@@ -1,0 +1,19 @@
+
+plugins {
+    id 'base'
+}
+
+allprojects {
+}
+
+ext {
+  startTime = System.currentTimeMillis()
+}
+
+task cleanPython(type: Delete) {
+  description = 'Clean all compiled python files'
+  delete fileTree("hhslib/src").matching {
+    include "**/*.pyc"
+    include "**/__pycache__/"
+  }
+}
