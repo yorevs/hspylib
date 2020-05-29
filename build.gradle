@@ -12,6 +12,10 @@ ext {
   pyrcc = "pyrcc3${pyrccVersion}"
 }
 
+wrapper {
+    gradleVersion="${gradleVersion}"
+}
+
 task props {
   doLast {
     File propsFile = new File(gradleProperties)
