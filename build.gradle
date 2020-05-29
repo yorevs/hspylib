@@ -1,19 +1,63 @@
 
-plugins {
-    id 'base'
-}
-
-allprojects {
-}
-
 ext {
   startTime = System.currentTimeMillis()
+  python = 'python3'
+  pyrcc = 'pyrcc5'
 }
 
 task cleanPython(type: Delete) {
-  description = 'Clean all compiled python files'
-  delete fileTree("hhslib/src").matching {
+  description = 'Clean all compiled and cached python files'
+  delete fileTree("src").matching {
     include "**/*.pyc"
     include "**/__pycache__/"
   }
+}
+
+task compilePython(type: Task) {
+  fileTree("src/main").matching {
+    include "**/*.py"
+    exclude "**/__init__.py"
+    exclude "**/test_*.py"
+  }.each { File file ->
+      println "Compiling Python file -> ${file.name}"
+      exec {
+        commandLine rootProject.python, '-m', 'py_compile', file.path
+      }
+    }
+}
+
+task compileQrc(type: Task) {
+  fileTree("src/main").matching {
+    include "**/*.qrc"
+  }.each { File file ->
+      println "Compiling Qt Resource -> ${file.name}"
+      exec {
+        commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
+      }
+    }
+}
+
+task runTest(type: Task) {
+  fileTree("src/test").matching {
+    include "**/test_*.py"
+  }.each { File file ->
+      println "Running test -> ${file.name}"
+      exec {
+        commandLine rootProject.python, file.path
+      }
+    }
+}
+
+task clean(type: Task) {
+  dependsOn cleanPython
+}
+
+task test(type: Task) {
+  dependsOn runTest
+}
+
+task build(type: Task) {
+  dependsOn compileQrc
+  dependsOn compilePython
+  dependsOn test
 }
