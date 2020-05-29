@@ -3,6 +3,6 @@
 # Package: python.core
 
 __all__ = [
-  "crud_repository",
-  "crud_service"
+  "repository",
+  "service"
 ]

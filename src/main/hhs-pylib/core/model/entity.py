@@ -1,9 +1,12 @@
+from uuid import UUID
+
+
 class Entity:
-    def __init__(self, entity_id: str = None):
+    def __init__(self, entity_id: UUID = None):
         self.uuid = entity_id
 
     def __str__(self):
-        return "{}".format(self.uuid)
+        return "Entity( UUID={} )".format(str(self.uuid))
 
     def to_dict(self) -> dict:
         ret_dict = {}

@@ -10,3 +10,5 @@ build
 gradle/
 gradlew*
 .idea/
+!/gradlew.bat
+!/gradlew

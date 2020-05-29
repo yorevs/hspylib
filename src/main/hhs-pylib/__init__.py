@@ -5,5 +5,6 @@
 __all__ = [
   "core",
   "modules",
+  "tools",
   "ui"
 ]

@@ -6,6 +6,5 @@ __all__ = [
   "config",
   "enum",
   "interfaces",
-  "model",
-  "tools"
+  "model"
 ]
