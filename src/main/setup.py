@@ -13,6 +13,6 @@ setuptools.setup(
     long_description=long_description,
     author='Hugo Saporetti Junior',
     author_email='yorevs@hotmail.com',
-    packages = setuptools.find_packages(),
+    packages=setuptools.find_packages(),
     url='https://github.com/yorevs/hhs-pylib'
 )

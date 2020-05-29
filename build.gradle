@@ -1,13 +1,33 @@
 
+buildscript {
+  project.ext.gradleProperties = "$rootProject.projectDir/properties.gradle"
+  apply from: gradleProperties
+}
+
+apply from: "properties.gradle"
+
 ext {
   startTime = System.currentTimeMillis()
-  python = 'python3'
-  pyrcc = 'pyrcc5'
+  python = "python${pythonVersion}"
+  pyrcc = "pyrcc3${pyrccVersion}"
+}
+
+task props {
+  doLast {
+    File propsFile = new File(gradleProperties)
+    if (propsFile.exists()) {
+      propsFile.eachLine { line ->
+        def strLine = "${line.substring(16, line.length() - 1)}"
+        def (name, value) = strLine.tokenize( ',' )
+        println "${name.padRight(25, '.')} => ${value.trim()}"
+      }
+    }
+  }
 }
 
 task cleanPython(type: Delete) {
+  description = 'Clean all compiled and cached python files from "src"'
   doLast {
-    description = 'Clean all compiled and cached python files'
     delete fileTree("src").matching {
       include "**/*.pyc"
       include "**/__pycache__/"
@@ -16,6 +36,7 @@ task cleanPython(type: Delete) {
 }
 
 task compilePython(type: Task) {
+  description = 'Compile all python files from "src/main"'
   doLast {
     fileTree("src/main").matching {
       include "**/*.py"
@@ -31,6 +52,7 @@ task compilePython(type: Task) {
 }
 
 task compilePythonTest(type: Task) {
+  description = 'Compile all python test files from "src/test"'
   doLast {
     fileTree("src/test").matching {
       include "**/test_*.py"
@@ -45,6 +67,7 @@ task compilePythonTest(type: Task) {
 }
 
 task compileQrc(type: Task) {
+  description = 'Compile all Qt resource files from "src/main"'
   doLast {
     fileTree("src/main").matching {
       include "**/*.qrc"
@@ -58,6 +81,7 @@ task compileQrc(type: Task) {
 }
 
 task runTest(type: Task) {
+  description = 'Run all Qt python tests "src/test/**/test_*.py"'
   doLast {
     fileTree("src/test").matching {
       include "**/test_*.py"
@@ -71,6 +95,7 @@ task runTest(type: Task) {
 }
 
 task installModule(type: Task) {
+  description = 'Install all python modules from "**/setup.py"'
   doLast {
     fileTree("src/main").matching {
       include "**/setup.py"
@@ -90,7 +115,8 @@ task installModule(type: Task) {
   }
 }
 
-task removeModule(type: Task) {
+task uninstallModule(type: Task) {
+  description = 'Uninstall all python modules from "**/setup.py"'
   doLast {
     fileTree("src/main").matching {
       include "**/setup.py"
@@ -131,7 +157,7 @@ task build(type: Task) {
 task install(type: Task) {
   dependsOn build
   mustRunAfter build
-  dependsOn removeModule
-  mustRunAfter removeModule
+  dependsOn uninstallModule
+  mustRunAfter uninstallModule
   dependsOn installModule
 }
