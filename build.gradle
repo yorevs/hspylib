@@ -6,46 +6,108 @@ ext {
 }
 
 task cleanPython(type: Delete) {
-  description = 'Clean all compiled and cached python files'
-  delete fileTree("src").matching {
-    include "**/*.pyc"
-    include "**/__pycache__/"
+  doLast {
+    description = 'Clean all compiled and cached python files'
+    delete fileTree("src").matching {
+      include "**/*.pyc"
+      include "**/__pycache__/"
+    }
   }
 }
 
 task compilePython(type: Task) {
-  fileTree("src/main").matching {
-    include "**/*.py"
-    exclude "**/__init__.py"
-    exclude "**/test_*.py"
-  }.each { File file ->
-      println "Compiling Python file -> ${file.name}"
-      exec {
-        commandLine rootProject.python, '-m', 'py_compile', file.path
+  doLast {
+    fileTree("src/main").matching {
+      include "**/*.py"
+      exclude "**/__init__.py"
+      exclude "**/test_*.py"
+    }.each { File file ->
+        println "Compiling Python file -> ${file.name}"
+        exec {
+          commandLine rootProject.python, '-m', 'py_compile', file.path
+        }
       }
-    }
+  }
+}
+
+task compilePythonTest(type: Task) {
+  doLast {
+    fileTree("src/test").matching {
+      include "**/test_*.py"
+      exclude "**/__init__.py"
+    }.each { File file ->
+        println "Compiling Python Test file -> ${file.name}"
+        exec {
+          commandLine rootProject.python, '-m', 'py_compile', file.path
+        }
+      }
+  }
 }
 
 task compileQrc(type: Task) {
-  fileTree("src/main").matching {
-    include "**/*.qrc"
-  }.each { File file ->
-      println "Compiling Qt Resource -> ${file.name}"
-      exec {
-        commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
+  doLast {
+    fileTree("src/main").matching {
+      include "**/*.qrc"
+    }.each { File file ->
+        println "Compiling Qt Resource -> ${file.name}"
+        exec {
+          commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
+        }
       }
-    }
+  }
 }
 
 task runTest(type: Task) {
-  fileTree("src/test").matching {
-    include "**/test_*.py"
-  }.each { File file ->
-      println "Running test -> ${file.name}"
-      exec {
-        commandLine rootProject.python, file.path
+  doLast {
+    fileTree("src/test").matching {
+      include "**/test_*.py"
+    }.each { File file ->
+        println "Running test -> ${file.name}"
+        exec {
+          commandLine rootProject.python, file.path
+        }
       }
-    }
+  }
+}
+
+task installModule(type: Task) {
+  doLast {
+    fileTree("src/main").matching {
+      include "**/setup.py"
+    }.each { File file ->
+        def moduleDir = "${file.path.replace(file.name, "")}"
+        println "Installing python modules from: ${file.path}"
+        new File("${moduleDir}").listFiles().each {
+          if (it.directory && it.name != '__pycache__') {
+            def moduleName = it.name
+            exec {
+              workingDir "${moduleDir}"
+              commandLine rootProject.python, '-m', 'pip', 'install', '.'
+            }
+          }
+        }
+      }
+  }
+}
+
+task removeModule(type: Task) {
+  doLast {
+    fileTree("src/main").matching {
+      include "**/setup.py"
+    }.each { File file ->
+        def moduleDir = "${file.path.replace(file.name, "")}"
+        println "Removing python modules from: ${file.path}"
+        new File("${moduleDir}").listFiles().each {
+          if (it.directory && it.name != '__pycache__') {
+            def moduleName = it.name
+            exec {
+              workingDir "${moduleDir}"
+              commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', moduleName
+            }
+          }
+        }
+      }
+  }
 }
 
 task clean(type: Task) {
@@ -53,11 +115,23 @@ task clean(type: Task) {
 }
 
 task test(type: Task) {
+  dependsOn compilePythonTest
+  mustRunAfter compilePythonTest
   dependsOn runTest
 }
 
 task build(type: Task) {
   dependsOn compileQrc
   dependsOn compilePython
+  mustRunAfter compileQrc
+  mustRunAfter compilePython
   dependsOn test
+}
+
+task install(type: Task) {
+  dependsOn build
+  mustRunAfter build
+  dependsOn removeModule
+  mustRunAfter removeModule
+  dependsOn installModule
 }
