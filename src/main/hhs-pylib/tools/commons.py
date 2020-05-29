@@ -1,5 +1,6 @@
 import logging as log
 import os
+from typing import Type
 
 DEFAULT_LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
@@ -22,3 +23,11 @@ def log_init(log_file: str, level: int = log.INFO, log_fmt: str = DEFAULT_LOG_FM
         filemode=f_mode)
 
     return log
+
+
+def class_attribute_names(clazz: Type) -> tuple:
+    return tuple(vars(clazz()).keys()) if clazz else None
+
+
+def class_attribute_values(instance: dict) -> tuple:
+    return tuple(instance.values()) if object else None

@@ -4,6 +4,6 @@
 
 __all__ = [
   "forms",
-  "promoted",
+  "promotions",
   "views"
 ]
