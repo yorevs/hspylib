@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: python.core
+# Package: main.hspylib.core.crud
 
 __all__ = [
   "repository",

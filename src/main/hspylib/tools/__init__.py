@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: src.core.tools
+# Package: main.hspylib.core.tools
 
 __all__ = [
   "commons",

@@ -1,1 +1,1 @@
-# hhs-pylib
+# hspylib

@@ -7,7 +7,7 @@ with open("VERSION") as fh:
     version = fh.read()
 
 setuptools.setup(
-    name='hhs-pylib',
+    name='hspylib',
     version=version,
     description='HomeSetup python3 library',
     long_description=long_description,

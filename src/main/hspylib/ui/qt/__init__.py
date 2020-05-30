@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: python.ui.qt
+# Package: main.hslib.ui.qt
 
 __all__ = [
   "forms",
