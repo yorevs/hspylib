@@ -12,21 +12,11 @@ ext {
   pyrcc = "pyrcc3${pyrccVersion}"
 }
 
-wrapper {
-    gradleVersion="${gradleVersion}"
-}
+def pythonPathMain = 'src/main/hhs-pylib'
+def pythonPathTest =  'src/test/hhs-pylib'
 
-task props {
-  doLast {
-    File propsFile = new File(gradleProperties)
-    if (propsFile.exists()) {
-      propsFile.eachLine { line ->
-        def strLine = "${line.substring(16, line.length() - 1)}"
-        def (name, value) = strLine.tokenize( ',' )
-        println "${name.padRight(25, '.')} => ${value.trim()}"
-      }
-    }
-  }
+wrapper {
+  gradleVersion="${gradleVersion}"
 }
 
 task cleanPython(type: Delete) {
@@ -91,6 +81,13 @@ task runTest(type: Task) {
       include "**/test_*.py"
     }.each { File file ->
         println "Running test -> ${file.name}"
+        def PYTHONPATH = System.getenv('PYTHONPATH')
+//         System.setenv("PYTHONPATH", "${PYTHONPATH}:${pythonPathMain}:${pythonPathTest}")
+//         systemProperty "PYTHONPATH", "${PYTHONPATH}:${pythonPathMain}:${pythonPathTest}"
+//           ant.project.properties['PYTHONPATH'] = "${PYTHONPATH}:${pythonPathMain}:${pythonPathTest}"
+//             ant.project.properties['PYTHONPATH'] = "src/main/hhs-pylib"
+            System.setenv('PYTHONPATH','VAI TOMAR NO SEU CU')
+            println ">> " + System.getenv('PYTHONPATH')
         exec {
           commandLine rootProject.python, file.path
         }

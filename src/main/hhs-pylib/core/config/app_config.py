@@ -11,7 +11,7 @@ from tools.commons import log_init
 class AppConfigs(ABC):
     __root_dir = pathlib.Path(sys.argv[0]).parent.absolute()
     __log_file = "{}/../log/application.log".format(__root_dir)
-    assert os.path.exists(__log_file)
+    assert os.path.exists(__log_file), "Logfile was not found: {}".format(__log_file)
     __logger = log_init(__log_file)
     __app_properties = Properties(load_dir="{}/resources".format(__root_dir))
     __logger.info('Successfully read {} properties'.format(__app_properties.size()))

@@ -1,8 +1,7 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: core.modules
+# Package: core.modules.json_utils
 
 __all__ = [
-  "eventbus",
   "json_search"
 ]
