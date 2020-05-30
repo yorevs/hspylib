@@ -19,17 +19,17 @@ wrapper {
   gradleVersion="${gradleVersion}"
 }
 
-Collection listByPattern(String dir, String pattern) {
-  file(dir).listFiles({file -> file.isDirectory() && file.name ==~ pattern} as FileFilter)
+Collection dirsByPattern(String dir, String pattern) {
+  file(dir).listFiles({file -> !file.isFile() && file.name ==~ pattern} as FileFilter)
 }
 
 task cleanPython(type: Delete) {
   description = 'Clean all compiled and cached python files from "src"'
-  println "Removing ..."
+  println "Cleaning up compiled and cached files ..."
   delete fileTree("src").matching {
     include "**/*.pyc"
   }
-  delete listByPattern('src', /.*__pycache__/)
+  delete dirsByPattern('src', /__pycache__$/)
 }
 
 task compilePython(type: Task) {
