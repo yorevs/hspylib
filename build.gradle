@@ -101,14 +101,12 @@ task installModule(type: Task) {
   doLast {
     fileTree("${sourceRoot}").matching {
       include "**/setup.py"
-    }.each { File file ->
-        println "Installing python modules from: ${file.path}"
-        def moduleDir = "${file.path.replace(file.name, "")}"
-        new File("${moduleDir}").listFiles().each {
-          exec {
-            workingDir "${moduleDir}"
-            commandLine rootProject.python, '-m', 'pip', 'install', "${rootProject.name}"
-          }
+    }.each { File module ->
+        def moduleDir = dirName(module)
+        println "Installing ${rootProject.name} from ${moduleDir} -> ${module.path}"
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'pip', 'install', "."
         }
       }
   }
