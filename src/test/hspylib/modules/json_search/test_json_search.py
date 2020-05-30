@@ -10,20 +10,24 @@
 """
 
 import json
+import pathlib
+import sys
 import unittest
 from os import path
 
 from modules.json_search.json_search import JsonSearch
 
-SAMPLE_FILE_NAME = "resources/json_search_sample.json"
+SAMPLE_FILE = "{}/{}/resources/json_search_sample.json".format(
+    pathlib.Path(sys.argv[0]).parent.absolute(), 'src/test/hspylib/modules/json_search')
 
 
 class TestJsonSearch(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        assert path.exists(SAMPLE_FILE_NAME)
-        with open(SAMPLE_FILE_NAME) as f_sample_file:
+        sample_file = SAMPLE_FILE.format()
+        assert path.exists(sample_file), "Sample file was not found on {}".format(sample_file)
+        with open(SAMPLE_FILE) as f_sample_file:
             self.json_object = json.load(f_sample_file)
             self.j_utils = JsonSearch()
 
