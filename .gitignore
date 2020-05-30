@@ -7,8 +7,4 @@ __pycache__/
 
 # Ignore Gradle build output directory
 build
-gradle/
-gradlew*
 .idea/
-!/gradlew.bat
-!/gradlew

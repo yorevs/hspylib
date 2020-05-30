@@ -81,15 +81,10 @@ task runTest(type: Task) {
       include "**/test_*.py"
     }.each { File file ->
         println "Running test -> ${file.name}"
-        def PYTHONPATH = System.getenv('PYTHONPATH')
-//         System.setenv("PYTHONPATH", "${PYTHONPATH}:${pythonPathMain}:${pythonPathTest}")
-//         systemProperty "PYTHONPATH", "${PYTHONPATH}:${pythonPathMain}:${pythonPathTest}"
-//           ant.project.properties['PYTHONPATH'] = "${PYTHONPATH}:${pythonPathMain}:${pythonPathTest}"
-//             ant.project.properties['PYTHONPATH'] = "src/main/hhs-pylib"
-            System.setenv('PYTHONPATH','VAI TOMAR NO SEU CU')
-            println ">> " + System.getenv('PYTHONPATH')
+        def PYTHONPATH = System.getenv('PYTHONPATH') + ":${pythonPathMain}:${pythonPathTest}"
         exec {
           commandLine rootProject.python, file.path
+          environment PYTHONPATH: "${PYTHONPATH}"
         }
       }
   }
