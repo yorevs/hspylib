@@ -12,8 +12,8 @@ ext {
   pyrcc = "pyrcc3${pyrccVersion}"
 }
 
-def pythonPathMain = 'src/main/hhs-pylib'
-def pythonPathTest =  'src/test/hhs-pylib'
+def pythonPathMain = 'src/main/hspylib'
+def pythonPathTest =  'src/test/hspylib'
 
 wrapper {
   gradleVersion="${gradleVersion}"

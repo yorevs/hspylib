@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: core.modules
+# Package: main.hspylib.modules
 
 __all__ = [
   "eventbus",
