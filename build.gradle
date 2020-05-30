@@ -12,8 +12,7 @@ ext {
   pyrcc = "pyrcc3${pyrccVersion}"
 }
 
-def pythonPathMain = 'src/main/hspylib'
-def pythonPathTest =  'src/test/hspylib'
+def sourceRoot = "${rootDir}/src"
 
 wrapper {
   gradleVersion="${gradleVersion}"
@@ -21,6 +20,10 @@ wrapper {
 
 Collection dirsByPattern(String dir, String pattern) {
   file(dir).listFiles({file -> !file.isFile() && file.name ==~ pattern} as FileFilter)
+}
+
+String dirName(File file) {
+  file.getParentFile().getPath()
 }
 
 task cleanPython(type: Delete) {
@@ -78,16 +81,16 @@ task compileQrc(type: Task) {
 }
 
 task runTest(type: Task) {
-  description = 'Run all Qt python tests "src/test/**/test_*.py"'
+  description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
   doLast {
-    fileTree("src/test").matching {
+    fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"
     }.each { File file ->
-        println "Running test -> ${file.name}"
-        def PYTHONPATH = System.getenv('PYTHONPATH') + ":${pythonPathMain}:${pythonPathTest}"
+        println "Running unittests -> ${file.name}"
         exec {
+          workingDir = dirName(file)
+          environment PYTHONPATH: "${rootDir}:${sourceRoot}"
           commandLine rootProject.python, '-m', 'unittest', '-f', file.path
-          environment PYTHONPATH: "${PYTHONPATH}"
         }
       }
   }
@@ -96,7 +99,7 @@ task runTest(type: Task) {
 task installModule(type: Task) {
   description = 'Install all python modules from "**/setup.py"'
   doLast {
-    fileTree("src").matching {
+    fileTree("${sourceRoot}").matching {
       include "**/setup.py"
     }.each { File file ->
         println "Installing python modules from: ${file.path}"
@@ -114,7 +117,7 @@ task installModule(type: Task) {
 task uninstallModule(type: Task) {
   description = 'Uninstall all python modules from "**/setup.py"'
   doLast {
-    fileTree("src/main").matching {
+    fileTree("${sourceRoot}/main").matching {
       include "**/setup.py"
     }.each { File file ->
         def moduleDir = "${file.path.replace(file.name, "")}"
