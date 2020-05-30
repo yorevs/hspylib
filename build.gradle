@@ -19,14 +19,17 @@ wrapper {
   gradleVersion="${gradleVersion}"
 }
 
+Collection listByPattern(String dir, String pattern) {
+  file(dir).listFiles({file -> file.isDirectory() && file.name ==~ pattern} as FileFilter)
+}
+
 task cleanPython(type: Delete) {
   description = 'Clean all compiled and cached python files from "src"'
-  doLast {
-    delete fileTree("src").matching {
-      include "**/*.pyc"
-      include "**/__pycache__/"
-    }
+  println "Removing ..."
+  delete fileTree("src").matching {
+    include "**/*.pyc"
   }
+  delete listByPattern('src', /.*__pycache__/)
 }
 
 task compilePython(type: Task) {
@@ -83,7 +86,7 @@ task runTest(type: Task) {
         println "Running test -> ${file.name}"
         def PYTHONPATH = System.getenv('PYTHONPATH') + ":${pythonPathMain}:${pythonPathTest}"
         exec {
-          commandLine rootProject.python, file.path
+          commandLine rootProject.python, '-m', 'unittest', file.path
           environment PYTHONPATH: "${PYTHONPATH}"
         }
       }
@@ -93,18 +96,15 @@ task runTest(type: Task) {
 task installModule(type: Task) {
   description = 'Install all python modules from "**/setup.py"'
   doLast {
-    fileTree("src/main").matching {
+    fileTree("src").matching {
       include "**/setup.py"
     }.each { File file ->
-        def moduleDir = "${file.path.replace(file.name, "")}"
         println "Installing python modules from: ${file.path}"
+        def moduleDir = "${file.path.replace(file.name, "")}"
         new File("${moduleDir}").listFiles().each {
-          if (it.directory && it.name != '__pycache__') {
-            def moduleName = it.name
-            exec {
-              workingDir "${moduleDir}"
-              commandLine rootProject.python, '-m', 'pip', 'install', '.'
-            }
+          exec {
+            workingDir "${moduleDir}"
+            commandLine rootProject.python, '-m', 'pip', 'install', "${rootProject.name}"
           }
         }
       }
@@ -119,14 +119,9 @@ task uninstallModule(type: Task) {
     }.each { File file ->
         def moduleDir = "${file.path.replace(file.name, "")}"
         println "Removing python modules from: ${file.path}"
-        new File("${moduleDir}").listFiles().each {
-          if (it.directory && it.name != '__pycache__') {
-            def moduleName = it.name
-            exec {
-              workingDir "${moduleDir}"
-              commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', moduleName
-            }
-          }
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', "${rootProject.name}"
         }
       }
   }
