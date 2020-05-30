@@ -86,7 +86,7 @@ task runTest(type: Task) {
         println "Running test -> ${file.name}"
         def PYTHONPATH = System.getenv('PYTHONPATH') + ":${pythonPathMain}:${pythonPathTest}"
         exec {
-          commandLine rootProject.python, '-m', 'unittest', file.path
+          commandLine rootProject.python, '-m', 'unittest', '-f', file.path
           environment PYTHONPATH: "${PYTHONPATH}"
         }
       }

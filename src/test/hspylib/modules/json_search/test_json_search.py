@@ -69,22 +69,22 @@ class TestJsonSearch(unittest.TestCase):
     # TC6 - Test selecting a nested property nested inside an array by a property value inside an array.
     def test_should_select_a_nested_property_nested_inside_array_by_a_property_value_inside_array(self):
         st = self.j_utils.json_select(self.json_object,
-                                     'elem4{elem4_1}{elem4_1_1}{inner_nested_name1}')
+                                      'elem4{elem4_1}{elem4_1_1}{inner_nested_name1}')
         self.assertEqual('inner_nested_value1_1', st)
         st = self.j_utils.json_select(self.json_object,
-                                     'elem4{elem4_1}{elem4_1_1}{inner_nested_name1<inner_nested_value2_1>}')
+                                      'elem4{elem4_1}{elem4_1_1}{inner_nested_name1<inner_nested_value2_1>}')
         self.assertEqual('inner_nested_value2_1', st)
         st = self.j_utils.json_select(self.json_object,
-                                     'elem4{elem4_1}{elem4_1_2}{inner_nested_name1<inner_nested_value4_1>}')
+                                      'elem4{elem4_1}{elem4_1_2}{inner_nested_name1<inner_nested_value4_1>}')
         self.assertEqual('inner_nested_value4_1', st)
 
     # TC7 - Test selecting mixed nested properties and indexes.
     def test_select_mixed_nested_properties_and_indexes(self):
         st = self.j_utils.json_select(self.json_object,
-                                     'elem4{elem4_2}[0].elem4_2_1{inner_nested_name1<inner_nested_value2_1>}')
+                                      'elem4{elem4_2}[0].elem4_2_1{inner_nested_name1<inner_nested_value2_1>}')
         self.assertEqual('inner_nested_value2_1', st)
         st = self.j_utils.json_select(self.json_object,
-                                     'elem4{elem4_2}[1].elem4_2_2{inner_nested_name1<inner_nested_value4_1>}')
+                                      'elem4{elem4_2}[1].elem4_2_2{inner_nested_name1<inner_nested_value4_1>}')
         self.assertEqual('inner_nested_value4_1', st)
 
     # TC8 - Test selecting parents.
@@ -100,7 +100,7 @@ class TestJsonSearch(unittest.TestCase):
                           "elem6_1_3": [{"elem6_1_3_1": "value6_1_3_1_A", "elem6_1_3_2": "value6_1_3_2_A"},
                                         {"elem6_1_3_1": "value6_1_3_1_C", "elem6_1_3_2": "value6_1_3_2_C"}]}, st)
         st = self.j_utils.json_select(self.json_object,
-                                     'elem6.elem6_1.{elem6_1_1<value6_1_1_A>}.elem6_1_3{elem6_1_3_1<value6_1_3_1_A>}',
+                                      'elem6.elem6_1.{elem6_1_1<value6_1_1_A>}.elem6_1_3{elem6_1_3_1<value6_1_3_1_A>}',
                                       True)
         self.assertEqual({"elem6_1_3_1": "value6_1_3_1_A", "elem6_1_3_2": "value6_1_3_2_A"}, st)
 
@@ -108,4 +108,4 @@ class TestJsonSearch(unittest.TestCase):
 # Program entry point.
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestJsonSearch)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True).run(suite)
