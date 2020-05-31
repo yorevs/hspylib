@@ -6,7 +6,7 @@
    @mailto: yorevs@hotmail.com
   @license: Please refer to <https://opensource.org/licenses/MIT>
 """
-
+import sys
 import unittest
 from unittest.mock import MagicMock
 
@@ -63,4 +63,6 @@ class TestEventBus(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestEventBus)
-    unittest.TextTestRunner(verbosity=2, failfast=True).run(suite)
+    unittest\
+        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
+        .run(suite)

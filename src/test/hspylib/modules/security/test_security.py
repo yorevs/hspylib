@@ -1,4 +1,5 @@
 import os
+import sys
 import unittest
 
 from main.hspylib.modules.security.security import encode, encrypt, decrypt, decode
@@ -68,4 +69,6 @@ class TestHhsLib(unittest.TestCase):
 # Program entry point.
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestHhsLib)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest\
+        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
+        .run(suite)

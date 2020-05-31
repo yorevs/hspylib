@@ -18,6 +18,8 @@ def dependencies = [
  'PyQt5', 'cryptography', 'pycodestyle', 'pymysql'
 ]
 
+def application = "main.py"
+
 wrapper {
   gradleVersion="${gradleVersion}"
 }
@@ -35,6 +37,7 @@ String dirName(File file) {
 }
 
 task installDependencies(type: Task) {
+  group = 'Pip'
   doLast {
     dependencies.each { String dep ->
       exec {
@@ -45,6 +48,7 @@ task installDependencies(type: Task) {
 }
 
 task cleanPython(type: Delete) {
+  group = 'Build'
   description = 'Clean all compiled and cached python files from "${sourceRoot}"'
   doLast {
     println "Cleaning up compiled and cached files ..."
@@ -56,6 +60,7 @@ task cleanPython(type: Delete) {
 }
 
 task compilePython(type: Task) {
+  group = 'Build'
   description = 'Compile all python files from "${sourceRoot}/main"'
   doLast {
     fileTree("${sourceRoot}/main").matching {
@@ -71,6 +76,7 @@ task compilePython(type: Task) {
 }
 
 task compilePythonTest(type: Task) {
+  group = 'Build'
   dependsOn compilePython
   description = 'Compile all python test files from "${sourceRoot}/test"'
   doLast {
@@ -87,6 +93,7 @@ task compilePythonTest(type: Task) {
 }
 
 task compileQrc(type: Task) {
+  group = 'Build'
   description = 'Compile all Qt resource files from "${sourceRoot}/main"'
   doLast {
     fileTree("${sourceRoot}/main").matching {
@@ -100,17 +107,10 @@ task compileQrc(type: Task) {
   }
 }
 
-task compile(type: Task) {
-  dependsOn installDependencies
-  mustRunAfter installDependencies
-  dependsOn compilePython
-  dependsOn compileQrc
-  dependsOn compilePythonTest
-}
-
 task runTest(type: Task) {
-  dependsOn compile
+  group = 'Run'
   description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
+  dependsOn compilePythonTest
   doLast {
     fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"
@@ -125,9 +125,30 @@ task runTest(type: Task) {
   }
 }
 
-task installModule(type: Task) {
+task run(type: Task) {
+  group = 'Run'
+  description = 'Run main application'
   dependsOn compilePython
+  dependsOn compileQrc
+  doLast {
+    fileTree("${sourceRoot}").matching {
+      include "**/${application}"
+    }.each { File app ->
+        def appDir = dirName(app)
+        println "Running ${appDir} -> ${app.path}"
+        exec {
+          workingDir "${appDir}"
+          environment PYTHONPATH: "${rootDir}:${sourceRoot}"
+          commandLine rootProject.python, "${application}"
+        }
+      }
+  }
+}
+
+task installModule(type: Task) {
+  group = 'Pip'
   description = 'Install all python modules from "**/setup.py"'
+  dependsOn compilePython
   doLast {
     fileTree("${sourceRoot}").matching {
       include "**/setup.py"
@@ -143,6 +164,7 @@ task installModule(type: Task) {
 }
 
 task uninstallModule(type: Task) {
+  group = 'Pip'
   description = 'Uninstall all python modules from "**/setup.py"'
   doLast {
     fileTree("${sourceRoot}/main").matching {
@@ -158,23 +180,34 @@ task uninstallModule(type: Task) {
   }
 }
 
+task compile(type: Task) {
+  group = 'Build'
+  dependsOn installDependencies
+  mustRunAfter installDependencies
+  dependsOn compilePython
+  dependsOn compileQrc
+  dependsOn compilePythonTest
+}
+
 task clean(type: Task) {
+  group = 'Build'
   dependsOn cleanPython
 }
 
 task test(type: Task) {
+  group = 'Test'
   dependsOn runTest
-  dependsOn compile
-  mustRunAfter runTest
 }
 
 task build(type: Task) {
+  group = 'Build'
   dependsOn clean
   mustRunAfter clean
   dependsOn test
 }
 
 task install(type: Task) {
+  group = 'Pip'
   dependsOn build
   mustRunAfter build
   dependsOn uninstallModule
