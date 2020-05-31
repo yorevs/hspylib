@@ -4,5 +4,6 @@
 
 __all__ = [
   "eventbus",
-  "json_search"
+  "json_search",
+  "security"
 ]
