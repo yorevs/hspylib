@@ -2,7 +2,7 @@ import logging as log
 import os
 from typing import Type
 
-DEFAULT_LOG_FMT = '{} {} {} {}{} {} '.format(
+LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
     '[%(threadName)-10.10s]',
     '%(levelname)-5.5s',
@@ -12,7 +12,7 @@ DEFAULT_LOG_FMT = '{} {} {} {}{} {} '.format(
 )
 
 
-def log_init(log_file: str, level: int = log.INFO, log_fmt: str = DEFAULT_LOG_FMT):
+def log_init(log_file: str, level: int = log.INFO, log_fmt: str = LOG_FMT):
     with open(log_file, 'w'):
         os.utime(log_file, None)
     f_mode = "a"
