@@ -1,14 +1,3 @@
-"""
-  @package: jsonutils
-   @script: test_JsonSearch.py
-  @purpose: Test Suite for JsonSearch.
-  @created: Aug 26, 2017
-   @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-   @mailto: yorevs@hotmail.com
-     @site: https://github.com/yorevs/homesetup
-  @license: Please refer to <https://opensource.org/licenses/MIT>
-"""
-
 import json
 import sys
 import unittest
