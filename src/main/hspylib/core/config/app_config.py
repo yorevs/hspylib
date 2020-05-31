@@ -4,8 +4,8 @@ import sys
 from abc import ABC
 from typing import Optional
 
-from core.config.properties import Properties
-from tools.commons import log_init
+from main.hspylib.core.config.properties import Properties
+from main.hspylib.tools.commons import log_init
 
 
 class AppConfigs(ABC):

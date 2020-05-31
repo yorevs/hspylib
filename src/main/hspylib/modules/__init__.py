@@ -7,5 +7,5 @@ __all__ = [
   "fetch",
   "json_search",
   "security",
-  "wire_mock"
+  "server_mock"
 ]
