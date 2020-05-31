@@ -10,6 +10,7 @@
 """
 
 import json
+import sys
 import unittest
 from os import path
 
@@ -108,4 +109,6 @@ class TestJsonSearch(unittest.TestCase):
 # Program entry point.
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestJsonSearch)
-    unittest.TextTestRunner(verbosity=2, failfast=True).run(suite)
+    unittest\
+        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
+        .run(suite)
