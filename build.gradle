@@ -14,6 +14,10 @@ ext {
 
 def sourceRoot = "${rootDir}/src"
 
+def dependencies = [
+ 'PyQt5', 'cryptography', 'pycodestyle', 'pymysql'
+]
+
 wrapper {
   gradleVersion="${gradleVersion}"
 }
@@ -30,19 +34,31 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
-task cleanPython(type: Delete) {
-  description = 'Clean all compiled and cached python files from "src"'
-  println "Cleaning up compiled and cached files ..."
-  delete fileTree("src").matching {
-    include "**/*.pyc"
+task installDependencies(type: Task) {
+  doLast {
+    dependencies.each { String dep ->
+      exec {
+        commandLine rootProject.python, '-m', 'pip', 'install', dep
+      }
+    }
   }
-  delete dirsByPattern('src', /.*__pycache__$/)
+}
+
+task cleanPython(type: Delete) {
+  description = 'Clean all compiled and cached python files from "${sourceRoot}"'
+  doLast {
+    println "Cleaning up compiled and cached files ..."
+    delete fileTree(sourceRoot).matching {
+      include "**/*.pyc"
+    }
+    delete dirsByPattern(sourceRoot, /.*__pycache__$/)
+  }
 }
 
 task compilePython(type: Task) {
-  description = 'Compile all python files from "src/main"'
+  description = 'Compile all python files from "${sourceRoot}/main"'
   doLast {
-    fileTree("src/main").matching {
+    fileTree("${sourceRoot}/main").matching {
       include "**/*.py"
       exclude "**/__init__.py"
     }.each { File file ->
@@ -55,9 +71,10 @@ task compilePython(type: Task) {
 }
 
 task compilePythonTest(type: Task) {
-  description = 'Compile all python test files from "src/test"'
+  dependsOn compilePython
+  description = 'Compile all python test files from "${sourceRoot}/test"'
   doLast {
-    fileTree("src/test").matching {
+    fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"
       exclude "**/__init__.py"
     }.each { File file ->
@@ -70,9 +87,9 @@ task compilePythonTest(type: Task) {
 }
 
 task compileQrc(type: Task) {
-  description = 'Compile all Qt resource files from "src/main"'
+  description = 'Compile all Qt resource files from "${sourceRoot}/main"'
   doLast {
-    fileTree("src/main").matching {
+    fileTree("${sourceRoot}/main").matching {
       include "**/*.qrc"
     }.each { File file ->
         println "Compiling Qt Resource -> ${file.name}"
@@ -83,7 +100,16 @@ task compileQrc(type: Task) {
   }
 }
 
+task compile(type: Task) {
+  dependsOn installDependencies
+  mustRunAfter installDependencies
+  dependsOn compilePython
+  dependsOn compileQrc
+  dependsOn compilePythonTest
+}
+
 task runTest(type: Task) {
+  dependsOn compile
   description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
   doLast {
     fileTree("${sourceRoot}/test").matching {
@@ -100,6 +126,7 @@ task runTest(type: Task) {
 }
 
 task installModule(type: Task) {
+  dependsOn compilePython
   description = 'Install all python modules from "**/setup.py"'
   doLast {
     fileTree("${sourceRoot}").matching {
@@ -135,22 +162,15 @@ task clean(type: Task) {
   dependsOn cleanPython
 }
 
-task compile(type: Task) {
-  dependsOn compilePython
-  dependsOn compilePythonTest
-}
-
 task test(type: Task) {
-  dependsOn compilePythonTest
-  mustRunAfter compilePythonTest
   dependsOn runTest
+  dependsOn compile
+  mustRunAfter runTest
 }
 
 task build(type: Task) {
-  dependsOn compileQrc
-  dependsOn compilePython
-  mustRunAfter compileQrc
-  mustRunAfter compilePython
+  dependsOn clean
+  mustRunAfter clean
   dependsOn test
 }
 
