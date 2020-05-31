@@ -4,6 +4,7 @@ from _ctypes_test import func
 class EventBus:
     __buses = {}
     __subscribers = {}
+    __events = []
 
     @staticmethod
     def get(bus_name: str):
@@ -32,8 +33,11 @@ class EventBus:
         subscriber['callbacks'].append(callback)
 
     def emit(self, event_name: str, **kwargs):
-        cache_key = '{}.{}'.format(self.name, event_name)
-        subscribers = EventBus.__subscribers[cache_key] if cache_key in EventBus.__subscribers else None
-        if subscribers and len(subscribers['callbacks']) > 0:
-            for callback in subscribers['callbacks']:
-                callback(kwargs)
+        self.__events.append({'event': event_name, 'kwargs': kwargs})
+        while len(self.__events) > 0:
+            event = self.__events.pop()
+            cache_key = '{}.{}'.format(self.name, event['event'])
+            subscribers = self.__subscribers[cache_key] if cache_key in self.__subscribers else None
+            if subscribers and len(subscribers['callbacks']) > 0:
+                for callback in subscribers['callbacks']:
+                    callback(event['kwargs'])
