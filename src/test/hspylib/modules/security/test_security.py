@@ -5,6 +5,7 @@ import unittest
 from main.hspylib.modules.security.security import encode, encrypt, decrypt, decode
 
 PASSPHRASE = '12345'
+SALT = '1234567890'
 
 SAMPLE_IN_FILE_NAME = "resources/secret.in"
 SAMPLE_OUT_FILE_NAME = "resources/secret.out"
@@ -59,8 +60,8 @@ class TestHhsLib(unittest.TestCase):
         with open(SAMPLE_IN_FILE_NAME) as f_in:
             contents = str(f_in.read().strip())
             self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
-        encrypt(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE)
-        decrypt(OUT_FILE_GPG, OUT_FILE, PASSPHRASE)
+        encrypt(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE, SALT)
+        decrypt(OUT_FILE_GPG, OUT_FILE, PASSPHRASE, SALT)
         with open(OUT_FILE) as f_out:
             contents = str(f_out.read().strip())
             self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)

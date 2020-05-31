@@ -1,5 +1,10 @@
 import base64
-import subprocess
+import os
+
+from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 # @purpose: Encode file into base64
@@ -19,26 +24,52 @@ def decode(in_file, out_file):
 
 
 # @purpose: Encrypt file using gpg
-def encrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_algo='SHA512'):
-    cmd_args = [
-        'gpg', '--quiet', '--yes', '--batch',
-        '--cipher-algo={}'.format(cipher_algo),
-        '--digest-algo={}'.format(digest_algo),
-        '--passphrase={}'.format(pass_phrase),
-        '--output={}'.format(out_file), '-c', in_file
-    ]
-    subprocess.check_output(cmd_args, stderr=subprocess.STDOUT)
-    return '=> ' + ' '.join(cmd_args)
+def encrypt(
+        in_file: str,
+        out_file: str,
+        pass_phrase: str,
+        salt: str,
+        digest_algo=hashes.SHA256(),
+        length=32,
+        iterations=100000,
+        encoding: str = 'utf-8'):
+
+    kdf = PBKDF2HMAC(
+        algorithm=digest_algo,
+        length=length,
+        salt=salt.encode(encoding),
+        iterations=iterations,
+        backend=default_backend()
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
+    f = Fernet(key)
+    assert os.path.exists(in_file)
+    with open(in_file) as f_in_file:
+        with open(out_file, 'w') as f_out_file:
+            f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
 
 
 # @purpose: Decrypt file using gpg
-def decrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_algo='SHA512'):
-    cmd_args = [
-        'gpg', '--quiet', '--yes', '--batch',
-        '--cipher-algo={}'.format(cipher_algo),
-        '--digest-algo={}'.format(digest_algo),
-        '--passphrase={}'.format(pass_phrase),
-        '--output={}'.format(out_file), in_file
-    ]
-    subprocess.check_output(cmd_args, stderr=subprocess.STDOUT)
-    return '=> ' + ' '.join(cmd_args)
+def decrypt(
+        in_file: str,
+        out_file: str,
+        pass_phrase: str,
+        salt: str,
+        digest_algo=hashes.SHA256(),
+        length=32,
+        iterations=100000,
+        encoding: str = 'utf-8'):
+
+    kdf = PBKDF2HMAC(
+        algorithm=digest_algo,
+        length=length,
+        salt=salt.encode(encoding),
+        iterations=iterations,
+        backend=default_backend()
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
+    f = Fernet(key)
+    assert os.path.exists(in_file)
+    with open(in_file) as f_in_file:
+        with open(out_file, 'w') as f_out_file:
+            f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
