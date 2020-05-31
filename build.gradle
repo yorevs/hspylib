@@ -18,9 +18,9 @@ wrapper {
   gradleVersion="${gradleVersion}"
 }
 
-Collection dirsByPattern(String dirname, String pattern) {
+Collection dirsByPattern(String baseDir, String pattern) {
   def paths = []
-  fileTree(dirname).visit { FileVisitDetails details ->
+  fileTree(baseDir).visit { FileVisitDetails details ->
       if (details.isDirectory() && details.name ==~ pattern) paths << details.file.path
   }
   return paths
@@ -45,7 +45,6 @@ task compilePython(type: Task) {
     fileTree("src/main").matching {
       include "**/*.py"
       exclude "**/__init__.py"
-      exclude "**/test_*.py"
     }.each { File file ->
         println "Compiling Python file -> ${file.name}"
         exec {
@@ -134,6 +133,11 @@ task uninstallModule(type: Task) {
 
 task clean(type: Task) {
   dependsOn cleanPython
+}
+
+task compile(type: Task) {
+  dependsOn compilePython
+  dependsOn compilePythonTest
 }
 
 task test(type: Task) {
