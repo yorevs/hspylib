@@ -15,7 +15,7 @@ ext {
 def sourceRoot = "${rootDir}/src"
 
 def dependencies = [
- 'PyQt5', 'cryptography', 'pycodestyle', 'pymysql'
+ 'PyQt5', 'cryptography', 'pycodestyle', 'pymysql', 'requests'
 ]
 
 def application = "main.py"
@@ -62,6 +62,7 @@ task cleanPython(type: Delete) {
 task compilePython(type: Task) {
   group = 'Build'
   description = 'Compile all python files from "${sourceRoot}/main"'
+  dependsOn installDependencies
   doLast {
     fileTree("${sourceRoot}/main").matching {
       include "**/*.py"
@@ -77,8 +78,8 @@ task compilePython(type: Task) {
 
 task compilePythonTest(type: Task) {
   group = 'Build'
-  dependsOn compilePython
   description = 'Compile all python test files from "${sourceRoot}/test"'
+  dependsOn compilePython
   doLast {
     fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"

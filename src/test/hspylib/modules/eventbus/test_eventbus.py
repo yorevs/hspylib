@@ -1,11 +1,3 @@
-"""
-  @package: main.modules.eventbus
-  @purpose: Test Suite for EventBus module.
-  @created: May 28, 2020
-   @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-   @mailto: yorevs@hotmail.com
-  @license: Please refer to <https://opensource.org/licenses/MIT>
-"""
 import sys
 import unittest
 from unittest.mock import MagicMock

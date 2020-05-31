@@ -4,6 +4,8 @@
 
 __all__ = [
   "eventbus",
+  "fetch",
   "json_search",
-  "security"
+  "security",
+  "wire_mock"
 ]

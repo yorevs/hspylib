@@ -1,5 +1,6 @@
 import logging as log
 import os
+import sys
 from typing import Type
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
@@ -23,6 +24,16 @@ def log_init(log_file: str, level: int = log.INFO, log_fmt: str = LOG_FMT):
         filemode=f_mode)
 
     return log
+
+
+# @purpose: Print the unicode string
+def sysout(string, end='\n', encoding='utf-8'):
+    sys.stdout.write(string.encode(encoding).decode('unicode-escape')+end)
+
+
+# @purpose: Print the unicode string
+def syserr(string, end='\n', encoding='utf-8'):
+    sys.stderr.write(string.encode(encoding).decode('unicode-escape')+end)
 
 
 def class_attribute_names(clazz: Type) -> tuple:
