@@ -10,18 +10,38 @@ class MockServerHandler(BaseHTTPRequestHandler):
         self.parent = parent
         super().__init__(request, client_address, parent)
 
-    def process_default(self,
-                        code: HttpCode = HttpCode.OK,
-                        content_type: str = 'text/plain; charset=utf-8',
-                        headers: List[Dict[str, str]] = None):
-        self.send_response(code.value)
-        self.send_header("Content-Type", content_type)
-        self.send_header("Content-Length", '0')
+    @staticmethod
+    def remove_reserved_headers(headers: List[Dict[str, str]]):
+        filtered = []
+        if headers:
+            reserved = ['content-type', 'content-length', 'server', 'date']
+            for header in headers:
+                for key in header:
+                    if key.lower() not in reserved:
+                        filtered.append(header)
+        return filtered
+
+    def process_headers(self,
+                        headers: List[Dict[str, str]] = None,
+                        content_type: str = 'text/plain; charset=UTF-8',
+                        content_length: int = 0):
+        headers = MockServerHandler.remove_reserved_headers(headers)
         if headers and len(headers) > 0:
             for header in headers:
                 for key, value in header.items():
                     self.send_header(key, value)
+        self.send_header("Server", 'MockServer v{}'.format(self.parent.version))
+        self.send_header("Date", self.date_time_string())
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(content_length))
         self.end_headers()
+
+    def process_default(self,
+                        code: HttpCode = HttpCode.OK,
+                        content_type: str = 'text/plain; charset=utf-8',
+                        headers: List[Dict[str, str]] = None):
+        self.send_response_only(code.value)
+        self.process_headers(headers, content_type)
 
     def process_request(self, method: HttpMethod):
         if self.parent.is_allowed(method):
@@ -35,11 +55,14 @@ class MockServerHandler(BaseHTTPRequestHandler):
                     request.body = None
                 else:
                     code = request.code.value
-                self.send_response(code)
-                self.send_header("Content-type", "{}; charset={}".format(
-                    request.content_type, request.encoding))
-                self.send_header("Content-Length", str(len(request.body) if request.body else 0))
-                self.end_headers()
+                headers = request.headers if request.headers else []
+                self.send_response_only(code)
+                if request.received_body:
+                    length = int(self.headers['Content-Length'])
+                    request.body = self.rfile.read(length).decode(request.encoding)
+                    self.process_headers(headers, request.content_type, length)
+                else:
+                    self.process_headers(headers, request.content_type, len(request.body) if request.body else 0)
                 if request.body:
                     self.wfile.write(request.body.encode(request.encoding))
             else:

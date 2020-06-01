@@ -19,18 +19,11 @@ class MockServer(HTTPServer):
         except KeyError:
             return None
 
-    class ServerThread(Thread):
-        def __init__(self, server):
-            super().__init__()
-            self.server = server
-
-        def run(self) -> None:
-            self.server.serve_forever()
-
     def __init__(self, hostname: str, port: int):
         self.__mocks = {}
         self.hostname = hostname
         self.port = port
+        self.version = '0.9.0'
         super().__init__(self.server_address(), MockServerHandler)
 
     def server_address(self) -> Tuple[str, int]:
@@ -40,7 +33,7 @@ class MockServer(HTTPServer):
         return method in self.__mocks
 
     def start(self):
-        runner = MockServer.ServerThread(self)
+        runner = ServerThread(self)
         runner.start()
 
     def stop(self):
@@ -55,8 +48,24 @@ class MockServer(HTTPServer):
         return request
 
 
+class ServerThread(Thread):
+    def __init__(self, parent: MockServer):
+        super().__init__()
+        self.parent = parent
+
+    def run(self) -> None:
+        self.parent.serve_forever()
+
+
 if __name__ == '__main__':
     server = MockServer('localhost', 3333)
-    server.when_request(HttpMethod.GET, '/').then_return(HttpCode.OK)
-    server.when_request(HttpMethod.PUT, '/users').then_return(HttpCode.CREATED)
+    server\
+        .when_request(HttpMethod.GET, '/')\
+        .then_return(code=HttpCode.OK)
+    server\
+        .when_request(HttpMethod.POST, '/users')\
+        .then_return_with_received_body(code=HttpCode.OK)
+    server\
+        .when_request(HttpMethod.PUT, '/users')\
+        .then_return(code=HttpCode.OK, body='[{"name":"any-name"}]', headers=[{'Content-Length': '0'}, {'Etag': "3147526947"}])
     server.start()

@@ -1,10 +1,10 @@
 import json
 import subprocess
 
-# @purpose: TODO
 from main.hspylib.tools.commons import sysout, syserr
 
 
+# @purpose: TODO
 def __convert_headers(headers: dict):
     flat_headers = {}
     for d in headers:
