@@ -52,7 +52,7 @@ def fetch(url, method='GET', headers=None, body=None, silent=True):
         # If this happen, is because the response is not json format
         pass
 
-    return response
+    return response.strip()
 
 
 # @purpose: TODO
