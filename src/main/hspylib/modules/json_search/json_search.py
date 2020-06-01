@@ -1,17 +1,6 @@
-"""
-  @package: core.modules.json_search
-   @script: JsonSearch.py
-  @purpose: Provides an engine to navigate through a json object.
-  @created: Aug 26, 2017
-   @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-   @mailto: yorevs@hotmail.com
-     @site: https://github.com/yorevs/homesetup
-  @license: Please refer to <https://opensource.org/licenses/MIT>
-"""
-
 import re
 
-from appdirs import unicode
+from idna.core import unicode
 
 RE_JSON_NAME = '[a-zA-Z0-9_\\- ]'
 RE_JSON_ARRAY_INDEX = '[0-9]{1,}'

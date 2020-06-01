@@ -15,7 +15,7 @@ ext {
 def sourceRoot = "${rootDir}/src"
 
 def dependencies = [
- 'PyQt5', 'cryptography', 'pycodestyle', 'pymysql', 'requests', 'appdirs'
+ 'PyQt5', 'cryptography', 'pycodestyle', 'pymysql', 'requests'
 ]
 
 def application = "main.py"
