@@ -17,7 +17,7 @@ ORIGINAL_FILE_CONTENTS = "HomeSetup Secrets"
 ENCODED_FILE_CONTENTS = "SG9tZVNldHVwIFNlY3JldHM="
 
 
-class TestHhsLib(unittest.TestCase):
+class TestSecurity(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
@@ -69,7 +69,7 @@ class TestHhsLib(unittest.TestCase):
 
 # Program entry point.
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestHhsLib)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestSecurity)
     unittest\
         .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
         .run(suite)
