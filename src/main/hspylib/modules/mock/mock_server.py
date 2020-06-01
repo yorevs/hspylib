@@ -1,5 +1,5 @@
-import signal
 from http.server import HTTPServer
+from random import randint
 from threading import Thread
 from typing import Tuple, Optional
 
@@ -10,6 +10,8 @@ from main.hspylib.modules.mock.mock_server_handler import MockServerHandler
 
 
 class MockServer(HTTPServer):
+
+    RANDOM_PORT = randint(49152, 65535)
 
     def mock(self, method: HttpMethod, url: str) -> Optional[MockRequest]:
         try:
@@ -34,7 +36,7 @@ class MockServer(HTTPServer):
     def server_address(self) -> Tuple[str, int]:
         return self.hostname, self.port
 
-    def is_mocked(self, method: HttpMethod):
+    def is_allowed(self, method: HttpMethod):
         return method in self.__mocks
 
     def start(self):
@@ -51,3 +53,10 @@ class MockServer(HTTPServer):
             if method in self.__mocks else {}
         self.__mocks[method][url] = request
         return request
+
+
+if __name__ == '__main__':
+    server = MockServer('localhost', 3333)
+    server.when_request(HttpMethod.GET, '/').then_return(HttpCode.OK)
+    server.when_request(HttpMethod.PUT, '/users').then_return(HttpCode.CREATED)
+    server.start()

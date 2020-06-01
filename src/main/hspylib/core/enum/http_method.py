@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class HttpMethod(Enum):
-    HEAD = 'head'
     OPTIONS = 'options'
+    HEAD = 'head'
     GET = 'get'
     POST = 'post'
     PUT = 'put'
