@@ -20,7 +20,7 @@ class TestFetch(unittest.TestCase):
         expected_resp = '{"name":"Mock Server"}'
         self.server_mock \
             .when_request(HttpMethod.GET, '/get') \
-            .then_return(HttpCode.OK, expected_resp)
+            .then_return(code=HttpCode.OK, body=expected_resp, headers=[{'Etag': "3147526947"}])
         resp = get('localhost:{}/get'.format(self.server_mock.port))
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.decode('utf-8'))
@@ -29,7 +29,7 @@ class TestFetch(unittest.TestCase):
         expected_resp = '{"name":"Mock Server"}'
         self.server_mock \
             .when_request(HttpMethod.POST, '/post') \
-            .then_return(HttpCode.CREATED, expected_resp)
+            .then_return_with_received_body(code=HttpCode.CREATED)
         resp = post('localhost:{}/post'.format(self.server_mock.port), expected_resp)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.decode('utf-8'))
@@ -38,7 +38,7 @@ class TestFetch(unittest.TestCase):
         expected_resp = '{"name":"Mock Server"}'
         self.server_mock \
             .when_request(HttpMethod.PUT, '/put') \
-            .then_return(HttpCode.OK, expected_resp)
+            .then_return_with_received_body(code=HttpCode.OK)
         resp = put('localhost:{}/put'.format(self.server_mock.port), expected_resp)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.decode('utf-8'))
@@ -47,7 +47,7 @@ class TestFetch(unittest.TestCase):
         expected_resp = '{"name":"Mock Server"}'
         self.server_mock \
             .when_request(HttpMethod.PATCH, '/patch') \
-            .then_return(HttpCode.ACCEPTED, expected_resp)
+            .then_return_with_received_body(code=HttpCode.ACCEPTED)
         resp = patch('localhost:{}/patch'.format(self.server_mock.port), expected_resp)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.decode('utf-8'))
@@ -55,7 +55,7 @@ class TestFetch(unittest.TestCase):
     def test_should_delete_from_server(self):
         self.server_mock \
             .when_request(HttpMethod.DELETE, '/delete') \
-            .then_return(HttpCode.OK)
+            .then_return(code=HttpCode.OK)
         resp = delete('localhost:{}/delete'.format(self.server_mock.port))
         assert not resp, "Response is empty or None"
 
