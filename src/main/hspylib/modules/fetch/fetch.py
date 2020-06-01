@@ -19,12 +19,15 @@ def __convert_headers(headers: dict):
 
 # @purpose: TODO
 def __convert_body(body):
-    if type(body) is str:
-        return body
-    elif type(body) is dict:
-        return json.dumps(body)
+    if body:
+        if type(body) is str:
+            return body
+        elif type(body) is dict or isinstance(json, body):
+            return json.dumps(body)
+        else:
+            return json.dumps(body.__dict__)
     else:
-        return json.dumps(body.__dict__)
+        return None
 
 
 # @purpose: TODO

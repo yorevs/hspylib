@@ -3,23 +3,12 @@ from typing import Tuple, List, Dict
 
 from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod
-from main.hspylib.modules.mock.mock_request import MockRequest
 
 
 class MockServerHandler(BaseHTTPRequestHandler):
     def __init__(self, request: bytes, client_address: Tuple[str, int], parent):
         self.parent = parent
         super().__init__(request, client_address, parent)
-
-    def process_request(self, mock_request: MockRequest):
-        code = mock_request.code.value if mock_request.code else HttpCode.INTERNAL_SERVER_ERROR.value
-        self.send_response(code)
-        self.send_header("Content-type", "{}; charset={}".format(
-            mock_request.content_type, mock_request.encoding))
-        self.send_header("Content-Length", str(len(mock_request.body) if mock_request.body else 0))
-        self.end_headers()
-        if mock_request.body:
-            self.wfile.write(mock_request.body.encode(mock_request.encoding))
 
     def process_default(self,
                         code: HttpCode = HttpCode.OK,
@@ -34,29 +23,45 @@ class MockServerHandler(BaseHTTPRequestHandler):
                     self.send_header(key, value)
         self.end_headers()
 
-    def find_allowed_methods(self):
-        allowed_methods = ['OPTIONS']
-        if self.parent.is_mocked(HttpMethod.HEAD):
-            allowed_methods.append('HEAD')
-        if self.parent.is_mocked(HttpMethod.GET):
-            allowed_methods.append('GET')
-        if self.parent.is_mocked(HttpMethod.POST):
-            allowed_methods.append('POST')
-        if self.parent.is_mocked(HttpMethod.PUT):
-            allowed_methods.append('PUT')
-        if self.parent.is_mocked(HttpMethod.PATCH):
-            allowed_methods.append('PATCH')
-        if self.parent.is_mocked(HttpMethod.DELETE):
-            allowed_methods.append('DELETE')
-        return allowed_methods
-
-    def do_HEAD(self):
-        mock_request = self.parent.mock(HttpMethod.HEAD, self.path)
-        if mock_request:
-            mock_request.body = None
-            self.process_request(mock_request)
+    def process_request(self, method: HttpMethod):
+        if self.parent.is_allowed(method):
+            request = self.parent.mock(method, self.path)
+            if request:
+                if not request.code:
+                    code = HttpCode.INTERNAL_SERVER_ERROR.value
+                    request.body = 'Mocked response code must be provided'
+                elif method in ['OPTIONS', 'HEAD']:
+                    code = request.code.value
+                    request.body = None
+                else:
+                    code = request.code.value
+                self.send_response(code)
+                self.send_header("Content-type", "{}; charset={}".format(
+                    request.content_type, request.encoding))
+                self.send_header("Content-Length", str(len(request.body) if request.body else 0))
+                self.end_headers()
+                if request.body:
+                    self.wfile.write(request.body.encode(request.encoding))
+            else:
+                self.process_default(HttpCode.NOT_FOUND)
         else:
             self.process_default(HttpCode.METHOD_NOT_ALLOWED)
+
+    def find_allowed_methods(self):
+        allowed_methods = ['OPTIONS']
+        if self.parent.is_allowed(HttpMethod.HEAD):
+            allowed_methods.append('HEAD')
+        if self.parent.is_allowed(HttpMethod.GET):
+            allowed_methods.append('GET')
+        if self.parent.is_allowed(HttpMethod.POST):
+            allowed_methods.append('POST')
+        if self.parent.is_allowed(HttpMethod.PUT):
+            allowed_methods.append('PUT')
+        if self.parent.is_allowed(HttpMethod.PATCH):
+            allowed_methods.append('PATCH')
+        if self.parent.is_allowed(HttpMethod.DELETE):
+            allowed_methods.append('DELETE')
+        return allowed_methods
 
     def do_OPTIONS(self):
         mock_request = self.parent.mock(HttpMethod.OPTIONS, self.path)
@@ -64,42 +69,24 @@ class MockServerHandler(BaseHTTPRequestHandler):
             {'Allow': ', '.join(self.find_allowed_methods())}
         ]
         if mock_request:
-            mock_request.body = None
             self.process_request(mock_request)
         else:
             self.process_default(HttpCode.NO_CONTENT, headers=headers)
 
+    def do_HEAD(self):
+        self.process_request(HttpMethod.HEAD)
+
     def do_GET(self):
-        mock_request = self.parent.mock(HttpMethod.GET, self.path)
-        if mock_request:
-            self.process_request(mock_request)
-        else:
-            self.process_default(HttpCode.METHOD_NOT_ALLOWED)
+        self.process_request(HttpMethod.GET)
 
     def do_POST(self):
-        mock_request = self.parent.mock(HttpMethod.POST, self.path)
-        if mock_request:
-            self.process_request(mock_request)
-        else:
-            self.process_default(HttpCode.METHOD_NOT_ALLOWED)
+        self.process_request(HttpMethod.POST)
 
     def do_PUT(self):
-        mock_request = self.parent.mock(HttpMethod.PUT, self.path)
-        if mock_request:
-            self.process_request(mock_request)
-        else:
-            self.process_default(HttpCode.METHOD_NOT_ALLOWED)
+        self.process_request(HttpMethod.PUT)
 
     def do_PATCH(self):
-        mock_request = self.parent.mock(HttpMethod.PATCH, self.path)
-        if mock_request:
-            self.process_request(mock_request)
-        else:
-            self.process_default(HttpCode.METHOD_NOT_ALLOWED)
+        self.process_request(HttpMethod.PATCH)
 
     def do_DELETE(self):
-        mock_request = self.parent.mock(HttpMethod.DELETE, self.path)
-        if mock_request:
-            self.process_request(mock_request)
-        else:
-            self.process_default(HttpCode.METHOD_NOT_ALLOWED)
+        self.process_request(HttpMethod.DELETE)
