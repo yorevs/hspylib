@@ -6,5 +6,5 @@ __all__ = [
   "db",
   "file"
   "repository",
-  "service"
+  "crud_service"
 ]
