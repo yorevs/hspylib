@@ -1,5 +1,7 @@
 from requests.models import Response, CaseInsensitiveDict
 
+from main.hspylib.core.enum.charset import Charset
+from main.hspylib.core.enum.content_type import ContentType
 from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod
 
@@ -13,7 +15,7 @@ class HttpResponse:
             HttpCode(response.status_code),
             response.text,
             response.headers,
-            response.encoding,
+            Charset(str(response.encoding).upper()) if response.encoding else None,
         )
 
     def __init__(self,
@@ -22,8 +24,8 @@ class HttpResponse:
                  status_code: HttpCode = None,
                  body: str = None,
                  headers: CaseInsensitiveDict = None,
-                 encoding: str = 'UTF-8',
-                 content_type='application/json; charset=UTF-8'):
+                 encoding: Charset = Charset.UTF_8,
+                 content_type=ContentType.APPLICATION_JSON):
         self.method = method
         self.url = url
         self.status_code = status_code
@@ -31,3 +33,5 @@ class HttpResponse:
         self.headers = headers
         self.encoding = encoding
         self.content_type = content_type
+        if self.content_type:
+            self.content_type.charset = self.encoding

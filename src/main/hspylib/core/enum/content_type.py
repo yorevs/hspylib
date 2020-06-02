@@ -57,9 +57,5 @@ class ContentType(Enum):
     TEXT_VCARD = 'text/vcard'
     TEXT_XML = 'text/xml'
 
-    def __init__(self):
-        super().__init__()
-        self.charset = None
-
     def __str__(self):
-        return '{}{}'.format(self.value, ';{}'.format(self.charset) if self.charset else '')
+        return '{}{}'.format(self.value, '; charset={}'.format(self.charset) if self.charset else '')
