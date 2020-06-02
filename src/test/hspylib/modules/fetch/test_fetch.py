@@ -23,9 +23,9 @@ class TestFetch(unittest.TestCase):
             .when_request(HttpMethod.GET, '/get') \
             .then_return(code=expected_code, body=expected_resp)
         resp = get('localhost:{}/get'.format(self.server_mock.port))
-        self.assertEqual(expected_code.value, resp.status_code)
+        self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
-        self.assertEqual(expected_resp, resp.text)
+        self.assertEqual(expected_resp, resp.body)
 
     def test_should_post_to_server(self):
         expected_code = HttpCode.CREATED
@@ -34,9 +34,9 @@ class TestFetch(unittest.TestCase):
             .when_request(HttpMethod.POST, '/post') \
             .then_return_with_received_body(code=expected_code)
         resp = post('localhost:{}/post'.format(self.server_mock.port), expected_resp)
-        self.assertEqual(expected_code.value, resp.status_code)
+        self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
-        self.assertEqual(expected_resp, resp.text)
+        self.assertEqual(expected_resp, resp.body)
 
     def test_should_put_to_server(self):
         expected_code = HttpCode.OK
@@ -45,9 +45,9 @@ class TestFetch(unittest.TestCase):
             .when_request(HttpMethod.PUT, '/put') \
             .then_return_with_received_body(code=expected_code)
         resp = put('localhost:{}/put'.format(self.server_mock.port), expected_resp)
-        self.assertEqual(expected_code.value, resp.status_code)
+        self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
-        self.assertEqual(expected_resp, resp.text)
+        self.assertEqual(expected_resp, resp.body)
 
     def test_should_patch_to_server(self):
         expected_code = HttpCode.ACCEPTED
@@ -56,9 +56,9 @@ class TestFetch(unittest.TestCase):
             .when_request(HttpMethod.PATCH, '/patch') \
             .then_return_with_received_body(code=expected_code)
         resp = patch('localhost:{}/patch'.format(self.server_mock.port), expected_resp)
-        self.assertEqual(expected_code.value, resp.status_code)
+        self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
-        self.assertEqual(expected_resp, resp.text)
+        self.assertEqual(expected_resp, resp.body)
 
     def test_should_delete_from_server(self):
         expected_code = HttpCode.OK
@@ -66,9 +66,9 @@ class TestFetch(unittest.TestCase):
             .when_request(HttpMethod.DELETE, '/delete') \
             .then_return(code=expected_code)
         resp = delete('localhost:{}/delete'.format(self.server_mock.port))
-        self.assertEqual(expected_code.value, resp.status_code)
+        self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
-        assert not resp.text, "Response is not empty or None"
+        assert not resp.body, "Response is not empty or None"
 
 
 if __name__ == '__main__':
