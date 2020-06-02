@@ -13,6 +13,7 @@ class DBRepository(Repository):
         self.password = AppConfigs.get('db.password')
         self.database = AppConfigs.get('db.database')
         self.logger = AppConfigs.logger()
+        self.cursor = None
 
     @abstractmethod
     def connect(self):
@@ -24,8 +25,4 @@ class DBRepository(Repository):
 
     @abstractmethod
     def is_connected(self):
-        pass
-
-    @abstractmethod
-    def count(self):
         pass

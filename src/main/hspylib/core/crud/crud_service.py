@@ -4,7 +4,7 @@ from typing import Optional
 from main.hspylib.core.model.entity import Entity
 
 
-class Service(ABC):
+class CrudService(ABC):
     @abstractmethod
     def save(self, entity: Entity):
         pass

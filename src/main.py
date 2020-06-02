@@ -2,6 +2,8 @@
 
 import signal
 
+from main.hspylib.core.config.app_config import AppConfigs
+
 
 def exit_app(sig=None, frame=None):
     print(frame)
@@ -11,7 +13,16 @@ def exit_app(sig=None, frame=None):
     exit(sig)
 
 
+class Main:
+    def __init__(self):
+        self.configs = AppConfigs.INSTANCE
+
+    def run(self):
+        print('Done.')
+
+
 # Application entry point
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, exit_app)
+    Main().run()
     exit_app(0)

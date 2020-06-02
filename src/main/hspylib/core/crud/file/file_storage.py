@@ -23,6 +23,8 @@ class FileStorage:
     def commit(self):
         with open(self.filename, 'w') as f_local_db:
             f_local_db.write(str(self.data))
+        self.logger.debug('File storage committed entries={}'.format(len(self.data)))
 
     def truncate(self):
         open(self.filename, 'w').close()
+        self.logger.warn('File storage was truncated')
