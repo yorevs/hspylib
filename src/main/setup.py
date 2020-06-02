@@ -7,12 +7,20 @@ with open("VERSION") as fh:
     version = fh.read()
 
 setuptools.setup(
-    name='hspylib',
     version=version,
     description='HomeSetup python3 library',
-    long_description=long_description,
     author='Hugo Saporetti Junior',
     author_email='yorevs@hotmail.com',
-    packages=setuptools.find_packages(),
-    url='https://github.com/yorevs/hhs-pylib'
+    url='https://github.com/yorevs/hhs-pylib',
+    name='hspylib',
+    long_description=long_description,
+    packages=['hspylib'],
+    license='MIT',
+    install_requires=[
+        'PyQt5',
+        'cryptography',
+        'pycodestyle',
+        'pymysql',
+        'requests'
+    ],
 )

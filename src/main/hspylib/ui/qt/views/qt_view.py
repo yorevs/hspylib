@@ -11,7 +11,7 @@ class QtView(ABC):
         super().__init__()
         self.window = window
         self.parent = parent
-        self.log = AppConfigs.logger()
+        self.logger = AppConfigs.logger()
         self.qt = QtFinder(self.window)
 
     @abstractmethod
