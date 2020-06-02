@@ -12,17 +12,24 @@ ext {
   pyrcc = "pyrcc3${pyrccVersion}"
 }
 
-def sourceRoot = "${rootDir}/src"
-
 def dependencies = [
- 'PyQt5', 'cryptography', 'pycodestyle', 'pymysql', 'requests'
+ 'PyQt5',
+ 'cryptography',
+ 'pycodestyle',
+ 'pymysql',
+ 'requests'
 ]
 
+def sourceRoot = "${rootDir}/src"
 def application = "main.py"
+def version = "0-9.10"
+def versionFile = "VERSION"
 
 wrapper {
   gradleVersion="${gradleVersion}"
 }
+
+/* Functions --------------------------------------------------------------- */
 
 Collection dirsByPattern(String baseDir, String pattern) {
   def paths = []
@@ -35,6 +42,8 @@ Collection dirsByPattern(String baseDir, String pattern) {
 String dirName(File file) {
   file.getParentFile().getPath()
 }
+
+/* Tasks ------------------------------------------------------------------- */
 
 task installDependencies(type: Task) {
   group = 'Pip'
@@ -181,6 +190,17 @@ task uninstallModule(type: Task) {
   }
 }
 
+task updateVersion {
+  doLast {
+    if( !file("${versionFile}").exists() ) {
+        new File("${versionFile}").text = "$rootProject.project.version"
+    }
+    ant.replaceregexp(file: "${versionFile}", match:'^.*$', replace:"${version}", flags:'g', byline:true)
+    println "Project: [${rootProject.name}] Version: " + file("${versionFile}").text
+  }
+}
+
+
 task compile(type: Task) {
   group = 'Build'
   dependsOn installDependencies
@@ -202,6 +222,7 @@ task test(type: Task) {
 
 task build(type: Task) {
   group = 'Build'
+  dependsOn updateVersion
   dependsOn clean
   mustRunAfter clean
   dependsOn test

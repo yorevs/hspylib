@@ -3,8 +3,5 @@
 # Package: main.hspylib.core.crud
 
 __all__ = [
-  "db",
-  "file"
-  "repository",
-  "service"
+  "file_repository"
 ]
