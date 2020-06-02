@@ -9,7 +9,6 @@ class Properties:
     __profiled_format = 'application-{}.properties'
 
     def __init__(self, filename: str = None, profile: str = environ.get(__default_profile), load_dir: str = '.'):
-        assert path.exists(filename)
         self.filename = filename
         self.profile = profile
         self.load_dir = load_dir

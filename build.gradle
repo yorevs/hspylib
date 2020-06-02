@@ -148,7 +148,7 @@ task run(type: Task) {
         println "Running ${appDir} -> ${app.path}"
         exec {
           workingDir "${appDir}"
-          environment PYTHONPATH: "${rootDir}:${sourceRoot}"
+          environment PYTHONPATH: "${rootDir}:${sourceRoot}", SOURCE_ROOT: "${sourceRoot}"
           commandLine rootProject.python, "${application}"
         }
       }

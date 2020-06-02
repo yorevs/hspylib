@@ -9,7 +9,7 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
     '[%(threadName)-10.10s]',
     '%(levelname)-5.5s',
-    '%(name)s::',
+    '%(filename)s::',
     '%(funcName)s(@Line:%(lineno)d)',
     '%(message)s'
 )

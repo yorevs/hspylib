@@ -10,7 +10,6 @@ from main.hspylib.core.model.entity import Entity
 
 
 class FileRepository(Repository):
-
     __storages = {}
 
     @staticmethod
@@ -31,6 +30,9 @@ class FileRepository(Repository):
         self.logger = AppConfigs.logger()
         self.filename = filename
         self.file_db = self.__create_or_get()
+
+    def __str__(self):
+        return str(self.file_db.data)
 
     def __create_or_get(self):
         if self.filename in FileRepository.__storages:
@@ -67,7 +69,8 @@ class FileRepository(Repository):
                 fields = re.split('=|>|<|>=|<=|==|!=', next_filter)
                 try:
                     found = [
-                        self.row_to_entity(c) for c in self.file_db.data if self.check_criteria(fields[1], c[fields[0]])
+                        self.dict_to_entity(c) for c in self.file_db.data if
+                        self.check_criteria(fields[1], c[fields[0]])
                     ]
                 except KeyError:
                     continue
@@ -76,9 +79,9 @@ class FileRepository(Repository):
                 filtered.extend(found)
             return filtered
         else:
-            return [self.row_to_entity(c) for c in self.file_db.data]
+            return [self.dict_to_entity(c) for c in self.file_db.data]
 
-    def find_by_id(self, entity_id: str) -> Optional[Entity]:
+    def find_by_id(self, entity_id: uuid.UUID) -> Optional[Entity]:
         if entity_id:
             result = [c for c in self.file_db.data if entity_id == c['uuid']]
             return result if len(result) > 0 else None
@@ -86,5 +89,13 @@ class FileRepository(Repository):
             return None
 
     @abstractmethod
-    def row_to_entity(self, row: tuple) -> Entity:
+    def dict_to_entity(self, row: dict) -> Entity:
         pass
+
+
+class MyRepo(FileRepository):
+    def __init__(self, filename: str):
+        super().__init__(filename)
+
+    def dict_to_entity(self, row: dict) -> Entity:
+        return Entity(row[uuid])

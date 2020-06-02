@@ -3,5 +3,6 @@
 # Package: src
 
 __all__ = [
-  "main", "test"
+  "main",
+  "test"
 ]
