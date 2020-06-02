@@ -10,19 +10,19 @@ from src.main.hspylib.modules.fetch.fetch import get, post, put, patch, delete
 class TestFetch(unittest.TestCase):
 
     def setUp(self):
-        self.server_mock = MockServer('localhost', MockServer.RANDOM_PORT)
-        self.server_mock.start()
+        self.mock_server = MockServer('localhost', MockServer.RANDOM_PORT)
+        self.mock_server.start()
 
     def tearDown(self):
-        self.server_mock.stop()
+        self.mock_server.stop()
 
     def test_should_get_from_server(self):
         expected_code = HttpCode.OK
         expected_resp = '{"name":"Mock Server"}'
-        self.server_mock \
+        self.mock_server \
             .when_request(HttpMethod.GET, '/get') \
             .then_return(code=expected_code, body=expected_resp)
-        resp = get('localhost:{}/get'.format(self.server_mock.port))
+        resp = get('localhost:{}/get'.format(self.mock_server.port))
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
@@ -30,10 +30,10 @@ class TestFetch(unittest.TestCase):
     def test_should_post_to_server(self):
         expected_code = HttpCode.CREATED
         expected_resp = '{"name":"Mock Server"}'
-        self.server_mock \
+        self.mock_server \
             .when_request(HttpMethod.POST, '/post') \
             .then_return_with_received_body(code=expected_code)
-        resp = post('localhost:{}/post'.format(self.server_mock.port), expected_resp)
+        resp = post('localhost:{}/post'.format(self.mock_server.port), expected_resp)
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
@@ -41,10 +41,10 @@ class TestFetch(unittest.TestCase):
     def test_should_put_to_server(self):
         expected_code = HttpCode.OK
         expected_resp = '{"name":"Mock Server"}'
-        self.server_mock \
+        self.mock_server \
             .when_request(HttpMethod.PUT, '/put') \
             .then_return_with_received_body(code=expected_code)
-        resp = put('localhost:{}/put'.format(self.server_mock.port), expected_resp)
+        resp = put('localhost:{}/put'.format(self.mock_server.port), expected_resp)
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
@@ -52,20 +52,20 @@ class TestFetch(unittest.TestCase):
     def test_should_patch_to_server(self):
         expected_code = HttpCode.ACCEPTED
         expected_resp = '{"name":"Mock Server"}'
-        self.server_mock \
+        self.mock_server \
             .when_request(HttpMethod.PATCH, '/patch') \
             .then_return_with_received_body(code=expected_code)
-        resp = patch('localhost:{}/patch'.format(self.server_mock.port), expected_resp)
+        resp = patch('localhost:{}/patch'.format(self.mock_server.port), expected_resp)
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
 
     def test_should_delete_from_server(self):
         expected_code = HttpCode.OK
-        self.server_mock \
+        self.mock_server \
             .when_request(HttpMethod.DELETE, '/delete') \
             .then_return(code=expected_code)
-        resp = delete('localhost:{}/delete'.format(self.server_mock.port))
+        resp = delete('localhost:{}/delete'.format(self.mock_server.port))
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         assert not resp.body, "Response is not empty or None"
