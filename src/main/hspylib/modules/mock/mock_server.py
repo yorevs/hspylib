@@ -67,5 +67,5 @@ if __name__ == '__main__':
         .then_return_with_received_body(code=HttpCode.OK)
     server\
         .when_request(HttpMethod.PUT, '/users')\
-        .then_return(code=HttpCode.OK, body='[{"name":"any-name"}]', headers={'Content-Length': '0', 'Etag': "3147526947"})
+        .then_return(code=HttpCode.OK, body='[{"name":"any-name"}]', headers={'Etag': "3147526947"})
     server.start()

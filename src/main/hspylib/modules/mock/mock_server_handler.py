@@ -3,6 +3,7 @@ from typing import Tuple, List, Dict
 
 from requests.structures import CaseInsensitiveDict
 
+from main.hspylib.core.enum.content_type import ContentType
 from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod
 
@@ -24,7 +25,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
 
     def process_headers(self,
                         headers: CaseInsensitiveDict = None,
-                        content_type: str = 'text/plain; charset=UTF-8',
+                        content_type: ContentType = ContentType.APPLICATION_JSON,
                         content_length: int = 0):
         headers = MockServerHandler.remove_reserved_headers(headers)
         if headers and len(headers) > 0:
@@ -32,13 +33,13 @@ class MockServerHandler(BaseHTTPRequestHandler):
                 self.send_header(key, value)
         self.send_header("Server", 'MockServer v{}'.format(self.parent.version))
         self.send_header("Date", self.date_time_string())
-        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Type", str(content_type))
         self.send_header("Content-Length", str(content_length))
         self.end_headers()
 
     def process_default(self,
                         code: HttpCode = HttpCode.OK,
-                        content_type: str = 'text/plain; charset=utf-8',
+                        content_type: ContentType = ContentType.APPLICATION_JSON,
                         headers: List[Dict[str, str]] = None):
         self.send_response_only(code.value)
         self.process_headers(headers, content_type)
@@ -59,12 +60,12 @@ class MockServerHandler(BaseHTTPRequestHandler):
                 self.send_response_only(code)
                 if request.received_body:
                     length = int(self.headers['Content-Length'])
-                    request.body = self.rfile.read(length).decode(request.encoding)
+                    request.body = self.rfile.read(length).decode(str(request.encoding))
                     self.process_headers(headers, request.content_type, length)
                 else:
                     self.process_headers(headers, request.content_type, len(request.body) if request.body else 0)
                 if request.body:
-                    self.wfile.write(request.body.encode(request.encoding))
+                    self.wfile.write(request.body.encode(str(request.encoding)))
             else:
                 self.process_default(HttpCode.NOT_FOUND)
         else:
