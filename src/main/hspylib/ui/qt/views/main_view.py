@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from PyQt5 import uic
 
-from ui.qt.views.qt_view import QtView
+from main.hspylib.ui.qt.views.qt_view import QtView
 
 
 class MainView(QtView):

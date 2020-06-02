@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 
 from PyQt5.QtWidgets import QWidget
 
-from core.config.app_config import AppConfigs
-from tools.commons import log_init
-from tools.qt_finder import QtFinder
+from main.hspylib.core.config.app_config import AppConfigs
+from main.hspylib.tools.qt_finder import QtFinder
 
 
 class QtView(ABC):
@@ -12,7 +11,7 @@ class QtView(ABC):
         super().__init__()
         self.window = window
         self.parent = parent
-        self.log = log_init(AppConfigs.log_file())
+        self.log = AppConfigs.logger()
         self.qt = QtFinder(self.window)
 
     @abstractmethod

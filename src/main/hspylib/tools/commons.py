@@ -3,6 +3,8 @@ import os
 import sys
 from typing import Type
 
+from main.hspylib.core.enum.charset import Charset
+
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
     '[%(threadName)-10.10s]',
@@ -13,10 +15,15 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 )
 
 
-def log_init(log_file: str, level: int = log.INFO, log_fmt: str = LOG_FMT):
-    with open(log_file, 'w'):
+def log_init(
+        log_file: str,
+        create_new: bool = True,
+        f_mode: str = 'a',
+        level: int = log.DEBUG,
+        log_fmt: str = LOG_FMT):
+    with open(log_file, 'w' if create_new else 'a'):
         os.utime(log_file, None)
-    f_mode = "a"
+
     log.basicConfig(
         filename=log_file,
         format=log_fmt,
@@ -27,13 +34,13 @@ def log_init(log_file: str, level: int = log.INFO, log_fmt: str = LOG_FMT):
 
 
 # @purpose: Print the unicode string
-def sysout(string, end='\n', encoding='utf-8'):
-    sys.stdout.write(string.encode(encoding).decode('unicode-escape')+end)
+def sysout(string, end='\n', encoding=Charset.UTF_8):
+    sys.stdout.write(string.encode(encoding).decode('unicode-escape') + end)
 
 
 # @purpose: Print the unicode string
-def syserr(string, end='\n', encoding='utf-8'):
-    sys.stderr.write(string.encode(encoding).decode('unicode-escape')+end)
+def syserr(string, end='\n', encoding=Charset.UTF_8):
+    sys.stderr.write(string.encode(encoding).decode('unicode-escape') + end)
 
 
 def class_attribute_names(clazz: Type) -> tuple:
