@@ -1,29 +1,29 @@
 SELECT
-  $columns
+  :columnSet
   FROM
-    $tablename
+    :tableName
   WHERE
     1 = 1
-    $filters
+    :filters
 ;
 
 INSERT
-  INTO $tablename
-    ($columns)
+  INTO :tableName
+    :columnSet
   VALUES
-    ($valueset)
+    :valueSet
 ;
 
-UPDATE $tablename
-  SET $fielset
+UPDATE :tableName
+  SET :fielSet
   WHERE
     1 = 1
-    $filters
+    :filters
 ;
 
 DELETE
-  FROM $tablename
+  FROM :tableName
   WHERE
     1 = 1
-    $filters
+    :filters
 ;

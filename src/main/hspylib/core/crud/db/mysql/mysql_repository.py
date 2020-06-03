@@ -1,3 +1,4 @@
+import os
 import sys
 import uuid
 from abc import abstractmethod
@@ -19,7 +20,8 @@ class MySqlRepository(DBRepository):
     def __init__(self):
         super().__init__()
         self.connector = None
-        self.sql_factory = SqlFactoryFacade.get(DatabaseType.MYSQL)
+        self.sql_factory = SqlFactoryFacade.get(
+            DatabaseType.MYSQL, '{}/sql/mysql_stubs.sql'.format(os.path.dirname(__file__)))
 
     def __str__(self):
         return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)

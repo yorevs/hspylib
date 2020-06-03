@@ -3,7 +3,7 @@ import sys
 import unittest
 
 from main.hspylib.core.config.app_config import AppConfigs
-from test.hspylib.core.crud.resources.TestRepository import TestRepository
+from test.hspylib.core.crud.resources.TestRepository import TestRepository, TestEntity
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -20,16 +20,19 @@ class TestMySqlRepository(unittest.TestCase):
         self.repository = TestRepository()
         assert self.repository, "Unable to instantiate MySqlRepository"
         self.repository.connect()
+        self.assertTrue(self.repository.is_connected())
 
     # Teardown tests
     def tearDown(self):
         self.repository.disconnect()
+        self.assertFalse(self.repository.is_connected())
 
     # TEST CASES ----------
 
     # TC1 - TODO comments.
-    def test_should_implement(self):
-        pass
+    def test_should_insert_into_database(self):
+        test_entity = TestEntity('My-Test Data')
+        self.repository.insert(test_entity)
 
 
 # Program entry point.
