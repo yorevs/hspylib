@@ -1,9 +1,9 @@
 import sys
 import uuid
 from abc import abstractmethod
-from typing import Optional
+from typing import Optional, Tuple
 
-import pymysql as pymysql
+import pymysql
 from pymysql.err import OperationalError, ProgrammingError
 from requests.structures import CaseInsensitiveDict
 
@@ -63,53 +63,65 @@ class MySqlRepository(DBRepository):
         return self.connector
 
     def insert(self, entity: Entity):
-        entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
-        insert_stm = self.sql_factory.insert(entity)
-        self.logger.debug('Executing SQL statement: {}'.format(insert_stm))
-        self.cursor.execute(insert_stm)
-        self.connector.commit()
+        if self.is_connected():
+            entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
+            insert_stm = self.sql_factory.insert(entity)
+            self.logger.debug('Executing SQL statement: {}'.format(insert_stm))
+            self.cursor.execute(insert_stm)
+            self.connector.commit()
+        else:
+            self.logger.error('Not connected to database.')
 
     def update(self, entity: Entity):
-        update_stm = self.sql_factory.update(entity, filters=CaseInsensitiveDict({
-            "UUID": '{}'.format(entity.uuid)
-        }))
-        self.logger.debug('Executing SQL statement: {}'.format(update_stm))
-        self.cursor.execute(update_stm)
-        self.connector.commit()
+        if self.is_connected():
+            update_stm = self.sql_factory.update(entity, filters=CaseInsensitiveDict({
+                "UUID": '{}'.format(entity.uuid)
+            }))
+            self.logger.debug('Executing SQL statement: {}'.format(update_stm))
+            self.cursor.execute(update_stm)
+        else:
+            self.logger.error('Not connected to database.')
 
     def delete(self, entity: Entity):
-        delete_stm = self.sql_factory.delete(filters=CaseInsensitiveDict({
-            "UUID": '{}'.format(entity.uuid)
-        }))
-        self.logger.debug('Executing SQL statement: {}'.format(delete_stm))
-        self.cursor.execute(delete_stm)
-        self.connector.commit()
+        if self.is_connected():
+            delete_stm = self.sql_factory.delete(filters=CaseInsensitiveDict({
+                "UUID": '{}'.format(entity.uuid)
+            }))
+            self.logger.debug('Executing SQL statement: {}'.format(delete_stm))
+            self.cursor.execute(delete_stm)
+            self.connector.commit()
 
-    def find_all(self, sql_filters: CaseInsensitiveDict[str, str] = None) -> Optional[list]:
-        select_stm = self.sql_factory.select(filters=sql_filters)
-        self.logger.debug('Executing SQL statement: {}'.format(select_stm))
-        try:
-            self.cursor.execute(select_stm)
-            result = self.cursor.fetchall()
-            ret_val = []
-            for next_row in result:
-                ret_val.append(self.row_to_entity(next_row))
-            return ret_val
-        except ProgrammingError:
-            return None
+    def find_all(self, sql_filters: CaseInsensitiveDict = None) -> Optional[list]:
+        if self.is_connected():
+            select_stm = self.sql_factory.select(filters=sql_filters)
+            self.logger.debug('Executing SQL statement: {}'.format(select_stm))
+            try:
+                self.cursor.execute(select_stm)
+                result = self.cursor.fetchall()
+                ret_val = []
+                for next_row in result:
+                    ret_val.append(self.row_to_entity(next_row))
+                return ret_val
+            except ProgrammingError:
+                return None
+        else:
+            self.logger.error('Not connected to database.')
 
     def find_by_id(self, entity_id: str) -> Optional[Entity]:
-        if entity_id:
-            select_stm = self.sql_factory.select(filters=CaseInsensitiveDict({
-                "UUID": '{}'.format(entity_id)
-            }))
-            self.logger.debug('Executing SQL statement: {}'.format(select_stm))
-            self.cursor.execute(select_stm)
-            result = self.cursor.fetchall()
-            return self.row_to_entity(result[0]) if len(result) > 0 else None
+        if self.is_connected():
+            if entity_id:
+                select_stm = self.sql_factory.select(filters=CaseInsensitiveDict({
+                    "UUID": '{}'.format(entity_id)
+                }))
+                self.logger.debug('Executing SQL statement: {}'.format(select_stm))
+                self.cursor.execute(select_stm)
+                result = self.cursor.fetchall()
+                return self.row_to_entity(result[0]) if len(result) > 0 else None
+            else:
+                return None
         else:
-            return None
+            self.logger.error('Not connected to database.')
 
     @abstractmethod
-    def row_to_entity(self, row: tuple) -> Entity:
+    def row_to_entity(self, row: Tuple) -> Entity:
         pass

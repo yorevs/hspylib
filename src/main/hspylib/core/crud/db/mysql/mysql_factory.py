@@ -7,7 +7,7 @@ from main.hspylib.core.meta.singleton import Singleton
 from main.hspylib.core.model.entity import Entity
 
 
-class MySqlFactory(metaclass=Singleton, SqlFactory):
+class MySqlFactory(SqlFactory, metaclass=Singleton):
     INSTANCE = None
 
     def __init__(self):
@@ -18,14 +18,14 @@ class MySqlFactory(metaclass=Singleton, SqlFactory):
         pass
 
     @abstractmethod
-    def select(self, filters: CaseInsensitiveDict[str, str]):
+    def select(self, filters: CaseInsensitiveDict):
         pass
 
     @abstractmethod
-    def update(self, entity: Entity, filters: CaseInsensitiveDict[str, str]):
+    def update(self, entity: Entity, filters: CaseInsensitiveDict):
         pass
 
     @abstractmethod
-    def delete(self, filters: CaseInsensitiveDict[str, str]):
+    def delete(self, filters: CaseInsensitiveDict):
         pass
 

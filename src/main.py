@@ -4,9 +4,11 @@ import signal
 
 from main.hspylib.core.config.app_config import AppConfigs
 
+AppConfigs().logger().info(AppConfigs.INSTANCE)
+
 
 def exit_app(sig=None, frame=None):
-    print(frame)
+    print(frame or '', end='')
     print('\033[2J\033[H')
     print('Done.')
     print('')
@@ -18,7 +20,7 @@ class Main:
         self.configs = AppConfigs.INSTANCE
 
     def run(self):
-        print('Done.')
+        pass
 
 
 # Application entry point

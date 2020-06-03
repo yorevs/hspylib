@@ -1,17 +1,19 @@
 import re
-from os import environ, path
+import os
 from typing import Optional
 
 
 class Properties:
-    __default_profile = 'ACTIVE_PROFILE'
     __default_name = 'application.properties'
     __profiled_format = 'application-{}.properties'
 
-    def __init__(self, filename: str = None, profile: str = environ.get(__default_profile), load_dir: str = '.'):
+    def __init__(self,
+                 filename: str = None,
+                 profile: str = None,
+                 load_dir: str = None):
         self.filename = filename
-        self.profile = profile
-        self.load_dir = load_dir
+        self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE')
+        self.load_dir = load_dir if load_dir else os.path.abspath(os.curdir)
         self.properties = {}
         self.__read()
 
@@ -50,7 +52,7 @@ class Properties:
             self.profile) if self.profile else Properties.__default_name
         self.filename = self.filename if self.filename else default_filename
         file_path = '{}/{}'.format(self.load_dir, self.filename)
-        if path.exists(file_path):
+        if os.path.exists(file_path):
             with open(file_path) as f_properties:
                 all_properties = f_properties.readlines()
                 for next_property in all_properties:
@@ -59,8 +61,9 @@ class Properties:
                     if not re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]*', next_property):
                         continue
                     parts = next_property.split('=', 1)
-                    key = parts[0].strip()
-                    value = parts[1].strip()
-                    self.properties[key] = value
+                    if parts and len(parts) == 2:
+                        key = parts[0].strip()
+                        value = parts[1].strip()
+                        self.properties[key] = value
         else:
             raise OSError('{}: File "{}" does not exist'.format(self.__class__.__name__, file_path))
