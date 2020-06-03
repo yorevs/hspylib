@@ -6,7 +6,7 @@ from main.hspylib.core.model.entity import Entity
 
 class TestEntity(Entity):
     def __init__(self, comment: str):
-        super().__init__()
+        super().__init__('test')
         self.comment = comment
 
     def __str__(self):

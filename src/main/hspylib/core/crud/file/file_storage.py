@@ -10,7 +10,7 @@ class FileStorage:
         self.filename = filename
         self.data = []
         self.load()
-        self.logger.debug('File storage created filename={} and loaded entries={}'.format(filename, len(self.data)))
+        self.logger.debug('File storage created sql_filename={} and loaded entries={}'.format(filename, len(self.data)))
 
     def load(self):
         mode = 'r+' if os.path.exists(self.filename) else 'w+'

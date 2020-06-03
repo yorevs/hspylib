@@ -4,8 +4,8 @@ from typing import Optional
 
 
 class Properties:
-    __default_name = 'application.properties'
-    __profiled_format = 'application-{}.properties'
+    _default_name = 'application.properties'
+    _profiled_format = 'application-{}.properties'
 
     def __init__(self,
                  filename: str = None,
@@ -15,7 +15,7 @@ class Properties:
         self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE')
         self.load_dir = load_dir if load_dir else os.path.abspath(os.curdir)
         self.properties = {}
-        self.__read()
+        self._read()
 
     def __str__(self):
         str_val = ''
@@ -47,9 +47,9 @@ class Properties:
     def size(self) -> int:
         return len(self.properties) if self.properties else 0
 
-    def __read(self):
-        default_filename = Properties.__profiled_format.format(
-            self.profile) if self.profile else Properties.__default_name
+    def _read(self):
+        default_filename = Properties._profiled_format.format(
+            self.profile) if self.profile else Properties._default_name
         self.filename = self.filename if self.filename else default_filename
         file_path = '{}/{}'.format(self.load_dir, self.filename)
         if os.path.exists(file_path):
