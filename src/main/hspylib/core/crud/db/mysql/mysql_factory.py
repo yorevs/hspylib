@@ -1,4 +1,4 @@
-from requests.structures import CaseInsensitiveDict
+from requests.structures import CaseInsensitiveDict as SqlFilter
 
 from main.hspylib.core.crud.db.sql_factory import SqlFactory
 from main.hspylib.core.model.entity import Entity
@@ -11,21 +11,33 @@ class MySqlFactory(SqlFactory):
 
     def insert(self, entity: Entity) -> str:
         sql = self.sql_stubs['insert']
-        sql = sql.replace(':tableName', entity.get_table_name())
-        columns = str(self.column_set(entity)).replace("'", "")
+        columns = str(entity.to_fields()).replace("'", "")
         sql = sql.replace(':columnSet', columns)
-        values = str(self.values_set(entity))
+        values = str(entity.to_values())
         sql = sql.replace(':valueSet', values)
         return sql
 
-    def select(self, filters: CaseInsensitiveDict) -> str:
-        sql = self.sql_stubs['select']
+    def select(self, filters: SqlFilter) -> str:
+        sql = self.sql_stubs['select'].replace(':columnSet', '*')
+        filter_set = ''
+        for key, value in filters.items():
+            filter_set += "AND {} = '{}'".format(key, value)
+        sql = sql.replace(':filters', filter_set)
         return sql
 
-    def update(self, entity: Entity, filters: CaseInsensitiveDict) -> str:
+    def update(self, entity: Entity, filters: SqlFilter) -> str:
         sql = self.sql_stubs['update']
+        fields = entity.fieldset()
+        field_set = ''
+        for key, value in fields.items():
+            field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
+        sql = sql.replace(':fieldSet', field_set)
+        filter_set = ''
+        for key, value in filters.items():
+            filter_set += "AND {} = '{}'".format(key, value)
+        sql = sql.replace(':filters', filter_set)
         return sql
 
-    def delete(self, filters: CaseInsensitiveDict) -> str:
+    def delete(self, filters: SqlFilter) -> str:
         sql = self.sql_stubs['delete']
         return sql

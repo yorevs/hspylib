@@ -6,7 +6,7 @@ from main.hspylib.core.model.entity import Entity
 
 class TestEntity(Entity):
     def __init__(self, comment: str):
-        super().__init__('test')
+        super().__init__()
         self.comment = comment
 
     def __str__(self):
@@ -28,3 +28,6 @@ class TestRepository(MySqlRepository):
 
     def row_to_entity(self, row: Tuple) -> TestEntity:
         return TestEntity(row[1])
+
+    def table_name(self) -> str:
+        return 'TEST'
