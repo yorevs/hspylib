@@ -4,4 +4,5 @@
 
 __all__ = [
   "db_repository",
+  "sql_factory"
 ]

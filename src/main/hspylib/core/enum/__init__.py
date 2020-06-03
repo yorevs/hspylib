@@ -5,6 +5,7 @@
 __all__ = [
   "charset",
   "content_type",
+  "database_type",
   "http_code",
   "http_method"
 ]

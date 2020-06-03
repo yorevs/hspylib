@@ -65,5 +65,4 @@ class AppConfigs(metaclass=Singleton):
         return AppConfigs.INSTANCE.__logger
 
 
-AppConfigs()
-AppConfigs.INSTANCE.logger().info(AppConfigs.INSTANCE)
+AppConfigs().logger().info(AppConfigs.INSTANCE)
