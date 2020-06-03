@@ -1,12 +1,8 @@
-2020-06-02 14:27:36,574 [MainThread] INFO  app_config.py::<module>(@Line:68) 
+2020-06-03 14:33:00,220 [MainThread] INFO  main.py::<module>(@Line:7) 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 AppConfigs
   |-RootDir = /Users/hjunior/GIT-Repository/hhs-pylib/src
   |-LogFile = /Users/hjunior/GIT-Repository/hhs-pylib/src/../log/application.log
   |-AppProperties:
-   \- db.hostname=localhost
-   |- db.port=3306
-   |- db.user=mysql
-   |- db.password=mysql
-   |- db.database=hspylib
+   \-
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from requests.structures import CaseInsensitiveDict
+
 from main.hspylib.core.model.entity import Entity
 
 
@@ -18,7 +20,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def find_all(self, filters: str = None) -> Optional[list]:
+    def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
         pass
 
     @abstractmethod

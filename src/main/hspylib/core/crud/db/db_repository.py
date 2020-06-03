@@ -1,7 +1,9 @@
 from abc import abstractmethod
+from typing import Tuple
 
 from main.hspylib.core.config.app_config import AppConfigs
 from main.hspylib.core.crud.repository import Repository
+from main.hspylib.core.model.entity import Entity
 
 
 class DBRepository(Repository):
@@ -25,4 +27,8 @@ class DBRepository(Repository):
 
     @abstractmethod
     def is_connected(self):
+        pass
+
+    @abstractmethod
+    def row_to_entity(self, row: Tuple) -> Entity:
         pass

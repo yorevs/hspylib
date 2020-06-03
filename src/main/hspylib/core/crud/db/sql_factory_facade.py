@@ -15,4 +15,4 @@ class SqlFactoryFacade(ABC):
 
     @staticmethod
     def get(db_type: DatabaseType) -> Optional[SqlFactory]:
-        return SqlFactoryFacade.__factories[db_type]
+        return SqlFactoryFacade.__factories[db_type.name.upper()]

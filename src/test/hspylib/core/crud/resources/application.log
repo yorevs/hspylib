@@ -1,0 +1,14 @@
+2020-06-03 14:33:34,848 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:17) 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+AppConfigs
+  |-RootDir = /Users/hjunior/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
+  |-LogFile = /Users/hjunior/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud/resources/application.log
+  |-AppProperties:
+   \-db.hostname=localhost
+   |-db.port=3306
+   |-db.user=mysql
+   |-db.password=mysql
+   |-db.database=hspylib
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
+2020-06-03 14:33:34,859 [MainThread] DEBUG mysql_repository.py::connect(@Line:48) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 14:33:34,860 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:58) Disconnected from mysql@localhost:3306/hspylib. 
