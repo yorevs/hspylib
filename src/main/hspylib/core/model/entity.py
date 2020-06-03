@@ -1,13 +1,13 @@
+from typing import Tuple
 from uuid import UUID
 
 
 class Entity:
-    def __init__(self, table_name: str, entity_id: UUID = None):
-        self._table_name = table_name.upper()
+    def __init__(self, entity_id: UUID = None):
         self.uuid = entity_id
 
     def __str__(self):
-        return "Entity( Table={} uuid={} )".format(self._table_name, str(self.uuid))
+        return "Entity( uuid={} )".format(str(self.uuid))
 
     def to_dict(self) -> dict:
         ret_dict = {}
@@ -22,5 +22,23 @@ class Entity:
                 ret_dict[key] = str(value)
         return ret_dict
 
-    def get_table_name(self) -> str:
-        return self._table_name
+    def to_fields(self) -> Tuple[str]:
+        cols = []
+        for key in self.__dict__.keys():
+            if not key.startswith('_'):
+                cols.append(key.replace("'", "").upper())
+        return tuple(cols)
+
+    def to_values(self) -> Tuple[str]:
+        values = []
+        for key, value in self.__dict__.items():
+            if not key.startswith('_'):
+                values.append(str(value))
+        return tuple(values)
+
+    def fieldset(self) -> dict:
+        fields = {}
+        for key, value in self.__dict__.items():
+            if not key.startswith('_'):
+                fields[key.replace("'", "").upper()] = "{}".format(str(value))
+        return fields

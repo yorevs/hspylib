@@ -1,6 +1,5 @@
 import os
 from abc import abstractmethod, ABC
-from typing import Tuple
 
 from requests.structures import CaseInsensitiveDict
 
@@ -24,22 +23,6 @@ class SqlFactory(ABC):
                     key = stub.strip().partition(' ')[0].lower()
                     ret_val[key] = stub.strip()
         return ret_val
-
-    @staticmethod
-    def column_set(entity: Entity) -> Tuple[str]:
-        cols = []
-        for key in entity.__dict__.keys():
-            if not key.startswith('_'):
-                cols.append(key.replace("'", "").upper())
-        return tuple(cols)
-
-    @staticmethod
-    def values_set(entity: Entity) -> Tuple[str]:
-        values = []
-        for key, value in entity.__dict__.items():
-            if not key.startswith('_'):
-                values.append(str(value))
-        return tuple(values)
 
     def __init__(self, filename: str):
         self.logger = AppConfigs.INSTANCE.logger()

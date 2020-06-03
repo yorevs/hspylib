@@ -15,7 +15,7 @@ INSERT
 ;
 
 UPDATE :tableName
-  SET :fielSet
+  SET :fieldSet
   WHERE
     1 = 1
     :filters

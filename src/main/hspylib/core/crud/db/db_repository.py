@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import Tuple
 
 from main.hspylib.core.config.app_config import AppConfigs
@@ -15,7 +15,6 @@ class DBRepository(Repository):
         self.password = AppConfigs.INSTANCE.get('db.password')
         self.database = AppConfigs.INSTANCE.get('db.database')
         self.logger = AppConfigs.INSTANCE.logger()
-        self.cursor = None
 
     @abstractmethod
     def connect(self):
@@ -31,4 +30,8 @@ class DBRepository(Repository):
 
     @abstractmethod
     def row_to_entity(self, row: Tuple) -> Entity:
+        pass
+
+    @abstractmethod
+    def table_name(self) -> str:
         pass
