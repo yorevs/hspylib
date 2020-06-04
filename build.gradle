@@ -30,5 +30,5 @@ wrapper {
   gradleVersion="${gradleVersion}"
 }
 
-apply from: "gradle/python.gradle"
 apply from: "gradle/docker.gradle"
+apply from: "gradle/python.gradle"
