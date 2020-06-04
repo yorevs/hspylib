@@ -21,10 +21,7 @@ class TestClass(unittest.TestCase):
         AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
         ).logger().info(AppConfigs.INSTANCE)
-        self.server = MockServer(
-            AppConfigs.INSTANCE.get('mock.server.host'),
-            AppConfigs.INSTANCE.get_int('mock.server.port')
-        )
+        self.server = MockServer('localhost', MockServer.RANDOM_PORT)
         self.server.start()
 
     # Teardown tests
@@ -36,7 +33,7 @@ class TestClass(unittest.TestCase):
     # TC1 - Test processing a get stubbed request.
     def test_should_process_a_get_request(self):
         endpoint = '/test-get'
-        url = 'http://localhost:3333{}'.format(endpoint)
+        url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         expected_body = '{"status": "done"}'
         expected_etag_header = {'Etag': '12345678'}
         self.server \
@@ -51,7 +48,7 @@ class TestClass(unittest.TestCase):
     # TC2 - Test processing a post stubbed request.
     def test_should_process_a_post_request(self):
         endpoint = '/test-post'
-        url = 'http://localhost:3333{}'.format(endpoint)
+        url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         expected_body = '{"status": "done"}'
         expected_etag_header = {'Etag': '12345678'}
         self.server \
@@ -66,7 +63,7 @@ class TestClass(unittest.TestCase):
     # TC3 - Test processing a put stubbed request.
     def test_should_process_a_put_request(self):
         endpoint = '/test-put'
-        url = 'http://localhost:3333{}'.format(endpoint)
+        url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         expected_body = '{"id": "10", "status": "done"}'
         expected_etag_header = {'Etag': '12345678'}
         self.server \
@@ -81,7 +78,7 @@ class TestClass(unittest.TestCase):
     # TC4 - Test processing a patch stubbed request.
     def test_should_process_a_patch_request(self):
         endpoint = '/test-patch'
-        url = 'http://localhost:3333{}'.format(endpoint)
+        url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         expected_body = '{"status": "done"}'
         expected_etag_header = {'Etag': '987654321'}
         self.server \
@@ -96,7 +93,7 @@ class TestClass(unittest.TestCase):
     # TC5 - Test processing a delete stubbed request.
     def test_should_process_a_delete_request(self):
         endpoint = '/test-delete'
-        url = 'http://localhost:3333{}'.format(endpoint)
+        url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         self.server \
             .when_request(HttpMethod.DELETE, endpoint) \
             .then_return(HttpCode.OK)
@@ -105,11 +102,11 @@ class TestClass(unittest.TestCase):
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual('', resp.text)
 
-    # TC5 - Test processing options request.
+    # TC6 - Test processing options request.
     #       When there is a method stubbed and path is not found, return 'not found'; otherwise 'method not allowed'.
     def test_should_process_options_request(self):
         endpoint = '/test-options'
-        url = 'http://localhost:3333{}'.format(endpoint)
+        url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         resp = requests.options(url)
         assert resp, "Response is empty"
         self.assertEqual(HttpCode.NO_CONTENT.value, resp.status_code)
