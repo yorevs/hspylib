@@ -1,3 +1,5 @@
+from typing import List
+
 from requests.structures import CaseInsensitiveDict as SqlFilter
 
 from main.hspylib.core.crud.db.sql_factory import SqlFactory
@@ -17,11 +19,13 @@ class MySqlFactory(SqlFactory):
         sql = sql.replace(':valueSet', values)
         return sql
 
-    def select(self, filters: SqlFilter) -> str:
-        sql = self.sql_stubs['select'].replace(':columnSet', '*')
+    def select(self, column_set: List[str] = None, filters: SqlFilter = None) -> str:
+        sql = self.sql_stubs['select']
+        sql = sql.replace(':columnSet', '*') if not column_set else column_set
         filter_set = ''
-        for key, value in filters.items():
-            filter_set += "AND {} = '{}'".format(key, value)
+        if filters:
+            for key, value in filters.items():
+                filter_set += "AND {} = '{}'".format(key, value)
         sql = sql.replace(':filters', filter_set)
         return sql
 
@@ -33,11 +37,17 @@ class MySqlFactory(SqlFactory):
             field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
         sql = sql.replace(':fieldSet', field_set)
         filter_set = ''
-        for key, value in filters.items():
-            filter_set += "AND {} = '{}'".format(key, value)
+        if filters:
+            for key, value in filters.items():
+                filter_set += "AND {} = '{}'".format(key, value)
         sql = sql.replace(':filters', filter_set)
         return sql
 
     def delete(self, filters: SqlFilter) -> str:
         sql = self.sql_stubs['delete']
+        filter_set = ''
+        if filters:
+            for key, value in filters.items():
+                filter_set += "AND {} = '{}'".format(key, value)
+        sql = sql.replace(':filters', filter_set)
         return sql
