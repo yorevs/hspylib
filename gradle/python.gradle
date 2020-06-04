@@ -169,8 +169,10 @@ task updateVersion {
   group = 'Other'
   description = 'Update the VERSION file to match the build.gradle version'
   doLast {
-    def ver = project.ext.version
-    def v_file = project.ext.versionFile
+    //def ver = project.ext.version
+    //def v_file = project.ext.versionFile
+    def ver = version
+    def v_file = versionFile
     println "Updating version to: ${ver}"
     assert file("${v_file}").exists()
     new File("${v_file}").text = "${ver}"
