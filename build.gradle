@@ -14,7 +14,7 @@ ext {
   application = "main.py"
   version = "0-9.10"
   versionFile = "VERSION"
-  dependencies = [
+  deps = [
     'PyQt5',
     'cryptography',
     'pycodestyle',
