@@ -20,7 +20,7 @@ String dirName(File file) {
 task installDependencies(type: Task) {
   group = 'Install'
   doLast {
-    dependencies.each { String dep ->
+    deps.each { String dep ->
       exec {
         commandLine rootProject.python, '-m', 'pip', 'install', dep
       }
@@ -128,6 +128,8 @@ task compileQrc(type: Task) {
 task runTest(type: Task) {
   group = 'Run'
   description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
+  dependsOn compilePython
+  dependsOn compilePythonTest
   doLast {
     fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"
@@ -145,6 +147,7 @@ task runTest(type: Task) {
 task run(type: Task) {
   group = 'Run'
   description = 'Run main application'
+  dependsOn compilePython
   doLast {
     fileTree("${sourceRoot}").matching {
       include "**/${application}"
