@@ -1,8 +1,0 @@
-2020-06-03 14:33:00,220 [MainThread] INFO  main.py::<module>(@Line:7) 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-AppConfigs
-  |-RootDir = /Users/hjunior/GIT-Repository/hhs-pylib/src
-  |-LogFile = /Users/hjunior/GIT-Repository/hhs-pylib/src/../log/application.log
-  |-AppProperties:
-   \-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
