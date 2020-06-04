@@ -22,7 +22,7 @@ class TestMySqlRepository(unittest.TestCase):
         ).logger().info(AppConfigs.INSTANCE)
         self.repository = TestRepository()
         self.table = self.repository.table_name()
-        assert self.repository, "Unable to instantiate MySqlRepository"
+        assert self.repository, "Unable to instantiate TestRepository"
         self.repository.connect()
         self.assertTrue(self.repository.is_connected())
         try:
@@ -43,31 +43,31 @@ class TestMySqlRepository(unittest.TestCase):
 
     # TEST CASES ----------
 
-    # TC1 - TODO comments.
+    # TC1 - Test inserting a single row into the database.
     def test_should_insert_into_database(self):
         test_entity = TestEntity(comment='My-Test Data')
         self.repository.insert(test_entity)
-        result_set = self.repository.find_all(CaseInsensitiveDict({
+        result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
         }))
         assert result_set, "Result set is empty"
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
 
-    # TC2 - TODO comments.
+    # TC2 - Test updating a single row from the database.
     def test_should_update_database(self):
         test_entity = TestEntity(comment='My-Test Data')
         self.repository.insert(test_entity)
         test_entity.comment = 'Updated My-Test Data'
         self.repository.update(test_entity)
-        result_set = self.repository.find_all(CaseInsensitiveDict({
+        result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
         }))
         assert result_set, "Result set is empty"
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.comment, result_set[0].comment)
 
-    # TC3 - TODO comments.
+    # TC3 - Test selecting all rows on the database.
     def test_should_select_all_from_database(self):
         test_entity = TestEntity(comment='My-Test Data')
         self.repository.insert(test_entity)
@@ -77,16 +77,27 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
 
-    # TC4 - TODO comments.
+    # TC4 - Test selecting a single rows from the database.
     def test_should_select_one_from_database(self):
         test_entity = TestEntity(comment='My-Test Data')
         self.repository.insert(test_entity)
-        result_set = self.repository.find_by_id(str(test_entity.uuid))
+        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
         assert result_set, "Result set is empty"
         self.assertIsInstance(result_set, TestEntity)
         self.assertEqual(test_entity.uuid, result_set.uuid)
 
-    # TC5 - TODO comments.
+    # TC5 - Test selecting all rows and bring only specified columns.
+    def test_should_select_columns_from_database(self):
+        test_entity = TestEntity(comment='My-Test Data')
+        self.repository.insert(test_entity)
+        result_set = self.repository.find_all(column_set=["UUID"])
+        assert result_set, "Result set is empty"
+        self.assertIsInstance(result_set, list)
+        self.assertEqual(1, len(result_set))
+        self.assertEqual(test_entity.uuid, result_set[0].uuid)
+        self.assertIsNone(result_set[0].comment)
+
+    # TC6 - Test deleting one row from the database.
     def test_should_delete_from_database(self):
         test_entity = TestEntity(comment='My-Test Data')
         self.repository.insert(test_entity)

@@ -1,4 +1,4 @@
-2020-06-03 22:15:14,983 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
+2020-06-03 22:43:58,145 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 AppConfigs
   |-RootDir = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
@@ -10,13 +10,14 @@ AppConfigs
    |-db.password=mysql
    |-db.database=hspylib
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
-2020-06-03 22:15:14,983 [MainThread] DEBUG mysql_factory.py::__init__(@Line:12) MySqlFactory created with 4 Stubs 
-2020-06-03 22:15:14,991 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
-2020-06-03 22:15:14,992 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('252825fd-063c-4048-9e72-c1e61ece4850', 'My-Test Data') 
-2020-06-03 22:15:14,998 [MainThread] DEBUG mysql_repository.py::delete(@Line:94) Executing SQL statement: DELETE FROM TEST WHERE 1 = 1 AND UUID = '252825fd-063c-4048-9e72-c1e61ece4850' 
-2020-06-03 22:15:15,017 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
-2020-06-03 22:15:15,017 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
-2020-06-03 22:15:15,018 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
+2020-06-03 22:43:58,146 [MainThread] DEBUG mysql_factory.py::__init__(@Line:12) MySqlFactory created with 4 Stubs 
+2020-06-03 22:43:58,153 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 22:43:58,170 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
+2020-06-03 22:43:58,170 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('05beb7b6-4c9d-4ed3-8388-795e335130bd', 'My-Test Data') 
+2020-06-03 22:43:58,176 [MainThread] DEBUG mysql_repository.py::delete(@Line:94) Executing SQL statement: DELETE FROM TEST WHERE 1 = 1 AND UUID = '05beb7b6-4c9d-4ed3-8388-795e335130bd' 
+2020-06-03 22:43:58,200 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
+2020-06-03 22:43:58,200 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
+2020-06-03 22:43:58,201 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 AppConfigs
   |-RootDir = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
@@ -28,13 +29,13 @@ AppConfigs
    |-db.password=mysql
    |-db.database=hspylib
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
-2020-06-03 22:15:15,025 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
-2020-06-03 22:15:15,045 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
-2020-06-03 22:15:15,046 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('f14ac555-b76c-4f2e-9b10-270b6ce6a91b', 'My-Test Data') 
-2020-06-03 22:15:15,052 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1 AND UUID = 'f14ac555-b76c-4f2e-9b10-270b6ce6a91b' 
-2020-06-03 22:15:15,069 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
-2020-06-03 22:15:15,069 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
-2020-06-03 22:15:15,070 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
+2020-06-03 22:43:58,209 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 22:43:58,228 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
+2020-06-03 22:43:58,229 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('9228eefc-704c-4c1c-8fef-e4ce88371f70', 'My-Test Data') 
+2020-06-03 22:43:58,236 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1 AND UUID = '9228eefc-704c-4c1c-8fef-e4ce88371f70' 
+2020-06-03 22:43:58,254 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
+2020-06-03 22:43:58,254 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
+2020-06-03 22:43:58,255 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 AppConfigs
   |-RootDir = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
@@ -46,13 +47,13 @@ AppConfigs
    |-db.password=mysql
    |-db.database=hspylib
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
-2020-06-03 22:15:15,077 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
-2020-06-03 22:15:15,094 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
-2020-06-03 22:15:15,095 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('deb908ea-af45-4fd5-b662-e7290acbb846', 'My-Test Data') 
-2020-06-03 22:15:15,100 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1  
-2020-06-03 22:15:15,119 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
-2020-06-03 22:15:15,119 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
-2020-06-03 22:15:15,119 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
+2020-06-03 22:43:58,261 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 22:43:58,278 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
+2020-06-03 22:43:58,278 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('9e8343db-3434-4669-b236-169f409a1d4d', 'My-Test Data') 
+2020-06-03 22:43:58,284 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1  
+2020-06-03 22:43:58,302 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
+2020-06-03 22:43:58,303 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
+2020-06-03 22:43:58,304 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 AppConfigs
   |-RootDir = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
@@ -64,13 +65,13 @@ AppConfigs
    |-db.password=mysql
    |-db.database=hspylib
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
-2020-06-03 22:15:15,126 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
-2020-06-03 22:15:15,143 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
-2020-06-03 22:15:15,143 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('4769766e-a48c-4dc4-addd-58a799fd2a01', 'My-Test Data') 
-2020-06-03 22:15:15,149 [MainThread] DEBUG mysql_repository.py::find_by_id(@Line:120) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1 AND UUID = '4769766e-a48c-4dc4-addd-58a799fd2a01' 
-2020-06-03 22:15:15,165 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
-2020-06-03 22:15:15,165 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
-2020-06-03 22:15:15,166 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
+2020-06-03 22:43:58,311 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 22:43:58,329 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
+2020-06-03 22:43:58,329 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('836fa020-402a-4e70-b2bc-f724ce2facb9', 'My-Test Data') 
+2020-06-03 22:43:58,336 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT UUID FROM TEST WHERE 1 = 1  
+2020-06-03 22:43:58,351 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
+2020-06-03 22:43:58,351 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
+2020-06-03 22:43:58,352 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 AppConfigs
   |-RootDir = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
@@ -82,10 +83,28 @@ AppConfigs
    |-db.password=mysql
    |-db.database=hspylib
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
-2020-06-03 22:15:15,173 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
-2020-06-03 22:15:15,194 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
-2020-06-03 22:15:15,194 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('d256e16b-905f-4185-a35e-dd1da8dfd593', 'My-Test Data') 
-2020-06-03 22:15:15,200 [MainThread] DEBUG mysql_repository.py::update(@Line:85) Executing SQL statement: UPDATE TEST SET UUID = 'd256e16b-905f-4185-a35e-dd1da8dfd593', COMMENT = 'Updated My-Test Data' WHERE 1 = 1 AND UUID = 'd256e16b-905f-4185-a35e-dd1da8dfd593' 
-2020-06-03 22:15:15,203 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1 AND UUID = 'd256e16b-905f-4185-a35e-dd1da8dfd593' 
-2020-06-03 22:15:15,219 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
-2020-06-03 22:15:15,219 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
+2020-06-03 22:43:58,358 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 22:43:58,376 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
+2020-06-03 22:43:58,377 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('3b48a102-1f2a-409d-9d24-f8424c55651a', 'My-Test Data') 
+2020-06-03 22:43:58,383 [MainThread] DEBUG mysql_repository.py::find_by_id(@Line:120) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1 AND UUID = '3b48a102-1f2a-409d-9d24-f8424c55651a' 
+2020-06-03 22:43:58,397 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
+2020-06-03 22:43:58,397 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
+2020-06-03 22:43:58,398 [MainThread] INFO  test_mysql_repository.py::setUp(@Line:22) 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+AppConfigs
+  |-RootDir = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud
+  |-LogFile = /Users/hugo/GIT-Repository/hhs-pylib/src/test/hspylib/core/crud/resources/application.log
+  |-AppProperties:
+   \-db.hostname=localhost
+   |-db.port=3306
+   |-db.user=mysql
+   |-db.password=mysql
+   |-db.database=hspylib
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= 
+2020-06-03 22:43:58,404 [MainThread] DEBUG mysql_repository.py::connect(@Line:51) Connection to mysql@localhost:3306/hspylib established 
+2020-06-03 22:43:58,421 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: CREATE TABLE TEST (UUID varchar(36) NOT NULL, COMMENT varchar(128) NOT NULL, PRIMARY KEY (UUID)) 
+2020-06-03 22:43:58,422 [MainThread] DEBUG mysql_repository.py::insert(@Line:75) Executing SQL statement: INSERT INTO TEST (UUID, COMMENT) VALUES ('b4dbae86-4663-46d6-bc80-e22729db325e', 'My-Test Data') 
+2020-06-03 22:43:58,430 [MainThread] DEBUG mysql_repository.py::update(@Line:85) Executing SQL statement: UPDATE TEST SET UUID = 'b4dbae86-4663-46d6-bc80-e22729db325e', COMMENT = 'Updated My-Test Data' WHERE 1 = 1 AND UUID = 'b4dbae86-4663-46d6-bc80-e22729db325e' 
+2020-06-03 22:43:58,432 [MainThread] DEBUG mysql_repository.py::find_all(@Line:102) Executing SQL statement: SELECT * FROM TEST WHERE 1 = 1 AND UUID = 'b4dbae86-4663-46d6-bc80-e22729db325e' 
+2020-06-03 22:43:58,456 [MainThread] DEBUG mysql_repository.py::execute(@Line:132) Executing SQL statement: DROP TABLE TEST 
+2020-06-03 22:43:58,457 [MainThread] DEBUG mysql_repository.py::disconnect(@Line:63) Disconnected from mysql@localhost:3306/hspylib. 
