@@ -1,12 +1,11 @@
 from http.server import BaseHTTPRequestHandler
-from typing import Tuple, List, Dict
-
-from requests.structures import CaseInsensitiveDict
+from typing import Tuple
 
 from main.hspylib.core.config.app_config import AppConfigs
 from main.hspylib.core.enum.content_type import ContentType
 from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod
+from requests.structures import CaseInsensitiveDict
 
 
 class MockServerHandler(BaseHTTPRequestHandler):

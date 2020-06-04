@@ -1,0 +1,214 @@
+
+/* Helper Functions -------------------------------------------------------- */
+
+Collection dirsByPattern(String baseDir, String pattern) {
+  def paths = []
+  fileTree(baseDir).visit { FileVisitDetails details ->
+      if (details.isDirectory() && details.name ==~ pattern) paths << details.file.path
+  }
+  return paths
+}
+
+String dirName(File file) {
+  file.getParentFile().getPath()
+}
+
+/* Python Tasks ------------------------------------------------------------- */
+
+/***** Install Group */
+
+task installDependencies(type: Task) {
+  group = 'Install'
+  doLast {
+    dependencies.each { String dep ->
+      exec {
+        commandLine rootProject.python, '-m', 'pip', 'install', dep
+      }
+    }
+  }
+}
+
+task installModule(type: Task) {
+  group = 'Install'
+  description = 'Install all python modules from "**/setup.py"'
+  doLast {
+    fileTree("${sourceRoot}").matching {
+      include "**/setup.py"
+    }.each { File module ->
+        def moduleDir = dirName(module)
+        println "Installing ${rootProject.name} from ${moduleDir} -> ${module.path}"
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'pip', 'install', "."
+        }
+      }
+  }
+}
+
+task uninstallModule(type: Task) {
+  group = 'Install'
+  description = 'Uninstall all python modules from "**/setup.py"'
+  doLast {
+    fileTree("${sourceRoot}/main").matching {
+      include "**/setup.py"
+    }.each { File file ->
+        def moduleDir = "${file.path.replace(file.name, "")}"
+        println "Removing python modules from: ${file.path}"
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', "${rootProject.name}"
+        }
+      }
+  }
+}
+
+/***** Build Group */
+
+task cleanPython(type: Delete) {
+  group = 'Build'
+  description = 'Clean all compiled and cached python files from "${sourceRoot}"'
+  doLast {
+    println "Cleaning up compiled and cached files ..."
+    delete fileTree(sourceRoot).matching {
+      include "**/*.pyc"
+    }
+    delete dirsByPattern(sourceRoot, /.*__pycache__$/)
+  }
+}
+
+task compilePython(type: Task) {
+  group = 'Build'
+  description = 'Compile all python files from "${sourceRoot}/main"'
+  doLast {
+    fileTree("${sourceRoot}/main").matching {
+      include "**/*.py"
+      exclude "**/__init__.py"
+    }.each { File file ->
+        println "Compiling Python file -> ${file.name}"
+        exec {
+          commandLine rootProject.python, '-m', 'py_compile', file.path
+        }
+      }
+  }
+}
+
+task compilePythonTest(type: Task) {
+  group = 'Build'
+  description = 'Compile all python test files from "${sourceRoot}/test"'
+  doLast {
+    fileTree("${sourceRoot}/test").matching {
+      include "**/test_*.py"
+      exclude "**/__init__.py"
+    }.each { File file ->
+        println "Compiling Python Test file -> ${file.name}"
+        exec {
+          commandLine rootProject.python, '-m', 'py_compile', file.path
+        }
+      }
+  }
+}
+
+task compileQrc(type: Task) {
+  group = 'Build'
+  description = 'Compile all Qt resource files from "${sourceRoot}/main"'
+  doLast {
+    fileTree("${sourceRoot}/main").matching {
+      include "**/*.qrc"
+    }.each { File file ->
+        println "Compiling Qt Resource -> ${file.name}"
+        exec {
+          commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
+        }
+      }
+  }
+}
+
+/***** Run Group */
+
+task runTest(type: Task) {
+  group = 'Run'
+  description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
+  doLast {
+    fileTree("${sourceRoot}/test").matching {
+      include "**/test_*.py"
+    }.each { File file ->
+        println "Running unittests -> ${file.name}"
+        exec {
+          workingDir = dirName(file)
+          environment PYTHONPATH: "${rootDir}:${sourceRoot}"
+          commandLine rootProject.python, '-m', 'unittest', '-f', file.path
+        }
+      }
+  }
+}
+
+task run(type: Task) {
+  group = 'Run'
+  description = 'Run main application'
+  doLast {
+    fileTree("${sourceRoot}").matching {
+      include "**/${application}"
+    }.each { File app ->
+        def appDir = dirName(app)
+        println "Running ${appDir} -> ${app.path}"
+        exec {
+          workingDir "${appDir}"
+          environment PYTHONPATH: "${rootDir}:${sourceRoot}", SOURCE_ROOT: "${sourceRoot}"
+          commandLine rootProject.python, "${application}"
+        }
+      }
+  }
+}
+
+/***** Other Group */
+
+task updateVersion {
+  group = 'Other'
+  description = 'Update the VERSION file to match the build.gradle version'
+  doLast {
+    if( !file("${versionFile}").exists() ) {
+        new File("${versionFile}").text = "$rootProject.project.version"
+    }
+    ant.replaceregexp(file: "${versionFile}", match:'^.*$', replace:"${version}", flags:'g', byline:true)
+    println "Project: [${rootProject.name}] Version: " + file("${versionFile}").text
+  }
+}
+
+/***** Task Wrappers */
+
+task compile(type: Task) {
+  group = 'Build'
+  dependsOn compilePython
+  dependsOn compileQrc
+  dependsOn compilePythonTest
+}
+
+task clean(type: Task) {
+  group = 'Build'
+  dependsOn cleanPython
+}
+
+task test(type: Task) {
+  group = 'Test'
+  dependsOn compile
+  mustRunAfter compile
+  dependsOn runTest
+}
+
+task build(type: Task) {
+  group = 'Build'
+  dependsOn clean
+  mustRunAfter clean
+  dependsOn test
+}
+
+task install(type: Task) {
+  group = 'Install'
+  dependsOn installDependencies
+  mustRunAfter installDependencies
+  dependsOn build
+  mustRunAfter build
+  dependsOn uninstallModule
+  mustRunAfter uninstallModule
+  dependsOn installModule
+}

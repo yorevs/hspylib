@@ -1,0 +1,32 @@
+
+/* Docker Tasks ------------------------------------------------------------- */
+
+task startContainers(type: Task) {
+  group = 'Docker'
+  description = 'Start a docker-composed container'
+  doLast {
+    containers.each { String container ->
+      println "Starting container: ${container}"
+      exec {
+        workingDir = "${rootDir}/docker/${container}"
+        commandLine 'docker-compose', 'up', '-d'
+        commandLine 'docker', 'logs', 'mysql_mysql_1'
+      }
+    }
+  }
+}
+
+task stopContainers(type: Task) {
+  group = 'Docker'
+  description = 'Stop a docker-composed container'
+  doLast {
+    containers.each { String container ->
+      println "Stopping container: ${container}"
+      exec {
+        workingDir = "${rootDir}/docker/${container}"
+        commandLine 'docker-compose', 'down'
+        commandLine 'docker', 'logs', 'mysql_mysql_1'
+      }
+    }
+  }
+}

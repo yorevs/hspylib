@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from requests.structures import CaseInsensitiveDict
-
 from main.hspylib.core.model.entity import Entity
+from requests.structures import CaseInsensitiveDict
 
 
 class Repository(ABC):

@@ -2,10 +2,9 @@ import os
 import sys
 import unittest
 
+from main.hspylib.core.config.app_config import AppConfigs
 from pymysql.err import InternalError
 from requests.structures import CaseInsensitiveDict
-
-from main.hspylib.core.config.app_config import AppConfigs
 from test.hspylib.core.crud.resources.TestRepository import TestRepository, TestEntity
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))

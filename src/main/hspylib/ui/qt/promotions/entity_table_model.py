@@ -3,7 +3,6 @@ from typing import Type
 from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTableView
-
 from main.hspylib.core.config.app_config import AppConfigs
 from main.hspylib.tools.commons import log_init, class_attribute_values, class_attribute_names
 
