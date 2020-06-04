@@ -1,18 +1,30 @@
+import os
 import sys
 import unittest
 
 import requests
 
+from main.hspylib.core.config.app_config import AppConfigs
 from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod
 from main.hspylib.modules.mock.mock_server import MockServer
+
+TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestClass(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        self.server = MockServer('localhost', 3333)
+        resource_dir = '{}/resources'.format(TEST_DIR)
+        os.environ['ACTIVE_PROFILE'] = "test"
+        AppConfigs(
+            source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
+        ).logger().info(AppConfigs.INSTANCE)
+        self.server = MockServer(
+            AppConfigs.INSTANCE.get('mock.server.host'),
+            AppConfigs.INSTANCE.get_int('mock.server.port')
+        )
         self.server.start()
 
     # Teardown tests
