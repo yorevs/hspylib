@@ -36,7 +36,7 @@ class Entity:
                 values.append(str(value))
         return tuple(values)
 
-    def fieldset(self) -> dict:
+    def to_column_set(self) -> dict:
         fields = {}
         for key, value in self.__dict__.items():
             if not key.startswith('_'):

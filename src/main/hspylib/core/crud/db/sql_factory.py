@@ -24,6 +24,22 @@ class SqlFactory(ABC):
                     ret_val[key] = stub.strip()
         return ret_val
 
+    @staticmethod
+    def get_filter_string(filters: CaseInsensitiveDict) -> str:
+        filter_string = ''
+        if filters:
+            for key, value in filters.items():
+                filter_string += "AND {} = '{}'".format(key, value)
+        return filter_string
+
+    @staticmethod
+    def get_fieldset_string(entity: Entity) -> str:
+        fields = entity.to_column_set()
+        field_set = ''
+        for key, value in fields.items():
+            field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
+        return field_set
+
     def __init__(self, filename: str):
         self.logger = AppConfigs.INSTANCE.logger()
         self.sql_stubs = SqlFactory.read_stubs(filename)
