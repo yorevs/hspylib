@@ -10,7 +10,6 @@ task startContainers(type: Task) {
       exec {
         workingDir = "${rootDir}/docker/${container}"
         commandLine 'docker-compose', 'up', '-d'
-        commandLine 'docker', 'logs', 'mysql_mysql_1'
       }
     }
   }
@@ -25,7 +24,6 @@ task stopContainers(type: Task) {
       exec {
         workingDir = "${rootDir}/docker/${container}"
         commandLine 'docker-compose', 'down'
-        commandLine 'docker', 'logs', 'mysql_mysql_1'
       }
     }
   }
