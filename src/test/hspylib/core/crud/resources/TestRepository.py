@@ -1,16 +1,17 @@
 from typing import Tuple
+from uuid import UUID
 
 from main.hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
 from main.hspylib.core.model.entity import Entity
 
 
 class TestEntity(Entity):
-    def __init__(self, comment: str):
-        super().__init__()
+    def __init__(self, entity_id: UUID = None, comment: str = None):
+        super().__init__(entity_id)
         self.comment = comment
 
     def __str__(self):
-        return self.comment
+        return 'uuid={} comment={}'.format(self.uuid, self.comment)
 
 
 class TestRepository(MySqlRepository):
@@ -27,7 +28,7 @@ class TestRepository(MySqlRepository):
         super().delete(entity)
 
     def row_to_entity(self, row: Tuple) -> TestEntity:
-        return TestEntity(row[1])
+        return TestEntity(row[0], row[1])
 
     def table_name(self) -> str:
         return 'TEST'
