@@ -22,32 +22,16 @@ class MySqlFactory(SqlFactory):
     def select(self, column_set: List[str] = None, filters: SqlFilter = None) -> str:
         sql = self.sql_stubs['select']
         sql = sql.replace(':columnSet', '*') if not column_set else column_set
-        filter_set = ''
-        if filters:
-            for key, value in filters.items():
-                filter_set += "AND {} = '{}'".format(key, value)
-        sql = sql.replace(':filters', filter_set)
+        sql = sql.replace(':filters', SqlFactory.get_filter_string(filters))
         return sql
 
     def update(self, entity: Entity, filters: SqlFilter) -> str:
         sql = self.sql_stubs['update']
-        fields = entity.fieldset()
-        field_set = ''
-        for key, value in fields.items():
-            field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
-        sql = sql.replace(':fieldSet', field_set)
-        filter_set = ''
-        if filters:
-            for key, value in filters.items():
-                filter_set += "AND {} = '{}'".format(key, value)
-        sql = sql.replace(':filters', filter_set)
+        sql = sql.replace(':fieldSet', SqlFactory.get_fieldset_string(entity))
+        sql = sql.replace(':filters', SqlFactory.get_filter_string(filters))
         return sql
 
     def delete(self, filters: SqlFilter) -> str:
         sql = self.sql_stubs['delete']
-        filter_set = ''
-        if filters:
-            for key, value in filters.items():
-                filter_set += "AND {} = '{}'".format(key, value)
-        sql = sql.replace(':filters', filter_set)
+        sql = sql.replace(':filters', SqlFactory.get_filter_string(filters))
         return sql
