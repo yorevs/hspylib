@@ -169,11 +169,13 @@ task updateVersion {
   group = 'Other'
   description = 'Update the VERSION file to match the build.gradle version'
   doLast {
-    if( !file("${versionFile}").exists() ) {
-        new File("${versionFile}").text = "$rootProject.project.version"
-    }
-    ant.replaceregexp(file: "${versionFile}", match:'^.*$', replace:"${version}", flags:'g', byline:true)
-    println "Project: [${rootProject.name}] Version: " + file("${versionFile}").text
+    def ver = project.ext.version
+    def v_file = project.ext.versionFile
+    println "Updating version to: ${ver}"
+    assert file("${v_file}").exists()
+    new File("${v_file}").text = "${ver}"
+    ant.replaceregexp(file: "${v_file}", match:'^.*$', replace:"${ver}", flags:'g', byline:true)
+    println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
   }
 }
 
@@ -202,6 +204,7 @@ task build(type: Task) {
   group = 'Build'
   dependsOn clean
   mustRunAfter clean
+  dependsOn updateVersion
   dependsOn test
 }
 
