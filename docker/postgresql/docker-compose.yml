@@ -2,16 +2,18 @@ version: '3.3'
 
 services:
   postgres:
-    image: postgres/postgres:latest
+    image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: 'hspylib'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
     ports:
-      - 3306:3306
+      - 5432:5432
     expose:
-      - 3306
+      - 5432
     volumes:
-      - mysql-data:/var/lib/mysql:rw
+      - postgres-data:/var/lib/postgresql/data :rw
 
 volumes:
-  mysql-data:
+  postgres-data:
