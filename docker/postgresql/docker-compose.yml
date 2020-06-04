@@ -1,14 +1,11 @@
 version: '3.3'
 
 services:
-  mysql:
-    image: mysql/mysql-server:latest
+  postgres:
+    image: postgres/postgres:latest
     restart: always
     environment:
-      MYSQL_DATABASE: hspylib
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_PASSWORD: postgres
     ports:
       - 3306:3306
     expose:

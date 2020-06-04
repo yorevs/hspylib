@@ -2,10 +2,9 @@ import os
 from abc import abstractmethod, ABC
 from typing import List, Optional
 
-from requests.structures import CaseInsensitiveDict
-
 from main.hspylib.core.config.app_config import AppConfigs
 from main.hspylib.core.model.entity import Entity
+from requests.structures import CaseInsensitiveDict
 
 
 class SqlFactory(ABC):

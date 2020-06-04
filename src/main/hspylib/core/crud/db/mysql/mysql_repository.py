@@ -5,13 +5,12 @@ from abc import abstractmethod
 from typing import Optional, Tuple, List
 
 import pymysql
-from pymysql.err import OperationalError, ProgrammingError
-from requests.structures import CaseInsensitiveDict as SqlFilter
-
 from main.hspylib.core.crud.db.db_repository import DBRepository
 from main.hspylib.core.crud.db.sql_factory_facade import SqlFactoryFacade
 from main.hspylib.core.enum.database_type import DatabaseType
 from main.hspylib.core.model.entity import Entity
+from pymysql.err import OperationalError, ProgrammingError
+from requests.structures import CaseInsensitiveDict as SqlFilter
 
 
 class MySqlRepository(DBRepository):

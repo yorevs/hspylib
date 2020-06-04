@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import abstractmethod
 from typing import Tuple
 
 from main.hspylib.core.config.app_config import AppConfigs

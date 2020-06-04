@@ -1,9 +1,8 @@
 from typing import List, Optional
 
-from requests.structures import CaseInsensitiveDict as SqlFilter
-
 from main.hspylib.core.crud.db.sql_factory import SqlFactory
 from main.hspylib.core.model.entity import Entity
+from requests.structures import CaseInsensitiveDict as SqlFilter
 
 
 class MySqlFactory(SqlFactory):

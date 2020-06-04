@@ -3,7 +3,6 @@ import sys
 import unittest
 
 import requests
-
 from main.hspylib.core.config.app_config import AppConfigs
 from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod

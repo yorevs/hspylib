@@ -1,7 +1,6 @@
 from typing import Optional
 
 import requests
-
 from main.hspylib.core.enum.http_method import HttpMethod
 from main.hspylib.modules.fetch.http_response import HttpResponse
 from main.hspylib.tools.commons import sysout
