@@ -1,5 +1,6 @@
 import os
 from abc import abstractmethod, ABC
+from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict
 
@@ -45,17 +46,17 @@ class SqlFactory(ABC):
         self.sql_stubs = SqlFactory.read_stubs(filename)
 
     @abstractmethod
-    def insert(self, entity: Entity) -> str:
+    def insert(self, entity: Entity) -> Optional[str]:
         pass
 
     @abstractmethod
-    def select(self, filters: CaseInsensitiveDict) -> str:
+    def select(self, column_set: List[str], filters: CaseInsensitiveDict) -> Optional[str]:
         pass
 
     @abstractmethod
-    def update(self, entity: Entity, filters: CaseInsensitiveDict) -> str:
+    def update(self, entity: Entity, filters: CaseInsensitiveDict) -> Optional[str]:
         pass
 
     @abstractmethod
-    def delete(self, filters: CaseInsensitiveDict) -> str:
+    def delete(self, filters: CaseInsensitiveDict) -> Optional[str]:
         pass

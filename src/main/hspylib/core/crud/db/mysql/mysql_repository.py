@@ -2,7 +2,7 @@ import os
 import sys
 import uuid
 from abc import abstractmethod
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 import pymysql
 from pymysql.err import OperationalError, ProgrammingError
@@ -95,9 +95,9 @@ class MySqlRepository(DBRepository):
             self._cursor.execute(stm)
             self._connector.commit()
 
-    def find_all(self, sql_filters: SqlFilter = None) -> Optional[list]:
+    def find_all(self, column_set: List[str] = None, sql_filters: SqlFilter = None) -> Optional[list]:
         if self.is_connected():
-            stm = self._sql_factory.select(filters=sql_filters)
+            stm = self._sql_factory.select(column_set=column_set, filters=sql_filters)
             stm = stm.replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             try:
@@ -112,10 +112,10 @@ class MySqlRepository(DBRepository):
         else:
             self.logger.error('Not connected to database.')
 
-    def find_by_id(self, entity_id: str) -> Optional[Entity]:
+    def find_by_id(self, column_set: List[str] = None, entity_id: str = None) -> Optional[Entity]:
         if self.is_connected():
             if entity_id:
-                stm = self._sql_factory.select(filters=SqlFilter({"UUID": '{}'.format(entity_id)}))
+                stm = self._sql_factory.select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)}))
                 stm = stm.replace(':tableName', self.table_name())
                 self.logger.debug('Executing SQL statement: {}'.format(stm))
                 self._cursor.execute(stm)

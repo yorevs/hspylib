@@ -28,7 +28,7 @@ class TestRepository(MySqlRepository):
         super().delete(entity)
 
     def row_to_entity(self, row: Tuple) -> TestEntity:
-        return TestEntity(row[0], row[1])
+        return TestEntity(row[0], row[1] if len(row) > 1 else None)
 
     def table_name(self) -> str:
         return 'TEST'
