@@ -55,17 +55,3 @@ class ServerThread(Thread):
 
     def run(self) -> None:
         self.parent.serve_forever()
-
-
-if __name__ == '__main__':
-    server = MockServer('localhost', 3333)
-    server\
-        .when_request(HttpMethod.GET, '/')\
-        .then_return(code=HttpCode.OK)
-    server\
-        .when_request(HttpMethod.POST, '/users')\
-        .then_return_with_received_body(code=HttpCode.OK)
-    server\
-        .when_request(HttpMethod.PUT, '/users')\
-        .then_return(code=HttpCode.OK, body='[{"name":"any-name"}]', headers={'Etag': "3147526947"})
-    server.start()

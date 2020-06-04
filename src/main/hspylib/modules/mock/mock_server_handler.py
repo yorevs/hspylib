@@ -40,7 +40,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
     def process_default(self,
                         code: HttpCode = HttpCode.OK,
                         content_type: ContentType = ContentType.APPLICATION_JSON,
-                        headers: List[Dict[str, str]] = None):
+                        headers: CaseInsensitiveDict = None):
         self.send_response_only(code.value)
         self.process_headers(headers, content_type)
 
@@ -58,7 +58,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
                     code = request.status_code.value
                 headers = request.headers if request.headers else []
                 self.send_response_only(code)
-                if request.received_body:
+                if request.received_body and 'Content-Length' in self.headers:
                     length = int(self.headers['Content-Length'])
                     request.body = self.rfile.read(length).decode(str(request.encoding))
                     self.process_headers(headers, request.content_type, length)
@@ -89,9 +89,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         mock_request = self.parent.mock(HttpMethod.OPTIONS, self.path)
-        headers = [
-            {'Allow': ', '.join(self.find_allowed_methods())}
-        ]
+        headers = CaseInsensitiveDict({'Allow': ', '.join(self.find_allowed_methods())})
         if mock_request:
             self.process_request(mock_request)
         else:
