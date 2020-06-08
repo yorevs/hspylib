@@ -22,19 +22,12 @@ class Entity:
                 ret_dict[key] = str(value)
         return ret_dict
 
-    def to_fields(self) -> Tuple[str]:
+    def to_columns(self) -> Tuple[str]:
         cols = []
         for key in self.__dict__.keys():
             if not key.startswith('_'):
                 cols.append(key.replace("'", "").upper())
         return tuple(cols)
-
-    def to_values(self) -> Tuple[str]:
-        values = []
-        for key, value in self.__dict__.items():
-            if not key.startswith('_'):
-                values.append(str(value))
-        return tuple(values)
 
     def to_column_set(self) -> dict:
         fields = {}
@@ -42,3 +35,10 @@ class Entity:
             if not key.startswith('_'):
                 fields[key.replace("'", "").upper()] = "{}".format(str(value))
         return fields
+
+    def to_values(self) -> Tuple[str]:
+        values = []
+        for key, value in self.__dict__.items():
+            if not key.startswith('_'):
+                values.append(str(value))
+        return tuple(values)

@@ -73,7 +73,6 @@ class MySqlRepository(DBRepository):
             stm = stm.replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
-            self._connector.commit()
         else:
             self.logger.error('Not connected to database.')
 
@@ -92,7 +91,6 @@ class MySqlRepository(DBRepository):
             stm = stm.replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
-            self._connector.commit()
 
     def find_all(self, column_set: List[str] = None, sql_filters: SqlFilter = None) -> Optional[list]:
         if self.is_connected():
@@ -114,7 +112,8 @@ class MySqlRepository(DBRepository):
     def find_by_id(self, column_set: List[str] = None, entity_id: str = None) -> Optional[Entity]:
         if self.is_connected():
             if entity_id:
-                stm = self._sql_factory.select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)}))
+                stm = self._sql_factory.select(column_set=column_set,
+                                               filters=SqlFilter({"UUID": '{}'.format(entity_id)}))
                 stm = stm.replace(':tableName', self.table_name())
                 self.logger.debug('Executing SQL statement: {}'.format(stm))
                 self._cursor.execute(stm)
@@ -125,12 +124,22 @@ class MySqlRepository(DBRepository):
         else:
             self.logger.error('Not connected to database.')
 
-    def execute(self, sql_statement: str):
+    def execute(self, sql_statement: str, auto_commit: bool = True, *params):
         if self.is_connected():
-            self._cursor.execute(sql_statement)
+            self._cursor.execute(sql_statement, params)
             self.logger.debug('Executing SQL statement: {}'.format(sql_statement))
+            if auto_commit:
+                self.commit()
         else:
             self.logger.error('Not connected to database.')
+
+    def commit(self):
+        self.logger.debug('Committing database changes')
+        self._connector.commit()
+
+    def rollback(self):
+        self.logger.debug('Rolling back database changes')
+        self._connector.rollback()
 
     @abstractmethod
     def row_to_entity(self, row: Tuple) -> Entity:
