@@ -29,6 +29,18 @@ class DBRepository(Repository):
         pass
 
     @abstractmethod
+    def execute(self, sql_statement: str, auto_commit: bool = True, *params):
+        pass
+
+    @abstractmethod
+    def commit(self):
+        pass
+
+    @abstractmethod
+    def rollback(self):
+        pass
+
+    @abstractmethod
     def row_to_entity(self, row: Tuple) -> Entity:
         pass
 
