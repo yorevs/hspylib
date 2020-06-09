@@ -101,28 +101,23 @@ class MySqlRepository(DBRepository):
                 .select(column_set=column_set, filters=sql_filters)\
                 .replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
-            try:
-                self._cursor.execute(stm)
-                result = self._cursor.fetchall()
-                ret_val = []
-                for next_row in result:
-                    ret_val.append(self.row_to_entity(next_row))
-                return ret_val
-            except ProgrammingError:
-                return None
+            self._cursor.execute(stm)
+            result = self._cursor.fetchall()
+            return list(map(self.row_to_entity, result)) if result else None
         else:
             self.logger.error('Not connected to database.')
 
     def find_by_id(self, column_set: List[str] = None, entity_id: str = None) -> Optional[Entity]:
         if self.is_connected():
             if entity_id:
-                stm = self._sql_factory.select(
-                    column_set=column_set,
-                    filters=SqlFilter({"UUID": '{}'.format(entity_id)})
-                ).replace(':tableName', self.table_name())
+                stm = self._sql_factory\
+                    .select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)}))\
+                    .replace(':tableName', self.table_name())
                 self.logger.debug('Executing SQL statement: {}'.format(stm))
                 self._cursor.execute(stm)
                 result = self._cursor.fetchall()
+                if len(result) > 1:
+                    raise ProgrammingError('Multiple results found')
                 return self.row_to_entity(result[0]) if len(result) > 0 else None
             else:
                 return None
