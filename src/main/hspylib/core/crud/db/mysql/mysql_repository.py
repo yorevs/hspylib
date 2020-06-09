@@ -69,8 +69,9 @@ class MySqlRepository(DBRepository):
     def insert(self, entity: Entity):
         if self.is_connected():
             entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
-            stm = self._sql_factory.insert(entity)
-            stm = stm.replace(':tableName', self.table_name())
+            stm = self._sql_factory\
+                .insert(entity)\
+                .replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
         else:
@@ -78,8 +79,9 @@ class MySqlRepository(DBRepository):
 
     def update(self, entity: Entity):
         if self.is_connected():
-            stm = self._sql_factory.update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)}))
-            stm = stm.replace(':tableName', self.table_name())
+            stm = self._sql_factory\
+                .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)}))\
+                .replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
         else:
@@ -87,15 +89,17 @@ class MySqlRepository(DBRepository):
 
     def delete(self, entity: Entity):
         if self.is_connected():
-            stm = self._sql_factory.delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)}))
-            stm = stm.replace(':tableName', self.table_name())
+            stm = self._sql_factory\
+                .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)}))\
+                .replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
 
     def find_all(self, column_set: List[str] = None, sql_filters: SqlFilter = None) -> Optional[list]:
         if self.is_connected():
-            stm = self._sql_factory.select(column_set=column_set, filters=sql_filters)
-            stm = stm.replace(':tableName', self.table_name())
+            stm = self._sql_factory\
+                .select(column_set=column_set, filters=sql_filters)\
+                .replace(':tableName', self.table_name())
             self.logger.debug('Executing SQL statement: {}'.format(stm))
             try:
                 self._cursor.execute(stm)
@@ -112,9 +116,10 @@ class MySqlRepository(DBRepository):
     def find_by_id(self, column_set: List[str] = None, entity_id: str = None) -> Optional[Entity]:
         if self.is_connected():
             if entity_id:
-                stm = self._sql_factory.select(column_set=column_set,
-                                               filters=SqlFilter({"UUID": '{}'.format(entity_id)}))
-                stm = stm.replace(':tableName', self.table_name())
+                stm = self._sql_factory.select(
+                    column_set=column_set,
+                    filters=SqlFilter({"UUID": '{}'.format(entity_id)})
+                ).replace(':tableName', self.table_name())
                 self.logger.debug('Executing SQL statement: {}'.format(stm))
                 self._cursor.execute(stm)
                 result = self._cursor.fetchall()
