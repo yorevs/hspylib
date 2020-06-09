@@ -1,4 +1,5 @@
 import os
+from re import sub
 from typing import Optional
 
 from main.hspylib.core.config.properties import Properties
@@ -16,6 +17,10 @@ AppConfigs
 
 class AppConfigs(metaclass=Singleton):
     INSTANCE = None
+
+    @staticmethod
+    def environ_name(property_name: str) -> str:
+        return sub('[ -.]', '_', property_name).upper()
 
     def __init__(self,
                  source_root: str = None,
@@ -46,24 +51,24 @@ class AppConfigs(metaclass=Singleton):
             '-=' * 40
         )
 
-    def get(self, property_name: str) -> Optional[str]:
-        return self._app_properties.get(
-            property_name) if self._app_properties else None
-
-    def get_int(self, property_name: str) -> Optional[int]:
-        return self._app_properties.get_int(
-            property_name) if self._app_properties else None
-
-    def get_float(self, property_name: str) -> Optional[float]:
-        return self._app_properties.get_float(
-            property_name) if self._app_properties else None
-
-    def get_bool(self, property_name: str) -> Optional[bool]:
-        return self._app_properties.get_bool(
-            property_name) if self._app_properties else None
-
     def source_root(self) -> str:
         return self._source_root
 
     def logger(self):
         return self._logger
+
+    def get(self, property_name: str) -> Optional[str]:
+        env = os.environ.get(AppConfigs.environ_name(property_name))
+        return str(env) if env else self._app_properties.get(property_name)
+
+    def get_int(self, property_name: str) -> Optional[int]:
+        env = os.environ.get(AppConfigs.environ_name(property_name))
+        return int(env) if env else self._app_properties.get_int(property_name)
+
+    def get_float(self, property_name: str) -> Optional[float]:
+        env = os.environ.get(AppConfigs.environ_name(property_name))
+        return float(env) if env else self._app_properties.get_float(property_name)
+
+    def get_bool(self, property_name: str) -> Optional[bool]:
+        env = os.environ.get(AppConfigs.environ_name(property_name))
+        return bool(env) if env else self._app_properties.get_bool(property_name)

@@ -39,10 +39,7 @@ class Properties:
             return default_value
 
     def get_bool(self, key: str, default_value=None) -> Optional[bool]:
-        try:
-            return bool(self.get(key))
-        except TypeError:
-            return default_value
+        return self.get(key).capitalize() in ['True', '1', 'on', 'yes']
 
     def size(self) -> int:
         return len(self.properties) if self.properties else 0
