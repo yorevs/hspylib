@@ -22,16 +22,16 @@ class MySqlFactory(SqlFactory):
     def select(self, column_set: List[str] = None, filters: SqlFilter = None) -> Optional[str]:
         sql = self.sql_stubs['select']\
             .replace(':columnSet', '*' if not column_set else ', '.join(column_set))\
-            .replace(':filters', SqlFactory.get_filter_string(filters))
+            .replace(':filters', SqlFactory.join_filters(filters))
         return sql
 
     def update(self, entity: Entity, filters: SqlFilter) -> Optional[str]:
         sql = self.sql_stubs['update']\
-            .replace(':fieldSet', SqlFactory.get_fieldset_string(entity))\
-            .replace(':filters', SqlFactory.get_filter_string(filters))
+            .replace(':fieldSet', SqlFactory.join_fieldset(entity))\
+            .replace(':filters', SqlFactory.join_filters(filters))
         return sql
 
     def delete(self, filters: SqlFilter) -> Optional[str]:
         sql = self.sql_stubs['delete']\
-            .replace(':filters', SqlFactory.get_filter_string(filters))
+            .replace(':filters', SqlFactory.join_filters(filters))
         return sql

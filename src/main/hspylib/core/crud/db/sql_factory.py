@@ -25,15 +25,15 @@ class SqlFactory(ABC):
         return ret_val
 
     @staticmethod
-    def get_filter_string(filters: CaseInsensitiveDict) -> str:
+    def join_filters(filters: CaseInsensitiveDict, join_operator: str = 'AND') -> str:
         filter_string = ''
         if filters:
             for key, value in filters.items():
-                filter_string += "AND {} = '{}'".format(key, value)
+                filter_string += "{} {} = '{}'".format(join_operator, key, value)
         return filter_string
 
     @staticmethod
-    def get_fieldset_string(entity: Entity) -> str:
+    def join_fieldset(entity: Entity) -> str:
         fields = entity.to_column_set()
         field_set = ''
         for key, value in fields.items():
