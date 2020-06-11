@@ -18,7 +18,7 @@ ext {
     'PyQt5',
     'cryptography',
     'pycodestyle',
-    'pymysql',
+    'pygresql',
     'requests'
   ]
   containers = [
