@@ -13,7 +13,7 @@ from main.hspylib.core.model.entity import Entity
 
 
 class MySqlRepository(DBRepository):
-    __connections = {}
+    _connections = {}
 
     def __init__(self):
         super().__init__()
@@ -30,8 +30,8 @@ class MySqlRepository(DBRepository):
     def connect(self):
         if not self.is_connected():
             cache_key = self.__str__()
-            if cache_key in MySqlRepository.__connections:
-                self._connector = MySqlRepository.__connections[cache_key]
+            if cache_key in MySqlRepository._connections:
+                self._connector = MySqlRepository._connections[cache_key]
                 self._cursor = self._connector.cursor()
                 assert self.is_connected(), "Not connected to the database"
             else:
@@ -46,7 +46,7 @@ class MySqlRepository(DBRepository):
                     assert self.is_connected(), "Unable to connect to the database"
                     self._cursor = self._connector.cursor()
                     self.logger.debug('Connection to {} established'.format(str(self)))
-                    MySqlRepository.__connections[cache_key] = self._connector
+                    MySqlRepository._connections[cache_key] = self._connector
                 except OperationalError:
                     self.logger.error('Unable to connect to {}'.format(str(self)))
                     sys.exit(1)
@@ -56,7 +56,7 @@ class MySqlRepository(DBRepository):
             cache_key = self.__str__()
             self._connector.close()
             self._connector = None
-            del MySqlRepository.__connections[cache_key]
+            del MySqlRepository._connections[cache_key]
             self.logger.debug('Disconnected from {}.'.format(str(self)))
         else:
             self.logger.error('Unable to disconnect from {}'.format(str(self)))
