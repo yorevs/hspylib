@@ -1,13 +1,18 @@
 import os
-from abc import abstractmethod, ABC
 from typing import List, Optional
 
-from main.hspylib.core.config.app_config import AppConfigs
-from main.hspylib.core.model.entity import Entity
 from requests.structures import CaseInsensitiveDict
 
+from main.hspylib.core.config.app_config import AppConfigs
+from main.hspylib.core.meta.singleton import Singleton
+from main.hspylib.core.model.entity import Entity
 
-class SqlFactory(ABC):
+DEFAULT_SQL_STUBS = '{}/sql/sql_stubs.sql'.format(os.path.dirname(__file__))
+
+
+class SqlFactory(metaclass=Singleton):
+    INSTANCE = None
+
     @staticmethod
     def read_stubs(sql_filename: str) -> dict:
         ret_val = {}
@@ -40,22 +45,33 @@ class SqlFactory(ABC):
             field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
         return field_set
 
-    def __init__(self, filename: str):
+    def __init__(self):
         self.logger = AppConfigs.INSTANCE.logger()
-        self.sql_stubs = SqlFactory.read_stubs(filename)
+        self.sql_stubs = SqlFactory.read_stubs(DEFAULT_SQL_STUBS)
+        self.logger.debug('{} created with {} Stubs'.format(
+            self.__class__.__name__, len(self.sql_stubs)))
+        SqlFactory.INSTANCE = SqlFactory.INSTANCE if SqlFactory.INSTANCE else self
 
-    @abstractmethod
     def insert(self, entity: Entity) -> Optional[str]:
-        pass
+        params = entity.to_values()
+        sql = self.sql_stubs['insert']\
+                  .replace(':columnSet', str(entity.to_columns()).replace("'", ""))\
+                  .replace(':valueSet', str(params))
+        return sql
 
-    @abstractmethod
-    def select(self, column_set: List[str], filters: CaseInsensitiveDict) -> Optional[str]:
-        pass
+    def select(self, column_set: List[str] = None, filters: CaseInsensitiveDict = None) -> Optional[str]:
+        sql = self.sql_stubs['select']\
+            .replace(':columnSet', '*' if not column_set else ', '.join(column_set))\
+            .replace(':filters', SqlFactory.join_filters(filters))
+        return sql
 
-    @abstractmethod
     def update(self, entity: Entity, filters: CaseInsensitiveDict) -> Optional[str]:
-        pass
+        sql = self.sql_stubs['update']\
+            .replace(':fieldSet', SqlFactory.join_fieldset(entity))\
+            .replace(':filters', SqlFactory.join_filters(filters))
+        return sql
 
-    @abstractmethod
     def delete(self, filters: CaseInsensitiveDict) -> Optional[str]:
-        pass
+        sql = self.sql_stubs['delete']\
+            .replace(':filters', SqlFactory.join_filters(filters))
+        return sql
