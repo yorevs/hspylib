@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import signal
 
 from main.hspylib.core.config.app_config import AppConfigs
