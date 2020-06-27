@@ -3,6 +3,5 @@
 # Package: main.hspylib.core.crud.db.mysql
 
 __all__ = [
-  "mysql_repository",
-  "mysql_factory"
+  "mysql_repository"
 ]

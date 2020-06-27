@@ -1,27 +1,25 @@
-import os
 import sys
 import uuid
 from abc import abstractmethod
 from typing import Optional, Tuple, List
 
 import pymysql
-from main.hspylib.core.crud.db.db_repository import DBRepository
-from main.hspylib.core.crud.db.sql_factory_facade import SqlFactoryFacade
-from main.hspylib.core.enum.database_type import DatabaseType
-from main.hspylib.core.model.entity import Entity
 from pymysql.err import OperationalError, ProgrammingError
 from requests.structures import CaseInsensitiveDict as SqlFilter
 
+from main.hspylib.core.crud.db.db_repository import DBRepository
+from main.hspylib.core.crud.db.sql_factory import SqlFactory
+from main.hspylib.core.model.entity import Entity
+
 
 class MySqlRepository(DBRepository):
-    __connections = {}
+    _connections = {}
 
     def __init__(self):
         super().__init__()
         self._connector = None
         self._cursor = None
-        self._sql_factory = SqlFactoryFacade.get(
-            DatabaseType.MYSQL, '{}/sql/mysql_stubs.sql'.format(os.path.dirname(__file__)))
+        self._sql_factory = SqlFactory()
 
     def __str__(self):
         return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)
@@ -32,8 +30,8 @@ class MySqlRepository(DBRepository):
     def connect(self):
         if not self.is_connected():
             cache_key = self.__str__()
-            if cache_key in MySqlRepository.__connections:
-                self._connector = MySqlRepository.__connections[cache_key]
+            if cache_key in MySqlRepository._connections:
+                self._connector = MySqlRepository._connections[cache_key]
                 self._cursor = self._connector.cursor()
                 assert self.is_connected(), "Not connected to the database"
             else:
@@ -48,7 +46,7 @@ class MySqlRepository(DBRepository):
                     assert self.is_connected(), "Unable to connect to the database"
                     self._cursor = self._connector.cursor()
                     self.logger.debug('Connection to {} established'.format(str(self)))
-                    MySqlRepository.__connections[cache_key] = self._connector
+                    MySqlRepository._connections[cache_key] = self._connector
                 except OperationalError:
                     self.logger.error('Unable to connect to {}'.format(str(self)))
                     sys.exit(1)
@@ -58,7 +56,7 @@ class MySqlRepository(DBRepository):
             cache_key = self.__str__()
             self._connector.close()
             self._connector = None
-            del MySqlRepository.__connections[cache_key]
+            del MySqlRepository._connections[cache_key]
             self.logger.debug('Disconnected from {}.'.format(str(self)))
         else:
             self.logger.error('Unable to disconnect from {}'.format(str(self)))
