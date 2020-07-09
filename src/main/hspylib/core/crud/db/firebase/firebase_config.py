@@ -56,6 +56,7 @@ class FirebaseConfig(metaclass=Singleton):
                  username: str = None,
                  passphrase: str = None):
 
+        self.current_state = None
         self.project_id = project_id if project_id else AppConfigs.INSTANCE.get('firebase.project.id')
         self.database = database if database else AppConfigs.INSTANCE.get('firebase.database')
         self.project_uuid = project_uuid if project_uuid else AppConfigs.INSTANCE.get('firebase.project.uuid')
@@ -85,8 +86,12 @@ class FirebaseConfig(metaclass=Singleton):
         self.passphrase = base64.b64decode(encoding.lower())
 
     def assert_config(self) -> bool:
-        response = get(self.url())
-        return response is not None and response.status_code == HttpCode.OK
+        response = get('{}.json'.format(self.url()))
+        ret_val = response is not None and response.status_code == HttpCode.OK
+        if ret_val:
+            self.current_state = response.body if response.body and response.body != 'null' else None
+        return ret_val
 
     def url(self):
-        return 'https://{}.firebaseio.com/{}/{}'.format(self.project_id, self.database, self.project_uuid)
+        return 'https://{}.firebaseio.com/{}/{}'\
+            .format(self.project_id, self.database, self.project_uuid)
