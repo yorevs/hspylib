@@ -14,11 +14,11 @@ def fetch(
         body=None,
         silent=True) -> Optional[HttpResponse]:
 
-    url = url if url.startswith("http[s]?:[0-9]{0,5}//") else 'http://{}'.format(url)
+    url = url if url.startswith("http") else 'http://{}'.format(url)
     if not silent:
         sysout('Fetching: method={} headers={} body={} url={} ...'.format(
             method, headers if headers else '[]', body if body else '{}', url))
-    response = requests.request(url=url, method=method.name, headers=headers, data=body)
+    response = requests.request(url=url, method=method.name, headers=headers, data=body, timeout=3)
     return HttpResponse.of(response)
 
 

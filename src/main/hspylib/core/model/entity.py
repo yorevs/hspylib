@@ -1,3 +1,4 @@
+import json
 from typing import Tuple
 from uuid import UUID
 
@@ -12,15 +13,22 @@ class Entity:
     def to_dict(self) -> dict:
         ret_dict = {}
         for key, value in self.__dict__.items():
-            if isinstance(value, int):
+            if isinstance(value, bool):
+                ret_dict[key] = bool(value)
+            elif isinstance(value, int):
                 ret_dict[key] = int(value)
             elif isinstance(value, float):
                 ret_dict[key] = float(value)
-            elif isinstance(value, bool):
-                ret_dict[key] = bool(value)
-            else:
+            elif isinstance(value, str):
                 ret_dict[key] = str(value)
+            else:
+                ret_dict[key] = None
         return ret_dict
+
+    def to_json(self):
+        dict_obj = self.to_dict()
+        json_str = json.dumps(dict_obj)
+        return json_str
 
     def to_columns(self) -> Tuple[str]:
         cols = []

@@ -2,7 +2,11 @@ import os
 import sys
 import unittest
 
+from requests.structures import CaseInsensitiveDict
+
 from main.hspylib.core.config.app_config import AppConfigs
+from main.hspylib.modules.fetch.fetch import delete
+from test.hspylib.core.crud.resources.TestFirebaseEntity import TestFirebaseEntity
 from test.hspylib.core.crud.resources.TestFirebaseRepository import TestFirebaseRepository
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -17,17 +21,24 @@ class TestClass(unittest.TestCase):
         AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
         ).logger().info(AppConfigs.INSTANCE)
-        # self.repository = TestFirebaseRepository()
+        self.repository = TestFirebaseRepository()
 
     # Teardown tests
     def tearDown(self):
-        pass
+        delete('{}.json'.format(self.repository.config.url()))
 
     # TEST CASES ----------
 
     # TC1 - Test inserting a single object into firebase.
     def test_should_insert_into_firebase(self):
-        pass
+        test_entity = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        self.repository.insert(test_entity)
+        result_set = self.repository.find_all(filters=CaseInsensitiveDict({
+            "uuid": '{}'.format(test_entity.uuid)
+        }))
+        assert result_set, "Result set is empty"
+        self.assertEqual(1, len(result_set))
+        self.assertEqual(test_entity.uuid, result_set[0].uuid)
 
     # TC2 - Test updating a single object from firebase.
     def test_should_update_firebase(self):
