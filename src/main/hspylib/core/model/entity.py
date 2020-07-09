@@ -10,6 +10,9 @@ class Entity:
     def __str__(self):
         return "Entity( uuid={} )".format(str(self.uuid))
 
+    def __eq__(self, other):
+        return isinstance(other, Entity) and all(item in self.to_dict().items() for item in other.to_dict().items())
+
     def to_dict(self) -> dict:
         ret_dict = {}
         for key, value in self.__dict__.items():
