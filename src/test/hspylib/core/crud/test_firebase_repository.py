@@ -42,19 +42,50 @@ class TestClass(unittest.TestCase):
 
     # TC2 - Test updating a single object from firebase.
     def test_should_update_firebase(self):
-        pass
+        test_entity = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        self.repository.insert(test_entity)
+        test_entity.comment = 'Updated My-Test Data'
+        self.repository.update(test_entity)
+        result_set = self.repository.find_all(filters=CaseInsensitiveDict({
+            "uuid": '{}'.format(test_entity.uuid)
+        }))
+        assert result_set, "Result set is empty"
+        self.assertEqual(1, len(result_set))
+        self.assertEqual(test_entity.comment, result_set[0].comment)
 
     # TC3 - Test selecting all objects from firebase.
     def test_should_select_all_from_firebase(self):
-        pass
+        test_entity_1 = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity_2 = TestFirebaseEntity(comment='My-Test Data 2', lucky_number=55)
+        self.repository.insert(test_entity_1)
+        self.repository.insert(test_entity_2)
+        result_set = self.repository.find_all()
+        assert result_set, "Result set is empty"
+        self.assertIsInstance(result_set, list)
+        self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
 
     # TC4 - Test selecting a single object from firebase.
     def test_should_select_one_from_firebase(self):
-        pass
+        test_entity_1 = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity_2 = TestFirebaseEntity(comment='My-Test Data 2', lucky_number=55)
+        self.repository.insert(test_entity_1)
+        self.repository.insert(test_entity_2)
+        result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
+        assert result_set, "Result set is empty"
+        self.assertIsInstance(result_set, TestFirebaseEntity)
+        self.assertEqual(test_entity_1.uuid, result_set.uuid)
 
     # TC5 - Test deleting one object from firebase.
     def test_should_delete_from_firebase(self):
-        pass
+        test_entity = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        self.repository.insert(test_entity)
+        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        assert result_set, "Result set is empty"
+        self.assertIsInstance(result_set, TestFirebaseEntity)
+        self.assertEqual(test_entity.uuid, result_set.uuid)
+        self.repository.delete(test_entity)
+        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        assert not result_set, "Result set is not empty"
 
 
 # Program entry point.

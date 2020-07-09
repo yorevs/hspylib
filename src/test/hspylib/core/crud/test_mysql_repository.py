@@ -68,22 +68,26 @@ class TestMySqlRepository(unittest.TestCase):
 
     # TC3 - Test selecting all rows from the database.
     def test_should_select_all_from_database(self):
-        test_entity = TestMysqlEntity(comment='My-Test Data')
-        self.repository.insert(test_entity)
+        test_entity_1 = TestMysqlEntity(comment='My-Test Data')
+        test_entity_2 = TestMysqlEntity(comment='My-Test Data 2')
+        self.repository.insert(test_entity_1)
+        self.repository.insert(test_entity_2)
         result_set = self.repository.find_all()
         assert result_set, "Result set is empty"
         self.assertIsInstance(result_set, list)
-        self.assertEqual(1, len(result_set))
-        self.assertEqual(test_entity.uuid, result_set[0].uuid)
+        self.assertEqual(2, len(result_set))
+        self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
 
     # TC4 - Test selecting a single rows from the database.
     def test_should_select_one_from_database(self):
-        test_entity = TestMysqlEntity(comment='My-Test Data')
-        self.repository.insert(test_entity)
-        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        test_entity_1 = TestMysqlEntity(comment='My-Test Data')
+        test_entity_2 = TestMysqlEntity(comment='My-Test Data 2')
+        self.repository.insert(test_entity_1)
+        self.repository.insert(test_entity_2)
+        result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
         assert result_set, "Result set is empty"
         self.assertIsInstance(result_set, TestMysqlEntity)
-        self.assertEqual(test_entity.uuid, result_set.uuid)
+        self.assertEqual(test_entity_1.uuid, result_set.uuid)
 
     # TC5 - Test selecting all rows and bring only specified columns.
     def test_should_select_columns_from_database(self):
@@ -100,8 +104,13 @@ class TestMySqlRepository(unittest.TestCase):
     def test_should_delete_from_database(self):
         test_entity = TestMysqlEntity(comment='My-Test Data')
         self.repository.insert(test_entity)
-        result_set = self.repository.delete(test_entity)
-        assert not result_set, "Result set is empty"
+        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        assert result_set, "Result set is empty"
+        self.assertIsInstance(result_set, TestMysqlEntity)
+        self.assertEqual(test_entity.uuid, result_set.uuid)
+        self.repository.delete(test_entity)
+        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        assert not result_set, "Result set is not empty"
 
 
 # Program entry point.
