@@ -3,6 +3,10 @@
 # Package: main.hspylib.core.crud.db
 
 __all__ = [
+  "firebase",
+  "mysql",
+  "postgres",
+  "sql",
   "db_repository",
-  "sql_factory"
+  "sql_factory",
 ]

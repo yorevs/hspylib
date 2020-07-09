@@ -7,7 +7,7 @@ from main.hspylib.core.enum.http_code import HttpCode
 from main.hspylib.core.enum.http_method import HttpMethod
 from main.hspylib.modules.mock.mock_server import MockServer
 
-from src.main.hspylib.modules.fetch.fetch import get, post, put, patch, delete
+from src.main.hspylib.modules.fetch.fetch import get, post, put, patch, delete, head
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -36,6 +36,15 @@ class TestFetch(unittest.TestCase):
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
+
+    def test_should_head_from_server(self):
+        expected_code = HttpCode.OK
+        self.mock_server \
+            .when_request(HttpMethod.HEAD, '/head') \
+            .then_return(code=expected_code)
+        resp = head('localhost:{}/head'.format(self.mock_server.port))
+        self.assertEqual(expected_code, resp.status_code)
+        assert resp, "Response is empty or None"
 
     def test_should_post_to_server(self):
         expected_code = HttpCode.CREATED
