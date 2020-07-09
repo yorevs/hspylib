@@ -22,9 +22,14 @@ def fetch(
     return HttpResponse.of(response)
 
 
+# @purpose: Do HEAD request and according to parameters.
+def head(url: str, headers=None, silent=True):
+    return fetch(url=url, method=HttpMethod.HEAD, headers=headers, silent=silent)
+
+
 # @purpose: Do GET request and according to parameters.
 def get(url: str, headers=None, silent=True):
-    return fetch(url, headers=headers, silent=silent)
+    return fetch(url=url, headers=headers, silent=silent)
 
 
 # @purpose: Do DELETE request and according to parameters.
