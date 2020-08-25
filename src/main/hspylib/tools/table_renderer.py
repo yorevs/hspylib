@@ -101,14 +101,15 @@ class TableRenderer:
 
 if __name__ == '__main__':
     h = [
-        'Columns 1',
+        'Col 1',
         'Columns 2',
-        'Columns 3'
+        'Columns 3',
+        'Thats a big Column Header'
     ]
     data = [
-        ('One', 1, True),
-        ('Two', 2, False),
-        ('three', 3, True),
+        ('One', 1, True, 2),
+        ('Two', 2, False, 3),
+        ('Three, four and five', 3, True, 3),
     ]
-    tr = TableRenderer(h, data, 'Example')
+    tr = TableRenderer(h, data, 'TableRenderer example of usage')
     tr.render()
