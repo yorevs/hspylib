@@ -171,12 +171,12 @@ task updateVersion {
   doLast {
     //def ver = project.ext.version
     //def v_file = project.ext.versionFile
-    def ver = version
+    def ver = project.ext.version
     def v_file = versionFile
     println "Updating version to: ${ver}"
     assert file("${v_file}").exists()
     new File("${v_file}").text = "${ver}"
-    ant.replaceregexp(file: "${v_file}", match:'^.*$', replace:"${ver}", flags:'g', byline:true)
+    ant.replaceregexp(file: "${v_file}", match:'^([0-9]{1,2}\\.)[0-9]{1,3}$', replace:"${ver}", flags:'g', byline:true)
     println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
   }
 }

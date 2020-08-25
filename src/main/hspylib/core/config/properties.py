@@ -57,6 +57,7 @@ class Properties:
                         continue
                     if not re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]*', next_property):
                         continue
+                    # TODO {p[0]: p[1] for p in [p.split('=') for p in list(map(str.strip, arg.split(',')))]}
                     parts = next_property.split('=', 1)
                     if parts and len(parts) == 2:
                         key = parts[0].strip()

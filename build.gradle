@@ -19,7 +19,8 @@ ext {
     'cryptography',
     'pycodestyle',
     'pygresql',
-    'requests'
+    'requests',
+    'Charset'
   ]
   containers = [
     'mysql'
