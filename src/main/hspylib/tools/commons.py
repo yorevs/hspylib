@@ -1,7 +1,8 @@
 import logging as log
 import os
+import re
 import sys
-from typing import Type
+from typing import Type, List
 
 from main.hspylib.core.enum.charset import Charset
 
@@ -49,3 +50,11 @@ def class_attribute_names(clazz: Type) -> tuple:
 
 def class_attribute_values(instance: dict) -> tuple:
     return tuple(instance.values()) if object else None
+
+
+def split_and_filter(in_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
+    regex = re.compile(regex_filter)
+    lines = list(in_str.split(delimiter))
+    filtered = list(filter(regex.search, lines))
+
+    return filtered
