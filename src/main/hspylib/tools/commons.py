@@ -52,9 +52,8 @@ def class_attribute_values(instance: dict) -> tuple:
     return tuple(instance.values()) if object else None
 
 
-def split_and_filter(in_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
+def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
     regex = re.compile(regex_filter)
-    lines = list(in_str.split(delimiter))
-    filtered = list(filter(regex.search, lines))
+    result_list = list(filter(regex.search, input_str.split(delimiter)))
 
-    return filtered
+    return result_list
