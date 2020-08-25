@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Optional
+from typing import Optional, List
 
 
 class Properties:
@@ -44,24 +44,24 @@ class Properties:
     def size(self) -> int:
         return len(self.properties) if self.properties else 0
 
-    def _read(self):
+    def _read(self) -> None:
         default_filename = Properties._profiled_format.format(
             self.profile) if self.profile else Properties._default_name
         self.filename = self.filename if self.filename else default_filename
         file_path = '{}/{}'.format(self.load_dir, self.filename)
         if os.path.exists(file_path):
             with open(file_path) as f_properties:
-                all_properties = f_properties.readlines()
-                for next_property in all_properties:
-                    if next_property.strip().startswith('#'):
-                        continue
-                    if not re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]*', next_property):
-                        continue
-                    # TODO {p[0]: p[1] for p in [p.split('=') for p in list(map(str.strip, arg.split(',')))]}
-                    parts = next_property.split('=', 1)
-                    if parts and len(parts) == 2:
-                        key = parts[0].strip()
-                        value = parts[1].strip()
-                        self.properties[key] = value
+                all_properties = list(map(str.strip, filter(None, f_properties.readlines())))
+                self._parse(all_properties)
+                print(self.properties)
         else:
             raise OSError('{}: File "{}" does not exist'.format(self.__class__.__name__, file_path))
+
+    def _parse(self, all_properties: List[str]) -> None:
+        self.properties = {
+            p[0].strip(): p[1].strip() for p in [
+                p.split('=', 1) for p in list(
+                    filter(lambda l: re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]* *=.*', l), all_properties)
+                )
+            ]
+        }
