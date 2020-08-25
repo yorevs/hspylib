@@ -18,9 +18,8 @@ ext {
     'PyQt5',
     'cryptography',
     'pycodestyle',
-    'pygresql',
-    'requests',
-    'Charset'
+    'pymysql',
+    'requests'
   ]
   containers = [
     'mysql'
@@ -33,3 +32,28 @@ wrapper {
 
 apply from: "gradle/docker.gradle"
 apply from: "gradle/python.gradle"
+
+task downloadOraClient(type: Task) {
+  description = 'Download Oracle client zip file'
+  doLast {
+    def lib_dir = "${project.rootDir}/lib"
+    def uri = 'https://download.oracle.com/otn_software/mac/instantclient/193000/instantclient-basiclite-macos.x64-19.3.0.0.0dbru.zip'
+    mkdir lib_dir
+    exec {
+      commandLine 'curl', '-o', "${lib_dir}/instantclient.zip", '-O', uri
+    }
+  }
+}
+
+task installOraClient(dependsOn: downloadOraClient, type: Task) {
+  group = 'Install'
+  description = 'Download and install Oracle client libraries'
+  doLast {
+    def lib_dir = "${project.rootDir}/lib"
+    copy {
+      from zipTree("${lib_dir}/instantclient.zip")
+      into "${lib_dir}"
+    }
+    delete "${lib_dir}/instantclient.zip"
+  }
+}

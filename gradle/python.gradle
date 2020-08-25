@@ -19,10 +19,15 @@ String dirName(File file) {
 
 task installDependencies(type: Task) {
   group = 'Install'
+  description = 'Install all required python packages'
   doLast {
     deps.each { String dep ->
+      println "Upgrading pip module to the latest "
       exec {
-        commandLine rootProject.python, '-m', 'pip', 'install', dep
+        commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', 'pip'
+      }
+      exec {
+        commandLine rootProject.python, '-m', 'pip', 'install', '--user', dep
       }
     }
   }
@@ -30,7 +35,7 @@ task installDependencies(type: Task) {
 
 task installModule(type: Task) {
   group = 'Install'
-  description = 'Install all python modules from "**/setup.py"'
+  description = 'Install this application as a python package from "**/setup.py"'
   doLast {
     fileTree("${sourceRoot}").matching {
       include "**/setup.py"
@@ -39,7 +44,7 @@ task installModule(type: Task) {
         println "Installing ${rootProject.name} from ${moduleDir} -> ${module.path}"
         exec {
           workingDir "${moduleDir}"
-          commandLine rootProject.python, '-m', 'pip', 'install', "."
+          commandLine rootProject.python, '-m', 'pip', 'install', '--user', '.'
         }
       }
   }
@@ -153,11 +158,20 @@ task run(type: Task) {
       include "**/${application}"
     }.each { File app ->
         def appDir = dirName(app)
-        println "Running ${appDir} -> ${app.path}"
-        exec {
-          workingDir "${appDir}"
-          environment PYTHONPATH: "${rootDir}:${sourceRoot}", SOURCE_ROOT: "${sourceRoot}"
-          commandLine rootProject.python, "${application}"
+        def runEnv = findProperty('env') ?: "vdev"
+        def dryRun = findProperty('dry') ?: "true"
+        def multiThread = findProperty('multi') ?: "true"
+        def orderNum = findProperty('order') ?: "12345"
+        println "Running ${app} [${appDir}] \n\t->${app.path}"
+        new ByteArrayOutputStream().withStream { os ->
+          def result = exec {
+            workingDir "${appDir}"
+            errorOutput = os
+            standardOutput = os
+            environment PYTHONPATH: "${rootDir}:${sourceRoot}", SOURCE_ROOT: "${sourceRoot}"
+            commandLine rootProject.python, "${application}", "-f", "${filename}", "-e", "${runEnv}", "-o", "${orderNum}", "-r", "${dryRun}", "-t", "${multiThread}"
+          }
+          print(os.toString())
         }
       }
   }
@@ -206,6 +220,8 @@ task build(type: Task) {
   group = 'Build'
   dependsOn clean
   mustRunAfter clean
+  dependsOn installDependencies
+  mustRunAfter installDependencies
   dependsOn updateVersion
   dependsOn test
 }
