@@ -8,5 +8,6 @@ __all__ = [
   "enum",
   "meta",
   "model",
+  "tools",
   "web"
 ]

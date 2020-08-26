@@ -3,5 +3,6 @@
 # Package: main.hslib.ui
 
 __all__ = [
-  "qt"
+  "qt",
+  "cli"
 ]
