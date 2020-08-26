@@ -4,7 +4,7 @@ from typing import Optional
 
 from main.hspylib.core.config.properties import Properties
 from main.hspylib.core.meta.singleton import Singleton
-from main.hspylib.tools.commons import log_init
+from main.hspylib.core.tools.commons import log_init
 
 APP_CONFIG_FORMAT = """
 AppConfigs

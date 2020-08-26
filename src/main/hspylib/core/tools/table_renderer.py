@@ -1,7 +1,7 @@
 import sys
 from typing import List, Optional, Callable
 
-from main.hspylib.tools.text_helper import TextJustify
+from main.hspylib.core.tools.text_helper import TextJustify
 
 MIN_COL_LENGTH = 6
 
