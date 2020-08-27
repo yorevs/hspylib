@@ -2,4 +2,7 @@
 #
 # Package: test.hspylib.config
 
-__all__ = ["test_app_config"]
+__all__ = [
+  "resources",
+  "test_app_config"
+]

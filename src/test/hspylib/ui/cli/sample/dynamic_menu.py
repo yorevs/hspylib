@@ -19,7 +19,7 @@ def ret_sub_menu_2(self):
 
 if __name__ == '__main__':
     main_menu = MenuFactory.INSTANCE \
-        .create(None, 'Main Menu') \
+        .create(None, 'Dynamic Main Menu') \
         .with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
         .with_option('Sub-Menu-1').on_trigger(ret_sub_menu_1) \
         .with_option('Sub-Menu-2').on_trigger(ret_sub_menu_2) \

@@ -1,6 +1,7 @@
 import os
 from re import sub
 from typing import Optional
+import logging as log
 
 from main.hspylib.core.config.properties import Properties
 from main.hspylib.core.meta.singleton import Singleton
@@ -43,8 +44,8 @@ class AppConfigs(metaclass=Singleton):
         return '\n{}{}{}'.format(
             '-=' * 40,
             APP_CONFIG_FORMAT.format(
-                self._source_root,
-                self._log_file,
+                str(self._source_root),
+                str(self._log_file),
                 str(self._app_properties).replace('\n', '\n   |-')
                 if self._app_properties.size() > 0 else ''
             ),
@@ -55,7 +56,7 @@ class AppConfigs(metaclass=Singleton):
         return self._source_root
 
     def logger(self):
-        return self._logger
+        return self._logger if self._logger else log
 
     def get(self, property_name: str) -> Optional[str]:
         env = os.environ.get(AppConfigs.environ_name(property_name))

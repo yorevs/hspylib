@@ -1,8 +1,8 @@
 from main.hspylib.ui.cli.menu import Menu
 from main.hspylib.ui.cli.menu_item import MenuItem
 from main.hspylib.ui.cli.menu_utils import MenuUtils
-from main.hspylib.ui.cli.sample.sub_menu_1 import SubMenu1
-from main.hspylib.ui.cli.sample.sub_menu_2 import SubMenu2
+from test.hspylib.ui.cli.sample.sub_menu_1 import SubMenu1
+from test.hspylib.ui.cli.sample.sub_menu_2 import SubMenu2
 
 MENU = """\033[2J\033[H
 {}
@@ -15,7 +15,7 @@ MENU = """\033[2J\033[H
 
 class MainMenu(MenuItem):
     def __init__(self):
-        super().__init__(title='Main Menu')
+        super().__init__(title='Static Main Menu')
         self.menu_data = str(MENU).format(self.title)
         self.options = range(0, 3)
         self.menu_items = {

@@ -12,7 +12,7 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(levelname)-5.5s',
     '%(filename)s::',
     '%(funcName)s(@Line:%(lineno)d)',
-    '%(prompt_msg)s'
+    '%(message)s'
 )
 
 
