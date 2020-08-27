@@ -53,7 +53,6 @@ class Properties:
             with open(file_path) as f_properties:
                 all_properties = list(map(str.strip, filter(None, f_properties.readlines())))
                 self._parse(all_properties)
-                print(self.properties)
         else:
             raise OSError('{}: File "{}" does not exist'.format(self.__class__.__name__, file_path))
 
