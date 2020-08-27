@@ -22,7 +22,7 @@ class Menu(ABC):
     @abstractmethod
     def is_valid_option(self) -> bool:
         """
-        Checks if the selected option is within the available options.
+        Checks if the selected option is within the available menu_options.
         :return: whether the option is valid or not.
         """
         pass

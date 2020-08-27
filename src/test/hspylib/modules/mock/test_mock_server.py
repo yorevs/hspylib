@@ -101,10 +101,10 @@ class TestClass(unittest.TestCase):
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual('', resp.text)
 
-    # TC6 - Test processing options request.
+    # TC6 - Test processing menu_options request.
     #       When there is a method stubbed and path is not found, return 'not found'; otherwise 'method not allowed'.
     def test_should_process_options_request(self):
-        endpoint = '/test-options'
+        endpoint = '/test-menu_options'
         url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         resp = requests.options(url)
         assert resp, "Response is empty"

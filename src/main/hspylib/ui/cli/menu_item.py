@@ -6,7 +6,8 @@ from main.hspylib.ui.cli.menu import Menu
 
 
 class MenuItem(Menu, ABC):
-    def __init__(self, parent: Menu = None):
+    def __init__(self, parent: Menu = None, title: str = None):
+        self.title = title
         self.parent = parent
         self.done = False
         self.selected = None

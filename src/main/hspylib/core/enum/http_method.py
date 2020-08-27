@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class HttpMethod(Enum):
-    OPTIONS = 'options'
+    OPTIONS = 'menu_options'
     HEAD = 'head'
     GET = 'get'
     POST = 'post'
