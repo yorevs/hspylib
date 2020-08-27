@@ -2,6 +2,8 @@ from main.hspylib.ui.cli.menu import Menu
 from main.hspylib.ui.cli.menu_item import MenuItem
 
 MENU = """\033[2J\033[H
+{}
+
 \033[0;32m[0]\033[0;0;0m Back
 \033[0;32m[1]\033[0;0;0m Print Hello
 \033[0;32m[2]\033[0;0;0m Print Hi
@@ -10,8 +12,8 @@ MENU = """\033[2J\033[H
 
 class SubMenu2(MenuItem):
     def __init__(self, parent: Menu = None):
-        super().__init__(parent)
-        self.menu_data = str(MENU)
+        super().__init__(parent, '-= Sub Menu 2 =-')
+        self.menu_data = str(MENU).format(self.title)
         self.options = range(0, 3)
 
     def trigger_menu_item(self) -> Menu:

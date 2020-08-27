@@ -1,15 +1,15 @@
 import signal
+from typing import Optional
 
 from main.hspylib.ui.cli.menu import Menu
 from main.hspylib.ui.cli.menu_utils import MenuUtils
-from main.hspylib.ui.cli.sample.main_menu import MainMenu
 
 
 class MenuUi:
-    def __init__(self, main_menu: Menu):
+    def __init__(self, root: Optional[Menu]):
         self.done = False
         self.previous = None
-        self.current = main_menu
+        self.current = root
         self.next = None
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
 
@@ -27,8 +27,3 @@ class MenuUi:
     def change_menu(self, menu: Menu) -> None:
         self.previous = self.current
         self.current = menu
-
-
-if __name__ == '__main__':
-    mm = MenuUi(MainMenu())
-    mm.run()
