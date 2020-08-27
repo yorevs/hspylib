@@ -1,4 +1,4 @@
-from main.hspylib.ui.cli.menu_factory import MenuFactory
+from main.hspylib.ui.cli.factory.menu_factory import MenuFactory
 from main.hspylib.ui.cli.menu_ui import MenuUi
 from main.hspylib.ui.cli.menu_utils import MenuUtils
 
@@ -18,34 +18,33 @@ def ret_sub_menu_2(self):
 
 
 if __name__ == '__main__':
-    factory = MenuFactory.INSTANCE
-    sub_menu_1 = factory\
+    sub_menu_1 = MenuFactory.INSTANCE\
         .create(None, 'Sub-Menu-1')\
-            .with_option(0, 'Back')\
+            .with_option('Back')\
                 .on_trigger(ret_main_menu)\
-            .with_option(1, 'Print Hey')\
+            .with_option('Print Hey')\
                 .on_trigger(lambda t: print('Hey"'))\
-            .with_option(2, 'Print Hoo')\
+            .with_option('Print Hoo')\
                 .on_trigger(lambda t: print('Hoo"'))\
-            .with_option(3, 'Lets go')\
+            .with_option('Lets go')\
                 .on_trigger(lambda t: MenuUtils.exit_app(0))\
         .build()
-    sub_menu_2 = factory\
+    sub_menu_2 = MenuFactory.INSTANCE\
         .create(None, 'Sub-Menu-2')\
-            .with_option(0, 'Back')\
+            .with_option('Back')\
                 .on_trigger(lambda t: print('-> Back'))\
-            .with_option(1, 'Print Hey')\
+            .with_option('Print Hey')\
                 .on_trigger(lambda t: print('Hello"'))\
-            .with_option(2, 'Print Hoo')\
+            .with_option('Print Hoo')\
                 .on_trigger(lambda t: print('Hi"'))\
         .build()
-    main_menu = factory\
+    main_menu = MenuFactory.INSTANCE\
         .create(None, 'Main Menu')\
-            .with_option(0, 'Exit')\
+            .with_option('Exit')\
                 .on_trigger(lambda t: MenuUtils.exit_app(0))\
-            .with_option(1, 'Sub-Menu-1')\
+            .with_option('Sub-Menu-1')\
                 .on_trigger(ret_sub_menu_1)\
-            .with_option(2, 'Sub-Menu-2')\
+            .with_option('Sub-Menu-2')\
                 .on_trigger(ret_sub_menu_2)\
         .build()
     mm = MenuUi(main_menu)
