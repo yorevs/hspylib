@@ -3,6 +3,7 @@
 # Package: main.hslib.ui.cli
 
 __all__ = [
+  "factory",
   "sample",
   "menu",
   "menu_item",
