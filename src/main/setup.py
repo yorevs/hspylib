@@ -14,7 +14,11 @@ setuptools.setup(
     author_email='yorevs@hotmail.com',
     url="https://github.com/yorevs/hspylib",
     long_description=long_description,
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=['resources', 'README.md', 'VERSION']),
+    package_data={
+        'hspylib.core.crud.db.sql': ['sql_stubs.sql']
+    },
+    include_package_data=True,
     license='MIT',
     classifiers=[
         "Programming Language :: Python :: 3",

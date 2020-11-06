@@ -7,7 +7,7 @@ from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.enum.http_method import HttpMethod
 from hspylib.modules.mock.mock_server import MockServer
 
-from src.hspylib.modules.fetch.fetch import get, post, put, patch, delete, head
+from hspylib.modules.fetch.fetch import get, post, put, patch, delete, head
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
