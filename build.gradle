@@ -16,6 +16,7 @@ ext {
   versionFile = "VERSION"
   deps = [
     'PyQt5',
+    'PyQt5-stubs',
     'cryptography',
     'pycodestyle',
     'pymysql',
