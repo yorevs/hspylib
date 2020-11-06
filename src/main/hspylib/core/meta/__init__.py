@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main.hspylib.core
+# Package: hspylib.core.meta
 
 __all__ = [
   "singleton",

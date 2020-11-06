@@ -3,9 +3,9 @@ from re import sub
 from typing import Optional
 import logging as log
 
-from main.hspylib.core.config.properties import Properties
-from main.hspylib.core.meta.singleton import Singleton
-from main.hspylib.core.tools.commons import log_init
+from hspylib.core.config.properties import Properties
+from hspylib.core.meta.singleton import Singleton
+from hspylib.core.tools.commons import log_init
 
 APP_CONFIG_FORMAT = """
 AppConfigs

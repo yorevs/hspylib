@@ -1,7 +1,7 @@
 import ast
 import os
 
-from main.hspylib.core.config.app_config import AppConfigs
+from hspylib.core.config.app_config import AppConfigs
 
 
 class FileStorage:

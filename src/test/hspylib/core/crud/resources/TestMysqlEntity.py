@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from main.hspylib.core.model.entity import Entity
+from hspylib.core.model.entity import Entity
 
 
 class TestMysqlEntity(Entity):

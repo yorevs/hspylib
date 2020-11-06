@@ -1,6 +1,6 @@
-from main.hspylib.ui.cli.menu import Menu
-from main.hspylib.ui.cli.menu_item import MenuItem
-from main.hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.menu import Menu
+from hspylib.ui.cli.menu_item import MenuItem
+from hspylib.ui.cli.menu_utils import MenuUtils
 from test.hspylib.ui.cli.sample.sub_menu_1 import SubMenu1
 from test.hspylib.ui.cli.sample.sub_menu_2 import SubMenu2
 

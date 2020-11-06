@@ -1,8 +1,8 @@
-from main.hspylib.core.enum.charset import Charset
-from main.hspylib.core.enum.content_type import ContentType
-from main.hspylib.core.enum.http_code import HttpCode
-from main.hspylib.core.enum.http_method import HttpMethod
-from main.hspylib.modules.fetch.http_response import HttpResponse
+from hspylib.core.enum.charset import Charset
+from hspylib.core.enum.content_type import ContentType
+from hspylib.core.enum.http_code import HttpCode
+from hspylib.core.enum.http_method import HttpMethod
+from hspylib.modules.fetch.http_response import HttpResponse
 from requests.structures import CaseInsensitiveDict
 
 

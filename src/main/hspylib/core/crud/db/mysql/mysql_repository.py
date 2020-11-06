@@ -7,9 +7,9 @@ import pymysql
 from pymysql.err import OperationalError, ProgrammingError
 from requests.structures import CaseInsensitiveDict as SqlFilter
 
-from main.hspylib.core.crud.db.db_repository import DBRepository
-from main.hspylib.core.crud.db.sql_factory import SqlFactory
-from main.hspylib.core.model.entity import Entity
+from hspylib.core.crud.db.db_repository import DBRepository
+from hspylib.core.crud.db.sql_factory import SqlFactory
+from hspylib.core.model.entity import Entity
 
 
 class MySqlRepository(DBRepository):

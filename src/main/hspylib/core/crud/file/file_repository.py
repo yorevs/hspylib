@@ -3,10 +3,10 @@ import uuid
 from abc import abstractmethod
 from typing import Optional
 
-from main.hspylib.core.config.app_config import AppConfigs
-from main.hspylib.core.crud.file.file_storage import FileStorage
-from main.hspylib.core.crud.repository import Repository
-from main.hspylib.core.model.entity import Entity
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.crud.file.file_storage import FileStorage
+from hspylib.core.crud.repository import Repository
+from hspylib.core.model.entity import Entity
 
 
 class FileRepository(Repository):

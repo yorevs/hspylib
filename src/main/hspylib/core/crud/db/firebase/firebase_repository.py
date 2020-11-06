@@ -6,12 +6,12 @@ from typing import Optional
 from requests.exceptions import HTTPError
 from requests.structures import CaseInsensitiveDict
 
-from main.hspylib.core.config.app_config import AppConfigs
-from main.hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
-from main.hspylib.core.crud.repository import Repository
-from main.hspylib.core.enum.http_code import HttpCode
-from main.hspylib.core.model.entity import Entity
-from main.hspylib.modules.fetch.fetch import put, get, delete
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
+from hspylib.core.crud.repository import Repository
+from hspylib.core.enum.http_code import HttpCode
+from hspylib.core.model.entity import Entity
+from hspylib.modules.fetch.fetch import put, get, delete
 
 
 class FirebaseRepository(Repository):

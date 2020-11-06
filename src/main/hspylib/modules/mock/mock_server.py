@@ -3,9 +3,9 @@ from random import randint
 from threading import Thread
 from typing import Tuple, Optional
 
-from main.hspylib.core.enum.http_method import HttpMethod
-from main.hspylib.modules.mock.mock_request import MockResponse
-from main.hspylib.modules.mock.mock_server_handler import MockServerHandler
+from hspylib.core.enum.http_method import HttpMethod
+from hspylib.modules.mock.mock_request import MockResponse
+from hspylib.modules.mock.mock_server_handler import MockServerHandler
 
 
 class MockServer(HTTPServer):

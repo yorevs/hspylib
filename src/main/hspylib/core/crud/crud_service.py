@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from main.hspylib.core.model.entity import Entity
+from hspylib.core.model.entity import Entity
 
 
 class CrudService(ABC):

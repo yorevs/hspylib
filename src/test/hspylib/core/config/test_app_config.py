@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 
-from main.hspylib.core.config.app_config import AppConfigs
+from hspylib.core.config.app_config import AppConfigs
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

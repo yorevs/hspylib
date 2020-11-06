@@ -4,8 +4,8 @@ import unittest
 
 from requests.structures import CaseInsensitiveDict
 
-from main.hspylib.core.config.app_config import AppConfigs
-from main.hspylib.modules.fetch.fetch import delete
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.modules.fetch.fetch import delete
 from test.hspylib.core.crud.resources.TestFirebaseEntity import TestFirebaseEntity
 from test.hspylib.core.crud.resources.TestFirebaseRepository import TestFirebaseRepository
 

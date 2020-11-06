@@ -2,7 +2,7 @@ import sys
 import unittest
 from unittest.mock import MagicMock
 
-from main.hspylib.modules.eventbus.eventbus import EventBus
+from hspylib.modules.eventbus.eventbus import EventBus
 
 
 class TestEventBus(unittest.TestCase):

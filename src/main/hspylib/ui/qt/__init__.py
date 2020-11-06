@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main.hslib.ui.qt
+# Package: hspylib.ui.qt
 
 __all__ = [
   "forms",

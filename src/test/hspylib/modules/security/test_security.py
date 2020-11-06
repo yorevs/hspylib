@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 
-from main.hspylib.modules.security.security import encode, encrypt, decrypt, decode
+from hspylib.modules.security.security import encode, encrypt, decrypt, decode
 
 PASSPHRASE = '12345'
 SALT = '1234567890'

@@ -1,6 +1,6 @@
-from main.hspylib.ui.cli.menu import Menu
-from main.hspylib.ui.cli.menu_item import MenuItem
-from main.hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.menu import Menu
+from hspylib.ui.cli.menu_item import MenuItem
+from hspylib.ui.cli.menu_utils import MenuUtils
 
 MENU = """\033[2J\033[H
 {}

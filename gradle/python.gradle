@@ -37,6 +37,13 @@ task installModule(type: Task) {
   group = 'Install'
   description = 'Install this application as a python package from "**/setup.py"'
   doLast {
+    copy {
+        from("$rootProject.projectDir") {
+          include 'README.md'
+          include 'VERSION'
+        }
+        into "${sourceRoot}/main"
+    }
     fileTree("${sourceRoot}").matching {
       include "**/setup.py"
     }.each { File module ->

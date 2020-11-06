@@ -3,9 +3,9 @@ from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict
 
-from main.hspylib.core.config.app_config import AppConfigs
-from main.hspylib.core.meta.singleton import Singleton
-from main.hspylib.core.model.entity import Entity
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.meta.singleton import Singleton
+from hspylib.core.model.entity import Entity
 
 DEFAULT_SQL_STUBS = '{}/sql/sql_stubs.sql'.format(os.path.dirname(__file__))
 
