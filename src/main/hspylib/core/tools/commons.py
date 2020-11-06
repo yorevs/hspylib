@@ -16,6 +16,7 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 )
 
 
+# @purpose: Initialize the system logger
 def log_init(
         log_file: str,
         create_new: bool = True,
