@@ -6,5 +6,6 @@ __all__ = [
   "eventbus",
   "fetch",
   "json_search",
+  mock,
   "security",
 ]

@@ -1,5 +1,5 @@
-from main.hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
-from main.hspylib.core.model.entity import Entity
+from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
+from hspylib.core.model.entity import Entity
 from test.hspylib.core.crud.resources.TestFirebaseEntity import TestFirebaseEntity
 
 

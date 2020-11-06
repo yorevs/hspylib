@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main.hspylib.core.enum
+# Package: hspylib.core.enum
 
 __all__ = [
   "charset",

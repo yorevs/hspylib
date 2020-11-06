@@ -1,9 +1,9 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main.hslib.ui.cli.factory
+# Package: hspylib.ui.cli.factory
 
 __all__ = [
-  "dynamic_menu_item",
+  "menu_entry",
   "menu_factory",
   "menu_option"
 ]

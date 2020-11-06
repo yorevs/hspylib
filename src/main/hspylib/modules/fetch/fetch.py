@@ -1,9 +1,9 @@
 from typing import Optional
 
 import requests
-from main.hspylib.core.enum.http_method import HttpMethod
-from main.hspylib.modules.fetch.http_response import HttpResponse
-from main.hspylib.core.tools.commons import sysout
+from hspylib.core.enum.http_method import HttpMethod
+from hspylib.modules.fetch.http_response import HttpResponse
+from hspylib.core.tools.commons import sysout
 
 
 # @purpose: Do a request specified by method and according to parameters.

@@ -4,7 +4,7 @@ import re
 import sys
 from typing import Type, List
 
-from main.hspylib.core.enum.charset import Charset
+from hspylib.core.enum.charset import Charset
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',

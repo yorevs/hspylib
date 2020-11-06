@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import Optional
 
-from main.hspylib.ui.cli.menu_utils import MenuUtils
-from main.hspylib.ui.cli.menu import Menu
+from hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.menu import Menu
 
 
 class MenuItem(Menu, ABC):

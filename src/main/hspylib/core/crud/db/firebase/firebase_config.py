@@ -5,10 +5,10 @@ import uuid
 
 from requests.structures import CaseInsensitiveDict
 
-from main.hspylib.core.config.app_config import AppConfigs
-from main.hspylib.core.enum.http_code import HttpCode
-from main.hspylib.core.meta.singleton import Singleton
-from main.hspylib.modules.fetch.fetch import get
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.enum.http_code import HttpCode
+from hspylib.core.meta.singleton import Singleton
+from hspylib.modules.fetch.fetch import get
 
 FB_CONFIG_FMT = """
 # Your Firebase configuration:

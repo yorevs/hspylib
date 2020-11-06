@@ -1,4 +1,4 @@
-from main.hspylib.ui.cli.menu_ui import MenuUi
+from hspylib.ui.cli.menu_ui import MenuUi
 from test.hspylib.ui.cli.sample.main_menu import MainMenu
 
 if __name__ == '__main__':

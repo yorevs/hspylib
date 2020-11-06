@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 
-from main.hspylib.core.config.app_config import AppConfigs
+from hspylib.core.config.app_config import AppConfigs
 from pymysql.err import InternalError
 from requests.structures import CaseInsensitiveDict
 from test.hspylib.core.crud.resources.TestMysqlRepository import TestMysqlRepository, TestMysqlEntity

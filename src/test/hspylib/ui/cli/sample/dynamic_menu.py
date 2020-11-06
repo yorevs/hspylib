@@ -1,6 +1,6 @@
-from main.hspylib.ui.cli.factory.menu_factory import MenuFactory
-from main.hspylib.ui.cli.menu_ui import MenuUi
-from main.hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.factory.menu_factory import MenuFactory
+from hspylib.ui.cli.menu_ui import MenuUi
+from hspylib.ui.cli.menu_utils import MenuUtils
 
 main_menu = sub_menu_1 = sub_menu_2 = None
 

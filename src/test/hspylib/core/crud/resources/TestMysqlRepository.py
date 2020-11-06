@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from main.hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
+from hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
 from test.hspylib.core.crud.resources.TestMysqlEntity import TestMysqlEntity
 
 

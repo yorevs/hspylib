@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main.hspylib.modules.mock
+# Package: hspylib.modules.mock
 
 __all__ = [
   "mock_request",

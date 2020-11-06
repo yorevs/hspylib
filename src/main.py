@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import signal
 
-from main.hspylib.core.config.app_config import AppConfigs
+from hspylib.core.config.app_config import AppConfigs
 
 AppConfigs().logger().info(AppConfigs.INSTANCE)
 

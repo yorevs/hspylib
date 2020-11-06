@@ -3,5 +3,6 @@
 # Package: test.hspylib.core
 
 __all__ = [
-  "crud"
+  "crud",
+  "config"
 ]

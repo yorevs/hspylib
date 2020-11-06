@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main.hspylib.modules.fetch
+# Package: hspylib.modules.fetch
 
 __all__ = [
   "fetch",
