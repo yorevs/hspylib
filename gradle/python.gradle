@@ -1,4 +1,8 @@
 
+ext {
+  pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test"
+}
+
 /* Helper Functions -------------------------------------------------------- */
 
 Collection dirsByPattern(String baseDir, String pattern) {
@@ -37,10 +41,16 @@ task installModule(type: Task) {
   group = 'Install'
   description = 'Install this application as a python package from "**/setup.py"'
   doLast {
+    def depsFile = new File("DEPS.txt")
+    depsFile.write ''
+    project.ext.deps.each { dep ->
+      depsFile.append dep + '\n'
+    }
     copy {
         from("$rootProject.projectDir") {
           include 'README.md'
           include 'VERSION'
+          include 'DEPS.txt'
         }
         into "${sourceRoot}/main"
     }
@@ -135,6 +145,20 @@ task compileQrc(type: Task) {
   }
 }
 
+task updateVersion {
+  group = 'Build'
+  description = 'Update the VERSION file to match the build.gradle version'
+  doLast {
+    def ver = project.ext.version
+    def v_file = versionFile
+    println "Updating version to: ${ver}"
+    assert file("${v_file}").exists()
+    new File("${v_file}").text = "${ver}"
+    ant.replaceregexp(file: "${v_file}", match:'^([0-9]{1,2}\\.)[0-9]{1,3}$', replace:"${ver}", flags:'g', byline:true)
+    println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
+  }
+}
+
 /***** Run Group */
 
 task runTest(type: Task) {
@@ -147,9 +171,10 @@ task runTest(type: Task) {
       include "**/test_*.py"
     }.each { File file ->
         println "Running unittests -> ${file.name}"
+        println "  |- PYTHON_PATH: ${rootProject.ext.pythonPath}"
         exec {
           workingDir = dirName(file)
-          environment PYTHONPATH: "${rootDir}:${sourceRoot}"
+          environment PYTHONPATH: "${rootProject.ext.pythonPath}"
           commandLine rootProject.python, '-m', 'unittest', '-f', file.path
         }
       }
@@ -169,36 +194,20 @@ task run(type: Task) {
         def dryRun = findProperty('dry') ?: "true"
         def multiThread = findProperty('multi') ?: "true"
         def orderNum = findProperty('order') ?: "12345"
-        println "Running ${app} [${appDir}] \n\t->${app.path}"
+        println "Running ${app} [${appDir}]"
+        println "  |- PYTHON_PATH: ${rootProject.ext.pythonPath}"
+        println "  |- APP: ${app.path}"
         new ByteArrayOutputStream().withStream { os ->
           def result = exec {
             workingDir "${appDir}"
             errorOutput = os
             standardOutput = os
-            environment PYTHONPATH: "${rootDir}:${sourceRoot}", SOURCE_ROOT: "${sourceRoot}"
-            commandLine rootProject.python, "${application}", "-f", "${filename}", "-e", "${runEnv}", "-o", "${orderNum}", "-r", "${dryRun}", "-t", "${multiThread}"
+            environment PYTHONPATH: "${rootProject.ext.pythonPath}", SOURCE_ROOT: "${sourceRoot}"
+            commandLine rootProject.python, "${application}", "-f", "${app}", "-e", "${runEnv}", "-o", "${orderNum}", "-r", "${dryRun}", "-t", "${multiThread}"
           }
           print(os.toString())
         }
       }
-  }
-}
-
-/***** Other Group */
-
-task updateVersion {
-  group = 'Other'
-  description = 'Update the VERSION file to match the build.gradle version'
-  doLast {
-    //def ver = project.ext.version
-    //def v_file = project.ext.versionFile
-    def ver = project.ext.version
-    def v_file = versionFile
-    println "Updating version to: ${ver}"
-    assert file("${v_file}").exists()
-    new File("${v_file}").text = "${ver}"
-    ant.replaceregexp(file: "${v_file}", match:'^([0-9]{1,2}\\.)[0-9]{1,3}$', replace:"${ver}", flags:'g', byline:true)
-    println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
   }
 }
 
