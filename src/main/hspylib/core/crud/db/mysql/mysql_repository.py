@@ -47,7 +47,7 @@ class MySqlRepository(DBRepository):
                     self._cursor = self._connector.cursor()
                     self.logger.debug('Connection to {} established'.format(str(self)))
                     MySqlRepository._connections[cache_key] = self._connector
-                except OperationalError:
+                except (OperationalError, ConnectionRefusedError):
                     self.logger.error('Unable to connect to {}'.format(str(self)))
                     sys.exit(1)
 

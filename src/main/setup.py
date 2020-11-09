@@ -6,6 +6,9 @@ with open("README.md") as fh:
 with open("VERSION") as fh:
     version = fh.read()
 
+with open("DEPS.txt") as fh:
+    dependencies = list(filter(None, fh.read().splitlines()))
+
 setuptools.setup(
     name='hspylib',
     version=version,
@@ -14,7 +17,12 @@ setuptools.setup(
     author_email='yorevs@hotmail.com',
     url="https://github.com/yorevs/hspylib",
     long_description=long_description,
-    packages=setuptools.find_packages(exclude=['resources', 'README.md', 'VERSION']),
+    packages=setuptools.find_packages(
+        exclude=[
+            'resources',
+            'test'
+        ]
+    ),
     package_data={
         'hspylib.core.crud.db.sql': ['sql_stubs.sql']
     },
@@ -26,12 +34,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=[
-        'PyQt5',
-        'PyQt5-stubs',
-        'cryptography',
-        'pycodestyle',
-        'pymysql',
-        'requests'
-    ],
+    install_requires=dependencies,
 )
