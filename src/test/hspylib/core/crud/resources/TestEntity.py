@@ -3,7 +3,7 @@ from uuid import UUID
 from hspylib.core.model.entity import Entity
 
 
-class TestFirebaseEntity(Entity):
+class TestEntity(Entity):
     def __init__(self, entity_id: UUID = None, comment: str = None, lucky_number: int = 0, is_working: bool = False):
         super().__init__(entity_id)
         self.comment = comment
