@@ -1,24 +1,20 @@
 from typing import Tuple
 
 from hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
-from test.hspylib.core.crud.resources.TestMysqlEntity import TestMysqlEntity
+from hspylib.core.tools.commons import get_or_default, str_to_bool
+from test.hspylib.core.crud.resources.TestEntity import TestEntity
 
 
 class TestMysqlRepository(MySqlRepository):
     def __init__(self):
         super().__init__()
 
-    def insert(self, entity: TestMysqlEntity):
-        super().insert(entity)
-
-    def update(self, entity: TestMysqlEntity):
-        super().update(entity)
-
-    def delete(self, entity: TestMysqlEntity):
-        super().delete(entity)
-
-    def row_to_entity(self, row: Tuple) -> TestMysqlEntity:
-        return TestMysqlEntity(row[0], row[1] if len(row) > 1 else None)
+    def row_to_entity(self, row: Tuple) -> TestEntity:
+        return TestEntity(
+            get_or_default(row, 0),
+            get_or_default(row, 1),
+            get_or_default(row, 2),
+            str_to_bool(get_or_default(row, 3)))
 
     def table_name(self) -> str:
         return 'TEST'

@@ -2,7 +2,7 @@ import logging as log
 import os
 import re
 import sys
-from typing import Type, List
+from typing import Type, List, Tuple
 
 from hspylib.core.enum.charset import Charset
 
@@ -58,3 +58,13 @@ def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = 
     result_list = list(filter(regex.search, input_str.split(delimiter)))
 
     return result_list
+
+
+def get_or_default(array: Tuple, index: int, default_value=None):
+    return array[index] if index < len(array) else default_value
+
+
+def str_to_bool(string: str, true_values=None) -> bool:
+    if true_values is None:
+        true_values = ['true', 'on', 'yes', '1', 'y']
+    return string.lower() in true_values if string else False

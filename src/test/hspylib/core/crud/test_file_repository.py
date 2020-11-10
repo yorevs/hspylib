@@ -3,7 +3,7 @@ import sys
 import unittest
 
 from hspylib.core.config.app_config import AppConfigs
-from test.hspylib.core.crud.resources.TestFileDbEntity import TestFileDbEntity
+from test.hspylib.core.crud.resources.TestEntity import TestEntity
 from test.hspylib.core.crud.resources.TestFileDbRepository import TestFileDbRepository
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -30,7 +30,7 @@ class TestClass(unittest.TestCase):
 
     # TC1 - Test inserting a single object into firebase.
     def test_should_insert_into_file_db(self):
-        test_entity = TestFileDbEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         result_set = self.repository.find_all(filters="uuid={}".format(test_entity.uuid))
         assert result_set, "Result set is empty"
@@ -42,7 +42,7 @@ class TestClass(unittest.TestCase):
 
     # TC2 - Test updating a single object from firebase.
     def test_should_update_file_db(self):
-        test_entity = TestFileDbEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         test_entity.comment = 'Updated My-Test Data'
         self.repository.update(test_entity)
@@ -56,8 +56,8 @@ class TestClass(unittest.TestCase):
 
     # TC3 - Test selecting all objects from firebase.
     def test_should_select_all_from_file_db(self):
-        test_entity_1 = TestFileDbEntity(comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = TestFileDbEntity(comment='My-Test Data 2', lucky_number=55)
+        test_entity_1 = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity_2 = TestEntity(comment='My-Test Data 2', lucky_number=55)
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_all()
@@ -67,13 +67,13 @@ class TestClass(unittest.TestCase):
 
     # TC4 - Test selecting a single object from firebase.
     def test_should_select_one_from_file_db(self):
-        test_entity_1 = TestFileDbEntity(comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = TestFileDbEntity(comment='My-Test Data 2', lucky_number=55)
+        test_entity_1 = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity_2 = TestEntity(comment='My-Test Data 2', lucky_number=55)
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_by_id(entity_id=test_entity_1.uuid)
         assert result_set, "Result set is empty"
-        self.assertIsInstance(result_set, TestFileDbEntity)
+        self.assertIsInstance(result_set, TestEntity)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
         self.assertEqual(test_entity_1.comment, result_set.comment)
         self.assertEqual(test_entity_1.lucky_number, result_set.lucky_number)
@@ -81,14 +81,14 @@ class TestClass(unittest.TestCase):
 
     # TC5 - Test deleting one object from firebase.
     def test_should_delete_from_file_db(self):
-        test_entity = TestFileDbEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         result_set = self.repository.find_by_id(entity_id=test_entity.uuid)
         assert result_set, "Result set is empty"
-        self.assertIsInstance(result_set, TestFileDbEntity)
+        self.assertIsInstance(result_set, TestEntity)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
-        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        result_set = self.repository.find_by_id(entity_id=test_entity.uuid)
         assert not result_set, "Result set is not empty"
 
 

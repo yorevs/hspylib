@@ -29,10 +29,10 @@ class FileRepository(Repository):
         super().__init__()
         self.logger = AppConfigs.INSTANCE.logger()
         self.filename = filename
-        self.file_db = self.__create_or_get()
+        self.storage = self.__create_or_get()
 
     def __str__(self):
-        return str(self.file_db.data)
+        return str(self.storage.data)
 
     def __create_or_get(self):
         if self.filename in FileRepository.__storages:
@@ -43,25 +43,26 @@ class FileRepository(Repository):
 
     def insert(self, entity: Entity):
         entity.uuid = entity.uuid if entity.uuid else str(uuid.uuid4())
-        self.file_db.data.append(entity.to_dict())
-        self.file_db.commit()
+        self.storage.data.append(entity.to_dict())
+        self.storage.commit()
         self.logger.debug("{} has been inserted !".format(entity.__class__.__name__))
 
     def update(self, entity: Entity):
-        for index, next_entry in enumerate(self.file_db.data):
+        for index, next_entry in enumerate(self.storage.data):
             if next_entry['uuid'] == entity.uuid:
-                self.file_db.data[index] = entity.to_dict()
-                self.file_db.commit()
+                self.storage.data[index] = entity.to_dict()
+                self.storage.commit()
                 self.logger.debug("{} has been updated !".format(entity.__class__.__name__))
 
     def delete(self, entity: Entity):
-        for index, next_entry in enumerate(self.file_db.data):
+        for index, next_entry in enumerate(self.storage.data):
             if next_entry['uuid'] == entity.uuid:
-                self.file_db.data.remove(self.file_db.data[index])
-                self.file_db.commit()
+                self.storage.data.remove(self.storage.data[index])
+                self.storage.commit()
                 self.logger.debug("{} has been deleted !".format(entity.__class__.__name__))
 
     def find_all(self, filters: str = None) -> Optional[list]:
+        self.storage.load()
         if filters is not None:
             file_filters = filters.split(',')
             filtered = []
@@ -69,7 +70,7 @@ class FileRepository(Repository):
                 fields = re.split('=|>|<|>=|<=|==|!=', next_filter)
                 try:
                     found = [
-                        self.dict_to_entity(data) for data in self.file_db.data if
+                        self.dict_to_entity(data) for data in self.storage.data if
                         self.check_criteria(fields[1], data[fields[0]])
                     ]
                 except KeyError:
@@ -79,11 +80,12 @@ class FileRepository(Repository):
                 filtered.extend(found)
             return filtered
         else:
-            return [self.dict_to_entity(data) for data in self.file_db.data]
+            return [self.dict_to_entity(data) for data in self.storage.data]
 
     def find_by_id(self, entity_id: uuid.UUID) -> Optional[Entity]:
+        self.storage.load()
         if entity_id:
-            result = [data for data in self.file_db.data if entity_id == data['uuid']]
+            result = [data for data in self.storage.data if entity_id == data['uuid']]
             assert len(result) <= 1, "Multiple results found with entity_id={}".format(entity_id)
 
             return self.dict_to_entity(result[0]) if len(result) > 0 else None

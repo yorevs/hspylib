@@ -6,7 +6,7 @@ from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.fetch.fetch import delete
-from test.hspylib.core.crud.resources.TestFirebaseEntity import TestFirebaseEntity
+from test.hspylib.core.crud.resources.TestEntity import TestEntity
 from test.hspylib.core.crud.resources.TestFirebaseRepository import TestFirebaseRepository
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -31,7 +31,7 @@ class TestClass(unittest.TestCase):
 
     # TC1 - Test inserting a single object into firebase.
     def test_should_insert_into_firebase(self):
-        test_entity = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         result_set = self.repository.find_all(filters=CaseInsensitiveDict({
             "uuid": '{}'.format(test_entity.uuid)
@@ -45,7 +45,7 @@ class TestClass(unittest.TestCase):
 
     # TC2 - Test updating a single object from firebase.
     def test_should_update_firebase(self):
-        test_entity = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         test_entity.comment = 'Updated My-Test Data'
         self.repository.update(test_entity)
@@ -61,8 +61,8 @@ class TestClass(unittest.TestCase):
 
     # TC3 - Test selecting all objects from firebase.
     def test_should_select_all_from_firebase(self):
-        test_entity_1 = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = TestFirebaseEntity(comment='My-Test Data 2', lucky_number=55)
+        test_entity_1 = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity_2 = TestEntity(comment='My-Test Data 2', lucky_number=55)
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_all()
@@ -72,13 +72,13 @@ class TestClass(unittest.TestCase):
 
     # TC4 - Test selecting a single object from firebase.
     def test_should_select_one_from_firebase(self):
-        test_entity_1 = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = TestFirebaseEntity(comment='My-Test Data 2', lucky_number=55)
+        test_entity_1 = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity_2 = TestEntity(comment='My-Test Data 2', lucky_number=55)
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
         assert result_set, "Result set is empty"
-        self.assertIsInstance(result_set, TestFirebaseEntity)
+        self.assertIsInstance(result_set, TestEntity)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
         self.assertEqual(test_entity_1.comment, result_set.comment)
         self.assertEqual(test_entity_1.lucky_number, result_set.lucky_number)
@@ -86,11 +86,11 @@ class TestClass(unittest.TestCase):
 
     # TC5 - Test deleting one object from firebase.
     def test_should_delete_from_firebase(self):
-        test_entity = TestFirebaseEntity(comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = TestEntity(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
         assert result_set, "Result set is empty"
-        self.assertIsInstance(result_set, TestFirebaseEntity)
+        self.assertIsInstance(result_set, TestEntity)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
