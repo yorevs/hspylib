@@ -22,10 +22,10 @@ class Entity:
                 ret_dict[key] = int(value)
             elif isinstance(value, float):
                 ret_dict[key] = float(value)
-            elif isinstance(value, str):
+            elif isinstance(value, str) or isinstance(value, UUID):
                 ret_dict[key] = str(value)
             else:
-                ret_dict[key] = None
+                ret_dict[key] = value.__dict__()
         return ret_dict
 
     def to_json(self):

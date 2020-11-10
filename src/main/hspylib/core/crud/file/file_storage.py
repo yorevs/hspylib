@@ -6,7 +6,7 @@ from hspylib.core.config.app_config import AppConfigs
 
 class FileStorage:
     def __init__(self, filename: str):
-        self.logger = AppConfigs.logger()
+        self.logger = AppConfigs.INSTANCE.logger()
         self.filename = filename
         self.data = []
         self.load()

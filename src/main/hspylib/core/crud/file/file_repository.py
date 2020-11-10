@@ -27,7 +27,7 @@ class FileRepository(Repository):
 
     def __init__(self, filename: str):
         super().__init__()
-        self.logger = AppConfigs.logger()
+        self.logger = AppConfigs.INSTANCE.logger()
         self.filename = filename
         self.file_db = self.__create_or_get()
 
@@ -42,7 +42,7 @@ class FileRepository(Repository):
             return FileRepository.__storages[self.filename]
 
     def insert(self, entity: Entity):
-        entity.uuid = entity.uuid if entity.uuid is not None else uuid.uuid4()
+        entity.uuid = entity.uuid if entity.uuid else str(uuid.uuid4())
         self.file_db.data.append(entity.to_dict())
         self.file_db.commit()
         self.logger.debug("{} has been inserted !".format(entity.__class__.__name__))
@@ -69,8 +69,8 @@ class FileRepository(Repository):
                 fields = re.split('=|>|<|>=|<=|==|!=', next_filter)
                 try:
                     found = [
-                        self.dict_to_entity(c) for c in self.file_db.data if
-                        self.check_criteria(fields[1], c[fields[0]])
+                        self.dict_to_entity(data) for data in self.file_db.data if
+                        self.check_criteria(fields[1], data[fields[0]])
                     ]
                 except KeyError:
                     continue
@@ -79,23 +79,17 @@ class FileRepository(Repository):
                 filtered.extend(found)
             return filtered
         else:
-            return [self.dict_to_entity(c) for c in self.file_db.data]
+            return [self.dict_to_entity(data) for data in self.file_db.data]
 
     def find_by_id(self, entity_id: uuid.UUID) -> Optional[Entity]:
         if entity_id:
-            result = [c for c in self.file_db.data if entity_id == c['uuid']]
-            return result if len(result) > 0 else None
+            result = [data for data in self.file_db.data if entity_id == data['uuid']]
+            assert len(result) <= 1, "Multiple results found with entity_id={}".format(entity_id)
+
+            return self.dict_to_entity(result[0]) if len(result) > 0 else None
         else:
             return None
 
     @abstractmethod
     def dict_to_entity(self, row: dict) -> Entity:
         pass
-
-
-class MyRepo(FileRepository):
-    def __init__(self, filename: str):
-        super().__init__(filename)
-
-    def dict_to_entity(self, row: dict) -> Entity:
-        return Entity(row[uuid])
