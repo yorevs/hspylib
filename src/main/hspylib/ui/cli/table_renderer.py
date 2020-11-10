@@ -1,9 +1,7 @@
 import sys
-from typing import List, Optional, Callable
+from typing import List, Optional
 
-from hspylib.core.tools.text_helper import TextStyle, TextAlignment
-
-MIN_COL_LENGTH = 6
+from hspylib.core.tools.text_helper import TextAlignment, fit_text
 
 
 class TableRenderer:
@@ -21,11 +19,17 @@ class TableRenderer:
         self.headers = table_headers
         self.data = table_data
         self.caption = table_caption
+        self.rows = [row for row in self.data] if self.data else []
         self.header_alignment = TextAlignment.CENTER
         self.cell_alignment = TextAlignment.LEFT
-        self.rows = [r for r in self.data] if self.data else []
-        self.column_sizes = None
-        self.indexes = None
+        self.min_column_size = 0
+        if self.rows:
+            assert len(min(self.rows, key=len)) == len(self.headers), \
+                f'Headers and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(self.headers)}'
+        self.column_sizes = [
+            max(self.min_column_size, len(header)) for header in self.headers
+        ]
+        self.indexes = range(0, len(self.column_sizes))
 
     def set_header_alignment(self, alignment: TextAlignment) -> None:
         """
@@ -43,34 +47,74 @@ class TableRenderer:
         """
         self.cell_alignment = alignment
 
-    def render(self, file=sys.stdout) -> None:
+    def set_min_column_size(self, size: int) -> None:
         """
-        Render table based on the maximum length between a column data and header. Data will not be wrapped.
-        :param file: a file-like object (stream); defaults to the current sys.stdout.
+        Set table header justification.
+        :param size: minimum table cell size.
+        :return:
+        """
+        self.min_column_size = size
+
+    def adjust_sizes_by_largest_cell(self) -> None:
+        """
+        Render table based on the maximum size of all cell data.
         :return: None
         """
-        if self.rows:
-            assert len(min(self.rows, key=len)) == len(self.headers), \
-                f'Headers and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(self.headers)}'
-        self.column_sizes = [max(MIN_COL_LENGTH, len(header)) for header in self.headers]
-        self.indexes = range(0, len(self.column_sizes))
         for row in self.rows:
             for idx in range(0, len(row)):
                 self.column_sizes[idx] = max(self.column_sizes[idx], len(str(row[idx])))
+
+    def set_fixed_cell_size(self, width: int) -> None:
+        """
+        Render table based on a fixed size for all cell data.
+        :return: None
+        """
+        for row in self.rows:
+            for idx in range(0, len(row)):
+                self.column_sizes[idx] = max(width, self.min_column_size)
+
+    def set_cell_sizes(self, cell_sizes: List[int]) -> None:
+        """
+        Render table based on a list of fixed sizes.
+        :return: None
+        """
+        assert len(min(self.rows, key=len)) == len(cell_sizes), \
+            f'Sizes and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(cell_sizes)}'
+        for row in self.rows:
+            for idx in range(0, len(row)):
+                self.column_sizes[idx] = max(cell_sizes[idx], self.min_column_size)
+
+    def render(self, file=sys.stdout) -> None:
+        """
+        Render table based on the maximum size of a column header.
+        :param file: a file-like object (stream); defaults to the current sys.stdout.
+        :return: None
+        """
         header_cols = self.__join_header_columns()
         data_cols = self.__join_data_columns()
         table_borders = '+' + ''.join((('-' * (self.column_sizes[idx] + 2) + '+') for idx in self.indexes))
         self.__print_table(table_borders, header_cols, data_cols, file)
 
     def __join_header_columns(self) -> list:
-        cols = [self.header_alignment(self.headers[idx], self.column_sizes[idx]) for idx in self.indexes]
+        cols = [self.header_alignment(self.__header_text(idx), self.column_sizes[idx]) for idx in self.indexes]
         return ['| ' + ' | '.join(cols) + ' |']
 
     def __join_data_columns(self) -> list:
         return [
-            '| ' +
-            ''.join('%s | ' % self.cell_alignment(str(row[idx]), self.column_sizes[idx]) for idx in self.indexes) for row in self.rows
+            '| ' + ''.join(
+                '%s | ' % self.cell_alignment(self.__cell_text(row, idx), self.column_sizes[idx]) for idx
+                in self.indexes
+            ) for row in self.rows
         ]
+
+    def __header_text(self, idx: int) -> str:
+        return fit_text(self.headers[idx], self.__cell_size(idx))
+
+    def __cell_text(self, row: tuple, idx: int) -> str:
+        return fit_text(str(row[idx]), self.__cell_size(idx))
+
+    def __cell_size(self, idx: int) -> int:
+        return self.column_sizes[idx]
 
     def __print_table(
             self,
@@ -78,17 +122,10 @@ class TableRenderer:
             header_cols: List[str],
             data_cols: List[str],
             file=sys.stdout) -> None:
-        """
-        Print the table to stdout or to a file.
-        :param table_line: table border lines
-        :param header_cols: table table_headers to be displayed.
-        :param data_cols: table data to be displayed.
-        :param file: a file-like object (stream); defaults to the current sys.stdout.
-        :return: None
-        """
         if self.caption:
             print(table_line, file=file)
-            print('| ' + self.caption[0:len(table_line) - 4].center(len(header_cols[0]) - 4, ' ') + ' |', file=file)
+            print('| ' + fit_text(self.caption, len(table_line) - 4)
+                  .center(len(header_cols[0]) - 4, ' ') + ' |', file=file)
         print(table_line, file=file)
         print('\n'.join(header_cols), file=file)
         print(table_line, file=file)
@@ -112,4 +149,6 @@ if __name__ == '__main__':
         ('Three, four and five', 3, True, 3),
     ]
     tr = TableRenderer(h, data, 'TableRenderer example of usage')
+    tr.set_min_column_size(10)
+    tr.set_cell_sizes([5,5,5,5])
     tr.render()
