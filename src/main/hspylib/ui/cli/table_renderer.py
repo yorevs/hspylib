@@ -22,7 +22,7 @@ class TableRenderer:
         self.rows = [row for row in self.data] if self.data else []
         self.header_alignment = TextAlignment.CENTER
         self.cell_alignment = TextAlignment.LEFT
-        self.min_column_size = 0
+        self.min_column_size = 6
         if self.rows:
             assert len(min(self.rows, key=len)) == len(self.headers), \
                 f'Headers and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(self.headers)}'
@@ -134,21 +134,3 @@ class TableRenderer:
             else '| ' + '<empty>'.center(len(table_line) - 4, ' ') + ' |', file=file
         )
         print(table_line, file=file)
-
-
-if __name__ == '__main__':
-    h = [
-        'String',
-        'Number',
-        'Boolean',
-        'Thats a big Integer Column Header'
-    ]
-    data = [
-        ('One', 1, True, 2),
-        ('Two', 2, False, 3),
-        ('Three, four and five', 3, True, 3),
-    ]
-    tr = TableRenderer(h, data, 'TableRenderer example of usage')
-    tr.set_min_column_size(10)
-    tr.set_cell_sizes([5,5,5,5])
-    tr.render()
