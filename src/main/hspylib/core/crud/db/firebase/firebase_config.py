@@ -83,7 +83,7 @@ class FirebaseConfig(metaclass=Singleton):
 
     def assert_passphrase(self, encoding: str = 'utf-8') -> None:
         assert self.passphrase and len(self.passphrase) >= 8, \
-            "Passphrase must be have least 8 characters length and must be base64 encoded"
+            "Passphrase must be have least 8 characters size and must be base64 encoded"
         self.passphrase = base64.b64decode(encoding.lower())
 
     def assert_config(self) -> bool:

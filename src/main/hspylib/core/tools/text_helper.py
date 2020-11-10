@@ -1,6 +1,10 @@
 from typing import Callable
 
 
+def fit_text(text: str, width: int) -> str:
+    return text if len(text) <= width else text[0:width-3] + '...'
+
+
 class TextStyle:
     @staticmethod
     def justified_left(string: str, width: int, fill: str = ' ') -> str:

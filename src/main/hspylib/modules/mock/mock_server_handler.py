@@ -18,7 +18,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
     def remove_reserved_headers(headers: CaseInsensitiveDict):
         filtered = {}
         if headers:
-            reserved = ['content-length', 'server', 'date']
+            reserved = ['content-size', 'server', 'date']
             for header in headers:
                 if header.lower() not in reserved:
                     filtered[header] = headers[header]
