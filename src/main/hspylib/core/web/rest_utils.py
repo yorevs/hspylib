@@ -15,7 +15,7 @@ def rest_call(
         "Content-Type": "text/json",
         "Accept": "*/*"
     })
-    log.info('Processing SOAP {} {} -> {}'.format(all_headers, method, url))
+    log.info('Processing REST {} {} -> {}'.format(all_headers, method, url))
     response = requests.request(url=url, method=method, headers=all_headers, data=data)
     log.info('Response <=  Status: {}  Payload: {}'.format(response.status_code, response))
 
