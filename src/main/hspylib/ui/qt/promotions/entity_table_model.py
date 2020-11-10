@@ -16,7 +16,7 @@ class DefaultTableModel(QAbstractTableModel):
         self.headers = headers or self.headers_by_entity()
         self.cell_alignments = cell_alignments or []
         self.log = log_init(AppConfigs.logger())
-        self.log.info('{} headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
+        self.log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
 
     def data(self, index: QModelIndex, role: int = ...):
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
