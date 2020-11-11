@@ -7,5 +7,6 @@ __all__ = [
   "menu",
   "menu_item",
   "menu_ui",
-  "menu_utils"
+  "menu_utils",
+  "table_renderer"
 ]
