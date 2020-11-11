@@ -11,7 +11,6 @@ DEFAULT_SQL_STUBS = '{}/sql/sql_stubs.sql'.format(os.path.dirname(__file__))
 
 
 class SqlFactory(metaclass=Singleton):
-    INSTANCE = None
 
     @staticmethod
     def read_stubs(sql_filename: str) -> dict:
@@ -49,8 +48,8 @@ class SqlFactory(metaclass=Singleton):
         self.logger = AppConfigs.INSTANCE.logger()
         self.sql_stubs = SqlFactory.read_stubs(DEFAULT_SQL_STUBS)
         self.logger.debug('{} created with {} Stubs'.format(
-            self.__class__.__name__, len(self.sql_stubs)))
-        SqlFactory.INSTANCE = SqlFactory.INSTANCE if SqlFactory.INSTANCE else self
+            self.__class__.__name__,
+            len(self.sql_stubs)))
 
     def insert(self, entity: Entity) -> Optional[str]:
         params = entity.to_values()
