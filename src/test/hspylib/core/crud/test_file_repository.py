@@ -16,9 +16,10 @@ class TestClass(unittest.TestCase):
         resource_dir = '{}/resources'.format(TEST_DIR)
         self.db_file = "{}/test-file-db.txt".format(resource_dir)
         os.environ['ACTIVE_PROFILE'] = "test"
-        AppConfigs(
+        self.configs = AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
-        ).logger().info(AppConfigs.INSTANCE)
+        )
+        self.configs.logger().info(self.configs)
         self.repository = TestFileDbRepository(self.db_file)
 
     # Teardown tests

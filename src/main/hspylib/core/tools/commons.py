@@ -36,13 +36,13 @@ def log_init(
 
 
 # @purpose: Print the unicode string
-def sysout(string, end='\n', encoding=Charset.UTF_8):
-    sys.stdout.write(string.encode(encoding).decode('unicode-escape') + end)
+def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8):
+    sys.stdout.write(string.encode(str(encoding)).decode('unicode-escape') + end)
 
 
 # @purpose: Print the unicode string
-def syserr(string, end='\n', encoding=Charset.UTF_8):
-    sys.stderr.write(string.encode(encoding).decode('unicode-escape') + end)
+def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8):
+    sys.stderr.write(string.encode(str(encoding)).decode('unicode-escape') + end)
 
 
 def class_attribute_names(clazz: Type) -> tuple:

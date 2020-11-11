@@ -1,11 +1,11 @@
-from hspylib.core.meta.singleton import Singleton
+from abc import ABC
+
 from hspylib.ui.cli.factory.menu_entry import MenuEntry
 from hspylib.ui.cli.factory.menu_option import MenuOption
 from hspylib.ui.cli.menu import Menu
 
 
-class MenuFactory(metaclass=Singleton):
-    INSTANCE = None
+class MenuFactory(ABC):
 
     class MenuBuilder:
         def __init__(self, parent_menu: Menu = None, menu_title: str = None):
@@ -22,12 +22,6 @@ class MenuFactory(metaclass=Singleton):
         def build(self) -> Menu:
             return MenuEntry(self.parent_menu, self.menu_options, self.menu_title)
 
-    def __init__(self):
-        MenuFactory.INSTANCE = MenuFactory.INSTANCE if MenuFactory.INSTANCE else self
-
-    @classmethod
-    def create(cls, parent_menu: Menu = None, menu_title: str = None) -> MenuBuilder:
+    @staticmethod
+    def create(parent_menu: Menu = None, menu_title: str = None) -> MenuBuilder:
         return MenuFactory.MenuBuilder(parent_menu, menu_title)
-
-
-MenuFactory.INSTANCE = MenuFactory()

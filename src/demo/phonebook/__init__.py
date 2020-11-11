@@ -3,7 +3,6 @@
 # Package: demo
 
 __all__ = [
-  "phonebook",
-  "ui",
-  "demo"
+  "views",
+  "main"
 ]

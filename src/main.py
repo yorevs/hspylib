@@ -6,8 +6,8 @@ from hspylib.core.config.app_config import AppConfigs
 
 class Main:
     def __init__(self):
-        self.configs = AppConfigs.INSTANCE
-        AppConfigs().logger().info(self.configs)
+        self.configs = AppConfigs()
+        self.configs.logger().info(self.configs)
 
     @staticmethod
     def run():

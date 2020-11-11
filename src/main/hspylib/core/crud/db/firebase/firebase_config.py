@@ -22,7 +22,6 @@ UUID={}
 
 
 class FirebaseConfig(metaclass=Singleton):
-    INSTANCE = None
 
     @staticmethod
     def of(config_dict: CaseInsensitiveDict):
@@ -63,7 +62,6 @@ class FirebaseConfig(metaclass=Singleton):
         self.username = username if username else AppConfigs.INSTANCE.get('firebase.username')
         self.passphrase = passphrase if passphrase else AppConfigs.INSTANCE.get('firebase.passphrase')
         print(AppConfigs.INSTANCE)
-        FirebaseConfig.INSTANCE = FirebaseConfig.INSTANCE if FirebaseConfig.INSTANCE else self
         assert self.project_id, "Project ID must be defined"
         assert self.database, "Database name must be defined"
         assert self.username, "Username must be defined"

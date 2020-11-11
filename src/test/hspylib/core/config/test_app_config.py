@@ -13,9 +13,12 @@ class TestAppConfig(unittest.TestCase):
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
-        AppConfigs(
+        self.configs = AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
-        ).logger().info(AppConfigs.INSTANCE)
+        )
+        self.assertIsNotNone(self.configs)
+        self.assertIsNotNone(AppConfigs.INSTANCE)
+        self.configs.logger().info(self.configs)
         os.environ['TEST_OVERRIDDEN_BY_ENVIRON'] = 'yes its overridden'
 
     # Teardown tests

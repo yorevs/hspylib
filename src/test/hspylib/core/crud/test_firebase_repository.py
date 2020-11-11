@@ -18,9 +18,10 @@ class TestClass(unittest.TestCase):
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
-        AppConfigs(
+        self.configs = AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
-        ).logger().info(AppConfigs.INSTANCE)
+        )
+        self.configs.logger().info(self.configs)
         self.repository = TestFirebaseRepository()
 
     # Teardown tests

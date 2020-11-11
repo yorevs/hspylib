@@ -2,8 +2,6 @@ from hspylib.ui.cli.factory.menu_factory import MenuFactory
 from hspylib.ui.cli.menu_ui import MenuUi
 from hspylib.ui.cli.menu_utils import MenuUtils
 
-main_menu = sub_menu_1 = sub_menu_2 = None
-
 
 if __name__ == '__main__':
     main_menu = MenuFactory.INSTANCE \
@@ -15,14 +13,14 @@ if __name__ == '__main__':
     sub_menu_1 = MenuFactory.INSTANCE \
         .create(main_menu, 'Sub-Menu-1') \
         .with_option('Back').on_trigger(lambda x: main_menu) \
-        .with_option('Print Hey').on_trigger(lambda t: print('Hey"')) \
-        .with_option('Print Hoo').on_trigger(lambda t: print('Hoo"')) \
+        .with_option('Print Hey').on_trigger(lambda t: print('Hey')) \
+        .with_option('Print Hoo').on_trigger(lambda t: print('Hoo')) \
         .build()
     sub_menu_2 = MenuFactory.INSTANCE \
         .create(main_menu, 'Sub-Menu-2') \
         .with_option('Back').on_trigger(lambda x: main_menu) \
-        .with_option('Print Hello').on_trigger(lambda t: print('Hello"')) \
-        .with_option('Print Hi').on_trigger(lambda t: print('Hi"')) \
+        .with_option('Print Hello').on_trigger(lambda t: print('Hello')) \
+        .with_option('Print Hi').on_trigger(lambda t: print('Hi')) \
         .build()
     mm = MenuUi(main_menu)
     mm.run()

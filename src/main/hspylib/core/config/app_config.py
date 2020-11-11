@@ -17,7 +17,6 @@ AppConfigs
 
 
 class AppConfigs(metaclass=Singleton):
-    INSTANCE = None
 
     @staticmethod
     def environ_name(property_name: str) -> str:
@@ -38,7 +37,6 @@ class AppConfigs(metaclass=Singleton):
         self._resource_dir = resource_dir \
             if resource_dir else os.environ.get('RESOURCE_DIR', "{}/main/resources".format(self._source_root))
         self._app_properties = Properties(load_dir=self._resource_dir)
-        AppConfigs.INSTANCE = AppConfigs.INSTANCE if AppConfigs.INSTANCE else self
 
     def __str__(self):
         return '\n{}{}{}'.format(
@@ -54,6 +52,12 @@ class AppConfigs(metaclass=Singleton):
 
     def source_root(self) -> str:
         return self._source_root
+
+    def resource_dir(self) -> str:
+        return self._resource_dir
+
+    def log_dir(self) -> str:
+        return self._log_dir
 
     def logger(self):
         return self._logger if self._logger else log
