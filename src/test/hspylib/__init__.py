@@ -4,6 +4,5 @@
 
 __all__ = [
   "core",
-  "modules",
-  "ui"
+  "modules"
 ]

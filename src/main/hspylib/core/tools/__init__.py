@@ -5,7 +5,6 @@
 __all__ = [
   "commons",
   "qt_finder",
-  "table_renderer",
   "text_helper",
   "validators",
 ]
