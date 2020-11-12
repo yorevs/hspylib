@@ -3,6 +3,5 @@
 # Package: hspylib.modules.security
 
 __all__ = [
-  'resources', 
   'test_security'
 ]

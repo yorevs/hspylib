@@ -40,7 +40,8 @@ task syncPackages(type: Task) {
         def modules = []
         initFile.getParentFile().eachFile() { module ->
           if (!module.name.startsWith("__init__") &&
-              !module.name.startsWith("__pycache__")) {
+              !module.name.startsWith("__pycache__") &&
+              (module.isFile() || new File(module.getCanonicalPath() + "/__init__.py").exists())) {
             modules << "'${module.name.replaceAll("\\.py", "")}'"
           }
         }

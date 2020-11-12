@@ -3,6 +3,5 @@
 # Package: hspylib.modules.json_search
 
 __all__ = [
-  'resources', 
   'test_json_search'
 ]

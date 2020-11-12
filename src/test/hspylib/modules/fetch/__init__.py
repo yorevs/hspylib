@@ -3,6 +3,5 @@
 # Package: hspylib.modules.fetch
 
 __all__ = [
-  'resources', 
   'test_fetch'
 ]
