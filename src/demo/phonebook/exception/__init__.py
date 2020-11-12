@@ -1,5 +1,7 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: 
+# Package: phonebook.exception
 
-__all__ = [""]
+__all__ = [
+  'NotFoundError'
+]

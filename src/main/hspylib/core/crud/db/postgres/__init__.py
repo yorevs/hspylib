@@ -3,5 +3,5 @@
 # Package: hspylib.core.crud.db.postgres
 
 __all__ = [
-  "postgres_repository"
+  
 ]

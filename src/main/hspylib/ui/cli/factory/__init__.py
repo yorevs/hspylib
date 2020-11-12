@@ -3,7 +3,7 @@
 # Package: hspylib.ui.cli.factory
 
 __all__ = [
-  "menu_entry",
-  "menu_factory",
-  "menu_option"
+  'menu_entry', 
+  'menu_factory', 
+  'menu_option'
 ]

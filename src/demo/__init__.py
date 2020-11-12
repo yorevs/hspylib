@@ -1,9 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: demo
+# Package: __init__.py
 
 __all__ = [
-  "phonebook",
-  "ui",
-  "demo"
+  'phonebook', 
+  'ui'
 ]

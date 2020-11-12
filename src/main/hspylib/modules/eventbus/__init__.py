@@ -3,5 +3,5 @@
 # Package: hspylib.modules.eventbus
 
 __all__ = [
-  "eventbus"
+  'eventbus'
 ]

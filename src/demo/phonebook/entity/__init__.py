@@ -1,5 +1,9 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: 
+# Package: phonebook.entity
 
-__all__ = [""]
+__all__ = [
+  'Company', 
+  'Contact', 
+  'Person'
+]

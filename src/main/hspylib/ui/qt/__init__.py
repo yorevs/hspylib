@@ -3,7 +3,7 @@
 # Package: hspylib.ui.qt
 
 __all__ = [
-  "forms",
-  "promotions",
-  "views"
+  'forms', 
+  'promotions', 
+  'views'
 ]

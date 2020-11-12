@@ -3,6 +3,6 @@
 # Package: hspylib.core.crud.db.firebase
 
 __all__ = [
-  "firebase.py",
-  "firebase_config.py"
+  'firebase_config', 
+  'firebase_repository'
 ]

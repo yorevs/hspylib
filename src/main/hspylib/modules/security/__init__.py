@@ -3,5 +3,5 @@
 # Package: hspylib.modules.security
 
 __all__ = [
-  "security"
+  'security'
 ]

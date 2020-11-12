@@ -3,11 +3,11 @@
 # Package: hspylib.core
 
 __all__ = [
-  "config",
-  "crud",
-  "enum",
-  "meta",
-  "model",
-  "tools",
-  "web"
+  'config', 
+  'crud', 
+  'enum', 
+  'meta', 
+  'model', 
+  'tools', 
+  'web'
 ]

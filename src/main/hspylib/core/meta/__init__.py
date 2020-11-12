@@ -3,5 +3,5 @@
 # Package: hspylib.core.meta
 
 __all__ = [
-  "singleton",
+  'singleton'
 ]

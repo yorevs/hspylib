@@ -3,9 +3,9 @@
 # Package: hspylib.core.enum
 
 __all__ = [
-  "charset",
-  "content_type",
-  "database_type",
-  "http_code",
-  "http_method"
+  'charset', 
+  'content_type', 
+  'database_type', 
+  'http_code', 
+  'http_method'
 ]

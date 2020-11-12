@@ -1,7 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: test
+# Package: __init__.py
 
 __all__ = [
-  "hspylib"
+  '.DS_Store', 
+  'hspylib'
 ]

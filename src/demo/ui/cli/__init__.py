@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: demo.ui.cli
+# Package: ui.cli
 
 __all__ = [
-  "menu",
-  "table"
+  'menu', 
+  'table'
 ]

@@ -1,8 +1,13 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: demo
+# Package: phonebook
 
 __all__ = [
-  "views",
-  "main"
+  'entity', 
+  'exception', 
+  'main', 
+  'repository', 
+  'resources', 
+  'services', 
+  'view'
 ]

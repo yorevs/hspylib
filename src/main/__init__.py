@@ -1,7 +1,13 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: main
+# Package: __init__.py
 
 __all__ = [
-  "hspylib"
+  '.DS_Store', 
+  'DEPS.txt', 
+  'README.md', 
+  'VERSION', 
+  'hspylib', 
+  'resources', 
+  'setup'
 ]

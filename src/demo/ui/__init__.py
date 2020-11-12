@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: demo.ui
+# Package: ui
 
 __all__ = [
-  "cli"
+  'cli'
 ]

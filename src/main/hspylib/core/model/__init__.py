@@ -3,5 +3,5 @@
 # Package: hspylib.core.model
 
 __all__ = [
-  "entity"
+  'entity'
 ]

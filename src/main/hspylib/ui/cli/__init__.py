@@ -3,10 +3,10 @@
 # Package: hspylib.ui.cli
 
 __all__ = [
-  "factory",
-  "menu",
-  "menu_item",
-  "menu_ui",
-  "menu_utils",
-  "table_renderer"
+  'factory', 
+  'menu', 
+  'menu_item', 
+  'menu_ui', 
+  'menu_utils', 
+  'table_renderer'
 ]
