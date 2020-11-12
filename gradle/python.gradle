@@ -1,3 +1,9 @@
+def initTemplate = """# _*_ coding: utf-8 _*_
+#
+# Package: %package%
+
+__all__ = %modules%
+"""
 
 ext {
   pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test"
@@ -26,9 +32,25 @@ task syncPackages(type: Task) {
   description = 'Find and synchronize all python packages'
   doLast {
     project.file("${sourceRoot}").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
-      directory.eachFileMatch(~/^__init__.py$/) { file ->
-            println "Found" + file
+      directory.eachFileMatch(~/^__init__\.py$/) { initFile ->
+        def pkg = initFile.getCanonicalPath()
+          .replaceAll("${sourceRoot}/(main|test|demo)/", "")
+          .replaceAll("\\/", "\\.")
+          .replaceAll("\\.__init__\\.py", "")
+        def modules = []
+        initFile.getParentFile().eachFile() { module ->
+          if (!module.name.startsWith("__init__") &&
+              !module.name.startsWith("__pycache__")) {
+            modules << "'${module.name.replaceAll("\\.py", "")}'"
+          }
         }
+        initFile.write initTemplate
+          .replaceAll("%package%", pkg)
+          .replaceAll("%modules%", modules.sort().toString())
+          .replaceAll("\\[", "\\[\n  ")
+          .replaceAll(", ", ", \n  ")
+          .replaceAll("\\]", "\n]")
+      }
     }
   }
 }
