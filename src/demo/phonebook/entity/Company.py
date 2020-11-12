@@ -1,18 +1,16 @@
 from uuid import UUID
 
-from phonebook.entities.Contact import Contact
+from phonebook.entity.Contact import Contact
 
 
-class Person(Contact):
+class Company(Contact):
     def __init__(
             self,
             uuid: UUID = None,
             name: str = None,
-            age: int = None,
             phone: str = None,
-            email: str = None,
+            website: str = None,
             address: str = None,
             complement: str = None):
         super().__init__(uuid, name, phone, address, complement)
-        self.age = age
-        self.email = email
+        self.website = website

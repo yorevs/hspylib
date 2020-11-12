@@ -19,6 +19,20 @@ String dirName(File file) {
 
 /* Python Tasks ------------------------------------------------------------- */
 
+/***** Other Group */
+
+task syncPackages(type: Task) {
+  group = 'Other'
+  description = 'Find and synchronize all python packages'
+  doLast {
+    project.file("${sourceRoot}").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
+      directory.eachFileMatch(~/^__init__.py$/) { file ->
+            println "Found" + file
+        }
+    }
+  }
+}
+
 /***** Install Group */
 
 task installDependencies(type: Task) {

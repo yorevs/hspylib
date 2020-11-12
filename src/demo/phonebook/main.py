@@ -9,9 +9,9 @@ from hspylib.ui.cli.menu_ui import MenuUi
 from hspylib.ui.cli.menu_utils import MenuUtils
 
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
-from phonebook.views.create_view import CreateView
-from phonebook.views.edit_view import EditView
-from phonebook.views.search_view import SearchView
+from phonebook.view.create_view import CreateView
+from phonebook.view.edit_view import EditView
+from phonebook.view.search_view import SearchView
 
 
 class Main(metaclass=Singleton):
@@ -25,7 +25,7 @@ class Main(metaclass=Singleton):
     def __init__(self):
         source_dir = os.path.dirname(os.path.realpath(__file__))
         resource_dir = '{}/resources'.format(source_dir)
-        log_dir = '{}/log'.format(source_dir)
+        log_dir = '{}/log'.format(resource_dir)
         self.configs = AppConfigs(
             source_root=source_dir,
             resource_dir=resource_dir,

@@ -1,8 +1,8 @@
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu_utils import MenuUtils
-from phonebook.entities.Company import Company
-from phonebook.entities.Person import Person
+from phonebook.entity.Company import Company
+from phonebook.entity.Person import Person
 from phonebook.services.person_service import PersonService
 
 
