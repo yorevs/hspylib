@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: test.hspylib.core
+# Package: hspylib.core
 
 __all__ = [
-  "crud",
-  "config"
+  'config', 
+  'crud'
 ]

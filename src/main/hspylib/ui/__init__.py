@@ -3,6 +3,6 @@
 # Package: hspylib.ui
 
 __all__ = [
-  "qt",
-  "cli"
+  'cli', 
+  'qt'
 ]

@@ -3,7 +3,7 @@
 # Package: hspylib.ui.qt.promotions
 
 __all__ = [
-  "button_label",
-  "entity_table_model",
-  "panel"
+  'button_label', 
+  'entity_table_model', 
+  'panel'
 ]

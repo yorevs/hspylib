@@ -3,5 +3,5 @@
 # Package: hspylib.modules.json_search
 
 __all__ = [
-  "json_search"
+  'json_search'
 ]

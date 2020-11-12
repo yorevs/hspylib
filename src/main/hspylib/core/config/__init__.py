@@ -3,6 +3,6 @@
 # Package: hspylib.core.config
 
 __all__ = [
-  "app_config",
-  "properties"
+  'app_config', 
+  'properties'
 ]

@@ -1,7 +1,10 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: test.hspylib.core.crud
+# Package: hspylib.core.crud
 
 __all__ = [
-  "test_mysql_repository"
+  'resources', 
+  'test_file_repository', 
+  'test_firebase_repository', 
+  'test_mysql_repository'
 ]

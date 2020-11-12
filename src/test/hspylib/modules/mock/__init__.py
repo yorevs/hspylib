@@ -1,7 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: test.hspylib.modules.security
+# Package: hspylib.modules.mock
 
 __all__ = [
-  "test_mock_server"
+  'resources', 
+  'test_mock_server'
 ]

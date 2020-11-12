@@ -3,6 +3,6 @@
 # Package: hspylib.core.web
 
 __all__ = [
-  "rest_utils",
-  "soap_utils"
+  'rest_utils', 
+  'soap_utils'
 ]

@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: test.hspylib
+# Package: hspylib
 
 __all__ = [
-  "core",
-  "modules"
+  'core', 
+  'modules'
 ]

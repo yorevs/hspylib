@@ -3,6 +3,6 @@
 # Package: hspylib.ui.qt.views
 
 __all__ = [
-  "main_view",
-  "qt_view"
+  'main_view', 
+  'qt_view'
 ]

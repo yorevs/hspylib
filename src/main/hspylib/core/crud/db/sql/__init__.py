@@ -3,5 +3,5 @@
 # Package: hspylib.core.crud.db.sql
 
 __all__ = [
-  "sql_stubs"
+  'sql_stubs.sql'
 ]
