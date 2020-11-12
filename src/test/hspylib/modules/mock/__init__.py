@@ -3,6 +3,5 @@
 # Package: hspylib.modules.mock
 
 __all__ = [
-  'resources', 
   'test_mock_server'
 ]

@@ -7,7 +7,6 @@ __all__ = [
   'exception', 
   'main', 
   'repository', 
-  'resources', 
   'services', 
   'view'
 ]
