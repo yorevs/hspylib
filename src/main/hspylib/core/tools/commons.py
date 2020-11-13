@@ -5,6 +5,7 @@ import sys
 from typing import Type, List, Tuple, Any, Optional
 
 from hspylib.core.enum.charset import Charset
+from hspylib.core.tools.validator import Validator
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
@@ -38,14 +39,16 @@ def log_init(
 
 # @purpose: Print the unicode input_string
 def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
-    sys.stdout.write(
-        VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
+    if Validator.is_not_blank(string):
+        sys.stdout.write(
+            VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
 
 
 # @purpose: Print the unicode input_string
 def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
-    sys.stderr.write(
-        VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
+    if Validator.is_not_blank(string):
+        sys.stderr.write(
+            VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
 
 
 def class_attribute_names(clazz: Type) -> tuple:

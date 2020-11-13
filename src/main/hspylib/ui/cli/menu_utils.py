@@ -16,7 +16,7 @@ class MenuUtils(ABC):
             frame=None,
             exit_msg: str = "Bye") -> None:
 
-        sysout(frame if frame else '', end='')
+        sysout(str(frame) if frame else '', end='')
         sysout('{}\n{}'.format('\033[2J\033[H', exit_msg))
         sysout('')
         exit(exit_code if exit_code else 0)
@@ -82,3 +82,8 @@ class MenuUtils(ABC):
     def wait_enter() -> None:
         sysout('')
         MenuUtils.prompt('%YELLOW%Press [Enter] to continue ...', any_key=True, end='')
+
+    @staticmethod
+    def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
+        erase_back = '\033[2J\033[H'
+        sysout("{}\n{}{}\n".format(erase_back, color.placeholder(), title_str))

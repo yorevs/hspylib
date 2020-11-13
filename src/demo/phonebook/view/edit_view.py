@@ -17,7 +17,7 @@ class EditView(metaclass=Singleton):
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        sysout("\n%YELLOW%EDIT PERSON\n")
+        MenuUtils.title('EDIT PERSON')
         uuid = MenuUtils.prompt('Enter uuid')
         found = self.person_service.find_one(uuid)
         if not found:
@@ -40,7 +40,7 @@ class EditView(metaclass=Singleton):
         MenuUtils.wait_enter()
 
     def company(self) -> None:
-        sysout("\n%YELLOW%EDIT COMPANY\n")
+        MenuUtils.title('EDIT COMPANY')
         uuid = MenuUtils.prompt('Enter uuid')
         found = self.company_service.find_one(uuid)
         if not found:

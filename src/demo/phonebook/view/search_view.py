@@ -16,21 +16,20 @@ class SearchView(metaclass=Singleton):
         self.company_service = CompanyService()
 
     def by_name(self) -> None:
-        sysout("\n%YELLOW%SEARCH BY NAME\n")
+        MenuUtils.title('SEARCH BY NAME')
         name = MenuUtils.prompt('Person or Company name')
         all_persons = self.person_service.find_all(filters='name={}'.format(name))
         all_companies = self.company_service.find_all(filters='name={}'.format(name))
         self.display_contacts(all_persons, all_companies)
 
     def by_uuid(self) -> None:
-        sysout("\n%YELLOW%SEARCH BY UUID\n")
+        MenuUtils.title('SEARCH BY UUID')
         name = MenuUtils.prompt('Person or Company uuid')
         all_persons = self.person_service.find_all(filters='uuid={}'.format(name))
         all_companies = self.company_service.find_all(filters='uuid={}'.format(name))
         self.display_contacts(all_persons, all_companies)
 
     def list_all(self) -> None:
-        sysout("\n%YELLOW%LIST ALL ENTRIES\n")
         all_persons = self.person_service.find_all()
         all_companies = self.company_service.find_all()
         self.display_contacts(all_persons, all_companies)
@@ -49,6 +48,7 @@ class SearchView(metaclass=Singleton):
 
     @staticmethod
     def display_table(headers: List[str], entities: List[Entity], title: str):
+        MenuUtils.title('LISTING ALL {}'.format(title))
         tr = TableRenderer(headers, [c.to_values() for c in entities], title)
         tr.adjust_sizes_by_largest_cell()
         tr.render()

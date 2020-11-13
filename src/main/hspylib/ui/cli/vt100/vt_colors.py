@@ -44,3 +44,6 @@ class VtColors(Enum):
 
     def code(self) -> str:
         return str(self)
+
+    def placeholder(self) -> str:
+        return '%{}%'.format(self.name)
