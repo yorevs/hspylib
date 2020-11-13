@@ -8,5 +8,6 @@ __all__ = [
   'menu_item', 
   'menu_ui', 
   'menu_utils', 
-  'table_renderer'
+  'table_renderer', 
+  'vt100'
 ]

@@ -1,8 +1,9 @@
 from abc import ABC
 from typing import Optional
 
-from hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu import Menu
+from hspylib.ui.cli.menu_utils import MenuUtils
 
 
 class MenuItem(Menu, ABC):
@@ -20,8 +21,8 @@ class MenuItem(Menu, ABC):
 
     def execute(self) -> Optional[Menu]:
         while not self.selected == 0 and not self.done:
-            print(self)
-            self.selected = MenuUtils.prompt()
+            sysout(str(self))
+            self.selected = MenuUtils.prompt(end='$ ')
             if not self.selected:
                 return None
             elif self.selected.isalnum() and self.is_valid_option():
