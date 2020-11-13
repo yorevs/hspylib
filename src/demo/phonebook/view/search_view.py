@@ -38,7 +38,7 @@ class SearchView(metaclass=Singleton):
     @staticmethod
     def display_contacts(persons, companies):
 
-        if len(persons) >0 or len(companies) > 0:
+        if len(persons) > 0 or len(companies) > 0:
             SearchView.display_table(
                 ["UUID", "NAME", "AGE", "PHONE", "EMAIL", "ADDRESS", "CPL"], persons, 'PERSONS')
             SearchView.display_table(
