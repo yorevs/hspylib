@@ -10,4 +10,4 @@ class MenuOption:
         return self.parent
 
     def __str__(self):
-        return "\033[0;32m[{}]\033[0;0;0m {}".format(self.option_index, self.option_text)
+        return "\033[0;34m[{}]\033[0m {}".format(self.option_index, self.option_text)

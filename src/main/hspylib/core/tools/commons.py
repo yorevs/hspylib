@@ -2,9 +2,10 @@ import logging as log
 import os
 import re
 import sys
-from typing import Type, List, Tuple
+from typing import Type, List, Tuple, Any, Optional
 
 from hspylib.core.enum.charset import Charset
+from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
@@ -36,13 +37,15 @@ def log_init(
 
 
 # @purpose: Print the unicode input_string
-def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8):
-    sys.stdout.write(string.encode(str(encoding)).decode('unicode-escape') + end)
+def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
+    sys.stdout.write(
+        VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
 
 
 # @purpose: Print the unicode input_string
-def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8):
-    sys.stderr.write(string.encode(str(encoding)).decode('unicode-escape') + end)
+def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
+    sys.stderr.write(
+        VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
 
 
 def class_attribute_names(clazz: Type) -> tuple:
@@ -60,7 +63,7 @@ def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = 
     return result_list
 
 
-def get_or_default(array: Tuple, index: int, default_value=None):
+def get_or_default(array: Tuple, index: int, default_value=None) -> Optional[Any]:
     return array[index] if index < len(array) else default_value
 
 
