@@ -3,5 +3,6 @@
 # Package: phonebook.repository
 
 __all__ = [
+  'company_repository', 
   'person_repository'
 ]

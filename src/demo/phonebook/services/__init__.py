@@ -3,5 +3,6 @@
 # Package: phonebook.services
 
 __all__ = [
+  'company_service', 
   'person_service'
 ]

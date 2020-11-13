@@ -35,12 +35,12 @@ def log_init(
     return log
 
 
-# @purpose: Print the unicode string
+# @purpose: Print the unicode input_string
 def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8):
     sys.stdout.write(string.encode(str(encoding)).decode('unicode-escape') + end)
 
 
-# @purpose: Print the unicode string
+# @purpose: Print the unicode input_string
 def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8):
     sys.stderr.write(string.encode(str(encoding)).decode('unicode-escape') + end)
 

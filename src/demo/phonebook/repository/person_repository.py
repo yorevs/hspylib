@@ -16,7 +16,7 @@ class PersonRepository(FileRepository):
         super(PersonRepository, self).insert(person)
 
     def update(self, person: Person):
-        super(PersonRepository, self).insert(person)
+        super(PersonRepository, self).update(person)
 
     def delete(self, person: Person):
         super(PersonRepository, self).delete(person)

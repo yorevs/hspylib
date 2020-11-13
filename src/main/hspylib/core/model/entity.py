@@ -8,7 +8,9 @@ class Entity:
         self.uuid = entity_id
 
     def __str__(self):
-        return "Entity( uuid={} )".format(str(self.uuid))
+        return "{}:{}".format(
+            self.__class__.__name__,
+            str(self.to_dict()))
 
     def __eq__(self, other):
         return isinstance(other, Entity) and all(item in self.to_dict().items() for item in other.to_dict().items())

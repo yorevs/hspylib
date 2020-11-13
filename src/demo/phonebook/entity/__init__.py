@@ -5,5 +5,6 @@
 __all__ = [
   'Company', 
   'Contact', 
-  'Person'
+  'Person', 
+  'validator'
 ]
