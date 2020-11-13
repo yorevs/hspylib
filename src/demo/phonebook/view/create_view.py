@@ -1,3 +1,5 @@
+from hspylib.ui.cli.vt100.vt_colors import VtColors
+
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.validator import Validator
@@ -18,7 +20,7 @@ class CreateView(metaclass=Singleton):
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        sysout("\n%YELLOW%CREATE PERSON\n")
+        MenuUtils.title('CREATE PERSON')
         person = Person()
         person.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
         person.age = MenuUtils.prompt('Age', PersonValidator.validate_age)
@@ -30,7 +32,7 @@ class CreateView(metaclass=Singleton):
         MenuUtils.wait_enter()
 
     def company(self) -> None:
-        sysout("\n%YELLOW%CREATE COMPANY\n")
+        MenuUtils.title('CREATE COMPANY')
         company = Company()
         company.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
         company.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)
