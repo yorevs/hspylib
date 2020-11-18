@@ -1,8 +1,3 @@
-from typing import TypeVar, Generic
-
-T = TypeVar('T')
-
-
 class Singleton(type):
     __instances = {}
 

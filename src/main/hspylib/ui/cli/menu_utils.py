@@ -63,22 +63,19 @@ class MenuUtils(ABC):
                         end)
                 )
                 input_data = input(colorized)
-                if Validator.is_not_blank(input_data):
-                    if not validator:
-                        valid = True
-                    else:
-                        valid, msg = validator(input_data)
-                        if not valid:
-                            MenuUtils.print_error("{}: ".format(msg), input_data)
-                        continue
+                if not validator:
+                    valid = True
                 elif default_value:
-                    return default_value
+                    input_data = default_value
                 elif any_key:
-                    return None
+                    input_data = None
+                elif Validator.is_not_blank(input_data):
+                    valid, msg = validator(input_data)
+                    if not valid:
+                        MenuUtils.print_error("{}: ".format(msg), input_data)
                 else:
                     if not on_blank_abort:
                         MenuUtils.print_error("Input can't be empty: ", input_data)
-                        continue
                     else:
                         raise InputAbortedError()
             except EOFError as err:

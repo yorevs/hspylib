@@ -24,3 +24,11 @@ class ContactValidator(Validator):
     def validate_phone(phone: str) -> (bool, str):
         return Validator \
             .matches(phone, Validator.RegexCommons.PHONE_NUMBER), "Invalid phone"
+
+    @staticmethod
+    def validate_address(address: str) -> (bool, str):
+        return Validator.is_not_blank(address), "Invalid address"
+
+    @staticmethod
+    def validate_complement(complement: str) -> (bool, str):
+        return Validator.is_not_blank(complement), "Invalid complement"

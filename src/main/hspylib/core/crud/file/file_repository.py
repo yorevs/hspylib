@@ -5,11 +5,11 @@ from typing import Optional
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.file.file_storage import FileStorage
-from hspylib.core.crud.repository import Repository
+from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.model.entity import Entity
 
 
-class FileRepository(Repository):
+class FileRepository(CrudRepository):
     __storages = {}
 
     @staticmethod

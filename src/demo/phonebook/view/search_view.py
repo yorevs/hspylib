@@ -1,21 +1,20 @@
 from typing import List
 
-from hspylib.core.crud.crud_service import CrudService
 from hspylib.core.exception.InputAbortedError import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.model.entity import Entity
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu_utils import MenuUtils
 from hspylib.ui.cli.table_renderer import TableRenderer
-from phonebook.repository.company_repository import CompanyRepository
-from phonebook.repository.person_repository import PersonRepository
+from phonebook.service.CompanyService import CompanyService
+from phonebook.service.PersonService import PersonService
 
 
 class SearchView(metaclass=Singleton):
 
     def __init__(self):
-        self.person_service = CrudService(PersonRepository())
-        self.company_service = CrudService(CompanyRepository())
+        self.person_service = PersonService()
+        self.company_service = CompanyService()
 
     def by_name(self) -> None:
         MenuUtils.title('SEARCH BY NAME')
