@@ -3,8 +3,6 @@ from hspylib.core.exception.InputAbortedError import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.validator import Validator
 from hspylib.ui.cli.menu_utils import MenuUtils
-from phonebook.entity.Company import Company
-from phonebook.entity.Person import Person
 from phonebook.entity.validator.CompanyValidator import CompanyValidator
 from phonebook.entity.validator.ContactValidator import ContactValidator
 from phonebook.entity.validator.PersonValidator import PersonValidator
@@ -15,8 +13,8 @@ from phonebook.repository.person_repository import PersonRepository
 class EditView(metaclass=Singleton):
 
     def __init__(self):
-        self.person_service = CrudService[Person](PersonRepository())
-        self.company_service = CrudService[Company](CompanyRepository())
+        self.person_service = CrudService(PersonRepository())
+        self.company_service = CrudService(CompanyRepository())
 
     def person(self) -> None:
         MenuUtils.title('EDIT PERSON')

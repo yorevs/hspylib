@@ -8,7 +8,7 @@ class PersonRepository(FileRepository):
     def __init__(self):
         self.db_file = "{}/db/{}".format(
             AppConfigs.INSTANCE.resource_dir(),
-            AppConfigs.INSTANCE.get("phonebook.companies.db.file")
+            AppConfigs.INSTANCE.get("phonebook.persons.db.file")
         )
         super().__init__(self.db_file)
 

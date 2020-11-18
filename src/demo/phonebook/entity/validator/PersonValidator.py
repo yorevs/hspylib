@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Person import Person
@@ -7,7 +7,7 @@ from phonebook.entity.validator.ContactValidator import ContactValidator
 
 class PersonValidator(ContactValidator):
 
-    def __call__(self, *persons, **kwargs) -> List[dict]:
+    def __call__(self, *persons, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         assert len(persons) == 1, "Only one person can be validated at a time"
         assert isinstance(persons[0], Person), "Only persons can be validated"
@@ -15,7 +15,7 @@ class PersonValidator(ContactValidator):
         assert self.validate_email(persons[0].email), "Invalid age: {}".format(persons[0].email)
         super().__call__(persons, kwargs)
 
-        return errors
+        return len(errors) == 0, errors
 
     @staticmethod
     def validate_age(age: str) -> (bool, str):

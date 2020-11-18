@@ -1,15 +1,12 @@
 from typing import Optional, List
-from typing import TypeVar, Generic
 from uuid import UUID
 
 from hspylib.core.crud.repository import Repository
 from hspylib.core.exception.NotFoundError import NotFoundError
 from hspylib.core.model.entity import Entity
 
-T = TypeVar('T')
 
-
-class CrudService(Generic[T]):
+class CrudService:
 
     def __init__(self, repository: Repository):
         self.repository = repository
