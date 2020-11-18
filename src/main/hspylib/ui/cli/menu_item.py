@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import Optional
 
+from hspylib.core.exception.InputAbortedError import InputAbortedError
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu import Menu
 from hspylib.ui.cli.menu_utils import MenuUtils
@@ -22,14 +23,17 @@ class MenuItem(Menu, ABC):
     def execute(self) -> Optional[Menu]:
         while not self.selected == 0 and not self.done:
             sysout(str(self))
-            self.selected = MenuUtils.prompt(end='$ ')
-            if not self.selected:
-                return None
-            elif self.selected.isalnum() and self.is_valid_option():
-                return self.trigger_menu_item()
-            else:
-                MenuUtils.print_error("Invalid option", self.selected)
-                self.selected = None
+            try:
+                self.selected = MenuUtils.prompt(end='$ ')
+                if not self.selected:
+                    return None
+                elif self.selected.isalnum() and self.is_valid_option():
+                    return self.trigger_menu_item()
+                else:
+                    MenuUtils.print_error("Invalid option", self.selected)
+                    self.selected = None
+            except InputAbortedError:
+                continue
 
     def trigger_menu_item(self) -> Optional[Menu]:
         return None

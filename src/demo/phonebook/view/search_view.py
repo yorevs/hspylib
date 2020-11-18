@@ -1,37 +1,47 @@
 from typing import List
 
+from hspylib.core.crud.crud_service import CrudService
+from hspylib.core.exception.InputAbortedError import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.model.entity import Entity
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu_utils import MenuUtils
 from hspylib.ui.cli.table_renderer import TableRenderer
-from phonebook.services.company_service import CompanyService
-from phonebook.services.person_service import PersonService
+from phonebook.entity.Company import Company
+from phonebook.entity.Person import Person
+from phonebook.repository.company_repository import CompanyRepository
+from phonebook.repository.person_repository import PersonRepository
 
 
 class SearchView(metaclass=Singleton):
 
     def __init__(self):
-        self.person_service = PersonService()
-        self.company_service = CompanyService()
+        self.person_service = CrudService[Person](PersonRepository())
+        self.company_service = CrudService[Company](CompanyRepository())
 
     def by_name(self) -> None:
         MenuUtils.title('SEARCH BY NAME')
-        name = MenuUtils.prompt('Person or Company name')
-        all_persons = self.person_service.find_all(filters='name={}'.format(name))
-        all_companies = self.company_service.find_all(filters='name={}'.format(name))
-        self.display_contacts(all_persons, all_companies)
+        try:
+            name = MenuUtils.prompt('Person or Company name')
+            all_persons = self.person_service.list(filters='name={}'.format(name))
+            all_companies = self.company_service.list(filters='name={}'.format(name))
+            self.display_contacts(all_persons, all_companies)
+        except InputAbortedError:
+            pass
 
     def by_uuid(self) -> None:
         MenuUtils.title('SEARCH BY UUID')
-        name = MenuUtils.prompt('Person or Company uuid')
-        all_persons = self.person_service.find_all(filters='uuid={}'.format(name))
-        all_companies = self.company_service.find_all(filters='uuid={}'.format(name))
-        self.display_contacts(all_persons, all_companies)
+        try:
+            name = MenuUtils.prompt('Person or Company uuid')
+            all_persons = self.person_service.list(filters='uuid={}'.format(name))
+            all_companies = self.company_service.list(filters='uuid={}'.format(name))
+            self.display_contacts(all_persons, all_companies)
+        except InputAbortedError:
+            pass
 
     def list_all(self) -> None:
-        all_persons = self.person_service.find_all()
-        all_companies = self.company_service.find_all()
+        all_persons = self.person_service.list()
+        all_companies = self.company_service.list()
         self.display_contacts(all_persons, all_companies)
 
     @staticmethod

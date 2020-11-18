@@ -12,15 +12,6 @@ class CompanyRepository(FileRepository):
         )
         super().__init__(self.db_file)
 
-    def insert(self, company: Company):
-        super(CompanyRepository, self).insert(company)
-
-    def update(self, company: Company):
-        super(CompanyRepository, self).update(company)
-
-    def delete(self, company: Company):
-        super(CompanyRepository, self).delete(company)
-
     def dict_to_entity(self, row: dict) -> Company:
         return Company(
             row['uuid'],
