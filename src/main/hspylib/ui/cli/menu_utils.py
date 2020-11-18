@@ -66,9 +66,9 @@ class MenuUtils(ABC):
                 if not validator:
                     valid = True
                 elif default_value:
-                    input_data = default_value
+                    return default_value
                 elif any_key:
-                    input_data = None
+                    return None
                 elif Validator.is_not_blank(input_data):
                     valid, msg = validator(input_data)
                     if not valid:
