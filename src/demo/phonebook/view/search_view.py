@@ -42,7 +42,7 @@ class SearchView(metaclass=Singleton):
         self.display_contacts(all_persons, all_companies)
 
     @staticmethod
-    def display_contacts(persons, companies):
+    def display_contacts(persons, companies) -> None:
 
         if len(persons) > 0 or len(companies) > 0:
             SearchView.display_table(
@@ -54,7 +54,7 @@ class SearchView(metaclass=Singleton):
             MenuUtils.wait_enter()
 
     @staticmethod
-    def display_table(headers: List[str], entities: List[Entity], title: str):
+    def display_table(headers: List[str], entities: List[Entity], title: str) -> None:
         MenuUtils.title('LISTING ALL {}'.format(title))
         tr = TableRenderer(headers, [c.to_values() for c in entities], title)
         tr.adjust_sizes_by_largest_cell()
