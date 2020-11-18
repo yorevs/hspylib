@@ -1,19 +1,22 @@
 from typing import List
 
 from hspylib.core.tools.validator import Validator
-from phonebook.entity.Person import Person
+from phonebook.entity.Company import Company
+from phonebook.entity.validator.ContactValidator import ContactValidator
 
 
-class CompanyValidator(Validator):
+class CompanyValidator(ContactValidator):
 
-    def __call__(self, *persons, **kwargs) -> List[dict]:
+    def __call__(self, *companies, **kwargs) -> List[dict]:
         errors = []
-        assert len(persons) == 1, "One person exactly is required to validate"
-        assert isinstance(persons[0], Person), "Can only validate Person entities"
+        assert len(companies) == 1, "Only one company can be validated at a time"
+        assert isinstance(companies[0], Company), "Only companies can be validated"
+        assert self.validate_website(companies[0].website), "Invalid website: {}".format(companies[0].website)
+        super().__call__(companies, kwargs)
 
         return errors
 
     @staticmethod
-    def validate_website(website: str) -> bool:
+    def validate_website(website: str) -> (bool, str):
         return Validator \
-            .matches(website, Validator.RegexCommons.URL)
+            .matches(website, Validator.RegexCommons.URL), "Invalid website"

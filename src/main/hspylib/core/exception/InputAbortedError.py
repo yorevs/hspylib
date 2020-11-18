@@ -1,0 +1,2 @@
+class InputAbortedError(Exception):
+    pass
