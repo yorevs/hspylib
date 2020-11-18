@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Optional
 
-from hspylib.core.exception.InputAbortedError import InputAbortedError
+from hspylib.core.exception.input_aborted_error import InputAbortedError
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu import Menu
 from hspylib.ui.cli.menu_utils import MenuUtils

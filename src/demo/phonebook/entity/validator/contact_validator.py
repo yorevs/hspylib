@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from hspylib.core.tools.validator import Validator
-from phonebook.entity.Person import Person
+from phonebook.entity.person import Person
 
 
 class ContactValidator(Validator):

@@ -1,8 +1,8 @@
 from typing import List, Tuple
 
 from hspylib.core.tools.validator import Validator
-from phonebook.entity.Company import Company
-from phonebook.entity.validator.ContactValidator import ContactValidator
+from phonebook.entity.company import Company
+from phonebook.entity.validator.contact_validator import ContactValidator
 
 
 class CompanyValidator(ContactValidator):
