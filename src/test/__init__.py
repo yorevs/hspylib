@@ -3,6 +3,5 @@
 # Package: __init__.py
 
 __all__ = [
-  '.DS_Store', 
   'hspylib'
 ]

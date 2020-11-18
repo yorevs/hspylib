@@ -3,10 +3,6 @@
 # Package: __init__.py
 
 __all__ = [
-  '.DS_Store', 
-  'DEPS.txt', 
-  'README.md', 
-  'VERSION', 
   'hspylib', 
   'setup'
 ]

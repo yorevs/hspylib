@@ -1,9 +1,4 @@
-def initTemplate = """# _*_ coding: utf-8 _*_
-#
-# Package: %package%
-
-__all__ = %modules%
-"""
+/* Python Tasks ------------------------------------------------------------- */
 
 ext {
   pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test"
@@ -23,11 +18,17 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
-/* Python Tasks ------------------------------------------------------------- */
-
 /***** Other Group */
 
-task syncPackages(type: Task) {
+def initTemplate = """# _*_ coding: utf-8 _*_
+#
+# Package: %package%
+
+__all__ = %modules%
+"""
+
+/* Find and synchronize all python packages */
+task syncPythonPackages(type: Task) {
   group = 'Other'
   description = 'Find and synchronize all python packages'
   doLast {
@@ -41,7 +42,11 @@ task syncPackages(type: Task) {
         initFile.getParentFile().eachFile() { module ->
           if (!module.name.startsWith("__init__") &&
               !module.name.startsWith("__pycache__") &&
-              (module.isFile() || new File(module.getCanonicalPath() + "/__init__.py").exists())) {
+              ((module.isFile() && module.name.endsWith(".py")) ||
+              new File(module.getCanonicalPath() + "/__init__.py").exists())) {
+            if (!module.isFile()) {
+              println "Syncing package: ${initFile.getParentFile()}/${module.name}"
+            }
             modules << "'${module.name.replaceAll("\\.py", "")}'"
           }
         }
@@ -58,11 +63,12 @@ task syncPackages(type: Task) {
 
 /***** Install Group */
 
+/* Install all required python packages */
 task installDependencies(type: Task) {
   group = 'Install'
   description = 'Install all required python packages'
   doLast {
-    deps.each { String dep ->
+    deps.each { dep ->
       println "Upgrading pip module to the latest "
       exec {
         commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', 'pip'
@@ -74,9 +80,10 @@ task installDependencies(type: Task) {
   }
 }
 
+/* Install this application as a python package using module's setup.py */
 task installModule(type: Task) {
   group = 'Install'
-  description = 'Install this application as a python package from "**/setup.py"'
+  description = "Install the module as a python package using module's setup.py"
   doLast {
     def depsFile = new File("DEPS.txt")
     depsFile.write ''
@@ -104,9 +111,10 @@ task installModule(type: Task) {
   }
 }
 
+/* Uninstall the module as a python package using module's setup.py */
 task uninstallModule(type: Task) {
   group = 'Install'
-  description = 'Uninstall all python modules from "**/setup.py"'
+  description = "Uninstall the module as a python package using module's setup.py"
   doLast {
     fileTree("${sourceRoot}/main").matching {
       include "**/setup.py"
@@ -123,23 +131,26 @@ task uninstallModule(type: Task) {
 
 /***** Build Group */
 
+/* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "${sourceRoot}" */
 task cleanPython(type: Delete) {
   group = 'Build'
-  description = 'Clean all compiled and cached python files from "${sourceRoot}"'
+  description = 'Clean all compiled (*.py,*.qrc) and cached (__pycache__) python files from sourceRoot'
   doLast {
-    println "Cleaning up compiled and cached files ..."
+    println 'Cleaning up compiled (*.py,*.qrc) and cached (__pycache__) files ...'
     delete fileTree(sourceRoot).matching {
       include "**/*.pyc"
+      include "**/*.qrc"
     }
     delete dirsByPattern(sourceRoot, /.*__pycache__$/)
   }
 }
 
+/* Compile all python files from sourceRoot */
 task compilePython(type: Task) {
   group = 'Build'
-  description = 'Compile all python files from "${sourceRoot}/main"'
+  description = 'Compile all python files from sourceRoot'
   doLast {
-    fileTree("${sourceRoot}/main").matching {
+    fileTree("${sourceRoot}").matching {
       include "**/*.py"
       exclude "**/__init__.py"
     }.each { File file ->
@@ -151,27 +162,11 @@ task compilePython(type: Task) {
   }
 }
 
-task compilePythonTest(type: Task) {
-  group = 'Build'
-  description = 'Compile all python test files from "${sourceRoot}/test"'
-  doLast {
-    fileTree("${sourceRoot}/test").matching {
-      include "**/test_*.py"
-      exclude "**/__init__.py"
-    }.each { File file ->
-        println "Compiling Python Test file -> ${file.name}"
-        exec {
-          commandLine rootProject.python, '-m', 'py_compile', file.path
-        }
-      }
-  }
-}
-
 task compileQrc(type: Task) {
   group = 'Build'
-  description = 'Compile all Qt resource files from "${sourceRoot}/main"'
+  description = 'Compile all Qt resource files from sourceRoot'
   doLast {
-    fileTree("${sourceRoot}/main").matching {
+    fileTree("${sourceRoot}").matching {
       include "**/*.qrc"
     }.each { File file ->
         println "Compiling Qt Resource -> ${file.name}"
@@ -182,27 +177,12 @@ task compileQrc(type: Task) {
   }
 }
 
-task updateVersion {
-  group = 'Build'
-  description = 'Update the VERSION file to match the build.gradle version'
-  doLast {
-    def ver = project.ext.version
-    def v_file = versionFile
-    println "Updating version to: ${ver}"
-    assert file("${v_file}").exists()
-    new File("${v_file}").text = "${ver}"
-    ant.replaceregexp(file: "${v_file}", match:'^([0-9]{1,2}\\.)[0-9]{1,3}$', replace:"${ver}", flags:'g', byline:true)
-    println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
-  }
-}
-
 /***** Run Group */
 
 task runTest(type: Task) {
   group = 'Run'
   description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
   dependsOn compilePython
-  dependsOn compilePythonTest
   doLast {
     fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"
@@ -250,16 +230,15 @@ task run(type: Task) {
 
 /***** Task Wrappers */
 
+task clean(type: Task) {
+  group = 'Build'
+  dependsOn cleanPython
+}
+
 task compile(type: Task) {
   group = 'Build'
   dependsOn compilePython
   dependsOn compileQrc
-  dependsOn compilePythonTest
-}
-
-task clean(type: Task) {
-  group = 'Build'
-  dependsOn cleanPython
 }
 
 task test(type: Task) {
