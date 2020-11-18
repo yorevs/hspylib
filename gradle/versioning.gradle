@@ -1,0 +1,43 @@
+/* Versioning Tasks ------------------------------------------------------------- */
+
+/* List all properties from properties.gradle */
+task listProperties {
+  group = 'Version'
+  description = 'List all properties from properties.gradle'
+  doLast {
+    File propsFile = new File(gradleProperties)
+    if ( propsFile.exists() ) {
+      propsFile.eachLine { line ->
+        def strLine = "${line.substring(16, line.length() - 1)}"
+        def (name, value) = strLine.tokenize( ',' )
+        println "${name.padRight(25, '.')} => ${value.trim()}"
+      }
+    }
+  }
+}
+
+/* Update the VERSION file to match the build.gradle version */
+task updateVersion {
+  group = 'Version'
+  description = 'Update the VERSION file to match the build.gradle version'
+  doLast {
+    def ver = project.ext.version
+    def v_file = new File("${versionFile}")
+    assert v_file.exists()
+    println "Updating version to ${ver}"
+    v_file.text = "${ver}"
+    ant.replaceregexp(file: "${v_file}", match:'^([0-9]{1,2}\\.)[0-9]{1,3}$', replace:"${ver}", flags:'g', byline:true)
+    println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
+  }
+}
+
+/* Check current program version */
+task version {
+  group = 'Version'
+  description = 'Check current program version'
+  doLast { task ->
+    if( file("${versionFile}").exists() ) {
+      println "Project: [$task.project.name] Version: " + file("${versionFile}").text
+    }
+  }
+}

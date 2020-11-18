@@ -1,9 +1,9 @@
-
 /* Docker Tasks ------------------------------------------------------------- */
 
+/* Start all containers as daemons */
 task startContainers(type: Task) {
   group = 'Docker'
-  description = 'Start a docker-composed container'
+  description = 'Start all containers as daemons'
   doLast {
     containers.each { String container ->
       println "Starting container: ${container}"
@@ -15,9 +15,10 @@ task startContainers(type: Task) {
   }
 }
 
+/* Stop and  remove all containers */
 task stopContainers(type: Task) {
   group = 'Docker'
-  description = 'Stop a docker-composed container'
+  description = 'Stop and  remove all containers'
   doLast {
     containers.each { String container ->
       println "Stopping container: ${container}"

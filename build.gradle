@@ -1,3 +1,8 @@
+/*
+    Gradle root project build file
+    Project: HSPYLIB
+    Created: 1st July, 2020
+*/
 
 buildscript {
   project.ext.gradleProperties = "$rootProject.projectDir/properties.gradle"
@@ -7,7 +12,7 @@ buildscript {
 apply from: "properties.gradle"
 
 ext {
-  version = "0-9.11"
+  version = "${projectVersion}"
   versionFile = "VERSION"
   application = "main.py"
   python = "python${pythonVersion}"
@@ -31,6 +36,7 @@ wrapper {
   gradleVersion="${gradleVersion}"
 }
 
+apply from: "gradle/versioning.gradle"
 apply from: "gradle/docker.gradle"
 apply from: "gradle/python.gradle"
 apply from: "gradle/oracle.gradle"
