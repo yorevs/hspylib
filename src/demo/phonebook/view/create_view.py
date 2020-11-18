@@ -16,8 +16,8 @@ from phonebook.repository.person_repository import PersonRepository
 class CreateView(metaclass=Singleton):
 
     def __init__(self):
-        self.person_service = CrudService[Person](PersonRepository())
-        self.company_service = CrudService[Company](CompanyRepository())
+        self.person_service = CrudService(PersonRepository())
+        self.company_service = CrudService(CompanyRepository())
 
     def person(self) -> None:
         MenuUtils.title('CREATE PERSON')

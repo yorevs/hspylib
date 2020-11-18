@@ -7,8 +7,6 @@ from hspylib.core.model.entity import Entity
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.menu_utils import MenuUtils
 from hspylib.ui.cli.table_renderer import TableRenderer
-from phonebook.entity.Company import Company
-from phonebook.entity.Person import Person
 from phonebook.repository.company_repository import CompanyRepository
 from phonebook.repository.person_repository import PersonRepository
 
@@ -16,8 +14,8 @@ from phonebook.repository.person_repository import PersonRepository
 class SearchView(metaclass=Singleton):
 
     def __init__(self):
-        self.person_service = CrudService[Person](PersonRepository())
-        self.company_service = CrudService[Company](CompanyRepository())
+        self.person_service = CrudService(PersonRepository())
+        self.company_service = CrudService(CompanyRepository())
 
     def by_name(self) -> None:
         MenuUtils.title('SEARCH BY NAME')

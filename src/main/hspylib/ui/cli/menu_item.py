@@ -26,7 +26,7 @@ class MenuItem(Menu, ABC):
             try:
                 self.selected = MenuUtils.prompt(end='$ ')
                 if not self.selected:
-                    return None
+                    continue
                 elif self.selected.isalnum() and self.is_valid_option():
                     return self.trigger_menu_item()
                 else:
