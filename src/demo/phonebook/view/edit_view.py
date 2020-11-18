@@ -1,11 +1,11 @@
-from hspylib.core.exception.InputAbortedError import InputAbortedError
+from hspylib.core.exception.input_aborted_error import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.ui.cli.menu_utils import MenuUtils
-from phonebook.entity.validator.CompanyValidator import CompanyValidator
-from phonebook.entity.validator.ContactValidator import ContactValidator
-from phonebook.entity.validator.PersonValidator import PersonValidator
-from phonebook.service.CompanyService import CompanyService
-from phonebook.service.PersonService import PersonService
+from phonebook.entity.validator.company_validator import CompanyValidator
+from phonebook.entity.validator.contact_validator import ContactValidator
+from phonebook.entity.validator.person_validator import PersonValidator
+from phonebook.service.company_service import CompanyService
+from phonebook.service.person_service import PersonService
 
 
 class EditView(metaclass=Singleton):

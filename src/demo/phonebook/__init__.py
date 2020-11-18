@@ -4,9 +4,8 @@
 
 __all__ = [
   'entity', 
-  'exception', 
   'main', 
   'repository', 
-  'services', 
+  'service', 
   'view'
 ]

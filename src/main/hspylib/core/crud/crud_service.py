@@ -1,7 +1,7 @@
 from typing import Optional, List, TypeVar, Generic
 from uuid import UUID
 
-from hspylib.core.exception.NotFoundError import NotFoundError
+from hspylib.core.exception.not_found_error import NotFoundError
 
 ET = TypeVar('ET')
 RT = TypeVar('RT')

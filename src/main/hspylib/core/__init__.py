@@ -6,6 +6,7 @@ __all__ = [
   'config', 
   'crud', 
   'enum', 
+  'exception', 
   'meta', 
   'model', 
   'tools', 

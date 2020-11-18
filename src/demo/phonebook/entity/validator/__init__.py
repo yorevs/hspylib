@@ -3,7 +3,7 @@
 # Package: phonebook.entity.validator
 
 __all__ = [
-  'CompanyValidator', 
-  'ContactValidator', 
-  'PersonValidator'
+  'company_validator', 
+  'contact_validator', 
+  'person_validator'
 ]
