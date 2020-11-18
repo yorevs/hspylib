@@ -2,11 +2,11 @@ from abc import abstractmethod
 from typing import Tuple
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.crud.repository import Repository
+from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.model.entity import Entity
 
 
-class DBRepository(Repository):
+class DBRepository(CrudRepository):
     def __init__(self):
         super().__init__()
         self.hostname = AppConfigs.INSTANCE.get('datasource.hostname')

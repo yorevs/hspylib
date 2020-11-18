@@ -13,8 +13,8 @@ class Validator(ABC, Callable):
         URL = '^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&\'\\(\\)\\*\\+,;=.]+$'
 
     @staticmethod
-    def is_not_blank(input_string: str) -> (bool, str):
-        return input_string and len(input_string) > 0, 'Provided input can\'t be blank'
+    def is_not_blank(input_string: str) -> bool:
+        return input_string and len(input_string) > 0
 
     @staticmethod
     def matches(

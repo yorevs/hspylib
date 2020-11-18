@@ -8,13 +8,13 @@ from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
-from hspylib.core.crud.repository import Repository
+from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.model.entity import Entity
 from hspylib.modules.fetch.fetch import put, get, delete
 
 
-class FirebaseRepository(Repository):
+class FirebaseRepository(CrudRepository):
     def __init__(self):
         self.logger = AppConfigs.INSTANCE.logger()
         self.payload = None
