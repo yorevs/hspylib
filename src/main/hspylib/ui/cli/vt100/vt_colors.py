@@ -23,7 +23,7 @@ class VtColors(Enum):
     WHITE = '{}0;97{}'.format(ESC_SEQ, MODE)
 
     @staticmethod
-    def colorize(input_string: str):
+    def colorize(input_string: str) -> str:
         return input_string \
                .replace("%NC%", VtColors.NC.code()) \
                .replace("%BLACK%", VtColors.BLACK.code()) \
@@ -39,7 +39,7 @@ class VtColors(Enum):
                .replace("%WHITE%", VtColors.WHITE.code()) \
                + VtColors.NC.code()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._value_
 
     def code(self) -> str:

@@ -14,8 +14,8 @@ class MainView(QtView):
         self.__setup_ui()
 
     @abstractmethod
-    def __setup_ui(self):
+    def __setup_ui(self) -> None:
         pass
 
-    def show(self):
+    def show(self) -> None:
         self.window.show()

@@ -28,7 +28,7 @@ class MenuUtils(ABC):
             argument: str = None,
             wait_interval: int = 2) -> None:
 
-        sysout(f"%RED%### Error: {message} \"{argument}\"")
+        sysout("%RED%### Error: {} {}".format(message, '"{}"'.format(argument) if argument else ''))
         time.sleep(wait_interval)
         sysout('\033[2A\033[J', end='')
 

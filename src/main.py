@@ -2,9 +2,10 @@
 import signal
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.meta.singleton import Singleton
 
 
-class Main:
+class Main(metaclass=Singleton):
     def __init__(self):
         self.configs = AppConfigs()
         self.configs.logger().info(self.configs)
