@@ -49,14 +49,14 @@ class TestJsonSearch(unittest.TestCase):
         st = self.j_utils.json_select(self.json_object, 'elem3[2].name3[0].inner_name1')
         self.assertEqual('inner_value1', st)
 
-    # TC5 - Test selecting a nested element by a property value inside an array.
+    # TC5 - Test selecting a nested element by a property value inside an options.
     def test_should_select_a_nested_element_by_a_property_value_inside_array(self):
         st = self.j_utils.json_select(self.json_object, 'elem5{radio}')
         self.assertEqual('Gaga', st)
         st = self.j_utils.json_select(self.json_object, 'elem5{radio<Gugo>}')
         self.assertEqual('Gugo', st)
 
-    # TC6 - Test selecting a nested property nested inside an array by a property value inside an array.
+    # TC6 - Test selecting a nested property nested inside an options by a property value inside an options.
     def test_should_select_a_nested_property_nested_inside_array_by_a_property_value_inside_array(self):
         st = self.j_utils.json_select(self.json_object,
                                       'elem4{elem4_1}{elem4_1_1}{inner_nested_name1}')

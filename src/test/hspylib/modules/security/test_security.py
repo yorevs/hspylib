@@ -2,7 +2,8 @@ import os
 import sys
 import unittest
 
-from hspylib.modules.security.security import encode, encrypt, decrypt, decode
+from hspylib.core.tools.commons import safe_del_file
+from hspylib.modules.security.security import encode, encrypt, decrypt, decode, lock, unlock
 
 PASSPHRASE = '12345'
 SALT = '1234567890'
@@ -21,25 +22,26 @@ class TestSecurity(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        with open(SAMPLE_IN_FILE_NAME, 'w') as f_in:
-            f_in.write(ORIGINAL_FILE_CONTENTS)
-        with open(SAMPLE_OUT_FILE_NAME, 'w') as f_in:
-            f_in.write(ENCODED_FILE_CONTENTS)
+        with open(SAMPLE_IN_FILE_NAME, 'w') as f_out:
+            f_out.write(ORIGINAL_FILE_CONTENTS)
+        with open(SAMPLE_OUT_FILE_NAME, 'w') as f_out:
+            f_out.write(ENCODED_FILE_CONTENTS)
+        with open(SAMPLE_IN_FILE_NAME) as f_in:
+            contents = str(f_in.read().strip())
+            self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
+        with open(SAMPLE_OUT_FILE_NAME) as f_in:
+            contents = str(f_in.read().strip())
+            self.assertEqual(ENCODED_FILE_CONTENTS, contents)
     
     # Teardown tests
     def tearDown(self):
-        if os.path.exists(OUT_FILE):
-            os.remove(OUT_FILE)
-        if os.path.exists(OUT_FILE_GPG):
-            os.remove(OUT_FILE_GPG)
+        safe_del_file(OUT_FILE)
+        safe_del_file(OUT_FILE_GPG)
     
     # TEST CASES ----------
 
     # TC1 - Test encoding a file.
     def test_should_encode_file(self):
-        with open(SAMPLE_IN_FILE_NAME) as f_in:
-            contents = str(f_in.read().strip())
-            self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
         encode(SAMPLE_IN_FILE_NAME, OUT_FILE)
         with open(OUT_FILE) as f_out:
             contents = str(f_out.read().strip())
@@ -47,9 +49,6 @@ class TestSecurity(unittest.TestCase):
 
     # TC2 - Test decoding a file.
     def test_should_decode_file(self):
-        with open(SAMPLE_OUT_FILE_NAME) as f_in:
-            contents = str(f_in.read().strip())
-            self.assertEqual(ENCODED_FILE_CONTENTS, contents)
         decode(SAMPLE_OUT_FILE_NAME, OUT_FILE)
         with open(OUT_FILE) as f_out:
             contents = str(f_out.read().strip())
@@ -57,12 +56,17 @@ class TestSecurity(unittest.TestCase):
 
     # TC3 - Test encrypting a file.
     def test_should_encrypt_decrypt_file(self):
-        with open(SAMPLE_IN_FILE_NAME) as f_in:
-            contents = str(f_in.read().strip())
-            self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
         encrypt(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE, SALT)
         decrypt(OUT_FILE_GPG, OUT_FILE, PASSPHRASE, SALT)
         with open(OUT_FILE) as f_out:
+            contents = str(f_out.read().strip())
+            self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
+
+    # TC4 - Test locking and then unlocking a file
+    def test_should_lock_and_then_unlock_file(self):
+        lock(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE, SALT)
+        unlock(OUT_FILE_GPG, SAMPLE_IN_FILE_NAME, PASSPHRASE, SALT)
+        with open(SAMPLE_IN_FILE_NAME) as f_out:
             contents = str(f_out.read().strip())
             self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
 

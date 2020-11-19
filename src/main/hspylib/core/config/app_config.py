@@ -59,7 +59,7 @@ class AppConfigs(metaclass=Singleton):
     def log_dir(self) -> str:
         return self._log_dir
 
-    def logger(self):
+    def logger(self) -> log:
         return self._logger if self._logger else log
 
     def get(self, property_name: str) -> Optional[str]:
