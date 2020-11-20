@@ -1,9 +1,8 @@
-import os
 import sys
 import unittest
 
 from hspylib.core.tools.commons import safe_del_file
-from hspylib.modules.security.security import encode, encrypt, decrypt, decode, lock, unlock
+from hspylib.modules.security.security import encode, encrypt, decrypt, decode
 
 PASSPHRASE = '12345'
 SALT = '1234567890'
@@ -59,14 +58,6 @@ class TestSecurity(unittest.TestCase):
         encrypt(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE, SALT)
         decrypt(OUT_FILE_GPG, OUT_FILE, PASSPHRASE, SALT)
         with open(OUT_FILE) as f_out:
-            contents = str(f_out.read().strip())
-            self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
-
-    # TC4 - Test locking and then unlocking a file
-    def test_should_lock_and_then_unlock_file(self):
-        lock(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE, SALT)
-        unlock(OUT_FILE_GPG, SAMPLE_IN_FILE_NAME, PASSPHRASE, SALT)
-        with open(SAMPLE_IN_FILE_NAME) as f_out:
             contents = str(f_out.read().strip())
             self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
 
