@@ -12,23 +12,28 @@ from hspylib.core.tools.commons import safe_del_file
 DEFAULT_SALT = 'HsPyLib'
 
 
-# @purpose: Encode file into base64
 def encode(in_file, out_file) -> int:
+    """Encode file into base64
+    :param in_file: The file to be encoded
+    :param out_file: The resulting encoded file
+    """
     with open(in_file) as f_in_file:
         with open(out_file, 'w') as f_out_file:
             b64msg = f_in_file.read().encode('utf-8')
             return f_out_file.write(str(base64.b64encode(b64msg).decode('utf-8')))
 
 
-# @purpose: Decode file from base64
 def decode(in_file, out_file) -> int:
+    """Decode file from base64
+    :param in_file: The file to be decoded
+    :param out_file: The resulting decoded file
+    """
     with open(in_file) as f_in_file:
         with open(out_file, 'w') as f_out_file:
             b64msg = f_in_file.read().encode('utf-8')
             return f_out_file.write(str(base64.b64decode(b64msg).decode('utf-8')))
 
 
-# @purpose: Encrypt file using fernet cryptography
 def encrypt(
         in_file: str,
         out_file: str,
@@ -38,7 +43,16 @@ def encrypt(
         length=32,
         iterations=100000,
         encoding: str = 'utf-8') -> None:
-
+    """Encrypt file using Fernet cryptography
+    :param in_file: The file to be encrypted
+    :param out_file: The resulting encrypted file
+    :param pass_phrase: The passphrase to encrypt the file
+    :param salt: TODO
+    :param digest_algo: The digest encrypting algorithm
+    :param length: TODO
+    :param iterations: TODO
+    :param encoding:
+    """
     kdf = PBKDF2HMAC(
         algorithm=digest_algo,
         length=length,
@@ -54,7 +68,6 @@ def encrypt(
             f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
 
 
-# @purpose: Encrypt file using fernet cryptography
 def decrypt(
         in_file: str,
         out_file: str,
@@ -64,7 +77,16 @@ def decrypt(
         length=32,
         iterations=100000,
         encoding: str = 'utf-8') -> None:
-
+    """Decrypt file using Fernet cryptography
+    :param in_file: The file to be decrypted
+    :param out_file: The resulting decrypted file
+    :param pass_phrase: The passphrase to decrypt the file
+    :param salt: TODO
+    :param digest_algo: The digest decrypting algorithm
+    :param length: TODO
+    :param iterations: TODO
+    :param encoding:
+    """
     kdf = PBKDF2HMAC(
         algorithm=digest_algo,
         length=length,
@@ -80,8 +102,19 @@ def decrypt(
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
 
 
-# @purpose: Encrypt file using gpg
-def gpg_encrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_algo='SHA512'):
+def gpg_encrypt(
+        in_file: str,
+        out_file: str,
+        pass_phrase: str,
+        cipher_algo='AES256',
+        digest_algo='SHA512') -> str:
+    """Encrypt file using gpg
+    :param in_file: The file to be encrypted
+    :param out_file: The resulting encrypted file
+    :param pass_phrase: The passphrase to encrypt the file
+    :param cipher_algo: The cipher algorithm
+    :param digest_algo: The digest encrypting algorithm
+    """
     cmd_args = [
         'gpg', '--quiet', '--yes', '--batch'
         , '--cipher-algo={}'.format(cipher_algo)
@@ -93,8 +126,19 @@ def gpg_encrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_alg
     return '=> ' + ' '.join(cmd_args)
 
 
-# @purpose: Decrypt file using gpg
-def gpg_decrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_algo='SHA512'):
+def gpg_decrypt(
+        in_file: str,
+        out_file: str,
+        pass_phrase: str,
+        cipher_algo='AES256',
+        digest_algo='SHA512'):
+    """Decrypt file using gpg
+    :param in_file: The file to be decrypted
+    :param out_file: The resulting decrypted file
+    :param pass_phrase: The passphrase to decrypt the file
+    :param cipher_algo: The cipher algorithm
+    :param digest_algo: The digest decrypting algorithm
+    """
     cmd_args = [
         'gpg', '--quiet', '--yes', '--batch'
         , '--cipher-algo={}'.format(cipher_algo)
@@ -106,7 +150,19 @@ def gpg_decrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_alg
     return '=> ' + ' '.join(cmd_args)
 
 
-def lock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT, is_gpg: bool = False) -> None:
+def lock(
+        in_file: str,
+        out_file: str,
+        passphrase: str,
+        salt: str = DEFAULT_SALT,
+        is_gpg: bool = False) -> None:
+    """ TODO
+    :param in_file:
+    :param out_file:
+    :param passphrase:
+    :param salt:
+    :param is_gpg:
+    """
     assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
     enc_file = '{}.{}'.format(out_file, 'gpg' if is_gpg else 'fernet')
     if is_gpg:
@@ -119,7 +175,19 @@ def lock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT,
     safe_del_file(enc_file)
 
 
-def unlock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT, is_gpg: bool = False) -> None:
+def unlock(
+        in_file: str,
+        out_file: str,
+        passphrase: str,
+        salt: str = DEFAULT_SALT,
+        is_gpg: bool = False) -> None:
+    """ TODO
+    :param in_file:
+    :param out_file:
+    :param passphrase:
+    :param salt:
+    :param is_gpg:
+    """
     assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
     dec_file = '{}.{}'.format(out_file, 'gpg' if is_gpg else 'fernet')
     decode(in_file, dec_file)
@@ -130,4 +198,3 @@ def unlock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SAL
         decrypt(dec_file, out_file, passphrase, salt)
     assert os.path.exists(out_file), "Unable to decrypt file {}".format(in_file)
     safe_del_file(dec_file)
-

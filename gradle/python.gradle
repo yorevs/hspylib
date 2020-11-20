@@ -192,7 +192,7 @@ task runTest(type: Task) {
         exec {
           workingDir = dirName(file)
           environment PYTHONPATH: "${rootProject.ext.pythonPath}"
-          commandLine rootProject.python, '-m', 'unittest', '-f', file.path
+          commandLine rootProject.python, '-m', 'unittest', '-v', '-f', file.path
         }
       }
   }

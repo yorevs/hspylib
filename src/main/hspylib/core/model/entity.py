@@ -3,7 +3,7 @@ from typing import Tuple
 from uuid import UUID
 
 
-class Entity:
+class Entity(object):
     def __init__(self, entity_id: UUID = None):
         self.uuid = entity_id
 
