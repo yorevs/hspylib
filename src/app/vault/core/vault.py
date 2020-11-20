@@ -1,9 +1,7 @@
 import base64
 import getpass
 import os
-import re
 import uuid
-from typing import Tuple, List
 
 from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file
 from hspylib.modules.security.security import lock, unlock
@@ -11,6 +9,7 @@ from hspylib.ui.cli.menu_utils import MenuUtils
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_service import VaultService
 from vault.entity.vault_entry import VaultEntry
+from vault.exception.vault_close_error import VaultCloseError
 from vault.exception.vault_open_error import VaultOpenError
 
 # Application name, read from it's own file path
@@ -24,7 +23,6 @@ class Vault(object):
     """Represents the vault and it's functionalities"""
 
     def __init__(self):
-        self.data = {}
         self.is_open = False
         self.is_modified = False
         self.is_new = False
@@ -34,10 +32,11 @@ class Vault(object):
         self.log = self.configs.logger()
 
     def __str__(self):
+        data = self.service.list()
         vault_str = ""
-        for entry_key in self.data:
-            vault_str += str(self.data[entry_key])
-        return str(vault_str)
+        for entry in data:
+            vault_str += entry.key
+        return vault_str
 
     def exit_handler(self, signum=0, frame=None) -> None:
         """
@@ -61,42 +60,44 @@ class Vault(object):
         try:
             if not self.is_open:
                 self.__unlock_vault()
-                self.log.debug("Vault open modified={} open={}".format(self.is_modified, self.is_open))
-            self.service.list()
-            self.log.debug("Vault read entries={}".format(len(self.data)))
+                self.log.debug("Vault open and unlocked")
         except UnicodeDecodeError:
-            MenuUtils.print_error('Invalid vault credentials')
-            self.exit_handler(1)
+            MenuUtils.print_error('Authentication failure')
         except Exception as err:
-            raise VaultOpenError("Unable to open Vault file: {} => {}".format(self.configs.vault_file(), err))
+            raise VaultOpenError("Unable to open Vault file => {}".format(str(err)))
 
     def close(self) -> None:
         """Close the Vault file and cleanup temporary files"""
         try:
             if self.is_open:
                 self.__lock_vault()
-                self.log.debug("Vault closed modified={} open={}".format(self.is_modified, self.is_open))
+                self.log.debug("Vault closed and locked")
         except UnicodeDecodeError:
             MenuUtils.print_error('Authentication failure')
-            self.exit_handler(1)
         except Exception as err:
-            raise VaultOpenError("Unable to close Vault file: {} => {}".format(self.configs.vault_file(), err))
+            raise VaultCloseError("Unable to close Vault file => {}".format(str(err)))
 
-    def list(self, filter_expr=None) -> None:
-        """List all vault payload
+    def list(self, filter_expr: str = None) -> None:
+        """List all vault entries filtered by filter_expr
         :param filter_expr: The filter expression
         """
-        if len(self.data) > 0:
-            (data, header) = self.__fetch_data(filter_expr)
+        try:
+            data = self.service.list(filter_expr)
             if len(data) > 0:
-                sysout("%YELLOW%{}%NC%".format(header))
-                for entry_key in data:
-                    sysout(self.data[entry_key].to_string())
+                sysout("%YELLOW%{} {}%NC%"
+                       .format("=== Listing all vault payload",
+                               "matching \'{}\' ===".format(filter_expr) if filter_expr else "==="))
+                for entry in data:
+                    sysout(entry.to_string())
             else:
-                sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
-        else:
-            sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
-        self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
+                if filter_expr:
+                    sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
+                else:
+                    sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
+            self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
+        except Exception as err:
+            self.close()
+            raise VaultOpenError("Unable to list Vault entries => {}".format(str(err)))
 
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
@@ -104,7 +105,8 @@ class Vault(object):
         :param hint: The vault entry hint to be added
         :param password: The vault entry password to be added
         """
-        if key not in self.data.keys():
+        entry = self.service.get(key)
+        if not entry:
             while not password:
                 password = getpass.getpass("Type the password for '{}': ".format(key)).strip()
             entry = VaultEntry(uuid.uuid4(), key, key, password, hint)
@@ -119,8 +121,8 @@ class Vault(object):
         """Display the vault entry specified by name
         :param key: The vault entry name to get
         """
-        if key in self.data.keys():
-            entry = self.data[key]
+        entry = self.service.get(key)
+        if entry:
             sysout("%GREEN%\n{}".format(entry.to_string(True)))
         else:
             self.log.error("Attempt to get from Vault failed for name={}".format(key))
@@ -133,13 +135,14 @@ class Vault(object):
         :param hint: The vault entry hint to be updated
         :param password: The vault entry password to be updated
         """
-        if key in self.data.keys():
+        entry = self.service.get(key)
+        if entry:
             if not password:
                 passphrase = getpass.getpass("Type a password for '{}': ".format(key)).strip()
             else:
                 passphrase = password
-            entry = VaultEntry(uuid.uuid4(), key, key, passphrase, hint)
-            self.service.save(entry)
+            upd_entry = VaultEntry(entry.uuid, key, key, passphrase, hint)
+            self.service.save(upd_entry)
             sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
         else:
             self.log.error("Attempt to update Vault failed for name={}".format(key))
@@ -150,8 +153,8 @@ class Vault(object):
         """Remove a vault entry
         :param key: The vault entry name to be removed
         """
-        if key in self.data.keys():
-            entry = self.service.get(key)
+        entry = self.service.get(key)
+        if entry:
             self.service.remove(entry)
             sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
         else:
@@ -209,30 +212,3 @@ class Vault(object):
             os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
         self.is_open = True
         safe_del_file(self.configs.vault_file())
-
-    def __fetch_data(self, filter_expr) -> Tuple[List[VaultEntry], str]:
-        """Filter and sort vault data and return the proper caption for listing them
-        :param filter_expr: The filter expression
-        """
-        if filter_expr:
-            caption = "\n=== Listing vault payload containing '{}' ===\n".format(filter_expr)
-            data = self.__filter_data(filter_expr)
-        else:
-            caption = "\n=== Listing all vault payload ===\n"
-            data = list(self.data)
-        data.sort()
-        self.log.debug(
-            "Vault payload fetched. Returned payload={} filtered={}"
-                .format(len(self.data), len(self.data) - len(data)))
-
-        return data, caption
-
-    def __filter_data(self, filter_expr) -> List[str]:
-        """Filter data based on expression
-        :param filter_expr: The filter expression
-        """
-        filtered = list(filter(lambda entry: entry, [
-            entry if re.search(filter_expr, entry, re.IGNORECASE) else None for entry in self.data.keys()
-        ]))
-
-        return filtered

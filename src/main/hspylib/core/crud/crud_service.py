@@ -12,13 +12,13 @@ class CrudService(Generic[ET, RT]):
     def __init__(self, repository: RT):
         self.repository = repository
 
-    def save(self, entity: ET):
+    def save(self, entity: ET) -> None:
         if not self.get(entity.uuid):
             self.repository.insert(entity)
         else:
             self.repository.update(entity)
 
-    def remove(self, entity: ET):
+    def remove(self, entity: ET) -> None:
         if not self.get(entity.uuid):
             raise NotFoundError(
                 "{} was not found: {}".format(entity.__class__, entity))
