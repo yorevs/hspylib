@@ -84,6 +84,7 @@ task installDependencies(type: Task) {
 task installModule(type: Task) {
   group = 'Install'
   description = "Install the module as a python package using module's setup.py"
+  dependsOn syncPythonPackages
   doLast {
     def depsFile = new File("DEPS.txt")
     depsFile.write ''

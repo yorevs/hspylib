@@ -9,5 +9,6 @@ __all__ = [
   'menu_ui', 
   'menu_utils', 
   'table_renderer', 
+  'tools', 
   'vt100'
 ]

@@ -3,6 +3,5 @@
 # Package: .Users.hjunior.GIT-Repository.hspylib.src.app.vault.entity
 
 __all__ = [
-  'validator', 
   'vault_entry'
 ]
