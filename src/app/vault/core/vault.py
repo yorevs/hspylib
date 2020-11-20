@@ -99,7 +99,7 @@ class Vault(object):
 
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
-        :param key: The vault entry key to be added
+        :param key: The vault entry name to be added
         :param hint: The vault entry hint to be added
         :param password: The vault entry password to be added
         """
@@ -111,25 +111,25 @@ class Vault(object):
             self.is_modified = True
             sysout("%GREEN%\n=== Entry added ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            self.log.error("Attempt to add to Vault failed for key={}".format(key))
+            self.log.error("Attempt to add to Vault failed for name={}".format(key))
             sysout("%RED%### Entry specified by '{}' already exists in vault".format(key))
         self.log.debug("Vault add issued. User={}".format(getpass.getuser()))
 
     def get(self, key) -> None:
-        """Display the vault entry specified by key
-        :param key: The vault entry key to get
+        """Display the vault entry specified by name
+        :param key: The vault entry name to get
         """
         if key in self.data.keys():
             entry = self.data[key]
             sysout("%GREEN%\n{}".format(entry.to_string(True)))
         else:
-            self.log.error("Attempt to get from Vault failed for key={}".format(key))
+            self.log.error("Attempt to get from Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
         self.log.debug("Vault get issued. User={}".format(getpass.getuser()))
 
     def update(self, key, hint, password) -> None:
         """Update a vault entry
-        :param key: The vault entry key to be updated
+        :param key: The vault entry name to be updated
         :param hint: The vault entry hint to be updated
         :param password: The vault entry password to be updated
         """
@@ -143,13 +143,13 @@ class Vault(object):
             self.is_modified = True
             sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            self.log.error("Attempt to update Vault failed for key={}".format(key))
+            self.log.error("Attempt to update Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
         self.log.debug("Vault update issued. User={}".format(getpass.getuser()))
 
     def remove(self, key: str) -> None:
         """Remove a vault entry
-        :param key: The vault entry key to be removed
+        :param key: The vault entry name to be removed
         """
         if key in self.data.keys():
             entry = self.data[key]
@@ -157,7 +157,7 @@ class Vault(object):
             self.is_modified = True
             sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            self.log.error("Attempt to remove to Vault failed for key={}".format(key))
+            self.log.error("Attempt to remove to Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
         self.log.debug("Vault remove issued. User={}".format(getpass.getuser()))
 

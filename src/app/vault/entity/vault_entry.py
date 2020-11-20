@@ -1,5 +1,9 @@
 import re
 from datetime import datetime
+from uuid import UUID
+
+from hspylib.core.model.entity import Entity
+from hspylib.core.tools.validator import DEFAULT_DATE_FORMAT
 
 DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
         Name: %GREEN%{}%NC%
@@ -11,15 +15,16 @@ DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
 ENTRY_FORMAT = """{}|{}|{}|{}\n"""
 
 
-class VaultEntry(object):
+class VaultEntry(Entity):
     """Represents a vault entity"""
 
-    def __init__(self, key: str, name: str, password: str, hint: str, modified: datetime = None):
+    def __init__(self, uuid: UUID, key: str, name: str, password: str, hint: str, modified: datetime = None):
+        super().__init__(uuid)
         self.key = key
         self.name = name
         self.password = password
         self.hint = hint
-        self.modified = modified if modified else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.modified = modified if modified else datetime.now().strftime(DEFAULT_DATE_FORMAT)
 
     def __str__(self):
         return ENTRY_FORMAT.format(self.key, self.name, self.password, self.hint, self.modified)
