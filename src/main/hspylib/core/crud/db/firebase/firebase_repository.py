@@ -58,7 +58,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to delete from={}'.format(response.status_code, url))
 
     def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
-        url = '{}.json?orderBy="$name"'.format(self.config.url())
+        url = '{}.json?orderBy="$key"'.format(self.config.url())
         self.logger.debug('Fetching firebase entries from {}'.format(url))
         response = get(url)
         assert response, "Response is empty"
@@ -68,7 +68,7 @@ class FirebaseRepository(CrudRepository):
         return self.to_list(response.body, filters) if response.body else []
 
     def find_by_id(self, entity_id: str) -> Optional[Entity]:
-        url = '{}.json?orderBy="$name"&equalTo="{}"'.format(self.config.url(), entity_id)
+        url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.url(), entity_id)
         self.logger.debug('Fetching firebase entry entity_id={} from {}'.format(entity_id, url))
         response = get(url)
         assert response, "Response is empty"
