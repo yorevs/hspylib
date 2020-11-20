@@ -20,7 +20,7 @@ VERSION = (1, 2, 0)
 
 
 class Vault(object):
-    """Represents the vault"""
+    """Represents the vault and it's functionalities"""
 
     def __init__(self):
         self.data = {}
@@ -40,18 +40,18 @@ class Vault(object):
     def exit_handler(self, signum=0, frame=None) -> None:
         """
         Handle interruptions to shutdown gracefully
-        :param signum: TODO
-        :param frame: TODO
+        :param signum: The signal number or the exit code
+        :param frame: The frame raised by the signal
         """
-        if signum != 0 and frame is not None:
+        exit_code = signum
+        if frame is not None:
             self.log.warn('Signal handler hooked signum={} frame={}'.format(signum, frame))
             sysout('')
-            ret_val = 1
+            exit_code = 3
         else:
             self.log.info('Exit handler called')
-            ret_val = signum
         self.close()
-        sys.exit(ret_val)
+        sys.exit(exit_code)
 
     def get_passphrase(self) -> str:
         """Retrieve the vault passphrase"""
@@ -100,8 +100,8 @@ class Vault(object):
             raise VaultOpenError("Unable to open Vault file: {} => {}".format(self.configs.vault_file(), err))
 
     def close(self) -> None:
+        """Close the Vault file and cleanup temporary files"""
         try:
-            """Close the Vault file and cleanup temporary files"""
             if self.is_modified:
                 self.save()
             if self.is_open:
@@ -149,7 +149,7 @@ class Vault(object):
                         if not line.strip():
                             continue
                         (key, password, hint, modified) = line.strip().split('|')
-                        entry = VaultEntry(key, 'TODO', password, hint, modified)
+                        entry = VaultEntry(key, key, password, hint, modified)
                         self.data[key] = entry
                     self.log.debug("Vault has been read. Returned payload={}".format(len(self.data)))
             except ValueError:
@@ -158,7 +158,7 @@ class Vault(object):
 
     def list(self, filter_expr=None) -> None:
         """List all vault payload
-        :param filter_expr: TODO
+        :param filter_expr: The filter expression
         """
         if len(self.data) > 0:
             (data, header) = self.fetch_data(filter_expr)
@@ -173,8 +173,8 @@ class Vault(object):
         self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
 
     def fetch_data(self, filter_expr) -> Tuple[List[VaultEntry], str]:
-        """Filter and sort vault payload and return the proper caption for listing them
-        :param filter_expr: TODO
+        """Filter and sort vault data and return the proper caption for listing them
+        :param filter_expr: The filter expression
         """
         if filter_expr:
             caption = "\n=== Listing vault payload containing '{}' ===\n".format(filter_expr)
@@ -189,6 +189,9 @@ class Vault(object):
         return data, caption
 
     def filter_data(self, filter_expr) -> List[str]:
+        """Filter data based on expression
+        :param filter_expr: The filter expression
+        """
         filtered = list(filter(lambda entry: entry, [
             entry if re.search(filter_expr, entry, re.IGNORECASE) else None for entry in self.data.keys()
         ]))
@@ -204,7 +207,7 @@ class Vault(object):
         if key not in self.data.keys():
             while not password:
                 password = getpass.getpass("Type the password for '{}': ".format(key)).strip()
-            entry = VaultEntry(key, 'TODO', password, hint)
+            entry = VaultEntry(key, key, password, hint)
             self.data[key] = entry
             self.is_modified = True
             sysout("%GREEN%\n=== Entry added ===\n\n%NC%{}".format(entry.to_string()))
@@ -227,16 +230,16 @@ class Vault(object):
 
     def update(self, key, hint, password) -> None:
         """Update a vault entry
-        :param key: TODO
-        :param hint: TODO
-        :param password: TODO
+        :param key: The vault entry key to be updated
+        :param hint: The vault entry hint to be updated
+        :param password: The vault entry password to be updated
         """
         if key in self.data.keys():
             if not password:
                 passphrase = getpass.getpass("Type a password for '{}': ".format(key)).strip()
             else:
                 passphrase = password
-            entry = VaultEntry(key, 'TODO', passphrase, hint)
+            entry = VaultEntry(key, key, passphrase, hint)
             self.data[key] = entry
             self.is_modified = True
             sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
@@ -247,7 +250,7 @@ class Vault(object):
 
     def remove(self, key: str) -> None:
         """Remove a vault entry
-        :param key: TODO
+        :param key: The vault entry key to be removed
         """
         if key in self.data.keys():
             entry = self.data[key]
