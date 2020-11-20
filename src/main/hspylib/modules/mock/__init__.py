@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: hspylib.modules.mock
+# HSPyLib v0-9.13
+#
+# Package: main.hspylib.modules.mock
 
 __all__ = [
   'mock_request', 

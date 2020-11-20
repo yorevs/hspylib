@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import getopt
 import os
 import signal
@@ -157,7 +158,7 @@ class Main(metaclass=Singleton):
             self.vault.close()
         except TypeError as err:
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
-            self.exit_app(1)
+            self.vault.exit_handler(1)
 
         MenuUtils.wait_enter()
 

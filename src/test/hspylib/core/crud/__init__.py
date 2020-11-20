@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: hspylib.core.crud
+# HSPyLib v0-9.13
+#
+# Package: test.hspylib.core.crud
 
 __all__ = [
   'test_file_repository', 

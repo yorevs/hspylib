@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: hspylib.core.config
+# HSPyLib v0-9.13
+#
+# Package: test.hspylib.core.config
 
 __all__ = [
   'test_app_config'

@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: ui.cli.menu
+# HSPyLib v0-9.13
+#
+# Package: demo.ui.cli.menu
 
 __all__ = [
   'dynamic_menu', 

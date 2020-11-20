@@ -6,7 +6,7 @@ with open("README.md") as fh:
 with open("VERSION") as fh:
     version = fh.read()
 
-with open("DEPS.txt") as fh:
+with open("requirements.txt") as fh:
     dependencies = list(filter(None, fh.read().splitlines()))
 
 setuptools.setup(

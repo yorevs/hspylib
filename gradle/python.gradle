@@ -1,4 +1,8 @@
-/* Python Tasks ------------------------------------------------------------- */
+/*
+    Gradle Python extension
+    Project: HSPYLIB
+    Created: 1st July, 2020
+*/
 
 ext {
   pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test"
@@ -20,12 +24,16 @@ String dirName(File file) {
 
 /***** Other Group */
 
+/* Used to created the __init__.py files { */
 def initTemplate = """# _*_ coding: utf-8 _*_
+#
+# HSPyLib v${projectVersion}
 #
 # Package: %package%
 
 __all__ = %modules%
 """
+/* } */
 
 /* Find and synchronize all python packages */
 task syncPythonPackages(type: Task) {
@@ -35,9 +43,9 @@ task syncPythonPackages(type: Task) {
     project.file("${sourceRoot}").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
       directory.eachFileMatch(~/^__init__\.py$/) { initFile ->
         def pkg = initFile.getCanonicalPath()
-          .replaceAll("${sourceRoot}/(main|test|demo)/", "")
+          .replaceAll("${sourceRoot}/", "")
           .replaceAll("\\/", "\\.")
-          .replaceAll("\\.__init__\\.py", "")
+          .replaceAll("\\.?__init__\\.py", "")
         def modules = []
         initFile.getParentFile().eachFile() { module ->
           if (!module.name.startsWith("__init__") &&
@@ -86,7 +94,7 @@ task installModule(type: Task) {
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
   doLast {
-    def depsFile = new File("DEPS.txt")
+    def depsFile = new File("requirements.txt")
     depsFile.write ''
     project.ext.deps.each { dep ->
       depsFile.append dep + '\n'
@@ -95,7 +103,7 @@ task installModule(type: Task) {
         from("$rootProject.projectDir") {
           include 'README.md'
           include 'VERSION'
-          include 'DEPS.txt'
+          include 'requirements.txt'
         }
         into "${sourceRoot}/main"
     }
@@ -190,10 +198,11 @@ task runTest(type: Task) {
     }.each { File file ->
         println "Running unittests -> ${file.name}"
         println "  |- PYTHON_PATH: ${rootProject.ext.pythonPath}"
+        println ""
         exec {
           workingDir = dirName(file)
           environment PYTHONPATH: "${rootProject.ext.pythonPath}"
-          commandLine rootProject.python, '-m', 'unittest', '-v', '-f', file.path
+          commandLine rootProject.python, '-m', 'unittest', '-b', '-f', '-v', file.path
         }
       }
   }
