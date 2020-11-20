@@ -11,7 +11,7 @@ from hspylib.core.tools.commons import sysout, get_or_default
 from hspylib.ui.cli.menu_utils import MenuUtils
 from vault.core.vault import Vault, APP_NAME, VERSION
 from vault.core.vault_config import VaultConfig
-from vault.entity.validator.argument_validator import ArgumentValidator
+from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 
 # Usage message
 USAGE = """
