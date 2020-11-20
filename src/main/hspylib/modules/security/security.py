@@ -64,10 +64,11 @@ def encrypt(
     )
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
-    assert os.path.exists(in_file)
+    assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
     with open(in_file) as f_in_file:
         with open(out_file, 'w') as f_out_file:
             f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
+    assert os.path.exists(out_file), "Unable to encrypt file \"{}\"".format(in_file)
 
 
 def decrypt(
@@ -98,39 +99,8 @@ def decrypt(
     )
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
-    assert os.path.exists(in_file)
+    assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
     with open(in_file) as f_in_file:
         with open(out_file, 'w') as f_out_file:
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
-
-
-def lock(
-        in_file: str,
-        out_file: str,
-        passphrase: str,
-        salt: str = DEFAULT_SALT) -> None:
-    """ TODO
-    :param in_file:
-    :param out_file:
-    :param passphrase:
-    :param salt:
-    """
-    assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
-    encrypt(in_file, out_file, passphrase, salt)
-    assert os.path.exists(out_file), "Unable to encrypt file {}".format(in_file)
-
-
-def unlock(
-        in_file: str,
-        out_file: str,
-        passphrase: str,
-        salt: str = DEFAULT_SALT) -> None:
-    """ TODO
-    :param in_file:
-    :param out_file:
-    :param passphrase:
-    :param salt:
-    """
-    assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
-    decrypt(in_file, out_file, passphrase, salt)
-    assert os.path.exists(out_file), "Unable to decrypt file {}".format(in_file)
+    assert os.path.exists(out_file), "Unable to decrypt file \"{}\"".format(in_file)

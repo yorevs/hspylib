@@ -4,7 +4,7 @@ import os
 import uuid
 
 from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file
-from hspylib.modules.security.security import lock, unlock
+from hspylib.modules.security.security import encrypt, decrypt
 from hspylib.ui.cli.menu_utils import MenuUtils
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_service import VaultService
@@ -24,8 +24,6 @@ class Vault(object):
 
     def __init__(self):
         self.is_open = False
-        self.is_modified = False
-        self.is_new = False
         self.passphrase = None
         self.configs = VaultConfig()
         self.service = VaultService()
@@ -191,31 +189,29 @@ class Vault(object):
                         self.log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
                         touch_file(self.configs.vault_file())
                         self.is_open = True
-                        self.is_modified = True
-                        self.is_new = True
             return "{}:{}".format(self.configs.vault_user(), passphrase)
 
     def __lock_vault(self) -> None:
-        """Encrypt and then, encode the vault file"""
+        """Encrypt the vault file"""
         if file_is_not_empty(self.configs.unlocked_vault_file()):
-            lock(
+            encrypt(
                 self.configs.unlocked_vault_file(),
                 self.configs.vault_file(),
                 self.passphrase)
-            self.log.debug("Vault file is locked !")
+            self.log.debug("Vault file is encrypted")
         else:
             os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
         self.is_open = False
         safe_del_file(self.configs.unlocked_vault_file())
 
     def __unlock_vault(self) -> None:
-        """Decode and then, decrypt the vault file"""
+        """Decrypt the vault file"""
         if file_is_not_empty(self.configs.vault_file()):
-            unlock(
+            decrypt(
                 self.configs.vault_file(),
                 self.configs.unlocked_vault_file(),
                 self.passphrase,)
-            self.log.debug("Vault file is unlocked !")
+            self.log.debug("Vault file is decrypted")
         else:
             os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
         self.is_open = True
