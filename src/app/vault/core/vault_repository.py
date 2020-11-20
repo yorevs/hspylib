@@ -38,7 +38,8 @@ class VaultRepository(FileRepository):
     def dict_to_entity(self, row: dict) -> VaultEntry:
         return VaultEntry(
             row['uuid'],
+            row['key'],
             row['name'],
-            row['name'],
+            row['password'],
             row['hint'],
             row['modified'])

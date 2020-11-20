@@ -85,7 +85,7 @@ class Vault(object):
             data = self.service.list(filter_expr)
             if len(data) > 0:
                 sysout("%YELLOW%{} {}%NC%"
-                       .format("=== Listing all vault payload",
+                       .format("=== Listing all vault entries",
                                "matching \'{}\' ===".format(filter_expr) if filter_expr else "==="))
                 for entry in data:
                     sysout(entry.to_string())
@@ -123,7 +123,7 @@ class Vault(object):
         """
         entry = self.service.get(key)
         if entry:
-            sysout("%GREEN%\n{}".format(entry.to_string(True)))
+            sysout("%GREEN%\n{}".format(entry.to_string(True, True)))
         else:
             self.log.error("Attempt to get from Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
