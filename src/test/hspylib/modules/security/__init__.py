@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: hspylib.modules.security
+# HSPyLib v0-9.13
+#
+# Package: test.hspylib.modules.security
 
 __all__ = [
   'test_security'

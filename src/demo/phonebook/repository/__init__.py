@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: phonebook.repository
+# HSPyLib v0-9.13
+#
+# Package: demo.phonebook.repository
 
 __all__ = [
   'company_repository', 

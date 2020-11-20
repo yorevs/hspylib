@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: phonebook.view
+# HSPyLib v0-9.13
+#
+# Package: demo.phonebook.view
 
 __all__ = [
   'create_view', 

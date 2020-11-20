@@ -1,6 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# Package: hspylib.core.crud.db
+# HSPyLib v0-9.13
+#
+# Package: main.hspylib.core.crud.db
 
 __all__ = [
   'db_repository', 
