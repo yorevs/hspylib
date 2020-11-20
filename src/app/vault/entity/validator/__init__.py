@@ -2,9 +2,8 @@
 #
 # HSPyLib v0-9.13
 #
-# Package: app.vault.entity
+# Package: app.vault.entity.validator
 
 __all__ = [
-  'validator', 
-  'vault_entry'
+  'entry_validator'
 ]

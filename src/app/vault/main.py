@@ -29,7 +29,7 @@ Usage: {} <option> [arguments]
       -l  |  --list [filters]               : List all password payload or matching the given filter.
 
     Arguments:
-      name      : The name of the vault entry. That will identify the entry (key).
+      name      : The name of the vault entry. That will identify the entry (name).
       hint      : Any hint related to that vault entry.
       password  : The password of the vault entry. If not provided, further input will be required.
       filter    : Filter the vault payload by name.

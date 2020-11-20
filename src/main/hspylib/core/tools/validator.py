@@ -1,7 +1,9 @@
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Type, Callable
+from typing import Type, Callable, Tuple
+
+DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 class Validator(ABC, Callable):
@@ -13,8 +15,16 @@ class Validator(ABC, Callable):
         URL = '^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&\'\\(\\)\\*\\+,;=.]+$'
 
     @staticmethod
-    def is_not_blank(input_string: str) -> bool:
-        return input_string and len(input_string) > 0
+    def assert_valid(errors: list, validation: Tuple[bool, str], throw_if_invalid: bool = False) -> None:
+        if not validation[0]:
+            if throw_if_invalid:
+                raise AssertionError(validation[1])
+            else:
+                errors.append(validation[1])
+
+    @staticmethod
+    def is_not_blank(input_string: str, min_length: int = 0) -> bool:
+        return input_string and len(input_string) >= min_length
 
     @staticmethod
     def matches(
@@ -49,7 +59,7 @@ class Validator(ABC, Callable):
     @staticmethod
     def is_date(
             date_text: str,
-            fmt: str) -> bool:
+            fmt: str = DEFAULT_DATE_FORMAT) -> bool:
 
         try:
             datetime.strptime(date_text, fmt)

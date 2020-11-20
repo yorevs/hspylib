@@ -6,5 +6,7 @@
 
 __all__ = [
   'vault', 
-  'vault_config'
+  'vault_config', 
+  'vault_repository', 
+  'vault_service'
 ]
