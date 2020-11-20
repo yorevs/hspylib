@@ -8,7 +8,7 @@ DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
     Modified: %GREEN%{}%NC%
 """
 
-ENTRY_FORMAT = """{}|{}|{}|{}"""
+ENTRY_FORMAT = """{}|{}|{}|{}\n"""
 
 
 class VaultEntry(object):
@@ -29,6 +29,6 @@ class VaultEntry(object):
         :param show_password: Whether to exhibit the password or not
         :param show_hint: Whether to exhibit the hint or not
         """
-        password = self.password if show_password else re.sub('.*', '*' * max(len(self.password), 6), self.password)
-        hint = self.hint if show_hint else re.sub('.*', '*' * max(len(self.hint), 6), self.hint)
+        password = self.password if show_password else re.sub('.*', '*' * min(len(self.password), 8), self.password)
+        hint = self.hint if show_hint else re.sub('.*', '*' * min(len(self.hint), 8), self.hint)
         return DISPLAY_FORMAT.format(self.key.upper(), self.name, password, hint, self.modified)
