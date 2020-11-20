@@ -2,7 +2,6 @@ import base64
 import getpass
 import os
 import re
-import sys
 from typing import Tuple, List
 
 from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file
@@ -51,47 +50,16 @@ class Vault(object):
         else:
             self.log.info('Exit handler called')
         self.close()
-        sys.exit(exit_code)
-
-    def get_passphrase(self) -> str:
-        """Retrieve the vault passphrase"""
-        if file_is_not_empty(self.configs.vault_file()):
-            confirm_flag = False
-        else:
-            sysout("%ORANGE%### Your Vault '{}' file is empty.".format(self.configs.vault_file()))
-            sysout("%ORANGE%>>> Enter the new passphrase for this Vault")
-            confirm_flag = True
-            touch_file(self.configs.vault_file())
-        passphrase = self.configs.passphrase()
-        if passphrase:
-            return "{}:{}".format(self.configs.vault_user(), base64.b64decode(passphrase).decode("utf-8"))
-        else:
-            while not passphrase and not confirm_flag:
-                passphrase = getpass.getpass("Enter passphrase:").strip()
-                confirm = None
-                if passphrase and confirm_flag:
-                    while not confirm:
-                        confirm = getpass.getpass("Repeat passphrase:").strip()
-                    if confirm != passphrase:
-                        sysout("%RED%### Passphrase and confirmation mismatch")
-                        safe_del_file(self.configs.vault_file())
-                    else:
-                        sysout("%GREEN%Passphrase successfully stored")
-                        self.log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
-                        touch_file(self.configs.vault_file())
-                        self.is_open = True
-                        self.is_modified = True
-                        self.is_new = True
-            return "{}:{}".format(self.configs.vault_user(), passphrase)
+        exit(exit_code)
 
     def open(self) -> None:
         """Open and read the Vault file"""
-        self.passphrase = self.get_passphrase()
+        self.passphrase = self.__get_passphrase()
         try:
             if not self.is_open:
-                self.unlock_vault()
+                self.__unlock_vault()
                 self.log.debug("Vault open modified={} open={}".format(self.is_modified, self.is_open))
-            self.read()
+            self.__read()
             self.log.debug("Vault read entries={}".format(len(self.data)))
         except UnicodeDecodeError:
             MenuUtils.print_error('Invalid vault credentials')
@@ -103,9 +71,9 @@ class Vault(object):
         """Close the Vault file and cleanup temporary files"""
         try:
             if self.is_modified:
-                self.save()
+                self.__save()
             if self.is_open:
-                self.lock_vault()
+                self.__lock_vault()
                 self.log.debug("Vault closed modified={} open={}".format(self.is_modified, self.is_open))
         except UnicodeDecodeError:
             MenuUtils.print_error('Authentication failure')
@@ -113,55 +81,12 @@ class Vault(object):
         except Exception as err:
             raise VaultOpenError("Unable to close Vault file: {} => {}".format(self.configs.vault_file(), err))
 
-    def lock_vault(self) -> None:
-        """Encrypt and then, encode the vault file"""
-        if file_is_not_empty(self.configs.unlocked_vault_file()):
-            lock(self.configs.unlocked_vault_file(), self.configs.vault_file(), self.passphrase)
-            self.log.debug("Vault file is locked !")
-        else:
-            os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
-        self.is_open = False
-        safe_del_file(self.configs.unlocked_vault_file())
-
-    def unlock_vault(self) -> None:
-        """Decode and then, decrypt the vault file"""
-        if file_is_not_empty(self.configs.vault_file()):
-            unlock(self.configs.vault_file(), self.configs.unlocked_vault_file(), self.passphrase)
-            self.log.debug("Vault file is unlocked !")
-        else:
-            os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
-        self.is_open = True
-        safe_del_file(self.configs.vault_file())
-
-    def save(self) -> None:
-        """Save the vault entries"""
-        with open(self.configs.unlocked_vault_file(), 'w') as f_vault:
-            for entry in self.data:
-                f_vault.write(str(self.data[entry]))
-            self.log.debug("Vault entries saved")
-
-    def read(self) -> None:
-        """Read all existing vault payload"""
-        if os.path.exists(self.configs.unlocked_vault_file()):
-            try:
-                with open(self.configs.unlocked_vault_file(), 'r') as f_vault:
-                    for line in f_vault:
-                        if not line.strip():
-                            continue
-                        (key, password, hint, modified) = line.strip().split('|')
-                        entry = VaultEntry(key, key, password, hint, modified)
-                        self.data[key] = entry
-                    self.log.debug("Vault has been read. Returned payload={}".format(len(self.data)))
-            except ValueError:
-                self.log.error("Attempt to read from Vault failed")
-                raise TypeError("### Vault file '{}' is invalid".format(self.configs.vault_file()))
-
     def list(self, filter_expr=None) -> None:
         """List all vault payload
         :param filter_expr: The filter expression
         """
         if len(self.data) > 0:
-            (data, header) = self.fetch_data(filter_expr)
+            (data, header) = self.__fetch_data(filter_expr)
             if len(data) > 0:
                 sysout("%YELLOW%{}%NC%".format(header))
                 for entry_key in data:
@@ -172,37 +97,11 @@ class Vault(object):
             sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
         self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
 
-    def fetch_data(self, filter_expr) -> Tuple[List[VaultEntry], str]:
-        """Filter and sort vault data and return the proper caption for listing them
-        :param filter_expr: The filter expression
-        """
-        if filter_expr:
-            caption = "\n=== Listing vault payload containing '{}' ===\n".format(filter_expr)
-            data = self.filter_data(filter_expr)
-        else:
-            caption = "\n=== Listing all vault payload ===\n"
-            data = list(self.data)
-        data.sort()
-        self.log.debug(
-            "Vault payload fetched. Returned payload={} filtered={}".format(len(self.data), len(self.data) - len(data)))
-
-        return data, caption
-
-    def filter_data(self, filter_expr) -> List[str]:
-        """Filter data based on expression
-        :param filter_expr: The filter expression
-        """
-        filtered = list(filter(lambda entry: entry, [
-            entry if re.search(filter_expr, entry, re.IGNORECASE) else None for entry in self.data.keys()
-        ]))
-
-        return filtered
-
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
-        :param key: TODO
-        :param hint: TODO
-        :param password: TODO
+        :param key: The vault entry key to be added
+        :param hint: The vault entry hint to be added
+        :param password: The vault entry password to be added
         """
         if key not in self.data.keys():
             while not password:
@@ -218,7 +117,7 @@ class Vault(object):
 
     def get(self, key) -> None:
         """Display the vault entry specified by key
-        :param key: TODO
+        :param key: The vault entry key to get
         """
         if key in self.data.keys():
             entry = self.data[key]
@@ -261,3 +160,108 @@ class Vault(object):
             self.log.error("Attempt to remove to Vault failed for key={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
         self.log.debug("Vault remove issued. User={}".format(getpass.getuser()))
+
+    def __get_passphrase(self) -> str:
+        """Retrieve the vault passphrase"""
+        if file_is_not_empty(self.configs.vault_file()):
+            confirm_flag = False
+        else:
+            sysout("%ORANGE%### Your Vault '{}' file is empty.".format(self.configs.vault_file()))
+            sysout("%ORANGE%>>> Enter the new passphrase for this Vault")
+            confirm_flag = True
+            touch_file(self.configs.vault_file())
+        passphrase = self.configs.passphrase()
+        if passphrase:
+            return "{}:{}".format(self.configs.vault_user(), base64.b64decode(passphrase).decode("utf-8"))
+        else:
+            while not passphrase and not confirm_flag:
+                passphrase = getpass.getpass("Enter passphrase:").strip()
+                confirm = None
+                if passphrase and confirm_flag:
+                    while not confirm:
+                        confirm = getpass.getpass("Repeat passphrase:").strip()
+                    if confirm != passphrase:
+                        sysout("%RED%### Passphrase and confirmation mismatch")
+                        safe_del_file(self.configs.vault_file())
+                    else:
+                        sysout("%GREEN%Passphrase successfully stored")
+                        self.log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
+                        touch_file(self.configs.vault_file())
+                        self.is_open = True
+                        self.is_modified = True
+                        self.is_new = True
+            return "{}:{}".format(self.configs.vault_user(), passphrase)
+
+    def __lock_vault(self) -> None:
+        """Encrypt and then, encode the vault file"""
+        if file_is_not_empty(self.configs.unlocked_vault_file()):
+            lock(self.configs.unlocked_vault_file(), self.configs.vault_file(), self.passphrase)
+            self.log.debug("Vault file is locked !")
+        else:
+            os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
+        self.is_open = False
+        safe_del_file(self.configs.unlocked_vault_file())
+
+    def __unlock_vault(self) -> None:
+        """Decode and then, decrypt the vault file"""
+        if file_is_not_empty(self.configs.vault_file()):
+            unlock(self.configs.vault_file(), self.configs.unlocked_vault_file(), self.passphrase)
+            self.log.debug("Vault file is unlocked !")
+        else:
+            os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
+        self.is_open = True
+        safe_del_file(self.configs.vault_file())
+
+    def __save(self) -> None:
+        """Save the vault entries"""
+        try:
+            with open(self.configs.unlocked_vault_file(), 'w') as f_vault:
+                for entry in self.data:
+                    f_vault.write(str(self.data[entry]))
+                self.log.debug("Vault entries saved")
+        except (OSError, ValueError) as err:
+            self.log.error("Attempt to write from Vault failed => {}".format(err))
+            raise TypeError("### Vault file '{}' is invalid".format(self.configs.vault_file()))
+
+    def __read(self) -> None:
+        """Read all existing vault payload"""
+        if os.path.exists(self.configs.unlocked_vault_file()):
+            try:
+                with open(self.configs.unlocked_vault_file(), 'r') as f_vault:
+                    for line in f_vault:
+                        if not line.strip():
+                            continue
+                        (key, password, hint, modified) = line.strip().split('|')
+                        entry = VaultEntry(key, key, password, hint, modified)
+                        self.data[key] = entry
+                    self.log.debug("Vault has been read. Returned payload={}".format(len(self.data)))
+            except (OSError, ValueError) as err:
+                self.log.error("Attempt to read from Vault failed => {}".format(err))
+                raise TypeError("### Vault file '{}' is invalid".format(self.configs.vault_file()))
+
+    def __fetch_data(self, filter_expr) -> Tuple[List[VaultEntry], str]:
+        """Filter and sort vault data and return the proper caption for listing them
+        :param filter_expr: The filter expression
+        """
+        if filter_expr:
+            caption = "\n=== Listing vault payload containing '{}' ===\n".format(filter_expr)
+            data = self.__filter_data(filter_expr)
+        else:
+            caption = "\n=== Listing all vault payload ===\n"
+            data = list(self.data)
+        data.sort()
+        self.log.debug(
+            "Vault payload fetched. Returned payload={} filtered={}"
+                .format(len(self.data), len(self.data) - len(data)))
+
+        return data, caption
+
+    def __filter_data(self, filter_expr) -> List[str]:
+        """Filter data based on expression
+        :param filter_expr: The filter expression
+        """
+        filtered = list(filter(lambda entry: entry, [
+            entry if re.search(filter_expr, entry, re.IGNORECASE) else None for entry in self.data.keys()
+        ]))
+
+        return filtered

@@ -53,13 +53,13 @@ class Main(metaclass=Singleton):
         """Display the usage message and exit with the specified code ( or zero as default )
         :param exit_code: The application exit code
         """
-        print(USAGE)
+        sysout(USAGE)
         Main.exit_app(exit_code, cls=False)
 
     @staticmethod
     def version() -> None:
         """Display the current program version and exit"""
-        print('HSPyLib Vault v{}'.format('.'.join(map(str, VERSION))))
+        sysout('HSPyLib Vault v{}'.format('.'.join(map(str, VERSION))))
         Main.exit_app(cls=False)
 
     @staticmethod
@@ -114,6 +114,7 @@ class Main(metaclass=Singleton):
         self.vault = Vault()
 
     def run(self, arguments: List[str]) -> None:
+        """Run the application with the command line arguments"""
         self.parse_arguments(arguments)
         self.configs.logger().info(
             WELCOME.format(
@@ -126,17 +127,16 @@ class Main(metaclass=Singleton):
         self.app_exec()
 
     def app_exec(self):
+        """Execute the application logic based on the specified operation"""
         for op in Main.options_map:
             if not Main.options_map[op] is None:
                 self.exec_operation(op)
                 break
 
     def exec_operation(self, op):
+        """Execute the specified operation
+        :param op: The vault operation to execute
         """
-        Execute the specified operation
-        :param op:
-        """
-
         try:
             options = tuple(Main.options_map[op])
             self.vault.open()
