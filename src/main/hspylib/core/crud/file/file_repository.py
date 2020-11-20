@@ -1,7 +1,7 @@
 import re
 import uuid
 from abc import abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.file.file_storage import FileStorage
@@ -34,13 +34,6 @@ class FileRepository(CrudRepository):
     def __str__(self):
         return str(self.storage.data)
 
-    def __create_or_get(self):
-        if self.filename in FileRepository.__storages:
-            return FileRepository.__storages[self.filename]
-        else:
-            FileRepository.__storages[self.filename] = FileStorage(self.filename)
-            return FileRepository.__storages[self.filename]
-
     def insert(self, entity: Entity):
         entity.uuid = entity.uuid if entity.uuid else str(uuid.uuid4())
         self.storage.data.append(entity.to_dict())
@@ -61,7 +54,7 @@ class FileRepository(CrudRepository):
                 self.storage.commit()
                 self.logger.debug("{} has been deleted !".format(entity.__class__.__name__))
 
-    def find_all(self, filters: str = None) -> Optional[list]:
+    def find_all(self, filters: str = None) -> List[Entity]:
         self.storage.load()
         if filters is not None:
             file_filters = filters.split(',')
@@ -95,3 +88,10 @@ class FileRepository(CrudRepository):
     @abstractmethod
     def dict_to_entity(self, row: dict) -> Entity:
         pass
+
+    def __create_or_get(self):
+        if self.filename in FileRepository.__storages:
+            return FileRepository.__storages[self.filename]
+        else:
+            FileRepository.__storages[self.filename] = FileStorage(self.filename)
+            return FileRepository.__storages[self.filename]
