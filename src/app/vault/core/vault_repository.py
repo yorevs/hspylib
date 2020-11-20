@@ -2,6 +2,7 @@ import re
 from typing import Optional, List
 
 from hspylib.core.crud.file.file_repository import FileRepository
+from hspylib.core.model.entity import Entity
 from vault.core.vault_config import VaultConfig
 from vault.entity.vault_entry import VaultEntry
 
