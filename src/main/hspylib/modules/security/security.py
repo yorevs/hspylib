@@ -12,26 +12,28 @@ from hspylib.core.tools.commons import safe_del_file
 DEFAULT_SALT = 'HsPyLib'
 
 
-def encode(in_file, out_file) -> int:
+def encode(in_file, out_file, encoding: str = 'utf-8') -> int:
     """Encode file into base64
     :param in_file: The file to be encoded
     :param out_file: The resulting encoded file
+    :param encoding: The text encoding
     """
-    with open(in_file) as f_in_file:
+    with open(in_file, 'r') as f_in_file:
         with open(out_file, 'w') as f_out_file:
-            b64msg = f_in_file.read().encode('utf-8')
-            return f_out_file.write(str(base64.b64encode(b64msg).decode('utf-8')))
+            data = base64.b64encode(str.encode(f_in_file.read()))
+            return f_out_file.write(str(data, encoding=encoding))
 
 
-def decode(in_file, out_file) -> int:
+def decode(in_file, out_file, encoding: str = 'utf-8') -> int:
     """Decode file from base64
     :param in_file: The file to be decoded
     :param out_file: The resulting decoded file
+    :param encoding: The text encoding
     """
-    with open(in_file) as f_in_file:
+    with open(in_file, 'r') as f_in_file:
         with open(out_file, 'w') as f_out_file:
-            b64msg = f_in_file.read().encode('utf-8')
-            return f_out_file.write(str(base64.b64decode(b64msg).decode('utf-8')))
+            data = base64.b64decode(f_in_file.read())
+            return f_out_file.write(str(data, encoding=encoding))
 
 
 def encrypt(
@@ -102,99 +104,33 @@ def decrypt(
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
 
 
-def gpg_encrypt(
-        in_file: str,
-        out_file: str,
-        pass_phrase: str,
-        cipher_algo='AES256',
-        digest_algo='SHA512') -> str:
-    """Encrypt file using gpg
-    :param in_file: The file to be encrypted
-    :param out_file: The resulting encrypted file
-    :param pass_phrase: The passphrase to encrypt the file
-    :param cipher_algo: The cipher algorithm
-    :param digest_algo: The digest encrypting algorithm
-    """
-    cmd_args = [
-        'gpg', '--quiet', '--yes', '--batch'
-        , '--cipher-algo={}'.format(cipher_algo)
-        , '--digest-algo={}'.format(digest_algo)
-        , '--passphrase={}'.format(pass_phrase)
-        , '--output={}'.format(out_file), '-c', in_file
-    ]
-    subprocess.check_output(cmd_args, stderr=subprocess.STDOUT)
-    return '=> ' + ' '.join(cmd_args)
-
-
-def gpg_decrypt(
-        in_file: str,
-        out_file: str,
-        pass_phrase: str,
-        cipher_algo='AES256',
-        digest_algo='SHA512'):
-    """Decrypt file using gpg
-    :param in_file: The file to be decrypted
-    :param out_file: The resulting decrypted file
-    :param pass_phrase: The passphrase to decrypt the file
-    :param cipher_algo: The cipher algorithm
-    :param digest_algo: The digest decrypting algorithm
-    """
-    cmd_args = [
-        'gpg', '--quiet', '--yes', '--batch'
-        , '--cipher-algo={}'.format(cipher_algo)
-        , '--digest-algo={}'.format(digest_algo)
-        , '--passphrase={}'.format(pass_phrase)
-        , '--output={}'.format(out_file), in_file
-    ]
-    subprocess.check_output(cmd_args, stderr=subprocess.STDOUT)
-    return '=> ' + ' '.join(cmd_args)
-
-
 def lock(
         in_file: str,
         out_file: str,
         passphrase: str,
-        salt: str = DEFAULT_SALT,
-        is_gpg: bool = False) -> None:
+        salt: str = DEFAULT_SALT) -> None:
     """ TODO
     :param in_file:
     :param out_file:
     :param passphrase:
     :param salt:
-    :param is_gpg:
     """
     assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
-    enc_file = '{}.{}'.format(out_file, 'gpg' if is_gpg else 'fernet')
-    if is_gpg:
-        gpg_encrypt(in_file, enc_file, passphrase)
-    else:
-        encrypt(in_file, enc_file, passphrase, salt)
-    assert os.path.exists(enc_file), "Unable to encrypt file {}".format(in_file)
-    encode(enc_file, out_file)
-    assert os.path.exists(out_file), "Unable to encode file {}".format(in_file)
-    safe_del_file(enc_file)
+    encrypt(in_file, out_file, passphrase, salt)
+    assert os.path.exists(out_file), "Unable to encrypt file {}".format(in_file)
 
 
 def unlock(
         in_file: str,
         out_file: str,
         passphrase: str,
-        salt: str = DEFAULT_SALT,
-        is_gpg: bool = False) -> None:
+        salt: str = DEFAULT_SALT) -> None:
     """ TODO
     :param in_file:
     :param out_file:
     :param passphrase:
     :param salt:
-    :param is_gpg:
     """
     assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
-    dec_file = '{}.{}'.format(out_file, 'gpg' if is_gpg else 'fernet')
-    decode(in_file, dec_file)
-    assert os.path.exists(dec_file), "Unable to decode file \"{}\"".format(in_file)
-    if is_gpg:
-        gpg_decrypt(dec_file, out_file, passphrase)
-    else:
-        decrypt(dec_file, out_file, passphrase, salt)
+    decrypt(in_file, out_file, passphrase, salt)
     assert os.path.exists(out_file), "Unable to decrypt file {}".format(in_file)
-    safe_del_file(dec_file)

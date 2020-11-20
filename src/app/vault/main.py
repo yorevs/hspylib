@@ -113,6 +113,7 @@ class Main(metaclass=Singleton):
         )
         self.configs.logger().info(self.configs)
         self.vault = Vault()
+        signal.signal(signal.SIGINT, self.vault.exit_handler)
 
     def run(self, arguments: List[str]) -> None:
         """Run the application with the command line arguments"""
@@ -155,17 +156,15 @@ class Main(metaclass=Singleton):
                 else:
                     sysout('%RED%### Unhandled operation: {}'.format(op))
                     self.usage(1)
+            self.vault.close()
         except Exception as err:
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
             self.vault.exit_handler(1)
-        finally:
-            self.vault.close()
 
         MenuUtils.wait_enter()
 
 
 if __name__ == "__main__":
     """Application entry point"""
-    signal.signal(signal.SIGINT, Main.exit_app)
     Main().INSTANCE.run(sys.argv[1:])
     Main.exit_app()
