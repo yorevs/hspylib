@@ -18,5 +18,4 @@ class CompanyRepository(FileRepository):
             row['name'],
             row['phone'],
             row['website'],
-            row['password'],
             row['complement'])
