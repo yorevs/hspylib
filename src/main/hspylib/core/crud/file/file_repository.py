@@ -56,7 +56,7 @@ class FileRepository(CrudRepository):
 
     def find_all(self, filters: str = None) -> List[Entity]:
         self.storage.load()
-        if filters is not None:
+        if filters:
             file_filters = filters.split(',')
             filtered = []
             for next_filter in file_filters:
