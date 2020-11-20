@@ -1,5 +1,6 @@
 import json
-from typing import Tuple
+import re
+from typing import Tuple, Any
 from uuid import UUID
 
 
@@ -27,7 +28,7 @@ class Entity(object):
             elif isinstance(value, str) or isinstance(value, UUID):
                 ret_dict[key] = str(value)
             else:
-                ret_dict[key] = value.__dict__()
+                ret_dict[key] = value.__dict__() if value else {}
         return ret_dict
 
     def to_json(self):
