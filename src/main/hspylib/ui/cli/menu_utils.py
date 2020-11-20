@@ -86,7 +86,7 @@ class MenuUtils(ABC):
 
     @staticmethod
     def wait_enter(wait_msg: str = '%YELLOW%Press [Enter] to continue ...') -> None:
-        sysout('\n')
+        sysout('')
         MenuUtils.prompt(wait_msg, any_key=True, end='')
 
     @staticmethod

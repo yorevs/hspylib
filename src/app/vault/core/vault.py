@@ -107,7 +107,7 @@ class Vault(object):
                 self.lock_vault()
                 self.log.debug("Vault closed modified={} open={}".format(self.is_modified, self.is_open))
         except UnicodeDecodeError:
-            MenuUtils.print_error('Invalid vault credentials')
+            MenuUtils.print_error('Authentication failure')
             self.exit_handler(1)
         except Exception as err:
             raise VaultOpenError("Unable to close Vault file: {} => {}".format(self.configs.vault_file(), err))

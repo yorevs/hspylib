@@ -1,5 +1,6 @@
 import base64
 import os
+import subprocess
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
@@ -27,7 +28,7 @@ def decode(in_file, out_file) -> int:
             return f_out_file.write(str(base64.b64decode(b64msg).decode('utf-8')))
 
 
-# @purpose: Encrypt file using gpg
+# @purpose: Encrypt file using fernet cryptography
 def encrypt(
         in_file: str,
         out_file: str,
@@ -53,7 +54,7 @@ def encrypt(
             f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
 
 
-# @purpose: Decrypt file using gpg
+# @purpose: Encrypt file using fernet cryptography
 def decrypt(
         in_file: str,
         out_file: str,
@@ -79,21 +80,54 @@ def decrypt(
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
 
 
-def lock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT) -> None:
+# @purpose: Encrypt file using gpg
+def gpg_encrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_algo='SHA512'):
+    cmd_args = [
+        'gpg', '--quiet', '--yes', '--batch'
+        , '--cipher-algo={}'.format(cipher_algo)
+        , '--digest-algo={}'.format(digest_algo)
+        , '--passphrase={}'.format(pass_phrase)
+        , '--output={}'.format(out_file), '-c', in_file
+    ]
+    subprocess.check_output(cmd_args, stderr=subprocess.STDOUT)
+    return '=> ' + ' '.join(cmd_args)
+
+
+# @purpose: Decrypt file using gpg
+def gpg_decrypt(in_file, out_file, pass_phrase, cipher_algo='AES256', digest_algo='SHA512'):
+    cmd_args = [
+        'gpg', '--quiet', '--yes', '--batch'
+        , '--cipher-algo={}'.format(cipher_algo)
+        , '--digest-algo={}'.format(digest_algo)
+        , '--passphrase={}'.format(pass_phrase)
+        , '--output={}'.format(out_file), in_file
+    ]
+    subprocess.check_output(cmd_args, stderr=subprocess.STDOUT)
+    return '=> ' + ' '.join(cmd_args)
+
+
+def lock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT, is_gpg: bool = False) -> None:
     assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
-    enc_file = '{}.fernet'.format(out_file)
-    encrypt(in_file, enc_file, passphrase, salt)
+    enc_file = '{}.{}'.format(out_file, 'gpg' if is_gpg else 'fernet')
+    if is_gpg:
+        gpg_encrypt(in_file, enc_file, passphrase)
+    else:
+        encrypt(in_file, enc_file, passphrase, salt)
     assert os.path.exists(enc_file), "Unable to encrypt file {}".format(in_file)
     encode(enc_file, out_file)
     assert os.path.exists(out_file), "Unable to encode file {}".format(in_file)
     safe_del_file(enc_file)
 
 
-def unlock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT) -> None:
+def unlock(in_file: str, out_file: str, passphrase: str, salt: str = DEFAULT_SALT, is_gpg: bool = False) -> None:
     assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
-    dec_file = '{}.fernet'.format(out_file)
+    dec_file = '{}.{}'.format(out_file, 'gpg' if is_gpg else 'fernet')
     decode(in_file, dec_file)
     assert os.path.exists(dec_file), "Unable to decode file \"{}\"".format(in_file)
-    decrypt(dec_file, out_file, passphrase, salt)
+    if is_gpg:
+        gpg_decrypt(dec_file, out_file, passphrase)
+    else:
+        decrypt(dec_file, out_file, passphrase, salt)
     assert os.path.exists(out_file), "Unable to decrypt file {}".format(in_file)
     safe_del_file(dec_file)
+

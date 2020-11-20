@@ -8,6 +8,7 @@ from typing import List
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout, get_or_default
+from hspylib.ui.cli.menu_utils import MenuUtils
 from vault.core.vault import Vault, APP_NAME, VERSION
 from vault.core.vault_config import VaultConfig
 from vault.entity.validator.argument_validator import ArgumentValidator
@@ -152,6 +153,7 @@ class Main(metaclass=Singleton):
                 sysout('%RED%### Unhandled operation: {}'.format(op))
                 self.usage(1)
         self.vault.close()
+        MenuUtils.wait_enter()
 
 
 if __name__ == "__main__":
