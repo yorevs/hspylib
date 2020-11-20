@@ -14,16 +14,16 @@ class VaultConfig(metaclass=Singleton):
     def logger(self) -> log:
         return self.configs.logger()
 
-    def vault_user(self):
+    def vault_user(self) -> str:
         user = self.configs.get('hhs.vault.user')
         return user if user else getpass.getuser()
 
-    def vault_file(self):
+    def vault_file(self) -> str:
         file = self.configs.get('hhs.vault.file')
         return file if file else '{}/.vault'.format(self.configs.resource_dir())
 
-    def unlocked_vault_file(self):
+    def unlocked_vault_file(self) -> str:
         return "{}.unlocked".format(self.vault_file())
 
-    def passphrase(self):
+    def passphrase(self) -> str:
         return self.configs.get('hhs.vault.passphrase')

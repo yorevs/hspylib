@@ -196,6 +196,7 @@ task runTest(type: Task) {
     fileTree("${sourceRoot}/test").matching {
       include "**/test_*.py"
     }.each { File file ->
+        println ""
         println "Running unittests -> ${file.name}"
         println "  |- PYTHON_PATH: ${rootProject.ext.pythonPath}"
         println ""

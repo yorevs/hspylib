@@ -61,7 +61,8 @@ class Vault(object):
             if not self.is_open:
                 self.__unlock_vault()
                 self.log.debug("Vault open and unlocked")
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as err:
+            self.log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
         except Exception as err:
             raise VaultOpenError("Unable to open Vault file => {}".format(str(err)))
@@ -72,7 +73,8 @@ class Vault(object):
             if self.is_open:
                 self.__lock_vault()
                 self.log.debug("Vault closed and locked")
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as err:
+            self.log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
         except Exception as err:
             raise VaultCloseError("Unable to close Vault file => {}".format(str(err)))
@@ -196,7 +198,10 @@ class Vault(object):
     def __lock_vault(self) -> None:
         """Encrypt and then, encode the vault file"""
         if file_is_not_empty(self.configs.unlocked_vault_file()):
-            lock(self.configs.unlocked_vault_file(), self.configs.vault_file(), self.passphrase)
+            lock(
+                self.configs.unlocked_vault_file(),
+                self.configs.vault_file(),
+                self.passphrase)
             self.log.debug("Vault file is locked !")
         else:
             os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
@@ -206,7 +211,10 @@ class Vault(object):
     def __unlock_vault(self) -> None:
         """Decode and then, decrypt the vault file"""
         if file_is_not_empty(self.configs.vault_file()):
-            unlock(self.configs.vault_file(), self.configs.unlocked_vault_file(), self.passphrase)
+            unlock(
+                self.configs.vault_file(),
+                self.configs.unlocked_vault_file(),
+                self.passphrase,)
             self.log.debug("Vault file is unlocked !")
         else:
             os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
