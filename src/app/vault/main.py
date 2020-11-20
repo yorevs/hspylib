@@ -136,23 +136,29 @@ class Main(metaclass=Singleton):
         Execute the specified operation
         :param op:
         """
-        options = tuple(Main.options_map[op])
-        self.vault.open()
-        if not self.vault.is_new:
-            if "add" == op:
-                self.vault.add(options[0], options[1], get_or_default(options, 2))
-            elif "get" == op:
-                self.vault.get(options[0])
-            elif "del" == op:
-                self.vault.remove(options[0])
-            elif "upd" == op:
-                self.vault.update(options[0], options[1], get_or_default(options, 2))
-            elif "list" == op:
-                self.vault.list(get_or_default(options, 0))
-            else:
-                sysout('%RED%### Unhandled operation: {}'.format(op))
-                self.usage(1)
-        self.vault.close()
+
+        try:
+            options = tuple(Main.options_map[op])
+            self.vault.open()
+            if not self.vault.is_new:
+                if "add" == op:
+                    self.vault.add(options[0], options[1], get_or_default(options, 2))
+                elif "get" == op:
+                    self.vault.get(options[0])
+                elif "del" == op:
+                    self.vault.remove(options[0])
+                elif "upd" == op:
+                    self.vault.update(options[0], options[1], get_or_default(options, 2))
+                elif "list" == op:
+                    self.vault.list(get_or_default(options, 0))
+                else:
+                    sysout('%RED%### Unhandled operation: {}'.format(op))
+                    self.usage(1)
+            self.vault.close()
+        except TypeError as err:
+            MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
+            self.exit_app(1)
+
         MenuUtils.wait_enter()
 
 
