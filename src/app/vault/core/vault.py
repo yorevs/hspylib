@@ -44,14 +44,14 @@ class Vault(object):
         :param signum: The signal number or the exit code
         :param frame: The frame raised by the signal
         """
-        exit_code = signum
         if frame is not None:
             self.log.warn('Signal handler hooked signum={} frame={}'.format(signum, frame))
-            sysout('')
             exit_code = 3
         else:
             self.log.info('Exit handler called')
+            exit_code = signum
         self.close()
+        sysout('')
         exit(exit_code)
 
     def open(self) -> None:
@@ -85,8 +85,8 @@ class Vault(object):
             data = self.service.list(filter_expr)
             if len(data) > 0:
                 sysout("%YELLOW%{} {}%NC%"
-                       .format("=== Listing all vault entries",
-                               "matching \'{}\' ===".format(filter_expr) if filter_expr else "==="))
+                       .format("\n=== Listing all vault entries",
+                               "matching \'{}\' ===\n".format(filter_expr) if filter_expr else "===\n"))
                 for entry in data:
                     sysout(entry.to_string())
             else:
