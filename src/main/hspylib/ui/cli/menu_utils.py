@@ -25,10 +25,10 @@ class MenuUtils(ABC):
     @staticmethod
     def print_error(
             message: str,
-            argument: str = None,
+            argument: Any = None,
             wait_interval: int = 2) -> None:
 
-        sysout("%RED%### Error: {} {}".format(message, '"{}"'.format(argument) if argument else ''))
+        sysout("%RED%### Error: {} {}".format(message, '"{}"'.format(str(argument)) if argument else ''))
         time.sleep(wait_interval)
         sysout('\033[2A\033[J', end='')
 

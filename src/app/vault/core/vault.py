@@ -1,8 +1,9 @@
 import base64
 import getpass
 import os
+import re
 import sys
-from typing import Tuple
+from typing import Tuple, List
 
 from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file
 from hspylib.modules.security.security import lock, unlock
@@ -155,22 +156,6 @@ class Vault(object):
                 self.log.error("Attempt to read from Vault failed")
                 raise TypeError("### Vault file '{}' is invalid".format(self.configs.vault_file()))
 
-    def fetch_data(self, filter_expr) -> Tuple[list, str]:
-        """Filter and sort vault payload and return the proper caption for listing them
-        :param filter_expr: TODO
-        """
-        if filter_expr:
-            data = list(filter(lambda x: filter_expr in x, self.data))
-            caption = "\n=== Listing vault payload containing '{}' ===\n".format(filter_expr)
-        else:
-            data = list(self.data)
-            caption = "\n=== Listing all vault payload ===\n"
-        data.sort()
-        self.log.debug(
-            "Vault payload fetched. Returned payload={} filtered={}".format(len(self.data), len(self.data) - len(data)))
-
-        return data, caption
-
     def list(self, filter_expr=None) -> None:
         """List all vault payload
         :param filter_expr: TODO
@@ -186,6 +171,29 @@ class Vault(object):
         else:
             sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
         self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
+
+    def fetch_data(self, filter_expr) -> Tuple[List[VaultEntry], str]:
+        """Filter and sort vault payload and return the proper caption for listing them
+        :param filter_expr: TODO
+        """
+        if filter_expr:
+            caption = "\n=== Listing vault payload containing '{}' ===\n".format(filter_expr)
+            data = self.filter_data(filter_expr)
+        else:
+            caption = "\n=== Listing all vault payload ===\n"
+            data = list(self.data)
+        data.sort()
+        self.log.debug(
+            "Vault payload fetched. Returned payload={} filtered={}".format(len(self.data), len(self.data) - len(data)))
+
+        return data, caption
+
+    def filter_data(self, filter_expr) -> List[str]:
+        filtered = list(filter(lambda entry: entry, [
+            entry if re.search(filter_expr, entry, re.IGNORECASE) else None for entry in self.data.keys()
+        ]))
+
+        return filtered
 
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
