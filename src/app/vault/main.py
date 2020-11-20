@@ -155,10 +155,11 @@ class Main(metaclass=Singleton):
                 else:
                     sysout('%RED%### Unhandled operation: {}'.format(op))
                     self.usage(1)
-            self.vault.close()
         except Exception as err:
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
             self.vault.exit_handler(1)
+        finally:
+            self.vault.close()
 
         MenuUtils.wait_enter()
 
