@@ -76,31 +76,38 @@ class Main(metaclass=Singleton):
         """ Handle program arguments and options. Short opts: -<C>, Long opts: --<Word>
         :param arguments: The list of program arguments passed on the command line
         """
-        opts, args = getopt.getopt(arguments, 'vhagdul', [
-            'version', 'help', 'add', 'get', 'del', 'upd', 'list'
-        ])
+        try:
+            opts, args = getopt.getopt(arguments, 'vhagdul', [
+                'version', 'help', 'add', 'get', 'del', 'upd', 'list'
+            ])
 
-        if len(opts) == 0:
-            Main.usage()
-
-        for opt, arg in opts:
-            if opt in ('-v', '--version'):
-                Main.version()
-            elif opt in ('-h', '--help'):
+            if len(opts) == 0:
                 Main.usage()
-            elif opt in ('-a', '--add'):
-                Main.options_map['add'] = args if ArgumentValidator.validate_argument(args, 2) else Main.usage(1)
-            elif opt in ('-g', '--get'):
-                Main.options_map['get'] = args if ArgumentValidator.validate_argument(args, 2) else Main.usage(1)
-            elif opt in ('-d', '--del'):
-                Main.options_map['del'] = args if ArgumentValidator.validate_argument(args, 2) else Main.usage(1)
-            elif opt in ('-u', '--upd'):
-                Main.options_map['upd'] = args if ArgumentValidator.validate_argument(args, 2) else Main.usage(1)
-            elif opt in ('-l', '--list'):
-                Main.options_map['list'] = args
-            else:
-                assert False, '### Unhandled option: {}'.format(opt)
-            break
+
+            for op, arg in opts:
+                if op in ('-v', '--version'):
+                    Main.version()
+                elif op in ('-h', '--help'):
+                    Main.usage()
+                elif op in ('-a', '--add'):
+                    Main.options_map['add'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                elif op in ('-g', '--get'):
+                    Main.options_map['get'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                elif op in ('-d', '--del'):
+                    Main.options_map['del'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                elif op in ('-u', '--upd'):
+                    Main.options_map['upd'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                elif op in ('-l', '--list'):
+                    Main.options_map['list'] = args
+                else:
+                    assert False, '### Unhandled option: {}'.format(op)
+                break
+        except getopt.GetoptError as err:
+            sysout('%RED%### Unhandled operation: {}'.format(str(err)))
+            Main.usage(1)
+        except AssertionError as err:
+            sysout('%RED%### {}'.format(str(err)))
+            Main.usage(1)
 
     def __init__(self):
         source_dir = os.path.dirname(os.path.realpath(__file__))
@@ -154,7 +161,7 @@ class Main(metaclass=Singleton):
                 self.vault.list(get_or_default(options, 0))
             else:
                 sysout('%RED%### Unhandled operation: {}'.format(op))
-                self.usage(1)
+                Main.usage(1)
             self.vault.close()
         except Exception as err:
             self.configs.logger().error('Failed to execute \'vault --{}\' => {}'.format(op, str(err)))
