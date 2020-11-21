@@ -13,6 +13,9 @@ class VaultRepository(FileRepository):
         super().__init__(self.db_file)
 
     def find_all(self, filters: str = None) -> List[VaultEntry]:
+        """TODO
+        :param filters:
+        """
         self.storage.load()
         data = self.storage.data or []
         if data and filters:
@@ -27,6 +30,9 @@ class VaultRepository(FileRepository):
             return [self.dict_to_entity(entry) for entry in data]
 
     def find_by_key(self, key: str) -> Optional[VaultEntry]:
+        """TODO
+        :param key:
+        """
         self.storage.load()
         if key:
             result = [data for data in self.storage.data if key == data['key']]
@@ -36,6 +42,9 @@ class VaultRepository(FileRepository):
             return None
 
     def dict_to_entity(self, row: dict) -> VaultEntry:
+        """TODO
+        :param row:
+        """
         return VaultEntry(
             row['uuid'],
             row['key'],
