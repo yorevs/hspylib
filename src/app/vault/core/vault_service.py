@@ -13,4 +13,7 @@ class VaultService(CrudService, metaclass=Singleton):
         super().__init__(self.repository)
 
     def get(self, key: str) -> Optional[VaultEntry]:
+        """TODO
+        :param key:
+        """
         return self.repository.find_by_key(key)

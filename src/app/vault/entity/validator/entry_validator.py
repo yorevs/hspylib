@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Tuple, List
 
+from hspylib.core.tools.regex_commons import RegexCommons
 from hspylib.core.tools.validator import Validator
 from vault.entity.vault_entry import VaultEntry
 
@@ -22,12 +23,12 @@ class EntryValidator(Validator):
     @staticmethod
     def validate_key(key: str) -> Tuple[bool, str]:
         return Validator \
-            .matches(key, Validator.RegexCommons.COMMON_3_30_NAME), "Invalid key"
+            .matches(key, RegexCommons.COMMON_3_30_NAME), "Invalid key"
 
     @staticmethod
     def validate_name(name: str) -> Tuple[bool, str]:
         return Validator \
-            .matches(name, Validator.RegexCommons.COMMON_3_30_NAME), "Invalid name"
+            .matches(name, RegexCommons.COMMON_3_30_NAME), "Invalid name"
 
     @staticmethod
     def validate_password(password: str) -> Tuple[bool, str]:

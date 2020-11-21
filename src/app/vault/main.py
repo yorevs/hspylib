@@ -14,7 +14,6 @@ from vault.core.vault import Vault, APP_NAME, VERSION
 from vault.core.vault_config import VaultConfig
 from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 
-# Usage message
 USAGE = """
 Usage: {} <option> [arguments]
 
