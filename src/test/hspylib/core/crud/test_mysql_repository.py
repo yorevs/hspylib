@@ -27,7 +27,8 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertTrue(self.repository.is_connected())
         try:
             self.repository.execute(
-                'CREATE TABLE {} (UUID varchar(36) NOT NULL, COMMENT varchar(128), LUCKY_NUMBER int, IS_WORKING varchar(5), PRIMARY KEY (UUID))'
+                'CREATE TABLE {} (UUID varchar(36) NOT NULL, COMMENT varchar(128), LUCKY_NUMBER int, IS_WORKING '
+                'varchar(5), PRIMARY KEY (UUID)) '
                 .format(self.table))
         except (InternalError, OperationalError) as err:
             if "Failed to create table 'TEST' => {}\n\t.Truncating it instead!" not in str(err):

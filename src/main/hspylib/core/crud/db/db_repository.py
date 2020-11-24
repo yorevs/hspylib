@@ -11,7 +11,7 @@ class DBRepository(CrudRepository):
         super().__init__()
         self.hostname = AppConfigs.INSTANCE.get('datasource.hostname')
         self.port = AppConfigs.INSTANCE.get_int('datasource.port')
-        self.user = AppConfigs.INSTANCE.get('datasource.username')
+        self.user = AppConfigs.INSTANCE.get('datasource.user')
         self.password = AppConfigs.INSTANCE.get('datasource.password')
         self.database = AppConfigs.INSTANCE.get('datasource.database')
         self.logger = AppConfigs.INSTANCE.logger()

@@ -18,13 +18,19 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 )
 
 
-# @purpose: Initialize the system logger
 def log_init(
         log_file: str,
         create_new: bool = True,
         f_mode: str = 'a',
         level: int = log.DEBUG,
         log_fmt: str = LOG_FMT):
+    """Initialize the system logger
+    :param log_file: TODO
+    :param create_new:  TODO
+    :param f_mode:  TODO
+    :param level:  TODO
+    :param log_fmt:  TODO
+    """
     with open(log_file, 'w' if create_new else 'a'):
         os.utime(log_file, None)
 
@@ -37,29 +43,40 @@ def log_init(
     return log
 
 
-# @purpose: Print the unicode input_string
 def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
+    """Print the unicode input_string"""
     if Validator.is_not_blank(string):
         sys.stdout.write(
             VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
 
 
-# @purpose: Print the unicode input_string
 def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
+    """Print the unicode input_string"""
     if Validator.is_not_blank(string):
         sys.stderr.write(
             VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end))
 
 
 def class_attribute_names(clazz: Type) -> tuple:
+    """TODO
+    :param clazz:
+    """
     return tuple(vars(clazz()).keys()) if clazz else None
 
 
 def class_attribute_values(instance: dict) -> tuple:
+    """TODO
+    :param instance:
+    """
     return tuple(instance.values()) if object else None
 
 
 def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
+    """TODO
+    :param input_str:
+    :param regex_filter:
+    :param delimiter:
+    """
     regex = re.compile(regex_filter)
     result_list = list(filter(regex.search, input_str.split(delimiter)))
 
@@ -88,6 +105,10 @@ def str_to_bool(string: str, true_values: List[str] = None) -> bool:
 
 
 def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
+    """TODO
+    :param filename:
+    :param on_not_found_except:
+    """
     if os.path.exists(filename):
         os.remove(filename)
         return True
@@ -99,9 +120,15 @@ def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
 
 
 def file_is_not_empty(filename: str) -> bool:
+    """TODO
+    :param filename:
+    """
     return os.path.exists(filename) and os.stat(filename).st_size > 0
 
 
 def touch_file(filename: str) -> None:
+    """TODO
+    :param filename:
+    """
     with open(filename, 'a'):
         os.utime(filename, None)

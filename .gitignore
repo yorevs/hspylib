@@ -12,3 +12,5 @@ build
 *.dat
 requirements.txt
 .vault*
+firebase.cfg*
+.firebase*

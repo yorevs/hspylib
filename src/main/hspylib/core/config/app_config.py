@@ -50,6 +50,9 @@ class AppConfigs(metaclass=Singleton):
             '-=' * 40
         )
 
+    def size(self):
+        return self._app_properties.size()
+
     def source_root(self) -> str:
         return self._source_root
 
