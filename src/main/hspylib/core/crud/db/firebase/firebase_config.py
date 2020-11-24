@@ -2,10 +2,12 @@ import base64
 import logging as log
 import os
 import uuid
+from typing import Any
 
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.enum.charset import Charset
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.modules.fetch.fetch import get
@@ -24,7 +26,7 @@ UUID={}
 class FirebaseConfig(metaclass=Singleton):
 
     @staticmethod
-    def of(config_dict: CaseInsensitiveDict):
+    def of(config_dict: CaseInsensitiveDict) -> Any:
         return FirebaseConfig(
             config_dict['PROJECT_ID'],
             config_dict['DATABASE'],
@@ -34,7 +36,7 @@ class FirebaseConfig(metaclass=Singleton):
         )
 
     @staticmethod
-    def of_file(filename: str):
+    def of_file(filename: str) -> Any:
         assert os.path.exists(filename), "Config file does not exist"
         with open(filename) as f_config:
             cfg = CaseInsensitiveDict()
@@ -55,42 +57,45 @@ class FirebaseConfig(metaclass=Singleton):
                  username: str = None,
                  passphrase: str = None):
 
+        self.encoding = str(Charset.UTF_8).lower()
         self.current_state = None
         self.project_id = project_id if project_id else AppConfigs.INSTANCE.get('firebase.project.id')
         self.database = database if database else AppConfigs.INSTANCE.get('firebase.database')
         self.project_uuid = project_uuid if project_uuid else AppConfigs.INSTANCE.get('firebase.project.uuid')
         self.username = username if username else AppConfigs.INSTANCE.get('firebase.username')
         self.passphrase = passphrase if passphrase else AppConfigs.INSTANCE.get('firebase.passphrase')
-        print(AppConfigs.INSTANCE)
         assert self.project_id, "Project ID must be defined"
         assert self.database, "Database name must be defined"
         assert self.username, "Username must be defined"
-        self.assert_passphrase()
-        self.project_uuid = self.project_uuid if self.project_uuid else uuid.uuid4()
-        assert self.assert_config(), "Your Firebase configuration is not valid"
-        log.debug('Successfully connected to Firebase: {}'.format(self.url()))
+        self.set_passphrase()
+        self.project_uuid = str(self.project_uuid) if self.project_uuid else str(uuid.uuid4())
+        assert self.validate_config(), "Your Firebase configuration is not valid"
+        log.debug('Successfully connected to Firebase: {}'.format(self.base_url()))
 
     def __str__(self):
         return FB_CONFIG_FMT.format(
             self.project_id,
-            self.database,
-            self.project_uuid,
             self.username,
-            self.passphrase
+            self.database,
+            str(base64.b64encode(self.passphrase.encode(self.encoding)), encoding=self.encoding),
+            self.project_uuid
         )
 
-    def assert_passphrase(self, encoding: str = 'utf-8') -> None:
+    def set_passphrase(self) -> None:
         assert self.passphrase and len(self.passphrase) >= 8, \
             "Passphrase must be have least 8 characters size and must be base64 encoded"
-        self.passphrase = base64.b64decode(encoding.lower())
+        self.passphrase = str(base64.b64decode(self.passphrase), encoding=self.encoding)
 
-    def assert_config(self) -> bool:
-        response = get('{}.json'.format(self.url()))
+    def validate_config(self) -> bool:
+        response = get('{}.json'.format(self.base_url()))
         ret_val = response is not None and response.status_code == HttpCode.OK
         if ret_val:
             self.current_state = response.body if response.body and response.body != 'null' else None
         return ret_val
 
-    def url(self):
-        return 'https://{}.firebaseio.com/{}/{}'\
+    def base_url(self):
+        return 'https://{}.firebaseio.com/{}/{}' \
             .format(self.project_id, self.database, self.project_uuid)
+
+    def url(self, db_alias: str):
+        return '{}/{}.json'.format(self.base_url(), db_alias)

@@ -2,9 +2,9 @@
 #
 # HSPyLib v0-9.13
 #
-# Package: app
+# Package: app.firebase.core
 
 __all__ = [
-  'firebase', 
-  'vault'
+  'agent_config', 
+  'firebase'
 ]

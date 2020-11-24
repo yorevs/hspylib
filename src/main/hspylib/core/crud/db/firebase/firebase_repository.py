@@ -32,7 +32,7 @@ class FirebaseRepository(CrudRepository):
 
     def insert(self, entity: Entity):
         entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
-        url = '{}/{}.json'.format(self.config.url(), entity.uuid)
+        url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
         self.logger.debug('Inserting firebase entry: {} into: {}'.format(entity, url))
         response = put(url, payload)
@@ -41,7 +41,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to post into={} with payload={}'.format(response.status_code, url, payload))
 
     def update(self, entity: Entity):
-        url = '{}/{}.json'.format(self.config.url(), entity.uuid)
+        url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
         self.logger.debug('Updating firebase entry: {} into: {}'.format(entity, url))
         response = put(url, payload)
@@ -50,7 +50,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to post into={} with payload={}'.format(response.status_code, url, payload))
 
     def delete(self, entity: Entity):
-        url = '{}/{}.json'.format(self.config.url(), entity.uuid)
+        url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         self.logger.debug('Deleting firebase entry: {} into: {}'.format(entity, url))
         response = delete(url)
         assert response, "Response is empty"
@@ -58,7 +58,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to delete from={}'.format(response.status_code, url))
 
     def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
-        url = '{}.json?orderBy="$key"'.format(self.config.url())
+        url = '{}.json?orderBy="$key"'.format(self.config.base_url())
         self.logger.debug('Fetching firebase entries from {}'.format(url))
         response = get(url)
         assert response, "Response is empty"
@@ -68,7 +68,7 @@ class FirebaseRepository(CrudRepository):
         return self.to_list(response.body, filters) if response.body else []
 
     def find_by_id(self, entity_id: str) -> Optional[Entity]:
-        url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.url(), entity_id)
+        url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.base_url(), entity_id)
         self.logger.debug('Fetching firebase entry entity_id={} from {}'.format(entity_id, url))
         response = get(url)
         assert response, "Response is empty"

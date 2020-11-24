@@ -26,7 +26,7 @@ class TestClass(unittest.TestCase):
 
     # Teardown tests
     def tearDown(self):
-        delete('{}.json'.format(self.repository.config.url()))
+        delete('{}.json'.format(self.repository.config.base_url()))
 
     # TEST CASES ----------
 
