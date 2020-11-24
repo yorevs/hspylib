@@ -38,7 +38,7 @@ class FirebaseRepository(CrudRepository):
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to post into={} with payload={}'.format(response.status_code, url, payload))
+            raise HTTPError('{} - Unable to post into={} with json_string={}'.format(response.status_code, url, payload))
 
     def update(self, entity: Entity):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
@@ -47,7 +47,7 @@ class FirebaseRepository(CrudRepository):
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to post into={} with payload={}'.format(response.status_code, url, payload))
+            raise HTTPError('{} - Unable to post into={} with json_string={}'.format(response.status_code, url, payload))
 
     def delete(self, entity: Entity):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)

@@ -25,13 +25,13 @@ Usage: {} <option> [arguments]
       -a  |  --add <name> <hint> [password] : Add a password entry to the vault.
       -d  |  --del <name>                   : Remove a password entry from the vault.
       -u  |  --upd <name> <hint> [password] : Update a password entry from the vault.
-      -l  |  --list [filters]               : List all password payload or matching the given filter.
+      -l  |  --list [filters]               : List all password json_string or matching the given filter.
 
     Arguments:
       name      : The name of the vault entry. That will identify the entry (name).
       hint      : Any hint related to that vault entry.
       password  : The password of the vault entry. If not provided, further input will be required.
-      filter    : Filter the vault payload by name.
+      filter    : Filter the vault json_string by name.
 """.format(APP_NAME, '.'.join(map(str, VERSION)))
 
 WELCOME = """
