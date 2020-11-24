@@ -24,11 +24,11 @@ Usage: {} <option> [arguments]
       -v  |  --version                          : Display current program version.
       -h  |     --help                          : Display this help message.
       -s  |    --setup                          : Setup your Firebase account.
-      -u  |   --upload <db_alias> <file_path>   : Upload a file to your Firebase Realtime Database.
-      -d  | --download <db_alias> <file_path>   : Download a file from your Firebase Realtime Database.
+      -u  |   --upload <name> <file_path>   : Upload a file to your Firebase Realtime Database.
+      -d  | --download <name> <file_path>   : Download a file from your Firebase Realtime Database.
 
     Arguments:
-      db_alias  : Alias to be used to identify the firebase object to fetch payload from.
+      name  : Alias to be used to identify the firebase object to fetch json_string from.
 """.format(APP_NAME, ' '.join(map(str, VERSION)))
 
 WELCOME = """

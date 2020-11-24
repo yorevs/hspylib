@@ -60,7 +60,7 @@ class AgentConfig(metaclass=Singleton):
         return database if database else input('Please type you database Name: ')
 
     def username(self) -> str:
-        user = self.configs.get('firebase.username')
+        user = self.configs.get('firebase.last_update_user')
         return user if user else getpass.getuser()
 
     def passphrase(self):

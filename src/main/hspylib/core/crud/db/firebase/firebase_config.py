@@ -62,7 +62,7 @@ class FirebaseConfig(metaclass=Singleton):
         self.project_id = project_id if project_id else AppConfigs.INSTANCE.get('firebase.project.id')
         self.database = database if database else AppConfigs.INSTANCE.get('firebase.database')
         self.project_uuid = project_uuid if project_uuid else AppConfigs.INSTANCE.get('firebase.project.uuid')
-        self.username = username if username else AppConfigs.INSTANCE.get('firebase.username')
+        self.username = username if username else AppConfigs.INSTANCE.get('firebase.last_update_user')
         self.passphrase = passphrase if passphrase else AppConfigs.INSTANCE.get('firebase.passphrase')
         assert self.project_id, "Project ID must be defined"
         assert self.database, "Database name must be defined"
