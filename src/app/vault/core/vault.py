@@ -66,7 +66,7 @@ class Vault(object):
             raise VaultOpenError("Unable to open Vault file => {}".format(str(err)))
 
     def close(self) -> None:
-        """Close the Vault file and cleanup temporary files"""
+        """Close the Vault file and cleanup temporary file_paths"""
         try:
             if self.is_open:
                 self.__lock_vault()

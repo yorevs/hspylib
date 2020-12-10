@@ -3,6 +3,7 @@ import getopt
 import os
 import signal
 import sys
+import traceback
 from datetime import datetime
 from typing import List
 
@@ -11,7 +12,6 @@ from firebase.core.firebase import APP_NAME, VERSION, Firebase
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
-from hspylib.ui.cli.menu_utils import MenuUtils
 from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 
 # Usage message
@@ -21,14 +21,15 @@ Usage: {} <option> [arguments]
     Firebase Agent v{} Manage your firebase integration.
 
     Options:
-      -v  |  --version                          : Display current program version.
-      -h  |     --help                          : Display this help message.
-      -s  |    --setup                          : Setup your Firebase account.
-      -u  |   --upload <name> <file_path>   : Upload a file to your Firebase Realtime Database.
-      -d  | --download <name> <file_path>   : Download a file from your Firebase Realtime Database.
+      -v  |  --version                              : Display current program version.
+      -h  |     --help                              : Display this help message.
+      -s  |    --setup                              : Setup your Firebase account.
+      -u  |   --upload <db_alias> <file1...fileN>   : Upload a file to your Firebase Realtime Database.
+      -d  | --download <db_alias> <file1...fileN>   : Download a file from your Firebase Realtime Database.
 
     Arguments:
-      name  : Alias to be used to identify the firebase object to fetch json_string from.
+      db_alias   : Alias to be used to identify the firebase object to fetch json_string from.
+      file1..N   : List os file paths to upload.
 """.format(APP_NAME, ' '.join(map(str, VERSION)))
 
 WELCOME = """
@@ -88,9 +89,9 @@ class Main(metaclass=Singleton):
                 elif opt in ('-s', '--setup'):
                     Main.options_map['setup'] = args
                 elif opt in ('-u', '--upload'):
-                    Main.options_map['upload'] = args if ArgumentValidator.validate_argument(args, 1) else None
+                    Main.options_map['upload'] = args if ArgumentValidator.validate_argument(args, 2) else None
                 elif opt in ('-d', '--download'):
-                    Main.options_map['download'] = args if ArgumentValidator.validate_argument(args, 1) else None
+                    Main.options_map['download'] = args if ArgumentValidator.validate_argument(args, 2) else None
                 else:
                     assert False, '### Unhandled option: {}'.format(opt)
                 break
@@ -119,16 +120,16 @@ class Main(metaclass=Singleton):
         """Run the application with the command line arguments"""
         self.parse_arguments(arguments)
         signal.signal(signal.SIGINT, self.firebase.exit_handler)
-        self.app_exec()
+        self.__app_exec()
 
-    def app_exec(self):
+    def __app_exec(self) -> None:
         """Execute the application logic based on the specified operation"""
         for op in Main.options_map:
             if not Main.options_map[op] is None:
-                self.exec_operation(op)
+                self.__exec_operation(op)
                 break
 
-    def exec_operation(self, op):
+    def __exec_operation(self, op) -> None:
         """Execute the specified operation
         :param op: The vault operation to execute
         """
@@ -143,21 +144,20 @@ class Main(metaclass=Singleton):
                     AgentConfig.INSTANCE.config_file(),
                     datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             )
+            # Already handled above
             if "setup" == op:
                 pass
             elif "upload" == op:
-                self.firebase.upload(options[0])
+                self.firebase.upload(options[0], options[1:])
             elif "download" == op:
-                self.firebase.download(options[0])
+                self.firebase.download(options[0], options[1:])
             else:
                 sysout('%RED%### Unhandled operation: {}'.format(op))
                 Main.usage(1)
         except Exception as err:
             self.configs.logger().error('Failed to execute \'firebase --{}\' => {}'.format(op, str(err)))
-            MenuUtils.print_error('Failed to execute \'firebase --{}\' => '.format(op), str(err))
+            traceback.print_exc()
             self.firebase.exit_handler(1)
-
-        MenuUtils.wait_enter()
 
 
 if __name__ == "__main__":

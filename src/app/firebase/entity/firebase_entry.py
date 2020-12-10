@@ -30,7 +30,7 @@ class FirebaseEntry:
     def payload(self) -> str:
         return str({
             'encoding': self.str_encoding,
-            'files': str(self.files),
+            'file_paths': str(self.files),
             'last_modified': self.last_modified,
             'last_update_user': self.last_update_user
         })

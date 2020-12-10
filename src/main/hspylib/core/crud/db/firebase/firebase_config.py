@@ -12,14 +12,14 @@ from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.modules.fetch.fetch import get
 
-FB_CONFIG_FMT = """
+FB_CONFIG_FMT = """%YELLOW%
 # Your Firebase configuration:
 # --------------------------
-PROJECT_ID={}
-USERNAME={}
-DATABASE={}
-PASSPHRASE={}
-UUID={}
+%CYAN%PROJECT_ID%NC%={}
+%CYAN%USERNAME%NC%={}
+%CYAN%DATABASE%NC%={}
+%CYAN%PASSPHRASE%NC%={}
+%CYAN%UUID%NC%={}
 """
 
 
@@ -62,7 +62,7 @@ class FirebaseConfig(metaclass=Singleton):
         self.project_id = project_id if project_id else AppConfigs.INSTANCE.get('firebase.project.id')
         self.database = database if database else AppConfigs.INSTANCE.get('firebase.database')
         self.project_uuid = project_uuid if project_uuid else AppConfigs.INSTANCE.get('firebase.project.uuid')
-        self.username = username if username else AppConfigs.INSTANCE.get('firebase.last_update_user')
+        self.username = username if username else AppConfigs.INSTANCE.get('firebase.username')
         self.passphrase = passphrase if passphrase else AppConfigs.INSTANCE.get('firebase.passphrase')
         assert self.project_id, "Project ID must be defined"
         assert self.database, "Database name must be defined"
@@ -88,14 +88,14 @@ class FirebaseConfig(metaclass=Singleton):
 
     def validate_config(self) -> bool:
         response = get('{}.json'.format(self.base_url()))
-        ret_val = response is not None and response.status_code == HttpCode.OK
-        if ret_val:
+        is_valid = response is not None and response.status_code == HttpCode.OK
+        if is_valid:
             self.current_state = response.body if response.body and response.body != 'null' else None
-        return ret_val
+        return is_valid
 
-    def base_url(self):
+    def base_url(self) -> str:
         return 'https://{}.firebaseio.com/{}/{}' \
             .format(self.project_id, self.database, self.project_uuid)
 
-    def url(self, db_alias: str):
+    def url(self, db_alias: str) -> str:
         return '{}/{}.json'.format(self.base_url(), db_alias)
