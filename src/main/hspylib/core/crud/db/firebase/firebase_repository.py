@@ -7,8 +7,8 @@ from requests.exceptions import HTTPError
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.core.crud.crud_repository import CrudRepository
+from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.model.entity import Entity
 from hspylib.modules.fetch.fetch import put, get, delete
@@ -38,7 +38,7 @@ class FirebaseRepository(CrudRepository):
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to post into={} with json_string={}'.format(response.status_code, url, payload))
+            raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
     def update(self, entity: Entity):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
@@ -47,7 +47,7 @@ class FirebaseRepository(CrudRepository):
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to post into={} with json_string={}'.format(response.status_code, url, payload))
+            raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
     def delete(self, entity: Entity):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)

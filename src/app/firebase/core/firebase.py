@@ -2,6 +2,7 @@ import os
 from typing import List
 
 from firebase.core.agent_config import AgentConfig
+from firebase.core.file_processor import FileProcessor
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import sysout, file_is_not_empty
 
@@ -11,29 +12,13 @@ APP_NAME = os.path.basename(__file__)
 # Version tuple: (major,minor,build)
 VERSION = (1, 1, 0)
 
-# Usage message
-USAGE = """
-Usage: {} <option> [arguments]
-
-    HomeSetup firebase v{} Manage your firebase integration.
-
-    Options:
-      -v  |  --version              : Display current program version.
-      -h  |     --help              : Display this help message.
-      -s  |    --setup              : Setup your Firebase account to use with HomeSetup.
-      -u  |   --upload <name>   : Upload files to your Firebase Realtime Database.
-      -d  | --download <name>   : Download files from your Firebase Realtime Database.
-
-    Arguments:
-      name  : Alias to be used to identify the firebase object to fetch json_string from.
-""".format(APP_NAME, ' '.join(map(str, VERSION)))
-
 
 class Firebase(object):
     """Represents the firebase agent and it's functionalities"""
 
     def __init__(self):
         self.payload = None
+        self.processor = FileProcessor()
         self.configs = AgentConfig()
         self.log = AppConfigs.INSTANCE.logger()
 
@@ -56,21 +41,24 @@ class Firebase(object):
         exit(exit_code)
 
     def setup(self):
+        """Setup a firebase creating or reading an existing configuration file"""
         if file_is_not_empty(self.configs.config_file()):
             self.configs.load()
         else:
             self.configs.prompt()
-        sysout(str(self.configs))
+        self.log.debug(str(self.configs))
 
-    def upload(self, db_alias: str, files: List[str]) -> bool:
+    def upload(self, db_alias: str, file_paths: List[str]) -> bool:
+        """Upload file_paths to firebase"""
         url = self.configs.url(db_alias)
-        # TODO
-        return True
+        assert len(file_paths) > 0, "Unable to upload file_paths (zero size)."
+        return self.processor.upload_files(url, file_paths) > 0
 
-    def download(self, db_alias: str, files: List[str]) -> bool:
+    def download(self, db_alias: str, file_paths: List[str]) -> bool:
+        """Download file_paths from firebase"""
         url = self.configs.url(db_alias)
-        # TODO
-        return True
+        assert len(file_paths) > 0, "Unable to download file_paths (zero size)."
+        return self.processor.download_files(url) > 0
 
     def is_setup(self):
         return self.configs is not None and self.configs.fb_configs is not None
