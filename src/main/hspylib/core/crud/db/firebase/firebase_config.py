@@ -15,11 +15,11 @@ from hspylib.modules.fetch.fetch import get
 FB_CONFIG_FMT = """%YELLOW%
 # Your Firebase configuration:
 # --------------------------
-%CYAN%PROJECT_ID%NC%={}
-%CYAN%USERNAME%NC%={}
-%CYAN%DATABASE%NC%={}
-%CYAN%PASSPHRASE%NC%={}
-%CYAN%UUID%NC%={}
+PROJECT_ID={}
+USERNAME={}
+DATABASE={}
+PASSPHRASE={}
+UUID={}
 """
 
 
