@@ -1,4 +1,3 @@
-# Application name, read from it's own file path
 import getopt
 import os
 import signal
@@ -24,12 +23,13 @@ Usage: {} <option> [arguments]
       -v  |  --version                              : Display current program version.
       -h  |     --help                              : Display this help message.
       -s  |    --setup                              : Setup your Firebase account.
-      -u  |   --upload <db_alias> <file1...fileN>   : Upload a file to your Firebase Realtime Database.
-      -d  | --download <db_alias> <file1...fileN>   : Download a file from your Firebase Realtime Database.
+      -u  |   --upload <db_alias> <file1...fileN>   : Upload files to your Firebase Realtime Database.
+      -d  | --download <db_alias> [dest_dir]        : Download files from your Firebase Realtime Database.
 
     Arguments:
-      db_alias   : Alias to be used to identify the firebase object to fetch json_string from.
-      file1..N   : List os file paths to upload.
+      db_alias      : Alias to be used to identify the firebase object to fetch json_string from.
+      file1..N      : List os file paths to upload.
+      download_dir  : Destination directory. If omitted, your home folder will be used.
 """.format(APP_NAME, ' '.join(map(str, VERSION)))
 
 WELCOME = """
@@ -91,7 +91,7 @@ class Main(metaclass=Singleton):
                 elif opt in ('-u', '--upload'):
                     Main.options_map['upload'] = args if ArgumentValidator.validate_argument(args, 2) else None
                 elif opt in ('-d', '--download'):
-                    Main.options_map['download'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                    Main.options_map['download'] = args if ArgumentValidator.validate_argument(args, 1) else None
                 else:
                     assert False, '### Unhandled option: {}'.format(opt)
                 break
@@ -150,7 +150,7 @@ class Main(metaclass=Singleton):
             elif "upload" == op:
                 self.firebase.upload(options[0], options[1:])
             elif "download" == op:
-                self.firebase.download(options[0], options[1:])
+                self.firebase.download(options[0], options[1])
             else:
                 sysout('%RED%### Unhandled operation: {}'.format(op))
                 Main.usage(1)

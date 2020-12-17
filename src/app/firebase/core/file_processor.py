@@ -1,3 +1,4 @@
+import json
 from abc import ABC
 from typing import List
 
@@ -6,7 +7,7 @@ from requests.exceptions import HTTPError
 from firebase.entity.file_entry import FileEntry
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.fetch.fetch import put
+from hspylib.modules.fetch.fetch import put, get
 
 
 class FileProcessor(ABC):
@@ -29,8 +30,14 @@ class FileProcessor(ABC):
         return len(file_data)
 
     @staticmethod
-    def download_files(url: str) -> int:
-        file_data = []
+    def download_files(url: str, dest_dir: str) -> int:
+        response = get(url)
+        assert response and response.body, "Response or response body is empty"
+        if response.status_code != HttpCode.OK:
+            raise HTTPError(
+                '{} - Unable to download from={} with response={}'.format(response.status_code, url, response))
+        file_data = FileProcessor.__from_json(response.body)
+        FileProcessor.__decode_and_write(file_data)
 
         return len(file_data)
 
@@ -39,13 +46,16 @@ class FileProcessor(ABC):
         return FileEntry(file_path).encode()
 
     @staticmethod
-    def __decode_and_write(self, file_data) -> bool:
-        pass
+    def __decode_and_write(file_entries: List[dict]) -> bool:
+        for entry in file_entries:
+            ff = FileEntry.of(entry['path'], entry['data'], entry['size'])
+            print('Data: {}, Size: {}, Path: {}'.format(entry['data'], entry['size'], entry['path']))
+        return True
 
     @staticmethod
     def __to_json(file_data: List[FileEntry]) -> str:
         return '[' + ', '.join([str(entry) for entry in file_data]) + ']'
 
     @staticmethod
-    def __from_json(db_alias: str, file_data: str) -> List[str]:
-        pass
+    def __from_json(file_data: str) -> List[dict]:
+        return json.loads(file_data)
