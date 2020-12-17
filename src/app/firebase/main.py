@@ -89,9 +89,9 @@ class Main(metaclass=Singleton):
                 elif opt in ('-s', '--setup'):
                     Main.options_map['setup'] = args
                 elif opt in ('-u', '--upload'):
-                    Main.options_map['upload'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                    Main.options_map['upload'] = ArgumentValidator.check_arguments(args, 2)
                 elif opt in ('-d', '--download'):
-                    Main.options_map['download'] = args if ArgumentValidator.validate_argument(args, 1) else None
+                    Main.options_map['download'] = ArgumentValidator.check_arguments(args, 1)
                 else:
                     assert False, '### Unhandled option: {}'.format(opt)
                 break
@@ -100,7 +100,7 @@ class Main(metaclass=Singleton):
             sysout('%RED%### Unhandled operation: {}'.format(str(err)))
             Main.usage(1)
         except AssertionError as err:
-            sysout('%RED%### {}'.format(str(err)))
+            sysout('%RED%### Assertion error: {}'.format(str(err)))
             Main.usage(1)
 
     def __init__(self):
@@ -150,7 +150,7 @@ class Main(metaclass=Singleton):
             elif "upload" == op:
                 self.firebase.upload(options[0], options[1:])
             elif "download" == op:
-                self.firebase.download(options[0], options[1])
+                self.firebase.download(options[0], options[1] if len(options) > 1 else None)
             else:
                 sysout('%RED%### Unhandled operation: {}'.format(op))
                 Main.usage(1)

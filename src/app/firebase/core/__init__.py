@@ -6,5 +6,6 @@
 
 __all__ = [
   'agent_config', 
+  'file_processor', 
   'firebase'
 ]
