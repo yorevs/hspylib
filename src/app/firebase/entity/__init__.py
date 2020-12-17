@@ -5,6 +5,6 @@
 # Package: app.firebase.entity
 
 __all__ = [
-  'firebase_entry', 
-  'validator'
+  'file_entry', 
+  'firebase_entry'
 ]

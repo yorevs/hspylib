@@ -11,9 +11,10 @@ class FileEntry:
         file_entry = FileEntry(file_path)
         file_entry.data = file_data
         file_entry.decode()
-        assert len(file_entry.data) == expected_size, \
+        file_entry.size = len(file_entry.data)
+        assert file_entry.size == expected_size, \
             "Retrieved data and expected data length mismatch: {} vs {}".format(expected_size, len(file_entry.data))
-        return file_entry.save()
+        return file_entry
 
     def __init__(self, file_path: str):
         self.path = file_path

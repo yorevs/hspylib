@@ -89,13 +89,13 @@ class Main(metaclass=Singleton):
                 elif op in ('-h', '--help'):
                     Main.usage()
                 elif op in ('-a', '--add'):
-                    Main.options_map['add'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                    Main.options_map['add'] = ArgumentValidator.check_arguments(args, 2)
                 elif op in ('-g', '--get'):
-                    Main.options_map['get'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                    Main.options_map['get'] = ArgumentValidator.check_arguments(args, 2)
                 elif op in ('-d', '--del'):
-                    Main.options_map['del'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                    Main.options_map['del'] = ArgumentValidator.check_arguments(args, 2)
                 elif op in ('-u', '--upd'):
-                    Main.options_map['upd'] = args if ArgumentValidator.validate_argument(args, 2) else None
+                    Main.options_map['upd'] = ArgumentValidator.check_arguments(args, 2)
                 elif op in ('-l', '--list'):
                     Main.options_map['list'] = args
                 else:

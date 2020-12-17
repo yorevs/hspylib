@@ -54,11 +54,10 @@ class Firebase(object):
         assert len(file_paths) > 0, "Unable to upload file_paths (zero size)."
         return self.processor.upload_files(url, file_paths) > 0
 
-    def download(self, db_alias: str, dest_dir: str) -> bool:
+    def download(self, db_alias: str, destination_dir: str) -> bool:
         """Download file_paths from firebase"""
         url = self.configs.url(db_alias)
-        assert dest_dir and os.path.exists(dest_dir), "Unable find destination directory: {}".format(dest_dir)
-        return self.processor.download_files(url, dest_dir or os.environ.get('HOME')) > 0
+        return self.processor.download_files(url, destination_dir or os.environ.get('HOME')) > 0
 
     def is_setup(self):
         return self.configs is not None and self.configs.fb_configs is not None
