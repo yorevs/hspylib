@@ -7,5 +7,6 @@
 __all__ = [
   'forms', 
   'promotions', 
+  'qt_finder', 
   'views'
 ]

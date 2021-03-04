@@ -74,11 +74,12 @@ task installDependencies(type: Task) {
   group = 'Install'
   description = 'Install all required python packages'
   doLast {
+    println "Upgrading pip module to the latest "
+    exec {
+      commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', 'pip'
+    }
+    println "Installing dependencies using pip "
     deps.each { dep ->
-      println "Upgrading pip module to the latest "
-      exec {
-        commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', 'pip'
-      }
       exec {
         commandLine rootProject.python, '-m', 'pip', 'install', '--user', dep
       }
@@ -141,9 +142,9 @@ task uninstallModule(type: Task) {
 /* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "${sourceRoot}" */
 task cleanPython(type: Delete) {
   group = 'Build'
-  description = 'Clean all compiled (*.py,*.qrc) and cached (__pycache__) python files from sourceRoot'
+  description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
   doLast {
-    println 'Cleaning up compiled (*.py,*.qrc) and cached (__pycache__) files ...'
+    println 'Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories  from sourceRoot...'
     delete fileTree(sourceRoot).matching {
       include "**/*.pyc"
       include "**/*.qrc"
@@ -201,36 +202,6 @@ task check(type: Task) {
           workingDir = dirName(file)
           environment PYTHONPATH: "${rootProject.ext.pythonPath}"
           commandLine rootProject.python, '-m', 'unittest', '-b', '-f', '-v', file.path
-        }
-      }
-  }
-}
-
-task run(type: Task) {
-  group = 'Run'
-  description = 'Run main application'
-  dependsOn compilePython
-  doLast {
-    fileTree("${sourceRoot}").matching {
-      include "**/${application}"
-    }.each { File app ->
-        def appDir = dirName(app)
-        def runEnv = findProperty('env') ?: "vdev"
-        def dryRun = findProperty('dry') ?: "true"
-        def multiThread = findProperty('multi') ?: "true"
-        def orderNum = findProperty('order') ?: "12345"
-        println "Running ${app} [${appDir}]"
-        println "  |- PYTHON_PATH: ${rootProject.ext.pythonPath}"
-        println "  |- APP: ${app.path}"
-        new ByteArrayOutputStream().withStream { os ->
-          def result = exec {
-            workingDir "${appDir}"
-            errorOutput = os
-            standardOutput = os
-            environment PYTHONPATH: "${rootProject.ext.pythonPath}", SOURCE_ROOT: "${sourceRoot}"
-            commandLine rootProject.python, "${application}", "-f", "${app}", "-e", "${runEnv}", "-o", "${orderNum}", "-r", "${dryRun}", "-t", "${multiThread}"
-          }
-          print(os.toString())
         }
       }
   }

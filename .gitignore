@@ -14,3 +14,4 @@ requirements.txt
 .vault*
 firebase.cfg*
 .firebase*
+lib/

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from PyQt5.QtWidgets import QWidget
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.qt_finder import QtFinder
+from hspylib.ui.qt.qt_finder import QtFinder
 
 
 class QtView(ABC):
