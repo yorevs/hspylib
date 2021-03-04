@@ -1,0 +1,14 @@
+/*
+    Gradle dependencies file
+    Project: HSPYLIB
+    Created: 4th March, 2021
+*/
+
+project.ext.deps = [
+  'PyQt5',
+  'PyQt5-stubs',
+  'cryptography',
+  'pycodestyle',
+  'pymysql',
+  'requests'
+]

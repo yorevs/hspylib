@@ -1,3 +1,10 @@
+/*
+    Gradle Oracle integration
+    Project: HSPYLIB
+    Created: 4th March, 2021
+*/
+
+/* Download oracle driver and client from the oracle website */
 task downloadOraClient(type: Task) {
   group = 'Oracle'
   description = 'Download Oracle client zip file'
@@ -11,6 +18,7 @@ task downloadOraClient(type: Task) {
   }
 }
 
+/* Install the oracle driver and client into the system */
 task installOraClient(dependsOn: downloadOraClient, type: Task) {
   group = 'Oracle'
   description = 'Download and install Oracle client libraries'
