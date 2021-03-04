@@ -1,4 +1,4 @@
-project.ext.set("projectVersion", '0-9.13')
+project.ext.set("projectVersion", '0.9.14')
 project.ext.set("pythonVersion", '3')
 project.ext.set("pyrccVersion", '5')
 project.ext.set("gradleVersion", '6.4')

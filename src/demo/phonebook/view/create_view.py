@@ -1,7 +1,7 @@
 from hspylib.core.exception.input_aborted_error import InputAbortedError
 
 from hspylib.core.meta.singleton import Singleton
-from hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from phonebook.entity.company import Company
 from phonebook.entity.person import Person
 from phonebook.entity.validator.company_validator import CompanyValidator

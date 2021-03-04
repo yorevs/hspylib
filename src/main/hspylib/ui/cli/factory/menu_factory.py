@@ -1,11 +1,10 @@
-from abc import ABC
-
+from hspylib.core.meta.singleton import Singleton
 from hspylib.ui.cli.factory.menu_entry import MenuEntry
 from hspylib.ui.cli.factory.menu_option import MenuOption
-from hspylib.ui.cli.menu import Menu
+from hspylib.ui.cli.menu.menu import Menu
 
 
-class MenuFactory(ABC):
+class MenuFactory(metaclass=Singleton):
 
     class MenuBuilder:
         def __init__(self, parent_menu: Menu = None, menu_title: str = None):
