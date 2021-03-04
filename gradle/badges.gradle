@@ -1,0 +1,38 @@
+/* Download and save the generated badge file */
+def badgeGen(subject, status, color, outDir="${project.buildDir}") {
+  def url = "https://badgen.net/badge/${subject}/${status}/${color}"
+  def outFile = "$rootProject.projectDir/${subject}-badge.svg"
+  exec {
+    executable "curl"
+    args "--connect-timeout", 3, "${url}", "--output", "${outFile}"
+    standardOutput = new ByteArrayOutputStream()
+    errorOutput = standardOutput
+    ignoreExitValue = true
+  }
+  println("Badge generated: ${url} => ${outFile}")
+}
+
+/* Generate a badge based on build */
+task generateBuildBadge {
+  group = 'Verification'
+  description = 'Generate build badge'
+  outputs.upToDateWhen { false }
+  doLast {
+    def failure = tasks.build.state.failure
+    badgeGen('build', failure ? 'failed' : 'success', failure ? 'red' : 'green')
+  }
+}
+
+/* Generate a badge based on all tests */
+task generateCheckBadge {
+  group = 'Verification'
+  description = 'Generate tests badge'
+  outputs.upToDateWhen { false }
+  doLast {
+    def failure = tasks.check.state.failure
+    badgeGen('check', failure ? 'failed' : 'success', failure ? 'red' : 'green')
+  }
+}
+
+check.finalizedBy(generateCheckBadge)
+build.finalizedBy(generateBuildBadge)

@@ -1,0 +1,82 @@
+import java.text.SimpleDateFormat
+
+// Following Semantic Versioning 2.0.0 => https://semver.org/
+
+project.ext.build_info_file = 'build-info.properties'
+
+task updateBuildInfo {
+  group = 'Versioning'
+  description = 'Update the build-info.properties file with current build and version numbers'
+  outputs.upToDateWhen { false }
+  doLast {
+    def build_info_file = project.file("${project.ext.build_info_file}")
+    def build_datetime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS z").format(new Date())
+    if (build_info_file.exists()) {
+      build_info_file.delete()
+    }
+    build_info_file <<
+        """###
+#   (Automated) Build information
+###
+# Do not modify by hand. Automatic field update
+build.date = ${build_datetime}
+# Application version.
+# Do not modify by hand. Automatic field update
+app.version = ${project.ext.app_version}
+# JRE version used to compile.
+# Do not modify by hand. Automatic field update
+python.version = ${pythonVersion}
+"""
+  }
+}
+
+/* Update the VERSION file to match the build.gradle version */
+task updateVersion {
+  group = 'Versioning'
+  description = 'Update the VERSION file to match the build.gradle version'
+  doLast {
+    def ver = project.ext.app_version
+    def v_file = new File("${versionFile}")
+    assert v_file.exists()
+    println "Updating version to ${ver}"
+    v_file.text = "${ver}"
+    ant.replaceregexp(file: "${v_file}", match:'^([0-9]{1,2}\\.)[0-9]{1,3}$', replace:"${ver}", flags:'g', byline:true)
+    println "Project: [${rootProject.name}] Version: " + file("${v_file}").text
+  }
+}
+
+/* Check current program version */
+task version {
+  group = 'Versioning'
+  description = 'Check current program version'
+  outputs.upToDateWhen { false }
+  doLast { task ->
+    println "Project: [$task.project.name] Version: ${project.ext.app_version}"
+  }
+}
+
+/* List all properties from properties.gradle */
+task listProperties {
+  group = 'Versioning'
+  description = 'List all properties from properties.gradle'
+  outputs.upToDateWhen { false }
+  doLast {
+    File propsFile = project.file('properties.gradle')
+    File depsFile = project.file('gradle/dependencies.gradle')
+    if (propsFile.exists()) {
+      println "\nChecking dependency usage at: ${depsFile}\n"
+      propsFile.eachLine { line ->
+        if (line?.trim()) {
+          // Extract the name and version from line: 'project.ext.set(...)'
+          def strLine = "${line.substring(16, line.length() - 1)}"
+          def (name, value) = strLine.tokenize(',')
+          name = name.replaceAll('"', '').trim()
+          value = value.replaceAll('"', '').trim()
+          println "${name.padRight(40, ' ')} => ${value.padRight(10, ' ')}"
+        }
+      }
+    }
+  }
+}
+
+build.finalizedBy(updateBuildInfo)

@@ -22,7 +22,7 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
-/***** Other Group */
+/***** Install Group */
 
 /* Used to created the __init__.py files { */
 def initTemplate = """# _*_ coding: utf-8 _*_
@@ -37,7 +37,7 @@ __all__ = %modules%
 
 /* Find and synchronize all python packages */
 task syncPythonPackages(type: Task) {
-  group = 'Other'
+  group = 'Install'
   description = 'Find and synchronize all python packages'
   doLast {
     project.file("${sourceRoot}").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
@@ -68,8 +68,6 @@ task syncPythonPackages(type: Task) {
     }
   }
 }
-
-/***** Install Group */
 
 /* Install all required python packages */
 task installDependencies(type: Task) {
@@ -171,6 +169,7 @@ task compilePython(type: Task) {
   }
 }
 
+/* Compile all QT resources from sourceRoot */
 task compileQrc(type: Task) {
   group = 'Build'
   description = 'Compile all Qt resource files from sourceRoot'
@@ -186,10 +185,8 @@ task compileQrc(type: Task) {
   }
 }
 
-/***** Run Group */
-
-task runTest(type: Task) {
-  group = 'Run'
+task check(type: Task) {
+  group = 'Verification'
   description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
   dependsOn compilePython
   doLast {
@@ -253,10 +250,10 @@ task compile(type: Task) {
 }
 
 task test(type: Task) {
-  group = 'Test'
+  group = 'Verification'
   dependsOn compile
   mustRunAfter compile
-  dependsOn runTest
+  dependsOn check
 }
 
 task build(type: Task) {
@@ -265,7 +262,6 @@ task build(type: Task) {
   mustRunAfter clean
   dependsOn installDependencies
   mustRunAfter installDependencies
-  dependsOn updateVersion
   dependsOn test
 }
 

@@ -1,3 +1,14 @@
+/*
+    Gradle docker integration
+    Project: HSPYLIB
+    Created: 4th March, 2021
+*/
+
+/* Docker Containers -------------------------------------------------------- */
+project.ext.containers = [
+  'mysql'
+]
+
 /* Docker Tasks ------------------------------------------------------------- */
 
 /* Start all containers as daemons */

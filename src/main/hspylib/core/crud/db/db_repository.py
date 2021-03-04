@@ -11,10 +11,13 @@ class DBRepository(CrudRepository):
         super().__init__()
         self.hostname = AppConfigs.INSTANCE.get('datasource.hostname')
         self.port = AppConfigs.INSTANCE.get_int('datasource.port')
-        self.user = AppConfigs.INSTANCE.get('datasource.user')
+        self.user = AppConfigs.INSTANCE.get('datasource.username')
         self.password = AppConfigs.INSTANCE.get('datasource.password')
         self.database = AppConfigs.INSTANCE.get('datasource.database')
         self.logger = AppConfigs.INSTANCE.logger()
+
+    def __str__(self):
+        return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)
 
     @abstractmethod
     def connect(self):

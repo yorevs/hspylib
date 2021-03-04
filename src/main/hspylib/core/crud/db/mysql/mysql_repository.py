@@ -21,9 +21,6 @@ class MySqlRepository(DBRepository):
         self._cursor = None
         self._sql_factory = SqlFactory()
 
-    def __str__(self):
-        return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)
-
     def is_connected(self):
         return self._connector is not None
 

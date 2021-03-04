@@ -12,23 +12,12 @@ buildscript {
 apply from: "properties.gradle"
 
 ext {
-  version = "${projectVersion}"
+  app_version = "${projectVersion}"
   versionFile = "VERSION"
   application = "main.py"
   python = "python${pythonVersion}"
   pyrcc = "pyrcc3${pyrccVersion}"
   sourceRoot = "${rootDir}/src"
-  deps = [
-    'PyQt5',
-    'PyQt5-stubs',
-    'cryptography',
-    'pycodestyle',
-    'pymysql',
-    'requests'
-  ]
-  containers = [
-    'mysql'
-  ]
   startTime = System.currentTimeMillis()
 }
 
@@ -36,7 +25,9 @@ wrapper {
   gradleVersion="${gradleVersion}"
 }
 
-apply from: "gradle/versioning.gradle"
-apply from: "gradle/docker.gradle"
+apply from: "gradle/dependencies.gradle"
 apply from: "gradle/python.gradle"
+apply from: "gradle/build-info.gradle"
+apply from: "gradle/docker.gradle"
 apply from: "gradle/oracle.gradle"
+apply from: "gradle/badges.gradle"
