@@ -79,4 +79,5 @@ task listProperties {
   }
 }
 
+build.dependsOn(updateVersion)
 build.finalizedBy(updateBuildInfo)
