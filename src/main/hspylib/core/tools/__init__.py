@@ -6,7 +6,6 @@
 
 __all__ = [
   'commons', 
-  'qt_finder', 
   'regex_commons', 
   'text_helper', 
   'validator'
