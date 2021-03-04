@@ -1,6 +1,6 @@
 from hspylib.core.tools.text_helper import TextAlignment
 
-from hspylib.ui.cli.table_renderer import TableRenderer
+from hspylib.ui.cli.tables.table_renderer import TableRenderer
 
 if __name__ == '__main__':
     h = [

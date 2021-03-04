@@ -3,8 +3,8 @@ from typing import Optional
 
 from hspylib.core.exception.input_aborted_error import InputAbortedError
 from hspylib.core.tools.commons import sysout
-from hspylib.ui.cli.menu import Menu
-from hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.menu.menu import Menu
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 
 class MenuItem(Menu, ABC):

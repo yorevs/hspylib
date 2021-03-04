@@ -2,8 +2,8 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: main.hspylib.modules.security
+# Package: main.hspylib.ui.cli.tables
 
 __all__ = [
-  'security'
+  'table_renderer'
 ]

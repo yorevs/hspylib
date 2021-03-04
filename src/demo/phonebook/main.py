@@ -5,9 +5,9 @@ import signal
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
-from hspylib.ui.cli.menu_ui import MenuUi
+from hspylib.ui.cli.menu.menu_ui import MenuUi
 
-from hspylib.ui.cli.menu_utils import MenuUtils
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
 from phonebook.view.create_view import CreateView
