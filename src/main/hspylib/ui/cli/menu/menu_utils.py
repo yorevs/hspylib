@@ -18,8 +18,7 @@ class MenuUtils(ABC):
             exit_msg: str = "Done.") -> None:
 
         sysout(str(frame) if frame else '', end='')
-        sysout('{}\n{}'.format('%VT_ED2%%VT_HOM%', exit_msg))
-        sysout('')
+        sysout(f"%VT_ED2%%VT_HOM%\n{exit_msg}\n")
         exit(exit_code if exit_code else 0)
 
     @staticmethod
@@ -89,11 +88,11 @@ class MenuUtils(ABC):
         return input_data
 
     @staticmethod
-    def wait_enter(wait_msg: str = '%YELLOW%Press [Enter] to continue ...') -> None:
-        sysout('')
-        MenuUtils.prompt(wait_msg, any_key=True, end='')
+    def wait_enter(
+            wait_msg: str = 'Press [Enter] to continue ...',
+            color: VtColors = VtColors.YELLOW) -> None:
+        MenuUtils.prompt(wait_msg, any_key=True, color=color, end='')
 
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
-        erase_back = '%VT_ED2%%VT_HOM%'
-        sysout("{}\n{}{}\n".format(erase_back, color.placeholder(), title_str))
+        sysout(f"%VT_ED2%%VT_HOM%\n{color.placeholder()}{title_str}\n")

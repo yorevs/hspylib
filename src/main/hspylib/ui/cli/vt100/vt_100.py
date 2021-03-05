@@ -71,7 +71,7 @@ class Vt100:
         if cup_seq is None:
             return Vt100.sequence('H')
         else:
-            assert re.match(r"[0-9]+;[0-9]+", cup_seq)
+            assert re.match(r"[0-9]*;[0-9]*", cup_seq)
             return Vt100.sequence(f"{cup_seq}H")
 
     # Esc[<n><A/B/C/D>

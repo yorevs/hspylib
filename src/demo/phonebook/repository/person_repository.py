@@ -19,4 +19,5 @@ class PersonRepository(FileRepository):
             row['age'],
             row['phone'],
             row['email'],
+            row['address'],
             row['complement'])
