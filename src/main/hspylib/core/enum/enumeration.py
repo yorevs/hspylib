@@ -9,7 +9,7 @@ class Enumeration(Enum):
         return list(map(lambda e: e.name, cls))
 
     @classmethod
-    def values(cls) -> List[str]:
+    def values(cls) -> List[Any]:
         return list(map(lambda e: e.value, cls))
 
     @classmethod
