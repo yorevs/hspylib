@@ -54,6 +54,7 @@ def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> N
                 )
             )
         )
+        sys.stdout.flush()
 
 
 def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
@@ -66,6 +67,7 @@ def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> N
                 )
             )
         )
+        sys.stderr.flush()
 
 
 def class_attribute_names(clazz: Type) -> tuple:

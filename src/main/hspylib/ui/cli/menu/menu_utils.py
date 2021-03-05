@@ -18,7 +18,7 @@ class MenuUtils(ABC):
             exit_msg: str = "Done.") -> None:
 
         sysout(str(frame) if frame else '', end='')
-        sysout(f"%ED2%%HOM%\n{exit_msg}\n")
+        sysout(f"%ED2%%HOM%%NC%\n{exit_msg}\n")
         exit(exit_code if exit_code else 0)
 
     @staticmethod
