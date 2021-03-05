@@ -10,4 +10,4 @@ if __name__ == '__main__':
     vt_print('%VT_USC%HIDDEN_TEXT\n')
     vt_print('%VT_SSC%VISIBLE_TEXT\n')
     vt_print('%VT_CRE%')
-    vt_print('Doned')
+    vt_print('Done')

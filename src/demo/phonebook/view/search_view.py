@@ -46,9 +46,9 @@ class SearchView(metaclass=Singleton):
 
         if len(persons) > 0 or len(companies) > 0:
             SearchView.display_table(
-                ["UUID", "NAME", "AGE", "PHONE", "EMAIL", "ADDRESS", "CPL"], persons, 'PERSONS')
+                ["UUID", "NAME", "PHONE", "ADDRESS", "CPL", "AGE", "EMAIL"], persons, 'PERSONS')
             SearchView.display_table(
-                ["UUID", "NAME", "PHONE", "WEBSITE", "ADDRESS", "CPL"], companies, 'COMPANIES')
+                ["UUID", "NAME", "PHONE", "ADDRESS", "CPL", "WEBSITE"], companies, 'COMPANIES')
         else:
             sysout('-=- No results to be displayed -=-')
             MenuUtils.wait_enter()
