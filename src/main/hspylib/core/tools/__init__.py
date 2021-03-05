@@ -6,6 +6,7 @@
 
 __all__ = [
   'commons', 
+  'keyboard', 
   'regex_commons', 
   'text_helper', 
   'validator'

@@ -22,6 +22,16 @@ class Vt100(ABC):
     def sequence(cls, code: str) -> str:
         return cls.escape(f"[{code}")
 
+    # Esc7
+    @classmethod
+    def save_cursor(cls):
+        return cls.escape('7')
+
+    # Esc8
+    @classmethod
+    def restore_cursor(cls):
+        return cls.escape('8')
+
     # Esc[?7<h/l>
     @classmethod
     def set_auto_wrap(cls, enabled: bool) -> str:
@@ -55,16 +65,6 @@ class Vt100(ABC):
         else:
             assert mod_cls in [0, 1, 2]
             return cls.sequence(f'{mod_cls}K')
-
-    # Esc7
-    @classmethod
-    def save_cursor(cls):
-        return cls.escape('7')
-
-    # Esc8
-    @classmethod
-    def restore_cursor(cls):
-        return cls.escape('8')
 
     # Esc[<v>;<h>H
     @classmethod
