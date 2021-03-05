@@ -10,5 +10,6 @@ project.ext.deps = [
   'cryptography',
   'pycodestyle',
   'pymysql',
-  'requests'
+  'requests',
+  'emoji'
 ]

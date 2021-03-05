@@ -6,7 +6,6 @@ from typing import Type, List, Tuple, Any, Optional
 
 from hspylib.core.enum.charset import Charset
 from hspylib.core.tools.validator import Validator
-from hspylib.ui.cli.vt100.vt_100 import Vt100
 from hspylib.ui.cli.vt100.vt_codes import VtCodes
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
@@ -50,7 +49,9 @@ def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> N
     if Validator.is_not_blank(string):
         sys.stdout.write(
             VtCodes.decode(
-                VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end)
+                VtColors.colorize(
+                    f"{string.encode(str(encoding)).decode('unicode-escape')}{end}"
+                )
             )
         )
 
@@ -60,7 +61,9 @@ def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> N
     if Validator.is_not_blank(string):
         sys.stderr.write(
             VtCodes.decode(
-                VtColors.colorize(string.encode(str(encoding)).decode('unicode-escape') + end)
+                VtColors.colorize(
+                    f"{string.encode(str(encoding)).decode('unicode-escape')}{end}"
+                )
             )
         )
 

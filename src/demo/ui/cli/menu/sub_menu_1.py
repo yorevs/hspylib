@@ -2,7 +2,7 @@ from hspylib.ui.cli.menu.menu import Menu
 from hspylib.ui.cli.menu.menu_item import MenuItem
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
-MENU = """%VT_ED2%%VT_HOM%
+MENU = """%ED2%%HOM%
 {}
 
 %GREEN%[0]%NC% Back

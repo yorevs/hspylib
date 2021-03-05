@@ -20,7 +20,7 @@ class Main(metaclass=Singleton):
     @staticmethod
     def exit_app(sig=None, frame=None) -> None:
         sysout(frame if frame else '', end='')
-        sysout('%VT_ED2%%VT_HOM%')
+        sysout('%ED2%%HOM%')
         exit(sig)
 
     def __init__(self):

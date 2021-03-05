@@ -1,5 +1,5 @@
 import logging as log
-from enum import Enum
+from hspylib.core.enum.enumeration import Enumeration
 from typing import Optional
 
 import requests

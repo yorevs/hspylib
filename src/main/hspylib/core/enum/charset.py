@@ -1,7 +1,7 @@
-from enum import Enum
+from hspylib.core.enum.enumeration import Enumeration
 
 
-class Charset(Enum):
+class Charset(Enumeration):
     ASCII = 'ASCII'
     BIG5 = 'BIG5'
     BIG5HKSCS = 'BIG5HKSCS'

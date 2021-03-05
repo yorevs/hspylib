@@ -2,7 +2,7 @@ from hspylib.ui.cli.menu.menu import Menu
 from hspylib.ui.cli.menu.menu_item import MenuItem
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
-MENU_TPL = """%VT_ED2%%VT_HOM%
+MENU_TPL = """%ED2%%HOM%
 {}
 
 {}

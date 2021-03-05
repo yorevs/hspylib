@@ -1,9 +1,8 @@
-from enum import Enum
-
+from hspylib.core.enum.enumeration import Enumeration
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 
 
-class VtColors(Enum):
+class VtColors(Enumeration):
     NC = Vt100.mode('0;0;0')
     BLACK = Vt100.mode('0;30')
     RED = Vt100.mode('0;31')
@@ -40,4 +39,4 @@ class VtColors(Enum):
         return str(self)
 
     def placeholder(self) -> str:
-        return '%{}%'.format(self.name)
+        return f"%{self.name}%"

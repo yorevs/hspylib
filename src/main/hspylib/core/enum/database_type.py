@@ -1,8 +1,8 @@
-from enum import Enum
+from hspylib.core.enum.enumeration import Enumeration
 
 
-class DatabaseType(Enum):
+class DatabaseType(Enumeration):
+    FILE_STORAGE = 'file-storage'
     MYSQL = 'mysql'
-    POSTGRESS_SQL = 'postgres'
-    FILE_STORAGET = 'file-storage'
+    POSTGRES_SQL = 'postgres'
     MONGO_DB = 'mongo-db'
