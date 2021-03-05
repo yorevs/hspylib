@@ -94,10 +94,13 @@ class Keyboard(Enumeration):
 
     @classmethod
     def read_keystroke(cls) -> Any:
-        keystroke = getkey.getkey()
-        if keystroke:
-            return cls.of_value(keystroke, ignore_case=True)
-        else:
+        try:
+            keystroke = getkey.getkey()
+            if keystroke:
+                return cls.of_value(keystroke, ignore_case=True)
+            else:
+                return cls.ESC
+        except KeyboardInterrupt:
             return cls.ESC
 
     def isdigit(self):

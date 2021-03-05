@@ -218,12 +218,22 @@ task build(type: Task) {
   dependsOn test
 }
 
+task buildOnly(type: Task) {
+  group = 'Build'
+  dependsOn clean
+  mustRunAfter clean
+  dependsOn installDependencies
+  mustRunAfter installDependencies
+  dependsOn compile
+  mustRunAfter compile
+}
+
 task install(type: Task) {
   group = 'Install'
   dependsOn installDependencies
   mustRunAfter installDependencies
-  dependsOn build
-  mustRunAfter build
+  dependsOn buildOnly
+  mustRunAfter buildOnly
   dependsOn uninstallModule
   mustRunAfter uninstallModule
   dependsOn installModule

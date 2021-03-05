@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import os
 import re
+import signal
 from abc import ABC
 from typing import Any, List
 
 from hspylib.core.tools.commons import sysout, screen_size
 from hspylib.core.tools.keyboard import Keyboard
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 from hspylib.ui.cli.vt100.vt_codes import vt_print
 from hspylib.ui.cli.vt100.vt_colors import VtColors
@@ -30,56 +32,37 @@ class MenuSelect(ABC):
             color: VtColors = VtColors.ORANGE) -> Any:
 
         done = None
-        sel_index = show_from = 0
+        sel_index = -1
+        show_from = 0
         re_render = 1
         length = len(items)
+        signal.signal(signal.SIGINT, MenuUtils.exit_app)
         if length > 0:
-            hl_color = os.environ.get('HHS_HIGHLIGHT_COLOR', VtColors.BLUE.code())
+            sel_index = 0
             max_rows = int(os.environ.get('HHS_MENU_MAXROWS', 15))
             show_to = max_rows - 1
             diff_index = show_to - show_from
             # When only one option is provided, select the element at index 0 and return
             if length == 1:
                 return items[0]
+            sysout(f"%ED2%%HOM%{color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
-            # sysout(f"%ED2%%HOM%{color.placeholder()}{title}")
             vt_print(Vt100.save_cursor())
             # Wait for user interaction
             while not done:
                 # Menu Renderization {
                 if re_render:
-                    rows, columns = screen_size()
-                    vt_print(Vt100.set_show_cursor(False))
-                    # Restore the cursor to the home position
-                    vt_print(Vt100.restore_cursor())
-                    sysout('%NC%')
-                    for idx in range(show_from, show_to):
-                        selector = ' '
-                        if idx >= length:
-                            break  # When the number of items is lower than the max_rows, skip the other lines
-                        option_line = str(items[idx])[0:int(columns)]
-                        # Erase current line before repaint
-                        vt_print('%EL2%\r')
-                        if idx == sel_index:
-                            sysout(hl_color, end='')
-                            selector = '>'
-                        fmt = " {:>" + str(len(str(length))) + "}  {:>4} {}"
-                        sysout(fmt.format(idx + 1, selector, option_line))
-                        # Check if the text fits the screen and print it, otherwise print '...'
-                        if len(option_line) >= int(columns):
-                            vt_print("%CUB(4)%%EL0%...")
-                            sysout('%NC%')
-                    sysout('\r')
-                    sysout(f"%YELLOW%[Enter] Select  [↑↓] Navigate  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
+                    cls.__render__(items, show_from, show_to, sel_index)
                     re_render = None
-                    vt_print(Vt100.set_show_cursor(True))
                 # } Menu Renderization
 
                 # Navigation input {
                 keypress = Keyboard.read_keystroke()
                 if keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
+                    sel_index = -1
                     done = True
+                    sysout('\n%NC%')
                 else:
                     if keypress in ['q', 'Q']:  # Exit requested
                         sysout('\n%NC%')
@@ -125,11 +108,46 @@ class MenuSelect(ABC):
                             sel_index += 1
                             re_render = 1
                     elif keypress == Keyboard.VK_ENTER:  # Enter
-                        sysout('%NC%')
+                        sysout('\n%NC%')
                         break
                 # } Navigation input
 
-        return items[sel_index]
+        return items[sel_index] if sel_index >= 0 else None
+
+    @classmethod
+    def __render__(
+            cls,
+            items,
+            show_from: int,
+            show_to: int,
+            sel_index: int) -> None:
+
+        length = len(items)
+        rows, columns = screen_size()
+        hl_color = os.environ.get('HHS_HIGHLIGHT_COLOR', VtColors.BLUE.code())
+        vt_print(Vt100.set_show_cursor(False))
+        # Restore the cursor to the home position
+        vt_print(Vt100.restore_cursor())
+        sysout('%NC%')
+        for idx in range(show_from, show_to):
+            selector = ' '
+            if idx >= length:
+                break  # When the number of items is lower than the max_rows, skip the other lines
+            option_line = str(items[idx])[0:int(columns)]
+            # Erase current line before repaint
+            vt_print('%EL2%\r')
+            if idx == sel_index:
+                sysout(hl_color, end='')
+                selector = '>'
+            fmt = " {:>" + str(len(str(length))) + "}  {:>4} {}"
+            sysout(fmt.format(idx + 1, selector, option_line))
+            # Check if the text fits the screen and print it, otherwise print '...'
+            if len(option_line) >= int(columns):
+                vt_print("%CUB(4)%%EL0%...")
+                sysout('%NC%')
+        sysout('\n')
+        sysout(f"%YELLOW%[Enter] Select  [↑↓] Navigate  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
+        vt_print(Vt100.set_show_cursor(True))
 
 
 if __name__ == '__main__':
