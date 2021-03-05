@@ -99,3 +99,6 @@ class Keyboard(Enumeration):
             return cls.of_value(keystroke, ignore_case=True)
         else:
             return cls.ESC
+
+    def isdigit(self):
+        return self.value.isdigit()
