@@ -1,7 +1,7 @@
-from enum import Enum
+from hspylib.core.enum.enumeration import Enumeration
 
 
-class HttpMethod(Enum):
+class HttpMethod(Enumeration):
     OPTIONS = 'menu_options'
     HEAD = 'head'
     GET = 'get'

@@ -1,7 +1,7 @@
-from enum import Enum
+from hspylib.core.enum.enumeration import Enumeration
 
 
-class ContentType(Enum):
+class ContentType(Enumeration):
     APPLICATION_ATOM_XML = 'application/atom+xml'
     APPLICATION_ECMASCRIPT = 'application/ecmascript'
     APPLICATION_JSON = 'application/json'

@@ -1,8 +1,8 @@
-from enum import Enum
+from hspylib.core.enum.enumeration import Enumeration
 from http import HTTPStatus
 
 
-class HttpCode(Enum):
+class HttpCode(Enumeration):
     # 2xx Success
     OK = HTTPStatus.OK
     CREATED = HTTPStatus.CREATED

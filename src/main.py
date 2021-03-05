@@ -20,7 +20,7 @@ class Main(metaclass=Singleton):
     @staticmethod
     def exit_app(sig=None, frame=None):
         print(frame or '', end='')
-        print('%VT_ED2%%VT_HOM%')
+        print('%ED2%%HOM%')
         exit(sig)
 
 

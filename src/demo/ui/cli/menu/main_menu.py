@@ -4,7 +4,7 @@ from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from ui.cli.menu.sub_menu_1 import SubMenu1
 from ui.cli.menu.sub_menu_2 import SubMenu2
 
-MENU = """%VT_ED2%%VT_HOM%
+MENU = """%ED2%%HOM%
 {}
 
 %GREEN%[0]%NC% Exit

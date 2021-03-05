@@ -18,7 +18,7 @@ class MenuUtils(ABC):
             exit_msg: str = "Done.") -> None:
 
         sysout(str(frame) if frame else '', end='')
-        sysout(f"%VT_ED2%%VT_HOM%\n{exit_msg}\n")
+        sysout(f"%ED2%%HOM%\n{exit_msg}\n")
         exit(exit_code if exit_code else 0)
 
     @staticmethod
@@ -30,7 +30,7 @@ class MenuUtils(ABC):
 
         syserr(f"{color.placeholder()}### Error: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
-        sysout('%VT_CUU(2)%%VT_ED0%', end='')
+        sysout('%CUU(2)%%ED0%', end='')
 
     @staticmethod
     def print_warning(
@@ -41,7 +41,7 @@ class MenuUtils(ABC):
 
         sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
-        sysout('%VT_CUU(2)%%VT_ED0%', end='')
+        sysout('%CUU(2)%%ED0%', end='')
 
     @staticmethod
     def prompt(
@@ -95,4 +95,4 @@ class MenuUtils(ABC):
 
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
-        sysout(f"%VT_ED2%%VT_HOM%\n{color.placeholder()}{title_str}\n")
+        sysout(f"%ED2%%HOM%\n{color.placeholder()}{title_str}\n")
