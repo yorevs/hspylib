@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from hspylib.core.tools.text_helper import TextAlignment
 
 from hspylib.ui.cli.tables.table_renderer import TableRenderer

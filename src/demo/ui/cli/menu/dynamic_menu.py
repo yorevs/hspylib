@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
 from hspylib.ui.cli.menu.menu_ui import MenuUi
 from hspylib.ui.cli.menu.menu_utils import MenuUtils

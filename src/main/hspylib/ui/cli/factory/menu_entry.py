@@ -1,7 +1,8 @@
 from hspylib.ui.cli.menu.menu import Menu
 from hspylib.ui.cli.menu.menu_item import MenuItem
+from hspylib.ui.cli.vt100.vt_colors import VtColors
 
-MENU_TPL = """\033[2J\033[H
+MENU_TPL = """%VT_ED2%%VT_HOM%
 {}
 
 {}
@@ -9,11 +10,15 @@ MENU_TPL = """\033[2J\033[H
 
 
 class MenuEntry(MenuItem):
-    def __init__(self, parent: Menu, items: dict, title: str = None):
+    def __init__(self, parent: Menu, items: dict, title: str = None, color: VtColors = VtColors.ORANGE):
         super().__init__(parent, title)
         title_len = round(len(title) / 2) + 2
         self.menu_data = MENU_TPL.format(
-            '%ORANGE%{}\n  {}\n{}'.format('-='*title_len, self.title, '-='*title_len),
+            '{}{}\n  {}\n{}'.format(
+                color.placeholder(),
+                '-=' * title_len,
+                self.title,
+                '-=' * title_len),
             '\n'.join([str(value) for key, value in items.items()])
         )
         self.options = range(0, len(items))

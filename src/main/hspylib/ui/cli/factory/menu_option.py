@@ -13,4 +13,4 @@ class MenuOption:
         return self.parent
 
     def __str__(self) -> str:
-        return "\033[0;34m[{}]\033[0m {}".format(self.option_index, self.option_text)
+        return "%GREEN%[{}]%NC% {}".format(self.option_index, self.option_text)

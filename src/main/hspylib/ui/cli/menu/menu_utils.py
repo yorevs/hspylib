@@ -4,7 +4,7 @@ from abc import ABC
 from typing import Any, Optional, Callable
 
 from hspylib.core.exception.input_aborted_error import InputAbortedError
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, syserr
 from hspylib.core.tools.validator import Validator
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
@@ -15,10 +15,10 @@ class MenuUtils(ABC):
     def exit_app(
             exit_code: int = signal.SIGHUP,
             frame=None,
-            exit_msg: str = "Bye") -> None:
+            exit_msg: str = "Done.") -> None:
 
         sysout(str(frame) if frame else '', end='')
-        sysout('{}\n{}'.format('\033[2J\033[H', exit_msg))
+        sysout('{}\n{}'.format('%VT_ED2%%VT_HOM%', exit_msg))
         sysout('')
         exit(exit_code if exit_code else 0)
 
@@ -26,21 +26,23 @@ class MenuUtils(ABC):
     def print_error(
             message: str,
             argument: Any = None,
-            wait_interval: int = 2) -> None:
+            wait_interval: int = 2,
+            color: VtColors = VtColors.RED) -> None:
 
-        sysout("%RED%### Error: {} {}".format(message, '"{}"'.format(str(argument)) if argument else ''))
+        syserr(f"{color.placeholder()}### Error: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
-        sysout('\033[2A\033[J', end='')
+        sysout('%VT_CUU(2)%%VT_ED0%', end='')
 
     @staticmethod
     def print_warning(
             message: str,
             argument: str = None,
-            wait_interval: int = 2) -> None:
+            wait_interval: int = 2,
+            color: VtColors = VtColors.YELLOW) -> None:
 
-        sysout(f"%YELLOW%### Warn: {message} \"{argument}\"\033[0;0;0m")
+        sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
-        sysout('\033[2A\033[J', end='')
+        sysout('%VT_CUU(2)%%VT_ED0%', end='')
 
     @staticmethod
     def prompt(
@@ -49,6 +51,7 @@ class MenuUtils(ABC):
             default_value: Any = None,
             any_key: bool = False,
             on_blank_abort: bool = True,
+            color: VtColors = VtColors.GREEN,
             end: str = ': ') -> Optional[Any]:
 
         valid = False
@@ -57,10 +60,11 @@ class MenuUtils(ABC):
         while not valid:
             try:
                 colorized = VtColors.colorize(
-                    '%GREEN%{}{}{}%NC%'.format(
+                    '{}{}{}{}{}'.format(
+                        color.placeholder(),
                         prompt_msg,
                         '[{}]'.format(default_value) if default_value else '',
-                        end)
+                        end, VtColors.NC.placeholder())
                 )
                 input_data = input(colorized)
                 if not validator:
@@ -91,5 +95,5 @@ class MenuUtils(ABC):
 
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
-        erase_back = '\033[2J\033[H'
+        erase_back = '%VT_ED2%%VT_HOM%'
         sysout("{}\n{}{}\n".format(erase_back, color.placeholder(), title_str))

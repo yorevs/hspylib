@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import signal
 
 from hspylib.core.config.app_config import AppConfigs
@@ -20,7 +20,7 @@ class Main(metaclass=Singleton):
     @staticmethod
     def exit_app(sig=None, frame=None):
         print(frame or '', end='')
-        print('\033[2J\033[H')
+        print('%VT_ED2%%VT_HOM%')
         exit(sig)
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import signal
 
@@ -20,7 +20,7 @@ class Main(metaclass=Singleton):
     @staticmethod
     def exit_app(sig=None, frame=None) -> None:
         sysout(frame if frame else '', end='')
-        sysout('\033[2J\033[H')
+        sysout('%VT_ED2%%VT_HOM%')
         exit(sig)
 
     def __init__(self):

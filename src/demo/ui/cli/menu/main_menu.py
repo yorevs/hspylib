@@ -4,12 +4,12 @@ from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from ui.cli.menu.sub_menu_1 import SubMenu1
 from ui.cli.menu.sub_menu_2 import SubMenu2
 
-MENU = """\033[2J\033[H
+MENU = """%VT_ED2%%VT_HOM%
 {}
 
-\033[0;32m[0]\033[0;0;0m Exit
-\033[0;32m[1]\033[0;0;0m Sub Menu 1
-\033[0;32m[2]\033[0;0;0m Sub Menu 2
+%GREEN%[0]%NC% Exit
+%GREEN%[1]%NC% Sub Menu 1
+%GREEN%[2]%NC% Sub Menu 2
 """
 
 
