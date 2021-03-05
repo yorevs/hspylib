@@ -2,13 +2,13 @@ from hspylib.ui.cli.menu.menu import Menu
 from hspylib.ui.cli.menu.menu_item import MenuItem
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
-MENU = """\033[2J\033[H
+MENU = """%VT_ED2%%VT_HOM%
 {}
 
-\033[0;32m[0]\033[0;0;0m Back
-\033[0;32m[1]\033[0;0;0m Print Hey
-\033[0;32m[2]\033[0;0;0m Print Hoo
-\033[0;32m[3]\033[0;0;0m Exit
+%GREEN%[0]%NC% Back
+%GREEN%[1]%NC% Print Hey
+%GREEN%[2]%NC% Print Hoo
+%GREEN%[3]%NC% Exit
 """
 
 

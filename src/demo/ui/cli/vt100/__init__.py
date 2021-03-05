@@ -2,10 +2,8 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: demo.ui.cli
+# Package: demo.ui.cli.vt100
 
 __all__ = [
-  'menu', 
-  'table', 
-  'vt100'
+  'vt100_demo'
 ]

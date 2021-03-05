@@ -65,7 +65,7 @@ class Main(metaclass=Singleton):
         """Safely exit the application"""
         sysout(frame if frame else '', end='')
         if cls:
-            sysout('\033[2J\033[H')
+            sysout('%VT_ED2%%VT_HOM%')
         exit(exit_code)
 
     @staticmethod

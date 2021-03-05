@@ -5,5 +5,7 @@
 # Package: main.hspylib.ui.cli.vt100
 
 __all__ = [
+  'vt_100', 
+  'vt_codes', 
   'vt_colors'
 ]
