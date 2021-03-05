@@ -1,37 +1,35 @@
 #!/usr/bin/env python3
-import atexit
-import curses
 import os
+import re
 from abc import ABC
 from typing import Any, List
 
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, screen_size
 from hspylib.core.tools.keyboard import Keyboard
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 from hspylib.ui.cli.vt100.vt_codes import vt_print
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 
-def mselect(*all_options) -> Any:
+def mselect(all_options: List[Any]) -> Any:
     """
     TODO
     :param all_options:
     :return:
     """
-    items = [*all_options]
-    return MenuSelect.select(items)
-
-
-def foo(bar):
-    print('hello {}'.format(bar))
-    return 'foo'
+    return MenuSelect.select(all_options)
 
 
 class MenuSelect(ABC):
 
     @classmethod
-    def select(cls, items: List[Any]) -> Any:
-        ret_val = done = None
+    def select(
+            cls,
+            items: List[Any],
+            title: str = 'Please select one',
+            color: VtColors = VtColors.ORANGE) -> Any:
+
+        done = None
         sel_index = show_from = 0
         re_render = 1
         length = len(items)
@@ -44,13 +42,14 @@ class MenuSelect(ABC):
             if length == 1:
                 return items[0]
             vt_print(Vt100.set_auto_wrap(False))
-            vt_print('%HOM%%CUU(1)%%ED0%')
+            vt_print('%HOM%%CUD(1)%%ED0%')
+            # sysout(f"%ED2%%HOM%{color.placeholder()}{title}")
             vt_print(Vt100.save_cursor())
             # Wait for user interaction
             while not done:
                 # Menu Renderization {
                 if re_render:
-                    rows, columns = os.popen('stty size').read().split()
+                    rows, columns = screen_size()
                     vt_print(Vt100.set_show_cursor(False))
                     # Restore the cursor to the home position
                     vt_print(Vt100.restore_cursor())
@@ -59,13 +58,13 @@ class MenuSelect(ABC):
                         selector = ' '
                         if idx >= length:
                             break  # When the number of items is lower than the max_rows, skip the other lines
-                        option_line = str(items[idx])  # [0:columns]
+                        option_line = str(items[idx])[0:int(columns)]
                         # Erase current line before repaint
                         vt_print('%EL2%\r')
                         if idx == sel_index:
-                            sysout(hl_color)
+                            sysout(hl_color, end='')
                             selector = '>'
-                        fmt = " {:>" + str(len(str(idx))) + "}  {:>4} {}"
+                        fmt = " {:>" + str(len(str(length))) + "}  {:>4} {}"
                         sysout(fmt.format(idx + 1, selector, option_line))
                         # Check if the text fits the screen and print it, otherwise print '...'
                         if len(option_line) >= int(columns):
@@ -78,13 +77,62 @@ class MenuSelect(ABC):
                 # } Menu Renderization
 
                 # Navigation input {
-                key = Keyboard.read_keystroke()
-                if key == Keyboard.VK_Q or key == Keyboard.VK_ESC:
+                keypress = Keyboard.read_keystroke()
+                if keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
                     done = True
+                else:
+                    if keypress in ['q', 'Q']:  # Exit requested
+                        sysout('\n%NC%')
+                        break
+                    elif keypress.isdigit():  # An index was typed
+                        typed_index = keypress.value
+                        sysout(f"{keypress.value}", end='')
+                        index_len = 1
+                        while len(typed_index) < len(str(length)):
+                            numpress = Keyboard.read_keystroke()
+                            if not numpress:
+                                break
+                            elif not re.match(r'^[0-9]*$', numpress.value):
+                                typed_index = None
+                                break
+                            typed_index = f"{typed_index}{numpress.value if numpress else ''}"
+                            sysout(f"{numpress.value if numpress else ''}", end='')
+                            index_len += 1
+                        sysout(f"%CUB({index_len})%%EL0%", end='')
+                        if 1 <= int(typed_index) <= length:
+                            show_to = int(typed_index)
+                            if show_to <= diff_index:
+                                show_to = diff_index
+                            show_from = show_to - diff_index
+                            sel_index = int(typed_index) - 1
+                            re_render = 1
+                    elif keypress == Keyboard.VK_UP:  # Cursor up
+                        if sel_index == show_from and show_from > 0:
+                            show_from -= 1
+                            show_to -= 1
+                        elif sel_index == 0:
+                            continue
+                        if sel_index - 1 >= 0:
+                            sel_index -= 1
+                            re_render = 1
+                    elif keypress == Keyboard.VK_DOWN:  # Cursor down
+                        if sel_index + 1 == show_to and show_to < length:
+                            show_from += 1
+                            show_to += 1
+                        elif sel_index + 1 >= length:
+                            continue
+                        if sel_index + 1 < length:
+                            sel_index += 1
+                            re_render = 1
+                    elif keypress == Keyboard.VK_ENTER:  # Enter
+                        sysout('%NC%')
+                        break
                 # } Navigation input
 
-        return ret_val
+        return items[sel_index]
 
 
 if __name__ == '__main__':
-    mselect('item1', 'item2')
+    it = [f"Item-{n}" for n in range(1, 21)]
+    sel = mselect(it)
+    print("Selected: " + str(sel))

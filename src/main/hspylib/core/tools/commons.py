@@ -143,3 +143,11 @@ def touch_file(filename: str) -> None:
     """
     with open(filename, 'a'):
         os.utime(filename, None)
+
+
+def screen_size() -> List[str]:
+    """TODO
+    :param filename:
+    """
+
+    return os.popen('stty size').read().split()
