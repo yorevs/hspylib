@@ -1,3 +1,5 @@
+import string
+
 import getkey
 from typing import Any
 from hspylib.core.enum.enumeration import Enumeration
@@ -104,4 +106,13 @@ class Keyboard(Enumeration):
             return cls.ESC
 
     def isdigit(self):
-        return self.value.isdigit()
+        return str(self.value).isdigit()
+
+    def isalpha(self):
+        return str(self.value).isalpha()
+
+    def isalnum(self):
+        return str(self.value).isalnum()
+
+    def ispunct(self):
+        return all(ch in string.punctuation for ch in str(self.value))

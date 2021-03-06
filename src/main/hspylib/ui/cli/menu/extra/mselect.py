@@ -39,24 +39,28 @@ class MenuSelect(ABC):
         re_render = 1
         length = len(items)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
+
         if length > 0:
             sel_index = 0
             show_to = max_rows - 1
             diff_index = show_to - show_from
+
             # When only one option is provided, select the element at index 0 and return
             if length == 1:
                 return items[0]
+
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
             vt_print(Vt100.save_cursor())
+
             # Wait for user interaction
             while not done:
                 # Menu Renderization {
                 if re_render:
                     cls.__render__(items, show_from, show_to, sel_index, highlight_color)
                     sysout(
-                        f"{nav_color.placeholder()}[Enter] Select  [\u2191\u2193] Navigate  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
+                        f"{nav_color.placeholder()} [Enter] Select  [\u2191\u2193] Navigate  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
                     vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
@@ -85,6 +89,7 @@ class MenuSelect(ABC):
                             typed_index = f"{typed_index}{numpress.value if numpress else ''}"
                             sysout(f"{numpress.value if numpress else ''}", end='')
                             index_len += 1
+                        # Erase the index typed by the user
                         sysout(f"%CUB({index_len})%%EL0%", end='')
                         if 1 <= int(typed_index) <= length:
                             show_to = int(typed_index)
@@ -121,7 +126,7 @@ class MenuSelect(ABC):
     @classmethod
     def __render__(
             cls,
-            items,
+            items: List[Any],
             show_from: int,
             show_to: int,
             sel_index: int,
@@ -133,6 +138,7 @@ class MenuSelect(ABC):
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
+
         for idx in range(show_from, show_to):
             selector = ' '
             if idx >= length:
@@ -140,6 +146,7 @@ class MenuSelect(ABC):
             option_line = str(items[idx])[0:int(columns)]
             # Erase current line before repaint
             vt_print('%EL2%\r')
+            # Print the selector if the index is currently selected
             if idx == sel_index:
                 vt_print(highlight_color.code())
                 selector = '>'
