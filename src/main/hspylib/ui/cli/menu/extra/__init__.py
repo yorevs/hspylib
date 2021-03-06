@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: main.hspylib.ui.cli.menu.utils
+# Package: main.hspylib.ui.cli.menu.extra
 
 __all__ = [
   'mselect'

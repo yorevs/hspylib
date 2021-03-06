@@ -5,9 +5,9 @@
 # Package: main.hspylib.ui.cli.menu
 
 __all__ = [
+  'extra', 
   'menu', 
   'menu_item', 
   'menu_ui', 
-  'menu_utils', 
-  'utils'
+  'menu_utils'
 ]
