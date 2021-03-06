@@ -5,5 +5,6 @@
 # Package: main.hspylib.ui.cli.menu.extra
 
 __all__ = [
+  'mchoose', 
   'mselect'
 ]
