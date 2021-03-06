@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import re
 import signal
 from abc import ABC
@@ -29,7 +28,10 @@ class MenuSelect(ABC):
             cls,
             items: List[Any],
             title: str = 'Please select one',
-            color: VtColors = VtColors.ORANGE) -> Any:
+            max_rows: int = 15,
+            title_color: VtColors = VtColors.ORANGE,
+            highlight_color: VtColors = VtColors.BLUE,
+            nav_color: VtColors = VtColors.YELLOW) -> Any:
 
         done = None
         sel_index = -1
@@ -39,13 +41,12 @@ class MenuSelect(ABC):
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
         if length > 0:
             sel_index = 0
-            max_rows = int(os.environ.get('HHS_MENU_MAXROWS', 15))
             show_to = max_rows - 1
             diff_index = show_to - show_from
             # When only one option is provided, select the element at index 0 and return
             if length == 1:
                 return items[0]
-            sysout(f"%ED2%%HOM%{color.placeholder()}{title}")
+            sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
             vt_print(Vt100.save_cursor())
@@ -53,7 +54,10 @@ class MenuSelect(ABC):
             while not done:
                 # Menu Renderization {
                 if re_render:
-                    cls.__render__(items, show_from, show_to, sel_index)
+                    cls.__render__(items, show_from, show_to, sel_index, highlight_color)
+                    sysout(
+                        f"{nav_color.placeholder()}[Enter] Select  [\u2191\u2193] Navigate  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
+                    vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
 
@@ -120,11 +124,11 @@ class MenuSelect(ABC):
             items,
             show_from: int,
             show_to: int,
-            sel_index: int) -> None:
+            sel_index: int,
+            highlight_color: VtColors = VtColors.BLUE) -> None:
 
         length = len(items)
         rows, columns = screen_size()
-        hl_color = os.environ.get('HHS_HIGHLIGHT_COLOR', VtColors.BLUE.code())
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
@@ -137,7 +141,7 @@ class MenuSelect(ABC):
             # Erase current line before repaint
             vt_print('%EL2%\r')
             if idx == sel_index:
-                sysout(hl_color, end='')
+                vt_print(highlight_color.code())
                 selector = '>'
             fmt = " {:>" + str(len(str(length))) + "}  {:>4} {}"
             sysout(fmt.format(idx + 1, selector, option_line))
@@ -146,11 +150,9 @@ class MenuSelect(ABC):
                 vt_print("%CUB(4)%%EL0%...")
                 sysout('%NC%')
         sysout('\n')
-        sysout(f"%YELLOW%[Enter] Select  [↑↓] Navigate  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
-        vt_print(Vt100.set_show_cursor(True))
 
 
 if __name__ == '__main__':
     it = [f"Item-{n}" for n in range(1, 21)]
     sel = mselect(it)
-    print("Selected: " + str(sel))
+    print(str(sel))

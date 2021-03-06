@@ -47,27 +47,15 @@ def log_init(
 def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
     """Print the unicode input_string decoding vt100 placeholders"""
     if Validator.is_not_blank(string):
-        sys.stdout.write(
-            VtCodes.decode(
-                VtColors.colorize(
-                    f"{string.encode(str(encoding)).decode('unicode-escape')}{end}"
-                )
-            )
-        )
-        sys.stdout.flush()
+        msg = VtColors.colorize(VtCodes.decode(f"{string}"))
+        print(msg, file=sys.stdout, flush=True, end=end)
 
 
 def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
     """Print the unicode input_string decoding vt100 placeholders"""
     if Validator.is_not_blank(string):
-        sys.stderr.write(
-            VtCodes.decode(
-                VtColors.colorize(
-                    f"{string.encode(str(encoding)).decode('unicode-escape')}{end}"
-                )
-            )
-        )
-        sys.stderr.flush()
+        msg = VtColors.colorize(VtCodes.decode(f"{string}"))
+        print(msg, file=sys.stderr, flush=True, end=end)
 
 
 def class_attribute_names(clazz: Type) -> tuple:
