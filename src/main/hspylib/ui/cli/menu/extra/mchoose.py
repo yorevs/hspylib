@@ -38,6 +38,7 @@ class MenuChoose(ABC):
 
         done = None
         show_from = 0
+        sel_index = -1
         re_render = 1
         sel_options = []
         length = len(items)
@@ -76,6 +77,7 @@ class MenuChoose(ABC):
                 keypress = Keyboard.read_keystroke()
                 if keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
                     done = True
+                    sel_index = -1
                     sysout('\n%NC%')
                 else:
                     if keypress in ['q', 'Q']:  # Exit requested
@@ -134,7 +136,7 @@ class MenuChoose(ABC):
                         break
                 # } Navigation input
 
-        return [op for idx, op in enumerate(items) if sel_options[idx] == 1]
+        return [op for idx, op in enumerate(items) if sel_options[idx] == 1] if sel_index >= 0 else None
 
     @classmethod
     def __render__(
