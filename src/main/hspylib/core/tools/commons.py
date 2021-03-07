@@ -2,9 +2,10 @@ import logging as log
 import os
 import re
 import sys
+import termios
+import tty
 from typing import Type, List, Tuple, Any, Optional
 
-from hspylib.core.enum.charset import Charset
 from hspylib.core.tools.validator import Validator
 from hspylib.ui.cli.vt100.vt_codes import VtCodes
 from hspylib.ui.cli.vt100.vt_colors import VtColors
@@ -44,14 +45,14 @@ def log_init(
     return log
 
 
-def sysout(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
+def sysout(string: str, end: str = '\n') -> None:
     """Print the unicode input_string decoding vt100 placeholders"""
     if Validator.is_not_blank(string):
         msg = VtColors.colorize(VtCodes.decode(f"{string}"))
         print(msg, file=sys.stdout, flush=True, end=end)
 
 
-def syserr(string: str, end: str = '\n', encoding: Charset = Charset.UTF_8) -> None:
+def syserr(string: str, end: str = '\n') -> None:
     """Print the unicode input_string decoding vt100 placeholders"""
     if Validator.is_not_blank(string):
         msg = VtColors.colorize(VtCodes.decode(f"{string}"))
@@ -135,9 +136,53 @@ def touch_file(filename: str) -> None:
         os.utime(filename, None)
 
 
-def screen_size() -> List[str]:
+def screen_size() -> Optional[List[str]]:
     """TODO
-    :param filename:
     """
 
-    return os.popen('stty size').read().split()
+    if sys.stdout.isatty():
+        return os.popen('stty size').read().split()
+    else:
+        return None
+
+
+def set_enable_echo(enable: bool = True) -> None:
+    """
+    TODO
+    :param enable:
+    :return:
+    """
+    if sys.stdout.isatty():
+        os.popen(f"stty {'echo -raw' if enable else 'raw -echo min 0'}").read()
+
+
+def get_cursor_position() -> Optional[Tuple[int, int]]:
+    """ Get the terminal cursor position
+    Solution taken from:
+    - https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
+    :return:
+    """
+    if sys.stdout.isatty():
+        buf = ""
+        stdin = sys.stdin.fileno()
+        attrs = termios.tcgetattr(stdin)
+
+        try:
+            tty.setcbreak(stdin, termios.TCSANOW)
+            sys.stdout.write("\x1b[6n")
+            sys.stdout.flush()
+            while True:
+                buf += sys.stdin.read(1)
+                if buf[-1] == "R":
+                    break
+        finally:
+            termios.tcsetattr(stdin, termios.TCSANOW, attrs)
+        try:
+            matches = re.match(r"^\x1b\[(\d*);(\d*)R", buf)
+            groups = matches.groups()
+        except AttributeError:
+            return None
+
+        return int(groups[0]), int(groups[1])
+    else:
+        return None
