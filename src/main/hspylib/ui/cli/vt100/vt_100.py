@@ -32,6 +32,11 @@ class Vt100(ABC):
     def restore_cursor(cls):
         return cls.escape('8')
 
+    # Esc[c
+    @classmethod
+    def reset(cls):
+        return cls.sequence('c')
+
     # Esc[?7<h/l>
     @classmethod
     def set_auto_wrap(cls, enabled: bool) -> str:

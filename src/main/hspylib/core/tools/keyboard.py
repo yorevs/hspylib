@@ -1,12 +1,16 @@
 import string
+import termios
+from typing import Any
 
 import getkey
-from typing import Any
+
 from hspylib.core.enum.enumeration import Enumeration
+from hspylib.core.tools.commons import syserr
 
 
 class Keyboard(Enumeration):
     # Control keys
+    VK_NONE = ''
     VK_ESC = getkey.keys.ESC
     VK_UP = getkey.keys.UP
     VK_DOWN = getkey.keys.DOWN
@@ -102,8 +106,10 @@ class Keyboard(Enumeration):
                 return cls.of_value(keystroke, ignore_case=True)
             else:
                 return cls.ESC
-        except KeyboardInterrupt:
-            return cls.ESC
+        except (KeyboardInterrupt, termios.error) as err:
+            syserr(str(err))
+            input()
+            return cls.VK_ESC
 
     def isdigit(self):
         return str(self.value).isdigit()

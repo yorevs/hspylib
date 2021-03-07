@@ -6,5 +6,6 @@
 
 __all__ = [
   'mchoose', 
+  'minput', 
   'mselect'
 ]

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import re
 import signal
 from abc import ABC
@@ -67,8 +68,7 @@ class MenuChoose(ABC):
                 if re_render:
                     cls.__render__(items, sel_options, show_from, show_to, sel_index, highlight_color)
                     sysout(
-                        f"{nav_color.placeholder()} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [Q] Quit  [1..{str(length)}] Goto: %EL0%",
-                        end='')
+                        f"{nav_color.placeholder()} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
                     vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
