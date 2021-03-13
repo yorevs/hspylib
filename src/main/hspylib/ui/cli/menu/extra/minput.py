@@ -63,13 +63,14 @@ class MenuInput:
             return 'read-write' == self.access_type
 
         def val_regex(self, min_length: int, max_length: int) -> str:
-            regex = r'.*'
             if 'letter' == self.kind:
                 regex = r'^[a-zA-Z]{' + str(min_length) + ',' + str(max_length) + '}$'
             elif 'number' == self.kind:
                 regex = r'^[0-9]{' + str(min_length) + ',' + str(max_length) + '}$'
             elif 'word' == self.kind:
                 regex = r'^[a-zA-Z0-9 _]{' + str(min_length) + ',' + str(max_length) + '}$'
+            else:
+                regex = r'.{' + str(min_length) + ',' + str(max_length) + '}$'
 
             return regex
 
