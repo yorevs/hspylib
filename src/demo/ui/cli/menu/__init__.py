@@ -6,6 +6,7 @@
 
 __all__ = [
   'dynamic_menu', 
+  'extra', 
   'main_menu', 
   'static_menu', 
   'sub_menu_1', 

@@ -1,11 +1,13 @@
 import string
-import termios
-from typing import Any
+import sys
+from typing import Any, Optional
 
 import getkey
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.tools.commons import syserr
+
+assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
 
 
 class Keyboard(Enumeration):
@@ -99,17 +101,16 @@ class Keyboard(Enumeration):
     VK_QUESTION_MARK = '?'
 
     @classmethod
-    def read_keystroke(cls) -> Any:
+    def read_keystroke(cls) -> Optional[Any]:
         try:
             keystroke = getkey.getkey()
             if keystroke:
                 return cls.of_value(keystroke, ignore_case=True)
             else:
-                return cls.ESC
-        except (KeyboardInterrupt, termios.error) as err:
+                return None
+        except KeyboardInterrupt as err:
             syserr(str(err))
-            input()
-            return cls.VK_ESC
+            return None
 
     def isdigit(self):
         return str(self.value).isdigit()

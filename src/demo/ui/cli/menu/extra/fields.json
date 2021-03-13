@@ -1,0 +1,23 @@
+{
+  "fields": [
+    {
+      "label": "Name",
+      "mode": "input",
+      "kind": "word",
+      "min_length": 3,
+      "max_length": 35
+    },
+    {
+      "label": "Age",
+      "mode": "input",
+      "kind": "number",
+      "min_length": 1,
+      "max_length": 3
+    },
+    {
+      "label": "Access Type",
+      "mode": "checkbox",
+      "access_type": "read-only"
+    }
+  ]
+}
