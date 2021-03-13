@@ -136,6 +136,8 @@ class MenuChoose(ABC):
                         break
                 # } Navigation input
 
+        vt_print('%HOM%%ED2%%MOD(0)%')
+
         return [op for idx, op in enumerate(items) if sel_options[idx] == 1] if sel_index >= 0 else None
 
     @classmethod
@@ -177,9 +179,3 @@ class MenuChoose(ABC):
                 vt_print("%CUB(4)%%EL0%...")
                 sysout('%NC%')
         sysout('\n')
-
-
-if __name__ == '__main__':
-    it = [f"Item-{n}" for n in range(1, 21)]
-    sel = mchoose(it)
-    print(str(sel))

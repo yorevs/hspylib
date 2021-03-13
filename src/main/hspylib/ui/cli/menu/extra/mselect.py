@@ -121,6 +121,8 @@ class MenuSelect(ABC):
                         break
                 # } Navigation input
 
+        vt_print('%HOM%%ED2%%MOD(0)%')
+
         return items[sel_index] if sel_index >= 0 else None
 
     @classmethod
@@ -158,8 +160,3 @@ class MenuSelect(ABC):
                 sysout('%NC%')
         sysout('\n')
 
-
-if __name__ == '__main__':
-    it = [f"Item-{n}" for n in range(1, 21)]
-    sel = mselect(it)
-    print(str(sel))
