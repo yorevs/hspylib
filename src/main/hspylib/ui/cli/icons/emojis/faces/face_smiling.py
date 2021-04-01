@@ -1,4 +1,4 @@
-from hspylib.ui.cli.emojis.emojis import Emoji, emj_print
+from hspylib.ui.cli.icons.emojis.emojis import Emoji, emj_print
 
 
 class FaceSmiling(Emoji):
