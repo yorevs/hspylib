@@ -1,8 +1,8 @@
 import struct
-
-from idna.core import unicode
+from abc import ABC, abstractmethod
 
 from hspylib.core.enum.enumeration import Enumeration
+from idna.core import unicode
 
 
 def awe_print(awesome_str: str) -> None:
@@ -10,25 +10,11 @@ def awe_print(awesome_str: str) -> None:
 
 
 class Awesome(Enumeration):
-
     """
         Font awesome codes
         Full list of font awesome icons can be found here:
           - https://fontawesome.com/cheatsheet?from=io
     """
-    @classmethod
-    def awesomize(cls, awesome_str: str) -> str:
-        return f"{awesome_str}"
-
-    @classmethod
-    def deawesomize(cls, awesome_code: str) -> str:
-        return f"{awesome_code}"
-
-    def __str__(self) -> str:
-        return self.value
-
-    def placeholder(self) -> str:
-        return f":{self.name}:"
 
     @staticmethod
     def demo_unicodes():
@@ -40,7 +26,12 @@ class Awesome(Enumeration):
             print('{} {}'.format(hexa, n), end=endz)
             i += 1
 
+    @classmethod
+    def demo_icons(cls):
+        list(map(lambda e: awe_print(e), cls.values()))
 
-if __name__ == '__main__':
-    print(Awesome.awesomize('arrow-left'))
-    print(Awesome.deawesomize(''))
+    def __str__(self) -> str:
+        return self.value
+
+    def placeholder(self) -> str:
+        return f":{self.name}:"
