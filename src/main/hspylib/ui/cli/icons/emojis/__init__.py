@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: main.hspylib.ui.cli.emojis
+# Package: main.hspylib.ui.cli.icons.emojis
 
 __all__ = [
   'emojis', 

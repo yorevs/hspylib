@@ -6,6 +6,7 @@ from typing import Any, List
 
 from hspylib.core.tools.commons import sysout, set_enable_echo, get_cursor_position
 from hspylib.core.tools.keyboard import Keyboard
+from hspylib.ui.cli.icons.font_awesome.ui_compose.form_icons import FormIcons
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 from hspylib.ui.cli.vt100.vt_codes import vt_print
@@ -28,13 +29,6 @@ class MenuInput:
     __mi_access_types__ = ['read-only', 'read-write']
 
     SELECTED_BG = '%MOD(44)%'
-
-    LOCKED_ICN = '\uf023'            # 
-    EDIT_ICN = '\uf044'              # 
-    PASSWORD_ICN = '\uf070'          # 
-    ERROR_ICN = '\uf057'             # 
-    CHECKBOX_ICN = '\uf0c8'          # 
-    CHECKBOX_ICN_CHECKED = '\uf14a'  # 
 
     @staticmethod
     class Field:
@@ -222,19 +216,19 @@ class MenuInput:
 
             # Choose the icon to display
             if field.mode == "input":
-                icon = MenuInput.EDIT_ICN
+                icon = FormIcons.EDITABLE
                 MenuInput.mi_print(self.max_value_length, field.value)
             elif field.mode == "password":
-                icon = MenuInput.PASSWORD_ICN
+                icon = FormIcons.HIDDEN
                 MenuInput.mi_print(self.max_value_length, '*' * field_size)
             elif field.mode == "checkbox":
-                icon = MenuInput.EDIT_ICN
+                icon = FormIcons.EDITABLE
                 if field.value:
-                    MenuInput.mi_print(self.max_value_length - 1, ' ', MenuInput.CHECKBOX_ICN_CHECKED)
+                    MenuInput.mi_print(self.max_value_length - 1, ' ', FormIcons.CHECK_SQUARE.value)
                 else:
-                    MenuInput.mi_print(self.max_value_length - 1, ' ', MenuInput.CHECKBOX_ICN)
+                    MenuInput.mi_print(self.max_value_length - 1, ' ', FormIcons.UNCHECK_SQUARE.value)
             if field.access_type == 'read-only':
-                icon = MenuInput.LOCKED_ICN
+                icon = FormIcons.LOCKED
 
             # Remaining/max characters
             padding = 1 - len(str(self.max_detail_length / 2))
@@ -256,7 +250,7 @@ class MenuInput:
         set_enable_echo(False)
         err_pos = self.max_label_length + self.max_value_length + err_offset
         vt_print(f"%CUP({self.cur_row};{err_pos})%")
-        sysout(f"%RED% {MenuInput.ERROR_ICN}  {self.err_msg}", end='')
+        sysout(f"%RED% {FormIcons.ERROR}  {self.err_msg}", end='')
         dismiss_timeout = 1 + (len(self.err_msg) / 25)
         time.sleep(dismiss_timeout)
         # Remove the message after the timeout

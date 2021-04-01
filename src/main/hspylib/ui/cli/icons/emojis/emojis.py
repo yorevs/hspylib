@@ -4,7 +4,7 @@ from hspylib.core.enum.enumeration import Enumeration
 
 
 def emj_print(emoji_str: str) -> None:
-    print(Emoji.emojize(emoji_str), end='')
+    print(Emoji.emojize(emoji_str) + ' ', end='')
 
 
 class Emoji(Enumeration):

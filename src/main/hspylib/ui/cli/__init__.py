@@ -5,8 +5,8 @@
 # Package: main.hspylib.ui.cli
 
 __all__ = [
-  'emojis', 
   'factory', 
+  'icons', 
   'menu', 
   'tables', 
   'tools', 

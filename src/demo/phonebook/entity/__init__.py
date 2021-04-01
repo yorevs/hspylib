@@ -5,8 +5,8 @@
 # Package: demo.phonebook.entity
 
 __all__ = [
-  'Company', 
-  'Contact', 
-  'Person', 
+  'company', 
+  'contact', 
+  'person', 
   'validator'
 ]
