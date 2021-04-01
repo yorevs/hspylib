@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: main.hspylib.ui.cli.emojis.faces
+# Package: main.hspylib.ui.cli.icons.emojis.faces
 
 __all__ = [
   'face_smiling'

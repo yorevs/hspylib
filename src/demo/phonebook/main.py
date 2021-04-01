@@ -4,24 +4,15 @@ import signal
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import sysout
-from hspylib.ui.cli.menu.menu_ui import MenuUi
-
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
-
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
+from hspylib.ui.cli.menu.menu_ui import MenuUi
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
 
 class Main(metaclass=Singleton):
-
-    @staticmethod
-    def exit_app(sig=None, frame=None) -> None:
-        sysout(frame if frame else '', end='')
-        sysout('%ED2%%HOM%')
-        exit(sig)
 
     def __init__(self):
         source_dir = os.path.dirname(os.path.realpath(__file__))
@@ -71,6 +62,6 @@ class Main(metaclass=Singleton):
 
 # Application entry point
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, Main.exit_app)
+    signal.signal(signal.SIGINT, MenuUtils.exit_app)
     Main().INSTANCE.run()
-    Main.exit_app(0)
+    MenuUtils.exit_app(0)
