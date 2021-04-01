@@ -13,14 +13,6 @@ class Emoji(Enumeration):
         Full list of emojis can be found here:
           - https://unicode.org/emoji/charts/emoji-list.html
     """
-    @classmethod
-    def emojize(cls, emoji_str: str) -> str:
-        return emoji.emojize(f"{emoji_str}")
-
-    @classmethod
-    def demojize(cls, emoji_str: str) -> str:
-        return emoji.demojize(f"{emoji_str}")
-
     def __str__(self) -> str:
         return self.value
 

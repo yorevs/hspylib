@@ -1,7 +1,3 @@
-import struct
-
-from idna.core import unicode
-
 from hspylib.ui.cli.icons.font_awesome.awesome import Awesome, awe_print
 
 
@@ -11,6 +7,7 @@ class FormIcons(Awesome):
         Codes can be found here:
         - https://fontawesome.com/cheatsheet?from=io
     """
+
     ARROW_LEFT = '\uF060'       # 
     ARROW_RIGHT = '\uF061'      # 
     ARROW_UP = '\uF062'         # 
@@ -35,11 +32,6 @@ class FormIcons(Awesome):
     DELETE = '\uF014'           # 
     EXIT = '\uF08B'             # 
 
-    @classmethod
-    def demo_icons(cls):
-        list(map(lambda e: awe_print(e), cls.values()))
-
 
 if __name__ == '__main__':
-    # FormIcons.demo_icons()
-    Awesome.demo_unicodes()
+    FormIcons.demo_icons()

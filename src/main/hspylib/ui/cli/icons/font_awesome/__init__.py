@@ -5,5 +5,6 @@
 # Package: main.hspylib.ui.cli.icons.font_awesome
 
 __all__ = [
-  'awesome'
+  'awesome', 
+  'ui_compose'
 ]
