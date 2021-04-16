@@ -13,10 +13,17 @@ from hspylib.ui.cli.vt100.vt_codes import vt_print
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 
-def minput(form_fields: List[Any]) -> Any:
+def minput(
+        form_fields: List[Any],
+        title: str = 'Please fill all fields of the form fields below',
+        title_color: VtColors = VtColors.ORANGE,
+        nav_color: VtColors = VtColors.YELLOW) -> Any:
     """
     TODO
     :param form_fields:
+    :param title:
+    :param title_color:
+    :param nav_color:
     :return:
     """
     return MenuInput(form_fields).input()
