@@ -26,7 +26,7 @@ def minput(
     :param nav_color:
     :return:
     """
-    return MenuInput(form_fields).input()
+    return MenuInput(form_fields).input(title, title_color, nav_color)
 
 
 class MenuInput:

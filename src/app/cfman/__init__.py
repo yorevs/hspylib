@@ -2,10 +2,9 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: app
+# Package: app.cfman
 
 __all__ = [
-  'cfman', 
-  'firebase', 
-  'vault'
+  'core', 
+  'main'
 ]

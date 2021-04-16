@@ -1,11 +1,14 @@
+import re
 from typing import Callable
+
+from hspylib.core.tools.commons import get_or_default
 
 
 def fit_text(text: str, width: int) -> str:
     return text if len(text) <= width else text[0:width-3] + '...'
 
 
-class TextStyle:
+class TextHelper:
     @staticmethod
     def justified_left(string: str, width: int, fill: str = ' ') -> str:
         return string.ljust(width, fill)
@@ -30,20 +33,25 @@ class TextStyle:
     def camelcase(string: str) -> str:
         return string.capitalize()
 
+    @staticmethod
+    def cut(string: str, index: int) -> str:
+        result = tuple(re.split(r' +', string))
+        return get_or_default(result, index)
+
 
 class TextAlignment(Callable):
     """
     Table cell text justification helper.
     """
-    LEFT = TextStyle.justified_left
-    CENTER = TextStyle.justified_center
-    RIGHT = TextStyle.justified_right
+    LEFT = TextHelper.justified_left
+    CENTER = TextHelper.justified_center
+    RIGHT = TextHelper.justified_right
 
 
 class TextCase(Callable):
     """
     Table cell text justification helper.
     """
-    UPPER_CASE = TextStyle.uppercase
-    LOWER_CASE = TextStyle.lowercase
-    CAMEL_CASE = TextStyle.camelcase
+    UPPER_CASE = TextHelper.uppercase
+    LOWER_CASE = TextHelper.lowercase
+    CAMEL_CASE = TextHelper.camelcase

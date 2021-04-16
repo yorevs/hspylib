@@ -14,14 +14,26 @@ from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 
-def mchoose(all_options: List[Any], checked: bool = True) -> List[Any]:
+def mchoose(
+        items: List[Any],
+        checked: bool = True,
+        title: str = 'Please select one',
+        max_rows: int = 15,
+        title_color: VtColors = VtColors.ORANGE,
+        highlight_color: VtColors = VtColors.BLUE,
+        nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
     """
     TODO
-    :param all_options:
+    :param items:
     :param checked:
+    :param title:
+    :param max_rows:
+    :param title_color:
+    :param highlight_color:
+    :param nav_color:
     :return:
     """
-    return MenuChoose.choose(all_options, checked)
+    return MenuChoose.choose(items, checked, title, max_rows, title_color, highlight_color, nav_color)
 
 
 class MenuChoose(ABC):
