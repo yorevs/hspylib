@@ -75,7 +75,7 @@ task installModule(type: Task) {
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
   doLast {
-    def depsFile = new File("requirements.txt")
+    def depsFile = new File(projectDir, "requirements.txt")
     depsFile.write ''
     project.ext.deps.each { dep ->
       depsFile.append dep + '\n'
