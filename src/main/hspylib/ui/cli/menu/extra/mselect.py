@@ -14,11 +14,11 @@ from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 def mselect(
         items: List[Any],
-        title: str,
-        max_rows: int,
-        title_color: VtColors,
-        highlight_color: VtColors,
-        nav_color: VtColors) -> Any:
+        title: str = 'Please select one',
+        max_rows: int = 15,
+        title_color: VtColors = VtColors.ORANGE,
+        highlight_color: VtColors = VtColors.BLUE,
+        nav_color: VtColors = VtColors.YELLOW) -> Any:
     """
     TODO
     :param items:
