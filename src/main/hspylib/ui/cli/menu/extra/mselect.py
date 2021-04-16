@@ -12,13 +12,24 @@ from hspylib.ui.cli.vt100.vt_codes import vt_print
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 
-def mselect(all_options: List[Any]) -> Any:
+def mselect(
+        items: List[Any],
+        title: str,
+        max_rows: int,
+        title_color: VtColors,
+        highlight_color: VtColors,
+        nav_color: VtColors) -> Any:
     """
     TODO
-    :param all_options:
+    :param items:
+    :param title:
+    :param max_rows:
+    :param title_color:
+    :param highlight_color:
+    :param nav_color:
     :return:
     """
-    return MenuSelect.select(all_options)
+    return MenuSelect.select(items, title, max_rows, title_color, highlight_color, nav_color)
 
 
 class MenuSelect(ABC):
@@ -159,4 +170,3 @@ class MenuSelect(ABC):
                 vt_print("%CUB(4)%%EL0%...")
                 sysout('%NC%')
         sysout('\n')
-
