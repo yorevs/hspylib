@@ -78,7 +78,7 @@ class MenuSelect(ABC):
 
                 # Navigation input {
                 keypress = Keyboard.read_keystroke()
-                if keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
+                if keypress == Keyboard.VK_q or keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
                     sel_index = -1
                     done = True
                     sysout('\n%NC%')

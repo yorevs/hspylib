@@ -29,32 +29,32 @@ class Keyboard(Enumeration):
     VK_PAGE_UP = getkey.keys.PAGE_UP
     VK_PAGE_DOWN = getkey.keys.PAGE_DOWN
     # Letters
-    VK_A = 'a'
-    VK_B = 'b'
-    VK_C = 'c'
-    VK_D = 'd'
-    VK_E = 'e'
-    VK_F = 'f'
-    VK_G = 'g'
-    VK_H = 'h'
-    VK_I = 'i'
-    VK_J = 'j'
-    VK_K = 'k'
-    VK_L = 'l'
-    VK_M = 'm'
-    VK_N = 'n'
-    VK_O = 'o'
-    VK_P = 'p'
-    VK_Q = 'q'
-    VK_R = 'r'
-    VK_S = 's'
-    VK_T = 't'
-    VK_U = 'u'
-    VK_V = 'v'
-    VK_W = 'w'
-    VK_X = 'x'
-    VK_Y = 'y'
-    VK_Z = 'z'
+    VK_a = 'a'; VK_A = 'A'
+    VK_b = 'b'; VK_B = 'B'
+    VK_c = 'c'; VK_C = 'C'
+    VK_d = 'd'; VK_D = 'D'
+    VK_e = 'e'; VK_E = 'E'
+    VK_f = 'f'; VK_F = 'F'
+    VK_g = 'g'; VK_G = 'G'
+    VK_h = 'h'; VK_H = 'H'
+    VK_i = 'i'; VK_I = 'I'
+    VK_j = 'j'; VK_J = 'J'
+    VK_k = 'k'; VK_K = 'K'
+    VK_l = 'l'; VK_L = 'L'
+    VK_m = 'm'; VK_M = 'M'
+    VK_n = 'n'; VK_N = 'N'
+    VK_o = 'o'; VK_O = 'O'
+    VK_p = 'p'; VK_P = 'P'
+    VK_q = 'q'; VK_Q = 'Q'
+    VK_r = 'r'; VK_R = 'R'
+    VK_s = 's'; VK_S = 'S'
+    VK_t = 't'; VK_T = 'T'
+    VK_u = 'u'; VK_U = 'U'
+    VK_v = 'v'; VK_V = 'V'
+    VK_w = 'w'; VK_W = 'W'
+    VK_x = 'x'; VK_X = 'X'
+    VK_y = 'y'; VK_Y = 'Y'
+    VK_z = 'z'; VK_Z = 'Z'
     # Numbers
     VK_ZERO = '0'
     VK_ONE = '1'
@@ -105,7 +105,7 @@ class Keyboard(Enumeration):
         try:
             keystroke = getkey.getkey()
             if keystroke:
-                return cls.of_value(keystroke, ignore_case=True)
+                return cls.of_value(keystroke)
             else:
                 return None
         except KeyboardInterrupt as err:

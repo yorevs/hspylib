@@ -124,8 +124,9 @@ class MenuInput:
 
         def value(self, value: Any):
             re_valid = self.field.val_regex(0, len(str(value)))
-            assert re.match(re_valid, value), \
-                f"Not a valid value: \"{value}\". Valid regex is \"{re_valid}\""
+            if value:
+                assert re.match(re_valid, value), \
+                    f"Not a valid value: \"{value}\". Valid regex is \"{re_valid}\""
             self.field.value = value
             return self
 
