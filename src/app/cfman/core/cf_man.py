@@ -46,7 +46,7 @@ class CFManager(object):
             sysout('Not connected to CF, login required...')
             if not self.api:
                 self.__select_api__()
-            if not self.username and self.password:
+            if not self.username or not self.password:
                 sleep(0.5)
                 self.__require_credentials__()
             sysout(f'Logging in {self.username}@{self.api}...')
@@ -100,20 +100,28 @@ class CFManager(object):
             self.exit_handler()
 
     def __do_login__(self) -> None:
-        if not self.cf.login(self.api, self.username, self.password, self.org, self.space):
-            raise Exception('Unable to login into PCF')
+        result = self.cf.api(self.api)
+        if not result:
+            raise Exception(f'Unable to set API: => {result}')
+        result = self.cf.auth(self.username, self.password)
+        if not result:
+            raise Exception(f'Unable to authenticate: => {result}')
 
     def __select_org__(self) -> None:
-        orgs = self.cf.orgs()
-        if not orgs:
-            raise Exception('Unable to retrieve organizations')
-        self.org = mselect(orgs, title='Please select the organization')
+        if not self.org:
+            orgs = self.cf.orgs()
+            if not orgs:
+                raise Exception(f'Unable to retrieve organizations: => {str(orgs)}')
+            self.org = mselect(orgs, title='Please select the organization')
+        self.cf.target(org=self.org)
 
     def __select_space__(self) -> None:
-        spaces = self.cf.spaces()
-        if not spaces:
-            raise Exception('Unable to retrieve spaces')
-        self.space = mselect(spaces, title='Please select a space')
+        if not self.space:
+            spaces = self.cf.spaces()
+            if not spaces:
+                raise Exception(f'Unable to retrieve spaces: => {str(spaces)}')
+            self.space = mselect(spaces, title='Please select a space')
+        self.cf.target(space=self.space)
 
     def __choose_apps__(self) -> None:
         apps = self.get_apps()
@@ -126,22 +134,16 @@ class CFManager(object):
 
     def __loop_actions__(self) -> None:
 
-        apps = None
-
         while not self.done:
-            if not self.org or not self.space or not apps:
-                if not self.org:
-                    self.__select_org__()
-                if not self.space:
-                    self.__select_space__()
+            if self.org and self.space:
                 ret_status, ret_val = self.cf.target(org=self.org, space=self.space)
-                if ret_status:
-                    self.log.info(ret_val)
-                else:
-                    raise Exception(f"Unable to target ORG: {self.org}  SPACE: {self.space}")
+                self.log.info(ret_val)
+            else:
+                self.__select_org__()
+                self.__select_space__()
 
             if not self.org or not self.space:
-                self.exit_handler()
+                raise Exception(f"Unable to target ORG: {self.org}  SPACE: {self.space}")
 
             action = mselect(CFManager.CF_ACTIONS, 'Please select an action to perform')
 

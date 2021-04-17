@@ -1,7 +1,7 @@
 import select
 import subprocess
 from time import sleep
-from typing import List, Any, Tuple
+from typing import List, Any
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
@@ -12,42 +12,28 @@ class CloudFoundry(metaclass=Singleton):
 
     def __init__(self):
         self.log = AppConfigs.INSTANCE.logger()
-        self.connected = "FAILED" != self.__exec__('orgs')
+        self.connected = "FAILED" not in self.__exec__('orgs')
 
     # Before getting started:
+    def api(self, api: str) -> bool:
+        params = ['api', api]
+        return "FAILED" not in self.__exec__(*params)
 
-    def login(self, api: str, username: str, password: str, org: str = None, space: str = None) -> bool:
-        """Log user in"""
-        params = ['login', '-u', username, '-p', password]
-        if api:
-            params.append('-a')
-            params.append(api)
-        if org:
-            params.append('-o')
-            params.append(org)
-        if space:
-            params.append('-s')
-            params.append(space)
+    def auth(self, username: str, password: str):
+        params = ['auth', username, password]
+        return "FAILED" not in self.__exec__(*params)
 
-        return "FAILED" != self.__exec__(*params)
-
-    def logout(self) -> bool:
-        """Log user out"""
-        return "" != self.__exec__('logout')
-
-    def target(self, **kwargs) -> Tuple[bool, str]:
+    def target(self, **kwargs) -> bool:
         """Set or view the targeted org or space"""
         params = ['target']
-        if kwargs['org']:
+        if 'org' in kwargs:
             params.append('-o')
             params.append(kwargs['org'])
-        if kwargs['space']:
+        if 'space' in kwargs:
             params.append('-s')
             params.append(kwargs['space'])
 
-        result = self.__exec__(*params)
-
-        return "FAILED" != self.__exec__(*params), result
+        return "FAILED" not in self.__exec__(*params)
 
     # Space management
     def spaces(self) -> List[str]:
@@ -96,8 +82,10 @@ class CloudFoundry(metaclass=Singleton):
     def __exec__(self, *cmd_args) -> Any:
         args = list(cmd_args)
         args.insert(0, 'cf')
-        self.log.info('Executing PCF command: {}'.format(cmd_args))
-        return str(subprocess.run(args, capture_output=True, text=True).stdout.strip())
+        self.log.info('Executing PCF command: {}'.format(' '.join(args)))
+        result = subprocess.run(args, capture_output=True, text=True).stdout
+        self.log.debug('Execution result: {}'.format(result))
+        return str(result).strip() if result else None
 
     # Subprocess helper
     def __poll__(self, *cmd_args) -> Any:
