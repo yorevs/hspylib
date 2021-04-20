@@ -11,6 +11,5 @@ __all__ = [
   'exception', 
   'meta', 
   'model', 
-  'tools', 
-  'web'
+  'tools'
 ]

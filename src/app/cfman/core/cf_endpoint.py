@@ -1,7 +1,7 @@
 from typing import Tuple
 
 
-class Endpoint:
+class CFEndpoint:
 
     def __init__(self, attrs: Tuple[str]):
         self.alias = attrs[0]

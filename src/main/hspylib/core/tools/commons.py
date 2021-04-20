@@ -95,7 +95,7 @@ def get_or_default(options: Tuple, index: int, default_value=None) -> Optional[A
 
 
 def get_or_default(options: dict, key: str, default_value=None) -> Optional[Any]:
-    """Retrieve an item from the options list or None if index is out of range
+    """Retrieve an item from the options list or None if key was not found
     :param options: The available list of options
     :param key: The key of the item
     :param default_value: The default value if the index is not found

@@ -78,15 +78,12 @@ class MenuSelect(ABC):
 
                 # Navigation input {
                 keypress = Keyboard.read_keystroke()
-                if keypress == Keyboard.VK_q or keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
+                if keypress in [Keyboard.VK_q, Keyboard.VK_Q, Keyboard.VK_ESC]:
                     sel_index = -1
                     done = True
                     sysout('\n%NC%')
                 else:
-                    if keypress in ['q', 'Q']:  # Exit requested
-                        sysout('\n%NC%')
-                        break
-                    elif keypress.isdigit():  # An index was typed
+                    if keypress.isdigit():  # An index was typed
                         typed_index = keypress.value
                         sysout(f"{keypress.value}", end='')
                         index_len = 1
