@@ -1,14 +1,17 @@
 import re
 from typing import List
 
+from hspylib.core.tools.commons import sysout
 
-class Application:
+
+class CFApplication:
+    __max_name_length__ = 0
 
     @classmethod
     def of(cls, app_line: str):
         parts = re.split(r' {2,}', app_line)
         assert len(parts) >= 6, f"Invalid application line: {app_line}"
-        return Application(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
+        return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
 
     def __init__(
             self,
@@ -24,9 +27,21 @@ class Application:
         self.memory = memory
         self.disk = disk
         self.urls = urls
+        CFApplication.__max_name_length__ = max(CFApplication.__max_name_length__, len(self.name))
 
     def __str__(self) -> str:
         return self.name
 
     def __repr__(self):
         return str(self)
+
+    def print(self):
+        sysout("%CYAN%{}  %{}%{:5}  %WHITE%{:5}  {:4}  {:4}  {}".format(
+            self.name.ljust(CFApplication.__max_name_length__),
+            'GREEN' if self.state == 'started' else 'RED',
+            self.state,
+            self.instances,
+            self.memory,
+            self.disk,
+            self.urls
+        ))

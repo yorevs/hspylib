@@ -80,22 +80,19 @@ class MenuChoose(ABC):
                 if re_render:
                     cls.__render__(items, sel_options, show_from, show_to, sel_index, highlight_color)
                     sysout(
-                        f"{nav_color.placeholder()} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
+                        f"{nav_color.placeholder()} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{str(length)}] Goto: %EL0%", end='')
                     vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
 
                 # Navigation input {
                 keypress = Keyboard.read_keystroke()
-                if keypress == Keyboard.VK_q or keypress == Keyboard.VK_Q or keypress == Keyboard.VK_ESC:
+                if keypress in [Keyboard.VK_q, Keyboard.VK_Q, Keyboard.VK_ESC]:
                     done = True
                     sel_index = -1
                     sysout('\n%NC%')
                 else:
-                    if keypress in ['q', 'Q']:  # Exit requested
-                        sysout('\n%NC%')
-                        break
-                    elif keypress.isdigit():  # An index was typed
+                    if keypress.isdigit():  # An index was typed
                         typed_index = keypress.value
                         sysout(f"{keypress.value}", end='')
                         index_len = 1
@@ -118,11 +115,15 @@ class MenuChoose(ABC):
                             show_from = show_to - diff_index
                             sel_index = int(typed_index) - 1
                             re_render = 1
-                    elif keypress == Keyboard.VK_SPACE:  # Mark option
+                    elif keypress == Keyboard.VK_SPACE:  # Space -> Mark option
                         if sel_options[sel_index] == 0:
                             sel_options[sel_index] = 1
                         else:
                             sel_options[sel_index] = 0
+                        re_render = 1
+                        continue
+                    elif keypress in [Keyboard.VK_i, Keyboard.VK_I]:  # I -> Invert options
+                        sel_options = [(0 if op == 1 else 1) for op in sel_options]
                         re_render = 1
                         continue
                     elif keypress == Keyboard.VK_UP:  # Cursor up

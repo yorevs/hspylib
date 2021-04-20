@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: main.hspylib.core.web
+# Package: main.hspylib.modules.web
 
 __all__ = [
   'rest_utils', 

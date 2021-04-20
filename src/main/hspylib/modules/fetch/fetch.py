@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 import requests
 from hspylib.core.enum.http_method import HttpMethod
@@ -6,15 +6,22 @@ from hspylib.modules.fetch.http_response import HttpResponse
 from hspylib.core.tools.commons import sysout
 
 
-# @purpose: Do a request specified by method and according to parameters.
 def fetch(
         url: str,
         method: HttpMethod = HttpMethod.GET,
-        headers=None,
-        body=None,
+        headers: list = None,
+        body: Optional[Any] = None,
         silent=True) -> Optional[HttpResponse]:
+    """ Do a request specified by method and according to parameters.
+    :param url: The url to make the request.
+    :param method: The http method to be used [ GET, HEAD, POST, PUT, PATCH, DELETE ].
+    :param headers: The http request headers.
+    :param body: The http request body (payload).
+    :param silent: Omits all informational messages.
+    :return:
+    """
 
-    url = url if url.startswith("http") else 'http://{}'.format(url)
+    url = url if url and url.startswith("http") else 'http://{}'.format(url)
     if not silent:
         sysout('Fetching: method={} table_headers={} body={} url={} ...'.format(
             method, headers if headers else '[]', body if body else '{}', url))
@@ -22,31 +29,31 @@ def fetch(
     return HttpResponse.of(response)
 
 
-# @purpose: Do HEAD request and according to parameters.
-def head(url: str, headers=None, silent=True):
+def head(url: str, headers=None, silent=True) -> Optional[HttpResponse]:
+    """Do HEAD request and according to parameters."""
     return fetch(url=url, method=HttpMethod.HEAD, headers=headers, silent=silent)
 
 
-# @purpose: Do GET request and according to parameters.
-def get(url: str, headers=None, silent=True):
+def get(url: str, headers=None, silent=True) -> Optional[HttpResponse]:
+    """Do GET request and according to parameters."""
     return fetch(url=url, headers=headers, silent=silent)
 
 
-# @purpose: Do DELETE request and according to parameters.
-def delete(url: str, headers=None, silent=True):
+def delete(url: str, headers=None, silent=True) -> Optional[HttpResponse]:
+    """Do DELETE request and according to parameters."""
     return fetch(url=url, method=HttpMethod.DELETE, headers=headers, silent=silent)
 
 
-# @purpose: Do POST request and according to parameters.
-def post(url: str, body=None, headers=None, silent=True):
+def post(url: str, body=None, headers=None, silent=True) -> Optional[HttpResponse]:
+    """Do POST request and according to parameters."""
     return fetch(url, HttpMethod.POST, headers, body, silent)
 
 
-# @purpose: Do PUT request and according to parameters.
-def put(url, body=None, headers=None, silent=True):
+def put(url, body=None, headers=None, silent=True) -> Optional[HttpResponse]:
+    """Do PUT request and according to parameters."""
     return fetch(url=url, method=HttpMethod.PUT, headers=headers, body=body, silent=silent)
 
 
-# @purpose: Do PATCH request and according to parameters.
-def patch(url, body=None, headers=None, silent=True):
+def patch(url, body=None, headers=None, silent=True) -> Optional[HttpResponse]:
+    """Do PATCH request and according to parameters."""
     return fetch(url=url, method=HttpMethod.PATCH, headers=headers, body=body, silent=silent)

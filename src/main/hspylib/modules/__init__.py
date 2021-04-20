@@ -9,5 +9,6 @@ __all__ = [
   'fetch', 
   'json_search', 
   'mock', 
-  'security'
+  'security', 
+  'web'
 ]
