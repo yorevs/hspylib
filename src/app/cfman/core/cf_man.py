@@ -24,15 +24,16 @@ class CFManager(object):
         'Status',
         'Start',
         'Stop',
+        'Target',
     ]
 
     @staticmethod
     def __allow_multiple__(action: str) -> bool:
-        return action.lower() not in ['logs']
+        return action.lower() not in ['logs', 'target']
 
     @staticmethod
     def __is_callable__(action: str) -> bool:
-        return action.lower() not in ['status']
+        return action.lower() not in ['status', 'target']
 
     def __init__(self, options: dict):
         self.log = AppConfigs.INSTANCE.logger()
@@ -78,13 +79,16 @@ class CFManager(object):
         sysout('')
         exit(exit_code)
 
-    def get_apps(self) -> List[CFApplication]:
+    def __get_apps__(self) -> List[CFApplication]:
         sysout(f'Retrieving {self.space} applications ...')
         apps = self.cf.apps()
         apps = list(map(CFApplication.of, apps if apps else []))
         if not apps:
-            raise Exception(f'Unable to retrieve applications: => => {self.cf.last_result}')
-        return apps
+            if "OK" not in self.cf.last_result:
+                raise Exception(f'Unable to retrieve applications: => {self.cf.last_result}')
+            else:
+                sysout('No apps found')
+        return apps or []
 
     def __select_endpoint__(self):
         with open('{}/api_endpoints.txt'.format(self.configs.resource_dir()), 'r+') as f_hosts:
@@ -142,11 +146,11 @@ class CFManager(object):
         self.cf.target(space=self.space)
 
     def __choose_apps__(self) -> None:
-        apps = self.get_apps()
+        apps = self.__get_apps__()
         self.apps = mchoose(apps, checked=False, title='Please choose the applications you want to manage')
 
     def __select_app__(self):
-        apps = self.get_apps()
+        apps = self.__get_apps__()
         sel_app = mselect(apps, title='Please select the application you want to manage')
         self.apps = [sel_app] if sel_app else None
 
@@ -179,18 +183,23 @@ class CFManager(object):
                                 self.__perform__(action, app=app.name, org=self.org, space=self.space)
                     else:
                         if "status" == action.lower():
-                            apps = self.get_apps()
-                            sysout("{}  {}  {}  {}  {}  {}".format(
-                                'Name'.ljust(CFApplication.__max_name_length__),
-                                'State'.ljust(7),
-                                'Inst'.ljust(5),
-                                'Mem'.ljust(4),
-                                'Disk'.ljust(4),
-                                'URLs',
-                            ))
-                            for app in apps:
-                                app.print()
-                            MenuUtils.wait_enter()
+                            apps = self.__get_apps__()
+                            if len(apps) > 0:
+                                sysout("{}  {}  {}  {}  {}  {}".format(
+                                    'Name'.ljust(CFApplication.__max_name_length__),
+                                    'State'.ljust(7),
+                                    'Inst'.ljust(5),
+                                    'Mem'.ljust(4),
+                                    'Disk'.ljust(4),
+                                    'URLs',
+                                ))
+                                for app in apps:
+                                    app.print()
+                        elif "target" == action.lower():
+                            self.space = None
+                            self.org = None
+                            continue
+                        MenuUtils.wait_enter()
 
         self.exit_handler()
 
