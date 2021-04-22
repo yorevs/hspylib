@@ -2,11 +2,9 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: demo.ui.cli
+# Package: main.hspylib.ui.cli.app
 
 __all__ = [
   'application', 
-  'menu', 
-  'table', 
-  'vt100'
+  'option'
 ]
