@@ -16,3 +16,5 @@ firebase.cfg*
 .firebase*
 api_endpoints.txt
 lib/
+dist/
+*.egg-info/

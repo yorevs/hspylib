@@ -12,7 +12,9 @@ project.ext.deps = [
   'pymysql',
   'requests',
   'emoji',
-  'getkey'
+  'getkey',
+  'twine',
+  'wheel'
 ]
 
 /* Install all required python packages */
