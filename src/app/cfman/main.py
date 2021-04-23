@@ -48,11 +48,11 @@ class Main(Application):
 
     def main(self, arguments: List[str]) -> None:
         """Run the application with the command line arguments"""
-        self.with_option('a', 'api', handler=lambda arg: self.__add_option__('api', arg))
-        self.with_option('o', 'org', handler=lambda arg: self.__add_option__('org', arg))
-        self.with_option('s', 'space', handler=lambda arg: self.__add_option__('space', arg))
-        self.with_option('u', 'username', handler=lambda arg: self.__add_option__('username', arg))
-        self.with_option('p', 'password', handler=lambda arg: self.__add_option__('password', arg))
+        self.with_option('a', 'api', True, lambda arg: self.__add_option__('api', arg))
+        self.with_option('o', 'org', True, lambda arg: self.__add_option__('org', arg))
+        self.with_option('s', 'space', True, lambda arg: self.__add_option__('space', arg))
+        self.with_option('u', 'username', True, lambda arg: self.__add_option__('username', arg))
+        self.with_option('p', 'password', True, lambda arg: self.__add_option__('password', arg))
         self.parse_arguments(arguments)
         self.cfman = CFManager(self.option_map)
         self.configs.logger().info(

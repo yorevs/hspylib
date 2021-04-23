@@ -14,8 +14,11 @@ class CloudFoundry(metaclass=Singleton):
     def __init__(self):
         self.log = AppConfigs.INSTANCE.logger()
         self.connected = False
-        self.targeted = False
+        self.targeted = {'org': None, 'space': None, 'targeted': False}
         self.last_result = None
+
+    def is_targeted(self):
+        return self.targeted['org'] and self.targeted['space'] and self.targeted['targeted']
 
     # Before getting started:
     def connect(self) -> bool:
@@ -34,16 +37,19 @@ class CloudFoundry(metaclass=Singleton):
         params = ['auth', username, password]
         return "FAILED" not in self.__exec__(*params)
 
-    def target(self, **kwargs) -> bool:
+    def target(self, **kwargs) -> dict:
         """Set or view the targeted org or space"""
         params = ['target']
-        if 'org' in kwargs:
+        if 'org' in kwargs and kwargs['org']:
             params.append('-o')
             params.append(kwargs['org'])
-        if 'space' in kwargs:
+            self.targeted['org'] = kwargs['org']
+        if 'space' in kwargs and kwargs['space']:
             params.append('-s')
             params.append(kwargs['space'])
-        self.targeted = "FAILED" not in self.__exec__(*params)
+            self.targeted['space'] = kwargs['space']
+        self.targeted['targeted'] = "FAILED" not in self.__exec__(*params)
+
         return self.targeted
 
     # Space management
