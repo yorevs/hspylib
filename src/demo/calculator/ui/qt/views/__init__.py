@@ -2,8 +2,8 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: app.calc.core.enum
+# Package: demo.calculator.ui.qt.views
 
 __all__ = [
-  'calc_operations'
+  'main_view'
 ]

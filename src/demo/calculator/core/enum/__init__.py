@@ -2,9 +2,8 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: app.calc.core
+# Package: demo.calculator.core.enum
 
 __all__ = [
-  'enum', 
-  'qt_calculator'
+  'calc_operations'
 ]

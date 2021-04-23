@@ -2,9 +2,10 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: app.calc.ui.qt
+# Package: demo.calculator
 
 __all__ = [
-  'promotions', 
-  'views'
+  'core', 
+  'main', 
+  'ui'
 ]

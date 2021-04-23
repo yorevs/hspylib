@@ -5,6 +5,7 @@
 # Package: demo
 
 __all__ = [
+  'calculator', 
   'phonebook', 
   'ui'
 ]
