@@ -1,7 +1,15 @@
+/*
+    Gradle build badge generation  extension
+    Project: HSPyLib
+    Created: 4th March, 2021
+
+    See also: https://badgen.net/
+*/
+
 /* Download and save the generated badge file */
 def badgeGen(subject, status, color, outDir="${project.buildDir}") {
   def url = "https://badgen.net/badge/${subject}/${status}/${color}"
-  def outFile = "$rootProject.projectDir/${subject}-badge.svg"
+  def outFile = "${rootProject.projectDir}/${subject}-badge.svg"
   exec {
     executable "curl"
     args "--connect-timeout", 3, "${url}", "--output", "${outFile}"

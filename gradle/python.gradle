@@ -1,6 +1,6 @@
 /*
     Gradle Python extension
-    Project: HSPYLIB
+    Project: HSPyLib
     Created: 1st July, 2020
 */
 
@@ -80,14 +80,13 @@ task installModule(type: Task) {
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
   doLast {
-    def requirements_file = project.file("${project.ext.requirementsFile}")
-    def depsFile = new File(projectDir, "requirements.txt")
+    def depsFile = project.file("${project.ext.requirementsFile}")
     depsFile.write ''
     project.ext.deps.each { dep ->
       depsFile.append dep + '\n'
     }
     copy {
-        from("$rootProject.projectDir") {
+        from("${rootProject.projectDir}") {
           include 'README.md'
         }
         into "${sourceRoot}/main"
