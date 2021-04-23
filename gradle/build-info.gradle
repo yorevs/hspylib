@@ -60,6 +60,9 @@ task patchVersion(type: Task) {
   group = 'Versioning'
   description = 'Increment the build number for publishing'
   outputs.upToDateWhen { false }
+  dependsOn check
+  mustRunAfter check
+  finalizedBy updateVersion
   doLast {
     def ver = project.ext.app_version
     println 'Increment the build number for publishing'
@@ -106,6 +109,5 @@ task listProperties {
   }
 }
 
-build.dependsOn(patchVersion)
 build.dependsOn(updateVersion)
 build.finalizedBy(updateBuildInfo)

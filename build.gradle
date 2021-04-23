@@ -27,8 +27,8 @@ wrapper {
 
 apply from: "gradle/dependencies.gradle"
 apply from: "gradle/python.gradle"
-apply from: "gradle/pypi-publish.gradle"
 apply from: "gradle/build-info.gradle"
+apply from: "gradle/pypi-publish.gradle"
 apply from: "gradle/docker.gradle"
 apply from: "gradle/oracle.gradle"
 apply from: "gradle/badges.gradle"
