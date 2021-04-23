@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.9.15
+# HSPyLib v0.9.16
 #
 # Package: app.vault
 
@@ -10,4 +10,4 @@ __all__ = [
   'exception', 
   'main'
 ]
-__version__ = "1.3.0"
+__version__ = "0.9.2"
