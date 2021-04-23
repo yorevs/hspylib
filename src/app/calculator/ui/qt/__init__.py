@@ -6,6 +6,5 @@
 
 __all__ = [
   'promotions', 
-  'qt_calculator', 
   'views'
 ]
