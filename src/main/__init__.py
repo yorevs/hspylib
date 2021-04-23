@@ -1,10 +1,10 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.9.15
+# HSPyLib v0.9.16
 #
 # Package: main
 
 __all__ = [
   'hspylib'
 ]
-__version__ = "0.9.15"
+__version__ = "0.9.16"

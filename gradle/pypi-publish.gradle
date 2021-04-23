@@ -6,9 +6,11 @@
 
 ext {
   pypiTestRepoUrl = "https://test.pypi.org/legacy/"
+  pypiProdRepoUrl = "https://upload.pypi.org/legacy/"
   pypiUsername = 'yorevs'
   pypiPassword = '^e32?g$eCwazbfC'
 }
+
 
 /* Helper Functions -------------------------------------------------------- */
 Collection dirsByPattern(String baseDir, String pattern) {
@@ -17,6 +19,10 @@ Collection dirsByPattern(String baseDir, String pattern) {
       if (details.isDirectory() && details.name ==~ pattern) paths << details.file.path
   }
   return paths
+}
+
+String dirName(File file) {
+  file.getParentFile().getPath()
 }
 
 /* Cleanup distribution files */
@@ -30,17 +36,18 @@ task cleanDist(type: Delete) {
   delete dirsByPattern(projectRoot, /.*hspylib.egg-info$/)
 }
 
-
 /* Generate PyPi distribution files */
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
+  dependsOn build
+  dependsOn test
   dependsOn cleanDist
   doLast {
     fileTree("${sourceRoot}").matching {
         include "**/setup.py"
       }.each { File module ->
-          def moduleDir = module.getParentFile().getPath()
+          def moduleDir = dirName(module)
           println "Generating distribution files -> ${moduleDir}"
           exec {
             workingDir "${moduleDir}"
@@ -59,7 +66,7 @@ task checkDist(type: Task) {
     fileTree("${sourceRoot}").matching {
         include "**/setup.py"
       }.each { File module ->
-        def moduleDir = module.getParentFile().getPath()
+        def moduleDir = dirName(module)
         def distDir = "${moduleDir}/dist"
         println "Checking distribution files -> ${distDir}"
         exec {
@@ -70,30 +77,39 @@ task checkDist(type: Task) {
   }
 }
 
-/* Publish the module into the PyPi "Test" repository */
-task publishTest(type: Task) {
+/* Publish the module to PyPi repository */
+task publish(type: Task) {
   group = 'Publish'
-  description = "Publish the module into the PyPi \"Test\" repository"
+  description = "Publish the module to PyPi repository"
   dependsOn checkDist
-  def url = project.ext.pypiTestRepoUrl
+  def env = findProperty('env') ?: 'test'
+  def url = env == "prod" ? project.ext.pypiProdRepoUrl : project.ext.pypiTestRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword
   doLast {
     fileTree("${sourceRoot}").matching {
         include "**/setup.py"
       }.each { File module ->
-        def moduleDir = module.getParentFile().getPath()
+        def moduleDir = dirName(module)
         def distDir = "${moduleDir}/dist"
-        println "Publishing the ${distDir}/* into the PyPi repository => ${un}:${pw}@${url}"
-        exec {
-          workingDir "${moduleDir}"
-          commandLine rootProject.python, '-m', 'twine', 'upload',
-            '--verbose',
-            '--repository-url', "${url}",
-            '-u', "${un}",
-            '-p', "${pw}",
-            "${distDir}/*"
-        }
+        println '--'
+        println "|-version: ${project.ext.app_version}"
+        println "|-setup: ${module}"
+        println "|-env: ${env}"
+        println "|-user: ${un}"
+        println "|-url: ${url}"
+        println "|-dist: ${distDir}/*"
+        println '--'
+        println "Publishing module to PyPi..."
+//         exec {
+//           workingDir "${moduleDir}"
+//           commandLine rootProject.python, '-m', 'twine', 'upload',
+//             '--verbose',
+//             '--repository-url', "${url}",
+//             '-u', "${un}",
+//             '-p', "${pw}",
+//             "${distDir}/*"
+//         }
     }
   }
 }

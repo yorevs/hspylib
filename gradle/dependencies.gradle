@@ -14,7 +14,8 @@ project.ext.deps = [
   'emoji',
   'getkey',
   'twine',
-  'wheel'
+  'wheel',
+  'bumpversion'
 ]
 
 /* Install all required python packages */
