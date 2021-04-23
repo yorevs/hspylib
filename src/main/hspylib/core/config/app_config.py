@@ -81,8 +81,8 @@ class AppConfigs(metaclass=Singleton):
         return self._logger if self._logger else log
 
     def get(self, property_name: str) -> Optional[str]:
-        env = os.environ.get(AppConfigs.environ_name(property_name))
-        return str(env) if env else self._app_properties.get(property_name)
+        env_value = os.environ.get(AppConfigs.environ_name(property_name))
+        return str(env_value) if env_value else self._app_properties.get(property_name)
 
     def get_int(self, property_name: str) -> Optional[int]:
         env = os.environ.get(AppConfigs.environ_name(property_name))

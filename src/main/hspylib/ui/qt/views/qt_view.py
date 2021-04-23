@@ -10,9 +10,9 @@ class QtView(ABC):
         super().__init__()
         self.window = window
         self.parent = parent
-        self.logger = AppConfigs.logger()
+        self.logger = AppConfigs.INSTANCE.logger()
         self.qt = QtFinder(self.window)
 
     @abstractmethod
-    def __setup_ui(self):
+    def setup_ui(self):
         pass
