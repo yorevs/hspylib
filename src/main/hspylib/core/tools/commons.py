@@ -85,7 +85,7 @@ def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = 
     return result_list
 
 
-def get_or_default(options: Tuple, index: int, default_value=None) -> Optional[Any]:
+def get_or_default(options: tuple, index: int, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or None if index is out of range
     :param options: The available list of options
     :param index: The index of the item
@@ -94,7 +94,7 @@ def get_or_default(options: Tuple, index: int, default_value=None) -> Optional[A
     return options[index] if index < len(options) else default_value
 
 
-def get_or_default(options: dict, key: str, default_value=None) -> Optional[Any]:
+def get_by_key_or_default(options: dict, key: str, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or None if key was not found
     :param options: The available list of options
     :param key: The key of the item

@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
-import getopt
 import os
 import signal
 import sys
+import traceback
 from datetime import datetime
-from typing import List
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout, get_or_default
+from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
-from vault.core.vault import Vault, APP_NAME, VERSION
-from vault.core.vault_config import VaultConfig
 from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
+from vault.core.vault import Vault
+from vault.core.vault_config import VaultConfig
 
+# Application name, read from it's own file path
+APP_NAME = os.path.basename(__file__)
+
+# Version tuple: (major,minor,build)
+VERSION = (1, 3, 0)
+
+# Vault usage message
 USAGE = """
 Usage: {} <option> [arguments]
 
@@ -34,6 +39,7 @@ Usage: {} <option> [arguments]
       filter    : Filter the vault json_string by name.
 """.format(APP_NAME, '.'.join(map(str, VERSION)))
 
+# Welcome message
 WELCOME = """
 
 HSPyLib Vault v{}
@@ -45,85 +51,22 @@ Settings ==============================
 """
 
 
-class Main(metaclass=Singleton):
-    options_map = {}
+class Main(Application):
 
-    @staticmethod
-    def usage(exit_code: int = 0) -> None:
-        """Display the usage message and exit with the specified code ( or zero as default )
-        :param exit_code: The application exit code
-        """
-        sysout(USAGE)
-        Main.exit_app(exit_code, cls=False)
-
-    @staticmethod
-    def version() -> None:
-        """Display the current program version and exit"""
-        sysout('HSPyLib Vault v{}'.format('.'.join(map(str, VERSION))))
-        Main.exit_app(cls=False)
-
-    @staticmethod
-    def exit_app(exit_code=0, frame=None, cls: bool = True) -> None:
-        """Safely exit the application"""
-        sysout(frame if frame else '', end='')
-        if cls:
-            sysout('%ED2%%HOM%')
-        exit(exit_code)
-
-    @staticmethod
-    def parse_arguments(arguments: List[str]) -> None:
-        """ Handle program arguments and options. Short opts: -<C>, Long opts: --<Word>
-        :param arguments: The list of program arguments passed on the command line
-        """
-        try:
-            opts, args = getopt.getopt(arguments, 'vhagdul', [
-                'version', 'help', 'add', 'get', 'del', 'upd', 'list'
-            ])
-
-            if len(opts) == 0:
-                Main.usage()
-
-            for op, arg in opts:
-                if op in ('-v', '--version'):
-                    Main.version()
-                elif op in ('-h', '--help'):
-                    Main.usage()
-                elif op in ('-a', '--add'):
-                    Main.options_map['add'] = ArgumentValidator.check_arguments(args, 2)
-                elif op in ('-g', '--get'):
-                    Main.options_map['get'] = ArgumentValidator.check_arguments(args, 2)
-                elif op in ('-d', '--del'):
-                    Main.options_map['del'] = ArgumentValidator.check_arguments(args, 2)
-                elif op in ('-u', '--upd'):
-                    Main.options_map['upd'] = ArgumentValidator.check_arguments(args, 2)
-                elif op in ('-l', '--list'):
-                    Main.options_map['list'] = args
-                else:
-                    assert False, '### Unhandled option: {}'.format(op)
-                break
-        except getopt.GetoptError as err:
-            sysout('%RED%### Unhandled operation: {}'.format(str(err)))
-            Main.usage(1)
-        except AssertionError as err:
-            sysout('%RED%### {}'.format(str(err)))
-            Main.usage(1)
-
-    def __init__(self):
+    def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        resource_dir = '{}/resources'.format(source_dir)
-        log_dir = '{}/log'.format(resource_dir)
-        self.configs = AppConfigs(
-            source_root=source_dir,
-            resource_dir=resource_dir,
-            log_dir=log_dir
-        )
-        self.configs.logger().info(self.configs)
+        super().__init__(app_name, VERSION, USAGE, source_dir)
         self.vault = Vault()
         signal.signal(signal.SIGINT, self.vault.exit_handler)
 
-    def run(self, arguments: List[str]) -> None:
+    def main(self, *args, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.parse_arguments(arguments)
+        self.with_option('a', 'add', handler=lambda arg: self.exec_operation('add', 2))
+        self.with_option('g', 'get', handler=lambda arg: self.exec_operation('get', 1))
+        self.with_option('d', 'del', handler=lambda arg: self.exec_operation('del', 1))
+        self.with_option('u', 'upd', handler=lambda arg: self.exec_operation('upd', 2))
+        self.with_option('l', 'list', handler=lambda arg: self.exec_operation('list'))
+        self.parse_arguments(*args)
         self.configs.logger().info(
             WELCOME.format(
                 VERSION,
@@ -131,40 +74,33 @@ class Main(metaclass=Singleton):
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        signal.signal(signal.SIGINT, self.vault.exit_handler)
-        self.app_exec()
 
-    def app_exec(self):
-        """Execute the application logic based on the specified operation"""
-        for op in Main.options_map:
-            if not Main.options_map[op] is None:
-                self.exec_operation(op)
-                break
-
-    def exec_operation(self, op):
+    def exec_operation(self, op: str, req_args: int = 0) -> None:
         """Execute the specified operation
+        :param req_args: Number of required arguments for the operation
         :param op: The vault operation to execute
         """
         try:
-            options = tuple(Main.options_map[op])
+            self.args = tuple(ArgumentValidator.check_arguments(self.args, req_args))
             self.vault.open()
             if "add" == op:
-                self.vault.add(options[0], options[1], get_or_default(options, 2))
+                self.vault.add(self.args[0], self.args[1], get_or_default(self.args, 2))
             elif "get" == op:
-                self.vault.get(options[0])
+                self.vault.get(self.args[0])
             elif "del" == op:
-                self.vault.remove(options[0])
+                self.vault.remove(self.args[0])
             elif "upd" == op:
-                self.vault.update(options[0], options[1], get_or_default(options, 2))
+                self.vault.update(self.args[0], self.args[1], get_or_default(self.args, 2))
             elif "list" == op:
-                self.vault.list(get_or_default(options, 0))
+                self.vault.list(get_or_default(self.args, 0))
             else:
-                sysout('%RED%### Unhandled operation: {}'.format(op))
-                Main.usage(1)
+                sysout('%RED%### Invalid operation: {}'.format(op))
+                self.usage(1)
             self.vault.close()
-        except Exception as err:
-            self.configs.logger().error('Failed to execute \'vault --{}\' => {}'.format(op, str(err)))
-            MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), str(err))
+        except Exception:
+            err = str(traceback.format_exc())
+            self.configs.logger().error('Failed to execute \'vault --{}\' => {}'.format(op, err))
+            MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
             self.vault.exit_handler(1)
 
         MenuUtils.wait_enter()
@@ -172,5 +108,4 @@ class Main(metaclass=Singleton):
 
 if __name__ == "__main__":
     """Application entry point"""
-    Main().INSTANCE.run(sys.argv[1:])
-    Main.exit_app()
+    Main('HSPyLib Vault').INSTANCE.run(sys.argv[1:])

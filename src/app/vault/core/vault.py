@@ -12,12 +12,6 @@ from vault.entity.vault_entry import VaultEntry
 from vault.exception.vault_close_error import VaultCloseError
 from vault.exception.vault_open_error import VaultOpenError
 
-# Application name, read from it's own file path
-APP_NAME = os.path.basename(__file__)
-
-# Version tuple: (major,minor,build)
-VERSION = (1, 2, 0)
-
 
 class Vault(object):
     """Represents the vault and it's functionalities"""
@@ -30,7 +24,7 @@ class Vault(object):
         self.log = self.configs.logger()
 
     def __str__(self):
-        data = self.service.list()
+        data = set(self.service.list())
         vault_str = ""
         for entry in data:
             vault_str += entry.key
@@ -81,23 +75,19 @@ class Vault(object):
         """List all vault entries filtered by filter_expr
         :param filter_expr: The filter expression
         """
-        try:
-            data = self.service.list(filter_expr)
-            if len(data) > 0:
-                sysout("%YELLOW%{} {}%NC%"
-                       .format("\n=== Listing all vault entries",
-                               "matching \'{}\' ===\n".format(filter_expr) if filter_expr else "===\n"))
-                for entry in data:
-                    sysout(entry.to_string())
+        data = self.service.list(filter_expr)
+        if len(data) > 0:
+            sysout("%YELLOW%{} {}%NC%"
+                   .format("\n=== Listing all vault entries",
+                           "matching \'{}\' ===\n".format(filter_expr) if filter_expr else "===\n"))
+            for entry in data:
+                sysout(entry.to_string())
+        else:
+            if filter_expr:
+                sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
             else:
-                if filter_expr:
-                    sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
-                else:
-                    sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
-            self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
-        except Exception as err:
-            self.close()
-            raise VaultOpenError("Unable to list Vault entries => {}".format(str(err)))
+                sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
+        self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
 
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
@@ -105,7 +95,7 @@ class Vault(object):
         :param hint: The vault entry hint to be added
         :param password: The vault entry password to be added
         """
-        entry = self.service.get(key)
+        entry = self.service.get_by_key(key)
         if not entry:
             while not password:
                 password = getpass.getpass("Type the password for '{}': ".format(key)).strip()
@@ -121,7 +111,7 @@ class Vault(object):
         """Display the vault entry specified by name
         :param key: The vault entry name to get
         """
-        entry = self.service.get(key)
+        entry = self.service.get_by_key(key)
         if entry:
             sysout("%GREEN%\n{}".format(entry.to_string(True, True)))
         else:
@@ -135,7 +125,7 @@ class Vault(object):
         :param hint: The vault entry hint to be updated
         :param password: The vault entry password to be updated
         """
-        entry = self.service.get(key)
+        entry = self.service.get_by_key(key)
         if entry:
             if not password:
                 passphrase = getpass.getpass("Type a password for '{}': ".format(key)).strip()
@@ -153,7 +143,7 @@ class Vault(object):
         """Remove a vault entry
         :param key: The vault entry name to be removed
         """
-        entry = self.service.get(key)
+        entry = self.service.get_by_key(key)
         if entry:
             self.service.remove(entry)
             sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
