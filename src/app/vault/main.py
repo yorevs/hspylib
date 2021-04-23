@@ -12,14 +12,18 @@ from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
 
-# Application name, read from it's own file path
-APP_NAME = os.path.basename(__file__)
 
-# Version tuple: (major,minor,build)
-VERSION = (1, 3, 0)
+class Main(Application):
+    """TODO"""
 
-# Vault usage message
-USAGE = """
+    # The application name
+    APP_NAME = os.path.basename(__file__)
+
+    # Version tuple: (major,minor,build)
+    VERSION = (1, 3, 0)
+
+    # Vault usage message
+    USAGE = """
 Usage: {} <option> [arguments]
 
     HSPyLib Vault v{}
@@ -39,37 +43,35 @@ Usage: {} <option> [arguments]
       filter    : Filter the vault json_string by name.
 """.format(APP_NAME, '.'.join(map(str, VERSION)))
 
-# Welcome message
-WELCOME = """
+    # Welcome message
+    WELCOME = """
 
-HSPyLib Vault v{}
+    {} v{}
 
-Settings ==============================
-        VAULT_USER: {}
-        VAULT_FILE: {}
-        STARTED: {}
-"""
-
-
-class Main(Application):
+    Settings ==============================
+            VAULT_USER: {}
+            VAULT_FILE: {}
+            STARTED: {}
+    """
 
     def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, VERSION, USAGE, source_dir)
+        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
         self.vault = Vault()
         signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, *args, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.with_option('a', 'add', handler=lambda arg: self.exec_operation('add', 2))
-        self.with_option('g', 'get', handler=lambda arg: self.exec_operation('get', 1))
-        self.with_option('d', 'del', handler=lambda arg: self.exec_operation('del', 1))
-        self.with_option('u', 'upd', handler=lambda arg: self.exec_operation('upd', 2))
-        self.with_option('l', 'list', handler=lambda arg: self.exec_operation('list'))
+        self.with_option('a', 'add', handler=lambda arg: self.__exec_operation__('add', 2))
+        self.with_option('g', 'get', handler=lambda arg: self.__exec_operation__('get', 1))
+        self.with_option('d', 'del', handler=lambda arg: self.__exec_operation__('del', 1))
+        self.with_option('u', 'upd', handler=lambda arg: self.__exec_operation__('upd', 2))
+        self.with_option('l', 'list', handler=lambda arg: self.__exec_operation__('list'))
         self.parse_arguments(*args)
         self.configs.logger().info(
-            WELCOME.format(
-                VERSION,
+            self.WELCOME.format(
+                self.app_name,
+                self.VERSION,
                 VaultConfig.INSTANCE.vault_user(),
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -78,7 +80,7 @@ class Main(Application):
     def cleanup(self):
         self.vault.close()
 
-    def exec_operation(self, op: str, req_args: int = 0) -> None:
+    def __exec_operation__(self, op: str, req_args: int = 0) -> None:
         """Execute the specified operation
         :param op: The vault operation to execute
         :param req_args: Number of required arguments for the operation
@@ -99,14 +101,12 @@ class Main(Application):
             else:
                 sysout('%RED%### Invalid operation: {}'.format(op))
                 self.usage(1)
-            self.vault.close()
         except Exception:
             err = str(traceback.format_exc())
             self.configs.logger().error('Failed to execute \'vault --{}\' => {}'.format(op, err))
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
-            self.exit_handler(1)
-
-        MenuUtils.wait_enter()
+        finally:
+            self.vault.close()
 
     def __reqopts__(self) -> int:
         return 1

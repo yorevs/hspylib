@@ -1,4 +1,5 @@
 import getopt
+import sys
 from typing import List, Callable, Optional, Tuple
 
 from hspylib.core.config.app_config import AppConfigs
@@ -25,9 +26,7 @@ class Application(metaclass=Singleton):
         self.cleanup()
         if clear_screen:
             sysout('%ED2%%HOM%')
-        else:
-            sysout('')
-        exit(exit_code)
+        sys.exit(exit_code)
 
     def usage(self, exit_code: int = 0) -> None:
         """Display the usage message and exit with the specified code ( or zero as default )
