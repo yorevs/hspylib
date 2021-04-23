@@ -49,23 +49,23 @@ class AgentConfig(metaclass=Singleton):
         return self.configs.logger()
 
     def config_file(self) -> str:
-        file = self.configs.get('firebase.config.file')
+        file = self.configs['firebase.config.file']
         return file if file else '{}/.firebase'.format(self.configs.resource_dir())
 
     def project_id(self) -> str:
-        project_id = self.configs.get('firebase.project.id')
+        project_id = self.configs['firebase.project.id']
         return project_id if project_id else input('Please type you project ID: ')
 
     def database(self) -> str:
-        database = self.configs.get('firebase.database')
+        database = self.configs['firebase.database']
         return database if database else input('Please type you database Name: ')
 
     def username(self) -> str:
-        user = self.configs.get('firebase.last_update_user')
+        user = self.configs['firebase.last_update_user']
         return user if user else getpass.getuser()
 
     def passphrase(self) -> str:
-        passphrase = self.configs.get('firebase.passphrase')
+        passphrase = self.configs['firebase.passphrase']
         return passphrase if passphrase else base64.b32encode(
             '{}:{}'.format(
                 self.username(),
@@ -74,7 +74,7 @@ class AgentConfig(metaclass=Singleton):
         )
 
     def uuid(self) -> str:
-        project_uuid = self.configs.get('firebase.project.uuid')
+        project_uuid = self.configs['firebase.project.uuid']
         if not project_uuid:
             project_uuid = input('Please type a UUID to use or press [Enter] to generate a new one: ')
             project_uuid = str(uuid.uuid4()) if not project_uuid else project_uuid
