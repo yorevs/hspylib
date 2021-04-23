@@ -128,14 +128,12 @@ task uninstallModule(type: Task) {
 task cleanPython(type: Delete) {
   group = 'Build'
   description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
-  doLast {
-    println 'Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories  from sourceRoot...'
-    delete fileTree(sourceRoot).matching {
-      include "**/*.pyc"
-      include "**/*.qrc"
-    }
-    delete dirsByPattern(sourceRoot, /.*__pycache__$/)
+  println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories  from ${sourceRoot}..."
+  delete fileTree(sourceRoot).matching {
+    include "**/*.pyc"
+    include "**/*.qrc"
   }
+  delete dirsByPattern(sourceRoot, /.*__pycache__$/)
 }
 
 /* Compile all python files from sourceRoot */
