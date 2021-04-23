@@ -30,10 +30,10 @@ python.version = ${pythonVersion}
   }
 }
 
-/* Update the VERSION file to match the build.gradle version */
+/* Update the version file to match the build.gradle version */
 task updateVersion {
   group = 'Versioning'
-  description = 'Update the VERSION file to match the build.gradle version'
+  description = 'Update the version file to match the build.gradle version'
   doLast {
     def ver = project.ext.app_version
     def v_file = new File("${versionFile}")

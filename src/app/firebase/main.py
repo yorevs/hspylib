@@ -19,9 +19,6 @@ class Main(Application):
     # The application name
     APP_NAME = os.path.basename(__file__)
 
-    # Version tuple: (major,minor,build)
-    VERSION = (1, 2, 0)
-
     # Usage message
     USAGE = """
 Usage: {} <option> [arguments]
@@ -39,7 +36,7 @@ Usage: {} <option> [arguments]
       db_alias      : Alias to be used to identify the firebase object to fetch json_string from.
       file1..N      : List os file paths to upload.
       download_dir  : Destination directory. If omitted, your home folder will be used.
-""".format(APP_NAME, ' '.join(map(str, VERSION)))
+""".format(APP_NAME, '.'.join(map(str, Application.__version__())))
 
     WELCOME = """
 
@@ -53,7 +50,7 @@ Settings ==============================
 
     def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
+        super().__init__(app_name, Application.__version__(), self.USAGE, source_dir)
         self.firebase = Firebase()
         signal.signal(signal.SIGINT, self.exit_handler)
 
@@ -66,7 +63,7 @@ Settings ==============================
         self.configs.logger().info(
             self.WELCOME.format(
                 self.app_name,
-                self.VERSION,
+                Application.__version__(),
                 AgentConfig.INSTANCE.username(),
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

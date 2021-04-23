@@ -3,7 +3,7 @@ import setuptools
 with open("README.md") as fh:
     long_description = fh.read()
 
-with open("VERSION") as fh:
+with open(".version") as fh:
     version = fh.read()
 
 with open("requirements.txt") as fh:
@@ -17,12 +17,7 @@ setuptools.setup(
     author_email='yorevs@hotmail.com',
     url="https://github.com/yorevs/hspylib",
     long_description=long_description,
-    packages=setuptools.find_packages(
-        exclude=[
-            'resources',
-            'test'
-        ]
-    ),
+    packages=setuptools.find_packages(),
     package_data={
         'hspylib.core.crud.db.sql': ['sql_stubs.sql']
     },

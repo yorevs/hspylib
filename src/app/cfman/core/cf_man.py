@@ -100,7 +100,7 @@ class CFManager(object):
                     raise Exception(f'Failed to connect to API ({response.status_code}): {selected}')
             except Exception as err:
                 self.configs.logger().error(f'Failed to connect to API => {err}')
-                MenuUtils.print_error('Failed to connect to API => ', selected.host)
+                syserr('Failed to connect to API => ', selected.host)
                 exit(0)
 
     def __require_credentials__(self):
