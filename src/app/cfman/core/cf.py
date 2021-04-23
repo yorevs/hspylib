@@ -13,15 +13,24 @@ class CloudFoundry(metaclass=Singleton):
 
     def __init__(self):
         self.log = AppConfigs.INSTANCE.logger()
-        self.connected = "FAILED" not in self.__exec__('orgs')
+        self.connected = False
+        self.targeted = False
         self.last_result = None
 
     # Before getting started:
+    def connect(self) -> bool:
+        """Attempt to connect to CloudFoundry"""
+        if not self.connected:
+            self.connected = "FAILED" not in self.__exec__('orgs')
+        return self.connected
+
     def api(self, api: str) -> bool:
+        """Set or view target api url"""
         params = ['api', api]
         return "FAILED" not in self.__exec__(*params)
 
     def auth(self, username: str, password: str) -> bool:
+        """Authorize a CloudFoundry user"""
         params = ['auth', username, password]
         return "FAILED" not in self.__exec__(*params)
 
@@ -34,8 +43,8 @@ class CloudFoundry(metaclass=Singleton):
         if 'space' in kwargs:
             params.append('-s')
             params.append(kwargs['space'])
-
-        return "FAILED" not in self.__exec__(*params)
+        self.targeted = "FAILED" not in self.__exec__(*params)
+        return self.targeted
 
     # Space management
     def spaces(self) -> List[str]:

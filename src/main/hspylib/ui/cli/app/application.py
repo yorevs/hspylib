@@ -48,8 +48,6 @@ class Application(metaclass=Singleton):
         try:
             if self.options:
                 opts, self.args = getopt.getopt(arguments, self.__shortopts__(), self.__longopts__())
-                if not len(opts) and len(self.options):
-                    self.usage(1)
                 assert self.__has_valid_options__(opts), f'Invalid number of options: {len(opts)}'
                 for op, arg in opts:
                     opt = self.__getopt__(op)
@@ -108,7 +106,9 @@ class Application(metaclass=Singleton):
         self.options.append(Option(shortopt, longopt, has_argument, handler, required))
 
     def __has_valid_options__(self, options: List[str]):
-        if len(options) < self.__reqopts__():
+        if self.__reqopts__() > 0 and not len(options) and len(self.options):
+            self.usage(1)
+        elif len(options) < self.__reqopts__():
             return any(opt[0].strip() in ['-v', '--version', '-h', '--help'] for opt in options)
         return True
 

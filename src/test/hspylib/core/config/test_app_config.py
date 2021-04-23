@@ -29,11 +29,11 @@ class TestAppConfig(unittest.TestCase):
 
     def test_should_get_a_weird_valued_property(self):
         expected_value = 'this is. = a weird value'
-        self.assertEqual(expected_value, AppConfigs.INSTANCE.get('test.weird.property'))
+        self.assertEqual(expected_value, AppConfigs.INSTANCE['test.weird.property'])
 
     def test_should_get_the_overridden_value(self):
         expected_value = 'yes its overridden'
-        self.assertEqual(expected_value, AppConfigs.INSTANCE.get('test.overridden.by.environ'))
+        self.assertEqual(expected_value, AppConfigs.INSTANCE['test.overridden.by.environ'])
 
     def test_should_get_int_property(self):
         expected_value = 1055
