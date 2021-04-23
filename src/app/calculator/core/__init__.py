@@ -2,8 +2,9 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: app.calc.ui.qt.views
+# Package: app.calc.core
 
 __all__ = [
-  'main_ui'
+  'enum', 
+  'qt_calculator'
 ]

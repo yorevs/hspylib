@@ -4,7 +4,7 @@ import signal
 import sys
 
 from hspylib.ui.cli.app.application import Application
-from ui.qt.qt_calculator import QtCalculator
+from calculator.core.qt_calculator import QtCalculator
 
 
 class Main(Application):

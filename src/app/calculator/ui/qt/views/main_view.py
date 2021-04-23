@@ -6,12 +6,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLCDNumber
 from PyQt5.QtWidgets import QWidget
 
-from calc.core.enum.calc_operations import CalcOperations
+from calculator.core.enum.calc_operations import CalcOperations
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.ui.qt.views.qt_view import QtView
 
 
-class MainUi(QtView):
+class MainView(QtView):
 
     class BlinkLcdThread(Thread):
         def __init__(self, lcd: QLCDNumber):
@@ -145,7 +145,7 @@ class MainUi(QtView):
         self.lcdDisplay.display(value)
 
     def blink_lcd(self):
-        blink = MainUi.BlinkLcdThread(self.lcdDisplay)
+        blink = MainView.BlinkLcdThread(self.lcdDisplay)
         blink.start()
         self.display_text = ''
 
