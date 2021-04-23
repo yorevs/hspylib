@@ -108,6 +108,9 @@ class Main(Application):
 
         MenuUtils.wait_enter()
 
+    def __reqopts__(self) -> int:
+        return 1
+
 
 if __name__ == "__main__":
     """Application entry point"""

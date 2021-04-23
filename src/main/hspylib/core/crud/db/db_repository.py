@@ -9,11 +9,11 @@ from hspylib.core.model.entity import Entity
 class DBRepository(CrudRepository):
     def __init__(self):
         super().__init__()
-        self.hostname = AppConfigs.INSTANCE.get('datasource.hostname')
+        self.hostname = AppConfigs.INSTANCE['datasource.hostname']
         self.port = AppConfigs.INSTANCE.get_int('datasource.port')
-        self.user = AppConfigs.INSTANCE.get('datasource.username')
-        self.password = AppConfigs.INSTANCE.get('datasource.password')
-        self.database = AppConfigs.INSTANCE.get('datasource.database')
+        self.user = AppConfigs.INSTANCE['datasource.username']
+        self.password = AppConfigs.INSTANCE['datasource.password']
+        self.database = AppConfigs.INSTANCE['datasource.database']
         self.logger = AppConfigs.INSTANCE.logger()
 
     def __str__(self):
