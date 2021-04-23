@@ -7,16 +7,21 @@ from datetime import datetime
 from typing import List, Any
 
 from cfman.core.cf_man import CFManager
-# Application name, read from it's own file path
 from hspylib.ui.cli.app.application import Application
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
-APP_NAME = os.path.basename(__file__)
 
-# Version tuple: (major,minor,build)
-VERSION = (0, 9, 0)
+class Main(Application):
+    """TODO"""
 
-# CloudFoundry manager usage message
-USAGE = """
+    # The application name
+    APP_NAME = os.path.basename(__file__)
+
+    # Version tuple: (major,minor,build)
+    VERSION = (0, 9, 0)
+
+    # CloudFoundry manager usage message
+    USAGE = """
 Usage: {} <option> [arguments]
 
     Cloud Foundry Manager v{} Manage PCF applications.
@@ -31,17 +36,14 @@ Usage: {} <option> [arguments]
       -p  |   --password <password>     : Set the password
 """.format(APP_NAME, ' '.join(map(str, VERSION)))
 
-WELCOME = """
-
-HSPyLib Cloud Foundry Manager v{}
+    WELCOME = """
+    
+{} v{}
 """
-
-
-class Main(Application):
 
     def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, VERSION, USAGE, source_dir)
+        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
         self.option_map = {}
         self.cfman = None
         signal.signal(signal.SIGINT, self.exit_handler)
@@ -56,23 +58,24 @@ class Main(Application):
         self.parse_arguments(arguments)
         self.cfman = CFManager(self.option_map)
         self.configs.logger().info(
-            WELCOME.format(
-                VERSION,
+            self.WELCOME.format(
+                self.app_name,
+                self.VERSION,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        self.__app_exec__()
+        self.__exec_application__()
 
     def __add_option__(self, key: str, value: Any):
         self.option_map[key] = value
 
-    def __app_exec__(self) -> None:
-        """Execute the application logic based on the specified operation"""
+    def __exec_application__(self) -> None:
+        """Execute the application"""
         try:
             self.cfman.run()
-        except Exception as err:
-            self.configs.logger().error('Failed to execute PCF manager => {}'.format(str(err)))
-            traceback.print_exc()
-            self.exit_handler(1)
+        except Exception:
+            err = str(traceback.format_exc())
+            self.configs.logger().error('Failed to execute PCF manager => {}'.format(err))
+            MenuUtils.print_error('Failed to execute PCF manager => {}'.format(err))
 
     def __reqopts__(self) -> int:
         return 0

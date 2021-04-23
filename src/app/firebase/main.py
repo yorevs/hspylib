@@ -12,14 +12,18 @@ from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 
-# Application name, read from it's own file path
-APP_NAME = os.path.basename(__file__)
 
-# Version tuple: (major,minor,build)
-VERSION = (1, 2, 0)
+class Main(Application):
+    """TODO"""
 
-# Usage message
-USAGE = """
+    # The application name
+    APP_NAME = os.path.basename(__file__)
+
+    # Version tuple: (major,minor,build)
+    VERSION = (1, 2, 0)
+
+    # Usage message
+    USAGE = """
 Usage: {} <option> [arguments]
 
     Firebase Agent v{} Manage your firebase integration.
@@ -37,9 +41,9 @@ Usage: {} <option> [arguments]
       download_dir  : Destination directory. If omitted, your home folder will be used.
 """.format(APP_NAME, ' '.join(map(str, VERSION)))
 
-WELCOME = """
+    WELCOME = """
 
-HSPyLib Firebase Agent v{}
+{} v{}
 
 Settings ==============================
         FIREBASE_USER: {}
@@ -47,30 +51,28 @@ Settings ==============================
         STARTED: {}
 """
 
-
-class Main(Application):
-
     def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, VERSION, USAGE, source_dir)
+        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
         self.firebase = Firebase()
         signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, *args, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.with_option('s', 'setup', handler=lambda arg: self.exec_operation('setup'))
-        self.with_option('u', 'upload', handler=lambda arg: self.exec_operation('upload', 2))
-        self.with_option('d', 'download', handler=lambda arg: self.exec_operation('download', 1))
+        self.with_option('s', 'setup', handler=lambda arg: self.__exec_operation__('setup'))
+        self.with_option('u', 'upload', handler=lambda arg: self.__exec_operation__('upload', 2))
+        self.with_option('d', 'download', handler=lambda arg: self.__exec_operation__('download', 1))
         self.parse_arguments(*args)
         self.configs.logger().info(
-            WELCOME.format(
-                VERSION,
+            self.WELCOME.format(
+                self.app_name,
+                self.VERSION,
                 AgentConfig.INSTANCE.username(),
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
 
-    def exec_operation(self, op: str, req_args: int = 0) -> None:
+    def __exec_operation__(self, op: str, req_args: int = 0) -> None:
         """Execute the specified operation
         :param op: The firebase operation to execute
         :param req_args: Number of required arguments for the operation
@@ -94,9 +96,6 @@ class Main(Application):
             err = str(traceback.format_exc())
             self.configs.logger().error('Failed to execute \'firebase --{}\' => {}'.format(op, err))
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
-            self.exit_handler(1)
-
-        MenuUtils.wait_enter()
 
     def __reqopts__(self) -> int:
         return 1

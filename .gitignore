@@ -14,4 +14,5 @@ requirements.txt
 .vault*
 firebase.cfg*
 .firebase*
+api_endpoints.txt
 lib/
