@@ -1,6 +1,12 @@
-import java.text.SimpleDateFormat
+/*
+    Gradle build information and versioning extension
+    Project: HSPyLib
+    Created: 4th March, 2021
 
-// Following Semantic Versioning 2.0.0 => https://semver.org/
+    Note: Following Semantic Versioning 2.0.0 => https://semver.org/
+*/
+
+import java.text.SimpleDateFormat
 
 project.ext.build_info_file = 'build-info.properties'
 
