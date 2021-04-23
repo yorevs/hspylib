@@ -10,15 +10,24 @@ ext {
   pypiPassword = '^e32?g$eCwazbfC'
 }
 
+/* Helper Functions -------------------------------------------------------- */
+Collection dirsByPattern(String baseDir, String pattern) {
+  def paths = []
+  fileTree(baseDir).visit { FileVisitDetails details ->
+      if (details.isDirectory() && details.name ==~ pattern) paths << details.file.path
+  }
+  return paths
+}
+
 /* Cleanup distribution files */
 task cleanDist(type: Delete) {
   group = 'Publish'
   description = "Cleanup distribution files from rootProject.projectDir"
   def projectRoot = "${rootProject.projectDir}"
   println "Cleanup distribution files from ${projectRoot}"
-  delete "${projectRoot}/dist/"
-  delete "${projectRoot}/build/"
-  delete "${projectRoot}/hspylib.egg-info/"
+  delete dirsByPattern(projectRoot, /.*dist$/)
+  delete dirsByPattern(projectRoot, /.*build$/)
+  delete dirsByPattern(projectRoot, /.*hspylib.egg-info$/)
 }
 
 
@@ -32,10 +41,10 @@ task dist(type: Task) {
         include "**/setup.py"
       }.each { File module ->
           def moduleDir = module.getParentFile().getPath()
-          println "Generating distribution files -> ${module.path}"
+          println "Generating distribution files -> ${moduleDir}"
           exec {
             workingDir "${moduleDir}"
-            commandLine rootProject.python, "${module.path}", 'sdist', 'bdist_wheel'
+            commandLine rootProject.python, "setup.py", 'sdist', 'bdist_wheel'
           }
         }
     }
@@ -46,15 +55,17 @@ task checkDist(type: Task) {
   group = 'Publish'
   description = 'Check on the files created in dist'
   dependsOn dist
-  File module = project.file('dist')
   doLast {
-    if (module.exists() && !module.isFile()) {
-      println "Checking distribution files -> ${module.path}"
-      exec {
-        commandLine rootProject.python, '-m', 'twine', 'check', "${module.path}/*"
-      }
-    } else {
-      ant.fail("Invalid distribution directory: ${module.path}")
+    fileTree("${sourceRoot}").matching {
+        include "**/setup.py"
+      }.each { File module ->
+        def moduleDir = module.getParentFile().getPath()
+        def distDir = "${moduleDir}/dist"
+        println "Checking distribution files -> ${distDir}"
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'twine', 'check', "${distDir}/*"
+        }
     }
   }
 }
@@ -64,22 +75,25 @@ task publishTest(type: Task) {
   group = 'Publish'
   description = "Publish the module into the PyPi \"Test\" repository"
   dependsOn checkDist
-  File module = project.file('dist')
   def url = project.ext.pypiTestRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword
   doLast {
-    if (module.exists() && !module.isFile()) {
-      println "Publishing the ${module.path}/* into the PyPi repository => ${un}:${pw}@${url}"
-      exec {
-        commandLine rootProject.python, '-m', 'twine', 'upload', "${module.path}/*",
-          '--verbose',
-          '--repository-url', "${url}",
-          '-u', "${un}",
-          '-p', "${pw}"
-      }
-    } else {
-      ant.fail("Invalid distribution directory: ${module.path}")
+    fileTree("${sourceRoot}").matching {
+        include "**/setup.py"
+      }.each { File module ->
+        def moduleDir = module.getParentFile().getPath()
+        def distDir = "${moduleDir}/dist"
+        println "Publishing the ${distDir}/* into the PyPi repository => ${un}:${pw}@${url}"
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'twine', 'upload',
+            '--verbose',
+            '--repository-url', "${url}",
+            '-u', "${un}",
+            '-p', "${pw}",
+            "${distDir}/*"
+        }
     }
   }
 }
