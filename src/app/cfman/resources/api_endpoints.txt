@@ -1,3 +1,0 @@
-AZURE_PCF_DEVS,https://api.sys.cfplatform.dev.azeus.gaptech.com,False
-AZURE_PCF_PROD,https://api.sys.cfplatform.prod.azeus.gaptech.com,True
-
