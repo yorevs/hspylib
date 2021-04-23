@@ -4,6 +4,9 @@
     Created: 4th March, 2021
 
     Note: Following Semantic Versioning 2.0.0 => https://semver.org/
+    - Increment the MAJOR version when making incompatible API changes
+    - Increment the MINOR version when adding functionality in a backwards-compatible manner
+    - Increment the PATCH version when making backwards-compatible bug fixes. (Source)
 */
 
 import java.text.SimpleDateFormat
