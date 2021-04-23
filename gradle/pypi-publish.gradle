@@ -40,8 +40,7 @@ task cleanDist(type: Delete) {
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
-  dependsOn build
-  dependsOn test
+  dependsOn patchVersion
   dependsOn cleanDist
   doLast {
     fileTree("${sourceRoot}").matching {
@@ -101,15 +100,15 @@ task publish(type: Task) {
         println "|-dist: ${distDir}/*"
         println '--'
         println "Publishing module to PyPi..."
-//         exec {
-//           workingDir "${moduleDir}"
-//           commandLine rootProject.python, '-m', 'twine', 'upload',
-//             '--verbose',
-//             '--repository-url', "${url}",
-//             '-u', "${un}",
-//             '-p', "${pw}",
-//             "${distDir}/*"
-//         }
+        exec {
+          workingDir "${moduleDir}"
+          commandLine rootProject.python, '-m', 'twine', 'upload',
+            '--verbose',
+            '--repository-url', "${url}",
+            '-u', "${un}",
+            '-p', "${pw}",
+            "${distDir}/*"
+        }
     }
   }
 }
