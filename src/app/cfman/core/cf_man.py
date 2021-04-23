@@ -6,7 +6,7 @@ from cfman.core.cf_application import CFApplication
 from cfman.core.cf_endpoint import CFEndpoint
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enum.http_code import HttpCode
-from hspylib.core.tools.commons import sysout, get_by_key_or_default
+from hspylib.core.tools.commons import sysout, get_by_key_or_default, syserr
 from hspylib.modules.fetch.fetch import head
 from hspylib.ui.cli.menu.extra.mchoose import mchoose
 from hspylib.ui.cli.menu.extra.minput import MenuInput, minput
@@ -53,29 +53,37 @@ class CFManager(object):
         if self.cf.connect():
             sysout('%GREEN%Already authorized to CloudFoundry!%NC%')
         else:
+            authorized = False
             sysout('%YELLOW%Not authorized to CloudFoundry, login required...%NC%')
-            if not self.api:
-                sleep(0.5)
-                self.__select_endpoint__()
-            if not self.username or not self.password:
-                sleep(0.5)
-                self.__require_credentials__()
-            sysout(f'%GREEN%Authorizing {self.username}@{self.api}...%NC%')
-            self.__authorize__()
+            while not authorized:
+                if not self.api:
+                    sleep(1)
+                    self.__select_endpoint__()
+                if not self.username or not self.password:
+                    sleep(1)
+                    self.__require_credentials__()
+                sysout(f'%GREEN%Authorizing {self.username}@{self.api}...%NC%')
+                authorized = self.__authorize__()
+                if not authorized:
+                    self.password = None
+                    sleep(1)
             sysout('%GREEN%Successfully authorized!%NC%')
 
         self.__loop_actions__()
 
-    def __get_apps__(self) -> List[CFApplication]:
-        sysout(f'%GREEN%Retrieving {self.space} applications ...%NC%')
-        apps = self.cf.apps()
-        apps = list(map(CFApplication.of, apps if apps else []))
-        if not apps:
-            if "OK" not in self.cf.last_result:
-                raise Exception(f'Unable to retrieve applications: => {self.cf.last_result}')
-            else:
-                sysout('%YELLOW%No apps found%NC%')
-        return apps or []
+    def __get_apps__(self, refresh: bool = False) -> List[CFApplication]:
+        if refresh or not self.apps:
+            sysout(f'%GREEN%Retrieving {self.space} applications ...%NC%')
+            apps = self.cf.apps()
+            apps = list(map(CFApplication.of, apps if apps else []))
+            if not apps:
+                if "OK" not in self.cf.last_result:
+                    raise Exception(f'Unable to retrieve applications: => {self.cf.last_result}')
+                else:
+                    sysout('%YELLOW%No apps found%NC%')
+            self.apps = apps
+
+        return self.apps
 
     def __select_endpoint__(self):
         with open('{}/api_endpoints.txt'.format(self.configs.resource_dir()), 'r+') as f_hosts:
@@ -95,11 +103,9 @@ class CFManager(object):
                 MenuUtils.print_error('Failed to connect to API => ', selected.host)
                 exit(0)
 
-        MenuUtils.wait_enter()
-
     def __require_credentials__(self):
-        self.username = self.options['username'] if 'username' in self.options else None
-        self.password = self.options['password'] if 'password' in self.options else None
+        self.username = self.options['username'] if 'username' in self.options else self.username
+        self.password = self.options['password'] if 'password' in self.options else self.password
         form_fields = MenuInput.builder() \
             .field().label('Username').kind('any').value(self.username).build() \
             .field().label('Password').kind('any').mode('password').value(self.password).build() \
@@ -111,36 +117,48 @@ class CFManager(object):
         else:
             exit(0)
 
-    def __authorize__(self) -> None:
-        result = self.cf.api(self.api)
-        if not result:
+    def __authorize__(self) -> bool:
+        if not self.cf.api(self.api):
             raise Exception(f'Unable to set API: => {self.cf.last_result}')
-        result = self.cf.auth(self.username, self.password)
-        if not result:
-            raise Exception(f'Unable to authenticate: => {self.cf.last_result}')
+        if not self.cf.auth(self.username, self.password):
+            syserr(f'%RED%Unable to authenticate to => {self.api}%NC%')
+            return False
+
+        return True
 
     def __set_org__(self) -> None:
         if not self.org:
+            sysout('%YELLOW%Checking organization...%NC%')
             orgs = self.cf.orgs()
             if not orgs:
                 raise Exception(f'Unable to retrieve organizations: => {self.cf.last_result}')
             self.org = mselect(orgs, title='Please select the organization')
+            if not self.org:
+                exit(1)
+            else:
+                self.__do_target__()
 
     def __set_space__(self) -> None:
         if not self.space:
+            sysout('%YELLOW%Checking space...%NC%')
             spaces = self.cf.spaces()
             if not spaces:
                 raise Exception(f'Unable to retrieve spaces: => {self.cf.last_result}')
             self.space = mselect(spaces, title='Please select a space')
+            if not self.space:
+                exit(1)
+            else:
+                self.__do_target__()
 
-    def __choose_apps__(self) -> None:
-        apps = self.__get_apps__()
-        self.apps = mchoose(apps, checked=False, title='Please choose the applications you want to manage')
+    def __choose_apps__(self) -> List[CFApplication]:
+        if not self.apps:
+            self.apps = self.__get_apps__()
+        return mchoose(self.apps, checked=False, title='Please choose the applications you want to manage')
 
-    def __select_app__(self):
-        apps = self.__get_apps__()
-        sel_app = mselect(apps, title='Please select the application you want to manage')
-        self.apps = [sel_app] if sel_app else None
+    def __select_app__(self) -> CFApplication:
+        if not self.apps:
+            self.apps = self.__get_apps__()
+        return mselect(self.apps, title='Please select the application you want to manage')
 
     def __do_target__(self):
         sysout(f"%GREEN%Targeting ORG = {self.org} and SPACE = {self.space}...%NC%")
@@ -150,17 +168,13 @@ class CFManager(object):
     def __loop_actions__(self) -> None:
 
         while not self.done:
-            if self.org and self.space and not self.cf.targeted:
+            if self.org and self.space and not self.cf.is_targeted():
                 self.__do_target__()
             else:
-                sysout('%YELLOW%Selecting organization...%NC%')
                 self.__set_org__()
-                sysout('%YELLOW%Selecting space...%NC%')
                 self.__set_space__()
-                if not self.cf.targeted:
-                    self.__do_target__()
 
-            if not self.org or not self.space or not self.cf.targeted:
+            if not self.org or not self.space or not self.cf.is_targeted():
                 raise Exception(f"Unable to target ORG: {self.org}  SPACE: {self.space} => {self.cf.last_result}")
 
             action = mselect(CFManager.CF_ACTIONS, 'Please select an action to perform')
@@ -170,15 +184,15 @@ class CFManager(object):
             else:
                 if self.__is_callable__(action):
                     if self.__allow_multiple__(action.lower()):
-                        self.__choose_apps__()
+                        apps = self.__choose_apps__()
                     else:
-                        self.__select_app__()
-                    if len(self.apps) > 0:
-                        for app in self.apps:
+                        apps = self.__select_app__()
+                    if len(apps) > 0:
+                        for app in apps:
                             self.__perform__(action, app=app.name, org=self.org, space=self.space)
                 else:
                     if "status" == action.lower():
-                        apps = self.__get_apps__()
+                        apps = self.__get_apps__(refresh=True)
                         if len(apps) > 0:
                             sysout("{}  {}  {}  {}  {}  {}".format(
                                 'Name'.ljust(CFApplication.__max_name_length__),
@@ -193,7 +207,7 @@ class CFManager(object):
                     elif "target" == action.lower():
                         self.space = None
                         self.org = None
-                        self.cf.targeted = False
+                        self.cf.targeted = {'org': None, 'space': None, 'targeted': False}
                         continue
 
                     MenuUtils.wait_enter()
