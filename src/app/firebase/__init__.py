@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.9.14
+# HSPyLib v0.9.15
 #
 # Package: app.firebase
 
@@ -9,3 +9,4 @@ __all__ = [
   'entity', 
   'main'
 ]
+__version__ = "1.2.0"

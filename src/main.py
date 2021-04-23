@@ -14,7 +14,7 @@ class Main(metaclass=Singleton):
     def run():
         with open("welcome.txt") as fh:
             print(fh.read(), end='')
-        with open("main/VERSION") as fh:
+        with open("main/.version") as fh:
             print("Version " + fh.read())
 
     @staticmethod

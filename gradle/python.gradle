@@ -5,7 +5,8 @@
 */
 
 ext {
-  pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test"
+  pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test:${sourceRoot}/app:${sourceRoot}/demo"
+  requirementsFile = "${rootProject.projectDir}/src/main/requirements.txt"
 }
 
 /* Helper Functions -------------------------------------------------------- */
@@ -32,7 +33,7 @@ def initTemplate = """# _*_ coding: utf-8 _*_
 # Package: %package%
 
 __all__ = %modules%
-"""
+%version%"""
 /* } */
 
 /* Find and synchronize all python packages */
@@ -50,6 +51,7 @@ task syncPythonPackages(type: Task) {
         initFile.getParentFile().eachFile() { module ->
           if (!module.name.startsWith("__init__") &&
               !module.name.startsWith("__pycache__") &&
+              !module.name.endsWith("setup.py") &&
               ((module.isFile() && module.name.endsWith(".py")) ||
               new File(module.getCanonicalPath() + "/__init__.py").exists())) {
             if (!module.isFile()) {
@@ -58,9 +60,12 @@ task syncPythonPackages(type: Task) {
             modules << "'${module.name.replaceAll("\\.py", "")}'"
           }
         }
+        def ver_file = new File("${initFile.getParentFile()}/.version")
+        def version_string = ver_file.exists() ? "__version__ = \"${ver_file.text.trim()}\"\n" : ''
         initFile.write initTemplate
           .replaceAll("%package%", pkg)
           .replaceAll("%modules%", modules.sort().toString())
+          .replaceAll("%version%", version_string)
           .replaceAll("\\[", "\\[\n  ")
           .replaceAll(", ", ", \n  ")
           .replaceAll("\\]", "\n]")
@@ -75,6 +80,7 @@ task installModule(type: Task) {
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
   doLast {
+    def requirements_file = project.file("${project.ext.requirementsFile}")
     def depsFile = new File(projectDir, "requirements.txt")
     depsFile.write ''
     project.ext.deps.each { dep ->
@@ -83,8 +89,6 @@ task installModule(type: Task) {
     copy {
         from("$rootProject.projectDir") {
           include 'README.md'
-          include 'VERSION'
-          include 'requirements.txt'
         }
         into "${sourceRoot}/main"
     }

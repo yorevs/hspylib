@@ -10,6 +10,12 @@ from hspylib.ui.cli.app.option import Option
 
 class Application(metaclass=Singleton):
 
+    @staticmethod
+    def __version__() -> Tuple:
+        """Retrieve the version of the application in the form: Tuple[major,minor,build]"""
+        with open(".version") as fh:
+            return tuple(map(str.strip, fh.read().split('.')))
+
     def exit_handler(self, signum=0, frame=None, clear_screen: bool = False) -> None:
         """
         Handle interruptions to shutdown gracefully

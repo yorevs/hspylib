@@ -19,9 +19,6 @@ class Main(Application):
     # The application name
     APP_NAME = os.path.basename(__file__)
 
-    # Version tuple: (major,minor,build)
-    VERSION = (1, 3, 0)
-
     # Vault usage message
     USAGE = """
 Usage: {} <option> [arguments]
@@ -41,7 +38,7 @@ Usage: {} <option> [arguments]
       hint      : Any hint related to that vault entry.
       password  : The password of the vault entry. If not provided, further input will be required.
       filter    : Filter the vault json_string by name.
-""".format(APP_NAME, '.'.join(map(str, VERSION)))
+""".format(APP_NAME, '.'.join(map(str, Application.__version__())))
 
     # Welcome message
     WELCOME = """
@@ -56,7 +53,7 @@ Usage: {} <option> [arguments]
 
     def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
+        super().__init__(app_name, Application.__version__(), self.USAGE, source_dir)
         self.vault = Vault()
         signal.signal(signal.SIGINT, self.exit_handler)
 
@@ -71,7 +68,7 @@ Usage: {} <option> [arguments]
         self.configs.logger().info(
             self.WELCOME.format(
                 self.app_name,
-                self.VERSION,
+                Application.__version__(),
                 VaultConfig.INSTANCE.vault_user(),
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

@@ -13,7 +13,7 @@ apply from: "properties.gradle"
 
 ext {
   app_version = "${projectVersion}"
-  versionFile = "VERSION"
+  versionFile = "${rootProject.projectDir}/src/main/.version"
   application = "main.py"
   python = "python${pythonVersion}"
   pyrcc = "pyrcc3${pyrccVersion}"

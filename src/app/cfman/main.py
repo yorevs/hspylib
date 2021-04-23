@@ -17,9 +17,6 @@ class Main(Application):
     # The application name
     APP_NAME = os.path.basename(__file__)
 
-    # Version tuple: (major,minor,build)
-    VERSION = (0, 9, 0)
-
     # CloudFoundry manager usage message
     USAGE = """
 Usage: {} <option> [arguments]
@@ -34,7 +31,7 @@ Usage: {} <option> [arguments]
       -s  |      --space <space_url>    : Set the space to connect to
       -u  |   --username <username>     : Set the username
       -p  |   --password <password>     : Set the password
-""".format(APP_NAME, ' '.join(map(str, VERSION)))
+""".format(APP_NAME, '.'.join(map(str, Application.__version__())))
 
     WELCOME = """
     
@@ -43,7 +40,7 @@ Usage: {} <option> [arguments]
 
     def __init__(self, app_name: str):
         source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
+        super().__init__(app_name, Application.__version__(), self.USAGE, source_dir)
         self.option_map = {}
         self.cfman = None
         signal.signal(signal.SIGINT, self.exit_handler)
@@ -60,7 +57,7 @@ Usage: {} <option> [arguments]
         self.configs.logger().info(
             self.WELCOME.format(
                 self.app_name,
-                self.VERSION,
+                Application.__version__(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self.__exec_application__()
