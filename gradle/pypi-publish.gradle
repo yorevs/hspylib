@@ -5,10 +5,10 @@
 */
 
 ext {
-  pypiTestRepoUrl = "https://test.pypi.org/legacy/"
-  pypiProdRepoUrl = "https://upload.pypi.org/legacy/"
-  pypiUsername = 'yorevs'
-  pypiPassword = '^e32?g$eCwazbfC'
+  pypiTestRepoUrl = System.getenv("TEST_PYPI_REPO") ?: 'https://test.pypi.org/legacy/'
+  pypiProdRepoUrl = System.getenv("PROD_PYPI_REPO") ?: 'https://upload.pypi.org/legacy/'
+  pypiUsername = System.getenv("PYPI_USERNAME") ?: System.getenv("USER")
+  pypiPassword = System.getenv("PYPI_PASSWORD") ?: ''
 }
 
 
