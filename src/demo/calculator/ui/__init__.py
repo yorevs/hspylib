@@ -2,8 +2,8 @@
 #
 # HSPyLib v0.9.14
 #
-# Package: app.calc.ui.qt.views
+# Package: demo.calculator.ui
 
 __all__ = [
-  'main_view'
+  'qt'
 ]

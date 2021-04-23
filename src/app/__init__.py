@@ -5,7 +5,6 @@
 # Package: app
 
 __all__ = [
-  'calc', 
   'cfman', 
   'firebase', 
   'vault'
