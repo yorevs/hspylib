@@ -1,6 +1,6 @@
 import os
 from re import sub
-from typing import Optional
+from typing import Optional, Any
 import logging as log
 
 from hspylib.core.config.properties import Properties
@@ -61,6 +61,9 @@ class AppConfigs(metaclass=Singleton):
 
     def __repr__(self):
         return str(self)
+
+    def __getitem__(self, item: str) -> Any:
+        return self.get(item)
 
     def size(self):
         return self._app_properties.size()

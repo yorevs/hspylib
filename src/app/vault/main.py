@@ -57,7 +57,7 @@ class Main(Application):
         source_dir = os.path.dirname(os.path.realpath(__file__))
         super().__init__(app_name, VERSION, USAGE, source_dir)
         self.vault = Vault()
-        signal.signal(signal.SIGINT, self.vault.exit_handler)
+        signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, *args, **kwargs) -> None:
         """Run the application with the command line arguments"""
@@ -75,10 +75,13 @@ class Main(Application):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
 
+    def cleanup(self):
+        self.vault.close()
+
     def exec_operation(self, op: str, req_args: int = 0) -> None:
         """Execute the specified operation
-        :param req_args: Number of required arguments for the operation
         :param op: The vault operation to execute
+        :param req_args: Number of required arguments for the operation
         """
         try:
             self.args = tuple(ArgumentValidator.check_arguments(self.args, req_args))
@@ -101,7 +104,7 @@ class Main(Application):
             err = str(traceback.format_exc())
             self.configs.logger().error('Failed to execute \'vault --{}\' => {}'.format(op, err))
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
-            self.vault.exit_handler(1)
+            self.exit_handler(1)
 
         MenuUtils.wait_enter()
 

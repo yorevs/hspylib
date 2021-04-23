@@ -30,22 +30,6 @@ class Vault(object):
             vault_str += entry.key
         return vault_str
 
-    def exit_handler(self, signum=0, frame=None) -> None:
-        """
-        Handle interruptions to shutdown gracefully
-        :param signum: The signal number or the exit code
-        :param frame: The frame raised by the signal
-        """
-        if frame is not None:
-            self.log.warn('Signal handler hooked signum={} frame={}'.format(signum, frame))
-            exit_code = 3
-        else:
-            self.log.info('Exit handler called')
-            exit_code = signum
-        self.close()
-        sysout('')
-        exit(exit_code)
-
     def open(self) -> None:
         """Open and read the Vault file"""
         self.passphrase = self.__get_passphrase()
