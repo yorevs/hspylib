@@ -1,50 +1,48 @@
 import getopt
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, Tuple
 
-from hspylib.ui.cli.appfw.option import Option
+from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
+from hspylib.ui.cli.app.option import Option
 
 
 class Application(metaclass=Singleton):
 
-    VERSION = (0, 0, 0)
-    USAGE = "TBD"
-
     @staticmethod
-    def usage(exit_code: int = 0) -> None:
-        """Display the usage message and exit with the specified code ( or zero as default )
-        :param exit_code: The application exit code
-        """
-        sysout(Application.USAGE)
-        Application.exit_app(exit_code, clear_screen=False)
-
-    def version(self) -> None:
-        """Display the current program version and exit"""
-        sysout('{} v{}'.format(self.app_name, '.'.join(map(str, Application.VERSION))))
-        Application.exit_app(clear_screen=False)
-
-    @staticmethod
-    def exit_app(exit_code=0, frame=None, clear_screen: bool = True) -> None:
+    def exit_app(exit_code=0, frame=None, clear_screen: bool = False) -> None:
         """Safely exit the application"""
         sysout(frame if frame else '', end='')
         if clear_screen:
             sysout('%ED2%%HOM%')
         exit(exit_code)
 
+    def usage(self, exit_code: int = 0) -> None:
+        """Display the usage message and exit with the specified code ( or zero as default )
+        :param exit_code: The application exit code
+        """
+        sysout(self.app_usage)
+        Application.exit_app(exit_code)
+
+    def version(self) -> None:
+        """Display the current program version and exit"""
+        sysout('{} v{}'.format(self.app_name, '.'.join(map(str, self.app_version))))
+        Application.exit_app()
+
     def parse_arguments(self, arguments: List[str]) -> None:
         """ Handle program arguments and options. Short opts: -<C>, Long opts: --<Word>
         :param arguments: The list of unparsed program arguments passed by the command line
         """
         try:
-            opts, args = getopt.getopt(arguments, self.__shortopts__(), self.__longopts__())
-            assert self.__has_valid_options__(opts), f'Invalid number of options: {len(opts)}'
-            for op, arg in opts:
-                opt = self.__getopt__(op)
-                if opt and opt.handler:
-                    opt.handler()
-                else:
-                    assert False, f"Unhandled option: {op}"
+            if self.options:
+                opts, self.args = getopt.getopt(arguments, self.__shortopts__(), self.__longopts__())
+                assert self.__has_valid_options__(opts), f'Invalid number of options: {len(opts)}'
+                for op, arg in opts:
+                    opt = self.__getopt__(op)
+                    if opt and opt.handler:
+                        opt.handler(arg)
+                    else:
+                        assert False, f"Unhandled option: {op}"
         except getopt.GetoptError as err:
             sysout(f"%RED%### Unhandled option: {str(err)}")
             self.usage(1)
@@ -52,9 +50,26 @@ class Application(metaclass=Singleton):
             sysout(f"%RED%### {str(err)}")
             self.usage(1)
 
-    def __init__(self, app_name: str):
+    def __init__(
+            self,
+            app_name: str,
+            app_version: Tuple[int, int, int],
+            app_usage: str,
+            source_dir: str,
+            resource_dir: str = None,
+            log_dir: str = None):
+
         self.app_name = app_name
+        self.app_version = app_version
+        self.app_usage = app_usage
         self.options = []
+        self.args = None
+        self.configs = AppConfigs(
+            source_root=source_dir,
+            resource_dir=resource_dir,
+            log_dir=log_dir
+        )
+        self.configs.logger().info(self.configs)
         self.with_option('h', 'help', handler=self.usage)
         self.with_option('v', 'version', handler=self.version)
 
@@ -65,8 +80,14 @@ class Application(metaclass=Singleton):
         self.main(*args, **kwargs)
         self.exit_app()
 
-    def with_option(self, shortopt: chr, longopt: str, args_num: int = 0, handler: Callable = None):
-        self.options.append(Option(shortopt, longopt, args_num, handler))
+    def with_option(
+            self,
+            shortopt: chr,
+            longopt: str,
+            has_argument: bool = False,
+            handler: Callable = None,
+            required: bool = False):
+        self.options.append(Option(shortopt, longopt, has_argument, handler, required))
 
     def __has_valid_options__(self, options: List[str]):
         if len(options) < self.__reqopts__():
@@ -82,7 +103,7 @@ class Application(metaclass=Singleton):
         return str_all_opts
 
     def __getopt__(self, item: str) -> Optional[Option]:
-        return next((opt for opt in self.options if opt.is_eq(item)), None)
+        return next((op for op in self.options if op.is_eq(item)), None)
 
     def __reqopts__(self) -> int:
-        return sum(opt.args_num > 0 for opt in self.options)
+        return sum(opt.required for opt in self.options)

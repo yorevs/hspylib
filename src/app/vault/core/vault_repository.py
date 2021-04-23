@@ -35,9 +35,8 @@ class VaultRepository(FileRepository):
         """
         self.storage.load()
         if key:
-            result = [data for data in self.storage.data if key == data['key']]
-            assert len(result) <= 1, "Multiple results found with key={}".format(key)
-            return self.dict_to_entity(result[0]) if len(result) > 0 else None
+            result = next((entry for entry in self.storage.data if key == entry['key']), None)
+            return self.dict_to_entity(result) if result else None
         else:
             return None
 

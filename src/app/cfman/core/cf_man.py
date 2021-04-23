@@ -6,7 +6,7 @@ from cfman.core.cf_application import CFApplication
 from cfman.core.cf_endpoint import CFEndpoint
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enum.http_code import HttpCode
-from hspylib.core.tools.commons import sysout, get_or_default, syserr
+from hspylib.core.tools.commons import sysout, syserr, get_by_key_or_default
 from hspylib.modules.fetch.fetch import head
 from hspylib.ui.cli.menu.extra.mchoose import mchoose
 from hspylib.ui.cli.menu.extra.minput import MenuInput, minput
@@ -40,11 +40,11 @@ class CFManager(object):
         self.configs = AppConfigs.INSTANCE
         self.options = options
         self.cf = CloudFoundry()
-        self.api = get_or_default(self.options, 'api')
-        self.username = get_or_default(self.options, 'username')
-        self.password = get_or_default(self.options, 'password')
-        self.org = get_or_default(self.options, 'org')
-        self.space = get_or_default(self.options, 'space')
+        self.api = get_by_key_or_default(self.options, 'api')
+        self.username = get_by_key_or_default(self.options, 'username')
+        self.password = get_by_key_or_default(self.options, 'password')
+        self.org = get_by_key_or_default(self.options, 'org')
+        self.space = get_by_key_or_default(self.options, 'space')
         self.apps = None
         self.done = False
 

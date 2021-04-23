@@ -61,6 +61,10 @@ class Validator(ABC, Callable):
         except ValueError:
             return False
 
+    @staticmethod
+    def has_no_nulls(*args):
+        return all(opt is not None for opt in args)
+
     @abstractmethod
     def __call__(self, *args, **kwargs) -> bool:
         pass

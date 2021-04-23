@@ -22,20 +22,29 @@ class AppConfigs(metaclass=Singleton):
     def environ_name(property_name: str) -> str:
         return sub('[ -.]', '_', property_name).upper()
 
-    def __init__(self,
-                 source_root: str = None,
-                 resource_dir: str = None,
-                 log_dir: str = None,
-                 log_file: str = 'application.log'):
-        self._source_root = source_root or os.environ.get('SOURCE_ROOT', os.path.abspath(os.curdir))
-        assert os.path.exists(self._source_root), "Unable to find the source directory: {}".format(self._source_root)
-        self._log_dir = log_dir if log_dir else '{}/../log'.format(os.environ.get('LOG_DIR', self._source_root))
-        assert os.path.exists(self._log_dir), "Unable to find the log directory: {}".format(self._log_dir)
+    def __init__(
+            self,
+            source_root,
+            resource_dir: str = None,
+            log_dir: str = None,
+            log_file: str = 'application.log'):
+
+        self._source_root = source_root \
+            if source_root else os.environ.get('SOURCE_ROOT', os.path.abspath(os.curdir))
+        assert os.path.exists(self._source_root), f"Unable to find the source dir: {self._source_root}"
+
+        self._resource_dir = resource_dir \
+            if resource_dir else os.environ.get('RESOURCE_DIR', f"{self._source_root}/resources")
+        assert os.path.exists(self._resource_dir), f"Unable to find the resources dir: {self._resource_dir}"
+
+        self._log_dir = log_dir \
+            if log_dir else '{}/log'.format(os.environ.get('LOG_DIR', self._resource_dir))
+        assert os.path.exists(self._log_dir), f"Unable to find the log dir: {self._log_dir}"
+
         self._log_file = "{}/{}".format(self._log_dir, log_file)
         self._logger = log_init(self._log_file)
-        assert self._logger, "Unable to create the logger: {}".format(str(self._logger))
-        self._resource_dir = resource_dir \
-            if resource_dir else os.environ.get('RESOURCE_DIR', "{}/main/resources".format(self._source_root))
+        assert self._logger, f"Unable to create the logger: {str(self._logger)}"
+
         self._app_properties = Properties(load_dir=self._resource_dir)
 
     def __str__(self):
@@ -49,6 +58,9 @@ class AppConfigs(metaclass=Singleton):
             ),
             '-=' * 40
         )
+
+    def __repr__(self):
+        return str(self)
 
     def size(self):
         return self._app_properties.size()
