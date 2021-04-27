@@ -1,10 +1,9 @@
 from typing import List, Tuple
 
-from phonebook.entity.contact import Contact
-from phonebook.entity.person import Person
-
 from hspylib.core.tools.regex_commons import RegexCommons
 from hspylib.core.tools.validator import Validator
+from phonebook.entity.Contact import Contact
+from phonebook.entity.Person import Person
 
 
 class ContactValidator(Validator):

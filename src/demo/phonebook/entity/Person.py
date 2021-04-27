@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from phonebook.entity.contact import Contact
+from phonebook.entity.Contact import Contact
 
 
 class Person(Contact):
