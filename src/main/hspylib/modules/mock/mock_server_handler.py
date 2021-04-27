@@ -1,17 +1,17 @@
+import logging as log
 from http.server import BaseHTTPRequestHandler
 from typing import Tuple
 
-from hspylib.core.config.app_config import AppConfigs
+from requests.structures import CaseInsensitiveDict
+
 from hspylib.core.enum.content_type import ContentType
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.enum.http_method import HttpMethod
-from requests.structures import CaseInsensitiveDict
 
 
 class MockServerHandler(BaseHTTPRequestHandler):
     def __init__(self, request: bytes, client_address: Tuple[str, int], parent):
         self.parent = parent
-        self.logger = AppConfigs.INSTANCE.logger()
         super().__init__(request, client_address, parent)
 
     @staticmethod
@@ -42,7 +42,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
                         code: HttpCode = HttpCode.OK,
                         content_type: ContentType = ContentType.APPLICATION_JSON,
                         headers: CaseInsensitiveDict = None):
-        self.logger.debug('Processing a default request status_code={} content-type={}'.format(code, content_type))
+        log.debug('Processing a default request status_code={} content-type={}'.format(code, content_type))
         self.send_response_only(code.value)
         self.process_headers(headers, content_type)
 
@@ -50,7 +50,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
         if self.parent.is_allowed(method):
             request = self.parent.mock(method, self.path)
             if request:
-                self.logger.debug('Processing a request status_code={} content-type={}'.format(
+                log.debug('Processing a request status_code={} content-type={}'.format(
                     request.status_code, request.content_type))
                 if not request.status_code:
                     code = HttpCode.INTERNAL_SERVER_ERROR.value

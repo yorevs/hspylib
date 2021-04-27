@@ -22,7 +22,7 @@ class Main(Application):
 """.format(APP_NAME)
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, __version__(), self.USAGE, __curdir__)
+        super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
         self.calc = QtCalculator()
 
     def main(self, *args, **kwargs):

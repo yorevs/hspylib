@@ -20,7 +20,7 @@ class TestMySqlRepository(unittest.TestCase):
         self.configs = AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
         )
-        self.configs.logger().info(self.configs)
+        log.info(self.configs)
         self.repository = TestMysqlRepository()
         self.table = self.repository.table_name()
         assert self.repository, "Unable to instantiate TestRepository"

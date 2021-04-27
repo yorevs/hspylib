@@ -2,7 +2,6 @@ import re
 from enum import auto
 
 from hspylib.core.enum.enumeration import Enumeration
-
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 
 

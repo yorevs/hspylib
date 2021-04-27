@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+import logging as log
 import os
 import sys
 import traceback
-import logging as log
 from datetime import datetime
 
 from firebase.core.agent_config import AgentConfig

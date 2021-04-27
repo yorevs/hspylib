@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+import logging as log
 
 from hspylib.core.config.app_config import AppConfigs
 
@@ -18,7 +19,7 @@ class TestAppConfig(unittest.TestCase):
         )
         self.assertIsNotNone(self.configs)
         self.assertIsNotNone(AppConfigs.INSTANCE)
-        self.configs.logger().info(self.configs)
+        log.info(self.configs)
         os.environ['TEST_OVERRIDDEN_BY_ENVIRON'] = 'yes its overridden'
 
     # Teardown tests

@@ -1,5 +1,6 @@
-from hspylib.core.enum.enumeration import Enumeration
 from http import HTTPStatus
+
+from hspylib.core.enum.enumeration import Enumeration
 
 
 class HttpCode(Enumeration):

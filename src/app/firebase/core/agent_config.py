@@ -22,6 +22,9 @@ class AgentConfig(metaclass=Singleton):
     def __str__(self):
         return str(self.fb_configs)
 
+    def __repr__(self):
+        return str(self)
+
     def setup(self, config_dict: CaseInsensitiveDict) -> None:
         """Setup firebase config from dictionary
         :param config_dict: TODO
@@ -46,7 +49,7 @@ class AgentConfig(metaclass=Singleton):
         self.setup(config)
 
     def logger(self) -> log:
-        return self.configs.logger()
+        return log
 
     def config_file(self) -> str:
         file = self.configs['firebase.config.file']

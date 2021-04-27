@@ -1,8 +1,8 @@
 import struct
-from abc import ABC, abstractmethod
+
+from idna.core import unicode
 
 from hspylib.core.enum.enumeration import Enumeration
-from idna.core import unicode
 
 
 def awe_print(awesome_str: str) -> None:

@@ -1,13 +1,10 @@
 import base64
 import os
-import subprocess
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-
-from hspylib.core.tools.commons import safe_del_file
 
 DEFAULT_SALT = 'HsPyLib'
 

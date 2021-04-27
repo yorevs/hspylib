@@ -5,9 +5,8 @@ import unittest
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.enum.http_method import HttpMethod
-from hspylib.modules.mock.mock_server import MockServer
-
 from hspylib.modules.fetch.fetch import get, post, put, patch, delete, head
+from hspylib.modules.mock.mock_server import MockServer
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -19,7 +18,7 @@ class TestFetch(unittest.TestCase):
         os.environ['ACTIVE_PROFILE'] = "test"
         AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
-        ).logger().info(AppConfigs.INSTANCE)
+        )
         self.mock_server = MockServer('localhost', MockServer.RANDOM_PORT)
         self.mock_server.start()
 

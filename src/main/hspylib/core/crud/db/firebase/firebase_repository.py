@@ -1,4 +1,5 @@
 import json
+import logging as log
 import uuid
 from abc import abstractmethod
 from typing import Optional
@@ -6,7 +7,6 @@ from typing import Optional
 from requests.exceptions import HTTPError
 from requests.structures import CaseInsensitiveDict
 
-from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.core.enum.http_code import HttpCode
@@ -16,7 +16,6 @@ from hspylib.modules.fetch.fetch import put, get, delete
 
 class FirebaseRepository(CrudRepository):
     def __init__(self):
-        self.logger = AppConfigs.INSTANCE.logger()
         self.payload = None
         self.config = FirebaseConfig()
 
@@ -34,7 +33,7 @@ class FirebaseRepository(CrudRepository):
         entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
-        self.logger.debug('Inserting firebase entry: {} into: {}'.format(entity, url))
+        log.debug('Inserting firebase entry: {} into: {}'.format(entity, url))
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -43,7 +42,7 @@ class FirebaseRepository(CrudRepository):
     def update(self, entity: Entity):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
-        self.logger.debug('Updating firebase entry: {} into: {}'.format(entity, url))
+        log.debug('Updating firebase entry: {} into: {}'.format(entity, url))
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -51,7 +50,7 @@ class FirebaseRepository(CrudRepository):
 
     def delete(self, entity: Entity):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
-        self.logger.debug('Deleting firebase entry: {} into: {}'.format(entity, url))
+        log.debug('Deleting firebase entry: {} into: {}'.format(entity, url))
         response = delete(url)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -59,7 +58,7 @@ class FirebaseRepository(CrudRepository):
 
     def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
         url = '{}.json?orderBy="$key"'.format(self.config.base_url())
-        self.logger.debug('Fetching firebase entries from {}'.format(url))
+        log.debug('Fetching firebase entries from {}'.format(url))
         response = get(url)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -69,7 +68,7 @@ class FirebaseRepository(CrudRepository):
 
     def find_by_id(self, entity_id: str) -> Optional[Entity]:
         url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.base_url(), entity_id)
-        self.logger.debug('Fetching firebase entry entity_id={} from {}'.format(entity_id, url))
+        log.debug('Fetching firebase entry entity_id={} from {}'.format(entity_id, url))
         response = get(url)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:

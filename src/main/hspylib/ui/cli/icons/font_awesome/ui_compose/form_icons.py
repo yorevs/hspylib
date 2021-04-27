@@ -1,4 +1,4 @@
-from hspylib.ui.cli.icons.font_awesome.awesome import Awesome, awe_print
+from hspylib.ui.cli.icons.font_awesome.awesome import Awesome
 
 
 class FormIcons(Awesome):
