@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import os
-import signal
 import sys
 
-from hspylib.ui.cli.app.application import Application
 from calculator.core.qt_calculator import QtCalculator
+from hspylib.core.tools.commons import __curdir__, __version__
+from hspylib.ui.cli.app.application import Application
 
 
 class Main(Application):
@@ -22,10 +22,8 @@ class Main(Application):
 """.format(APP_NAME)
 
     def __init__(self, app_name: str):
-        source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, self.VERSION, self.USAGE, source_dir)
+        super().__init__(app_name, __version__(), self.USAGE, __curdir__)
         self.calc = QtCalculator()
-        signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, *args, **kwargs):
         self.calc.run()
