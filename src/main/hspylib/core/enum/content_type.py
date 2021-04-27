@@ -58,4 +58,4 @@ class ContentType(Enumeration):
     TEXT_XML = 'text/xml'
 
     def __str__(self):
-        return '{}{}'.format(self.value, '; charset={}'.format(self.charset) if self.charset else '')
+        return str(self.value)

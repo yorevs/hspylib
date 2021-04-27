@@ -1,6 +1,5 @@
 import random
 import re
-from typing import Callable
 
 from hspylib.core.tools.commons import get_or_default
 
@@ -44,7 +43,7 @@ class TextHelper:
         return get_or_default(result, index)
 
 
-class TextAlignment(Callable):
+class TextAlignment:
     """
     Table cell text justification helper.
     """
@@ -53,7 +52,7 @@ class TextAlignment(Callable):
     RIGHT = TextHelper.justified_right
 
 
-class TextCase(Callable):
+class TextCase:
     """
     Table cell text justification helper.
     """

@@ -23,9 +23,9 @@ class MockServer(HTTPServer):
         self.hostname = hostname
         self.port = port
         self.version = '0.9.0'
-        super().__init__(self.server_address(), MockServerHandler)
+        super().__init__(self.address(), MockServerHandler)
 
-    def server_address(self) -> Tuple[str, int]:
+    def address(self) -> Tuple[str, int]:
         return self.hostname, self.port
 
     def is_allowed(self, method: HttpMethod):

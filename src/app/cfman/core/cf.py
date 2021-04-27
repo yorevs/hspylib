@@ -23,18 +23,18 @@ class CloudFoundry(metaclass=Singleton):
     def connect(self) -> bool:
         """Attempt to connect to CloudFoundry"""
         if not self.connected:
-            self.connected = "FAILED" not in self.__exec__('orgs')
+            self.connected = "FAILED" not in str(self.__exec__('orgs'))
         return self.connected
 
     def api(self, api: str) -> bool:
         """Set or view target api url"""
         params = ['api', api]
-        return "FAILED" not in self.__exec__(*params)
+        return "FAILED" not in str(self.__exec__(*params))
 
     def auth(self, username: str, password: str) -> bool:
         """Authorize a CloudFoundry user"""
         params = ['auth', username, password]
-        return "FAILED" not in self.__exec__(*params)
+        return "FAILED" not in str(self.__exec__(*params))
 
     def target(self, **kwargs) -> dict:
         """Set or view the targeted org or space"""
@@ -47,7 +47,7 @@ class CloudFoundry(metaclass=Singleton):
             params.append('-s')
             params.append(kwargs['space'])
             self.targeted['space'] = kwargs['space']
-        self.targeted['targeted'] = "FAILED" not in self.__exec__(*params)
+        self.targeted['targeted'] = "FAILED" not in str(self.__exec__(*params))
 
         return self.targeted
 
@@ -55,7 +55,7 @@ class CloudFoundry(metaclass=Singleton):
     def spaces(self) -> List[str]:
         """List all spaces in an org"""
         all_spaces = self.__exec__('spaces').split('\n')
-        return all_spaces[3:] if all_spaces and "FAILED" not in all_spaces else None
+        return all_spaces[3:] if all_spaces and "FAILED" not in str(all_spaces) else None
 
     # Org management
     def orgs(self) -> List[str]:

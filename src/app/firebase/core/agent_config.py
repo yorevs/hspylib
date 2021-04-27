@@ -69,7 +69,7 @@ class AgentConfig(metaclass=Singleton):
             '{}:{}'.format(
                 self.username(),
                 getpass.getpass('Please type a password to encrypt your data: ')
-            ).encode(Charset.UTF_8.value)
+            ).encode(str(Charset.UTF_8))
         )
 
     def uuid(self) -> str:

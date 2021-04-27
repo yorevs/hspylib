@@ -1,11 +1,11 @@
+import logging as log
 from typing import Type
 
 from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTableView
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import log_init, class_attribute_values, class_attribute_names
+from hspylib.core.tools.commons import class_attribute_values, class_attribute_names
 
 
 class DefaultTableModel(QAbstractTableModel):
@@ -16,8 +16,7 @@ class DefaultTableModel(QAbstractTableModel):
         self.table_data = table_data or []
         self.headers = headers or self.headers_by_entity()
         self.cell_alignments = cell_alignments or []
-        self.log = log_init(AppConfigs.logger())
-        self.log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
+        log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
 
     def data(self, index: QModelIndex, role: int = ...):
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]

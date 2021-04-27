@@ -9,9 +9,6 @@ class Vt100(ABC):
         - https://espterm.github.io/docs/VT100%20escape%20codes.html
     """
 
-    def __str__(self):
-        return self.value
-
     # Esc<Sequence>
     @classmethod
     def escape(cls, seq: str) -> str:

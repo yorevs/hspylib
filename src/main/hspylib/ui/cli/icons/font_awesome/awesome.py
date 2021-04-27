@@ -31,7 +31,7 @@ class Awesome(Enumeration):
         list(map(lambda e: awe_print(e), cls.values()))
 
     def __str__(self) -> str:
-        return self.value
+        return str(self.value)
 
     def placeholder(self) -> str:
         return f":{self.name}:"
