@@ -15,7 +15,8 @@ project.ext.deps = [
   'getkey',
   'twine',
   'wheel',
-  'bumpversion'
+  'bumpversion',
+  'pylint'
 ]
 
 /* Install all required python packages */
