@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 import os
-import signal
 import sys
 import traceback
+import logging as log
 from datetime import datetime
 
 from firebase.core.agent_config import AgentConfig
 from firebase.core.firebase import Firebase
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 
 
 class Main(Application):
-    """TODO"""
+    """Firebase Agent - Manage your firebase integration"""
 
     # The application name
     APP_NAME = os.path.basename(__file__)
@@ -23,7 +23,7 @@ class Main(Application):
     USAGE = """
 Usage: {} <option> [arguments]
 
-    Firebase Agent v{} Manage your firebase integration.
+    Firebase Agent v{} - Manage your firebase integration.
 
     Options:
       -v  |  --version                              : Display current program version.
@@ -36,7 +36,7 @@ Usage: {} <option> [arguments]
       db_alias      : Alias to be used to identify the firebase object to fetch json_string from.
       file1..N      : List os file paths to upload.
       download_dir  : Destination directory. If omitted, your home folder will be used.
-""".format(APP_NAME, '.'.join(map(str, Application.__version__())))
+""".format(APP_NAME, '.'.join(map(str, __version__())))
 
     WELCOME = """
 
@@ -49,10 +49,8 @@ Settings ==============================
 """
 
     def __init__(self, app_name: str):
-        source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, Application.__version__(), self.USAGE, source_dir)
+        super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
         self.firebase = Firebase()
-        signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, *args, **kwargs) -> None:
         """Run the application with the command line arguments"""
@@ -60,10 +58,10 @@ Settings ==============================
         self.with_option('u', 'upload', handler=lambda arg: self.__exec_operation__('upload', 2))
         self.with_option('d', 'download', handler=lambda arg: self.__exec_operation__('download', 1))
         self.parse_arguments(*args)
-        self.configs.logger().info(
+        log.info(
             self.WELCOME.format(
                 self.app_name,
-                Application.__version__(),
+                __version__(),
                 AgentConfig.INSTANCE.username(),
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -91,7 +89,7 @@ Settings ==============================
                 self.usage(1)
         except Exception:
             err = str(traceback.format_exc())
-            self.configs.logger().error('Failed to execute \'firebase --{}\' => {}'.format(op, err))
+            log.error('Failed to execute \'firebase --{}\' => {}'.format(op, err))
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
 
     def __reqopts__(self) -> int:

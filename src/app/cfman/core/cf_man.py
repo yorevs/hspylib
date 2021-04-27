@@ -1,5 +1,6 @@
 from time import sleep
 from typing import List
+import logging as log
 
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
@@ -36,7 +37,6 @@ class CFManager(object):
         return action.lower() not in ['status', 'target']
 
     def __init__(self, options: dict):
-        self.log = AppConfigs.INSTANCE.logger()
         self.configs = AppConfigs.INSTANCE
         self.options = options
         self.cf = CloudFoundry()
@@ -86,7 +86,7 @@ class CFManager(object):
         return self.apps
 
     def __select_endpoint__(self):
-        with open('{}/api_endpoints.txt'.format(self.configs.resource_dir()), 'r+') as f_hosts:
+        with open(f'{self.configs.resource_dir()}/api_endpoints.txt', 'r+') as f_hosts:
             endpoints = list(map(lambda x: CFEndpoint(x.split(',')), f_hosts.readlines()))
             selected = mselect(endpoints, title='Please select an endpoint')
             if not selected:
@@ -99,7 +99,7 @@ class CFManager(object):
                 else:
                     raise Exception(f'Failed to connect to API ({response.status_code}): {selected}')
             except Exception as err:
-                self.configs.logger().error(f'Failed to connect to API => {err}')
+                log.error(f'Failed to connect to API => {err}')
                 syserr('Failed to connect to API => ', selected.host)
                 exit(0)
 

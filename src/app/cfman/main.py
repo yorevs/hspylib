@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 import os
-import signal
 import sys
 import traceback
+import logging as log
 from datetime import datetime
 from typing import List, Any
 
 from cfman.core.cf_man import CFManager
+from hspylib.core.tools.commons import __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 
 class Main(Application):
-    """TODO"""
+    """Cloud Foundry Manager - Manage PCF applications."""
 
     # The application name
     APP_NAME = os.path.basename(__file__)
@@ -21,7 +22,7 @@ class Main(Application):
     USAGE = """
 Usage: {} <option> [arguments]
 
-    Cloud Foundry Manager v{} Manage PCF applications.
+    Cloud Foundry Manager v{} - Manage PCF applications.
 
     Options:
       -v  |    --version                : Display current program version.
@@ -31,7 +32,7 @@ Usage: {} <option> [arguments]
       -s  |      --space <space_url>    : Set the space to connect to
       -u  |   --username <username>     : Set the username
       -p  |   --password <password>     : Set the password
-""".format(APP_NAME, '.'.join(map(str, Application.__version__())))
+""".format(APP_NAME, '.'.join(map(str, __version__())))
 
     WELCOME = """
     
@@ -39,11 +40,9 @@ Usage: {} <option> [arguments]
 """
 
     def __init__(self, app_name: str):
-        source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, Application.__version__(), self.USAGE, source_dir)
+        super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
         self.option_map = {}
         self.cfman = None
-        signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, arguments: List[str]) -> None:
         """Run the application with the command line arguments"""
@@ -54,11 +53,9 @@ Usage: {} <option> [arguments]
         self.with_option('p', 'password', True, lambda arg: self.__add_option__('password', arg))
         self.parse_arguments(arguments)
         self.cfman = CFManager(self.option_map)
-        self.configs.logger().info(
+        log.info(
             self.WELCOME.format(
-                self.app_name,
-                Application.__version__(),
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                self.app_name, __version__(), datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self.__exec_application__()
 
@@ -71,7 +68,7 @@ Usage: {} <option> [arguments]
             self.cfman.run()
         except Exception:
             err = str(traceback.format_exc())
-            self.configs.logger().error('Failed to execute PCF manager => {}'.format(err))
+            log.error('Failed to execute PCF manager => {}'.format(err))
             MenuUtils.print_error('Failed to execute PCF manager => {}'.format(err))
 
     def __reqopts__(self) -> int:

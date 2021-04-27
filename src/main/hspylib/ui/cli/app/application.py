@@ -1,5 +1,7 @@
 import getopt
+import signal
 import sys
+import logging as log
 from typing import List, Callable, Optional, Tuple
 
 from hspylib.core.config.app_config import AppConfigs
@@ -9,12 +11,44 @@ from hspylib.ui.cli.app.option import Option
 
 
 class Application(metaclass=Singleton):
+    """TODO"""
 
-    @staticmethod
-    def __version__() -> Tuple:
-        """Retrieve the version of the application in the form: Tuple[major,minor,build]"""
-        with open(".version") as fh:
-            return tuple(map(str.strip, fh.read().split('.')))
+    def __init__(
+            self,
+            app_name: str,
+            app_version: Tuple[int, int, int],
+            app_usage: str = "Usage: main.py <option> [arguments]",
+            source_dir: str = None,
+            resource_dir: str = None,
+            log_dir: str = None):
+
+        signal.signal(signal.SIGINT, self.exit_handler)
+        self.app_name = app_name
+        self.app_version = app_version
+        self.app_usage = app_usage
+        self.options = []
+        self.args = None
+        if source_dir:
+            self.configs = AppConfigs(
+                source_root=source_dir,
+                resource_dir=resource_dir,
+                log_dir=log_dir
+            )
+        self.with_option('h', 'help', handler=self.usage)
+        self.with_option('v', 'version', handler=self.version)
+
+    def main(self, *args, **kwargs):
+        """TODO"""
+        pass
+
+    def run(self, *args, **kwargs):
+        """TODO"""
+        self.main(*args, **kwargs)
+        self.exit_handler()
+
+    def cleanup(self):
+        """TODO"""
+        log.info('Cleanup handler called. nothing to cleanup')
 
     def exit_handler(self, signum=0, frame=None, clear_screen: bool = False) -> None:
         """
@@ -24,10 +58,10 @@ class Application(metaclass=Singleton):
         :param clear_screen: Whether to clean the screen before execution or not
         """
         if frame is not None:
-            self.configs.logger().warn('Signal handler hooked signum={} frame={}'.format(signum, frame))
+            log.warn('Signal handler hooked signum={} frame={}'.format(signum, frame))
             exit_code = 3
         else:
-            self.configs.logger().info('Exit handler called')
+            log.info('Exit handler called')
             exit_code = signum
         self.cleanup()
         if clear_screen:
@@ -66,40 +100,6 @@ class Application(metaclass=Singleton):
         except AssertionError as err:
             sysout(f"%RED%### {str(err)}")
             self.usage(1)
-
-    def __init__(
-            self,
-            app_name: str,
-            app_version: Tuple[int, int, int],
-            app_usage: str,
-            source_dir: str = None,
-            resource_dir: str = None,
-            log_dir: str = None):
-
-        self.app_name = app_name
-        self.app_version = app_version
-        self.app_usage = app_usage
-        self.options = []
-        self.args = None
-        if source_dir:
-            self.configs = AppConfigs(
-                source_root=source_dir,
-                resource_dir=resource_dir,
-                log_dir=log_dir
-            )
-            self.configs.logger().info(self.configs)
-        self.with_option('h', 'help', handler=self.usage)
-        self.with_option('v', 'version', handler=self.version)
-
-    def main(self, *args, **kwargs):
-        pass
-
-    def cleanup(self):
-        self.configs.logger().info('Cleanup handler called. nothing to cleanup')
-
-    def run(self, *args, **kwargs):
-        self.main(*args, **kwargs)
-        self.exit_handler()
 
     def with_option(
             self,

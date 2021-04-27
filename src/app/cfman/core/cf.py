@@ -1,9 +1,9 @@
+import logging as log
 import select
 import subprocess
 from time import sleep
 from typing import List, Any
 
-from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import syserr
 
@@ -12,7 +12,6 @@ class CloudFoundry(metaclass=Singleton):
     """Cloud Foundry command line tool python wrapper"""
 
     def __init__(self):
-        self.log = AppConfigs.INSTANCE.logger()
         self.connected = False
         self.targeted = {'org': None, 'space': None, 'targeted': False}
         self.last_result = None
@@ -96,12 +95,12 @@ class CloudFoundry(metaclass=Singleton):
         try:
             args = list(cmd_args)
             args.insert(0, 'cf')
-            self.log.info('Executing PCF command: {}'.format(' '.join(args)))
+            log.info('Executing PCF command: {}'.format(' '.join(args)))
             result = subprocess.run(args, capture_output=True, text=True).stdout
-            self.log.debug('Success! Execution result: {}'.format(result))
+            log.debug('Success! Execution result: {}'.format(result))
             result = str(result).strip() if result else None
         except subprocess.CalledProcessError as err:
-            self.log.debug(f'Failed => {str(err)}')
+            log.debug(f'Failed => {str(err)}')
             syserr(str(err))
             result = None
         self.last_result = result
@@ -113,7 +112,7 @@ class CloudFoundry(metaclass=Singleton):
         try:
             args = list(cmd_args)
             args.insert(0, 'cf')
-            self.log.info('Polling PCF command: {}'.format(cmd_args))
+            log.info('Polling PCF command: {}'.format(cmd_args))
             file = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             process = select.poll()
             process.register(file.stdout)
@@ -124,5 +123,5 @@ class CloudFoundry(metaclass=Singleton):
                     print(line)
                 sleep(1)
         except Exception as err:
-            self.log.debug(f'Failed => {str(err)}')
+            log.debug(f'Failed => {str(err)}')
             syserr(str(err))

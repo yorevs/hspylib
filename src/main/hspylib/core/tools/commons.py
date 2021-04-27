@@ -45,6 +45,25 @@ def log_init(
     return log
 
 
+def __version__(version_filepath: str = ".version") -> Optional[Tuple]:
+    """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
+    try:
+        with open(version_filepath) as fh:
+            return tuple(map(str.strip, fh.read().split('.')))
+    except FileNotFoundError:
+        return None
+
+
+def __curdir__(filepath: str) -> str:
+    """Retrieve the application directory"""
+    return os.path.dirname(os.path.realpath(filepath))
+
+
+def environ_name(property_name: str) -> str:
+    """Retrieve the environment name of the specified property name"""
+    return re.sub('[ -.]', '_', property_name).upper()
+
+
 def sysout(string: str, end: str = '\n') -> None:
     """Print the unicode input_string decoding vt100 placeholders"""
     if Validator.is_not_blank(string):
