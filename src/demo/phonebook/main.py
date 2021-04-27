@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-import os
-import signal
-import logging as log
+import sys
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.meta.singleton import Singleton
+from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
 from hspylib.ui.cli.menu.menu_ui import MenuUi
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
@@ -13,21 +10,12 @@ from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
 
-class Main(metaclass=Singleton):
+class Main(Application):
 
-    def __init__(self):
-        source_dir = os.path.dirname(os.path.realpath(__file__))
-        resource_dir = '{}/resources'.format(source_dir)
-        log_dir = '{}/log'.format(resource_dir)
-        self.configs = AppConfigs(
-            source_root=source_dir,
-            resource_dir=resource_dir,
-            log_dir=log_dir
-        )
-        log.info(self.configs)
+    def __init__(self, app_name: str):
+        super().__init__(app_name, (0, 9, 0))
 
-    @staticmethod
-    def run() -> None:
+    def main(self, *args, **kwargs) -> None:
         create_view = CreateView()
         edit_view = EditView()
         search_view = SearchView()
@@ -63,6 +51,5 @@ class Main(metaclass=Singleton):
 
 # Application entry point
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, MenuUtils.exit_app)
-    Main().INSTANCE.run()
-    MenuUtils.exit_app(0)
+    """Application entry point"""
+    Main('HSPyLib Phonebook Demo').INSTANCE.run(sys.argv[1:])

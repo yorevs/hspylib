@@ -28,12 +28,11 @@ class Application(metaclass=Singleton):
         self.app_usage = app_usage
         self.options = []
         self.args = None
-        if source_dir:
-            self.configs = AppConfigs(
-                source_root=source_dir,
-                resource_dir=resource_dir,
-                log_dir=log_dir
-            )
+        self.configs = AppConfigs(
+            source_root=source_dir if source_dir else '.',
+            resource_dir=resource_dir,
+            log_dir=log_dir
+        )
         self.with_option('h', 'help', handler=self.usage)
         self.with_option('v', 'version', handler=self.version)
 

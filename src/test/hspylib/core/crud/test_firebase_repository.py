@@ -1,7 +1,7 @@
+import logging as log
 import os
 import sys
 import unittest
-import logging as log
 
 from requests.structures import CaseInsensitiveDict
 

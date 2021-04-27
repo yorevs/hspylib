@@ -1,6 +1,5 @@
 from typing import List, Tuple
 
-
 from hspylib.core.tools.regex_commons import RegexCommons
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Company import Company
