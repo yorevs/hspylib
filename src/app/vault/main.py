@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import os
-import signal
 import sys
 import traceback
+import logging as log
 from datetime import datetime
 
-from hspylib.core.tools.commons import sysout, get_or_default
+from hspylib.core.tools.commons import sysout, get_or_default, __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
@@ -14,7 +14,7 @@ from vault.core.vault_config import VaultConfig
 
 
 class Main(Application):
-    """TODO"""
+    """HSPyLib Vault - Manage your secrets"""
 
     # The application name
     APP_NAME = os.path.basename(__file__)
@@ -23,7 +23,7 @@ class Main(Application):
     USAGE = """
 Usage: {} <option> [arguments]
 
-    HSPyLib Vault v{}
+    HSPyLib Vault v{} - Manage your secrets.
 
     Options:
       -v  |  --version                      : Display current program version.
@@ -38,7 +38,7 @@ Usage: {} <option> [arguments]
       hint      : Any hint related to that vault entry.
       password  : The password of the vault entry. If not provided, further input will be required.
       filter    : Filter the vault json_string by name.
-""".format(APP_NAME, '.'.join(map(str, Application.__version__())))
+""".format(APP_NAME, '.'.join(map(str, __version__())))
 
     # Welcome message
     WELCOME = """
@@ -52,10 +52,8 @@ Usage: {} <option> [arguments]
     """
 
     def __init__(self, app_name: str):
-        source_dir = os.path.dirname(os.path.realpath(__file__))
-        super().__init__(app_name, Application.__version__(), self.USAGE, source_dir)
+        super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
         self.vault = Vault()
-        signal.signal(signal.SIGINT, self.exit_handler)
 
     def main(self, *args, **kwargs) -> None:
         """Run the application with the command line arguments"""
@@ -65,10 +63,10 @@ Usage: {} <option> [arguments]
         self.with_option('u', 'upd', handler=lambda arg: self.__exec_operation__('upd', 2))
         self.with_option('l', 'list', handler=lambda arg: self.__exec_operation__('list'))
         self.parse_arguments(*args)
-        self.configs.logger().info(
+        log.info(
             self.WELCOME.format(
                 self.app_name,
-                Application.__version__(),
+                __version__(),
                 VaultConfig.INSTANCE.vault_user(),
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -100,7 +98,7 @@ Usage: {} <option> [arguments]
                 self.usage(1)
         except Exception:
             err = str(traceback.format_exc())
-            self.configs.logger().error('Failed to execute \'vault --{}\' => {}'.format(op, err))
+            log.error('Failed to execute \'vault --{}\' => {}'.format(op, err))
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
         finally:
             self.vault.close()

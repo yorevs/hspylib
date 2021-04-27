@@ -1,31 +1,25 @@
 #!/usr/bin/env python3
-import signal
+import sys
+from typing import List
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.tools.commons import sysout, __version__
+from hspylib.ui.cli.app.application import Application
 
 
-class Main(metaclass=Singleton):
-    def __init__(self):
-        self.configs = AppConfigs()
-        self.configs.logger().info(self.configs)
+class Main(Application):
 
-    @staticmethod
-    def run():
+    VERSION = __version__("main/.version")
+
+    def __init__(self, app_name: str):
+        super().__init__(app_name, Main.VERSION)
+
+    def main(self, arguments: List[str]) -> None:
         with open("welcome.txt") as fh:
-            print(fh.read(), end='')
-        with open("main/.version") as fh:
-            print("Version " + fh.read())
-
-    @staticmethod
-    def exit_app(sig=None, frame=None):
-        print(frame or '', end='')
-        print('%ED2%%HOM%')
-        exit(sig)
+            sysout(fh.read(), end='')
+        sysout(f"Version {Main.VERSION}")
 
 
 # Application entry point
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, Main.exit_app)
-    Main().run()
-    Main.exit_app(0)
+    """Application entry point"""
+    Main('HSPyLib Welcome').INSTANCE.run(sys.argv[1:])
