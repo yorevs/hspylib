@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-from typing import List
 
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout, __version__
