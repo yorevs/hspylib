@@ -33,7 +33,7 @@ task cleanDist(type: Delete) {
   println "Cleanup distribution files from ${projectRoot}"
   delete dirsByPattern(projectRoot, /.*dist$/)
   delete dirsByPattern(projectRoot, /.*build$/)
-  delete dirsByPattern(projectRoot, /.*hspylib.egg-info$/)
+  delete dirsByPattern(projectRoot, /.*egg-info$/)
 }
 
 /* Generate PyPi distribution files */
