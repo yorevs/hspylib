@@ -1,16 +1,14 @@
 import ast
+import logging as log
 import os
-
-from hspylib.core.config.app_config import AppConfigs
 
 
 class FileStorage:
     def __init__(self, filename: str):
-        self.logger = AppConfigs.INSTANCE.logger()
         self.filename = filename
         self.data = []
         self.load()
-        self.logger.debug('File storage filename={} created and loaded entries={}'.format(filename, len(self.data)))
+        log.debug('File storage filename={} created and loaded entries={}'.format(filename, len(self.data)))
 
     def load(self):
         mode = 'r+' if os.path.exists(self.filename) else 'w+'
@@ -23,8 +21,8 @@ class FileStorage:
     def commit(self):
         with open(self.filename, 'w') as f_local_db:
             f_local_db.write(str(self.data))
-        self.logger.debug('File storage filename={} committed entries={}'.format(self.filename, len(self.data)))
+        log.debug('File storage filename={} committed entries={}'.format(self.filename, len(self.data)))
 
     def truncate(self):
         open(self.filename, 'w').close()
-        self.logger.warn('File storage filename={} was truncated'.format(self.filename))
+        log.warn('File storage filename={} was truncated'.format(self.filename))

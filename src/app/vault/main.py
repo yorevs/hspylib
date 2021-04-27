@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+import logging as log
 import os
 import sys
 import traceback
-import logging as log
 from datetime import datetime
 
 from hspylib.core.tools.commons import sysout, get_or_default, __version__, __curdir__

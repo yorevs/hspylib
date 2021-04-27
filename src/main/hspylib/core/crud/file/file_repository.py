@@ -1,11 +1,11 @@
+import logging as log
 import re
 import uuid
 from abc import abstractmethod
 from typing import Optional, List
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.crud.file.file_storage import FileStorage
 from hspylib.core.crud.crud_repository import CrudRepository
+from hspylib.core.crud.file.file_storage import FileStorage
 from hspylib.core.model.entity import Entity
 
 
@@ -32,7 +32,6 @@ class FileRepository(CrudRepository):
 
     def __init__(self, filename: str):
         super().__init__()
-        self.logger = AppConfigs.INSTANCE.logger()
         self.filename = filename
         self.storage = self.__create_or_get()
 
@@ -46,7 +45,7 @@ class FileRepository(CrudRepository):
         entity.uuid = entity.uuid if entity.uuid else str(uuid.uuid4())
         self.storage.data.append(entity.to_dict())
         self.storage.commit()
-        self.logger.debug("{} has been inserted !".format(entity.__class__.__name__))
+        log.debug("{} has been inserted !".format(entity.__class__.__name__))
 
     def update(self, entity: Entity):
         """TODO
@@ -56,7 +55,7 @@ class FileRepository(CrudRepository):
             if next_entry['uuid'] == entity.uuid:
                 self.storage.data[index] = entity.to_dict()
                 self.storage.commit()
-                self.logger.debug("{} has been updated !".format(entity.__class__.__name__))
+                log.debug("{} has been updated !".format(entity.__class__.__name__))
 
     def delete(self, entity: Entity):
         """TODO
@@ -66,7 +65,7 @@ class FileRepository(CrudRepository):
             if next_entry['uuid'] == entity.uuid:
                 self.storage.data.remove(self.storage.data[index])
                 self.storage.commit()
-                self.logger.debug("{} has been deleted !".format(entity.__class__.__name__))
+                log.debug("{} has been deleted !".format(entity.__class__.__name__))
 
     def find_all(self, filters: str = None) -> List[Entity]:
         """TODO

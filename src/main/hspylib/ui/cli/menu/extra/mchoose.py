@@ -4,13 +4,11 @@ import signal
 from abc import ABC
 from typing import List, Any
 
-from hspylib.core.tools.keyboard import Keyboard
-from hspylib.ui.cli.vt100.vt_100 import Vt100
-
-from hspylib.ui.cli.vt100.vt_codes import vt_print
-
 from hspylib.core.tools.commons import sysout, screen_size
+from hspylib.core.tools.keyboard import Keyboard
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
+from hspylib.ui.cli.vt100.vt_100 import Vt100
+from hspylib.ui.cli.vt100.vt_codes import vt_print
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 

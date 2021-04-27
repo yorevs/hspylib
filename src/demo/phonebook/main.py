@@ -23,7 +23,7 @@ class Main(metaclass=Singleton):
             resource_dir=resource_dir,
             log_dir=log_dir
         )
-        self.configs.logger().info(self.configs)
+        log.info(self.configs)
 
     @staticmethod
     def run() -> None:

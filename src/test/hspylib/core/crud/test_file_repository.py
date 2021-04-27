@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+import logging as log
 
 from hspylib.core.config.app_config import AppConfigs
 from test.hspylib.core.crud.resources.TestEntity import TestEntity
@@ -19,7 +20,7 @@ class TestClass(unittest.TestCase):
         self.configs = AppConfigs(
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
         )
-        self.configs.logger().info(self.configs)
+        log.info(self.configs)
         self.repository = TestFileDbRepository(self.db_file)
 
     # Teardown tests

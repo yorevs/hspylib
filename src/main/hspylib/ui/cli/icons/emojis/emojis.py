@@ -1,5 +1,3 @@
-import emoji
-
 from hspylib.core.enum.enumeration import Enumeration
 
 

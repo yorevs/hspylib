@@ -210,7 +210,7 @@ class MainView(QtView):
         self.blink_lcd()
 
     def btn_equal_clicked(self):
-        self.configs.logger().info("Clicked: =")
+        log.info("Clicked: =")
         if self.wait_operand:
             self.operand = self.lcdDisplay.value()
             self.operand2 = self.last_operand
@@ -221,7 +221,7 @@ class MainView(QtView):
         self.blink_lcd()
 
     def btn_ac_clicked(self):
-        self.configs.logger().info("Clicked: AC")
+        log.info("Clicked: AC")
         if self.memory_rec:
             self.memory_rec = 0
         else:
@@ -233,12 +233,12 @@ class MainView(QtView):
         self.blink_lcd()
 
     def btn_signal_clicked(self):
-        self.configs.logger().info("Clicked: +-")
+        log.info("Clicked: +-")
         self.display(self.lcdDisplay.value() * -1)
         self.display_text = str(self.lcdDisplay.value())
 
     def btn_percent_clicked(self):
-        self.configs.logger().info("Clicked: %")
+        log.info("Clicked: %")
         if not self.memory_rec:
             self.display(self.lcdDisplay.value() / 100)
         else:
@@ -249,63 +249,63 @@ class MainView(QtView):
         self.memory_rec = self.lcdDisplay.value()
 
     def btn_division_clicked(self):
-        self.configs.logger().info("Clicked: /")
+        log.info("Clicked: /")
         self.change_op(CalcOperations.DIVISION)
 
     def btn7_clicked(self):
-        self.configs.logger().info("Clicked: 7")
+        log.info("Clicked: 7")
         self.append_digit(7)
 
     def btn8_clicked(self):
-        self.configs.logger().info("Clicked: 8")
+        log.info("Clicked: 8")
         self.append_digit(8)
 
     def btn9_clicked(self):
-        self.configs.logger().info("Clicked: 9")
+        log.info("Clicked: 9")
         self.append_digit(9)
 
     def btn_multiplication_clicked(self):
-        self.configs.logger().info("Clicked: x")
+        log.info("Clicked: x")
         self.change_op(CalcOperations.MULTIPLICATION)
 
     def btn4_clicked(self):
-        self.configs.logger().info("Clicked: 4")
+        log.info("Clicked: 4")
         self.append_digit(4)
 
     def btn5_clicked(self):
-        self.configs.logger().info("Clicked: 5")
+        log.info("Clicked: 5")
         self.append_digit(5)
 
     def btn6_clicked(self):
-        self.configs.logger().info("Clicked: 6")
+        log.info("Clicked: 6")
         self.append_digit(6)
 
     def btn_minus_clicked(self):
-        self.configs.logger().info("Clicked: -")
+        log.info("Clicked: -")
         self.change_op(CalcOperations.SUBTRACTION)
 
     def btn1_clicked(self):
-        self.configs.logger().info("Clicked: 1")
+        log.info("Clicked: 1")
         self.append_digit(1)
 
     def btn2_clicked(self):
-        self.configs.logger().info("Clicked: 2")
+        log.info("Clicked: 2")
         self.append_digit(2)
 
     def btn3_clicked(self):
-        self.configs.logger().info("Clicked: 3")
+        log.info("Clicked: 3")
         self.append_digit(3)
 
     def btn_plus_clicked(self):
-        self.configs.logger().info("Clicked: +")
+        log.info("Clicked: +")
         self.change_op(CalcOperations.SUM)
 
     def btn0_clicked(self):
-        self.configs.logger().info("Clicked: 0")
+        log.info("Clicked: 0")
         self.append_digit(0)
 
     def btn_comma_clicked(self):
-        self.configs.logger().info("Clicked: ,")
+        log.info("Clicked: ,")
         if self.dec_sep not in self.display_text:
             self.display_text += self.dec_sep if self.display_text else '0' + self.dec_sep
         self.display(self.display_text)

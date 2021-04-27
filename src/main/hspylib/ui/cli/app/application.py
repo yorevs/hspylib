@@ -1,7 +1,7 @@
 import getopt
+import logging as log
 import signal
 import sys
-import logging as log
 from typing import List, Callable, Optional, Tuple
 
 from hspylib.core.config.app_config import AppConfigs

@@ -47,7 +47,7 @@ class SqlFactory(metaclass=Singleton):
     def __init__(self):
         self.logger = AppConfigs.INSTANCE.logger()
         self.sql_stubs = SqlFactory.read_stubs(DEFAULT_SQL_STUBS)
-        self.logger.debug('{} created with {} Stubs'.format(
+        log.debug('{} created with {} Stubs'.format(
             self.__class__.__name__,
             len(self.sql_stubs)))
 

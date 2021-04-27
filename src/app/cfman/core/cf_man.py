@@ -1,6 +1,6 @@
+import logging as log
 from time import sleep
 from typing import List
-import logging as log
 
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication

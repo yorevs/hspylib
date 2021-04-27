@@ -1,5 +1,6 @@
 import base64
 import getpass
+import logging as log
 import os
 import uuid
 
@@ -21,7 +22,6 @@ class Vault(object):
         self.passphrase = None
         self.configs = VaultConfig()
         self.service = VaultService()
-        self.log = self.configs.logger()
 
     def __str__(self):
         data = set(self.service.list())
@@ -36,21 +36,21 @@ class Vault(object):
         try:
             if not self.is_open:
                 self.__unlock_vault()
-                self.log.debug("Vault open and unlocked")
+                log.debug("Vault open and unlocked")
         except UnicodeDecodeError as err:
-            self.log.error("Authentication failure => {}".format(str(err)))
+            log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
         except Exception as err:
-            raise VaultOpenError("Unable to open Vault file => {}".format(str(err)))
+            raise VaultOpenError("Unable to open Vault file", err)
 
     def close(self) -> None:
         """Close the Vault file and cleanup temporary file_paths"""
         try:
             if self.is_open:
                 self.__lock_vault()
-                self.log.debug("Vault closed and locked")
+                log.debug("Vault closed and locked")
         except UnicodeDecodeError as err:
-            self.log.error("Authentication failure => {}".format(str(err)))
+            log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
         except Exception as err:
             raise VaultCloseError("Unable to close Vault file => {}".format(str(err)))
@@ -71,7 +71,7 @@ class Vault(object):
                 sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
             else:
                 sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
-        self.log.debug("Vault list issued. User={}".format(getpass.getuser()))
+        log.debug("Vault list issued. User={}".format(getpass.getuser()))
 
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
@@ -87,9 +87,9 @@ class Vault(object):
             self.service.save(entry)
             sysout("%GREEN%\n=== Entry added ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            self.log.error("Attempt to add to Vault failed for name={}".format(key))
+            log.error("Attempt to add to Vault failed for name={}".format(key))
             sysout("%RED%### Entry specified by '{}' already exists in vault".format(key))
-        self.log.debug("Vault add issued. User={}".format(getpass.getuser()))
+        log.debug("Vault add issued. User={}".format(getpass.getuser()))
 
     def get(self, key) -> None:
         """Display the vault entry specified by name
@@ -99,9 +99,9 @@ class Vault(object):
         if entry:
             sysout("%GREEN%\n{}".format(entry.to_string(True, True)))
         else:
-            self.log.error("Attempt to get from Vault failed for name={}".format(key))
+            log.error("Attempt to get from Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
-        self.log.debug("Vault get issued. User={}".format(getpass.getuser()))
+        log.debug("Vault get issued. User={}".format(getpass.getuser()))
 
     def update(self, key, hint, password) -> None:
         """Update a vault entry
@@ -119,9 +119,9 @@ class Vault(object):
             self.service.save(upd_entry)
             sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            self.log.error("Attempt to update Vault failed for name={}".format(key))
+            log.error("Attempt to update Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
-        self.log.debug("Vault update issued. User={}".format(getpass.getuser()))
+        log.debug("Vault update issued. User={}".format(getpass.getuser()))
 
     def remove(self, key: str) -> None:
         """Remove a vault entry
@@ -132,9 +132,9 @@ class Vault(object):
             self.service.remove(entry)
             sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            self.log.error("Attempt to remove to Vault failed for name={}".format(key))
+            log.error("Attempt to remove to Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
-        self.log.debug("Vault remove issued. User={}".format(getpass.getuser()))
+        log.debug("Vault remove issued. User={}".format(getpass.getuser()))
 
     def __get_passphrase(self) -> str:
         """Retrieve the vault passphrase"""
@@ -160,7 +160,7 @@ class Vault(object):
                         safe_del_file(self.configs.vault_file())
                     else:
                         sysout("%GREEN%Passphrase successfully stored")
-                        self.log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
+                        log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
                         touch_file(self.configs.vault_file())
                         self.is_open = True
             return "{}:{}".format(self.configs.vault_user(), passphrase)
@@ -172,7 +172,7 @@ class Vault(object):
                 self.configs.unlocked_vault_file(),
                 self.configs.vault_file(),
                 self.passphrase)
-            self.log.debug("Vault file is encrypted")
+            log.debug("Vault file is encrypted")
         else:
             os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
         self.is_open = False
@@ -185,7 +185,7 @@ class Vault(object):
                 self.configs.vault_file(),
                 self.configs.unlocked_vault_file(),
                 self.passphrase,)
-            self.log.debug("Vault file is decrypted")
+            log.debug("Vault file is decrypted")
         else:
             os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
         self.is_open = True
