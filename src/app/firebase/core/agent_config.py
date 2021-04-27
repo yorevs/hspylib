@@ -1,7 +1,6 @@
 import base64
 import getpass
 import uuid
-from logging import log
 from typing import Any
 
 from requests.structures import CaseInsensitiveDict
@@ -30,7 +29,7 @@ class AgentConfig(metaclass=Singleton):
         :param config_dict: TODO
         """
         self.fb_configs = FirebaseConfig.of(config_dict)
-        self.__save()
+        self.save()
 
     def load(self) -> None:
         """Load a firebase configuration from a file"""
@@ -47,9 +46,6 @@ class AgentConfig(metaclass=Singleton):
         config['PASSPHRASE'] = self.passphrase()
         config['UUID'] = self.uuid()
         self.setup(config)
-
-    def logger(self) -> log:
-        return log
 
     def config_file(self) -> str:
         file = self.configs['firebase.config.file']
@@ -73,7 +69,7 @@ class AgentConfig(metaclass=Singleton):
             '{}:{}'.format(
                 self.username(),
                 getpass.getpass('Please type a password to encrypt your data: ')
-            ).encode(str(Charset.UTF_8))
+            ).encode(Charset.UTF_8.value)
         )
 
     def uuid(self) -> str:
@@ -86,7 +82,7 @@ class AgentConfig(metaclass=Singleton):
     def url(self, db_alias: str) -> str:
         return self.fb_configs.url(db_alias)
 
-    def __save(self) -> None:
+    def save(self) -> None:
         with open(self.config_file(), 'w') as f_config:
             f_config.write(str(self))
             AppConfigs.INSTANCE.logger().info("Firebase configuration saved !")

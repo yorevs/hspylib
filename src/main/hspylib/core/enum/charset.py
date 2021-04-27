@@ -90,3 +90,6 @@ class Charset(Enumeration):
 
     def __str__(self):
         return self.value
+
+    def __repr__(self):
+        return str(self)
