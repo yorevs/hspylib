@@ -2,24 +2,24 @@
 import sys
 from typing import List
 
+from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout, __version__
-from hspylib.ui.cli.app.application import Application
 
 
-class Main(Application):
+class Main(metaclass=Singleton):
 
     VERSION = __version__("main/.version")
 
-    def __init__(self, app_name: str):
-        super().__init__(app_name, Main.VERSION)
+    def __init__(self):
+        super().__init__()
 
-    def main(self, arguments: List[str]) -> None:
+    def run(self, *args) -> None:
         with open("welcome.txt") as fh:
             sysout(fh.read(), end='')
-        sysout(f"Version {Main.VERSION}")
+        sysout(f"Version {self.VERSION}")
 
 
 # Application entry point
 if __name__ == "__main__":
     """Application entry point"""
-    Main('HSPyLib Welcome').INSTANCE.run(sys.argv[1:])
+    Main().INSTANCE.run(sys.argv[1:])

@@ -1,7 +1,7 @@
+import logging as log
 import os
 import sys
 import unittest
-import logging as log
 
 from hspylib.core.config.app_config import AppConfigs
 from test.hspylib.core.crud.resources.TestEntity import TestEntity

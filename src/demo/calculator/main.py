@@ -17,9 +17,9 @@ class Main(Application):
     VERSION = (0, 9, 0)
 
     # CloudFoundry manager usage message
-    USAGE = """
-    Usage: {} <option> [arguments]
-""".format(APP_NAME)
+    USAGE = f"""
+    Usage: {APP_NAME} <option> [arguments]
+"""
 
     def __init__(self, app_name: str):
         super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
