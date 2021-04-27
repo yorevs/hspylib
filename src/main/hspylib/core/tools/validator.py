@@ -1,12 +1,12 @@
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Type, Callable, Tuple
+from typing import Type, Tuple
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
-class Validator(ABC, Callable):
+class Validator(ABC):
 
     @staticmethod
     def assert_valid(errors: list, validation: Tuple[bool, str], throw_if_invalid: bool = False) -> None:

@@ -33,7 +33,7 @@ class VtColors(Enumeration):
                    .replace("%WHITE%", VtColors.WHITE.code()) + VtColors.NC.code()
 
     def __str__(self) -> str:
-        return self._value_
+        return str(self.value)
 
     def code(self) -> str:
         return str(self)

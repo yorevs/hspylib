@@ -89,7 +89,7 @@ class Charset(Enumeration):
     UTF_8 = 'UTF-8'
 
     def __str__(self):
-        return self.value
+        return str(self.value)
 
     def __repr__(self):
         return str(self)

@@ -233,9 +233,9 @@ class MenuInput:
             elif field.mode == "checkbox":
                 icon = FormIcons.EDITABLE
                 if field.value:
-                    MenuInput.mi_print(self.max_value_length - 1, ' ', FormIcons.CHECK_SQUARE.value)
+                    MenuInput.mi_print(self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE))
                 else:
-                    MenuInput.mi_print(self.max_value_length - 1, ' ', FormIcons.UNCHECK_SQUARE.value)
+                    MenuInput.mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
             if field.access_type == 'read-only':
                 icon = FormIcons.LOCKED
 

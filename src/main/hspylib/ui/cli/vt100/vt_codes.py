@@ -67,7 +67,7 @@ class VtCodes(Enumeration):
         return VtCodes.__VT100_FNC_MAP__[self.name](args[0])
 
     def __str__(self) -> str:
-        return self._value_
+        return str(self.value)
 
     def code(self) -> str:
         return str(self)
