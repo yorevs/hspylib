@@ -74,6 +74,24 @@ task syncPythonPackages(type: Task) {
   }
 }
 
+/* Install all required python packages */
+task installDependencies(type: Task) {
+  group = 'Install'
+  description = 'Install all required python packages'
+  doLast {
+    println "Upgrading pip module to the latest "
+    exec {
+      commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', 'pip'
+    }
+    println "Installing dependencies using pip "
+    deps.each { dep ->
+      exec {
+        commandLine rootProject.python, '-m', 'pip', 'install', '--user', dep
+      }
+    }
+  }
+}
+
 /* Install this application as a python package using module's setup.py */
 task installModule(type: Task) {
   group = 'Install'
