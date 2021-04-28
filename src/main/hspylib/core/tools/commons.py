@@ -48,8 +48,8 @@ def log_init(
 def __version__(version_filepath: str = ".version") -> Optional[Tuple]:
     """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
     try:
-        with open(version_filepath) as fh:
-            return tuple(map(str.strip, fh.read().split('.')))
+        with open(version_filepath) as fh_version:
+            return tuple(map(str.strip, fh_version.read().split('.')))
     except FileNotFoundError:
         return None
 

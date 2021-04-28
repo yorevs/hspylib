@@ -1,3 +1,5 @@
 include hspylib/welcome.txt
 include hspylib/.version
+include hspylib/hspylib.ini
+include hspylib/templates/*
 include hspylib/core/crud/db/sql/sql_stubs.sql
