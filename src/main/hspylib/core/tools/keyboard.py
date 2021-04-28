@@ -28,6 +28,7 @@ class Keyboard(Enumeration):
     VK_END = getkey.keys.END
     VK_PAGE_UP = getkey.keys.PAGE_UP
     VK_PAGE_DOWN = getkey.keys.PAGE_DOWN
+    VK_SHIFT_TAB = '\x1b[Z'
     # Letters
     VK_a = 'a'; VK_A = 'A'
     VK_b = 'b'; VK_B = 'B'
@@ -102,6 +103,7 @@ class Keyboard(Enumeration):
 
     @classmethod
     def read_keystroke(cls) -> Optional[Any]:
+        keystroke = None
         try:
             keystroke = getkey.getkey()
             if keystroke:
@@ -110,7 +112,10 @@ class Keyboard(Enumeration):
                 return None
         except KeyboardInterrupt as err:
             syserr(str(err))
-            return None
+        except AssertionError:
+            pass
+
+        return None
 
     def isdigit(self):
         return str(self.value).isdigit()

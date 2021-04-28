@@ -193,7 +193,7 @@ task check(type: Task) {
 }
 
 /* Execute PyLint on sourceRoot */
-task pyLint(type: Task) {
+task pylint(type: Task) {
   group = 'Verification'
   description = 'Run pylint on "${sourceRoot}"'
   doLast {
