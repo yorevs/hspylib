@@ -18,7 +18,7 @@ class Enumeration(Enum):
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.name == name, list(cls)), None)
-        assert found, f"{name} is not a valid \"{cls.__name__}\" name"
+        assert found, f"{name} name is not a valid \"{cls.__name__}\""
         return found
 
     @classmethod
@@ -27,5 +27,5 @@ class Enumeration(Enum):
             found = next(filter(lambda en: str(en.value).upper() == str(value).upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.value == value, list(cls)), None)
-        assert found, f"{value} does not correspond to a valid \"{cls.__name__}\""
+        assert found, f"\"{value}\" value does not correspond to a valid \"{cls.__name__}\""
         return found

@@ -1,0 +1,7 @@
+/*
+    Gradle dependencies extension
+*/
+
+project.ext.deps = [
+  'hspylib'
+]

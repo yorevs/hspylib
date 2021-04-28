@@ -17,7 +17,7 @@ class Application(metaclass=Singleton):
             self,
             app_name: str,
             app_version: Tuple[int, int, int],
-            app_usage: str = "Usage: __main__.py <option> [arguments]",
+            app_usage: str = "Usage: __main__.py [options] <arguments>",
             source_dir: str = None,
             resource_dir: str = None,
             log_dir: str = None):

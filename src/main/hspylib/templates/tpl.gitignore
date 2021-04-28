@@ -1,0 +1,14 @@
+*.pyc
+__pycache__/
+.DS_Store
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+.idea/
+*.log
+lib/
+dist/
+*.egg-info/
