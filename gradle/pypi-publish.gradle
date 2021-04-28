@@ -5,8 +5,7 @@
 */
 
 ext {
-  pypiTestRepoUrl = System.getenv("TEST_PYPI_REPO") ?: 'https://test.pypi.org/legacy/'
-  pypiProdRepoUrl = System.getenv("PROD_PYPI_REPO") ?: 'https://upload.pypi.org/legacy/'
+  pypiRepoUrl = System.getenv("PYPI_REPOSITORY") ?: 'https://upload.pypi.org/legacy/'
   pypiUsername = System.getenv("PYPI_USERNAME") ?: System.getenv("USER")
   pypiPassword = System.getenv("PYPI_PASSWORD") ?: ''
 }
@@ -81,8 +80,7 @@ task publish(type: Task) {
   group = 'Publish'
   description = "Publish the module to PyPi repository"
   dependsOn checkDist
-  def env = findProperty('env') ?: 'test'
-  def url = env == "prod" ? project.ext.pypiProdRepoUrl : project.ext.pypiTestRepoUrl
+  def url = project.ext.pypiRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword
   doLast {
@@ -94,9 +92,8 @@ task publish(type: Task) {
         println '--'
         println "|-version: ${project.ext.app_version}"
         println "|-setup: ${module}"
-        println "|-env: ${env}"
-        println "|-user: ${un}"
         println "|-url: ${url}"
+        println "|-user: ${un}"
         println "|-dist: ${distDir}/*"
         println '--'
         println "Publishing module to PyPi..."
