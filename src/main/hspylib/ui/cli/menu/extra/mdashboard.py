@@ -37,12 +37,12 @@ class MenuDashBoard:
             self.tooltip = tooltip
             self.action = action
 
-    def __init__(self, items: List[Any]):
+    def __init__(self, items: List[Any], items_per_line: int = 5):
         self.all_items = items
         self.done = None
         self.re_render = True
         self.tab_index = 0
-        self.items_per_line = 3
+        self.items_per_line = items_per_line
 
     def show(
             self,
@@ -74,6 +74,7 @@ class MenuDashBoard:
                 # } Navigation input
 
         vt_print('%HOM%%ED2%%MOD(0)%')
+        vt_print(Vt100.set_show_cursor(True))
 
         return self.all_items[self.tab_index]
 
@@ -91,8 +92,7 @@ class MenuDashBoard:
             else:
                 self.__print_cell__(idx, item, MenuDashBoard.SEL_CELL_TPL)
         # Print selected tab tooltip
-        sysout(f'%EL2%>> %GREEN%{self.all_items[self.tab_index].tooltip} %NC%<<')
-        sysout('\n')
+        sysout(f'%EL2%> %GREEN%{self.all_items[self.tab_index].tooltip}%NC%\n\n')
         sysout(f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%", end='')
 
     def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]):
@@ -101,16 +101,18 @@ class MenuDashBoard:
         for row in range(0, num_rows):
             for col in range(0, num_cols):
                 if 'X' == cell_template[row][col]:
-                    sysout(f'{item.icon}')
+                    vt_print(f'{item.icon}')
                 else:
-                    sysout(f'{cell_template[row][col]}')
+                    vt_print(f'{cell_template[row][col]}')
             vt_print(f'%CUD(1)%%CUB({num_cols})%')
         if idx > 0 and (idx+1) % self.items_per_line == 0:
             # Break the line
             vt_print(f'%CUD(1)%%CUB({num_cols*self.items_per_line})%')
-        else:
+        elif idx + 1 < len(self.all_items):
             # Same line
             vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')
+        else:
+            vt_print('%CUD(1)%%EL2%')
 
     def __nav_input__(self):
         length = len(self.all_items)
@@ -150,4 +152,4 @@ if __name__ == '__main__':
     i6 = MenuDashBoard.DashBoardItem(FormIcons.VISIBLE, 'Back something', lambda: print('Back'))
     MenuDashBoard([
         i1, i2, i3, i4, i5, i6
-    ]).show()
+    ], items_per_line=6).show()
