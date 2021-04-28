@@ -4,5 +4,5 @@
 pushd ../ &> /dev/null || exit 1
 CUR_DIR="$(pwd)"
 export PYTHONPATH="${CUR_DIR}"
-python3 phonebook/main.py
+python3 phonebook/__main__.py
 popd &> /dev/null || exit 1

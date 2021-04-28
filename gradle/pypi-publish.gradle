@@ -24,17 +24,6 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
-/* Cleanup distribution files */
-task cleanDist(type: Delete) {
-  group = 'Publish'
-  description = "Cleanup distribution files from rootProject.projectDir"
-  def projectRoot = "${rootProject.projectDir}"
-  println "Cleanup distribution files from ${projectRoot}"
-  delete dirsByPattern(projectRoot, /.*dist$/)
-  delete dirsByPattern(projectRoot, /.*build$/)
-  delete dirsByPattern(projectRoot, /.*egg-info$/)
-}
-
 /* Generate PyPi distribution files */
 task dist(type: Task) {
   group = 'Publish'
@@ -80,6 +69,7 @@ task publish(type: Task) {
   group = 'Publish'
   description = "Publish the module to PyPi repository"
   dependsOn checkDist
+  finalizedBy cleanDist
   def url = project.ext.pypiRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword

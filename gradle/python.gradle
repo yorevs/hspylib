@@ -98,7 +98,7 @@ task installModule(type: Task) {
         println "Installing ${rootProject.name} from ${moduleDir} -> ${module.path}"
         exec {
           workingDir "${moduleDir}"
-          commandLine rootProject.python, '-m', 'pip', 'install', '--user', '.'
+          commandLine rootProject.python, '-m', 'pip', 'install', '--use-feature=in-tree-build', '--user', '.'
         }
       }
   }
@@ -123,6 +123,17 @@ task uninstallModule(type: Task) {
 }
 
 /***** Build Group */
+
+/* Cleanup distribution files */
+task cleanDist(type: Delete) {
+  group = 'Build'
+  description = "Cleanup distribution files from rootProject.projectDir"
+  def projectRoot = "${rootProject.projectDir}"
+  println "Cleanup distribution files from ${projectRoot}"
+  delete dirsByPattern(projectRoot, /.*dist$/)
+  delete dirsByPattern(projectRoot, /.*build$/)
+  delete dirsByPattern(projectRoot, /.*egg-info$/)
+}
 
 /* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "${sourceRoot}" */
 task cleanPython(type: Delete) {

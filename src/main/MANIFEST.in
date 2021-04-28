@@ -1,0 +1,3 @@
+include hspylib/welcome.txt
+include hspylib/.version
+include hspylib/core/crud/db/sql/sql_stubs.sql

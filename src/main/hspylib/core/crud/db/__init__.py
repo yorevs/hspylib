@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.9.22
+# HSPyLib v0.9.23
 #
 # Package: main.hspylib.core.crud.db
 
@@ -9,6 +9,5 @@ __all__ = [
   'firebase', 
   'mysql', 
   'postgres', 
-  'sql', 
   'sql_factory'
 ]
