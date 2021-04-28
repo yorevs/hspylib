@@ -5,15 +5,20 @@ from typing import Any, Callable, List
 from hspylib.core.tools.commons import sysout, set_enable_echo
 from hspylib.core.tools.keyboard import Keyboard
 from hspylib.ui.cli.icons.font_awesome.awesome import Awesome
-from hspylib.ui.cli.icons.font_awesome.ui_compose.form_icons import FormIcons
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 from hspylib.ui.cli.vt100.vt_codes import vt_print
 from hspylib.ui.cli.vt100.vt_colors import VtColors
 
 
-def mdashboard():
-    pass
+def mdashboard(
+        items: List[Any],
+        items_per_line: int = 5,
+        title: str = 'Please select one item',
+        title_color: VtColors = VtColors.ORANGE,
+        nav_color: VtColors = VtColors.YELLOW) -> Any:
+
+    return MenuDashBoard(items, items_per_line).show(title, title_color, nav_color)
 
 
 class MenuDashBoard:
@@ -32,12 +37,58 @@ class MenuDashBoard:
 
     @staticmethod
     class DashBoardItem:
-        def __init__(self, icon: Awesome, tooltip: str, action: Callable):
+        def __init__(
+                self,
+                icon: Awesome = None,
+                tooltip: str = None,
+                action: Callable = None):
+
             self.icon = icon
             self.tooltip = tooltip
             self.action = action
 
-    def __init__(self, items: List[Any], items_per_line: int = 5):
+    @staticmethod
+    class DashBoardBuilder:
+        def __init__(self):
+            self.items = []
+
+        def item(self) -> Any:
+            return MenuDashBoard.ItemBuilder(self)
+
+        def build(self) -> list:
+            return self.items
+
+    @staticmethod
+    class ItemBuilder:
+        def __init__(self, parent: Any):
+            self.parent = parent
+            self.item = MenuDashBoard.DashBoardItem()
+
+        def icon(self, icon: Awesome):
+            self.item.icon = icon
+            return self
+
+        def tooltip(self, tooltip: str):
+            self.item.tooltip = tooltip
+            return self
+
+        def action(self, action: Callable):
+            self.item.action = action
+            return self
+
+        def build(self):
+            self.parent.items.append(self.item)
+            return self.parent
+
+    @classmethod
+    def builder(cls):
+        return cls.DashBoardBuilder()
+
+    def __init__(
+            self,
+            items: List[Any],
+            items_per_line: int = 5):
+
         self.all_items = items
         self.done = None
         self.re_render = True
@@ -76,7 +127,11 @@ class MenuDashBoard:
         vt_print('%HOM%%ED2%%MOD(0)%')
         vt_print(Vt100.set_show_cursor(True))
 
-        return self.all_items[self.tab_index]
+        selected = self.all_items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
+        if selected and selected.action:
+            selected.action()
+
+        return selected
 
     def __render__(self, nav_color: VtColors):
 
@@ -92,7 +147,7 @@ class MenuDashBoard:
             else:
                 self.__print_cell__(idx, item, MenuDashBoard.SEL_CELL_TPL)
         # Print selected tab tooltip
-        sysout(f'%EL2%> %GREEN%{self.all_items[self.tab_index].tooltip}%NC%\n\n')
+        sysout(f'\r%EL2%> %GREEN%{self.all_items[self.tab_index].tooltip}%NC%\n\n')
         sysout(f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%", end='')
 
     def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]):
@@ -129,6 +184,11 @@ class MenuDashBoard:
                     self.tab_index += 1
                 else:
                     self.tab_index = 0
+            elif keypress == Keyboard.VK_SHIFT_TAB:  # Handle Shift + TAB
+                if self.tab_index - 1 >= 0:
+                    self.tab_index -= 1
+                else:
+                    self.tab_index = length - 1
             elif keypress == Keyboard.VK_UP:  # Cursor up
                 self.tab_index = max(0, self.tab_index - self.items_per_line)
             elif keypress == Keyboard.VK_DOWN:  # Cursor down
@@ -141,15 +201,3 @@ class MenuDashBoard:
                 pass
 
         return keypress
-
-
-if __name__ == '__main__':
-    i1 = MenuDashBoard.DashBoardItem(FormIcons.ON, 'Add something', lambda: print('Add'))
-    i2 = MenuDashBoard.DashBoardItem(FormIcons.OFF, 'Remove something', lambda: print('Del'))
-    i3 = MenuDashBoard.DashBoardItem(FormIcons.EDITABLE, 'Edit something', lambda: print('Edit'))
-    i4 = MenuDashBoard.DashBoardItem(FormIcons.UNCHECK_CIRCLE, 'List something', lambda: print('List'))
-    i5 = MenuDashBoard.DashBoardItem(FormIcons.EXIT, 'Update something', lambda: print('Update'))
-    i6 = MenuDashBoard.DashBoardItem(FormIcons.VISIBLE, 'Back something', lambda: print('Back'))
-    MenuDashBoard([
-        i1, i2, i3, i4, i5, i6
-    ], items_per_line=6).show()

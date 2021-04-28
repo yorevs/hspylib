@@ -144,6 +144,23 @@ class MenuInput:
             self.parent.fields.append(self.field)
             return self.parent
 
+    @staticmethod
+    def __detail_len__(field: Any) -> int:
+        max_len = len(str(field.max_length))
+        return 1 + (2 * max_len)
+
+    @classmethod
+    def mi_print(cls, size: int, text: str, prepend: str = None, end: str = ''):
+        fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
+        if prepend:
+            vt_print(fmt.format(prepend, text), end=end)
+        else:
+            vt_print(fmt.format(text), end=end)
+
+    @classmethod
+    def builder(cls):
+        return cls.FormBuilder()
+
     def __init__(self, all_fields: List[Any]):
         self.all_fields = all_fields
         self.all_pos = [(0, 0) for _ in all_fields]
@@ -326,20 +343,3 @@ class MenuInput:
                         break
 
         return keypress
-
-    @staticmethod
-    def __detail_len__(field: Any) -> int:
-        max_len = len(str(field.max_length))
-        return 1 + (2 * max_len)
-
-    @classmethod
-    def mi_print(cls, size: int, text: str, prepend: str = None, end: str = ''):
-        fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
-        if prepend:
-            vt_print(fmt.format(prepend, text), end=end)
-        else:
-            vt_print(fmt.format(text), end=end)
-
-    @classmethod
-    def builder(cls):
-        return cls.FormBuilder()
