@@ -101,9 +101,9 @@ class MenuDashBoard:
         for row in range(0, num_rows):
             for col in range(0, num_cols):
                 if 'X' == cell_template[row][col]:
-                    vt_print(f'{item.icon}')
+                    sysout(f'{item.icon}')
                 else:
-                    vt_print(f'{cell_template[row][col]}')
+                    sysout(f'{cell_template[row][col]}')
             vt_print(f'%CUD(1)%%CUB({num_cols})%')
         if idx > 0 and (idx+1) % self.items_per_line == 0:
             # Break the line
