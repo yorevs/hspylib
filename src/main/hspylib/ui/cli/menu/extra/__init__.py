@@ -6,6 +6,7 @@
 
 __all__ = [
   'mchoose', 
+  'mdashboard', 
   'minput', 
   'mselect'
 ]

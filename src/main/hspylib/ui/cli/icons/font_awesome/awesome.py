@@ -35,3 +35,7 @@ class Awesome(Enumeration):
 
     def placeholder(self) -> str:
         return f":{self.name}:"
+
+
+if __name__ == '__main__':
+    Awesome.demo_unicodes()
