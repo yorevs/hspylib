@@ -7,3 +7,4 @@ class CalcOperations(Enumeration):
     MULTIPLICATION = 'x'
     SUBTRACTION = '-'
     SUM = '+'
+    PERCENT = '%'
