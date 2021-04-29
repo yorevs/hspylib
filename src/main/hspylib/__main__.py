@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
-import getopt
 import os
 import pathlib
 import subprocess
 import sys
-from typing import List
+import traceback
+import logging as log
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
-from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import __version__, sysout, syserr
 from hspylib.modules.fetch.fetch import get
-
 # The directory containing this file
+from hspylib.ui.cli.app.application import Application
+from hspylib.ui.cli.app.argument_chain import ArgumentChain
+from hspylib.ui.cli.menu.menu_utils import MenuUtils
+
 HERE = pathlib.Path(__file__).parent
 
 # The directory containing all template files
@@ -21,9 +23,18 @@ TEMPLATES = (HERE / "templates")
 # The directory containing the welcome message
 WELCOME = (HERE / "welcome.txt")
 
-VERSION = __version__(f"{HERE}/.version")
+GRADLE_PROPS = f"""
+project.ext.set("projectVersion", '0.1.0')
+project.ext.set("pythonVersion", '3')
+project.ext.set("pyrccVersion", '5')
+"""
 
-USAGE = """
+
+class Main(Application):
+
+    VERSION = __version__(f"{HERE}/.version")
+
+    USAGE = """
 Usage: hspylib [options] <arguments>
 
     HSPyLib Manager v{} - Manage HSPyLib applications.
@@ -38,17 +49,7 @@ Usage: hspylib [options] <arguments>
                   structure. "gradle" is going to initialize you project with gradle (requires gradle installed). 
                   "git" is going to initialize a git repository. "all" is going to create a gradle project and also
                   initialize a git repository.
-
 """.format('.'.join(map(str, VERSION)))
-
-GRADLE_PROPS = f"""
-project.ext.set("projectVersion", '0.1.0')
-project.ext.set("pythonVersion", '3')
-project.ext.set("pyrccVersion", '5')
-"""
-
-
-class Main(metaclass=Singleton):
 
     class AppType(Enumeration):
         BASIC = 1
@@ -56,35 +57,48 @@ class Main(metaclass=Singleton):
         GIT = 4
         ALL = 8
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, app_name: str):
+        super().__init__(app_name, self.VERSION)
         self.app_dir = None
         self.init_gradle = False
         self.init_git = False
 
-    def run(self, arguments: List[str]) -> None:
-        if len(arguments) == 0:
-            welcome = WELCOME.read_text()
+    def main(self, *params, **kwargs) -> None:
+        if len(*params) == 0:
+            welcome = WELCOME.read_text().strip()
             sysout(f"{welcome}")
-            sysout(USAGE)
+            sysout(self.USAGE)
         else:
-            try:
-                opts, args = getopt.getopt(arguments, 'hvc:', ['--help', '--version', '--create'])
-                for op, arg in opts:
-                    if op in ['-h', '--help']:
-                        sysout(USAGE)
-                    elif op in ['-v', '--version']:
-                        sysout('.'.join(map(str, VERSION)))
-                    elif op in ['-c', '--create']:
-                        assert arg.lower() in ['basic', 'gradle', 'git', 'all'], f'Invalid type: {arg}'
-                        assert len(args) > 0, f'Invalid arguments: {str(args)}'
-                        self._create_app(
-                            Main.AppType.value_of(arg, ignore_case=True),
-                            args[0],
-                            args[1] if len(args) > 1 else os.environ.get('HOME'))
-            except getopt.GetoptError as err:
-                syserr(f"Unhandled option: {str(err)}")
-                sysout(USAGE)
+            # @formatter:off
+            self.with_arguments(
+                ArgumentChain.builder()
+                    .when('Operation', 'create')
+                        .require('MngType', 'basic|gradle|git|all')
+                        .require('AppName', '.+')
+                        .accept('DestDir', '.+')
+                        .end()
+                    .build()
+            )
+            # @formatter:on
+            self.parse_parameters(*params)
+            self._exec_application()
+
+    def _exec_application(self) -> None:
+        """Execute the application"""
+        op = self.args[0]
+        try:
+            if "create" == op:
+                self._create_app(
+                    Main.AppType.value_of(self.args[1], ignore_case=True),
+                    self.args[2],
+                    self.args[3] if len(self.args) > 2 else os.environ.get('HOME'))
+            else:
+                syserr('### Invalid operation: {}'.format(op))
+                self.usage(1)
+        except Exception:
+            err = str(traceback.format_exc())
+            log.error('Failed to execute HSPyLib manager => {}'.format(err))
+            MenuUtils.print_error('Failed to execute HSPyLib manager => {}'.format(err))
 
     def _create_app(self, app_type: AppType, app_name: str, dest_dir: str):
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')
@@ -164,4 +178,4 @@ class Main(metaclass=Singleton):
 # Application entry point
 if __name__ == "__main__":
     """Application entry point"""
-    Main().INSTANCE.run(sys.argv[1:])
+    Main('HSPyLib Manager').INSTANCE.run(sys.argv[1:])
