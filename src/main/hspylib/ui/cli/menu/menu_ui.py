@@ -13,7 +13,7 @@ class MenuUi:
         self.next = None
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
 
-    def run(self) -> None:
+    def show(self) -> None:
         while not self.done:
             if self.current:
                 self.next = self.current.execute()

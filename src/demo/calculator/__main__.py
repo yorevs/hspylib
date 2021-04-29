@@ -18,15 +18,14 @@ class Main(Application):
 
     # CloudFoundry manager usage message
     USAGE = f"""
-    Usage: {APP_NAME} <option> [arguments]
-"""
+    Usage: {APP_NAME} <option> [arguments]"""
 
     def __init__(self, app_name: str):
         super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
         self.calc = QtCalculator()
 
     def main(self, *args, **kwargs):
-        self.calc.run()
+        self.calc.show()
 
 
 if __name__ == "__main__":
