@@ -60,7 +60,7 @@ Settings ==============================
         self.with_option('s', 'setup', handler=lambda arg: self.__exec_operation__('setup'))
         self.with_option('u', 'upload', handler=lambda arg: self.__exec_operation__('upload', 2))
         self.with_option('d', 'download', handler=lambda arg: self.__exec_operation__('download', 1))
-        self.parse_arguments(*args)
+        self.parse_parameters(*args)
         log.info(
             self.WELCOME.format(
                 self.app_name,

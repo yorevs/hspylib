@@ -84,7 +84,7 @@ class Application(metaclass=Singleton):
         sysout('{} v{}'.format(self.app_name, '.'.join(map(str, self.app_version))))
         self.exit_handler(args[0] or 0)
 
-    def parse_arguments(self, arguments: List[str]) -> None:
+    def parse_parameters(self, arguments: List[str]) -> None:
         """ Handle program arguments and options. Short opts: -<C>, Long opts: --<Word>
         :param arguments: The list of unparsed program arguments passed by the command line
         """

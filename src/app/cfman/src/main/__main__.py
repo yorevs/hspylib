@@ -54,7 +54,7 @@ Usage: {} <option> [arguments]
         self.with_option('s', 'space', True, lambda arg: self.__add_option__('space', arg))
         self.with_option('u', 'username', True, lambda arg: self.__add_option__('username', arg))
         self.with_option('p', 'password', True, lambda arg: self.__add_option__('password', arg))
-        self.parse_arguments(arguments)
+        self.parse_parameters(arguments)
         self.cfman = CFManager(self.option_map)
         log.info(
             self.WELCOME.format(

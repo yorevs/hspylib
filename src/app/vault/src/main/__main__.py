@@ -65,7 +65,7 @@ Usage: {} <option> [arguments]
         self.with_option('d', 'del', handler=lambda arg: self.__exec_operation__('del', 1))
         self.with_option('u', 'upd', handler=lambda arg: self.__exec_operation__('upd', 2))
         self.with_option('l', 'list', handler=lambda arg: self.__exec_operation__('list'))
-        self.parse_arguments(*args)
+        self.parse_parameters(*args)
         log.info(
             self.WELCOME.format(
                 self.app_name,
