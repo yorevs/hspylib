@@ -2,7 +2,7 @@
 from hspylib.ui.cli.menu.extra.minput import MenuInput, minput
 
 if __name__ == '__main__':
-
+    # @formatter:off
     form_fields = MenuInput.builder() \
         .field() \
             .label('Letters') \
@@ -36,6 +36,6 @@ if __name__ == '__main__':
             .value('READ-ONLY') \
             .build() \
         .build()
-
+    # @formatter:on
     result = minput(form_fields)
     print('\n'.join(map(str, result)))

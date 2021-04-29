@@ -3,6 +3,7 @@ from hspylib.ui.cli.icons.font_awesome.ui_compose.form_icons import FormIcons
 from hspylib.ui.cli.menu.extra.mdashboard import MenuDashBoard, mdashboard
 
 if __name__ == '__main__':
+    # @formatter:off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
             .icon(FormIcons.ON) \
@@ -35,4 +36,5 @@ if __name__ == '__main__':
             .action(lambda: print('Exit')) \
             .build() \
         .build()
+    # @formatter:on
     result = mdashboard(dashboard_items, 3)

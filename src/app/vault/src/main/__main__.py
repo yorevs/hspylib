@@ -5,9 +5,8 @@ import sys
 import traceback
 from datetime import datetime
 
-from hspylib.core.tools.commons import sysout, get_or_default, __version__, __curdir__
+from hspylib.core.tools.commons import get_or_default, __version__, __curdir__, syserr
 from hspylib.ui.cli.app.application import Application
-
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from vault.src.main.core.vault import Vault
@@ -108,7 +107,7 @@ Usage: {} <option> [arguments]
             elif "list" == op:
                 self.vault.list(get_or_default(self.args, 1))
             else:
-                sysout('%RED%### Invalid operation: {}'.format(op))
+                syserr('### Invalid operation: {}'.format(op))
                 self.usage(1)
         except Exception:
             err = str(traceback.format_exc())

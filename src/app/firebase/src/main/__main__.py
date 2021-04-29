@@ -7,7 +7,7 @@ from datetime import datetime
 
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
-from hspylib.core.tools.commons import sysout, __version__, __curdir__
+from hspylib.core.tools.commons import __version__, __curdir__, syserr
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
@@ -98,7 +98,7 @@ Settings ==============================
             elif "download" == op:
                 self.firebase.download(self.args[1], self.args[2] if len(self.args) > 2 else None)
             else:
-                sysout('%RED%### Unhandled operation: {}'.format(op))
+                syserr('### Unhandled operation: {}'.format(op))
                 self.usage(1)
         except Exception:
             err = str(traceback.format_exc())

@@ -6,12 +6,11 @@ import subprocess
 import sys
 from typing import List
 
-from hspylib.modules.fetch.fetch import get
-
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import __version__, sysout, syserr
+from hspylib.modules.fetch.fetch import get
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -84,7 +83,7 @@ class Main(metaclass=Singleton):
                             args[0],
                             args[1] if len(args) > 1 else os.environ.get('HOME'))
             except getopt.GetoptError as err:
-                sysout(f"%RED%### Unhandled option: {str(err)}")
+                syserr(f"Unhandled option: {str(err)}")
                 sysout(USAGE)
 
     def _create_app(self, app_type: AppType, app_name: str, dest_dir: str):
