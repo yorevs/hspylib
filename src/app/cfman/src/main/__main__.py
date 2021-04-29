@@ -76,9 +76,6 @@ Usage: {} <option> [arguments]
             log.error('Failed to execute PCF manager => {}'.format(err))
             MenuUtils.print_error('Failed to execute PCF manager => {}'.format(err))
 
-    def __reqopts__(self) -> int:
-        return 0
-
 
 if __name__ == "__main__":
     """Application entry point"""

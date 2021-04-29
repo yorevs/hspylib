@@ -7,8 +7,8 @@ from datetime import datetime
 
 from hspylib.core.tools.commons import sysout, get_or_default, __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
+from hspylib.ui.cli.app.argument_validator import ArgumentValidator
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
-from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 from vault.src.main.core.vault import Vault
 from vault.src.main.core.vault_config import VaultConfig
 
