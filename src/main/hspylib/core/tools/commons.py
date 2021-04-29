@@ -74,7 +74,7 @@ def sysout(string: str, end: str = '\n') -> None:
 def syserr(string: str, end: str = '\n') -> None:
     """Print the unicode input_string decoding vt100 placeholders"""
     if Validator.is_not_blank(string):
-        msg = VtColors.colorize(VtCodes.decode(f"{string}"))
+        msg = VtColors.colorize(VtCodes.decode(f"%RED%{string}%NC%"))
         print(msg, file=sys.stderr, flush=True, end=end)
 
 

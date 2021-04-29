@@ -8,6 +8,5 @@ __all__ = [
   'application', 
   'argument', 
   'argument_chain', 
-  'argument_validator', 
   'option'
 ]

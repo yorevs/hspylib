@@ -25,10 +25,9 @@ class MenuUtils(ABC):
     def print_error(
             message: str,
             argument: Any = None,
-            wait_interval: int = 2,
-            color: VtColors = VtColors.RED) -> None:
+            wait_interval: int = 2) -> None:
 
-        syserr(f"{color.placeholder()}### Error: {message} \"{argument or ''}\"%NC%")
+        syserr(f"### Error: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
 

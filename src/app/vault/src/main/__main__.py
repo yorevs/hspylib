@@ -7,7 +7,8 @@ from datetime import datetime
 
 from hspylib.core.tools.commons import sysout, get_or_default, __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
-from hspylib.ui.cli.app.argument_validator import ArgumentValidator
+
+from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from vault.src.main.core.vault import Vault
 from vault.src.main.core.vault_config import VaultConfig
@@ -58,14 +59,26 @@ Usage: {} <option> [arguments]
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
         self.vault = Vault()
 
-    def main(self, *args, **kwargs) -> None:
+    def main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.with_option('a', 'add', handler=lambda arg: self.__exec_operation__('add', 2))
-        self.with_option('g', 'get', handler=lambda arg: self.__exec_operation__('get', 1))
-        self.with_option('d', 'del', handler=lambda arg: self.__exec_operation__('del', 1))
-        self.with_option('u', 'upd', handler=lambda arg: self.__exec_operation__('upd', 2))
-        self.with_option('l', 'list', handler=lambda arg: self.__exec_operation__('list'))
-        self.parse_parameters(*args)
+        # @formatter:off
+        self.with_arguments(
+            ArgumentChain.builder()
+                .when('Operation', 'list')
+                    .accept('Filter', '.+')
+                    .end()
+                .when('Operation', 'add|upd')
+                    .require('Name', '.+')
+                    .require('Hint', '.+')
+                    .accept('Password', '.+')
+                    .end()
+                .when('Operation', 'del|get')
+                    .require('Name', '.+')
+                    .end()
+                .build()
+        )
+        # @formatter:on
+        self.parse_parameters(*params)
         log.info(
             self.WELCOME.format(
                 self.app_name,
@@ -74,28 +87,26 @@ Usage: {} <option> [arguments]
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
+        self.__exec_operation__()
 
     def cleanup(self):
         self.vault.close()
 
-    def __exec_operation__(self, op: str, req_args: int = 0) -> None:
-        """Execute the specified operation
-        :param op: The vault operation to execute
-        :param req_args: Number of required arguments for the operation
-        """
+    def __exec_operation__(self,) -> None:
+        """Execute the specified vault operation"""
+        op = self.args[0]
         try:
-            self.args = tuple(ArgumentValidator.check_arguments(self.args, req_args))
             self.vault.open()
             if "add" == op:
-                self.vault.add(self.args[0], self.args[1], get_or_default(self.args, 2))
+                self.vault.add(self.args[1], self.args[2], get_or_default(self.args, 3))
             elif "get" == op:
-                self.vault.get(self.args[0])
+                self.vault.get(self.args[1])
             elif "del" == op:
-                self.vault.remove(self.args[0])
+                self.vault.remove(self.args[1])
             elif "upd" == op:
-                self.vault.update(self.args[0], self.args[1], get_or_default(self.args, 2))
+                self.vault.update(self.args[1], self.args[2], get_or_default(self.args, 3))
             elif "list" == op:
-                self.vault.list(get_or_default(self.args, 0))
+                self.vault.list(get_or_default(self.args, 1))
             else:
                 sysout('%RED%### Invalid operation: {}'.format(op))
                 self.usage(1)
@@ -105,9 +116,6 @@ Usage: {} <option> [arguments]
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
         finally:
             self.vault.close()
-
-    def __reqopts__(self) -> int:
-        return 1
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import getopt
 import logging as log
 import signal
 import sys
+from datetime import datetime
 from typing import List, Callable, Optional, Tuple, Set
 
 from hspylib.core.config.app_config import AppConfigs
@@ -41,13 +42,15 @@ class Application(metaclass=Singleton):
         self.with_option('v', 'version', handler=self.version)
 
     def main(self, *args, **kwargs):
-        """TODO"""
+        """Execute the application's main statements"""
         log.info('Main entry point handler called. nothing to do')
 
     def run(self, *args, **kwargs):
-        """TODO"""
+        """Main entry point handler"""
+        log.info('Run started {}'.format(datetime.now()))
         self.main(*args, **kwargs)
         self.exit_handler()
+        log.info('Run finished {}'.format(datetime.now()))
 
     def cleanup(self):
         """TODO"""
@@ -86,13 +89,17 @@ class Application(metaclass=Singleton):
         self.exit_handler(args[0] or 0)
 
     def parse_parameters(self, parameters: List[str]) -> None:
-        """ Handle program arguments and options. Short opts: -<C>, Long opts: --<Word>
-        :param parameters: The list of unparsed program arguments passed by the command line
+        """ Handle program parameters.
+        :param parameters: The list of unparsed program parameters passed by the command line
         """
         # First parse all options, then, parse arguments
         self.parse_arguments(self.parse_options(parameters))
 
     def parse_options(self, parameters: List[str]) -> List[str]:
+        """Handle program options in the form: Short opts: -<C>, Long opts: --<Word>
+        :param parameters: The list of unparsed program parameters passed by the command line
+        :return A list of remaining arguments
+        """
         try:
             opts, args = getopt.getopt(parameters, self._shortopts(), self._longopts())
             for op, arg in opts:
@@ -110,14 +117,19 @@ class Application(metaclass=Singleton):
             self.usage(1)
 
     def parse_arguments(self, provided_args: List[str]) -> None:
+        """Handle program arguments
+        :param provided_args: Arguments left after processing all options
+        """
         valid = False
         if self.cond_args_chain:
+            # Walk through all argument conditions in chain and validate the provided arguments
             for cond_arg in self.cond_args_chain:
                 arg = cond_arg.argument
                 try:
                     self.recursive_set(0, arg, provided_args)
-                    # This is true if all required args were set
-                    valid = self.validate_argument(arg, len(provided_args))
+                    # At this point, we found a valid argument chain
+                    valid = self.validate_args_in_chain(arg)
+                    # Will be true if all required args were set
                     self.args = provided_args
                     break
                 except getopt.GetoptError as err:
@@ -126,6 +138,9 @@ class Application(metaclass=Singleton):
             assert valid, f"Invalid arguments => {', '.join(provided_args)}"
 
     def recursive_set(self, idx: int, argument: Argument, provided_args: List[str]):
+        """ Try to set a value for each provided argument. If any failure setting occur, raise an exception to be caught
+            by the parse function, so they can try the next chain in the loop.
+        """
         if not argument or idx >= len(provided_args):
             return
         if not argument.set_value(provided_args[idx]):
@@ -134,12 +149,13 @@ class Application(metaclass=Singleton):
         else:
             self.recursive_set(idx + 1, argument.next_in_chain, provided_args)
 
-    def validate_argument(self, arg: Argument, args_num: int) -> bool:
+    @staticmethod
+    def validate_args_in_chain(arg: Argument) -> bool:
         missing = 0
-        narg = arg
-        while narg:
-            missing += 1 if not narg.value and narg.required else 0
-            narg = narg.next_in_chain
+        next_arg = arg
+        while next_arg:
+            missing += 1 if not next_arg.value and next_arg.required else 0
+            next_arg = next_arg.next_in_chain
         return missing == 0
 
     def with_option(
