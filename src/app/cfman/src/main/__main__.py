@@ -4,7 +4,7 @@ import os
 import sys
 import traceback
 from datetime import datetime
-from typing import List, Any
+from typing import Any
 
 from cfman.src.main.core.cf_man import CFManager
 from hspylib.core.tools.commons import __version__, __curdir__
@@ -23,7 +23,7 @@ class Main(Application):
 
     # CloudFoundry manager usage message
     USAGE = """
-Usage: {} <option> [arguments]
+Usage: cfman [option] [arguments]
 
     Cloud Foundry Manager v{} - Manage PCF applications.
 
@@ -35,6 +35,13 @@ Usage: {} <option> [arguments]
       -s  |      --space <space_url>    : Set the space to connect to
       -u  |   --username <username>     : Set the username
       -p  |   --password <password>     : Set the password
+    
+    Arguments:
+      api_url   : API endpoint (e.g. https://api.example.com)
+      org_url   : Target organization
+      space_url : Target organization space
+      username  : Username
+      password  : Password
 """.format(APP_NAME, '.'.join(map(str, VERSION)))
 
     WELCOME = """

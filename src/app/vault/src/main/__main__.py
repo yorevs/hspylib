@@ -24,23 +24,26 @@ class Main(Application):
 
     # Vault usage message
     USAGE = """
-Usage: {} <option> [arguments]
+Usage: vault [options] <operation> <arguments>
 
     HSPyLib Vault v{} - Manage your secrets.
 
     Options:
-      -v  |  --version                      : Display current program version.
-      -h  |  --help                         : Display this help message.
-      -a  |  --add <name> <hint> [password] : Add a password entry to the vault.
-      -d  |  --del <name>                   : Remove a password entry from the vault.
-      -u  |  --upd <name> <hint> [password] : Update a password entry from the vault.
-      -l  |  --list [filters]               : List all password json_string or matching the given filter.
+      -v  |  --version      : Display current program version.
+      -h  |  --help         : Display this help message.
+    
+    Operations:
+      list [filter]                 : List all passwords or matching the given filter criteria, if specified.
+      get <name>                    : Get a decoded vault entry, specified by <name>.
+      del <name>                    : Delete a decoded vault entry, specified by <name>.
+      add <name> <hint> [password]  : Add a new non existent vault entry.
+      upd <name> <hint> [password]  : Update an existent vault entry.
 
     Arguments:
+      filter    : Filter the vault json_string by name.
       name      : The name of the vault entry. That will identify the entry (name).
       hint      : Any hint related to that vault entry.
       password  : The password of the vault entry. If not provided, further input will be required.
-      filter    : Filter the vault json_string by name.
 """.format(APP_NAME, '.'.join(map(str, VERSION)))
 
     # Welcome message

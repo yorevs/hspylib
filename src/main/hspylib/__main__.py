@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
+import logging as log
 import os
 import pathlib
 import subprocess
 import sys
 import traceback
-import logging as log
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.tools.commons import __version__, sysout, syserr
 from hspylib.modules.fetch.fetch import get
-# The directory containing this file
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
+# The directory containing this file
 HERE = pathlib.Path(__file__).parent
 
 # The directory containing all template files
@@ -35,20 +35,25 @@ class Main(Application):
     VERSION = __version__(f"{HERE}/.version")
 
     USAGE = """
-Usage: hspylib [options] <arguments>
+Usage: hspylib [options] <operation> <arguments>
 
     HSPyLib Manager v{} - Manage HSPyLib applications.
 
     Options:
-      -v  |  --version                                      : Display current program version.
-      -h  |     --help                                      : Display this help message.
-      -c  |     --create <type> <app_name> [dest_dir]     : Manage an HSPyLib application.
+      -v  |  --version      : Display current program version.
+      -h  |     --help      : Display this help message.
+
+    Operations:
+      create <type> <app_name> [dest_dir]   : Create an HSPyLib based application.
 
     Arguments:
       type      : One of basic|gradle|git|all. "basic" is going to scaffold a basic app based on HSPyLib application 
                   structure. "gradle" is going to initialize you project with gradle (requires gradle installed). 
                   "git" is going to initialize a git repository. "all" is going to create a gradle project and also
                   initialize a git repository.
+      app_name  : The application name.
+      dest_dir  : Destination directory. If omitted, your home folder will be used.
+      
 """.format('.'.join(map(str, VERSION)))
 
     class AppType(Enumeration):

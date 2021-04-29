@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import sys
 
 from hspylib.core.tools.commons import __curdir__
