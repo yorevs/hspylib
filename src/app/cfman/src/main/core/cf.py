@@ -97,7 +97,7 @@ class CloudFoundry(metaclass=Singleton):
             args.insert(0, 'cf')
             log.info('Executing PCF command: {}'.format(' '.join(args)))
             result = subprocess.run(args, capture_output=True, text=True).stdout
-            log.debug('Success! Execution result: {}'.format(result))
+            log.debug('Execution result: {}'.format(result))
             result = str(result).strip() if result else None
         except subprocess.CalledProcessError as err:
             log.debug(f'Failed => {str(err)}')

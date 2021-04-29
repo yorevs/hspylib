@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging as log
 import os
+import pathlib
 import sys
 from datetime import datetime
 
@@ -9,6 +10,9 @@ from firebase.src.main.core.firebase import Firebase
 from hspylib.core.tools.commons import __version__, __curdir__, syserr
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
+
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
 
 
 class Main(Application):
@@ -21,35 +25,10 @@ class Main(Application):
     VERSION = __version__('src/main/.version')
 
     # Usage message
-    USAGE = """
-Usage: firebase [options] <operation> <arguments>
+    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
 
-    Firebase Agent v{} - Manage your firebase integration.
-
-    Options:
-      -v  |  --version      : Display current program version.
-      -h  |     --help      : Display this help message.
-
-    Operations:
-      setup                         : Setup your Firebase account.
-      upload <db_alias> <file...>   : Upload files to your Firebase Realtime Database.
-      download <db_alias> <file...> : Download files from your Firebase Realtime Database.
-
-    Arguments:
-      db_alias      : Alias to be used to identify the firebase object to fetch json_string from.
-      file1...      : List of files to upload.
-      dest_dir      : Destination directory. If omitted, your home folder will be used.
-""".format(APP_NAME, '.'.join(map(str, VERSION)))
-
-    WELCOME = """
-
-{} v{}
-
-Settings ==============================
-        FIREBASE_USER: {}
-        FIREBASE_CONFIG_FILE: {}
-        STARTED: {}
-"""
+    # The welcome message
+    WELCOME = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))

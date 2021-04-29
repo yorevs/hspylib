@@ -13,6 +13,7 @@ from hspylib.core.meta.singleton import Singleton
 from hspylib.modules.fetch.fetch import get
 
 FB_CONFIG_FMT = """%YELLOW%
+
 # Your Firebase configuration:
 # --------------------------
 PROJECT_ID={}
@@ -20,6 +21,7 @@ USERNAME={}
 DATABASE={}
 PASSPHRASE={}
 UUID={}
+%NC%
 """
 
 
