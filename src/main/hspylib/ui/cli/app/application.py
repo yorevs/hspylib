@@ -67,15 +67,17 @@ class Application(metaclass=Singleton):
             sysout('%ED2%%HOM%')
         sys.exit(exit_code)
 
-    def usage(self, exit_code: int = 0) -> None:
+    def usage(self, *args) -> None:
         """Display the usage message and exit with the specified code ( or zero as default )
-        :param exit_code: The application exit code
+        :param args: The application arguments
         """
         sysout(self.app_usage)
-        self.exit_handler(exit_code)
+        self.exit_handler(args[0] or 0)
 
-    def version(self) -> None:
-        """Display the current program version and exit"""
+    def version(self, *args) -> None:
+        """Display the current program version and exit
+        :param args: The application arguments
+        """
         sysout('{} v{}'.format(self.app_name, '.'.join(map(str, self.app_version))))
         self.exit_handler()
 
