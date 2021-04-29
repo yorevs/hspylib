@@ -9,6 +9,6 @@ class QtCalculator:
         self.app = QApplication([])
         self.ui = MainView()
 
-    def run(self):
+    def show(self):
         self.ui.show()
         self.app.exec_()

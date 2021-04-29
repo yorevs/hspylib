@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+import os
 import sys
 
+from hspylib.core.tools.commons import __curdir__
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
 from hspylib.ui.cli.menu.menu_ui import MenuUi
@@ -11,9 +13,13 @@ from phonebook.view.search_view import SearchView
 
 
 class Main(Application):
+    """TODO"""
+
+    # Version tuple: (major,minor,build)
+    VERSION = (0, 9, 0)
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, (0, 9, 0))
+        super().__init__(app_name, self.VERSION, source_dir=__curdir__(__file__))
 
     def main(self, *args, **kwargs) -> None:
         create_view = CreateView()
@@ -46,7 +52,7 @@ class Main(Application):
             .with_option('List all').on_trigger(lambda t: search_view.list_all()) \
             .build()
         mm = MenuUi(main_menu)
-        mm.run()
+        mm.show()
 
 
 # Application entry point

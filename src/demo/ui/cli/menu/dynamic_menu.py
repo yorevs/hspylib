@@ -26,4 +26,4 @@ if __name__ == '__main__':
         .build()
     # @formatter:on
     mm = MenuUi(main_menu)
-    mm.run()
+    mm.show()
