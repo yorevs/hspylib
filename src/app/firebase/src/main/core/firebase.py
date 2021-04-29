@@ -37,5 +37,5 @@ class Firebase(object):
         url = self.configs.url(db_alias)
         return self.processor.download_files(url, dest_dir or os.environ.get('HOME')) > 0
 
-    def is_setup(self):
+    def is_configured(self):
         return self.configs is not None and self.configs.fb_configs is not None

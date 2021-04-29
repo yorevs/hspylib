@@ -82,13 +82,13 @@ Settings ==============================
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        self.__exec_operation__()
+        self._exec_operation()
 
-    def __exec_operation__(self) -> None:
+    def _exec_operation(self) -> None:
         """Execute the specified firebase operation"""
         op = self.args[0]
         try:
-            if "setup" == op or not self.firebase.is_setup():
+            if "setup" == op or not self.firebase.is_configured():
                 self.firebase.setup()
             # Already handled above
             if "setup" == op:

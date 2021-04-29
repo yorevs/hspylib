@@ -49,11 +49,11 @@ Usage: {} <option> [arguments]
 
     def main(self, arguments: List[str]) -> None:
         """Run the application with the command line arguments"""
-        self.with_option('a', 'api', True, lambda arg: self.__add_option__('api', arg))
-        self.with_option('o', 'org', True, lambda arg: self.__add_option__('org', arg))
-        self.with_option('s', 'space', True, lambda arg: self.__add_option__('space', arg))
-        self.with_option('u', 'username', True, lambda arg: self.__add_option__('username', arg))
-        self.with_option('p', 'password', True, lambda arg: self.__add_option__('password', arg))
+        self.with_option('a', 'api', True, lambda arg: self._add_option('api', arg))
+        self.with_option('o', 'org', True, lambda arg: self._add_option('org', arg))
+        self.with_option('s', 'space', True, lambda arg: self._add_option('space', arg))
+        self.with_option('u', 'username', True, lambda arg: self._add_option('username', arg))
+        self.with_option('p', 'password', True, lambda arg: self._add_option('password', arg))
         self.parse_parameters(arguments)
         self.cfman = CFManager(self.option_map)
         log.info(
@@ -62,12 +62,12 @@ Usage: {} <option> [arguments]
                 self.VERSION,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        self.__exec_application__()
+        self._exec_application()
 
-    def __add_option__(self, key: str, value: Any):
+    def _add_option(self, key: str, value: Any):
         self.option_map[key] = value
 
-    def __exec_application__(self) -> None:
+    def _exec_application(self) -> None:
         """Execute the application"""
         try:
             self.cfman.run()
