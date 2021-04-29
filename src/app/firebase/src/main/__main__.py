@@ -24,21 +24,23 @@ class Main(Application):
 
     # Usage message
     USAGE = """
-Usage: {} <option> [arguments]
+Usage: firebase [options] <operation> <arguments>
 
     Firebase Agent v{} - Manage your firebase integration.
 
     Options:
-      -v  |  --version                              : Display current program version.
-      -h  |     --help                              : Display this help message.
-      -s  |    --setup                              : Setup your Firebase account.
-      -u  |   --upload <db_alias> <file1...fileN>   : Upload files to your Firebase Realtime Database.
-      -d  | --download <db_alias> [dest_dir]        : Download files from your Firebase Realtime Database.
+      -v  |  --version      : Display current program version.
+      -h  |     --help      : Display this help message.
+
+    Operations:
+      setup                         : Setup your Firebase account.
+      upload <db_alias> <file...>   : Upload files to your Firebase Realtime Database.
+      download <db_alias> <file...> : Download files from your Firebase Realtime Database.
 
     Arguments:
       db_alias      : Alias to be used to identify the firebase object to fetch json_string from.
-      file1..N      : List os file paths to upload.
-      download_dir  : Destination directory. If omitted, your home folder will be used.
+      file1...      : List of files to upload.
+      dest_dir      : Destination directory. If omitted, your home folder will be used.
 """.format(APP_NAME, '.'.join(map(str, VERSION)))
 
     WELCOME = """
@@ -94,9 +96,15 @@ Settings ==============================
             if "setup" == op:
                 pass
             elif "upload" == op:
-                self.firebase.upload(self.args[1], self.args[2:])
+                self.firebase.upload(
+                    self.args[1],
+                    self.args[2:]
+                )
             elif "download" == op:
-                self.firebase.download(self.args[1], self.args[2] if len(self.args) > 2 else None)
+                self.firebase.download(
+                    self.args[1],
+                    self.args[2] if len(self.args) > 2 else os.environ.get('HOME')
+                )
             else:
                 syserr('### Unhandled operation: {}'.format(op))
                 self.usage(1)

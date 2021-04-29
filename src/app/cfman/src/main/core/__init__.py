@@ -8,6 +8,5 @@ __all__ = [
   'cf', 
   'cf_application', 
   'cf_endpoint', 
-  'cf_man', 
-  'cf_status'
+  'cf_man'
 ]
