@@ -6,8 +6,8 @@ import sys
 from datetime import datetime
 
 from hspylib.core.tools.commons import get_or_default, __version__, __curdir__, syserr
-from hspylib.ui.cli.app.application import Application
-from hspylib.ui.cli.app.argument_chain import ArgumentChain
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.argument_chain import ArgumentChain
 from vault.src.main.core.vault import Vault
 from vault.src.main.core.vault_config import VaultConfig
 

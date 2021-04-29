@@ -2,7 +2,7 @@ import os
 import sys
 
 from hspylib.core.tools.commons import __version__, __curdir__, sysout
-from hspylib.ui.cli.app.application import Application
+from hspylib.modules.application.application import Application
 
 
 class Main(Application):
