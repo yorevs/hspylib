@@ -2,6 +2,7 @@ import sys
 
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.app.application import Application
+from hspylib.ui.cli.app.argument_chain_builder import ArgumentChain
 
 VERSION = (0, 1, 0)
 
@@ -12,11 +13,25 @@ Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
 
 class Main(Application):
     def main(self, *args):
-        self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
-        self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
-        self.with_argument('Number', 'one|two|three')
-        self.with_argument('Anything', '[a-z]{3,7}')
-        self.parse_arguments(*args)
+        # self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
+        # self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
+        # self.with_argument('Number', 'one|two|three')
+        # self.with_argument('Anything', '[a-z]{3,7}')
+
+        args = ArgumentChain.builder() \
+            .when('Operation', 'list') \
+                .accept('Filter', '.*') \
+                .end() \
+            .when('Operation', 'add|upd') \
+                .require('Name', '[a-zA-Z_ -]{2, 5}') \
+                .require('Hint', '.*') \
+                .accept('Password', '.*') \
+                .end() \
+            .when('Operation', 'del|get') \
+                .require('Name', '.*') \
+                .end() \
+            .build()
+        # self.parse_arguments(*args)
         sysout('Done')
 
 
