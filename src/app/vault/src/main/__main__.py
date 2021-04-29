@@ -86,12 +86,12 @@ Usage: {} <option> [arguments]
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        self.__exec_operation__()
+        self._exec_operation()
 
     def cleanup(self):
         self.vault.close()
 
-    def __exec_operation__(self,) -> None:
+    def _exec_operation(self, ) -> None:
         """Execute the specified vault operation"""
         op = self.args[0]
         try:

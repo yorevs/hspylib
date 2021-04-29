@@ -32,28 +32,28 @@ class Vault(object):
 
     def open(self) -> None:
         """Open and read the Vault file"""
-        self.passphrase = self.__get_passphrase()
+        self.passphrase = self._get_passphrase()
         try:
             if not self.is_open:
-                self.__unlock_vault()
+                self._unlock_vault()
                 log.debug("Vault open and unlocked")
         except UnicodeDecodeError as err:
             log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
-        except Exception:
-            raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}")
+        except Exception as err:
+            raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}", err)
 
     def close(self) -> None:
         """Close the Vault file and cleanup temporary file_paths"""
         try:
             if self.is_open:
-                self.__lock_vault()
+                self._lock_vault()
                 log.debug("Vault closed and locked")
         except UnicodeDecodeError as err:
             log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
-        except Exception:
-            raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file()}")
+        except Exception as err:
+            raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file()}", err)
 
     def list(self, filter_expr: str = None) -> None:
         """List all vault entries filtered by filter_expr
@@ -136,7 +136,7 @@ class Vault(object):
             syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault remove issued. User={}".format(getpass.getuser()))
 
-    def __get_passphrase(self) -> str:
+    def _get_passphrase(self) -> str:
         """Retrieve the vault passphrase"""
         if file_is_not_empty(self.configs.vault_file()):
             confirm_flag = False
@@ -165,7 +165,7 @@ class Vault(object):
                         self.is_open = True
             return "{}:{}".format(self.configs.vault_user(), passphrase)
 
-    def __lock_vault(self) -> None:
+    def _lock_vault(self) -> None:
         """Encrypt the vault file"""
         if file_is_not_empty(self.configs.unlocked_vault_file()):
             encrypt(
@@ -178,7 +178,7 @@ class Vault(object):
         self.is_open = False
         safe_del_file(self.configs.unlocked_vault_file())
 
-    def __unlock_vault(self) -> None:
+    def _unlock_vault(self) -> None:
         """Decrypt the vault file"""
         if file_is_not_empty(self.configs.vault_file()):
             decrypt(
