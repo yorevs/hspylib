@@ -2,14 +2,12 @@
 import logging as log
 import os
 import sys
-import traceback
 from datetime import datetime
 from typing import Any
 
 from cfman.src.main.core.cf_man import CFManager
 from hspylib.core.tools.commons import __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 
 class Main(Application):
@@ -76,12 +74,7 @@ Usage: cfman [option] [arguments]
 
     def _exec_application(self) -> None:
         """Execute the application"""
-        try:
-            self.cfman.run()
-        except Exception:
-            err = str(traceback.format_exc())
-            log.error('Failed to execute PCF manager => {}'.format(err))
-            MenuUtils.print_error('Failed to execute PCF manager => {}'.format(err))
+        self.cfman.run()
 
 
 if __name__ == "__main__":

@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-import logging as log
 import os
 import pathlib
 import subprocess
 import sys
-import traceback
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
@@ -12,7 +10,6 @@ from hspylib.core.tools.commons import __version__, sysout, syserr
 from hspylib.modules.fetch.fetch import get
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -91,19 +88,14 @@ Usage: hspylib [options] <operation> <arguments>
     def _exec_application(self) -> None:
         """Execute the application"""
         op = self.args[0]
-        try:
-            if "create" == op:
-                self._create_app(
-                    Main.AppType.value_of(self.args[1], ignore_case=True),
-                    self.args[2],
-                    self.args[3] if len(self.args) > 2 else os.environ.get('HOME'))
-            else:
-                syserr('### Invalid operation: {}'.format(op))
-                self.usage(1)
-        except Exception:
-            err = str(traceback.format_exc())
-            log.error('Failed to execute HSPyLib manager => {}'.format(err))
-            MenuUtils.print_error('Failed to execute HSPyLib manager => {}'.format(err))
+        if "create" == op:
+            self._create_app(
+                Main.AppType.value_of(self.args[1], ignore_case=True),
+                self.args[2],
+                self.args[3] if len(self.args) > 2 else os.environ.get('HOME'))
+        else:
+            syserr('### Invalid operation: {}'.format(op))
+            self.usage(1)
 
     def _create_app(self, app_type: AppType, app_name: str, dest_dir: str):
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')

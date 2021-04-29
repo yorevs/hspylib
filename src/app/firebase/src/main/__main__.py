@@ -2,7 +2,6 @@
 import logging as log
 import os
 import sys
-import traceback
 from datetime import datetime
 
 from firebase.src.main.core.agent_config import AgentConfig
@@ -10,7 +9,6 @@ from firebase.src.main.core.firebase import Firebase
 from hspylib.core.tools.commons import __version__, __curdir__, syserr
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 
 class Main(Application):
@@ -89,29 +87,24 @@ Settings ==============================
     def _exec_operation(self) -> None:
         """Execute the specified firebase operation"""
         op = self.args[0]
-        try:
-            if "setup" == op or not self.firebase.is_configured():
-                self.firebase.setup()
-            # Already handled above
-            if "setup" == op:
-                pass
-            elif "upload" == op:
-                self.firebase.upload(
-                    self.args[1],
-                    self.args[2:]
-                )
-            elif "download" == op:
-                self.firebase.download(
-                    self.args[1],
-                    self.args[2] if len(self.args) > 2 else os.environ.get('HOME')
-                )
-            else:
-                syserr('### Unhandled operation: {}'.format(op))
-                self.usage(1)
-        except Exception:
-            err = str(traceback.format_exc())
-            log.error('Failed to execute \'firebase --{}\' => {}'.format(op, err))
-            MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
+        if "setup" == op or not self.firebase.is_configured():
+            self.firebase.setup()
+        # Already handled above
+        if "setup" == op:
+            pass
+        elif "upload" == op:
+            self.firebase.upload(
+                self.args[1],
+                self.args[2:]
+            )
+        elif "download" == op:
+            self.firebase.download(
+                self.args[1],
+                self.args[2] if len(self.args) > 2 else os.environ.get('HOME')
+            )
+        else:
+            syserr('### Unhandled operation: {}'.format(op))
+            self.usage(1)
 
 
 if __name__ == "__main__":

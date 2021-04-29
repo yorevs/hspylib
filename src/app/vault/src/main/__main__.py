@@ -2,13 +2,11 @@
 import logging as log
 import os
 import sys
-import traceback
 from datetime import datetime
 
 from hspylib.core.tools.commons import get_or_default, __version__, __curdir__, syserr
 from hspylib.ui.cli.app.application import Application
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from vault.src.main.core.vault import Vault
 from vault.src.main.core.vault_config import VaultConfig
 
@@ -112,10 +110,6 @@ Usage: vault [options] <operation> <arguments>
             else:
                 syserr('### Invalid operation: {}'.format(op))
                 self.usage(1)
-        except Exception:
-            err = str(traceback.format_exc())
-            log.error('Failed to execute \'vault --{}\' => {}'.format(op, err))
-            MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
         finally:
             self.vault.close()
 
