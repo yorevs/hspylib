@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 import sys
 
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.app.application import Application
-from hspylib.ui.cli.app.argument_chain_builder import ArgumentChain
+from hspylib.ui.cli.app.argument_chain import ArgumentChain
 
 VERSION = (0, 1, 0)
 
@@ -12,26 +13,32 @@ Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
 
 
 class Main(Application):
-    def main(self, *args):
-        # self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
-        # self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
-        # self.with_argument('Number', 'one|two|three')
-        # self.with_argument('Anything', '[a-z]{3,7}')
+    def main(self, *params):
+        self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
+        self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
+        self.with_arguments(
+            ArgumentChain.builder()
+                .when('Number', 'one|two|three', False)
+                    .require('Anything', '.+')
+                    .end()
+                .build()
+        )
+        self.parse_parameters(*params)
+        self.exec_operation()
 
-        args = ArgumentChain.builder() \
-            .when('Operation', 'list') \
-                .accept('Filter', '.*') \
-                .end() \
-            .when('Operation', 'add|upd') \
-                .require('Name', '[a-zA-Z_ -]{2, 5}') \
-                .require('Hint', '.*') \
-                .accept('Password', '.*') \
-                .end() \
-            .when('Operation', 'del|get') \
-                .require('Name', '.*') \
-                .end() \
-            .build()
-        # self.parse_arguments(*args)
+    def exec_operation(self):
+        if 'list' == self.args[0]:
+            sysout(f'List: {str(self.args)}')
+        elif 'add' == self.args[0]:
+            sysout(f'Add: {str(self.args)}')
+        elif 'upd' == self.args[0]:
+            sysout(f'Update: {str(self.args)}')
+        elif 'del' == self.args[0]:
+            sysout(f'Delete: {str(self.args)}')
+        elif 'get' == self.args[0]:
+            sysout(f'Get: {str(self.args)}')
+        else:
+            sysout(f'VALID => {str(self.args)}')
         sysout('Done')
 
 
