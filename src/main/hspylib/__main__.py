@@ -94,14 +94,18 @@ class Main(metaclass=Singleton):
             self.app_dir = f'{dest_dir}/{app_name}'
             sysout(f'App: {app_name}')
             self._mkdir('')
-            self._mkdir(f'resources')
-            self._mkfile(f'resources/application.properties', '# Main application property file')
-            self._mkdir(f'resources/log')
-            self._mkfile(f'__main__.py', (TEMPLATES / "tpl-main.py").read_text())
-            self._mkfile(f'run-it.sh', (TEMPLATES / "tpl-run-it.sh").read_text())
-            self._mkfile(f'README.md', f'# {app_name}')
-            self._mkfile(f'.env', '# Type in here the environment variables your app requires')
-            self._mkfile(f'.version', '0.1.0')
+            self._mkdir('src')
+            self._mkdir('src/test')
+            self._mkdir('src/main')
+            self._mkfile('src/main/__main__.py', (TEMPLATES / "tpl-main.py").read_text())
+            self._mkfile('src/main/.version', '0.1.0')
+            self._mkdir('src/main/resources')
+            self._mkfile('src/main/resources/application.properties', '# Main application property file')
+            self._mkdir('src/main/resources/log')
+            self._mkfile('README.md', f'# {app_name}')
+            self._mkfile('.env', '# Type in here the environment variables your app requires')
+            self._mkfile('run-it.sh', (TEMPLATES / "tpl-run-it.sh").read_text())
+            os.chmod(f'{self.app_dir}/run-it.sh', 0o755)
             if app_type in [Main.AppType.GRADLE, Main.AppType.ALL]:
                 self._init_gradle(app_name)
             if app_type in [Main.AppType.GIT, Main.AppType.ALL]:
@@ -145,7 +149,7 @@ class Main(metaclass=Singleton):
         self._mkfile(f'gradle/{extension}', resp.body)
 
     def _init_git(self):
-        self._mkfile(f'resources/log/.gitkeep', '')
+        self._mkfile(f'src/main/resources/log/.gitkeep', '')
         self._mkfile(f'.gitignore', (TEMPLATES / "tpl.gitignore").read_text())
         sysout('Initializing git repository')
         result = subprocess.run(['git', 'init'], capture_output=True, text=True, cwd=self.app_dir).stdout
