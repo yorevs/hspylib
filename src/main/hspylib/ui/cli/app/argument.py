@@ -12,8 +12,8 @@ class Argument:
         self.value = ''
 
     def __str__(self):
-        return "arg_nam: {}, validation_regex: {}, required: {}, next: {}" \
-            .format(self.arg_name, self.validation_regex, self.required, self.next_in_chain)
+        return "arg_nam: {}, validation_regex: {}, required: {}, value: {}, next: {}" \
+            .format(self.arg_name, self.validation_regex, self.required, self.value, self.next_in_chain)
 
     def __repr__(self):
         return str(self)

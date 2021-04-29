@@ -12,6 +12,7 @@ buildscript {
 apply from: "properties.gradle"
 
 ext {
+  app_name = "HSPyLib"
   app_version = "${projectVersion}"
   versionFile = "${rootProject.projectDir}/src/main/hspylib/.version"
   application = "main/__main__.py"

@@ -2,12 +2,13 @@ import getopt
 import logging as log
 import signal
 import sys
-from typing import List, Callable, Optional, Tuple
+from typing import List, Callable, Optional, Tuple, Set
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.ui.cli.app.argument import Argument
+from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.app.option import Option
 
 
@@ -27,8 +28,8 @@ class Application(metaclass=Singleton):
         self.app_name = app_name
         self.app_version = app_version
         self.app_usage = app_usage
-        self.options = []
-        self.required_args = []
+        self.options = {}
+        self.cond_args_chain = {}
         self.args = None
         if source_dir:
             self.configs = AppConfigs(
@@ -84,20 +85,23 @@ class Application(metaclass=Singleton):
         sysout('{} v{}'.format(self.app_name, '.'.join(map(str, self.app_version))))
         self.exit_handler(args[0] or 0)
 
-    def parse_parameters(self, arguments: List[str]) -> None:
+    def parse_parameters(self, parameters: List[str]) -> None:
         """ Handle program arguments and options. Short opts: -<C>, Long opts: --<Word>
-        :param arguments: The list of unparsed program arguments passed by the command line
+        :param parameters: The list of unparsed program arguments passed by the command line
         """
+        # First parse all options, then, parse arguments
+        self.parse_arguments(self.parse_options(parameters))
+
+    def parse_options(self, parameters: List[str]) -> List[str]:
         try:
-            opts, self.args = getopt.getopt(arguments, self._shortopts(), self._longopts())
-            assert self._validate_args_and_opts(self.args, opts), \
-                f'Invalid arguments/options => Opts: {str(opts)}, Args: {str(self.args)}'
+            opts, args = getopt.getopt(parameters, self._shortopts(), self._longopts())
             for op, arg in opts:
                 opt = self._getopt(op)
                 if opt and opt.cb_handler:
                     opt.cb_handler(arg)
                 else:
                     assert False, f"Unhandled option: {op}"
+            return args
         except getopt.GetoptError as err:
             sysout(f"%RED%### Unhandled option: {str(err)}")
             self.usage(1)
@@ -105,35 +109,57 @@ class Application(metaclass=Singleton):
             sysout(f"%RED%### {str(err)}")
             self.usage(1)
 
+    def parse_arguments(self, provided_args: List[str]) -> None:
+        valid = False
+        if self.cond_args_chain:
+            for cond_arg in self.cond_args_chain:
+                arg = cond_arg.argument
+                try:
+                    self.recursive_set(0, arg, provided_args)
+                    # This is true if all required args were set
+                    valid = self.validate_argument(arg, len(provided_args))
+                    self.args = provided_args
+                    break
+                except getopt.GetoptError as err:
+                    log.debug(str(err))
+                    continue  # Just try the next chain
+            assert valid, f"Invalid arguments => {', '.join(provided_args)}"
+
+    def recursive_set(self, idx: int, argument: Argument, provided_args: List[str]):
+        if not argument or idx >= len(provided_args):
+            return
+        if not argument.set_value(provided_args[idx]):
+            raise getopt.GetoptError(
+                f'Invalid argument: {provided_args[idx]}. Required expression: {argument.validation_regex}')
+        else:
+            self.recursive_set(idx + 1, argument.next_in_chain, provided_args)
+
+    def validate_argument(self, arg: Argument, args_num: int) -> bool:
+        missing = 0
+        narg = arg
+        while narg:
+            missing += 1 if not narg.value and narg.required else 0
+            narg = narg.next_in_chain
+        return missing == 0
+
     def with_option(
             self,
             shortopt: chr,
             longopt: str,
             has_argument: bool = False,
             handler: Callable = None):
-        self.options.append(Option(shortopt, longopt, has_argument, handler))
+        self.options[longopt] = Option(shortopt, longopt, has_argument, handler)
 
-    def with_argument(self, arg_name: str, validation_regex: str = '.*'):
-        self.required_args.append(Argument(arg_name, validation_regex))
-
-    def _validate_args_and_opts(self, args: List[str], options: List[str]) -> bool:
-        if any(opt[0].strip() in ['-v', '--version', '-h', '--help'] for opt in options):
-            return True
-        else:
-            if len(args) < len(self.required_args):
-                return False
-            for idx, arg in enumerate(self.required_args):
-                if not arg.set_value(args[idx]):
-                    return False
-        return True
+    def with_arguments(
+            self,
+            chained_args: Set[ArgumentChain.ChainedArgument]):
+        self.cond_args_chain = chained_args
 
     def _shortopts(self) -> str:
-        str_all_opts = ''.join([lop.shortopt.replace('-', '') for lop in self.options])
-        return str_all_opts
+        return ''.join([op.shortopt.replace('-', '') for key, op in self.options.items()])
 
     def _longopts(self) -> List[str]:
-        str_all_opts = [lop.longopt.replace('-', '') + ' ' for lop in self.options]
-        return str_all_opts
+        return [op.longopt.replace('-', '') + ' ' for key, op in self.options.items()]
 
     def _getopt(self, item: str) -> Optional[Option]:
-        return next((op for op in self.options if op.is_eq(item)), None)
+        return next((op for key, op in self.options.items() if op.is_eq(item)), None)

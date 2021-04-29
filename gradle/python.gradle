@@ -28,7 +28,7 @@ String dirName(File file) {
 /* Used to created the __init__.py files { */
 def initTemplate = """# _*_ coding: utf-8 _*_
 #
-# HSPyLib v${projectVersion}
+# ${project.ext.app_name} v${projectVersion}
 #
 # Package: %package%
 

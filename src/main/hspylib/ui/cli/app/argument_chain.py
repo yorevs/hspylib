@@ -11,9 +11,9 @@ class ArgumentChain:
         def __init__(self):
             self.chained_arguments = set()
 
-        def when(self, arg_name: str, val_regex: str) -> Any:
-            argument = Argument(arg_name, val_regex)
-            next_in_chain = ArgumentChain.ConditionalArgument(self, argument)
+        def when(self, arg_name: str, val_regex: str, required: bool = True) -> Any:
+            argument = Argument(arg_name, val_regex, required)
+            next_in_chain = ArgumentChain.ChainedArgument(self, argument)
             self.chained_arguments.add(next_in_chain)
             return next_in_chain
 
@@ -21,7 +21,7 @@ class ArgumentChain:
             return self.chained_arguments
 
     @staticmethod
-    class ConditionalArgument:
+    class ChainedArgument:
 
         def __init__(self, parent, argument: Argument):
             self.parent = parent
@@ -32,13 +32,13 @@ class ArgumentChain:
 
         def accept(self, arg_name: str, val_regex) -> Any:
             argument = Argument(arg_name, val_regex, False)
-            next_in_chain = ArgumentChain.ConditionalArgument(self.parent, argument)
+            next_in_chain = ArgumentChain.ChainedArgument(self.parent, argument)
             self.argument.set_next(argument)
             return next_in_chain
 
         def require(self, arg_name: str, val_regex) -> Any:
             argument = Argument(arg_name, val_regex)
-            next_in_chain = ArgumentChain.ConditionalArgument(self.parent, argument)
+            next_in_chain = ArgumentChain.ChainedArgument(self.parent, argument)
             self.argument.set_next(argument)
             return next_in_chain
 
