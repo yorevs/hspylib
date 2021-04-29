@@ -9,8 +9,8 @@ from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
 from hspylib.core.tools.commons import sysout, __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
+from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
-from hspylib.ui.cli.tools.validator.argument_validator import ArgumentValidator
 
 
 class Main(Application):
@@ -55,12 +55,25 @@ Settings ==============================
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
         self.firebase = Firebase()
 
-    def main(self, *args, **kwargs) -> None:
+    def main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.with_option('s', 'setup', handler=lambda arg: self.__exec_operation__('setup'))
-        self.with_option('u', 'upload', handler=lambda arg: self.__exec_operation__('upload', 2))
-        self.with_option('d', 'download', handler=lambda arg: self.__exec_operation__('download', 1))
-        self.parse_parameters(*args)
+        # @formatter:off
+        self.with_arguments(
+            ArgumentChain.builder()
+                .when('Operation', 'setup')
+                    .end()
+                .when('Operation', 'upload')
+                    .require('Db_Alias', '.+')
+                    .require('Files', '.+')
+                    .end()
+                .when('Operation', 'download')
+                    .require('Db_Alias', '.+')
+                    .accept('DestDir', '.+')
+                    .end()
+                .build()
+        )
+        # @formatter:on
+        self.parse_parameters(*params)
         log.info(
             self.WELCOME.format(
                 self.app_name,
@@ -69,24 +82,21 @@ Settings ==============================
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
+        self.__exec_operation__()
 
-    def __exec_operation__(self, op: str, req_args: int = 0) -> None:
-        """Execute the specified operation
-        :param op: The firebase operation to execute
-        :param req_args: Number of required arguments for the operation
-        """
+    def __exec_operation__(self) -> None:
+        """Execute the specified firebase operation"""
+        op = self.args[0]
         try:
-            self.args = tuple(ArgumentValidator.check_arguments(self.args, req_args))
             if "setup" == op or not self.firebase.is_setup():
                 self.firebase.setup()
-
             # Already handled above
             if "setup" == op:
                 pass
             elif "upload" == op:
-                self.firebase.upload(self.args[0], self.args[1:])
+                self.firebase.upload(self.args[1], self.args[2:])
             elif "download" == op:
-                self.firebase.download(self.args[0], self.args[1] if len(self.args) > 1 else None)
+                self.firebase.download(self.args[1], self.args[2] if len(self.args) > 2 else None)
             else:
                 sysout('%RED%### Unhandled operation: {}'.format(op))
                 self.usage(1)
@@ -94,9 +104,6 @@ Settings ==============================
             err = str(traceback.format_exc())
             log.error('Failed to execute \'firebase --{}\' => {}'.format(op, err))
             MenuUtils.print_error('Failed to execute \'vault --{}\' => '.format(op), err)
-
-    def __reqopts__(self) -> int:
-        return 1
 
 
 if __name__ == "__main__":

@@ -100,7 +100,7 @@ class CFManager(object):
                     raise Exception(f'Failed to connect to API ({response.status_code}): {selected}')
             except Exception as err:
                 log.error(f'Failed to connect to API => {err}')
-                syserr('Failed to connect to API => ', selected.host)
+                syserr(f'Failed to connect to API => {selected.host}')
                 exit(0)
 
     def __require_credentials__(self):
@@ -121,7 +121,7 @@ class CFManager(object):
         if not self.cf.api(self.api):
             raise Exception(f'Unable to set API: => {self.cf.last_result}')
         if not self.cf.auth(self.username, self.password):
-            syserr(f'%RED%Unable to authenticate to => {self.api}%NC%')
+            syserr(f'Unable to authenticate to => {self.api}')
             return False
 
         return True

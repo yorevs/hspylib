@@ -97,7 +97,7 @@ class Vault(object):
         """
         entry = self.service.get_by_key(key)
         if entry:
-            sysout("%GREEN%\n{}".format(entry.to_string(True, True)))
+            sysout("\n{}".format(entry.to_string(True, True)))
         else:
             log.error("Attempt to get from Vault failed for name={}".format(key))
             sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
