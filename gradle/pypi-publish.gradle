@@ -69,7 +69,6 @@ task publish(type: Task) {
   group = 'Publish'
   description = "Publish the module to PyPi repository"
   dependsOn checkDist
-  finalizedBy cleanDist
   def url = project.ext.pypiRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword

@@ -69,7 +69,7 @@ Usage: {} <option> [arguments]
         log.info(
             self.WELCOME.format(
                 self.app_name,
-                __version__(),
+                self.VERSION,
                 VaultConfig.INSTANCE.vault_user(),
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

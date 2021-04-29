@@ -70,7 +70,7 @@ class FirebaseConfig(metaclass=Singleton):
         self.set_passphrase()
         self.project_uuid = str(self.project_uuid) if self.project_uuid else str(uuid.uuid4())
         assert self.validate_config(), "Your Firebase configuration is not valid"
-        log.debug('Successfully connected to Firebase: {}'.format(self.base_url()))
+        log.debug(f'Successfully connected to Firebase: {self.base_url()}')
 
     def __str__(self):
         return FB_CONFIG_FMT.format(

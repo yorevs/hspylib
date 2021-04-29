@@ -49,7 +49,7 @@ class AgentConfig(metaclass=Singleton):
 
     def config_file(self) -> str:
         file = self.configs['firebase.config.file']
-        return file if file else '{}/.firebase'.format(self.configs.resource_dir())
+        return file if file else f"{self.configs.resource_dir()}/firebase.cfg"
 
     def project_id(self) -> str:
         project_id = self.configs['firebase.project.id']
