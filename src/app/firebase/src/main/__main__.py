@@ -64,7 +64,7 @@ Settings ==============================
         log.info(
             self.WELCOME.format(
                 self.app_name,
-                __version__(),
+                self.VERSION,
                 AgentConfig.INSTANCE.username(),
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

@@ -58,7 +58,9 @@ Usage: {} <option> [arguments]
         self.cfman = CFManager(self.option_map)
         log.info(
             self.WELCOME.format(
-                self.app_name, __version__(), datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                self.app_name,
+                self.VERSION,
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self.__exec_application__()
 
