@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.9.24
 #
-# Package: main.hspylib.ui.cli.app
+# Package: main.hspylib.modules.application
 
 __all__ = [
   'application', 

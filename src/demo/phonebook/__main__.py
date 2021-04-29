@@ -2,7 +2,7 @@
 import sys
 
 from hspylib.core.tools.commons import __curdir__
-from hspylib.ui.cli.app.application import Application
+from hspylib.modules.application.application import Application
 from hspylib.ui.cli.factory.menu_factory import MenuFactory
 from hspylib.ui.cli.menu.menu_ui import MenuUi
 from hspylib.ui.cli.menu.menu_utils import MenuUtils

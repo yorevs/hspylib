@@ -8,7 +8,7 @@ from typing import Any
 
 from cfman.src.main.core.cf_man import CFManager
 from hspylib.core.tools.commons import __version__, __curdir__
-from hspylib.ui.cli.app.application import Application
+from hspylib.modules.application.application import Application
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent

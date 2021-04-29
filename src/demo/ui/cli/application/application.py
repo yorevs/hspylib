@@ -2,8 +2,8 @@
 import sys
 
 from hspylib.core.tools.commons import sysout
-from hspylib.ui.cli.app.application import Application
-from hspylib.ui.cli.app.argument_chain import ArgumentChain
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.argument_chain import ArgumentChain
 
 VERSION = (0, 1, 0)
 

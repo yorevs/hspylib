@@ -8,13 +8,13 @@ from typing import List, Callable, Optional, Tuple, Set
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout, syserr
-from hspylib.ui.cli.app.argument import Argument
-from hspylib.ui.cli.app.argument_chain import ArgumentChain
-from hspylib.ui.cli.app.option import Option
+from hspylib.modules.application.argument import Argument
+from hspylib.modules.application.argument_chain import ArgumentChain
+from hspylib.modules.application.option import Option
 
 
 class Application(metaclass=Singleton):
-    """TODO"""
+    """HSPyLib application framework"""
 
     def __init__(
             self,

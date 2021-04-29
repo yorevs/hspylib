@@ -8,8 +8,8 @@ from datetime import datetime
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
 from hspylib.core.tools.commons import __version__, __curdir__, syserr
-from hspylib.ui.cli.app.application import Application
-from hspylib.ui.cli.app.argument_chain import ArgumentChain
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.argument_chain import ArgumentChain
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
