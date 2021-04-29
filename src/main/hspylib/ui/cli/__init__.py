@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.9.23
+# HSPyLib v0.9.24
 #
 # Package: main.hspylib.ui.cli
 
@@ -10,6 +10,5 @@ __all__ = [
   'icons', 
   'menu', 
   'tables', 
-  'tools', 
   'vt100'
 ]
