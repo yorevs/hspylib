@@ -1,5 +1,5 @@
-import os
 import logging as log
+import os
 from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict

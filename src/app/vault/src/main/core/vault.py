@@ -4,7 +4,7 @@ import logging as log
 import os
 import uuid
 
-from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file
+from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file, syserr
 from hspylib.modules.security.security import encrypt, decrypt
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from vault.src.main.core.vault_config import VaultConfig
@@ -88,7 +88,7 @@ class Vault(object):
             sysout("%GREEN%\n=== Entry added ===\n\n%NC%{}".format(entry.to_string()))
         else:
             log.error("Attempt to add to Vault failed for name={}".format(key))
-            sysout("%RED%### Entry specified by '{}' already exists in vault".format(key))
+            syserr("### Entry specified by '{}' already exists in vault".format(key))
         log.debug("Vault add issued. User={}".format(getpass.getuser()))
 
     def get(self, key) -> None:
@@ -100,7 +100,7 @@ class Vault(object):
             sysout("\n{}".format(entry.to_string(True, True)))
         else:
             log.error("Attempt to get from Vault failed for name={}".format(key))
-            sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
+            syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault get issued. User={}".format(getpass.getuser()))
 
     def update(self, key, hint, password) -> None:
@@ -120,7 +120,7 @@ class Vault(object):
             sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
         else:
             log.error("Attempt to update Vault failed for name={}".format(key))
-            sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
+            syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault update issued. User={}".format(getpass.getuser()))
 
     def remove(self, key: str) -> None:
@@ -133,7 +133,7 @@ class Vault(object):
             sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
         else:
             log.error("Attempt to remove to Vault failed for name={}".format(key))
-            sysout("%RED%### No entry specified by '{}' was found in vault".format(key))
+            syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault remove issued. User={}".format(getpass.getuser()))
 
     def __get_passphrase(self) -> str:
@@ -156,7 +156,7 @@ class Vault(object):
                     while not confirm:
                         confirm = getpass.getpass("Repeat passphrase:").strip()
                     if confirm != passphrase:
-                        sysout("%RED%### Passphrase and confirmation mismatch")
+                        syserr("### Passphrase and confirmation mismatch")
                         safe_del_file(self.configs.vault_file())
                     else:
                         sysout("%GREEN%Passphrase successfully stored")

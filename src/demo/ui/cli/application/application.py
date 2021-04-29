@@ -16,6 +16,7 @@ class Main(Application):
     def main(self, *params):
         self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
         self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
+        # @formatter:off
         self.with_arguments(
             ArgumentChain.builder()
                 .when('Number', 'one|two|three', False)
@@ -23,22 +24,19 @@ class Main(Application):
                     .end()
                 .build()
         )
+        # @formatter:on
         self.parse_parameters(*params)
         self.exec_operation()
 
     def exec_operation(self):
-        if 'list' == self.args[0]:
-            sysout(f'List: {str(self.args)}')
-        elif 'add' == self.args[0]:
-            sysout(f'Add: {str(self.args)}')
-        elif 'upd' == self.args[0]:
-            sysout(f'Update: {str(self.args)}')
-        elif 'del' == self.args[0]:
-            sysout(f'Delete: {str(self.args)}')
-        elif 'get' == self.args[0]:
-            sysout(f'Get: {str(self.args)}')
+        if 'one' == self.args[0]:
+            sysout(f'One: {str(self.args)}')
+        elif 'two' == self.args[0]:
+            sysout(f'Two: {str(self.args)}')
+        elif 'three' == self.args[0]:
+            sysout(f'Three: {str(self.args)}')
         else:
-            sysout(f'VALID => {str(self.args)}')
+            sysout(f'INVALID => {str(self.args)}')
         sysout('Done')
 
 

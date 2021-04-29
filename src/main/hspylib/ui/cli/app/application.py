@@ -7,7 +7,7 @@ from typing import List, Callable, Optional, Tuple, Set
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, syserr
 from hspylib.ui.cli.app.argument import Argument
 from hspylib.ui.cli.app.argument_chain import ArgumentChain
 from hspylib.ui.cli.app.option import Option
@@ -110,10 +110,10 @@ class Application(metaclass=Singleton):
                     assert False, f"Unhandled option: {op}"
             return args
         except getopt.GetoptError as err:
-            sysout(f"%RED%### Unhandled option: {str(err)}")
+            syserr(f"### Unhandled option: {str(err)}")
             self.usage(1)
         except AssertionError as err:
-            sysout(f"%RED%### {str(err)}")
+            syserr(f"### {str(err)}")
             self.usage(1)
 
     def parse_arguments(self, provided_args: List[str]) -> None:

@@ -5,6 +5,7 @@ from hspylib.ui.cli.menu.menu_utils import MenuUtils
 
 
 if __name__ == '__main__':
+    # @formatter:off
     main_menu = MenuFactory().INSTANCE \
         .create(None, 'Dynamic Main Menu') \
         .with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
@@ -23,5 +24,6 @@ if __name__ == '__main__':
         .with_option('Print Hello').on_trigger(lambda t: print('Hello')) \
         .with_option('Print Hi').on_trigger(lambda t: print('Hi')) \
         .build()
+    # @formatter:on
     mm = MenuUi(main_menu)
     mm.run()
