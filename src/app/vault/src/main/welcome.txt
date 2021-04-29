@@ -1,0 +1,6 @@
+{} v{}
+
+Settings ==============================
+        VAULT_USER: {}
+        VAULT_FILE: {}
+        STARTED: {}

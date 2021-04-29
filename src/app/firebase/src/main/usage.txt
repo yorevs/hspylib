@@ -1,0 +1,17 @@
+Usage: firebase [options] <operation> <arguments>
+
+    Firebase Agent v{} - Manage your firebase integration.
+
+    Options:
+      -v  |  --version      : Display current program version.
+      -h  |     --help      : Display this help message.
+
+    Operations:
+      setup                         : Setup your Firebase account.
+      upload <db_alias> <file...>   : Upload files to your Firebase Realtime Database.
+      download <db_alias> <file...> : Download files from your Firebase Realtime Database.
+
+    Arguments:
+      db_alias      : Alias to be used to identify the firebase object to fetch json_string from.
+      file1...      : List of files to upload.
+      dest_dir      : Destination directory. If omitted, your home folder will be used.

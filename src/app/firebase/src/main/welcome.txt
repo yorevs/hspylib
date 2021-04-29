@@ -1,0 +1,6 @@
+{} v{}
+
+Settings ==============================
+        FIREBASE_USER: {}
+        FIREBASE_CONFIG_FILE: {}
+        STARTED: {}

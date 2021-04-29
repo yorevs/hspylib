@@ -36,6 +36,65 @@ __all__ = %modules%
 %version%"""
 /* } */
 
+/***** Build Group */
+
+/* Cleanup distribution files */
+task cleanDist(type: Delete) {
+  group = 'Build'
+  description = "Cleanup distribution files from rootProject.projectDir"
+  def projectRoot = "${rootProject.projectDir}"
+  println "Cleanup distribution files from ${projectRoot}"
+  delete dirsByPattern(projectRoot, /.*dist$/)
+  delete dirsByPattern(projectRoot, /.*build$/)
+  delete dirsByPattern(projectRoot, /.*egg-info$/)
+}
+
+/* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "${sourceRoot}" */
+task cleanPython(type: Delete) {
+  group = 'Build'
+  description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
+  println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories  from ${sourceRoot}..."
+  delete fileTree(sourceRoot).matching {
+    include "**/*.pyc"
+    include "**/*.qrc"
+  }
+  delete dirsByPattern(sourceRoot, /.*__pycache__$/)
+}
+
+/* Compile all python files from sourceRoot */
+task compilePython(type: Task) {
+  group = 'Build'
+  description = 'Compile all python files from sourceRoot'
+  doLast {
+    fileTree("${sourceRoot}").matching {
+      include "**/*.py"
+      exclude "**/__init__.py"
+    }.each { File file ->
+        println "Compiling Python file -> ${file.name}"
+        exec {
+          commandLine rootProject.python, '-m', 'py_compile', file.path
+        }
+      }
+  }
+}
+
+/* Compile all QT resources from sourceRoot */
+task compileQrc(type: Task) {
+  group = 'Build'
+  description = 'Compile all Qt resource files from sourceRoot'
+  doLast {
+    fileTree("${sourceRoot}").matching {
+      include "**/*.qrc"
+    }.each { File file ->
+        println "Compiling Qt Resource -> ${file.name}"
+        exec {
+          commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
+        }
+      }
+  }
+}
+
+/***** Install Group */
 /* Find and synchronize all python packages */
 task syncPythonPackages(type: Task) {
   group = 'Install'
@@ -97,6 +156,7 @@ task installModule(type: Task) {
   group = 'Install'
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
+  dependsOn cleanDist
   doLast {
     def depsFile = project.file("${project.ext.requirementsFile}")
     depsFile.write ''
@@ -135,64 +195,6 @@ task uninstallModule(type: Task) {
         exec {
           workingDir "${moduleDir}"
           commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', "${rootProject.name}"
-        }
-      }
-  }
-}
-
-/***** Build Group */
-
-/* Cleanup distribution files */
-task cleanDist(type: Delete) {
-  group = 'Build'
-  description = "Cleanup distribution files from rootProject.projectDir"
-  def projectRoot = "${rootProject.projectDir}"
-  println "Cleanup distribution files from ${projectRoot}"
-  delete dirsByPattern(projectRoot, /.*dist$/)
-  delete dirsByPattern(projectRoot, /.*build$/)
-  delete dirsByPattern(projectRoot, /.*egg-info$/)
-}
-
-/* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "${sourceRoot}" */
-task cleanPython(type: Delete) {
-  group = 'Build'
-  description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
-  println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories  from ${sourceRoot}..."
-  delete fileTree(sourceRoot).matching {
-    include "**/*.pyc"
-    include "**/*.qrc"
-  }
-  delete dirsByPattern(sourceRoot, /.*__pycache__$/)
-}
-
-/* Compile all python files from sourceRoot */
-task compilePython(type: Task) {
-  group = 'Build'
-  description = 'Compile all python files from sourceRoot'
-  doLast {
-    fileTree("${sourceRoot}").matching {
-      include "**/*.py"
-      exclude "**/__init__.py"
-    }.each { File file ->
-        println "Compiling Python file -> ${file.name}"
-        exec {
-          commandLine rootProject.python, '-m', 'py_compile', file.path
-        }
-      }
-  }
-}
-
-/* Compile all QT resources from sourceRoot */
-task compileQrc(type: Task) {
-  group = 'Build'
-  description = 'Compile all Qt resource files from sourceRoot'
-  doLast {
-    fileTree("${sourceRoot}").matching {
-      include "**/*.qrc"
-    }.each { File file ->
-        println "Compiling Qt Resource -> ${file.name}"
-        exec {
-          commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
         }
       }
   }

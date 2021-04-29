@@ -5,6 +5,5 @@
 # Package: app.cfman.src
 
 __all__ = [
-  'main', 
-  'test'
+  'main'
 ]

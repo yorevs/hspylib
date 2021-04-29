@@ -5,6 +5,5 @@
 # Package: app.vault.src
 
 __all__ = [
-  'main', 
-  'test'
+  'main'
 ]

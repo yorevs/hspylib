@@ -1,0 +1,18 @@
+Usage: hspylib [options] <operation> <arguments>
+
+    HSPyLib Manager v{} - Manage HSPyLib applications.
+
+    Options:
+      -v  |  --version      : Display current program version.
+      -h  |     --help      : Display this help message.
+
+    Operations:
+      create <type> <app_name> [dest_dir]   : Create an HSPyLib based application.
+
+    Arguments:
+      type      : One of basic|gradle|git|all. "basic" is going to scaffold a basic app based on HSPyLib application
+                  structure. "gradle" is going to initialize you project with gradle (requires gradle installed).
+                  "git" is going to initialize a git repository. "all" is going to create a gradle project and also
+                  initialize a git repository.
+      app_name  : The application name.
+      dest_dir  : Destination directory. If omitted, your home folder will be used.

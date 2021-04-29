@@ -5,6 +5,5 @@
 # Package: app.firebase.src
 
 __all__ = [
-  'main', 
-  'test'
+  'main'
 ]

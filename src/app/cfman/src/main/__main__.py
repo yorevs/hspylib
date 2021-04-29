@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging as log
 import os
+import pathlib
 import sys
 from datetime import datetime
 from typing import Any
@@ -8,6 +9,9 @@ from typing import Any
 from cfman.src.main.core.cf_man import CFManager
 from hspylib.core.tools.commons import __version__, __curdir__
 from hspylib.ui.cli.app.application import Application
+
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
 
 
 class Main(Application):
@@ -20,32 +24,10 @@ class Main(Application):
     VERSION = __version__('src/main/.version')
 
     # CloudFoundry manager usage message
-    USAGE = """
-Usage: cfman [option] [arguments]
+    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
 
-    Cloud Foundry Manager v{} - Manage PCF applications.
-
-    Options:
-      -v  |    --version                : Display current program version.
-      -h  |       --help                : Display this help message.
-      -a  |        --api <api_url>      : Set the API to connect to
-      -o  |        --org <org_url>      : Set the organization to connect to
-      -s  |      --space <space_url>    : Set the space to connect to
-      -u  |   --username <username>     : Set the username
-      -p  |   --password <password>     : Set the password
-    
-    Arguments:
-      api_url   : API endpoint (e.g. https://api.example.com)
-      org_url   : Target organization
-      space_url : Target organization space
-      username  : Username
-      password  : Password
-""".format(APP_NAME, '.'.join(map(str, VERSION)))
-
-    WELCOME = """
-    
-{} v{}
-"""
+    # The welcome message
+    WELCOME = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
