@@ -31,7 +31,8 @@ class MySqlRepository(DBRepository):
             if cache_key in MySqlRepository._connections:
                 self._connector = MySqlRepository._connections[cache_key]
                 self._cursor = self._connector.cursor()
-                assert self.is_connected(), "Not connected to the database"
+                if not self.is_connected():
+                    raise ConnectionError("Not connected to the database")
             else:
                 try:
                     self._connector = pymysql.connect(
@@ -41,7 +42,8 @@ class MySqlRepository(DBRepository):
                         password=self.password,
                         database=self.database
                     )
-                    assert self.is_connected(), "Unable to connect to the database"
+                    if not self.is_connected():
+                        raise ConnectionError("Unable to connect to the database")
                     self._cursor = self._connector.cursor()
                     log.debug('Connection to {} established'.format(str(self)))
                     MySqlRepository._connections[cache_key] = self._connector
@@ -113,7 +115,7 @@ class MySqlRepository(DBRepository):
                 self._cursor.execute(stm)
                 result = self._cursor.fetchall()
                 if len(result) > 1:
-                    raise ProgrammingError('Multiple results found')
+                    raise ProgrammingError(f'Multiple results found {len(result)}')
                 return self.row_to_entity(result[0]) if len(result) > 0 else None
             else:
                 return None

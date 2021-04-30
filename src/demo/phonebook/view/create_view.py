@@ -1,4 +1,4 @@
-from hspylib.core.exception.input_aborted_error import InputAbortedError
+from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from phonebook.entity.Company import Company

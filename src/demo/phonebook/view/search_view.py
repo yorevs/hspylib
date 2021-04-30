@@ -1,6 +1,6 @@
 from typing import List
 
-from hspylib.core.exception.input_aborted_error import InputAbortedError
+from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.model.entity import Entity
 from hspylib.core.tools.commons import sysout

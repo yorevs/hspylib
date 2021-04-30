@@ -3,7 +3,7 @@ import time
 from abc import ABC
 from typing import Any, Optional, Callable
 
-from hspylib.core.exception.input_aborted_error import InputAbortedError
+from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import sysout, syserr
 from hspylib.core.tools.validator import Validator
 from hspylib.ui.cli.vt100.vt_colors import VtColors

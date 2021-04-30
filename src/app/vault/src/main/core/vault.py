@@ -10,8 +10,7 @@ from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from vault.src.main.core.vault_config import VaultConfig
 from vault.src.main.core.vault_service import VaultService
 from vault.src.main.entity.vault_entry import VaultEntry
-from vault.src.main.exception.vault_close_error import VaultCloseError
-from vault.src.main.exception.vault_open_error import VaultOpenError
+from vault.src.main.exception.exceptions import VaultOpenError, VaultCloseError
 
 
 class Vault(object):
