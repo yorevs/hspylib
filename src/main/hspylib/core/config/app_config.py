@@ -8,7 +8,8 @@ from hspylib.core.tools.commons import log_init, environ_name, __curdir__
 
 APP_CONFIG_FORMAT = """
 AppConfigs
-  |-RootDir = {}
+  |-SourceDir = {}
+  |-ResourceDir = {}
   |-LogFile = {}
   |-AppProperties:
    \\-{}
@@ -49,6 +50,7 @@ class AppConfigs(metaclass=Singleton):
             '-=' * 40,
             APP_CONFIG_FORMAT.format(
                 str(self._source_dir),
+                str(self._resource_dir),
                 str(self._log_file),
                 str(self._app_properties).replace('\n', '\n   |-')
                 if self._app_properties.size() > 0 else ''
