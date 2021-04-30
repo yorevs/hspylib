@@ -7,5 +7,6 @@
 __all__ = [
   'vt_100', 
   'vt_codes', 
-  'vt_colors'
+  'vt_colors', 
+  'vt_utils'
 ]
