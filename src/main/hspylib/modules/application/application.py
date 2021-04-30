@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import List, Callable, Optional, Tuple, Set
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.exception.exceptions import InvalidOptionError, InvalidArgumentError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout, syserr
 from hspylib.modules.application.argument import Argument
@@ -107,13 +108,13 @@ class Application(metaclass=Singleton):
                 if opt and opt.cb_handler:
                     opt.cb_handler(arg)
                 else:
-                    assert False, f"Unhandled option: {op}"
+                    raise InvalidOptionError(f"Unhandled option: {op}")
             return args
         except getopt.GetoptError as err:
-            syserr(f"### Unhandled option: {str(err)}")
+            syserr(f"### Invalid option: {str(err)}")
             self.usage(1)
-        except AssertionError as err:
-            syserr(f"### {str(err)}")
+        except InvalidOptionError as err:
+            syserr(f"### Invalid option: {str(err)}")
             self.usage(1)
 
     def parse_arguments(self, provided_args: List[str]) -> None:
@@ -135,7 +136,8 @@ class Application(metaclass=Singleton):
                 except getopt.GetoptError as err:
                     log.debug(str(err))
                     continue  # Just try the next chain
-            assert valid, f"Invalid arguments => {', '.join(provided_args)}"
+            if not valid:
+                raise InvalidArgumentError(f"Invalid arguments => {', '.join(provided_args)}")
 
     def recursive_set(self, idx: int, argument: Argument, provided_args: List[str]):
         """ Try to set a value for each provided argument. If any failure setting occur, raise an exception to be caught
@@ -144,7 +146,7 @@ class Application(metaclass=Singleton):
         if not argument or idx >= len(provided_args):
             return
         if not argument.set_value(provided_args[idx]):
-            raise getopt.GetoptError(
+            raise InvalidArgumentError(
                 f'Invalid argument: {provided_args[idx]}. Required expression: {argument.validation_regex}')
         else:
             self.recursive_set(idx + 1, argument.next_in_chain, provided_args)

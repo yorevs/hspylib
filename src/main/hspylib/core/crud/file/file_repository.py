@@ -6,6 +6,7 @@ from typing import Optional, List
 
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.file.file_storage import FileStorage
+from hspylib.core.exception.exceptions import ProgrammingError
 from hspylib.core.model.entity import Entity
 
 
@@ -83,9 +84,9 @@ class FileRepository(CrudRepository):
                         self.check_criteria(fields[1], data[fields[0]])
                     ]
                 except KeyError:
-                    continue
+                    continue  # Just skip the filter and continue
                 except IndexError:
-                    continue
+                    continue  # Just skip the filter and continue
                 filtered.extend(found)
             return filtered
         else:
@@ -98,8 +99,8 @@ class FileRepository(CrudRepository):
         self.storage.load()
         if entity_id:
             result = [data for data in self.storage.data if entity_id == data['uuid']]
-            assert len(result) <= 1, "Multiple results found with entity_id={}".format(entity_id)
-
+            if len(result) > 1:
+                raise ProgrammingError(f'Multiple results {len(result)} found with entity_id={entity_id}')
             return self.dict_to_entity(result[0]) if len(result) > 0 else None
         else:
             return None

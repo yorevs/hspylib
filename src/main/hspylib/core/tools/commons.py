@@ -2,9 +2,6 @@ import logging as log
 import os
 import re
 import sys
-import termios
-import collections
-import tty
 from typing import Type, List, Tuple, Any, Optional
 
 from hspylib.core.tools.validator import Validator
@@ -163,58 +160,6 @@ def touch_file(filename: str) -> None:
     """
     with open(filename, 'a'):
         os.utime(filename, None)
-
-
-def screen_size() -> Optional[List[str]]:
-    """TODO
-    """
-
-    if sys.stdout.isatty():
-        return os.popen('stty size').read().split()
-    else:
-        return None
-
-
-def set_enable_echo(enable: bool = True) -> None:
-    """
-    TODO
-    :param enable:
-    :return:
-    """
-    if sys.stdout.isatty():
-        os.popen(f"stty {'echo -raw' if enable else 'raw -echo min 0'}").read()
-
-
-def get_cursor_position() -> Optional[Tuple[int, int]]:
-    """ Get the terminal cursor position
-    Solution taken from:
-    - https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
-    :return:
-    """
-    if sys.stdout.isatty():
-        buf = ""
-        stdin = sys.stdin.fileno()
-        attrs = termios.tcgetattr(stdin)
-
-        try:
-            tty.setcbreak(stdin, termios.TCSANOW)
-            sys.stdout.write("\x1b[6n")
-            sys.stdout.flush()
-            while True:
-                buf += sys.stdin.read(1)
-                if buf[-1] == "R":
-                    break
-        finally:
-            termios.tcsetattr(stdin, termios.TCSANOW, attrs)
-        try:
-            matches = re.match(r"^\x1b\[(\d*);(\d*)R", buf)
-            groups = matches.groups()
-        except AttributeError:
-            return None
-
-        return int(groups[0]), int(groups[1])
-    else:
-        return None
 
 
 def flatten_dict(dictionary: dict, parent_key='', sep='.'):
