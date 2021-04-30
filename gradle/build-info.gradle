@@ -60,14 +60,14 @@ task changeVersion(type: Task) {
   group = 'Versioning'
   description = 'Increment the build number for publishing'
   outputs.upToDateWhen { false }
-  //dependsOn check
-  //mustRunAfter check
+  dependsOn check
+  mustRunAfter check
   finalizedBy updateVersion
   doLast {
     def ver = project.ext.app_version
-    def part = project.getProperty('part') ?: 'patch'
+    def part = hasProperty('part') ? project.getProperty('part') : 'patch'
     println "Increment the ${part} number for publishing"
-    // major, minor or patch
+    // (major.minor.patch)
     exec {
       commandLine rootProject.python, '-m', 'bumpversion',
         '--verbose', '--allow-dirty', '--current-version', ver,
