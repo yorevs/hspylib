@@ -5,6 +5,6 @@
 # Package: main.hspylib.core.exception
 
 __all__ = [
-  'input_aborted_error', 
-  'not_found_error'
+  'entity_not_found_error', 
+  'input_aborted_error'
 ]

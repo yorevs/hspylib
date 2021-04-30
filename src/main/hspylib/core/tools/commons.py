@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import termios
+import collections
 import tty
 from typing import Type, List, Tuple, Any, Optional
 
@@ -214,3 +215,15 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
         return int(groups[0]), int(groups[1])
     else:
         return None
+
+
+def flatten_dict(dictionary: dict, parent_key='', sep='.'):
+    flat_dict = {}
+    for key, value in dictionary.items():
+        new_key = parent_key + sep + key if parent_key else key
+        if isinstance(value, dict):
+            flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
+        else:
+            flat_dict.update({new_key: value})
+
+    return flat_dict

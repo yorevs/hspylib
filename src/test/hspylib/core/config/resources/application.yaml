@@ -1,0 +1,11 @@
+test:
+  weird:
+    property: this is. = a weird value
+  int:
+    property: 1055
+  float:
+    property: 3.14
+  bool:
+    property1: FALse
+    property2: TRue
+  overridden.by.environ: should not be gotten
