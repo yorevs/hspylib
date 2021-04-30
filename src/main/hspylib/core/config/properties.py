@@ -44,33 +44,40 @@ class Properties:
         return self.properties.__iter__()
 
     def get(self, key: str, default_value=None) -> Optional[str]:
+        """Get a property value as string or default_value if the property was not found"""
         return self.properties[key.strip()] if key.strip() in self.properties else default_value
 
     def get_int(self, key: str, default_value=None) -> Optional[int]:
+        """Get and convert a property value into int or return a default value if any error occurred"""
         try:
             return int(self.get(key))
         except TypeError:
             return default_value
 
     def get_float(self, key: str, default_value=None) -> Optional[float]:
+        """Get and convert a property value into float or return a default value if any error occurred"""
         try:
             return float(self.get(key))
         except TypeError:
             return default_value
 
     def get_bool(self, key: str, default_value=None) -> Optional[bool]:
+        """Get and convert a property value into bool or return a default value if any error occurred"""
         try:
             return self.get(key).lower() in ['true', '1', 'on', 'yes']
         except TypeError:
             return default_value
 
     def size(self) -> int:
+        """Retrieve the amount of properties"""
         return len(self.properties) if self.properties else 0
 
-    def values(self):
-        return self.properties.values()
+    def values(self) -> list:
+        """Retrieve all values for all properties"""
+        return list(self.properties.values())
 
     def _read(self) -> None:
+        """Read all properties from the file"""
         self.filepath = self._find_path()
         if os.path.exists(self.filepath):
             self._parse()
@@ -79,6 +86,7 @@ class Properties:
                 'File "{}" does not exist'.format(self.filepath))
 
     def _find_path(self) -> str:
+        """Find the proper path for the properties file"""
         if self.profile:
             filepath = self._profiled_format \
                 .format(self.filename, self.profile, self.extension)
@@ -88,6 +96,7 @@ class Properties:
         return f'{self.load_dir}/{filepath}'
 
     def _parse(self):
+        """Parse the properties file according to it's extension"""
         with open(self.filepath) as fh_props:
             if self.extension in ['.ini', '.cfg']:
                 all_lines = ''.join(fh_props.readlines())
