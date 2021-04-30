@@ -13,6 +13,7 @@ project.ext.deps = [
   'requests',
   'emoji',
   'getkey',
+  'PyYAML',
   'twine',
   'wheel',
   'bumpversion',

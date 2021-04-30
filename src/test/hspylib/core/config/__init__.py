@@ -5,5 +5,6 @@
 # Package: test.hspylib.core.config
 
 __all__ = [
-  'test_app_config'
+  'test_app_config', 
+  'test_properties'
 ]
