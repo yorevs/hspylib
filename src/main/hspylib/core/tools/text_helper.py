@@ -12,50 +12,48 @@ def rand_string(choices: str, length: int) -> str:
     return ''.join(random.choices(choices, k=length))
 
 
-class TextHelper:
-    @staticmethod
-    def justified_left(string: str, width: int, fill: str = ' ') -> str:
-        return string.ljust(width, fill)
+def justified_left(string: str, width: int, fill: str = ' ') -> str:
+    return string.ljust(width, fill)
 
-    @staticmethod
-    def justified_center(string: str, width: int, fill: str = ' ') -> str:
-        return string.center(width, fill)
 
-    @staticmethod
-    def justified_right(string: str, width: int, fill: str = ' ') -> str:
-        return string.rjust(width, fill)
+def justified_center(string: str, width: int, fill: str = ' ') -> str:
+    return string.center(width, fill)
 
-    @staticmethod
-    def uppercase(string: str) -> str:
-        return string.upper()
 
-    @staticmethod
-    def lowercase(string: str) -> str:
-        return string.lower()
+def justified_right(string: str, width: int, fill: str = ' ') -> str:
+    return string.rjust(width, fill)
 
-    @staticmethod
-    def camelcase(string: str) -> str:
-        return string.capitalize()
 
-    @staticmethod
-    def cut(string: str, index: int) -> str:
-        result = tuple(re.split(r' +', string))
-        return get_or_default(result, index)
+def uppercase(string: str) -> str:
+    return string.upper()
+
+
+def lowercase(string: str) -> str:
+    return string.lower()
+
+
+def camelcase(string: str) -> str:
+    return string.capitalize()
+
+
+def cut(string: str, index: int) -> str:
+    result = tuple(re.split(r' +', string))
+    return get_or_default(result, index)
 
 
 class TextAlignment:
     """
     Table cell text justification helper.
     """
-    LEFT = TextHelper.justified_left
-    CENTER = TextHelper.justified_center
-    RIGHT = TextHelper.justified_right
+    LEFT = justified_left
+    CENTER = justified_center
+    RIGHT = justified_right
 
 
 class TextCase:
     """
     Table cell text justification helper.
     """
-    UPPER_CASE = TextHelper.uppercase
-    LOWER_CASE = TextHelper.lowercase
-    CAMEL_CASE = TextHelper.camelcase
+    UPPER_CASE = uppercase
+    LOWER_CASE = lowercase
+    CAMEL_CASE = camelcase

@@ -103,7 +103,6 @@ class Keyboard(Enumeration):
 
     @classmethod
     def read_keystroke(cls) -> Optional[Any]:
-        keystroke = None
         try:
             keystroke = getkey.getkey()
             if keystroke:
