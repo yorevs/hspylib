@@ -1,8 +1,12 @@
 import os
+import pathlib
 import sys
 
 from hspylib.core.tools.commons import __version__, __curdir__, sysout
 from hspylib.modules.application.application import Application
+
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
 
 
 class Main(Application):
@@ -12,10 +16,10 @@ class Main(Application):
     APP_NAME = os.path.basename(__file__)
 
     # The application version
-    VERSION = __version__('src/main/.version')
+    VERSION = __version__(f"{HERE}/.version")
 
     # Usage message
-    USAGE = f"Usage: {APP_NAME} <option> [arguments]"
+    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
 
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))

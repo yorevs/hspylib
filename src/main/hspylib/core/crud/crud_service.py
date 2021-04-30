@@ -1,7 +1,7 @@
 from typing import Optional, List, TypeVar, Generic
 from uuid import UUID
 
-from hspylib.core.exception.not_found_error import NotFoundError
+from hspylib.core.exception.entity_not_found_error import EntityNotFoundError
 
 ET = TypeVar('ET')
 RT = TypeVar('RT')
@@ -20,7 +20,7 @@ class CrudService(Generic[ET, RT]):
 
     def remove(self, entity: ET) -> None:
         if not self.get(entity.uuid):
-            raise NotFoundError(
+            raise EntityNotFoundError(
                 "{} was not found: {}".format(entity.__class__, entity))
         else:
             self.repository.delete(entity)

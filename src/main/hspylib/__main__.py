@@ -91,6 +91,7 @@ project.ext.set("pyrccVersion", '5')"""
             self._mkdir('src/main')
             self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
             self._mkfile('src/main/.version', '0.1.0')
+            self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
             self._mkdir('src/main/resources')
             self._mkfile('src/main/resources/application.properties', '# Main application property file')
             self._mkdir('src/main/resources/log')
