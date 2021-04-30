@@ -1,0 +1,97 @@
+/*
+    Gradle documentation generation extension
+    Project: HSPyLib
+    Created: 30th April, 2021
+*/
+
+import java.text.SimpleDateFormat
+
+def year = new SimpleDateFormat("yyyy").format(new Date())
+def curDate = new SimpleDateFormat("EEE, d MMM yyyy").format(new Date())
+
+/* File Headers Section ---------------------------------------------------- */
+
+/**** PYTHON ****/
+def PY_FILE_HEADER = """#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+\"\"\"
+   TODO Purpose of the file
+   @project: ${project.ext.app_name}
+   @package: %package%
+      @file: %filename%
+   @created: ${curDate}
+      @site: ${project.ext.siteUrl}
+   @license: Please refer to <https://opensource.org/licenses/MIT>
+\"\"\"
+"""
+
+/* For future use */
+def POST_PY_HEADER = """
+__author__ = "${project.ext.author}"
+__license__ = "MIT"
+__status__ = "Development"
+__version__ = "${project.ext.app_version}"
+__email__ = "${project.ext.mailTo}"
+__copyright__ = "Copyright ${year}, ${project.ext.app_name} team"
+"""
+
+
+/* Helper Functions -------------------------------------------------------- */
+
+Collection filesByPattern(String baseDir, String pattern) {
+  def paths = []
+  fileTree(baseDir).visit { FileVisitDetails details ->
+      if (!details.isDirectory() && details.name ==~ pattern) paths << details.file.path
+  }
+  return paths
+}
+
+String getPackageName(File file) {
+  return file.getParentFile()
+    .getCanonicalPath()
+    .replaceAll("${sourceRoot}", "${project.ext.app_name.toLowerCase()}")
+    .replaceAll("\\/", "\\.")
+}
+
+String processPythonHeader(File file, String header_template) {
+    def pkg = getPackageName(file)
+    def header = header_template
+      .replaceAll("%package%", pkg).replaceAll("%filename%", file.getName())
+    def contents = file.getText()
+      .replaceAll("#!.* python.?\n", "")
+      .replaceAll("# _*_ .* _*_\n", "")
+
+    return "${header}\n${contents}"
+}
+
+
+/* Docgen tasks */
+
+task syncPythonHeaders(type: Task) {
+  group = 'Documentation'
+  description = 'Synchronize all Python file headers'
+  doLast {
+    def files = filesByPattern(sourceRoot, /.*(?<!__init__)\.py$/)
+    files.each {
+      def fh_file = new File(it)
+      def headers = processPythonHeader(fh_file, PY_FILE_HEADER)
+      def fileStates = 'headers'
+      def imports = []
+      def code = []
+      fh_file.eachLine { String line ->
+        if (line ==~ /^(import |from ).*/) {
+          imports << line
+          fileStates = 'imports'
+        } else if ('imports'.equals(fileStates) || 'code'.equals(fileStates)) {
+          code << line
+          fileStates = 'code'
+        } else if (!'headers'.equals(fileStates)) {
+          println "SEI LA: ${line}"
+        }
+      }
+      //fh_file.setText("${headers}${imports.join('\n')}${POST_PY_HEADER}${code.join('\n')}")
+      println
+    }
+  }
+}

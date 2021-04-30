@@ -20,9 +20,13 @@ class AppManager(metaclass=Singleton):
     TEMPLATES = (HERE / "templates")
 
     GRADLE_PROPS = f"""
-    project.ext.set("projectVersion", '{'.'.join(map(str, VERSION))}')
-    project.ext.set("pythonVersion", '3')
-    project.ext.set("pyrccVersion", '5')"""
+project.ext.set("projectVersion", '{'.'.join(map(str, VERSION))}')
+project.ext.set("pythonVersion", '3')
+project.ext.set("pyrccVersion", '5')
+project.ext.set("author", "YourUser")
+project.ext.set("mailTo", "YourEmail")
+project.ext.set("siteUrl", "YourSiteUrl")
+"""
 
     class AppType(Enumeration):
         BASIC = 1
