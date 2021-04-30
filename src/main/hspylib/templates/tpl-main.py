@@ -1,4 +1,3 @@
-import os
 import sys
 
 from hspylib.core.tools.commons import __version__, __curdir__, sysout, __here__
@@ -9,9 +8,6 @@ HERE = __here__(__file__)
 
 class Main(Application):
     """TODO"""
-
-    # The application name
-    APP_NAME = os.path.basename(__file__)
 
     # The application version
     VERSION = __version__(f"{HERE}/.version")
@@ -24,7 +20,7 @@ class Main(Application):
 
     def main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        sysout(f'Hello {self.APP_NAME}')
+        sysout(f'Hello {self.app_name}')
 
 
 if __name__ == "__main__":

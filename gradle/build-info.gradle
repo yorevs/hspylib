@@ -70,7 +70,7 @@ task changeVersion(type: Task) {
     // (major.minor.patch)
     exec {
       commandLine rootProject.python, '-m', 'bumpversion',
-        '--verbose', '--allow-dirty', '--current-version', ver,
+        '--allow-dirty', '--current-version', ver,
         part, 'properties.gradle'
     }
   }
