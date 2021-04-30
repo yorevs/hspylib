@@ -1,25 +1,20 @@
 #!/usr/bin/env python3
 import logging as log
 import os
-import pathlib
 import sys
 from datetime import datetime
 
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
-from hspylib.core.tools.commons import __version__, __curdir__, syserr
+from hspylib.core.tools.commons import __version__, __curdir__, syserr, __here__
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.argument_chain import ArgumentChain
 
-# The directory containing this file
-HERE = pathlib.Path(__file__).parent
+HERE = __here__(__file__)
 
 
 class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
-
-    # The application name
-    APP_NAME = os.path.basename(__file__)
 
     # The application version
     VERSION = __version__('src/main/.version')

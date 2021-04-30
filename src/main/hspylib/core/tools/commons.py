@@ -1,5 +1,6 @@
 import logging as log
 import os
+import pathlib
 import re
 import sys
 from typing import Type, List, Tuple, Any, Optional
@@ -53,24 +54,41 @@ def __version__(version_filepath: str = ".version") -> Optional[Tuple]:
 
 
 def __curdir__(filepath: str) -> str:
-    """Retrieve the application directory"""
+    """Retrieve the directory of the specified filepath"""
     return os.path.dirname(os.path.realpath(filepath))
 
 
+def __rootdir__() -> str:
+    """Retrieve the application's root directory"""
+    return sys.path[0]
+
+
+def __here__(filepath: str) -> pathlib.Path:
+    return pathlib.Path(filepath).parent
+
+
 def environ_name(property_name: str) -> str:
-    """Retrieve the environment name of the specified property name"""
+    """Retrieve the environment name of the specified property name
+    :param property_name: the name of the property using space, dot or dash notations
+    """
     return re.sub('[ -.]', '_', property_name).upper()
 
 
 def sysout(string: str, end: str = '\n') -> None:
-    """Print the unicode input_string decoding vt100 placeholders"""
+    """Print the unicode input_string decoding vt100 placeholders
+    :param string: values to be printed to sys.stdout
+    :param end: string appended after the last value, default a newline
+    """
     if Validator.is_not_blank(string):
         msg = VtColors.colorize(VtCodes.decode(f"{string}"))
         print(msg, file=sys.stdout, flush=True, end=end)
 
 
 def syserr(string: str, end: str = '\n') -> None:
-    """Print the unicode input_string decoding vt100 placeholders"""
+    """Print the unicode input_string decoding vt100 placeholders
+    :param string: values to be printed to sys.stderr
+    :param end: string appended after the last value, default a newline
+    """
     if Validator.is_not_blank(string):
         msg = VtColors.colorize(VtCodes.decode(f"%RED%{string}%NC%"))
         print(msg, file=sys.stderr, flush=True, end=end)
@@ -78,23 +96,23 @@ def syserr(string: str, end: str = '\n') -> None:
 
 def class_attribute_names(clazz: Type) -> tuple:
     """TODO
-    :param clazz:
+    :param clazz: TODO
     """
     return tuple(vars(clazz()).keys()) if clazz else None
 
 
 def class_attribute_values(instance: dict) -> tuple:
     """TODO
-    :param instance:
+    :param instance: TODO
     """
     return tuple(instance.values()) if object else None
 
 
 def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
-    """TODO
-    :param input_str:
-    :param regex_filter:
-    :param delimiter:
+    """Split the string using the delimiter and filter using the specified regex filter
+    :param input_str: The string to be split
+    :param regex_filter: The regex to filter the string
+    :param delimiter: The delimiter according which to split the string
     """
     regex = re.compile(regex_filter)
     result_list = list(filter(regex.search, input_str.split(delimiter)))

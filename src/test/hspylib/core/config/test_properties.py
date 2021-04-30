@@ -1,12 +1,11 @@
 import logging as log
-import pathlib
 import sys
 import unittest
 
 from hspylib.core.config.properties import Properties
+from hspylib.core.tools.commons import __here__
 
-# The directory containing this file
-TEST_DIR = pathlib.Path(__file__).parent
+TEST_DIR = __here__(__file__)
 
 
 class TestProperties(unittest.TestCase):

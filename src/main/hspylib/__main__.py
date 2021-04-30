@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 import os
-import pathlib
 import subprocess
 import sys
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
-from hspylib.core.tools.commons import __version__, sysout, syserr
-from hspylib.modules.fetch.fetch import get
+from hspylib.core.tools.commons import __version__, sysout, syserr, __here__
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.argument_chain import ArgumentChain
+from hspylib.modules.fetch.fetch import get
 
-# The directory containing this file
-HERE = pathlib.Path(__file__).parent
+HERE = __here__(__file__)
 
 
 class Main(Application):

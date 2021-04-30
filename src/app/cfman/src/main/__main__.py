@@ -1,24 +1,18 @@
 #!/usr/bin/env python3
 import logging as log
-import os
-import pathlib
 import sys
 from datetime import datetime
 from typing import Any
 
 from cfman.src.main.core.cf_man import CFManager
-from hspylib.core.tools.commons import __version__, __curdir__
+from hspylib.core.tools.commons import __version__, __curdir__, __here__
 from hspylib.modules.application.application import Application
 
-# The directory containing this file
-HERE = pathlib.Path(__file__).parent
+HERE = __here__(__file__)
 
 
 class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
-
-    # The application name
-    APP_NAME = os.path.basename(__file__)
 
     # The application version
     VERSION = __version__('src/main/.version')
