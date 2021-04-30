@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
 import logging as log
-import os
-import pathlib
 import sys
 from datetime import datetime
 
-from hspylib.core.tools.commons import get_or_default, __version__, __curdir__, syserr
+from hspylib.core.tools.commons import get_or_default, __version__, __curdir__, syserr, __here__
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.argument_chain import ArgumentChain
 from vault.src.main.core.vault import Vault
 from vault.src.main.core.vault_config import VaultConfig
 
-# The directory containing this file
-HERE = pathlib.Path(__file__).parent
+HERE = __here__(__file__)
 
 
 class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
-
-    # The application name
-    APP_NAME = os.path.basename(__file__)
 
     # The application version
     VERSION = __version__('src/main/.version')

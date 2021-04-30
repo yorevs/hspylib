@@ -1,12 +1,12 @@
 import logging as log
 import os
 import re
-import sys
-import yaml
 from configparser import ConfigParser
 from typing import Optional, Any
 
-from hspylib.core.tools.commons import flatten_dict
+import yaml
+
+from hspylib.core.tools.commons import flatten_dict, __rootdir__
 
 
 class Properties:
@@ -26,7 +26,7 @@ class Properties:
         self.filename = filename
         self.extension = extension
         self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE')
-        self.load_dir = load_dir if load_dir else f'{sys.path[0]}/resources'
+        self.load_dir = load_dir if load_dir else f'{__rootdir__()}/resources'
         self.filepath = None
         self.properties = {}
         self._read()

@@ -1,12 +1,10 @@
 import os
-import pathlib
 import sys
 
-from hspylib.core.tools.commons import __version__, __curdir__, sysout
+from hspylib.core.tools.commons import __version__, __curdir__, sysout, __here__
 from hspylib.modules.application.application import Application
 
-# The directory containing this file
-HERE = pathlib.Path(__file__).parent
+HERE = __here__(__file__)
 
 
 class Main(Application):

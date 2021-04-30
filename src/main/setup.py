@@ -2,7 +2,6 @@ import pathlib
 
 import setuptools
 
-# The directory containing this file
 HERE = pathlib.Path(__file__).parent
 
 # The text of the README file

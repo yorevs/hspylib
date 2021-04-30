@@ -4,8 +4,9 @@ import sys
 import unittest
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import __curdir__
 
-TEST_DIR = os.path.dirname(os.path.realpath(__file__))
+TEST_DIR = __curdir__(__file__)
 
 
 class TestAppConfig(unittest.TestCase):

@@ -49,9 +49,14 @@ class Application(metaclass=Singleton):
     def run(self, *args, **kwargs):
         """Main entry point handler"""
         log.info('Run started {}'.format(datetime.now()))
-        self.main(*args, **kwargs)
-        self.exit_handler()
-        log.info('Run finished {}'.format(datetime.now()))
+        try:
+            self.main(*args, **kwargs)
+            self.exit_handler()
+        except (InvalidArgumentError, InvalidOptionError) as err:
+            syserr(str(err))
+            self.usage(1)
+        finally:
+            log.info('Run finished {}'.format(datetime.now()))
 
     def cleanup(self):
         """TODO"""
@@ -108,14 +113,10 @@ class Application(metaclass=Singleton):
                 if opt and opt.cb_handler:
                     opt.cb_handler(arg)
                 else:
-                    raise InvalidOptionError(f"Unhandled option: {op}")
+                    raise InvalidOptionError(f'Option "{op}" not recognized')
             return args
         except getopt.GetoptError as err:
-            syserr(f"### Invalid option: {str(err)}")
-            self.usage(1)
-        except InvalidOptionError as err:
-            syserr(f"### Invalid option: {str(err)}")
-            self.usage(1)
+            raise InvalidOptionError(f"### Invalid option: {str(err)}")
 
     def parse_arguments(self, provided_args: List[str]) -> None:
         """Handle program arguments
@@ -136,8 +137,10 @@ class Application(metaclass=Singleton):
                 except getopt.GetoptError as err:
                     log.debug(str(err))
                     continue  # Just try the next chain
+                except LookupError:
+                    continue  # Just try the next chain
             if not valid:
-                raise InvalidArgumentError(f"Invalid arguments => {', '.join(provided_args)}")
+                raise InvalidArgumentError(f"Invalid arguments  \"{', '.join(provided_args)}\"")
 
     def recursive_set(self, idx: int, argument: Argument, provided_args: List[str]):
         """ Try to set a value for each provided argument. If any failure setting occur, raise an exception to be caught
@@ -146,8 +149,8 @@ class Application(metaclass=Singleton):
         if not argument or idx >= len(provided_args):
             return
         if not argument.set_value(provided_args[idx]):
-            raise InvalidArgumentError(
-                f'Invalid argument: {provided_args[idx]}. Required expression: {argument.validation_regex}')
+            raise LookupError(
+                f'Invalid argument "{provided_args[idx]}"')
         else:
             self.recursive_set(idx + 1, argument.next_in_chain, provided_args)
 
