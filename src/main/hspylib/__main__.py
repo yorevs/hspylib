@@ -54,7 +54,7 @@ class Main(Application):
             manager.create_app(
                 self.args[1],
                 AppManager.AppType.value_of(self.args[2], ignore_case=True),
-                self.args[3] if len(self.args) > 2 else __rootdir__())
+                self.args[3] if len(self.args) > 3 else __rootdir__())
         else:
             syserr('### Invalid operation: {}'.format(op))
             self.usage(1)

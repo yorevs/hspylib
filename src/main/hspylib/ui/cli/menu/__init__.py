@@ -6,6 +6,7 @@
 
 __all__ = [
   'extra', 
+  'factory', 
   'menu', 
   'menu_item', 
   'menu_ui', 
