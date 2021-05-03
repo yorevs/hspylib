@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.10.2
 #
-# Package: main.hspylib.ui.cli.factory
+# Package: main.hspylib.ui.cli.menu.factory
 
 __all__ = [
   'menu_entry', 

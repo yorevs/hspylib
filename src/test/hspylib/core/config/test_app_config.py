@@ -23,10 +23,6 @@ class TestAppConfig(unittest.TestCase):
         log.info(self.configs)
         os.environ['TEST_OVERRIDDEN_BY_ENVIRON'] = 'yes its overridden'
 
-    # Teardown tests
-    def tearDown(self):
-        pass
-
     # TEST CASES ----------
 
     def test_should_get_a_weird_valued_property(self):

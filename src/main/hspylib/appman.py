@@ -50,13 +50,17 @@ project.ext.set("siteUrl", "YourSiteUrl")
             self._mkdir('')
             self._mkdir('src')
             self._mkdir('src/test')
+            self._mkfile('src/test/test_main.py', (self.TEMPLATES / "tpl-test_main.py").read_text())
             self._mkdir('src/main')
             self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
             self._mkfile('src/main/.version', '0.1.0')
             self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
             self._mkdir('src/main/resources')
+            self._mkdir('src/test/resources')
             self._mkfile('src/main/resources/application.properties', '# Main application property file')
+            self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
             self._mkdir('src/main/resources/log')
+            self._mkdir('src/test/resources/log')
             self._mkfile('README.md', f'# {app_name}')
             self._mkfile('MANIFEST.in', '')
             # TODO Create setup.py
@@ -101,6 +105,9 @@ project.ext.set("siteUrl", "YourSiteUrl")
             f'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self.app_name)
         )
         self._mkfile(f'gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
+        args = ['./gradlew', 'build']
+        result = subprocess.run(args, capture_output=True, text=True, cwd=self.app_dir).stdout
+        sysout('Gradle execution result: {}'.format(result))
 
     def _download_ext(self, extension: str):
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')

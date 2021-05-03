@@ -5,7 +5,6 @@
 # Package: main.hspylib.ui.qt
 
 __all__ = [
-  'forms', 
   'promotions', 
   'qt_finder', 
   'views'

@@ -5,6 +5,7 @@
 # Package: test.hspylib.modules
 
 __all__ = [
+  'application', 
   'eventbus', 
   'fetch', 
   'json_search', 
