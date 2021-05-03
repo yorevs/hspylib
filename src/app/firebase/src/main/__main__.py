@@ -29,8 +29,7 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
         self.firebase = Firebase()
 
-    def main(self, *params, **kwargs) -> None:
-        """Run the application with the command line arguments"""
+    def setup_parameters(self, *params, **kwargs):
         # @formatter:off
         self.with_arguments(
             ArgumentChain.builder()
@@ -47,7 +46,9 @@ class Main(Application):
                 .build()
         )
         # @formatter:on
-        self.parse_parameters(*params)
+
+    def main(self, *params, **kwargs) -> None:
+        """Run the application with the command line arguments"""
         log.info(
             self.WELCOME.format(
                 self.app_name,
