@@ -25,24 +25,25 @@ class Main(Application):
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE)
 
+    def setup_parameters(self, *params, **kwargs):
+        # @formatter:off
+        self.with_arguments(
+            ArgumentChain.builder()
+                .when('Operation', 'create')
+                .require('AppName', '.+')
+                .require('MngType', 'basic|gradle|git|all')
+                .accept('DestDir', '.+')
+                .end()
+                .build()
+        )
+        # @formatter:on
+
     def main(self, *params, **kwargs) -> None:
         if len(*params) == 0:
             welcome = self.WELCOME
             sysout(f"{welcome}")
             sysout(self.USAGE)
         else:
-            # @formatter:off
-            self.with_arguments(
-                ArgumentChain.builder()
-                    .when('Operation', 'create')
-                        .require('AppName', '.+')
-                        .require('MngType', 'basic|gradle|git|all')
-                        .accept('DestDir', '.+')
-                        .end()
-                    .build()
-            )
-            # @formatter:on
-            self.parse_parameters(*params)
             self._exec_application()
 
     def _exec_application(self) -> None:
