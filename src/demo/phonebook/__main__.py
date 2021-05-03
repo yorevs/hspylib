@@ -3,7 +3,7 @@ import sys
 
 from hspylib.core.tools.commons import __curdir__
 from hspylib.modules.application.application import Application
-from hspylib.ui.cli.factory.menu_factory import MenuFactory
+from hspylib.ui.cli.menu.factory.menu_factory import MenuFactory
 from hspylib.ui.cli.menu.menu_ui import MenuUi
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from phonebook.view.create_view import CreateView

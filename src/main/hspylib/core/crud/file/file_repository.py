@@ -11,7 +11,7 @@ from hspylib.core.model.entity import Entity
 
 
 class FileRepository(CrudRepository):
-    __storages = {}
+    _storages = {}
 
     @staticmethod
     def check_criteria(partial_value, whole_value):
@@ -114,8 +114,8 @@ class FileRepository(CrudRepository):
 
     def __create_or_get(self):
         """TODO"""
-        if self.filename in FileRepository.__storages:
-            return FileRepository.__storages[self.filename]
+        if self.filename in FileRepository._storages:
+            return FileRepository._storages[self.filename]
         else:
-            FileRepository.__storages[self.filename] = FileStorage(self.filename)
-            return FileRepository.__storages[self.filename]
+            FileRepository._storages[self.filename] = FileStorage(self.filename)
+            return FileRepository._storages[self.filename]
