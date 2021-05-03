@@ -28,14 +28,14 @@ class Main(Application):
         self.option_map = {}
         self.cfman = None
 
-    def setup_parameters(self, *params, **kwargs):
-        self.with_option('a', 'api', True, lambda arg: self._add_option('api', arg))
-        self.with_option('o', 'org', True, lambda arg: self._add_option('org', arg))
-        self.with_option('s', 'space', True, lambda arg: self._add_option('space', arg))
-        self.with_option('u', 'username', True, lambda arg: self._add_option('username', arg))
-        self.with_option('p', 'password', True, lambda arg: self._add_option('password', arg))
+    def _setup_parameters(self, *params, **kwargs):
+        self._with_option('a', 'api', True, lambda arg: self._add_option('api', arg))
+        self._with_option('o', 'org', True, lambda arg: self._add_option('org', arg))
+        self._with_option('s', 'space', True, lambda arg: self._add_option('space', arg))
+        self._with_option('u', 'username', True, lambda arg: self._add_option('username', arg))
+        self._with_option('p', 'password', True, lambda arg: self._add_option('password', arg))
 
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(self.option_map)
         log.info(

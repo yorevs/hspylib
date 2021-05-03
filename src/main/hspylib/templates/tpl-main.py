@@ -18,7 +18,7 @@ class Main(Application):
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
 
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         sysout(f'Hello {self.app_name}')
 

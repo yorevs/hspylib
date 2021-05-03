@@ -6,6 +6,7 @@ from hspylib.ui.cli.vt100.vt_100 import Vt100
 
 
 def vt_print(vt100_str: str, end: str = '') -> None:
+    """Print a vt-100 encoded string. VT-100 string will contain one or more %VT-100-CODE% """
     print(VtCodes.decode(vt100_str), end=end)
 
 
@@ -30,6 +31,7 @@ class VtCodes(Enumeration):
 
     HOM = Vt100.cursor_pos()     # ^[[H  -> Move cursor to upper left corner
 
+    # The following entries must defined as auto(), so they can be invoked as Callable
     MOD = auto()  # ^[[<m1;m2;m3>m  -> Set terminal modes
     CUP = auto()  # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
     CUU = auto()  # ^[[<n>A         -> Move cursor up n lines
@@ -37,19 +39,20 @@ class VtCodes(Enumeration):
     CUF = auto()  # ^[[<n>C         -> Move cursor right n lines
     CUB = auto()  # ^[[<n>D         -> Move cursor left n lines
 
-    # For all mnemonics that take arguments we need to include in this map
-    _vt100_fnc_map = {
+    # For all mnemonics that take arguments we need to include in this map, so we can call it
+    __VT100_FNC_MAP__ = {
+        "MOD": Vt100.mode,
         "CUP": Vt100.cursor_pos,
         "CUU": Vt100.cursor_move_up,
         "CUD": Vt100.cursor_move_down,
         "CUF": Vt100.cursor_move_forward,
         "CUB": Vt100.cursor_move_backward,
-        "MOD": Vt100.mode,
     }
 
     @classmethod
     def decode(cls, input_string: str) -> str:
         results = re.findall(r'%([a-zA-Z0-9]+)(\([0-9]+(;[0-9]+)*\))?%', input_string)
+        """Decode the string into a VT_CODE enum"""
         for nextResult in results:
             mnemonic = nextResult[0]
             if mnemonic in VtCodes.names():
@@ -64,7 +67,7 @@ class VtCodes(Enumeration):
         return input_string
 
     def __call__(self, *args, **kwargs) -> str:
-        return self._vt100_fnc_map[self.name](args[0])
+        return VtCodes.__VT100_FNC_MAP__[self.name](args[0])
 
     def __str__(self) -> str:
         return str(self.value)
