@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 from typing import Any
 
-from cfman.src.main.core.cf_man import CFManager
+from cfman.src.main.core.cf_manager import CFManager
 from hspylib.core.tools.commons import __version__, __curdir__, __here__
 from hspylib.modules.application.application import Application
 
@@ -29,11 +29,11 @@ class Main(Application):
         self.cfman = None
 
     def _setup_parameters(self, *params, **kwargs):
-        self._with_option('a', 'api', True, lambda arg: self._add_option('api', arg))
-        self._with_option('o', 'org', True, lambda arg: self._add_option('org', arg))
-        self._with_option('s', 'space', True, lambda arg: self._add_option('space', arg))
-        self._with_option('u', 'username', True, lambda arg: self._add_option('username', arg))
-        self._with_option('p', 'password', True, lambda arg: self._add_option('password', arg))
+        self._with_option('a', 'api', True)
+        self._with_option('o', 'org', True)
+        self._with_option('s', 'space', True)
+        self._with_option('u', 'username', True)
+        self._with_option('p', 'password', True)
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
@@ -45,9 +45,6 @@ class Main(Application):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self._exec_application()
-
-    def _add_option(self, key: str, value: Any):
-        self.option_map[key] = value
 
     def _exec_application(self) -> None:
         """Execute the application"""

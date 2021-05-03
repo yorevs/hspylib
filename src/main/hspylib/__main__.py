@@ -3,7 +3,7 @@ import os
 import sys
 
 from hspylib.appman import AppManager
-from hspylib.core.tools.commons import __version__, sysout, syserr, __here__
+from hspylib.core.tools.commons import __version__, sysout, syserr, __here__, __rootdir__
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.argument_chain import ArgumentChain
 
@@ -54,7 +54,7 @@ class Main(Application):
             manager.create_app(
                 self.args[1],
                 AppManager.AppType.value_of(self.args[2], ignore_case=True),
-                self.args[3] if len(self.args) > 2 else os.environ.get('HOME'))
+                self.args[3] if len(self.args) > 2 else __rootdir__())
         else:
             syserr('### Invalid operation: {}'.format(op))
             self.usage(1)
