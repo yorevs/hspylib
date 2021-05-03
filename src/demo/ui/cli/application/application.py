@@ -14,11 +14,11 @@ Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
 
 class Main(Application):
 
-    def setup_parameters(self, *params, **kwargs):
-        self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
-        self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
+    def _setup_parameters(self, *params, **kwargs):
+        self._with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
+        self._with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
         # @formatter:off
-        self.with_arguments(
+        self._with_arguments(
             ArgumentChain.builder()
                 .when('Number', 'one|two|three', False)
                 .require('Anything', '.+')
@@ -27,7 +27,7 @@ class Main(Application):
         )
         # @formatter:on
 
-    def main(self, *params):
+    def _main(self, *params):
         self.exec_operation()
 
     def exec_operation(self):

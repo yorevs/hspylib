@@ -24,7 +24,7 @@ class Main(Application):
         super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
         self.calc = QtCalculator()
 
-    def main(self, *args, **kwargs):
+    def _main(self, *args, **kwargs):
         self.calc.show()
 
 
