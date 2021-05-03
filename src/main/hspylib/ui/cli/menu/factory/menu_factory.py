@@ -1,6 +1,6 @@
 from hspylib.core.meta.singleton import Singleton
-from hspylib.ui.cli.factory.menu_entry import MenuEntry
-from hspylib.ui.cli.factory.menu_option import MenuOption
+from hspylib.ui.cli.menu.factory.menu_entry import MenuEntry
+from hspylib.ui.cli.menu.factory.menu_option import MenuOption
 from hspylib.ui.cli.menu.menu import Menu
 
 

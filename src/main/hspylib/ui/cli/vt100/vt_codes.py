@@ -38,7 +38,7 @@ class VtCodes(Enumeration):
     CUB = auto()  # ^[[<n>D         -> Move cursor left n lines
 
     # For all mnemonics that take arguments we need to include in this map
-    __VT100_FNC_MAP__ = {
+    _vt100_fnc_map = {
         "CUP": Vt100.cursor_pos,
         "CUU": Vt100.cursor_move_up,
         "CUD": Vt100.cursor_move_down,
@@ -64,7 +64,7 @@ class VtCodes(Enumeration):
         return input_string
 
     def __call__(self, *args, **kwargs) -> str:
-        return VtCodes.__VT100_FNC_MAP__[self.name](args[0])
+        return self._vt100_fnc_map[self.name](args[0])
 
     def __str__(self) -> str:
         return str(self.value)
