@@ -4,17 +4,17 @@ import subprocess
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import sysout, syserr, __here__, __version__
+from hspylib.core.tools.commons import sysout, syserr, get_path, read_version, run_dir
 from hspylib.modules.fetch.fetch import get
 
-HERE = __here__(__file__)
+HERE = get_path(__file__)
 
 
 class AppManager(metaclass=Singleton):
     """TODO"""
 
     # The hspylib version
-    VERSION = __version__(f"{HERE}/.version")
+    VERSION = read_version(f"{run_dir()}/.version")
 
     # The directory containing all template files
     TEMPLATES = (HERE / "templates")

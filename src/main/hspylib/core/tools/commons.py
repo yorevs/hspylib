@@ -44,7 +44,7 @@ def log_init(
     return log
 
 
-def __version__(version_filepath: str = ".version") -> Optional[Tuple]:
+def read_version(version_filepath: str = ".version") -> Optional[Tuple]:
     """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
     try:
         with open(version_filepath) as fh_version:
@@ -53,17 +53,17 @@ def __version__(version_filepath: str = ".version") -> Optional[Tuple]:
         return None
 
 
-def __curdir__(filepath: str) -> str:
+def dirname(filepath: str) -> str:
     """Retrieve the directory of the specified filepath"""
     return os.path.dirname(os.path.realpath(filepath))
 
 
-def __rootdir__() -> str:
+def run_dir() -> str:
     """Retrieve the application's root directory"""
     return sys.path[0]
 
 
-def __here__(filepath: str) -> pathlib.Path:
+def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 

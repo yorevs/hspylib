@@ -4,17 +4,17 @@ import sys
 from datetime import datetime
 
 from cfman.src.main.core.cf_manager import CFManager
-from hspylib.core.tools.commons import __version__, __curdir__, __here__
+from hspylib.core.tools.commons import read_version, dirname, get_path
 from hspylib.modules.cli.application.application import Application
 
-HERE = __here__(__file__)
+HERE = get_path(__file__)
 
 
 class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The application version
-    VERSION = __version__('src/main/.version')
+    VERSION = read_version('src/main/.version')
 
     # CloudFoundry manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
@@ -23,7 +23,7 @@ class Main(Application):
     WELCOME = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
+        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.option_map = {}
         self.cfman = None
 

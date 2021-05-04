@@ -3,7 +3,7 @@ import unittest
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import __curdir__
+from hspylib.core.tools.commons import dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.option import Option
 
@@ -30,7 +30,7 @@ class TestApplication(unittest.TestCase):
 
     # TC3 - Creating an application specifying source root directory
     def test_should_instantiate_configs(self):
-        app = Application('App-test', source_dir=__curdir__(__file__))
+        app = Application('App-test', source_dir=dirname(__file__))
         self.assertTrue(hasattr(AppConfigs, 'INSTANCE'))
 
     # TC4 - Check application should accept -v|--version when version is specified

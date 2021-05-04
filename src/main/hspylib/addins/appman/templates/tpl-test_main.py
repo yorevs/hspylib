@@ -4,9 +4,9 @@ import unittest
 import logging as log
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import __curdir__
+from hspylib.core.tools.commons import dirname
 
-TEST_DIR = __curdir__(__file__)
+TEST_DIR = dirname(__file__)
 
 
 class TestMain(unittest.TestCase):

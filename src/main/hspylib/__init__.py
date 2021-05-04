@@ -6,7 +6,7 @@
 
 __all__ = [
   '__main__', 
-  'add-ins', 
+  'addins', 
   'core', 
   'modules'
 ]

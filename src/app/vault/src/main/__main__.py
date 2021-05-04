@@ -3,20 +3,20 @@ import logging as log
 import sys
 from datetime import datetime
 
-from hspylib.core.tools.commons import get_or_default, __version__, __curdir__, syserr, __here__
+from hspylib.core.tools.commons import get_or_default, read_version, dirname, syserr, get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 from vault.src.main.core.vault import Vault
 from vault.src.main.core.vault_config import VaultConfig
 
-HERE = __here__(__file__)
+HERE = get_path(__file__)
 
 
 class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
     # The application version
-    VERSION = __version__('src/main/.version')
+    VERSION = read_version('src/main/.version')
 
     # Vault usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
@@ -25,7 +25,7 @@ class Main(Application):
     WELCOME = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
+        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.vault = Vault()
 
     def setup_parameters(self, *params, **kwargs):

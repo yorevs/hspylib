@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
-from hspylib.core.tools.commons import __curdir__
+from hspylib.core.tools.commons import dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.menu.factory.menu_factory import MenuFactory
 from hspylib.modules.cli.menu.menu_ui import MenuUi
@@ -18,7 +18,7 @@ class Main(Application):
     VERSION = (0, 9, 0)
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, source_dir=__curdir__(__file__))
+        super().__init__(app_name, self.VERSION, source_dir=dirname(__file__))
 
     def main(self, *args, **kwargs) -> None:
         create_view = CreateView()
