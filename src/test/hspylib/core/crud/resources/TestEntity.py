@@ -15,6 +15,7 @@
 """
 
 from uuid import UUID
+
 from hspylib.core.model.entity import Entity
 
 

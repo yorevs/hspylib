@@ -14,9 +14,11 @@
    Copyright 2021, HSPyLib team
 """
 
+from test.hspylib.core.crud.resources.TestEntity import TestEntity
+
 from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
 from hspylib.core.model.entity import Entity
-from test.hspylib.core.crud.resources.TestEntity import TestEntity
+
 
 class TestFirebaseRepository(FirebaseRepository):
     def __init__(self):

@@ -17,6 +17,7 @@
 import sys
 import unittest
 from unittest.mock import MagicMock
+
 from hspylib.modules.eventbus.eventbus import EventBus
 
 
@@ -70,6 +71,6 @@ class TestEventBus(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestEventBus)
-    unittest\
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
+    unittest \
+        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
         .run(suite)

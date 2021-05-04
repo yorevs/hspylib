@@ -15,6 +15,7 @@
 """
 
 import re
+
 from idna.core import unicode
 
 RE_JSON_NAME = '[a-zA-Z0-9_\\- ]'

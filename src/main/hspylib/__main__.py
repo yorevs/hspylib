@@ -15,6 +15,7 @@
 """
 
 import sys
+
 from hspylib.addins.appman.appman import AppManager
 from hspylib.core.tools.commons import read_version, sysout, syserr, get_path, run_dir
 from hspylib.modules.cli.application.application import Application

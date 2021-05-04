@@ -16,6 +16,7 @@
 
 from typing import Callable
 
+
 class EventBus:
     _buses = {}
     _subscribers = {}

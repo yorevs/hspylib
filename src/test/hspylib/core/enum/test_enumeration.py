@@ -16,11 +16,11 @@
 
 import sys
 import unittest
+
 from hspylib.core.enum.enumeration import Enumeration
 
 
 class TestClass(unittest.TestCase):
-
     class MyIntEnum(Enumeration):
         ENUM_1 = 1
         ENUM_2 = 2
