@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.core.crud.db
+      @file: sql_factory.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import logging as log
 import os
 from typing import List, Optional
@@ -54,24 +70,24 @@ class SqlFactory(metaclass=Singleton):
 
     def insert(self, entity: Entity) -> Optional[str]:
         params = entity.to_values()
-        sql = self.sql_stubs['insert']\
-                  .replace(':columnSet', str(entity.to_columns()).replace("'", ""))\
-                  .replace(':valueSet', str(params))
+        sql = self.sql_stubs['insert'] \
+            .replace(':columnSet', str(entity.to_columns()).replace("'", "")) \
+            .replace(':valueSet', str(params))
         return sql
 
     def select(self, column_set: List[str] = None, filters: CaseInsensitiveDict = None) -> Optional[str]:
-        sql = self.sql_stubs['select']\
-            .replace(':columnSet', '*' if not column_set else ', '.join(column_set))\
+        sql = self.sql_stubs['select'] \
+            .replace(':columnSet', '*' if not column_set else ', '.join(column_set)) \
             .replace(':filters', SqlFactory.join_filters(filters))
         return sql
 
     def update(self, entity: Entity, filters: CaseInsensitiveDict) -> Optional[str]:
-        sql = self.sql_stubs['update']\
-            .replace(':fieldSet', SqlFactory.join_fieldset(entity))\
+        sql = self.sql_stubs['update'] \
+            .replace(':fieldSet', SqlFactory.join_fieldset(entity)) \
             .replace(':filters', SqlFactory.join_filters(filters))
         return sql
 
     def delete(self, filters: CaseInsensitiveDict) -> Optional[str]:
-        sql = self.sql_stubs['delete']\
+        sql = self.sql_stubs['delete'] \
             .replace(':filters', SqlFactory.join_filters(filters))
         return sql

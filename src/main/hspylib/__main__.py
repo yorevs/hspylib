@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
-import sys
+# -*- coding: utf-8 -*-
 
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib
+      @file: __main__.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
+import sys
 from hspylib.addins.appman.appman import AppManager
 from hspylib.core.tools.commons import read_version, sysout, syserr, get_path, run_dir
 from hspylib.modules.cli.application.application import Application

@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.core.tools
+      @file: keyboard.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import string
 import sys
 from typing import Any, Optional
@@ -30,32 +46,58 @@ class Keyboard(Enumeration):
     VK_PAGE_DOWN = getkey.keys.PAGE_DOWN
     VK_SHIFT_TAB = '\x1b[Z'
     # Letters
-    VK_a = 'a'; VK_A = 'A'
-    VK_b = 'b'; VK_B = 'B'
-    VK_c = 'c'; VK_C = 'C'
-    VK_d = 'd'; VK_D = 'D'
-    VK_e = 'e'; VK_E = 'E'
-    VK_f = 'f'; VK_F = 'F'
-    VK_g = 'g'; VK_G = 'G'
-    VK_h = 'h'; VK_H = 'H'
-    VK_i = 'i'; VK_I = 'I'
-    VK_j = 'j'; VK_J = 'J'
-    VK_k = 'k'; VK_K = 'K'
-    VK_l = 'l'; VK_L = 'L'
-    VK_m = 'm'; VK_M = 'M'
-    VK_n = 'n'; VK_N = 'N'
-    VK_o = 'o'; VK_O = 'O'
-    VK_p = 'p'; VK_P = 'P'
-    VK_q = 'q'; VK_Q = 'Q'
-    VK_r = 'r'; VK_R = 'R'
-    VK_s = 's'; VK_S = 'S'
-    VK_t = 't'; VK_T = 'T'
-    VK_u = 'u'; VK_U = 'U'
-    VK_v = 'v'; VK_V = 'V'
-    VK_w = 'w'; VK_W = 'W'
-    VK_x = 'x'; VK_X = 'X'
-    VK_y = 'y'; VK_Y = 'Y'
-    VK_z = 'z'; VK_Z = 'Z'
+    VK_a = 'a';
+    VK_A = 'A'
+    VK_b = 'b';
+    VK_B = 'B'
+    VK_c = 'c';
+    VK_C = 'C'
+    VK_d = 'd';
+    VK_D = 'D'
+    VK_e = 'e';
+    VK_E = 'E'
+    VK_f = 'f';
+    VK_F = 'F'
+    VK_g = 'g';
+    VK_G = 'G'
+    VK_h = 'h';
+    VK_H = 'H'
+    VK_i = 'i';
+    VK_I = 'I'
+    VK_j = 'j';
+    VK_J = 'J'
+    VK_k = 'k';
+    VK_K = 'K'
+    VK_l = 'l';
+    VK_L = 'L'
+    VK_m = 'm';
+    VK_M = 'M'
+    VK_n = 'n';
+    VK_N = 'N'
+    VK_o = 'o';
+    VK_O = 'O'
+    VK_p = 'p';
+    VK_P = 'P'
+    VK_q = 'q';
+    VK_Q = 'Q'
+    VK_r = 'r';
+    VK_R = 'R'
+    VK_s = 's';
+    VK_S = 'S'
+    VK_t = 't';
+    VK_T = 'T'
+    VK_u = 'u';
+    VK_U = 'U'
+    VK_v = 'v';
+    VK_V = 'V'
+    VK_w = 'w';
+    VK_W = 'W'
+    VK_x = 'x';
+    VK_X = 'X'
+    VK_y = 'y';
+    VK_Y = 'Y'
+    VK_z = 'z';
+    VK_Z = 'Z'
     # Numbers
     VK_ZERO = '0'
     VK_ONE = '1'

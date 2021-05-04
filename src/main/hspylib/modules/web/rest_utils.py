@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.modules.web
+      @file: rest_utils.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import logging as log
 from typing import Optional
 
@@ -13,7 +29,6 @@ def rest_call(
         method: HttpMethod,
         data: str,
         headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
-
     all_headers = {} if not headers else headers
     all_headers.update({
         "Content-Type": "text/json",

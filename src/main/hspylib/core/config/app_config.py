@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.core.config
+      @file: app_config.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import logging as log
 import os
 from typing import Optional, Any
@@ -24,7 +40,6 @@ class AppConfigs(metaclass=Singleton):
             resource_dir: str = None,
             log_dir: str = None,
             log_file: str = None):
-
         self._source_dir = source_root \
             if source_root else os.environ.get('SOURCE_ROOT', dirname(__file__))
         assert os.path.exists(self._source_dir), f"Unable to find the source dir: {self._source_dir}"

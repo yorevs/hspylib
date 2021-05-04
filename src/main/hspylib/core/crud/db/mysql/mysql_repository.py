@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.core.crud.db.mysql
+      @file: mysql_repository.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import logging as log
 import sys
 import uuid
@@ -67,8 +83,8 @@ class MySqlRepository(DBRepository):
     def insert(self, entity: Entity):
         if self.is_connected():
             entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
-            stm = self._sql_factory\
-                .insert(entity)\
+            stm = self._sql_factory \
+                .insert(entity) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
@@ -77,8 +93,8 @@ class MySqlRepository(DBRepository):
 
     def update(self, entity: Entity):
         if self.is_connected():
-            stm = self._sql_factory\
-                .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)}))\
+            stm = self._sql_factory \
+                .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
@@ -87,16 +103,16 @@ class MySqlRepository(DBRepository):
 
     def delete(self, entity: Entity):
         if self.is_connected():
-            stm = self._sql_factory\
-                .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)}))\
+            stm = self._sql_factory \
+                .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
 
     def find_all(self, column_set: List[str] = None, sql_filters: SqlFilter = None) -> Optional[list]:
         if self.is_connected():
-            stm = self._sql_factory\
-                .select(column_set=column_set, filters=sql_filters)\
+            stm = self._sql_factory \
+                .select(column_set=column_set, filters=sql_filters) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
@@ -108,8 +124,8 @@ class MySqlRepository(DBRepository):
     def find_by_id(self, column_set: List[str] = None, entity_id: str = None) -> Optional[Entity]:
         if self.is_connected():
             if entity_id:
-                stm = self._sql_factory\
-                    .select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)}))\
+                stm = self._sql_factory \
+                    .select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)})) \
                     .replace(':tableName', self.table_name())
                 log.debug('Executing SQL statement: {}'.format(stm))
                 self._cursor.execute(stm)
