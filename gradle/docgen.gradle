@@ -77,7 +77,7 @@ task syncPythonHeaders(type: Task) {
         else if (line ==~ /^(import|from) .*/) {
           imports << line
           parseState = parseState.equals('headers') ? 'code' : parseState
-        } else if ('code'.equals(parseState) || !(line.isEMpty() && line ==~ /^(import|from) .*/)) {
+        } else if ('code'.equals(parseState) || !(line.isEmpty() && line ==~ /^(import|from) .*/)) {
           code << line
         }
       }
