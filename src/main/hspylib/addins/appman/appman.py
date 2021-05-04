@@ -34,9 +34,9 @@ class AppManager(metaclass=Singleton):
     TEMPLATES = (HERE / "templates")
 
     GRADLE_PROPS = """
-project.ext.set("projectVersion", '{}')
-project.ext.set("pythonVersion", '3')
-project.ext.set("pyrccVersion", '5')
+project.ext.set("projectVersion", "{}")
+project.ext.set("pythonVersion", "3")
+project.ext.set("pyrccVersion", "5")
 project.ext.set("author", "YourUser")
 project.ext.set("mailTo", "YourEmail")
 project.ext.set("siteUrl", "YourSiteUrl")
@@ -115,7 +115,8 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._download_ext('oracle.gradle')
         self._download_ext('pypi-publish.gradle')
         self._download_ext('python.gradle')
-        self._mkfile('properties.gradle', self.GRADLE_PROPS.format(self.parent.VERSION).strip())
+        version_string = '.'.join(map(str, self.parent.VERSION))
+        self._mkfile('properties.gradle', self.GRADLE_PROPS.format(version_string).strip())
         self._mkfile(
             f'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self.app_name)
         )
