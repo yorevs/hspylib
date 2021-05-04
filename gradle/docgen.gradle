@@ -70,9 +70,15 @@ task syncPythonHeaders(type: Task) {
       def parseState = 'headers' // headers -> imports -> code
       def imports = []
       def code = []
+      def old_headers = []
+      def has_old_headers = false
       fh_file.eachLine { String line ->
         if ('headers'.equals(parseState) && !(line ==~ /^(import|from) .*/)) {
           // Ignore all header lines (we could keep them tho)
+          old_headers << line
+          if (line.startsWith('"""')) {
+            has_old_headers = true
+          }
         }
         else if (line ==~ /^(import|from) .*/) {
           imports << line
@@ -81,7 +87,7 @@ task syncPythonHeaders(type: Task) {
           code << line
         }
       }
-      fh_file.setText("${headers}\n${imports.join('\n')}${code.join('\n')}\n")
+      fh_file.setText("${has_old_headers ? old_headers.join('\n') : headers }\n${imports.join('\n')}\n${code.join('\n')}\n")
     }
     println "Finished processing all python files"
   }
