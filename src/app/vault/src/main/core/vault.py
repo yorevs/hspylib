@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.app.vault.src.main.core
+      @file: vault.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import base64
 import getpass
 import logging as log
@@ -5,8 +21,8 @@ import os
 import uuid
 
 from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file, syserr
-from hspylib.modules.security.security import encrypt, decrypt
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.security.security import encrypt, decrypt
 from vault.src.main.core.vault_config import VaultConfig
 from vault.src.main.core.vault_service import VaultService
 from vault.src.main.entity.vault_entry import VaultEntry
@@ -183,7 +199,7 @@ class Vault(object):
             decrypt(
                 self.configs.vault_file(),
                 self.configs.unlocked_vault_file(),
-                self.passphrase,)
+                self.passphrase, )
             log.debug("Vault file is decrypted")
         else:
             os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())

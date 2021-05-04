@@ -1,5 +1,20 @@
-from requests.models import Response, CaseInsensitiveDict
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.modules.fetch
+      @file: http_response.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
+from requests.models import Response, CaseInsensitiveDict
 from hspylib.core.enum.charset import Charset
 from hspylib.core.enum.content_type import ContentType
 from hspylib.core.enum.http_code import HttpCode

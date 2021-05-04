@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.demo.cli.menu
+      @file: sub_menu_1.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 from hspylib.modules.cli.menu.menu import Menu
 from hspylib.modules.cli.menu.menu_item import MenuItem
 from hspylib.modules.cli.menu.menu_utils import MenuUtils

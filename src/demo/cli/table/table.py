@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
-from hspylib.core.tools.text_helper import TextAlignment
+# -*- coding: utf-8 -*-
 
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.demo.cli.table
+      @file: table.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
+from hspylib.core.tools.text_helper import TextAlignment
 from hspylib.modules.cli.tables.table_renderer import TableRenderer
 
 if __name__ == '__main__':

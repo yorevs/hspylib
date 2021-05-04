@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.modules.cli.menu.extra
+      @file: mdashboard.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import signal
 from typing import Any, Callable, List
 
@@ -18,12 +33,10 @@ def mdashboard(
         title: str = 'Please select one item',
         title_color: VtColors = VtColors.ORANGE,
         nav_color: VtColors = VtColors.YELLOW) -> Any:
-
     return MenuDashBoard(items, items_per_line).show(title, title_color, nav_color)
 
 
 class MenuDashBoard:
-
     CELL_TPL = [
         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '],
@@ -43,7 +56,6 @@ class MenuDashBoard:
                 icon: Awesome = None,
                 tooltip: str = None,
                 action: Callable = None):
-
             self.icon = icon
             self.tooltip = tooltip
             self.action = action
@@ -149,7 +161,9 @@ class MenuDashBoard:
                 self.__print_cell__(idx, item, MenuDashBoard.SEL_CELL_TPL)
         # Print selected tab tooltip
         sysout(f'\r%EL2%> %GREEN%{self.all_items[self.tab_index].tooltip}%NC%\n\n')
-        sysout(f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%", end='')
+        sysout(
+            f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%",
+            end='')
 
     def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]):
         num_cols = len(cell_template[0])
@@ -161,9 +175,9 @@ class MenuDashBoard:
                 else:
                     vt_print(f'{cell_template[row][col]}')
             vt_print(f'%CUD(1)%%CUB({num_cols})%')
-        if idx > 0 and (idx+1) % self.items_per_line == 0:
+        if idx > 0 and (idx + 1) % self.items_per_line == 0:
             # Break the line
-            vt_print(f'%CUD(1)%%CUB({num_cols*self.items_per_line})%')
+            vt_print(f'%CUD(1)%%CUB({num_cols * self.items_per_line})%')
         elif idx + 1 < len(self.all_items):
             # Same line
             vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')

@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.app.firebase.src.main.core
+      @file: file_processor.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import json
 import os
 from abc import ABC
@@ -34,7 +50,7 @@ class FileProcessor(ABC):
 
     @staticmethod
     def download_files(url: str, destination_dir: str) -> int:
-        assert destination_dir and os.path.exists(destination_dir), "Unable find destination directory: {}"\
+        assert destination_dir and os.path.exists(destination_dir), "Unable find destination directory: {}" \
             .format(destination_dir)
         response = get(url)
         assert response and response.body, "Response or response body is empty"

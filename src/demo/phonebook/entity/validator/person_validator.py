@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.demo.phonebook.entity.validator
+      @file: person_validator.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 from typing import List, Tuple
 
 from hspylib.core.tools.regex_commons import RegexCommons
@@ -28,4 +44,4 @@ class PersonValidator(ContactValidator):
     @staticmethod
     def validate_email(email: str) -> (bool, str):
         return Validator \
-            .matches(email, RegexCommons.EMAIL_W3C), "Invalid email"
+                   .matches(email, RegexCommons.EMAIL_W3C), "Invalid email"

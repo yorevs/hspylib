@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.core.tools
+      @file: text_helper.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import random
 import re
 
@@ -5,7 +21,7 @@ from hspylib.core.tools.commons import get_or_default
 
 
 def fit_text(text: str, width: int) -> str:
-    return text if len(text) <= width else text[0:width-3] + '...'
+    return text if len(text) <= width else text[0:width - 3] + '...'
 
 
 def rand_string(choices: str, length: int) -> str:

@@ -1,8 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.test.hspylib.modules.json_search
+      @file: test_json_search.py
+   @created: Tue, 4 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import json
 import sys
 import unittest
 from os import path
-
 from hspylib.modules.json_search.json_search import JsonSearch
 
 SAMPLE_FILE = "resources/json_search_sample.json"
