@@ -7,8 +7,8 @@ from datetime import datetime
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
 from hspylib.core.tools.commons import __version__, __curdir__, syserr, __here__
-from hspylib.modules.application.application import Application
-from hspylib.modules.application.argument_chain import ArgumentChain
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.argument_chain import ArgumentChain
 
 HERE = __here__(__file__)
 

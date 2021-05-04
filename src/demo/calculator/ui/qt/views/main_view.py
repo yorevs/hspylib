@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QWidget
 
 from calculator.core.enum.calc_operations import CalcOperations
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.ui.qt.views.qt_view import QtView
+from hspylib.modules.qt.views.qt_view import QtView
 
 
 class MainView(QtView):

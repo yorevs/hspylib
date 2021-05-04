@@ -6,6 +6,6 @@
 
 __all__ = [
   'calculator', 
-  'phonebook', 
-  'ui'
+  'cli', 
+  'phonebook'
 ]

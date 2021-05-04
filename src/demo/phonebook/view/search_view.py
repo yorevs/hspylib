@@ -4,8 +4,8 @@ from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.model.entity import Entity
 from hspylib.core.tools.commons import sysout
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
-from hspylib.ui.cli.tables.table_renderer import TableRenderer
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tables.table_renderer import TableRenderer
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 

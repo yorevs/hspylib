@@ -2,10 +2,10 @@
 import sys
 
 from hspylib.core.tools.commons import __curdir__
-from hspylib.modules.application.application import Application
-from hspylib.ui.cli.menu.factory.menu_factory import MenuFactory
-from hspylib.ui.cli.menu.menu_ui import MenuUi
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.menu.factory.menu_factory import MenuFactory
+from hspylib.modules.cli.menu.menu_ui import MenuUi
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView

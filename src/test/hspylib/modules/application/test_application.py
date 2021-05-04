@@ -4,8 +4,8 @@ import unittest
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import __curdir__
-from hspylib.modules.application.application import Application
-from hspylib.modules.application.option import Option
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.option import Option
 
 
 class TestApplication(unittest.TestCase):

@@ -9,10 +9,10 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.tools.commons import sysout, get_by_key_or_default, syserr
 from hspylib.modules.fetch.fetch import head
-from hspylib.ui.cli.menu.extra.mchoose import mchoose
-from hspylib.ui.cli.menu.extra.minput import MenuInput, minput
-from hspylib.ui.cli.menu.extra.mselect import mselect
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.menu.extra.mchoose import mchoose
+from hspylib.modules.cli.menu.extra.minput import MenuInput, minput
+from hspylib.modules.cli.menu.extra.mselect import mselect
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
 
 
 class CFManager(object):
