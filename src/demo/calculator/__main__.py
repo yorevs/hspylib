@@ -3,7 +3,7 @@ import os
 import sys
 
 from calculator.core.qt_calculator import QtCalculator
-from hspylib.core.tools.commons import __curdir__, __version__
+from hspylib.core.tools.commons import dirname, read_version
 from hspylib.modules.cli.application.application import Application
 
 
@@ -21,7 +21,7 @@ class Main(Application):
     Usage: {APP_NAME} <option> [arguments]"""
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, __version__(), self.USAGE, __curdir__(__file__))
+        super().__init__(app_name, read_version(), self.USAGE, dirname(__file__))
         self.calc = QtCalculator()
 
     def main(self, *args, **kwargs):

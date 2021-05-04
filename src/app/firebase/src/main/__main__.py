@@ -6,18 +6,18 @@ from datetime import datetime
 
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
-from hspylib.core.tools.commons import __version__, __curdir__, syserr, __here__
+from hspylib.core.tools.commons import read_version, dirname, syserr, get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 
-HERE = __here__(__file__)
+HERE = get_path(__file__)
 
 
 class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
     # The application version
-    VERSION = __version__('src/main/.version')
+    VERSION = read_version('src/main/.version')
 
     # Usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
@@ -26,7 +26,7 @@ class Main(Application):
     WELCOME = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
+        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.firebase = Firebase()
 
     def setup_parameters(self, *params, **kwargs):

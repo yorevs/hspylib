@@ -4,7 +4,7 @@ from typing import Optional, Any
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import log_init, environ_name, __curdir__
+from hspylib.core.tools.commons import log_init, environ_name, dirname
 
 APP_CONFIG_FORMAT = """
 AppConfigs
@@ -26,7 +26,7 @@ class AppConfigs(metaclass=Singleton):
             log_file: str = None):
 
         self._source_dir = source_root \
-            if source_root else os.environ.get('SOURCE_ROOT', __curdir__(__file__))
+            if source_root else os.environ.get('SOURCE_ROOT', dirname(__file__))
         assert os.path.exists(self._source_dir), f"Unable to find the source dir: {self._source_dir}"
 
         self._resource_dir = resource_dir \

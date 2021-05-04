@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 import sys
 
-from build.lib.hspylib.appman import AppManager
-from hspylib.core.tools.commons import __version__, sysout, syserr, __here__, __rootdir__
+from hspylib.addins.appman.appman import AppManager
+from hspylib.core.tools.commons import read_version, sysout, syserr, get_path, run_dir
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 
-HERE = __here__(__file__)
+HERE = get_path(__file__)
 
 
 class Main(Application):
     """HSPyLib Manager v{} - Manage HSPyLib applications."""
 
     # The hspylib version
-    VERSION = __version__(f"{HERE}/.version")
+    VERSION = read_version(f"{HERE}/.version")
 
     # HSPyLib manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
@@ -55,7 +55,7 @@ class Main(Application):
             manager.create_app(
                 self.args[1],
                 AppManager.AppType.value_of(self.args[2], ignore_case=True),
-                self.args[3] if len(self.args) > 3 else __rootdir__())
+                self.args[3] if len(self.args) > 3 else run_dir())
         else:
             syserr('### Invalid operation: {}'.format(op))
             self.usage(1)

@@ -6,7 +6,7 @@ from typing import Optional, Any
 
 import yaml
 
-from hspylib.core.tools.commons import flatten_dict, __rootdir__
+from hspylib.core.tools.commons import flatten_dict, run_dir
 
 
 class Properties:
@@ -26,7 +26,7 @@ class Properties:
         self.filename = filename
         self.extension = extension
         self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE')
-        self.load_dir = load_dir if load_dir else f'{__rootdir__()}/resources'
+        self.load_dir = load_dir if load_dir else f'{run_dir()}/resources'
         self.filepath = None
         self.properties = {}
         self._read()
