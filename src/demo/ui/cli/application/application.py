@@ -14,11 +14,11 @@ Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
 
 class Main(Application):
 
-    def _setup_parameters(self, *params, **kwargs):
-        self._with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
-        self._with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
+    def setup_parameters(self, *params, **kwargs) -> None:
+        self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
+        self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
         # @formatter:off
-        self._with_arguments(
+        self.with_arguments(
             ArgumentChain.builder()
                 .when('Number', 'one|two|three', False)
                 .require('Anything', '.+')
@@ -27,15 +27,15 @@ class Main(Application):
         )
         # @formatter:on
 
-    def _main(self, *params):
-        self.exec_operation()
+    def main(self, *params) -> None:
+        self._exec_application()
 
-    def exec_operation(self):
-        if 'one' == self.args[0]:
+    def _exec_application(self) -> None:
+        if 'one' == self.get_argument(0):
             sysout(f'One: {str(self.args)}')
-        elif 'two' == self.args[0]:
+        elif 'two' == self.get_argument(0):
             sysout(f'Two: {str(self.args)}')
-        elif 'three' == self.args[0]:
+        elif 'three' == self.get_argument(0):
             sysout(f'Three: {str(self.args)}')
         else:
             sysout(f'INVALID => {str(self.args)}')
