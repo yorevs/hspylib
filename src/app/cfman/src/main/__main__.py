@@ -2,11 +2,10 @@
 import logging as log
 import sys
 from datetime import datetime
-from typing import Any
 
 from cfman.src.main.core.cf_manager import CFManager
 from hspylib.core.tools.commons import __version__, __curdir__, __here__
-from hspylib.modules.application.application import Application
+from hspylib.modules.cli.application.application import Application
 
 HERE = __here__(__file__)
 

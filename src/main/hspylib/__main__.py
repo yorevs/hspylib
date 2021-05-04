@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-import os
 import sys
 
-from hspylib.appman import AppManager
+from build.lib.hspylib.appman import AppManager
 from hspylib.core.tools.commons import __version__, sysout, syserr, __here__, __rootdir__
-from hspylib.modules.application.application import Application
-from hspylib.modules.application.argument_chain import ArgumentChain
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.argument_chain import ArgumentChain
 
 HERE = __here__(__file__)
 
@@ -26,25 +25,27 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE)
 
     def setup_parameters(self, *params, **kwargs):
-        # @formatter:off
-        self.with_arguments(
-            ArgumentChain.builder()
-                .when('Operation', 'create')
-                .require('AppName', '.+')
-                .require('MngType', 'basic|gradle|git|all')
-                .accept('DestDir', '.+')
-                .end()
-                .build()
-        )
-        # @formatter:on
-
-    def main(self, *params, **kwargs) -> None:
+        """Initialize application parameters and options"""
         if len(*params) == 0:
             welcome = self.WELCOME
             sysout(f"{welcome}")
-            sysout(self.USAGE)
+            self.usage()
         else:
-            self._exec_application()
+            # @formatter:off
+            self.with_arguments(
+                ArgumentChain.builder()
+                    .when('Operation', 'create')
+                    .require('AppName', '.+')
+                    .require('MngType', 'basic|gradle|git|all')
+                    .accept('DestDir', '.+')
+                    .end()
+                    .build()
+            )
+            # @formatter:on
+
+    def main(self, *params, **kwargs) -> None:
+        """Main entry point handler"""
+        self._exec_application()
 
     def _exec_application(self) -> None:
         """Execute the application"""

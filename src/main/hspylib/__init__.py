@@ -6,9 +6,8 @@
 
 __all__ = [
   '__main__', 
-  'appman', 
+  'add-ins', 
   'core', 
-  'modules', 
-  'ui'
+  'modules'
 ]
 __version__ = "0.10.3"

@@ -6,7 +6,7 @@ import uuid
 
 from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file, syserr
 from hspylib.modules.security.security import encrypt, decrypt
-from hspylib.ui.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from vault.src.main.core.vault_config import VaultConfig
 from vault.src.main.core.vault_service import VaultService
 from vault.src.main.entity.vault_entry import VaultEntry

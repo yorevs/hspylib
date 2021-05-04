@@ -6,8 +6,8 @@ import sys
 from typing import Type, List, Tuple, Any, Optional
 
 from hspylib.core.tools.validator import Validator
-from hspylib.ui.cli.vt100.vt_codes import VtCodes
-from hspylib.ui.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_codes import VtCodes
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',

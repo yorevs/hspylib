@@ -5,11 +5,12 @@
 # Package: main.hspylib.modules
 
 __all__ = [
-  'application', 
+  'cli', 
   'eventbus', 
   'fetch', 
   'json_search', 
   'mock', 
+  'qt', 
   'security', 
   'web'
 ]
