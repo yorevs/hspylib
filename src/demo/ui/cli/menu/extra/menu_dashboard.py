@@ -1,37 +1,37 @@
 #!/usr/bin/env python3
-from hspylib.ui.cli.icons.font_awesome.ui_compose.form_icons import FormIcons
+from hspylib.ui.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.ui.cli.menu.extra.mdashboard import MenuDashBoard, mdashboard
 
 if __name__ == '__main__':
     # @formatter:off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
-            .icon(FormIcons.ON) \
+            .icon(DashboardIcons.PLUS) \
             .tooltip('Add something') \
             .action(lambda: print('Add')) \
             .build() \
         .item() \
-            .icon(FormIcons.OFF) \
+            .icon(DashboardIcons.MINUS) \
             .tooltip('Remove something') \
             .action(lambda: print('Del')) \
             .build() \
         .item() \
-            .icon(FormIcons.EDITABLE) \
+            .icon(DashboardIcons.EDIT) \
             .tooltip('Edit something') \
             .action(lambda: print('Edit')) \
             .build() \
         .item() \
-            .icon(FormIcons.UNCHECK_CIRCLE) \
+            .icon(DashboardIcons.LIST) \
             .tooltip('List everything') \
             .action(lambda: print('List')) \
             .build() \
         .item() \
-            .icon(FormIcons.VISIBLE) \
-            .tooltip('Show everything') \
-            .action(lambda: print('Show')) \
+            .icon(DashboardIcons.DATABASE) \
+            .tooltip('Database console') \
+            .action(lambda: print('Database')) \
             .build() \
         .item() \
-            .icon(FormIcons.EXIT) \
+            .icon(DashboardIcons.EXIT) \
             .tooltip('Exit application') \
             .action(lambda: print('Exit')) \
             .build() \

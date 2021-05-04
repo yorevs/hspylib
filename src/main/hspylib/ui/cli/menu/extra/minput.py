@@ -6,7 +6,7 @@ from typing import Any, List
 
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.keyboard import Keyboard
-from hspylib.ui.cli.icons.font_awesome.ui_compose.form_icons import FormIcons
+from hspylib.ui.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.ui.cli.menu.menu_utils import MenuUtils
 from hspylib.ui.cli.vt100.vt_100 import Vt100
 from hspylib.ui.cli.vt100.vt_codes import vt_print

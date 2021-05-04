@@ -6,5 +6,5 @@
 
 __all__ = [
   'awesome', 
-  'ui_compose'
+  'form_icons'
 ]
