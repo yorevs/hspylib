@@ -51,7 +51,7 @@ class Main(Application):
         """Execute the application"""
         op = self.args[0]
         if "create" == op:
-            manager = AppManager()
+            manager = AppManager(self)
             manager.create_app(
                 self.args[1],
                 AppManager.AppType.value_of(self.args[2], ignore_case=True),

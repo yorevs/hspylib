@@ -21,21 +21,13 @@ def PY_FILE_HEADER = """#!/usr/bin/env python3
    @package: %package%
       @file: %filename%
    @created: ${curDate}
+    @author: ${project.ext.author}"
       @site: ${project.ext.siteUrl}
-   @license: Please refer to <https://opensource.org/licenses/MIT>
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright ${year}, ${project.ext.app_name} team
 \"\"\"
 """
-
-/* For future use */
-def POST_PY_HEADER = """
-__author__ = "${project.ext.author}"
-__license__ = "MIT"
-__status__ = "Development"
-__version__ = "${project.ext.app_version}"
-__email__ = "${project.ext.mailTo}"
-__copyright__ = "Copyright ${year}, ${project.ext.app_name} team"
-"""
-
 
 /* Helper Functions -------------------------------------------------------- */
 
@@ -72,24 +64,24 @@ task syncPythonHeaders(type: Task) {
     println "Synchronizing python headers"
     def files = filesByPattern(sourceRoot, /.*(?<!__init__)\.py$/)
     files.each {
-      //println "Processing file: ${it}"
+      println "Processing file: ${it}"
       def fh_file = new File(it)
       def headers = processPythonHeader(fh_file, PY_FILE_HEADER)
       def parseState = 'headers' // headers -> imports -> code
       def imports = []
       def code = []
       fh_file.eachLine { String line ->
-        if ('headers'.equals(parseState) and !(line ==~ /^(import|from) .*/)) {
+        if ('headers'.equals(parseState) && !(line ==~ /^(import|from) .*/)) {
           // Ignore all header lines (we could keep them tho)
         }
         else if (line ==~ /^(import|from) .*/) {
           imports << line
           parseState = parseState.equals('headers') ? 'code' : parseState
-        } else if ('code'.equals(parseState) or !(line ==~ /^(import|from) .*/)) {
+        } else if ('code'.equals(parseState) || !(line.isEMpty() && line ==~ /^(import|from) .*/)) {
           code << line
         }
       }
-      fh_file.setText("${headers}\n${imports.join('\n')}\n${POST_PY_HEADER}\n${code.join('\n')}")
+      fh_file.setText("${headers}\n${imports.join('\n')}${code.join('\n')}\n")
     }
     println "Finished processing all python files"
   }

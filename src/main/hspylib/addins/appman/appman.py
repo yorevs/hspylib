@@ -1,10 +1,11 @@
 import os
 import subprocess
+from typing import Any
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import sysout, syserr, get_path, read_version, run_dir
+from hspylib.core.tools.commons import sysout, syserr, get_path
 from hspylib.modules.fetch.fetch import get
 
 HERE = get_path(__file__)
@@ -13,14 +14,11 @@ HERE = get_path(__file__)
 class AppManager(metaclass=Singleton):
     """TODO"""
 
-    # The hspylib version
-    VERSION = read_version(f"{run_dir()}/.version")
-
     # The directory containing all template files
     TEMPLATES = (HERE / "templates")
 
-    GRADLE_PROPS = f"""
-project.ext.set("projectVersion", '{'.'.join(map(str, VERSION))}')
+    GRADLE_PROPS = """
+project.ext.set("projectVersion", '{}')
 project.ext.set("pythonVersion", '3')
 project.ext.set("pyrccVersion", '5')
 project.ext.set("author", "YourUser")
@@ -34,7 +32,8 @@ project.ext.set("siteUrl", "YourSiteUrl")
         GIT = 4
         ALL = 8
 
-    def __init__(self):
+    def __init__(self, parent: Any):
+        self.parent = parent
         self.app_name = None
         self.app_dir = None
         self.init_gradle = False
@@ -100,7 +99,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._download_ext('oracle.gradle')
         self._download_ext('pypi-publish.gradle')
         self._download_ext('python.gradle')
-        self._mkfile('properties.gradle', self.GRADLE_PROPS.strip())
+        self._mkfile('properties.gradle', self.GRADLE_PROPS.format(self.parent.VERSION).strip())
         self._mkfile(
             f'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self.app_name)
         )
