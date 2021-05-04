@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.10.2
+# HSPyLib v0.10.3
 #
 # Package: main.hspylib
 
@@ -11,4 +11,4 @@ __all__ = [
   'modules', 
   'ui'
 ]
-__version__ = "0.10.1"
+__version__ = "0.10.3"
