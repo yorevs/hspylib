@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2020 Hugo Saporetti Junior
+Copyright (c) 2021 Hugo Saporetti Junior
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
