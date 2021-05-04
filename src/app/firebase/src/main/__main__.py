@@ -29,9 +29,9 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
         self.firebase = Firebase()
 
-    def _setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs):
         # @formatter:off
-        self._with_arguments(
+        self.with_arguments(
             ArgumentChain.builder()
                 .when('Operation', 'setup')
                     .end()
@@ -47,7 +47,7 @@ class Main(Application):
         )
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> None:
+    def main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         log.info(
             self.WELCOME.format(
@@ -57,9 +57,9 @@ class Main(Application):
                 AgentConfig.INSTANCE.config_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        self._exec_operation()
+        self._exec_application()
 
-    def _exec_operation(self) -> None:
+    def _exec_application(self) -> None:
         """Execute the specified firebase operation"""
         op = self.args[0]
         if "setup" == op or not self.firebase.is_configured():

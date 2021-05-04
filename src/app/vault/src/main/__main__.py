@@ -28,9 +28,9 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, __curdir__(__file__))
         self.vault = Vault()
 
-    def _setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs):
         # @formatter:off
-        self._with_arguments(
+        self.with_arguments(
             ArgumentChain.builder()
                 .when('Operation', 'list')
                     .accept('Filter', '.+')
@@ -47,7 +47,7 @@ class Main(Application):
         )
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> None:
+    def main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         log.info(
             self.WELCOME.format(
@@ -57,12 +57,12 @@ class Main(Application):
                 VaultConfig.INSTANCE.vault_file(),
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
-        self._exec_operation()
+        self._exec_application()
 
-    def _cleanup(self):
+    def cleanup(self):
         self.vault.close()
 
-    def _exec_operation(self, ) -> None:
+    def _exec_application(self, ) -> None:
         """Execute the specified vault operation"""
         op = self.args[0]
         try:

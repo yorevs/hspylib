@@ -20,35 +20,35 @@ class Main(Application):
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, source_dir=__curdir__(__file__))
 
-    def _main(self, *args, **kwargs) -> None:
+    def main(self, *args, **kwargs) -> None:
         create_view = CreateView()
         edit_view = EditView()
         search_view = SearchView()
         main_menu = MenuFactory \
             .create(menu_title='HSPYLIB Demo Phonebook') \
-            ._with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
-            ._with_option('Create').on_trigger(lambda x: create_menu) \
-            ._with_option('Edit').on_trigger(lambda x: edit_menu) \
-            ._with_option('Search').on_trigger(lambda x: search_menu) \
+            .with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
+            .with_option('Create').on_trigger(lambda x: create_menu) \
+            .with_option('Edit').on_trigger(lambda x: edit_menu) \
+            .with_option('Search').on_trigger(lambda x: search_menu) \
             .build()
         create_menu = MenuFactory \
             .create(parent_menu=main_menu, menu_title='Create new contact') \
-            ._with_option('Back').on_trigger(lambda x: main_menu) \
-            ._with_option('Person').on_trigger(lambda t: create_view.person()) \
-            ._with_option('Company').on_trigger(lambda t: create_view.company()) \
+            .with_option('Back').on_trigger(lambda x: main_menu) \
+            .with_option('Person').on_trigger(lambda t: create_view.person()) \
+            .with_option('Company').on_trigger(lambda t: create_view.company()) \
             .build()
         edit_menu = MenuFactory \
             .create(parent_menu=main_menu, menu_title='Edit contact') \
-            ._with_option('Back').on_trigger(lambda x: main_menu) \
-            ._with_option('Person').on_trigger(lambda t: edit_view.person()) \
-            ._with_option('Company').on_trigger(lambda t: edit_view.company()) \
+            .with_option('Back').on_trigger(lambda x: main_menu) \
+            .with_option('Person').on_trigger(lambda t: edit_view.person()) \
+            .with_option('Company').on_trigger(lambda t: edit_view.company()) \
             .build()
         search_menu = MenuFactory \
             .create(parent_menu=main_menu, menu_title='Search contacts') \
-            ._with_option('Back').on_trigger(lambda x: main_menu) \
-            ._with_option('By name').on_trigger(lambda t: search_view.by_name()) \
-            ._with_option('By uuid').on_trigger(lambda t: search_view.by_uuid()) \
-            ._with_option('List all').on_trigger(lambda t: search_view.list_all()) \
+            .with_option('Back').on_trigger(lambda x: main_menu) \
+            .with_option('By name').on_trigger(lambda t: search_view.by_name()) \
+            .with_option('By uuid').on_trigger(lambda t: search_view.by_uuid()) \
+            .with_option('List all').on_trigger(lambda t: search_view.list_all()) \
             .build()
         mm = MenuUi(main_menu)
         mm.show()

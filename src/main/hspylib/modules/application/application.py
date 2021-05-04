@@ -41,17 +41,17 @@ class Application(metaclass=Singleton):
                 log_dir=log_dir
             )
         if app_usage:
-            self._with_option('h', 'help', handler=self.usage)
+            self.with_option('h', 'help', handler=self.usage)
         if app_version:
-            self._with_option('v', 'version', handler=self.version)
+            self.with_option('v', 'version', handler=self.version)
 
     def run(self, *params, **kwargs):
         """Main entry point handler"""
         log.info('Run started {}'.format(datetime.now()))
         try:
-            self._setup_parameters(*params, **kwargs)
+            self.setup_parameters(*params, **kwargs)
             self._parse_parameters(*params, **kwargs)
-            self._main(*params, **kwargs)
+            self.main(*params, **kwargs)
             self.exit_handler()
         except (InvalidArgumentError, InvalidOptionError) as err:
             syserr(str(err))
@@ -72,7 +72,7 @@ class Application(metaclass=Singleton):
         else:
             log.info('Exit handler called')
             exit_code = signum
-        self._cleanup()
+        self.cleanup()
         if clear_screen:
             sysout('%ED2%%HOM%')
         sys.exit(exit_code)
@@ -97,20 +97,20 @@ class Application(metaclass=Singleton):
     def get_argument(self, index: int) -> Optional[Argument]:
         return self.args[index] if 0 < index < len(self.args) else None
 
-    def _setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs):
         """Initialize application parameters and options"""
         log.info('Application started without any parameters')
 
     @abstractmethod
-    def _main(self, *params, **kwargs):
+    def main(self, *params, **kwargs):
         """Execute the application's main statements"""
         pass
 
-    def _cleanup(self):
+    def cleanup(self):
         """Execute code cleanup before exiting"""
         log.info('Application started without cleanup code')
 
-    def _with_option(
+    def with_option(
             self,
             shortopt: chr,
             longopt: str,
@@ -119,7 +119,7 @@ class Application(metaclass=Singleton):
         """Specify an option for the command line"""
         self.options[longopt] = Option(shortopt, longopt, has_argument, handler)
 
-    def _with_arguments(
+    def with_arguments(
             self,
             chained_args: Set[ArgumentChain.ChainedArgument]):
         """Specify an argument for the command line"""
