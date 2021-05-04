@@ -1,19 +1,19 @@
-Usage: cfman [option] [arguments]
+Cloud Foundry Manager v{} - Manage PCF applications.
 
-    Cloud Foundry Manager v{} - Manage PCF applications.
+Usage: cfman [options]
 
-    Options:
-      -v  |    --version                : Display current program version.
-      -h  |       --help                : Display this help message.
-      -a  |        --api <api_url>      : Set the API to connect to
-      -o  |        --org <org_url>      : Set the organization to connect to
-      -s  |      --space <space_url>    : Set the space to connect to
-      -u  |   --username <username>     : Set the username
-      -p  |   --password <password>     : Set the password
+  Options:
+    -v |  --version              : Display current program version and exit.
+    -h |     --help              : Display this help message and exit.
+    -a |      --api <api_url>    : Set the API to connect to.
+    -o |      --org <org_url>    : Set the organization to connect to.
+    -s |    --space <space_url>  : Set the space to connect to.
+    -u | --username <username>   : Set the username.
+    -p | --password <password>   : Set the password.
 
-    Arguments:
-      api_url   : API endpoint (e.g. https://api.example.com)
-      org_url   : Target organization
-      space_url : Target organization space
-      username  : Username
-      password  : Password
+  Arguments:
+    api_url    : API endpoint (e.g. https://api.example.com).
+    org_url    : Target organization.
+    space_url  : Target organization space.
+    username   : Username.
+    password   : Password.

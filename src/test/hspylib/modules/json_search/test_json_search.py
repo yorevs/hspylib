@@ -18,6 +18,7 @@ import json
 import sys
 import unittest
 from os import path
+
 from hspylib.modules.json_search.json_search import JsonSearch
 
 SAMPLE_FILE = "resources/json_search_sample.json"
@@ -113,6 +114,6 @@ class TestJsonSearch(unittest.TestCase):
 # Program entry point.
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestJsonSearch)
-    unittest\
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
+    unittest \
+        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
         .run(suite)

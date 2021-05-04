@@ -18,11 +18,12 @@ import logging as log
 import os
 import sys
 import unittest
+
 from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
-from hspylib.core.config.app_config import AppConfigs
 from test.hspylib.core.crud.resources.TestMysqlRepository import TestMysqlRepository, TestEntity
 
+from hspylib.core.config.app_config import AppConfigs
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -46,7 +47,7 @@ class TestMySqlRepository(unittest.TestCase):
             self.repository.execute(
                 'CREATE TABLE {} (UUID varchar(36) NOT NULL, COMMENT varchar(128), LUCKY_NUMBER int, IS_WORKING '
                 'varchar(5), PRIMARY KEY (UUID)) '
-                .format(self.table))
+                    .format(self.table))
         except (InternalError, OperationalError) as err:
             if "Failed to create table 'TEST' => {}\n\t.Truncating it instead!" not in str(err):
                 self.repository.execute("TRUNCATE TABLE {}".format(self.table))

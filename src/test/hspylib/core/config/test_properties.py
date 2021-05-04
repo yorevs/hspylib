@@ -17,6 +17,7 @@
 import logging as log
 import sys
 import unittest
+
 from hspylib.core.config.properties import Properties
 from hspylib.core.tools.commons import get_path
 
@@ -24,7 +25,6 @@ TEST_DIR = get_path(__file__)
 
 
 class TestProperties(unittest.TestCase):
-
     properties = None
 
     # TEST CASES ----------

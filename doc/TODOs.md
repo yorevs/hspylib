@@ -6,8 +6,8 @@
 4. Add file headers for all files
 5. Create the widgets operation for the main hspylib app
 
-
 === HEADERS ===
+
 ```python
 # -*- coding: utf-8 -*-
 

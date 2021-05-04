@@ -16,6 +16,7 @@
 
 import sys
 import unittest
+
 from hspylib.core.tools.commons import safe_del_file
 from hspylib.modules.security.security import encode, encrypt, decrypt, decode
 
@@ -46,12 +47,12 @@ class TestSecurity(unittest.TestCase):
         with open(SAMPLE_OUT_FILE_NAME) as f_in:
             contents = str(f_in.read().strip())
             self.assertEqual(ENCODED_FILE_CONTENTS, contents)
-    
+
     # Teardown tests
     def tearDown(self):
         safe_del_file(OUT_FILE)
         safe_del_file(OUT_FILE_GPG)
-    
+
     # TEST CASES ----------
 
     # TC1 - Test encoding a file.
@@ -80,6 +81,6 @@ class TestSecurity(unittest.TestCase):
 # Program entry point.
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSecurity)
-    unittest\
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout)\
+    unittest \
+        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
         .run(suite)
