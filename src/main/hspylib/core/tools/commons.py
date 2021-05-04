@@ -44,13 +44,15 @@ def log_init(
     return log
 
 
-def read_version(version_filepath: str = ".version") -> Optional[Tuple]:
+def read_version(version_filepath: str = ".version") -> Tuple:
     """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
     try:
+        log.info(f"Reading version from {version_filepath}")
         with open(version_filepath) as fh_version:
-            return tuple(map(str.strip, fh_version.read().split('.')))
+            ver = tuple(map(str.strip, fh_version.read().split('.')))
+            return ver if ver else (0, 0, 0)
     except FileNotFoundError:
-        return None
+        return 0, 0, 0
 
 
 def dirname(filepath: str) -> str:
