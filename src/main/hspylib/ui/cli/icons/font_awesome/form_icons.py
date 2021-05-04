@@ -22,15 +22,12 @@ class FormIcons(Awesome):
     ON = '\uF205'               # 
     OFF = '\uF204'              # 
 
-    FOLDER = '\uF74A'           # 
-    FOLDER_OPEN = '\uF07C'      # 
     HIDDEN = '\uF070'           # 
     VISIBLE = '\uF06E'          # 
     LOCKED = '\uF023'           # 
     UNLOCKED = '\uF09C'         # 
     EDITABLE = '\uF044'         # 
     DELETE = '\uF014'           # 
-    EXIT = '\uF08B'             # 
 
 
 if __name__ == '__main__':
