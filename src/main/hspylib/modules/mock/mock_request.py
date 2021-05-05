@@ -13,6 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
+from typing import Any
 
 from requests.structures import CaseInsensitiveDict
 
@@ -43,7 +44,7 @@ class MockResponse(HttpResponse):
                     body: str = None,
                     headers=None,
                     encoding: Charset = Charset.UTF_8,
-                    content_type=ContentType.APPLICATION_JSON):
+                    content_type=ContentType.APPLICATION_JSON) -> Any:
 
         response = self.parent.mock(self.method, self.url)
         response.status_code = code
@@ -59,7 +60,7 @@ class MockResponse(HttpResponse):
                                        code: HttpCode,
                                        headers: CaseInsensitiveDict = None,
                                        encoding: Charset = Charset.UTF_8,
-                                       content_type=ContentType.APPLICATION_JSON):
+                                       content_type=ContentType.APPLICATION_JSON) -> Any:
         response = self.parent.mock(self.method, self.url)
         response.received_body = True
         response.body = None

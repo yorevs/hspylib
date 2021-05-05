@@ -34,7 +34,7 @@ class Firebase(object):
     def __str__(self):
         return str(self.payload)
 
-    def setup(self):
+    def setup(self) -> None:
         """Setup a firebase creating or reading an existing configuration file"""
         if file_is_not_empty(self.configs.config_file()):
             self.configs.load()
@@ -53,5 +53,5 @@ class Firebase(object):
         url = self.configs.url(db_alias)
         return self.processor.download_files(url, dest_dir or os.environ.get('HOME')) > 0
 
-    def is_configured(self):
+    def is_configured(self) -> bool:
         return self.configs is not None and self.configs.fb_configs is not None

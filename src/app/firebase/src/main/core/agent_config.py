@@ -17,7 +17,6 @@
 import base64
 import getpass
 import uuid
-from typing import Any
 
 from requests.structures import CaseInsensitiveDict
 
@@ -51,7 +50,7 @@ class AgentConfig(metaclass=Singleton):
         """Load a firebase configuration from a file"""
         self.fb_configs = FirebaseConfig.of_file(self.config_file())
 
-    def prompt(self) -> Any:
+    def prompt(self) -> None:
         """Create a new firebase configuration by prompting the user for information"""
         config = CaseInsensitiveDict()
         sysout("### Firebase setup")

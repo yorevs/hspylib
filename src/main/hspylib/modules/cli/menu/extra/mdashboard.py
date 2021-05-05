@@ -77,19 +77,19 @@ class MenuDashBoard:
             self.parent = parent
             self.item = MenuDashBoard.DashBoardItem()
 
-        def icon(self, icon: Awesome):
+        def icon(self, icon: Awesome) -> Any:
             self.item.icon = icon
             return self
 
-        def tooltip(self, tooltip: str):
+        def tooltip(self, tooltip: str) -> Any:
             self.item.tooltip = tooltip
             return self
 
-        def action(self, action: Callable):
+        def action(self, action: Callable) -> Any:
             self.item.action = action
             return self
 
-        def build(self):
+        def build(self) -> Any:
             self.parent.items.append(self.item)
             return self.parent
 
@@ -113,7 +113,7 @@ class MenuDashBoard:
             title: str = 'Please select one item',
             title_color: VtColors = VtColors.ORANGE,
             nav_color: VtColors = VtColors.YELLOW
-    ):
+    ) -> DashBoardItem:
         ret_val = None
         length = len(self.all_items)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
@@ -146,7 +146,7 @@ class MenuDashBoard:
 
         return selected
 
-    def __render__(self, nav_color: VtColors):
+    def __render__(self, nav_color: VtColors) -> None:
 
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
@@ -165,7 +165,7 @@ class MenuDashBoard:
             f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%",
             end='')
 
-    def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]):
+    def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]) -> None:
         num_cols = len(cell_template[0])
         num_rows = len(cell_template)
         for row in range(0, num_rows):
@@ -184,7 +184,7 @@ class MenuDashBoard:
         else:
             vt_print('%CUD(1)%%EL2%')
 
-    def __nav_input__(self):
+    def __nav_input__(self) -> chr:
         length = len(self.all_items)
         keypress = Keyboard.read_keystroke()
 

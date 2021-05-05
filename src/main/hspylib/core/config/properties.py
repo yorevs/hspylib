@@ -111,7 +111,7 @@ class Properties:
                 .format(self.filename, self.extension)
         return f'{self.load_dir}/{filepath}'
 
-    def _parse(self):
+    def _parse(self) -> None:
         """Parse the properties file according to it's extension"""
         with open(self.filepath) as fh_props:
             if self.extension in ['.ini', '.cfg']:

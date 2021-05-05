@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Callable
+from typing import Callable, Any
 
 
 class EventBus:
@@ -23,7 +23,7 @@ class EventBus:
     _events = []
 
     @staticmethod
-    def get(bus_name: str):
+    def get(bus_name: str) -> Any:
         if bus_name in EventBus._buses:
             return EventBus._buses[bus_name]
         else:
@@ -32,7 +32,7 @@ class EventBus:
             return bus_instance
 
     @staticmethod
-    def __create_or_get(bus_name: str, event_name: str):
+    def __create_or_get(bus_name: str, event_name: str) -> Any:
         cache_key = '{}.{}'.format(bus_name, event_name)
         if cache_key in EventBus._subscribers:
             return EventBus._subscribers[cache_key]
@@ -44,11 +44,11 @@ class EventBus:
     def __init__(self, name: str):
         self.name = name
 
-    def subscribe(self, event_name: str, cb_event_handler: Callable):
+    def subscribe(self, event_name: str, cb_event_handler: Callable) -> None:
         subscriber = EventBus.__create_or_get(self.name, event_name)
         subscriber['callbacks'].append(cb_event_handler)
 
-    def emit(self, event_name: str, **kwargs):
+    def emit(self, event_name: str, **kwargs) -> None:
         self._events.append({'event': event_name, 'kwargs': kwargs})
         while len(self._events) > 0:
             event = self._events.pop()

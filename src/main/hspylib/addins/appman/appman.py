@@ -43,6 +43,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
 """
 
     class AppType(Enumeration):
+        """Possible application creation type"""
         BASIC = 1
         GRADLE = 2
         GIT = 4
@@ -55,7 +56,8 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self.init_gradle = False
         self.init_git = False
 
-    def create_app(self, app_name: str, app_type: AppType, dest_dir: str):
+    def create_app(self, app_name: str, app_type: AppType, dest_dir: str) -> None:
+        """Create the application based on the parameters"""
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')
         try:
             assert os.path.exists(dest_dir), f'Destination not found: {dest_dir}'
@@ -77,7 +79,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
             self._mkdir('src/main/resources/log')
             self._mkdir('src/test/resources/log')
             self._mkfile('README.md', f'# {app_name}')
-            self._mkfile('MANIFEST.in', '')
+            self._mkfile('MANIFEST.in')
             # TODO Create setup.py
             self._mkfile('.env', '# Type in here the environment variables your app requires')
             self._mkfile('run-it.sh', (self.TEMPLATES / "tpl-run-it.sh").read_text())
@@ -92,18 +94,21 @@ project.ext.set("siteUrl", "YourSiteUrl")
         else:
             sysout(f"Successfully created the application {dest_dir}/{app_name}")
 
-    def _mkdir(self, dirname: str):
+    def _mkdir(self, dirname: str) -> None:
+        """Create a directory from the destination path"""
         dir_path = f"{self.app_dir}/{dirname}"
         sysout(f'  |- {dir_path}')
         os.mkdir(dir_path)
 
-    def _mkfile(self, filename: str, contents: str):
+    def _mkfile(self, filename: str, contents: str = '') -> None:
+        """Create a file from the destination path with the specified contents"""
         file_path = f"{self.app_dir}/{filename}"
         sysout(f'  |- {file_path}')
         with open(f'{file_path}', 'w') as fh:
             fh.write(contents)
 
-    def _init_gradle(self, app_name: str):
+    def _init_gradle(self, app_name: str) -> None:
+        """Initialize the as a gradle project"""
         sysout('Initializing gradle project')
         args = ['gradle', 'init', '--project-name', app_name, '--type', 'basic', '--dsl', 'groovy']
         result = subprocess.run(args, capture_output=True, text=True, cwd=self.app_dir).stdout
@@ -125,13 +130,15 @@ project.ext.set("siteUrl", "YourSiteUrl")
         result = subprocess.run(args, capture_output=True, text=True, cwd=self.app_dir).stdout
         sysout('Gradle execution result: {}'.format(result))
 
-    def _download_ext(self, extension: str):
+    def _download_ext(self, extension: str) -> None:
+        """Download a gradle extension from the HSPyLib repository"""
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')
         assert resp.status_code == HttpCode.OK, f'Unable to download {extension}'
         self._mkfile(f'gradle/{extension}', resp.body)
 
-    def _init_git(self):
-        self._mkfile(f'src/main/resources/log/.gitkeep', '')
+    def _init_git(self) -> None:
+        """Initialize a git repository for the project"""
+        self._mkfile(f'src/main/resources/log/.gitkeep')
         self._mkfile(f'.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
         sysout('Initializing git repository')
         result = subprocess.run(['git', 'init'], capture_output=True, text=True, cwd=self.app_dir).stdout

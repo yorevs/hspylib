@@ -46,7 +46,7 @@ class Entity(object):
                 ret_dict[key] = value.__dict__() if value else {}
         return ret_dict
 
-    def to_json(self):
+    def to_json(self) -> str:
         dict_obj = self.to_dict()
         json_str = json.dumps(dict_obj)
         return json_str

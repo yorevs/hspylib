@@ -38,7 +38,7 @@ class FaceSmiling(Emoji):
     ROFL = '\U0001F923'
 
     @classmethod
-    def demo_emojis(cls):
+    def demo_emojis(cls) -> bool:
         list(map(lambda e: emj_print(e), cls.values()))
 
 

@@ -18,7 +18,7 @@ import logging as log
 import re
 import uuid
 from abc import abstractmethod
-from typing import Optional, List
+from typing import Optional, List, Any
 
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.file.file_storage import FileStorage
@@ -30,7 +30,7 @@ class FileRepository(CrudRepository):
     _storages = {}
 
     @staticmethod
-    def check_criteria(partial_value, whole_value):
+    def check_criteria(partial_value, whole_value) -> bool:
         """TODO
         :param partial_value:
         :param whole_value:
@@ -55,7 +55,7 @@ class FileRepository(CrudRepository):
     def __str__(self):
         return str(self.storage.data)
 
-    def insert(self, entity: Entity):
+    def insert(self, entity: Entity) -> None:
         """TODO
         :param entity:
         """
@@ -64,7 +64,7 @@ class FileRepository(CrudRepository):
         self.storage.commit()
         log.debug("{} has been inserted !".format(entity.__class__.__name__))
 
-    def update(self, entity: Entity):
+    def update(self, entity: Entity) -> None:
         """TODO
         :param entity:
         """
@@ -74,7 +74,7 @@ class FileRepository(CrudRepository):
                 self.storage.commit()
                 log.debug("{} has been updated !".format(entity.__class__.__name__))
 
-    def delete(self, entity: Entity):
+    def delete(self, entity: Entity) -> None:
         """TODO
         :param entity:
         """
@@ -128,7 +128,7 @@ class FileRepository(CrudRepository):
         """
         pass
 
-    def __create_or_get(self):
+    def __create_or_get(self) -> Any:
         """TODO"""
         if self.filename in FileRepository._storages:
             return FileRepository._storages[self.filename]

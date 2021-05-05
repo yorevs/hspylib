@@ -43,9 +43,9 @@ class Singleton(type):
             return False
 
     @classmethod
-    def instances(mcs):
+    def instances(mcs) -> dict:
         print(Singleton._instances)
 
     @classmethod
-    def has_instance(mcs, cls):
+    def has_instance(mcs, cls) -> bool:
         return cls in cls._instances
