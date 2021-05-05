@@ -31,7 +31,7 @@ class VtColors(Enumeration):
     ORANGE = Vt100.mode('38;5;202')
     VIOLET = Vt100.mode('0;95')
     WHITE = Vt100.mode('0;97')
-
+    
     @staticmethod
     def colorize(input_string: str) -> str:
         return input_string \
@@ -47,12 +47,12 @@ class VtColors(Enumeration):
                    .replace("%ORANGE%", VtColors.ORANGE.code()) \
                    .replace("%VIOLET%", VtColors.VIOLET.code()) \
                    .replace("%WHITE%", VtColors.WHITE.code()) + VtColors.NC.code()
-
+    
     def __str__(self) -> str:
         return str(self.value)
-
+    
     def code(self) -> str:
         return str(self)
-
+    
     def placeholder(self) -> str:
         return f"%{self.name}%"

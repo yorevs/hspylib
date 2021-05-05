@@ -19,7 +19,7 @@ import sys
 from datetime import datetime
 
 from cfman.src.main.core.cf_manager import CFManager
-from hspylib.core.tools.commons import read_version, dirname, get_path
+from hspylib.core.tools.commons import dirname, get_path, read_version
 from hspylib.modules.cli.application.application import Application
 
 HERE = get_path(__file__)
@@ -27,28 +27,28 @@ HERE = get_path(__file__)
 
 class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
-
+    
     # The application version
     VERSION = read_version('src/main/.version')
-
+    
     # CloudFoundry manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-
+    
     # The welcome message
     WELCOME = (HERE / "welcome.txt").read_text()
-
+    
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.option_map = {}
         self.cfman = None
-
+    
     def setup_parameters(self, *params, **kwargs) -> None:
         self.with_option('a', 'api', True)
         self.with_option('o', 'org', True)
         self.with_option('s', 'space', True)
         self.with_option('u', 'username', True)
         self.with_option('p', 'password', True)
-
+    
     def main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(self.option_map)
@@ -59,12 +59,12 @@ class Main(Application):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self._exec_application()
-
+    
     def _exec_application(self) -> None:
         """Execute the application"""
         self.cfman.run()
 
 
 if __name__ == "__main__":
-    """Application entry point"""
+    # Application entry point
     Main('HSPyLib Cloud Foundry Manager').INSTANCE.run(sys.argv[1:])

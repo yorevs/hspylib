@@ -29,7 +29,6 @@ def soap_call(
         method: HttpMethod,
         data: str,
         headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
-
     all_headers = {} if not headers else headers
     all_headers.update({
         "Content-Type": "text/xml",
@@ -40,5 +39,5 @@ def soap_call(
     log.info(
         'Response <=  Status: {}  Payload: {}'.format(
             response.status_code, response.body if response.body else '<None>'))
-
+    
     return response

@@ -26,7 +26,7 @@ from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import set_enable_echo, get_cursor_position
+from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo
 
 
 def minput(
@@ -49,9 +49,9 @@ class MenuInput:
     __mi_modes__ = ['input', 'password', 'checkbox']
     __mi_kinds__ = ['letter', 'number', 'word', 'any']
     __mi_access_types__ = ['read-only', 'read-write']
-
+    
     SELECTED_BG = '%MOD(44)%'
-
+    
     @staticmethod
     class Field:
         def __init__(
@@ -63,7 +63,7 @@ class MenuInput:
                 max_length: int = 30,
                 access_type: str = 'read-write',
                 value: Any = None):
-
+            
             self.label = label
             self.mode = mode
             self.kind = kind
@@ -71,72 +71,72 @@ class MenuInput:
             self.max_length = max_length
             self.access_type = access_type
             self.value = value
-
+        
         def __str__(self) -> str:
             return str(self.__dict__)
-
+        
         def can_write(self) -> bool:
-            return 'read-write' == self.access_type
-
+            return self.access_type == 'read-write'
+        
         def val_regex(self, min_length: int, max_length: int) -> str:
-            if 'letter' == self.kind:
+            if self.kind == 'letter':
                 regex = r'^[a-zA-Z]{' + str(min_length) + ',' + str(max_length) + '}$'
-            elif 'number' == self.kind:
+            elif self.kind == 'number':
                 regex = r'^[0-9]{' + str(min_length) + ',' + str(max_length) + '}$'
-            elif 'word' == self.kind:
+            elif self.kind == 'word':
                 regex = r'^[a-zA-Z0-9 _]{' + str(min_length) + ',' + str(max_length) + '}$'
             else:
                 regex = r'.{' + str(min_length) + ',' + str(max_length) + '}$'
-
+            
             return regex
-
+    
     @staticmethod
     class FormBuilder:
         def __init__(self):
             self.fields = []
-
+        
         def field(self) -> Any:
             return MenuInput.FieldBuilder(self)
-
+        
         def build(self) -> list:
             return self.fields
-
+    
     @staticmethod
     class FieldBuilder:
         def __init__(self, parent: Any):
             self.parent = parent
             self.field = MenuInput.Field()
-
+        
         def label(self, label: str) -> Any:
             self.field.label = label
             return self
-
+        
         def mode(self, mode: str) -> Any:
             assert mode in MenuInput.__mi_modes__, \
                 f"Not a valid mode: {mode}. Valid modes are: {str(MenuInput.__mi_modes__)}"
             self.field.mode = mode
             return self
-
+        
         def kind(self, kind: str) -> Any:
             assert kind in MenuInput.__mi_kinds__, \
                 f"Not a valid kind: {kind}. Valid kinds are: {str(MenuInput.__mi_kinds__)}"
             self.field.kind = kind
-
+            
             return self
-
+        
         def min_max_length(self, min_length: int, max_length: int) -> Any:
             assert max_length >= min_length, f"Not a valid field length: ({min_length}-{max_length})"
             assert max_length > 0 and min_length > 0, f"Not a valid field length: ({min_length}-{max_length})"
             self.field.min_length = min_length
             self.field.max_length = max_length
             return self
-
+        
         def access_type(self, access_type: str) -> Any:
             assert access_type in MenuInput.__mi_access_types__, \
                 f"Not a valid access type {access_type}. Valid access types are: {str(MenuInput.__mi_access_types__)}"
             self.field.access_type = access_type
             return self
-
+        
         def value(self, value: Any) -> Any:
             re_valid = self.field.val_regex(0, len(str(value)))
             if value:
@@ -144,7 +144,7 @@ class MenuInput:
                     f"Not a valid value: \"{value}\". Valid regex is \"{re_valid}\""
             self.field.value = value
             return self
-
+        
         def build(self) -> Any:
             if self.field.mode == "checkbox":
                 self.field.value = self.field.value if self.field.value in ['0', '1'] else 0
@@ -158,12 +158,12 @@ class MenuInput:
             self.field.value = self.field.value or ''
             self.parent.fields.append(self.field)
             return self.parent
-
+    
     @staticmethod
     def __detail_len__(field: Any) -> int:
         max_len = len(str(field.max_length))
         return 1 + (2 * max_len)
-
+    
     @classmethod
     def mi_print(cls, size: int, text: str, prepend: str = None, end: str = '') -> None:
         fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
@@ -171,11 +171,11 @@ class MenuInput:
             vt_print(fmt.format(prepend, text), end=end)
         else:
             vt_print(fmt.format(text), end=end)
-
+    
     @classmethod
     def builder(cls) -> Any:
         return cls.FormBuilder()
-
+    
     def __init__(self, all_fields: List[Any]):
         self.all_fields = all_fields
         self.all_pos = [(0, 0) for _ in all_fields]
@@ -189,48 +189,48 @@ class MenuInput:
         self.max_detail_length = max([self.__detail_len__(field) for field in all_fields])
         self.done = None
         self.re_render = True
-
+    
     def input(
             self,
             title: str = 'Please fill all fields of the form fields below',
             title_color: VtColors = VtColors.ORANGE,
             nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
-
+        
         ret_val = None
         length = len(self.all_fields)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
         signal.signal(signal.SIGHUP, MenuUtils.exit_app)
-
+        
         if length > 0:
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
             vt_print(Vt100.save_cursor())
-
+            
             # Wait for user interaction
             while not self.done and ret_val != Keyboard.VK_ENTER:
                 # Menu Renderization {
                 if self.re_render:
                     self.__render__(nav_color)
                 # } Menu Renderization
-
+                
                 vt_print(Vt100.set_show_cursor(True))
-
+                
                 # Position the cursor to edit the current field
-                if "checkbox" != self.cur_field.mode:
+                if self.cur_field.mode != 'checkbox':
                     vt_print(f"%CUP({self.cur_row};{self.cur_col})%")
                 else:
                     vt_print(f"%CUP({self.cur_row};{self.max_label_length + 6})%")
-
+                
                 # Navigation input {
                 ret_val = self.__nav_input__()
                 self.re_render = True
                 # } Navigation input
-
+        
         vt_print('%HOM%%ED2%%MOD(0)%')
-
+        
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
-
+    
     def __render__(self, nav_color: VtColors) -> None:
         icon = ''
         vt_print(Vt100.set_show_cursor(False))
@@ -239,7 +239,7 @@ class MenuInput:
         sysout('%NC%')
         set_enable_echo()
         vt_print(Vt100.set_show_cursor(False))
-
+        
         for idx, field in enumerate(self.all_fields):
             field_size = len(str(field.value))
             if self.tab_index != idx:
@@ -254,7 +254,7 @@ class MenuInput:
                     self.all_pos[idx] = f_pos
                 # Keep the selected field on hand
                 self.cur_field = field
-
+            
             # Choose the icon to display
             if field.mode == "input":
                 icon = FormIcons.EDITABLE
@@ -270,22 +270,22 @@ class MenuInput:
                     MenuInput.mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
             if field.access_type == 'read-only':
                 icon = FormIcons.LOCKED
-
+            
             # Remaining/max characters
             padding = 1 - len(str(self.max_detail_length / 2))
             fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
             sysout(fmt.format(icon, field_size, field.max_length))
-
+            
             # Display any previously set error message
             if self.tab_index == idx and self.err_msg:
                 self.__display_error__()
                 return
-
+        
         sysout('\n')
         sysout(
             f"{nav_color.placeholder()}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%", end='')
         self.re_render = False
-
+    
     def __display_error__(self) -> None:
         err_offset = 12 + self.max_detail_length
         set_enable_echo(False)
@@ -298,14 +298,15 @@ class MenuInput:
         set_enable_echo()
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")
         self.err_msg = ''
-
+    
     def __nav_input__(self) -> chr:
         length = len(self.all_fields)
         keypress = Keyboard.read_keystroke()
-
+        
         if not keypress:
             return None
-        elif keypress == Keyboard.VK_ESC:
+        
+        if keypress == Keyboard.VK_ESC:
             self.done = True
             sysout('\n%NC%')
         else:
@@ -322,11 +323,11 @@ class MenuInput:
             elif keypress == Keyboard.VK_BACKSPACE:  # Handle backspace
                 if self.cur_field.can_write() and len(self.cur_field.value) >= 1:
                     self.cur_field.value = self.cur_field.value[:-1]
-                elif "read-only" == self.cur_field.access_type:
-                    self.err_msg = "This field is read only !"
+                elif self.cur_field.access_type == 'read-only':
+                    self.err_msg = 'This field is read only !'
             elif keypress.isalnum() or keypress.ispunct() or keypress == Keyboard.VK_SPACE:  # Handle an input
                 if not self.cur_field.can_write():
-                    self.err_msg = "This field is read only !"
+                    self.err_msg = 'This field is read only !'
                 else:
                     if self.cur_field.mode == "checkbox":
                         if keypress == Keyboard.VK_SPACE:
@@ -356,5 +357,5 @@ class MenuInput:
                         keypress = None
                         self.__display_error__()
                         break
-
+        
         return keypress

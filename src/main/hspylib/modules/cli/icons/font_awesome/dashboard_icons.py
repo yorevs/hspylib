@@ -23,7 +23,7 @@ class DashboardIcons(Awesome):
         Codes can be found here:
         - https://fontawesome.com/cheatsheet?from=io
     """
-
+    
     SEARCH = '\uF002'  # 
     EMAIL = '\uF003'  # 
     LIKE = '\uF004'  # 

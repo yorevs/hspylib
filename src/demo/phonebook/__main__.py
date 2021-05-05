@@ -28,14 +28,14 @@ from phonebook.view.search_view import SearchView
 
 class Main(Application):
     """TODO"""
-
+    
     # Version tuple: (major,minor,build)
     VERSION = (0, 9, 0)
-
+    
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, source_dir=dirname(__file__))
-
-    def main(self, *args, **kwargs) -> None:
+    
+    def main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         create_view = CreateView()
         edit_view = EditView()
         search_view = SearchView()
@@ -71,5 +71,5 @@ class Main(Application):
 
 # Application entry point
 if __name__ == "__main__":
-    """Application entry point"""
+    # Application entry point
     Main('HSPyLib Phonebook Demo').INSTANCE.run(sys.argv[1:])

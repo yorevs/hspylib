@@ -27,7 +27,7 @@ DEFAULT_SQL_STUBS = '{}/sql/sql_stubs.sql'.format(os.path.dirname(__file__))
 
 
 class SqlFactory(metaclass=Singleton):
-
+    
     @staticmethod
     def read_stubs(sql_filename: str) -> dict:
         ret_val = {}
@@ -43,7 +43,7 @@ class SqlFactory(metaclass=Singleton):
                     key = stub.strip().partition(' ')[0].lower()
                     ret_val[key] = stub.strip()
         return ret_val
-
+    
     @staticmethod
     def join_filters(filters: CaseInsensitiveDict, join_operator: str = 'AND') -> str:
         filter_string = ''
@@ -51,7 +51,7 @@ class SqlFactory(metaclass=Singleton):
             for key, value in filters.items():
                 filter_string += "{} {} = '{}'".format(join_operator, key, value)
         return filter_string
-
+    
     @staticmethod
     def join_fieldset(entity: Entity) -> str:
         fields = entity.to_column_set()
@@ -59,32 +59,32 @@ class SqlFactory(metaclass=Singleton):
         for key, value in fields.items():
             field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
         return field_set
-
+    
     def __init__(self):
         self.sql_stubs = SqlFactory.read_stubs(DEFAULT_SQL_STUBS)
         log.debug('{} created with {} Stubs'.format(
             self.__class__.__name__,
             len(self.sql_stubs)))
-
+    
     def insert(self, entity: Entity) -> Optional[str]:
         params = entity.to_values()
         sql = self.sql_stubs['insert'] \
             .replace(':columnSet', str(entity.to_columns()).replace("'", "")) \
             .replace(':valueSet', str(params))
         return sql
-
+    
     def select(self, column_set: List[str] = None, filters: CaseInsensitiveDict = None) -> Optional[str]:
         sql = self.sql_stubs['select'] \
             .replace(':columnSet', '*' if not column_set else ', '.join(column_set)) \
             .replace(':filters', SqlFactory.join_filters(filters))
         return sql
-
+    
     def update(self, entity: Entity, filters: CaseInsensitiveDict) -> Optional[str]:
         sql = self.sql_stubs['update'] \
             .replace(':fieldSet', SqlFactory.join_fieldset(entity)) \
             .replace(':filters', SqlFactory.join_filters(filters))
         return sql
-
+    
     def delete(self, filters: CaseInsensitiveDict) -> Optional[str]:
         sql = self.sql_stubs['delete'] \
             .replace(':filters', SqlFactory.join_filters(filters))

@@ -23,12 +23,12 @@ class FormIcons(Awesome):
         Codes can be found here:
         - https://fontawesome.com/cheatsheet?from=io
     """
-
+    
     ARROW_LEFT = '\uF060'  # 
     ARROW_RIGHT = '\uF061'  # 
     ARROW_UP = '\uF062'  # 
     ARROW_DOWN = '\uF063'  # 
-
+    
     CHECK = '\uF00C'  # 
     ERROR = '\uf057'  # 
     CHECK_CIRCLE = '\uF058'  # 
@@ -37,7 +37,7 @@ class FormIcons(Awesome):
     UNCHECK_SQUARE = '\uF0C8'  # 
     ON = '\uF205'  # 
     OFF = '\uF204'  # 
-
+    
     HIDDEN = '\uF070'  # 
     VISIBLE = '\uF06E'  # 
     LOCKED = '\uF023'  # 

@@ -42,13 +42,13 @@ class MenuDashBoard:
         [' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
     ]
-
+    
     SEL_CELL_TPL = [
         [' ', '\u250F', '\u2501', ' ', ' ', '\u2501', '\u2513', ' '],
         [' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '],
         [' ', '\u2517', '\u2501', ' ', ' ', '\u2501', '\u251B', ' ']
     ]
-
+    
     @staticmethod
     class DashBoardItem:
         def __init__(
@@ -59,55 +59,55 @@ class MenuDashBoard:
             self.icon = icon
             self.tooltip = tooltip
             self.action = action
-
+    
     @staticmethod
     class DashBoardBuilder:
         def __init__(self):
             self.items = []
-
+        
         def item(self) -> Any:
             return MenuDashBoard.ItemBuilder(self)
-
+        
         def build(self) -> list:
             return self.items
-
+    
     @staticmethod
     class ItemBuilder:
         def __init__(self, parent: Any):
             self.parent = parent
             self.item = MenuDashBoard.DashBoardItem()
-
+        
         def icon(self, icon: Awesome) -> Any:
             self.item.icon = icon
             return self
-
+        
         def tooltip(self, tooltip: str) -> Any:
             self.item.tooltip = tooltip
             return self
-
+        
         def action(self, action: Callable) -> Any:
             self.item.action = action
             return self
-
+        
         def build(self) -> Any:
             self.parent.items.append(self.item)
             return self.parent
-
+    
     @classmethod
     def builder(cls):
         return cls.DashBoardBuilder()
-
+    
     def __init__(
             self,
             items: List[Any],
             items_per_line: int = 5):
-
+        
         self.all_items = items
         self.done = None
         self.re_render = True
         self.tab_index = 0
         self.items_per_line = items_per_line
-
+    
     def show(
             self,
             title: str = 'Please select one item',
@@ -118,36 +118,36 @@ class MenuDashBoard:
         length = len(self.all_items)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
         signal.signal(signal.SIGHUP, MenuUtils.exit_app)
-
+        
         if length > 0:
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
             vt_print(Vt100.save_cursor())
-
+            
             # Wait for user interaction
             while not self.done and ret_val != Keyboard.VK_ENTER and ret_val != Keyboard.VK_ESC:
                 # Menu Renderization {
                 if self.re_render:
                     self.__render__(nav_color)
                 # } Menu Renderization
-
+                
                 # Navigation input {
                 ret_val = self.__nav_input__()
                 self.re_render = True
                 # } Navigation input
-
+        
         vt_print('%HOM%%ED2%%MOD(0)%')
         vt_print(Vt100.set_show_cursor(True))
-
+        
         selected = self.all_items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
         if selected and selected.action:
             selected.action()
-
+        
         return selected
-
+    
     def __render__(self, nav_color: VtColors) -> None:
-
+        
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
@@ -164,13 +164,13 @@ class MenuDashBoard:
         sysout(
             f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%",
             end='')
-
+    
     def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]) -> None:
         num_cols = len(cell_template[0])
         num_rows = len(cell_template)
         for row in range(0, num_rows):
             for col in range(0, num_cols):
-                if 'X' == cell_template[row][col]:
+                if cell_template[row][col] == 'X':
                     vt_print(f'{item.icon}')
                 else:
                     vt_print(f'{cell_template[row][col]}')
@@ -183,14 +183,15 @@ class MenuDashBoard:
             vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')
         else:
             vt_print('%CUD(1)%%EL2%')
-
+    
     def __nav_input__(self) -> chr:
         length = len(self.all_items)
         keypress = Keyboard.read_keystroke()
-
+        
         if not keypress:
             return None
-        elif keypress == Keyboard.VK_ESC:
+        
+        if keypress == Keyboard.VK_ESC:
             self.done = True
             sysout('\n%NC%')
         else:
@@ -214,5 +215,5 @@ class MenuDashBoard:
                 self.tab_index = min(length - 1, self.tab_index + 1)
             elif keypress == Keyboard.VK_ENTER:  # Select and exit
                 pass
-
+        
         return keypress

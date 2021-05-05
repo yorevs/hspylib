@@ -20,9 +20,9 @@ from PyQt5.QtWidgets import QFrame
 
 class Panel(QFrame):
     keyPressed = pyqtSignal(int)
-
+    
     def __init__(self, parent):
         super().__init__(parent=parent)
-
+    
     def keyPressEvent(self, event) -> None:
         self.keyPressed.emit(event.key())

@@ -29,9 +29,9 @@ class Emoji(Enumeration):
         Full list of emojis can be found here:
           - https://unicode.org/emoji/charts/emoji-list.html
     """
-
+    
     def __str__(self) -> str:
         return str(self.value)
-
+    
     def placeholder(self) -> str:
         return f":{self.name}:"

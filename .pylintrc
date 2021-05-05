@@ -1,7 +1,15 @@
 [MASTER]
-
 extension-pkg-whitelist=PyQt5
 init-hook='import sys; sys.path.append("src/main"); sys.path.append("src/demo"); sys.path.append("src/app"); sys.path.append("src/test");'
 
 [TYPECHECK]
-ignored-classes=struct
+ignored-classes=struct,termios,select
+
+[FORMAT]
+max-line-length=120
+
+[MISCELLANEOUS]
+notes=FIXME,XXX
+
+[MESSAGES CONTROL]
+enable=useless-suppression

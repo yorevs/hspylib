@@ -20,8 +20,7 @@ from time import sleep
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLCDNumber
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QLCDNumber, QWidget
 
 from calculator.core.enum.calc_operations import CalcOperations
 from hspylib.core.config.app_config import AppConfigs
@@ -33,7 +32,7 @@ class MainView(QtView):
         def __init__(self, lcd: QLCDNumber):
             Thread.__init__(self)
             self.lcd = lcd
-
+        
         def run(self):
             palette = self.lcd.palette()
             fg_color = palette.color(palette.WindowText)
@@ -43,7 +42,7 @@ class MainView(QtView):
             sleep(float(AppConfigs.INSTANCE['lcd.blink.delay']))
             palette.setColor(palette.WindowText, fg_color)
             self.lcd.setPalette(palette)
-
+    
     def __init__(self):
         form, window = uic \
             .loadUiType("{}/forms/qt_calculator.ui".format(AppConfigs.INSTANCE.resource_dir()))
@@ -86,7 +85,7 @@ class MainView(QtView):
         self.btnEqual = self.qt.find_tool_button('btnEqual')
         # }
         self.setup_ui()
-
+    
     def setup_ui(self):
         self.btnAC.clicked.connect(self._btn_ac_clicked)
         self.btnSignal.clicked.connect(self._btn_signal_clicked)
@@ -109,10 +108,10 @@ class MainView(QtView):
         self.btnDecimal.setText(self.dec_sep)
         self.btnEqual.clicked.connect(self._btn_equal_clicked)
         self.frameMain.keyPressed.connect(self._key_pressed)
-
+    
     def show(self):
         self.window.show()
-
+    
     def _key_pressed(self, key_pressed):
         if Qt.Key_1 == key_pressed:
             self._btn1_clicked()
@@ -142,15 +141,15 @@ class MainView(QtView):
             self._btn_division_clicked()
         elif Qt.Key_Percent == key_pressed:
             self._btn_percent_clicked()
-        elif Qt.Key_Equal == key_pressed or Qt.Key_Return == key_pressed:
+        elif key_pressed in [Qt.Key_Equal, Qt.Key_Return]:
             self._btn_equal_clicked()
         elif Qt.Key_Backspace == key_pressed:
             self._remove_digit()
-        elif Qt.Key_Period == key_pressed or Qt.Key_Comma == key_pressed:
+        elif key_pressed in [Qt.Key_Period, Qt.Key_Comma]:
             self._btn_signal_clicked()
         elif Qt.Key_Escape == key_pressed:
             self._btn_ac_clicked()
-
+    
     def _display(self, value):
         future_digits = len(str(value)) if value else 0
         digits = self.lcdDisplay.digitCount()
@@ -159,12 +158,12 @@ class MainView(QtView):
         elif future_digits <= digits:
             self.lcdDisplay.setDigitCount(max(future_digits, self.min_digits))
         self.lcdDisplay.display(value)
-
+    
     def _blink_lcd(self):
         blink = MainView.BlinkLcdThread(self.lcdDisplay)
         blink.start()
         self.display_text = ''
-
+    
     def _soft_reset(self):
         self.wait_operand = True
         self.wait_operand2 = True
@@ -173,7 +172,7 @@ class MainView(QtView):
         self.operand2 = 0
         self.memory_rec = 0
         self.display_text = ''
-
+    
     def _append_digit(self, digit: int):
         self.btnAC.setText('C')
         if not self.display_text or self.display_text == '0':
@@ -181,22 +180,22 @@ class MainView(QtView):
         else:
             self.display_text += str(digit)
         self._display(self.display_text)
-
+    
     def _remove_digit(self):
         if not self.display_text:
             return
-        elif len(self.display_text) <= 1:
+        if len(self.display_text) <= 1:
             self._btn_ac_clicked()
             return
-        else:
-            self.display_text = self.display_text[:-1]
+        self.display_text = self.display_text[:-1]
         self._display(self.display_text)
-
+    
     def _calculate(self):
         result = 0
         if not self.op or not self.operand:
             return
-        elif self.op == CalcOperations.SUM:
+        
+        if self.op == CalcOperations.SUM:
             result = self.operand + self.operand2
         elif self.op == CalcOperations.SUBTRACTION:
             result = self.operand - self.operand2
@@ -209,7 +208,7 @@ class MainView(QtView):
                 result = self.operand / self.operand2
         self._display(result)
         self.memory_rec = 0
-
+    
     def _change_op(self, op: CalcOperations):
         self.op = op
         if self.wait_operand:
@@ -224,7 +223,7 @@ class MainView(QtView):
             self.operand = self.lcdDisplay.value()
             self.wait_operand2 = True
         self._blink_lcd()
-
+    
     def _btn_equal_clicked(self):
         log.info("Clicked: =")
         if self.wait_operand:
@@ -236,7 +235,7 @@ class MainView(QtView):
             self._calculate()
         self._soft_reset()
         self._blink_lcd()
-
+    
     def _btn_ac_clicked(self):
         log.info("Clicked: AC")
         if self.memory_rec:
@@ -248,12 +247,12 @@ class MainView(QtView):
             self.btnAC.setText('AC')
         self.display_text = ''
         self._blink_lcd()
-
+    
     def _btn_signal_clicked(self):
         log.info("Clicked: +-")
         self._display(self.lcdDisplay.value() * -1)
         self.display_text = str(self.lcdDisplay.value())
-
+    
     def _btn_percent_clicked(self):
         log.info("Clicked: %")
         if not self.memory_rec:
@@ -265,63 +264,63 @@ class MainView(QtView):
             self._display(operand1 * (operand2 / 100))
             self.display_text = str(self.lcdDisplay.value())
             self.memory_rec = self.lcdDisplay.value()
-
+    
     def _btn_division_clicked(self):
         log.info("Clicked: /")
         self._change_op(CalcOperations.DIVISION)
-
+    
     def _btn7_clicked(self):
         log.info("Clicked: 7")
         self._append_digit(7)
-
+    
     def _btn8_clicked(self):
         log.info("Clicked: 8")
         self._append_digit(8)
-
+    
     def _btn9_clicked(self):
         log.info("Clicked: 9")
         self._append_digit(9)
-
+    
     def _btn_times_clicked(self):
         log.info("Clicked: x")
         self._change_op(CalcOperations.MULTIPLICATION)
-
+    
     def _btn4_clicked(self):
         log.info("Clicked: 4")
         self._append_digit(4)
-
+    
     def _btn5_clicked(self):
         log.info("Clicked: 5")
         self._append_digit(5)
-
+    
     def _btn6_clicked(self):
         log.info("Clicked: 6")
         self._append_digit(6)
-
+    
     def _btn_minus_clicked(self):
         log.info("Clicked: -")
         self._change_op(CalcOperations.SUBTRACTION)
-
+    
     def _btn1_clicked(self):
         log.info("Clicked: 1")
         self._append_digit(1)
-
+    
     def _btn2_clicked(self):
         log.info("Clicked: 2")
         self._append_digit(2)
-
+    
     def _btn3_clicked(self):
         log.info("Clicked: 3")
         self._append_digit(3)
-
+    
     def _btn_plus_clicked(self):
         log.info("Clicked: +")
         self._change_op(CalcOperations.SUM)
-
+    
     def _btn0_clicked(self):
         log.info("Clicked: 0")
         self._append_digit(0)
-
+    
     def _btn_comma_clicked(self):
         log.info("Clicked: ,")
         if self.dec_sep not in self.display_text:

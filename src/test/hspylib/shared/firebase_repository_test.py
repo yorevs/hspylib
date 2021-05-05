@@ -14,18 +14,15 @@
    Copyright 2021, HSPyLib team
 """
 
-
 from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
 from hspylib.core.model.entity import Entity
 from test.hspylib.shared.entity_test import EntityTest
 
 
 class FirebaseRepositoryTest(FirebaseRepository):
-    def __init__(self):
-        super().__init__()
-
+    
     def row_to_entity(self, row: dict) -> Entity:
         return EntityTest(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])
-
+    
     def database_name(self) -> str:
         return 'hspylib'

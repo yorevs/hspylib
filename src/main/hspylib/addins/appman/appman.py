@@ -21,7 +21,7 @@ from typing import Any
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import sysout, syserr, get_path
+from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.modules.fetch.fetch import get
 
 HERE = get_path(__file__)
@@ -29,10 +29,10 @@ HERE = get_path(__file__)
 
 class AppManager(metaclass=Singleton):
     """TODO"""
-
+    
     # The directory containing all template files
     TEMPLATES = (HERE / "templates")
-
+    
     GRADLE_PROPS = """
 project.ext.set("projectVersion", "{}")
 project.ext.set("pythonVersion", "3")
@@ -41,21 +41,21 @@ project.ext.set("author", "YourUser")
 project.ext.set("mailTo", "YourEmail")
 project.ext.set("siteUrl", "YourSiteUrl")
 """
-
+    
     class AppType(Enumeration):
         """Possible application creation type"""
         BASIC = 1
         GRADLE = 2
         GIT = 4
         ALL = 8
-
+    
     def __init__(self, parent: Any):
         self.parent = parent
         self.app_name = None
         self.app_dir = None
         self.init_gradle = False
         self.init_git = False
-
+    
     def create_app(self, app_name: str, app_type: AppType, dest_dir: str) -> None:
         """Create the application based on the parameters"""
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')
@@ -93,20 +93,20 @@ project.ext.set("siteUrl", "YourSiteUrl")
             syserr(str(err))
         else:
             sysout(f"Successfully created the application {dest_dir}/{app_name}")
-
+    
     def _mkdir(self, dirname: str) -> None:
         """Create a directory from the destination path"""
         dir_path = f"{self.app_dir}/{dirname}"
         sysout(f'  |- {dir_path}')
         os.mkdir(dir_path)
-
+    
     def _mkfile(self, filename: str, contents: str = '') -> None:
         """Create a file from the destination path with the specified contents"""
         file_path = f"{self.app_dir}/{filename}"
         sysout(f'  |- {file_path}')
         with open(f'{file_path}', 'w') as fh:
             fh.write(contents)
-
+    
     def _init_gradle(self, app_name: str) -> None:
         """Initialize the as a gradle project"""
         sysout('Initializing gradle project')
@@ -123,23 +123,23 @@ project.ext.set("siteUrl", "YourSiteUrl")
         version_string = '.'.join(map(str, self.parent.VERSION))
         self._mkfile('properties.gradle', self.GRADLE_PROPS.format(version_string).strip())
         self._mkfile(
-            f'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self.app_name)
+            'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self.app_name)
         )
-        self._mkfile(f'gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
+        self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
         args = ['./gradlew', 'build']
         result = subprocess.run(args, capture_output=True, text=True, cwd=self.app_dir).stdout
         sysout('Gradle execution result: {}'.format(result))
-
+    
     def _download_ext(self, extension: str) -> None:
         """Download a gradle extension from the HSPyLib repository"""
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')
         assert resp.status_code == HttpCode.OK, f'Unable to download {extension}'
         self._mkfile(f'gradle/{extension}', resp.body)
-
+    
     def _init_git(self) -> None:
         """Initialize a git repository for the project"""
-        self._mkfile(f'src/main/resources/log/.gitkeep')
-        self._mkfile(f'.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
+        self._mkfile('src/main/resources/log/.gitkeep')
+        self._mkfile('.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
         sysout('Initializing git repository')
         result = subprocess.run(['git', 'init'], capture_output=True, text=True, cwd=self.app_dir).stdout
         sysout('Git init result: {}'.format(result))

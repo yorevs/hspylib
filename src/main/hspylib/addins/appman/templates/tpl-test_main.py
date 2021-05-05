@@ -26,7 +26,7 @@ TEST_DIR = dirname(__file__)
 
 
 class TestMain(unittest.TestCase):
-
+    
     # Setup tests
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
@@ -37,13 +37,13 @@ class TestMain(unittest.TestCase):
         self.assertIsNotNone(self.configs)
         self.assertIsNotNone(AppConfigs.INSTANCE)
         log.info(self.configs)
-
+    
     # Teardown tests
     def tearDown(self):
         pass
-
+    
     # TEST CASES ----------
-
+    
     def test_should_test_something(self):
         pass
 

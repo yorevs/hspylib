@@ -15,15 +15,15 @@
 """
 
 import string
-import sys
 from typing import Any, Optional
 
 import getkey
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.tools.commons import syserr
+from hspylib.modules.cli.vt100.vt_utils import require_terminal
 
-assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
+require_terminal()
 
 
 class Keyboard(Enumeration):
@@ -46,34 +46,58 @@ class Keyboard(Enumeration):
     VK_PAGE_DOWN = getkey.keys.PAGE_DOWN
     VK_SHIFT_TAB = '\x1b[Z'
     # Letters
-    # @formatter:off
-    VK_a = 'a'; VK_A = 'A'
-    VK_b = 'b'; VK_B = 'B'
-    VK_c = 'c'; VK_C = 'C'
-    VK_d = 'd'; VK_D = 'D'
-    VK_e = 'e'; VK_E = 'E'
-    VK_f = 'f'; VK_F = 'F'
-    VK_g = 'g'; VK_G = 'G'
-    VK_h = 'h'; VK_H = 'H'
-    VK_i = 'i'; VK_I = 'I'
-    VK_j = 'j'; VK_J = 'J'
-    VK_k = 'k'; VK_K = 'K'
-    VK_l = 'l'; VK_L = 'L'
-    VK_m = 'm'; VK_M = 'M'
-    VK_n = 'n'; VK_N = 'N'
-    VK_o = 'o'; VK_O = 'O'
-    VK_p = 'p'; VK_P = 'P'
-    VK_q = 'q'; VK_Q = 'Q'
-    VK_r = 'r'; VK_R = 'R'
-    VK_s = 's'; VK_S = 'S'
-    VK_t = 't'; VK_T = 'T'
-    VK_u = 'u'; VK_U = 'U'
-    VK_v = 'v'; VK_V = 'V'
-    VK_w = 'w'; VK_W = 'W'
-    VK_x = 'x'; VK_X = 'X'
-    VK_y = 'y'; VK_Y = 'Y'
-    VK_z = 'z'; VK_Z = 'Z'
-    # @formatter:on
+    VK_a = 'a'
+    VK_A = 'A'
+    VK_b = 'b'
+    VK_B = 'B'
+    VK_c = 'c'
+    VK_C = 'C'
+    VK_d = 'd'
+    VK_D = 'D'
+    VK_e = 'e'
+    VK_E = 'E'
+    VK_f = 'f'
+    VK_F = 'F'
+    VK_g = 'g'
+    VK_G = 'G'
+    VK_h = 'h'
+    VK_H = 'H'
+    VK_i = 'i'
+    VK_I = 'I'
+    VK_j = 'j'
+    VK_J = 'J'
+    VK_k = 'k'
+    VK_K = 'K'
+    VK_l = 'l'
+    VK_L = 'L'
+    VK_m = 'm'
+    VK_M = 'M'
+    VK_n = 'n'
+    VK_N = 'N'
+    VK_o = 'o'
+    VK_O = 'O'
+    VK_p = 'p'
+    VK_P = 'P'
+    VK_q = 'q'
+    VK_Q = 'Q'
+    VK_r = 'r'
+    VK_R = 'R'
+    VK_s = 's'
+    VK_S = 'S'
+    VK_t = 't'
+    VK_T = 'T'
+    VK_u = 'u'
+    VK_U = 'U'
+    VK_v = 'v'
+    VK_V = 'V'
+    VK_w = 'w'
+    VK_W = 'W'
+    VK_x = 'x'
+    VK_X = 'X'
+    VK_y = 'y'
+    VK_Y = 'Y'
+    VK_z = 'z'
+    VK_Z = 'Z'
     # Numbers
     VK_ZERO = '0'
     VK_ONE = '1'
@@ -118,30 +142,30 @@ class Keyboard(Enumeration):
     VK_PERIOD = '.'
     VK_SLASH = '/'
     VK_QUESTION_MARK = '?'
-
+    
     @classmethod
     def read_keystroke(cls) -> Optional[Any]:
         try:
             keystroke = getkey.getkey()
             if keystroke:
                 return cls.of_value(keystroke)
-            else:
-                return None
+            
+            return None
         except KeyboardInterrupt as err:
             syserr(str(err))
         except AssertionError:
             pass
-
+        
         return None
-
+    
     def isdigit(self) -> bool:
         return str(self.value).isdigit()
-
+    
     def isalpha(self) -> bool:
         return str(self.value).isalpha()
-
+    
     def isalnum(self) -> bool:
         return str(self.value).isalnum()
-
+    
     def ispunct(self) -> bool:
         return all(ch in string.punctuation for ch in str(self.value))

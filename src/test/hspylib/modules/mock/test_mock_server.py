@@ -29,7 +29,7 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestClass(unittest.TestCase):
-
+    
     # Setup tests
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
@@ -39,13 +39,13 @@ class TestClass(unittest.TestCase):
         )
         self.server = MockServer('localhost', MockServer.RANDOM_PORT)
         self.server.start()
-
+    
     # Teardown tests
     def tearDown(self):
         self.server.stop()
-
+    
     # TEST CASES ----------
-
+    
     # TC1 - Test processing a get stubbed request.
     def test_should_process_a_get_request(self):
         endpoint = '/test-get'
@@ -60,7 +60,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
-
+    
     # TC2 - Test processing a post stubbed request.
     def test_should_process_a_post_request(self):
         endpoint = '/test-post'
@@ -75,7 +75,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
-
+    
     # TC3 - Test processing a put stubbed request.
     def test_should_process_a_put_request(self):
         endpoint = '/test-put'
@@ -90,7 +90,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(HttpCode.CREATED.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
-
+    
     # TC4 - Test processing a patch stubbed request.
     def test_should_process_a_patch_request(self):
         endpoint = '/test-patch'
@@ -105,7 +105,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(HttpCode.ACCEPTED.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
-
+    
     # TC5 - Test processing a delete stubbed request.
     def test_should_process_a_delete_request(self):
         endpoint = '/test-delete'
@@ -117,7 +117,7 @@ class TestClass(unittest.TestCase):
         assert resp, "Response is empty"
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual('', resp.text)
-
+    
     # TC6 - Test processing menu_options request.
     #       When there is a method stubbed and path is not found, return 'not found'; otherwise 'method not allowed'.
     def test_should_process_options_request(self):

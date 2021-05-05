@@ -19,17 +19,21 @@ import re
 import sys
 import termios
 import tty
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
+
+
+def require_terminal():
+    assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
 
 
 def screen_size() -> Optional[List[str]]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
         return os.popen('stty size').read().split()
-    else:
-        return None
+    
+    return None
 
 
 def get_cursor_position() -> Optional[Tuple[int, int]]:
@@ -57,8 +61,8 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
         except AttributeError:
             return None
         return int(groups[0]), int(groups[1])
-    else:
-        return None
+    
+    return None
 
 
 def set_enable_echo(enable: bool = True) -> None:

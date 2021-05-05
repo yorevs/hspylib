@@ -24,7 +24,7 @@ RE_JSON_ARRAY_INDEX = '[0-9]{1,}'
 
 
 class JsonSearch:
-
+    
     # Construction
     def __init__(self, separator='.', json_name_re=RE_JSON_NAME, json_array_index_re=RE_JSON_ARRAY_INDEX):
         self.separator = separator
@@ -34,26 +34,25 @@ class JsonSearch:
         self.pat_sel_elem_val = None
         self.pat_sub_expr = None
         self.pat_sub_expr_val = None
-
+    
     # find the next element in the list matching the specified value.
     def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False) -> Any:
         selected_element = root_element
-        if type(selected_element) is list:
+        if isinstance(selected_element, list):
             for nextInList in root_element:
-                if type(nextInList) is dict:
+                if isinstance(nextInList, dict):
                     selected_element = nextInList.get(match_name)
                     if selected_element and (match_value is None or (match_value and selected_element == match_value)):
                         # To return the parent element instead of the leaf
                         if fetch_parent:
                             selected_element = nextInList
                         break
-                    else:
-                        selected_element = None
-                elif type(nextInList) is unicode:
+                    selected_element = None
+                elif isinstance(nextInList, unicode):
                     selected_element = root_element
-                elif type(nextInList) is list:
+                elif isinstance(nextInList, list):
                     selected_element = self.__find_next_element__(nextInList, match_name, match_value)
-        elif type(selected_element) is dict:
+        elif isinstance(selected_element, dict):
             el = selected_element.get(match_name)
             if el and (match_value is None or (match_value and el == match_value)):
                 # To return the parent element instead of the leaf
@@ -63,22 +62,22 @@ class JsonSearch:
                 selected_element = None
         else:
             selected_element = None
-
+        
         return selected_element
-
+    
     # Find the element in the sub-expressions.
     def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False) -> Any:
         for nextSubExpr in sub_expressions:
-
+            
             if nextSubExpr:
                 sub_parts = re.search(pat_subst_expr_val, nextSubExpr)
                 sub_elem_id = sub_parts.group(1)
                 sub_elem_val = sub_parts.group(3)
                 sub_selected_element = self.__find_next_element__(
                     sub_selected_element, sub_elem_id, sub_elem_val, fetch_parent)
-
+        
         return sub_selected_element
-
+    
     # Purpose: Get the json element through it's path. Returned object is either [dict, list or unicode].
     #
     #   Search patterns:
@@ -109,12 +108,12 @@ class JsonSearch:
                     elem_array_group = parts.group(7)
                     elem_array_index = parts.group(8)
                     sub_expressions = re.compile(self.pat_sub_expr).split(sub_parts)
-                    if sel_elem_id and type(selected_element) is dict:
+                    if sel_elem_id and isinstance(selected_element, dict):
                         selected_element = selected_element.get(sel_elem_id)
                     if selected_element:
                         # Our first element is a list, so we will have to loop and find all the elements
                         # and sub expressions in it.
-                        if type(selected_element) is list:
+                        if isinstance(selected_element, list):
                             for nextInList in selected_element:
                                 sub_selected_element = self.__find_in_subex__(
                                     sub_expressions, nextInList, self.pat_sub_expr_val, fetch_parent)
@@ -123,9 +122,9 @@ class JsonSearch:
                                     selected_element = sub_selected_element
                                     break
                         # Check if there are indexed elements.
-                        if elem_array_group and elem_array_index and type(selected_element) is list:
+                        if elem_array_group and elem_array_index and isinstance(selected_element, list):
                             selected_element = selected_element[int(elem_array_index)]
-
+                
                 elif nextElement.find('[') >= 0:  # Next element is indexed
                     pat_sel_elem_idx = '(%s)\\[(%s)\\]' % (self.pat_elem, self.jsonArrayIndexRe)
                     parts = re.search(pat_sel_elem_idx, nextElement)
@@ -134,12 +133,11 @@ class JsonSearch:
                     # TODO Implement subarrays like elem[0][1][2]
                     if sub_elem_id is not None and elem_array_index is not None:
                         el = selected_element.get(sub_elem_id)
-                        if type(el) is list:
+                        if isinstance(el, list):
                             selected_element = el[int(elem_array_index)]
                 else:  # Next element is simple
                     selected_element = selected_element.get(nextElement)
         except (AttributeError, IndexError):
             selected_element = None
-            pass
-
+        
         return selected_element

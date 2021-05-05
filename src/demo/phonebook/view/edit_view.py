@@ -25,11 +25,11 @@ from phonebook.service.person_service import PersonService
 
 
 class EditView(metaclass=Singleton):
-
+    
     def __init__(self):
         self.person_service = PersonService()
         self.company_service = CompanyService()
-
+    
     def person(self) -> None:
         MenuUtils.title('EDIT PERSON')
         uuid = MenuUtils.prompt('Enter uuid')
@@ -48,10 +48,10 @@ class EditView(metaclass=Singleton):
                     'Complement', on_blank_abort=False, validator=ContactValidator.validate_complement)
                 self.person_service.save(found)
             except InputAbortedError:
-                return MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
-
+                MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
+            
             MenuUtils.wait_enter()
-
+    
     def company(self) -> None:
         MenuUtils.title('EDIT COMPANY')
         uuid = MenuUtils.prompt('Enter uuid')
@@ -69,6 +69,6 @@ class EditView(metaclass=Singleton):
                     'Complement', on_blank_abort=False, validator=ContactValidator.validate_complement)
                 self.company_service.save(found)
             except InputAbortedError:
-                return MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
-
+                MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
+            
             MenuUtils.wait_enter()
