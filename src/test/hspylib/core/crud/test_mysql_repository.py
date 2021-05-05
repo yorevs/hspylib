@@ -21,9 +21,11 @@ import unittest
 
 from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
-from test.hspylib.core.crud.resources.TestMysqlRepository import TestMysqlRepository, TestEntity
 
 from hspylib.core.config.app_config import AppConfigs
+from test.hspylib.core.crud.resources.TestMysqlRepository import TestMysqlRepository
+
+from test.hspylib.core.crud.resources.TestEntity import TestEntity
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

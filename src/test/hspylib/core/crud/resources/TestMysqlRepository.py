@@ -16,7 +16,7 @@
 
 from typing import Tuple
 
-from test.hspylib.core.crud.resources.TestEntity import TestEntity
+from hspylib.core.crud.resources.TestEntity import TestEntity
 
 from hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
 from hspylib.core.tools.commons import get_or_default, str_to_bool

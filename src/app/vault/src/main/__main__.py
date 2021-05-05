@@ -43,7 +43,7 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.vault = Vault()
 
-    def setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
         self.with_arguments(
             ArgumentChain.builder()
@@ -74,7 +74,7 @@ class Main(Application):
         )
         self._exec_application()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.vault.close()
 
     def _exec_application(self, ) -> None:

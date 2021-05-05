@@ -45,7 +45,7 @@ class VaultEntry(Entity):
     def __str__(self):
         return ENTRY_FORMAT.format(self.key, self.name, self.password, self.hint, self.modified)
 
-    def to_string(self, show_password: bool = False, show_hint: bool = False):
+    def to_string(self, show_password: bool = False, show_hint: bool = False) -> str:
         """Return the string representation of this entry
         :param show_password: Whether to exhibit the password or not
         :param show_hint: Whether to exhibit the hint or not

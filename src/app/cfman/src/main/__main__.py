@@ -42,7 +42,7 @@ class Main(Application):
         self.option_map = {}
         self.cfman = None
 
-    def setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs) -> None:
         self.with_option('a', 'api', True)
         self.with_option('o', 'org', True)
         self.with_option('s', 'space', True)

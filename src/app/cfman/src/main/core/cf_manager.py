@@ -101,7 +101,7 @@ class CFManager(object):
 
         return self.apps
 
-    def _select_endpoint(self):
+    def _select_endpoint(self) -> None:
         with open(f'{self.configs.resource_dir()}/api_endpoints.txt', 'r+') as f_hosts:
             endpoints = list(map(lambda x: CFEndpoint(x.split(',')), f_hosts.readlines()))
             selected = mselect(endpoints, title='Please select an endpoint')
@@ -119,7 +119,7 @@ class CFManager(object):
                 syserr(f'Failed to connect to API => {selected.host}')
                 exit(0)
 
-    def _require_credentials(self):
+    def _require_credentials(self) -> None:
         self.username = self.options['username'] if 'username' in self.options else self.username
         self.password = self.options['password'] if 'password' in self.options else self.password
         form_fields = MenuInput.builder() \
@@ -176,7 +176,7 @@ class CFManager(object):
             self.apps = self._get_apps()
         return mselect(self.apps, title='Please select the application you want to manage')
 
-    def _do_target(self):
+    def _do_target(self) -> None:
         sysout(f"%GREEN%Targeting ORG = {self.org} and SPACE = {self.space}...%NC%")
         if not self.cf.target(org=self.org, space=self.space):
             raise Exception(f"Unable to target ORG: {self.org} => {self.cf.last_result}")

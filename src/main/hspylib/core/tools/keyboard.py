@@ -46,58 +46,34 @@ class Keyboard(Enumeration):
     VK_PAGE_DOWN = getkey.keys.PAGE_DOWN
     VK_SHIFT_TAB = '\x1b[Z'
     # Letters
-    VK_a = 'a';
-    VK_A = 'A'
-    VK_b = 'b';
-    VK_B = 'B'
-    VK_c = 'c';
-    VK_C = 'C'
-    VK_d = 'd';
-    VK_D = 'D'
-    VK_e = 'e';
-    VK_E = 'E'
-    VK_f = 'f';
-    VK_F = 'F'
-    VK_g = 'g';
-    VK_G = 'G'
-    VK_h = 'h';
-    VK_H = 'H'
-    VK_i = 'i';
-    VK_I = 'I'
-    VK_j = 'j';
-    VK_J = 'J'
-    VK_k = 'k';
-    VK_K = 'K'
-    VK_l = 'l';
-    VK_L = 'L'
-    VK_m = 'm';
-    VK_M = 'M'
-    VK_n = 'n';
-    VK_N = 'N'
-    VK_o = 'o';
-    VK_O = 'O'
-    VK_p = 'p';
-    VK_P = 'P'
-    VK_q = 'q';
-    VK_Q = 'Q'
-    VK_r = 'r';
-    VK_R = 'R'
-    VK_s = 's';
-    VK_S = 'S'
-    VK_t = 't';
-    VK_T = 'T'
-    VK_u = 'u';
-    VK_U = 'U'
-    VK_v = 'v';
-    VK_V = 'V'
-    VK_w = 'w';
-    VK_W = 'W'
-    VK_x = 'x';
-    VK_X = 'X'
-    VK_y = 'y';
-    VK_Y = 'Y'
-    VK_z = 'z';
-    VK_Z = 'Z'
+    # @formatter:off
+    VK_a = 'a'; VK_A = 'A'
+    VK_b = 'b'; VK_B = 'B'
+    VK_c = 'c'; VK_C = 'C'
+    VK_d = 'd'; VK_D = 'D'
+    VK_e = 'e'; VK_E = 'E'
+    VK_f = 'f'; VK_F = 'F'
+    VK_g = 'g'; VK_G = 'G'
+    VK_h = 'h'; VK_H = 'H'
+    VK_i = 'i'; VK_I = 'I'
+    VK_j = 'j'; VK_J = 'J'
+    VK_k = 'k'; VK_K = 'K'
+    VK_l = 'l'; VK_L = 'L'
+    VK_m = 'm'; VK_M = 'M'
+    VK_n = 'n'; VK_N = 'N'
+    VK_o = 'o'; VK_O = 'O'
+    VK_p = 'p'; VK_P = 'P'
+    VK_q = 'q'; VK_Q = 'Q'
+    VK_r = 'r'; VK_R = 'R'
+    VK_s = 's'; VK_S = 'S'
+    VK_t = 't'; VK_T = 'T'
+    VK_u = 'u'; VK_U = 'U'
+    VK_v = 'v'; VK_V = 'V'
+    VK_w = 'w'; VK_W = 'W'
+    VK_x = 'x'; VK_X = 'X'
+    VK_y = 'y'; VK_Y = 'Y'
+    VK_z = 'z'; VK_Z = 'Z'
+    # @formatter:on
     # Numbers
     VK_ZERO = '0'
     VK_ONE = '1'
@@ -158,14 +134,14 @@ class Keyboard(Enumeration):
 
         return None
 
-    def isdigit(self):
+    def isdigit(self) -> bool:
         return str(self.value).isdigit()
 
-    def isalpha(self):
+    def isalpha(self) -> bool:
         return str(self.value).isalpha()
 
-    def isalnum(self):
+    def isalnum(self) -> bool:
         return str(self.value).isalnum()
 
-    def ispunct(self):
+    def ispunct(self) -> bool:
         return all(ch in string.punctuation for ch in str(self.value))

@@ -24,5 +24,5 @@ class ButtonLabel(QLabel):
     def __init__(self, parent):
         super().__init__(parent=parent)
 
-    def mousePressEvent(self, ev):
+    def mousePressEvent(self, ev) -> None:
         self.clicked.emit()

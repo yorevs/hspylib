@@ -61,7 +61,7 @@ class Application(metaclass=Singleton):
         if app_version:
             self.with_option('v', 'version', handler=self.version)
 
-    def run(self, *params, **kwargs):
+    def run(self, *params, **kwargs) -> bool:
         """Main entry point handler"""
         log.info('Run started {}'.format(datetime.now()))
         try:
@@ -113,16 +113,16 @@ class Application(metaclass=Singleton):
     def get_argument(self, index: int) -> Optional[Argument]:
         return self.args[index] if 0 < index < len(self.args) else None
 
-    def setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs) -> bool:
         """Initialize application parameters and options"""
         log.info('Application started without any parameters')
 
     @abstractmethod
-    def main(self, *params, **kwargs):
+    def main(self, *params, **kwargs) -> bool:
         """Execute the application's main statements"""
         pass
 
-    def cleanup(self):
+    def cleanup(self) -> bool:
         """Execute code cleanup before exiting"""
         log.info('Application started without cleanup code')
 
@@ -131,13 +131,13 @@ class Application(metaclass=Singleton):
             shortopt: chr,
             longopt: str,
             has_argument: bool = False,
-            handler: Callable = None):
+            handler: Callable = None) -> bool:
         """Specify an option for the command line"""
         self.options[longopt] = Option(shortopt, longopt, has_argument, handler)
 
     def with_arguments(
             self,
-            chained_args: Set[ArgumentChain.ChainedArgument]):
+            chained_args: Set[ArgumentChain.ChainedArgument]) -> bool:
         """Specify an argument for the command line"""
         self.cond_args_chain = chained_args
 
@@ -189,7 +189,7 @@ class Application(metaclass=Singleton):
             if not valid:
                 raise InvalidArgumentError(f"Invalid arguments  \"{', '.join(provided_args)}\"")
 
-    def _recursive_set(self, idx: int, argument: Argument, provided_args: List[str]):
+    def _recursive_set(self, idx: int, argument: Argument, provided_args: List[str]) -> bool:
         """ Try to set a value for each provided argument. If any failure setting occur, raise an exception to be caught
             by the parse function, so they can try the next chain in the loop.
         """
@@ -203,6 +203,7 @@ class Application(metaclass=Singleton):
 
     @staticmethod
     def _validate_args_in_chain(arg: Argument) -> bool:
+        """Validate all arguments following the chain path"""
         missing = 0
         next_arg = arg
         while next_arg:

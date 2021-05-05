@@ -44,7 +44,7 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.firebase = Firebase()
 
-    def setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
         self.with_arguments(
             ArgumentChain.builder()

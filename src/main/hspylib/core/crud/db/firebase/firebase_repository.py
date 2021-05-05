@@ -45,7 +45,7 @@ class FirebaseRepository(CrudRepository):
                 the_list.append(self.row_to_entity(value))
         return the_list
 
-    def insert(self, entity: Entity):
+    def insert(self, entity: Entity) -> None:
         entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
@@ -55,7 +55,7 @@ class FirebaseRepository(CrudRepository):
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
-    def update(self, entity: Entity):
+    def update(self, entity: Entity) -> None:
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
         log.debug('Updating firebase entry: {} into: {}'.format(entity, url))
@@ -64,7 +64,7 @@ class FirebaseRepository(CrudRepository):
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
-    def delete(self, entity: Entity):
+    def delete(self, entity: Entity) -> None:
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         log.debug('Deleting firebase entry: {} into: {}'.format(entity, url))
         response = delete(url)

@@ -15,6 +15,7 @@
 """
 
 import re
+from typing import Any
 
 from idna.core import unicode
 
@@ -35,7 +36,7 @@ class JsonSearch:
         self.pat_sub_expr_val = None
 
     # find the next element in the list matching the specified value.
-    def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False):
+    def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False) -> Any:
         selected_element = root_element
         if type(selected_element) is list:
             for nextInList in root_element:
@@ -66,7 +67,7 @@ class JsonSearch:
         return selected_element
 
     # Find the element in the sub-expressions.
-    def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False):
+    def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False) -> Any:
         for nextSubExpr in sub_expressions:
 
             if nextSubExpr:
@@ -91,7 +92,7 @@ class JsonSearch:
     #     elem1.elem2{property<value>}.elem3
     #     elem1.elem2{property<value>}[index].elem3
     #     elem1.elem2{property<value>}.{property2<value2>}.elem3
-    def json_select(self, root_element, search_path, fetch_parent=False):
+    def json_select(self, root_element, search_path, fetch_parent=False) -> Any:
         self.pat_elem = '%s+' % self.jsonNameRe
         self.pat_sel_elem_val = '(%s)?((\\{(%s)(<(%s)>)?\\})+)(\\[(%s)\\])?' % (
             self.pat_elem, self.pat_elem, self.pat_elem, self.jsonArrayIndexRe)

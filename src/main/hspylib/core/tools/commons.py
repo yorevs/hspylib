@@ -40,7 +40,7 @@ def log_init(
         create_new: bool = True,
         f_mode: str = 'a',
         level: int = log.DEBUG,
-        log_fmt: str = LOG_FMT):
+        log_fmt: str = LOG_FMT) -> log:
     """Initialize the system logger
     :param log_file: TODO
     :param create_new:  TODO
@@ -198,7 +198,13 @@ def touch_file(filename: str) -> None:
         os.utime(filename, None)
 
 
-def flatten_dict(dictionary: dict, parent_key='', sep='.'):
+def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
+    """TODO
+    :param dictionary:
+    :param parent_key:
+    :param sep:
+    :return:
+    """
     flat_dict = {}
     for key, value in dictionary.items():
         new_key = parent_key + sep + key if parent_key else key

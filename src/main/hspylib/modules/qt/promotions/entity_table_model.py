@@ -15,7 +15,7 @@
 """
 
 import logging as log
-from typing import Type
+from typing import Type, Any
 
 from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant
 from PyQt5.QtGui import QColor
@@ -34,7 +34,7 @@ class DefaultTableModel(QAbstractTableModel):
         self.cell_alignments = cell_alignments or []
         log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
 
-    def data(self, index: QModelIndex, role: int = ...):
+    def data(self, index: QModelIndex, role: int = ...) -> Any:
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
         str_entity = str(entity) if entity else ''
         if role == Qt.DisplayRole:
@@ -46,21 +46,21 @@ class DefaultTableModel(QAbstractTableModel):
 
         return QVariant()
 
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...):
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> Any:
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return self.headers[section].upper() if len(self.headers) >= section else '-'
         elif orientation == Qt.Vertical and role == Qt.DisplayRole:
             return section
         return QVariant()
 
-    def headers_by_entity(self):
+    def headers_by_entity(self) -> tuple:
         return class_attribute_names(self.clazz)
 
-    def rowCount(self, parent: QModelIndex = ...):
+    def rowCount(self, parent: QModelIndex = ...) -> int:
         return len(self.table_data) if self.table_data and len(self.table_data) > 0 else 0
 
-    def columnCount(self, parent: QModelIndex = ...):
+    def columnCount(self, parent: QModelIndex = ...) -> int:
         return len(self.table_data[0].__dict__.keys()) if self.table_data and len(self.table_data) > 0 else 0
 
-    def row(self, index: QModelIndex):
+    def row(self, index: QModelIndex) -> Any:
         return self.table_data[index.row()]

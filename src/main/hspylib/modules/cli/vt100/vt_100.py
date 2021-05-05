@@ -37,17 +37,17 @@ class Vt100(ABC):
 
     # Esc7
     @classmethod
-    def save_cursor(cls):
+    def save_cursor(cls) -> str:
         return cls.escape('7')
 
     # Esc8
     @classmethod
-    def restore_cursor(cls):
+    def restore_cursor(cls) -> str:
         return cls.escape('8')
 
     # Esc[c
     @classmethod
-    def reset(cls):
+    def reset(cls) -> str:
         return cls.sequence('c')
 
     # Esc[?7<h/l>

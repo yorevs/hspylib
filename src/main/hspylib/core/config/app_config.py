@@ -33,6 +33,7 @@ AppConfigs
 
 
 class AppConfigs(metaclass=Singleton):
+    """TODO"""
 
     def __init__(
             self,
@@ -79,16 +80,16 @@ class AppConfigs(metaclass=Singleton):
     def __getitem__(self, item: str) -> Any:
         return self.get(item)
 
-    def size(self):
+    def size(self) -> int:
         return self._app_properties.size()
 
-    def source_dir(self):
+    def source_dir(self) -> Optional[str]:
         return self._source_dir
 
-    def resource_dir(self):
+    def resource_dir(self) -> Optional[str]:
         return self._resource_dir
 
-    def log_dir(self):
+    def log_dir(self) -> Optional[str]:
         return self._log_dir
 
     def get(self, property_name: str) -> Optional[str]:
