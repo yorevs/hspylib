@@ -15,13 +15,13 @@
 """
 
 import os
-import subprocess
 from typing import Any
 
 from hspylib.core.enum.enumeration import Enumeration
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
 
 HERE = get_path(__file__)
@@ -110,8 +110,8 @@ project.ext.set("siteUrl", "YourSiteUrl")
     def _init_gradle(self, app_name: str) -> None:
         """Initialize the as a gradle project"""
         sysout('Initializing gradle project')
-        args = ['gradle', 'init', '--project-name', app_name, '--type', 'basic', '--dsl', 'groovy']
-        result = subprocess.run(args, capture_output=True, text=True, cwd=self.app_dir).stdout
+        result = Terminal.shell_exec(
+            f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self.app_dir)
         sysout('Gradle execution result: {}'.format(result))
         sysout('Downloading gradle extensions')
         self._download_ext('badges.gradle')
@@ -126,8 +126,8 @@ project.ext.set("siteUrl", "YourSiteUrl")
             'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self.app_name)
         )
         self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
-        args = ['./gradlew', 'build']
-        result = subprocess.run(args, capture_output=True, text=True, cwd=self.app_dir).stdout
+        result = Terminal.shell_exec(
+            './gradlew build', cwd=self.app_dir)
         sysout('Gradle execution result: {}'.format(result))
     
     def _download_ext(self, extension: str) -> None:
@@ -141,11 +141,12 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._mkfile('src/main/resources/log/.gitkeep')
         self._mkfile('.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
         sysout('Initializing git repository')
-        result = subprocess.run(['git', 'init'], capture_output=True, text=True, cwd=self.app_dir).stdout
+        result = Terminal.shell_exec(
+            'git init', cwd=self.app_dir)
         sysout('Git init result: {}'.format(result))
         sysout('Creating first commit')
-        subprocess.run(['git', 'add', '.'], capture_output=True, text=True, cwd=self.app_dir)
-        result = subprocess.run(
-            ['git', 'commit', '-m', 'First commit [@HSPyLib]'],
-            capture_output=True, text=True, cwd=self.app_dir).stdout
+        Terminal.shell_exec(
+            'git add .', cwd=self.app_dir)
+        result = Terminal.shell_exec(
+            'git commit -m First commit [@HSPyLib]', cwd=self.app_dir)
         sysout('Git commit result: {}'.format(result))

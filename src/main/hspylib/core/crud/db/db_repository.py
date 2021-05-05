@@ -47,7 +47,7 @@ class DBRepository(CrudRepository):
         pass
     
     @abstractmethod
-    def execute(self, sql_statement: str, auto_commit: bool = True, *params):
+    def execute(self, sql_statement: str, auto_commit: bool, *params):
         pass
     
     @abstractmethod
