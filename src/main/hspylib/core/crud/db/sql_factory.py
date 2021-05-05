@@ -20,7 +20,6 @@ from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict
 
-from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.model.entity import Entity
 
@@ -62,7 +61,6 @@ class SqlFactory(metaclass=Singleton):
         return field_set
 
     def __init__(self):
-        self.logger = AppConfigs.INSTANCE.logger()
         self.sql_stubs = SqlFactory.read_stubs(DEFAULT_SQL_STUBS)
         log.debug('{} created with {} Stubs'.format(
             self.__class__.__name__,

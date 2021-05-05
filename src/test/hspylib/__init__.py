@@ -6,5 +6,6 @@
 
 __all__ = [
   'core', 
-  'modules'
+  'modules', 
+  'shared'
 ]
