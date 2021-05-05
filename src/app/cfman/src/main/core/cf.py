@@ -32,25 +32,25 @@ class CloudFoundry(metaclass=Singleton):
         self.targeted = {'org': None, 'space': None, 'targeted': False}
         self.last_result = None
 
-    def is_targeted(self):
+    def is_targeted(self) -> bool:
         return self.targeted['org'] and self.targeted['space'] and self.targeted['targeted']
 
     # Before getting started:
     def connect(self) -> bool:
         """Attempt to connect to CloudFoundry"""
         if not self.connected:
-            self.connected = "FAILED" not in str(self.__exec__('orgs'))
+            self.connected = "FAILED" not in str(self._exec('orgs'))
         return self.connected
 
     def api(self, api: str) -> bool:
         """Set or view target api url"""
         params = ['api', api]
-        return "FAILED" not in str(self.__exec__(*params))
+        return "FAILED" not in str(self._exec(*params))
 
     def auth(self, username: str, password: str) -> bool:
         """Authorize a CloudFoundry user"""
         params = ['auth', username, password]
-        return "FAILED" not in str(self.__exec__(*params))
+        return "FAILED" not in str(self._exec(*params))
 
     def target(self, **kwargs) -> dict:
         """Set or view the targeted org or space"""
@@ -63,51 +63,51 @@ class CloudFoundry(metaclass=Singleton):
             params.append('-s')
             params.append(kwargs['space'])
             self.targeted['space'] = kwargs['space']
-        self.targeted['targeted'] = "FAILED" not in str(self.__exec__(*params))
+        self.targeted['targeted'] = "FAILED" not in str(self._exec(*params))
 
         return self.targeted
 
     # Space management
     def spaces(self) -> List[str]:
         """List all spaces in an org"""
-        all_spaces = self.__exec__('spaces').split('\n')
+        all_spaces = self._exec('spaces').split('\n')
         return all_spaces[3:] if all_spaces and "FAILED" not in str(all_spaces) else None
 
     # Org management
     def orgs(self) -> List[str]:
         """List all orgs"""
-        all_orgs = self.__exec__('orgs').split('\n')
+        all_orgs = self._exec('orgs').split('\n')
         return all_orgs[3:] if all_orgs and "FAILED" not in all_orgs else None
 
     # Application lifecycle:
     def apps(self) -> List[str]:
         """List all apps in the target space"""
-        all_apps = self.__exec__('apps').split('\n')
+        all_apps = self._exec('apps').split('\n')
         return all_apps[4:] if all_apps and "FAILED" not in all_apps else None
 
     def start(self, **kwargs) -> str:
         """Start an app"""
-        return self.__exec__('start', kwargs['app'])
+        return self._exec('start', kwargs['app'])
 
     def stop(self, **kwargs) -> str:
         """Stop an app"""
-        return self.__exec__('stop', kwargs['app'])
+        return self._exec('stop', kwargs['app'])
 
     def restart(self, **kwargs) -> str:
         """Stop all instances of the app, then start them again. This causes downtime."""
-        return self.__exec__('restart', kwargs['app'])
+        return self._exec('restart', kwargs['app'])
 
     def restage(self, **kwargs) -> str:
         """Recreate the app's executable artifact using the latest pushed app files and the latest environment
         (variables, service bindings, buildpack, stack, etc.). This action will cause app downtime."""
-        return self.__exec__('restage', kwargs['app'])
+        return self._exec('restage', kwargs['app'])
 
-    def logs(self, **kwargs):
+    def logs(self, **kwargs) -> None:
         """Tail or show recent logs for an app"""
-        self.__poll__('logs', kwargs['app'])
+        self._poll('logs', kwargs['app'])
 
     # Subprocess helper
-    def __exec__(self, *cmd_args) -> Any:
+    def _exec(self, *cmd_args) -> Any:
         try:
             args = list(cmd_args)
             args.insert(0, 'cf')
@@ -124,7 +124,8 @@ class CloudFoundry(metaclass=Singleton):
         return result
 
     # Subprocess helper
-    def __poll__(self, *cmd_args):
+    @staticmethod
+    def _poll(*cmd_args) -> None:
         try:
             args = list(cmd_args)
             args.insert(0, 'cf')

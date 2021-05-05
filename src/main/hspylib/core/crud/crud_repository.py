@@ -24,15 +24,15 @@ from hspylib.core.model.entity import Entity
 
 class CrudRepository(ABC):
     @abstractmethod
-    def insert(self, entity: Entity):
+    def insert(self, entity: Entity) -> None:
         pass
 
     @abstractmethod
-    def update(self, entity: Entity):
+    def update(self, entity: Entity) -> None:
         pass
 
     @abstractmethod
-    def delete(self, entity: Entity):
+    def delete(self, entity: Entity) -> None:
         pass
 
     @abstractmethod

@@ -78,7 +78,7 @@ class Validator(ABC):
             return False
 
     @staticmethod
-    def has_no_nulls(*args):
+    def has_no_nulls(*args) -> bool:
         return all(opt is not None for opt in args)
 
     @abstractmethod

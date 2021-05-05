@@ -29,5 +29,5 @@ class QtView(ABC):
         self.qt = QtFinder(self.window)
 
     @abstractmethod
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         pass

@@ -43,18 +43,18 @@ class MockServer(HTTPServer):
     def address(self) -> Tuple[str, int]:
         return self.hostname, self.port
 
-    def is_allowed(self, method: HttpMethod):
+    def is_allowed(self, method: HttpMethod) -> bool:
         return method in self.__mocks
 
-    def start(self):
+    def start(self) -> None:
         runner = ServerThread(self)
         runner.start()
 
-    def stop(self):
+    def stop(self) -> None:
         self.shutdown()
         self.server_close()
 
-    def when_request(self, method: HttpMethod, url: str):
+    def when_request(self, method: HttpMethod, url: str) -> Any:
         request = self.mock(method=method, url=url) or MockResponse(self, method, url)
         self.__mocks[method] = self.__mocks[method] \
             if method in self.__mocks else {}

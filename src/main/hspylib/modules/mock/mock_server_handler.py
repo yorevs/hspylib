@@ -16,7 +16,7 @@
 
 import logging as log
 from http.server import BaseHTTPRequestHandler
-from typing import Tuple
+from typing import Tuple, List
 
 from requests.structures import CaseInsensitiveDict
 
@@ -31,7 +31,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
         super().__init__(request, client_address, parent)
 
     @staticmethod
-    def remove_reserved_headers(headers: CaseInsensitiveDict):
+    def remove_reserved_headers(headers: CaseInsensitiveDict) -> dict:
         filtered = {}
         if headers:
             reserved = ['content-size', 'server', 'date']
@@ -43,7 +43,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
     def process_headers(self,
                         headers: CaseInsensitiveDict = None,
                         content_type: ContentType = ContentType.APPLICATION_JSON,
-                        content_length: int = 0):
+                        content_length: int = 0) -> None:
         headers = MockServerHandler.remove_reserved_headers(headers)
         if headers and len(headers) > 0:
             for key, value in headers.items():
@@ -57,12 +57,12 @@ class MockServerHandler(BaseHTTPRequestHandler):
     def process_default(self,
                         code: HttpCode = HttpCode.OK,
                         content_type: ContentType = ContentType.APPLICATION_JSON,
-                        headers: CaseInsensitiveDict = None):
+                        headers: CaseInsensitiveDict = None) -> None:
         log.debug('Processing a default request status_code={} content-type={}'.format(code, content_type))
         self.send_response_only(code.value)
         self.process_headers(headers, content_type)
 
-    def process_request(self, method: HttpMethod):
+    def process_request(self, method: HttpMethod) -> None:
         if self.parent.is_allowed(method):
             request = self.parent.mock(method, self.path)
             if request:
@@ -91,7 +91,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
         else:
             self.process_default(HttpCode.METHOD_NOT_ALLOWED)
 
-    def find_allowed_methods(self):
+    def find_allowed_methods(self) -> List[str]:
         allowed_methods = ['OPTIONS']
         if self.parent.is_allowed(HttpMethod.HEAD):
             allowed_methods.append('HEAD')
@@ -107,7 +107,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
             allowed_methods.append('DELETE')
         return allowed_methods
 
-    def do_OPTIONS(self):
+    def do_options(self) -> None:
         mock_request = self.parent.mock(HttpMethod.OPTIONS, self.path)
         headers = CaseInsensitiveDict({'Allow': ', '.join(self.find_allowed_methods())})
         if mock_request:
@@ -115,20 +115,20 @@ class MockServerHandler(BaseHTTPRequestHandler):
         else:
             self.process_default(HttpCode.NO_CONTENT, headers=headers)
 
-    def do_HEAD(self):
+    def do_head(self):
         self.process_request(HttpMethod.HEAD)
 
-    def do_GET(self):
+    def do_get(self):
         self.process_request(HttpMethod.GET)
 
-    def do_POST(self):
+    def do_post(self):
         self.process_request(HttpMethod.POST)
 
-    def do_PUT(self):
+    def do_put(self):
         self.process_request(HttpMethod.PUT)
 
-    def do_PATCH(self):
+    def do_patch(self):
         self.process_request(HttpMethod.PATCH)
 
-    def do_DELETE(self):
+    def do_delete(self):
         self.process_request(HttpMethod.DELETE)

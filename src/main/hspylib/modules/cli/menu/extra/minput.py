@@ -107,37 +107,37 @@ class MenuInput:
             self.parent = parent
             self.field = MenuInput.Field()
 
-        def label(self, label: str):
+        def label(self, label: str) -> Any:
             self.field.label = label
             return self
 
-        def mode(self, mode: str):
+        def mode(self, mode: str) -> Any:
             assert mode in MenuInput.__mi_modes__, \
                 f"Not a valid mode: {mode}. Valid modes are: {str(MenuInput.__mi_modes__)}"
             self.field.mode = mode
             return self
 
-        def kind(self, kind: str):
+        def kind(self, kind: str) -> Any:
             assert kind in MenuInput.__mi_kinds__, \
                 f"Not a valid kind: {kind}. Valid kinds are: {str(MenuInput.__mi_kinds__)}"
             self.field.kind = kind
 
             return self
 
-        def min_max_length(self, min_length: int, max_length: int):
+        def min_max_length(self, min_length: int, max_length: int) -> Any:
             assert max_length >= min_length, f"Not a valid field length: ({min_length}-{max_length})"
             assert max_length > 0 and min_length > 0, f"Not a valid field length: ({min_length}-{max_length})"
             self.field.min_length = min_length
             self.field.max_length = max_length
             return self
 
-        def access_type(self, access_type: str):
+        def access_type(self, access_type: str) -> Any:
             assert access_type in MenuInput.__mi_access_types__, \
                 f"Not a valid access type {access_type}. Valid access types are: {str(MenuInput.__mi_access_types__)}"
             self.field.access_type = access_type
             return self
 
-        def value(self, value: Any):
+        def value(self, value: Any) -> Any:
             re_valid = self.field.val_regex(0, len(str(value)))
             if value:
                 assert re.match(re_valid, value), \
@@ -145,7 +145,7 @@ class MenuInput:
             self.field.value = value
             return self
 
-        def build(self):
+        def build(self) -> Any:
             if self.field.mode == "checkbox":
                 self.field.value = self.field.value if self.field.value in ['0', '1'] else 0
                 self.field.min_length = self.field.max_length = 1
@@ -165,7 +165,7 @@ class MenuInput:
         return 1 + (2 * max_len)
 
     @classmethod
-    def mi_print(cls, size: int, text: str, prepend: str = None, end: str = ''):
+    def mi_print(cls, size: int, text: str, prepend: str = None, end: str = '') -> None:
         fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
         if prepend:
             vt_print(fmt.format(prepend, text), end=end)
@@ -173,7 +173,7 @@ class MenuInput:
             vt_print(fmt.format(text), end=end)
 
     @classmethod
-    def builder(cls):
+    def builder(cls) -> Any:
         return cls.FormBuilder()
 
     def __init__(self, all_fields: List[Any]):
@@ -231,7 +231,7 @@ class MenuInput:
 
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
 
-    def __render__(self, nav_color: VtColors):
+    def __render__(self, nav_color: VtColors) -> None:
         icon = ''
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
@@ -286,7 +286,7 @@ class MenuInput:
             f"{nav_color.placeholder()}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%", end='')
         self.re_render = False
 
-    def __display_error__(self):
+    def __display_error__(self) -> None:
         err_offset = 12 + self.max_detail_length
         set_enable_echo(False)
         err_pos = self.max_label_length + self.max_value_length + err_offset
@@ -299,7 +299,7 @@ class MenuInput:
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")
         self.err_msg = ''
 
-    def __nav_input__(self):
+    def __nav_input__(self) -> chr:
         length = len(self.all_fields)
         keypress = Keyboard.read_keystroke()
 

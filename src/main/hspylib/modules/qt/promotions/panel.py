@@ -24,5 +24,5 @@ class Panel(QFrame):
     def __init__(self, parent):
         super().__init__(parent=parent)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event) -> None:
         self.keyPressed.emit(event.key())

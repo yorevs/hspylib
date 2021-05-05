@@ -39,7 +39,7 @@ class Main(Application):
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE)
 
-    def setup_parameters(self, *params, **kwargs):
+    def setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
         if len(*params) == 0:
             welcome = self.WELCOME
