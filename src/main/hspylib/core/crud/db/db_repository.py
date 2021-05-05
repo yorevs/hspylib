@@ -30,7 +30,6 @@ class DBRepository(CrudRepository):
         self.user = AppConfigs.INSTANCE['datasource.username']
         self.password = AppConfigs.INSTANCE['datasource.password']
         self.database = AppConfigs.INSTANCE['datasource.database']
-        self.logger = AppConfigs.INSTANCE.logger()
 
     def __str__(self):
         return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)

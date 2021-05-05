@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    @package: hspylib.test.hspylib.core.crud.resources
-      @file: TestFileDbRepository.py
+      @file: file_db_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -14,14 +14,14 @@
    Copyright 2021, HSPyLib team
 """
 
-from test.hspylib.core.crud.resources.TestEntity import TestEntity
 
 from hspylib.core.crud.file.file_repository import FileRepository
+from test.hspylib.shared.entity_test import EntityTest
 
 
-class TestFileDbRepository(FileRepository):
+class FileDbRepositoryTest(FileRepository):
     def __init__(self, filename: str):
         super().__init__(filename)
 
-    def dict_to_entity(self, row: dict) -> TestEntity:
-        return TestEntity(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])
+    def dict_to_entity(self, row: dict) -> EntityTest:
+        return EntityTest(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])

@@ -17,7 +17,7 @@
 from http.server import HTTPServer
 from random import randint
 from threading import Thread
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 
 from hspylib.core.enum.http_method import HttpMethod
 from hspylib.modules.mock.mock_request import MockResponse

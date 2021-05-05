@@ -47,11 +47,11 @@ class Main(Application):
 
     def _exec_application(self) -> None:
         if 'one' == self.get_argument(0):
-            sysout(f'One: {str(self.args)}')
+            sysout(f'One: {self.get_argument(1)}')
         elif 'two' == self.get_argument(0):
-            sysout(f'Two: {str(self.args)}')
+            sysout(f'Two: {self.get_argument(1)}')
         elif 'three' == self.get_argument(0):
-            sysout(f'Three: {str(self.args)}')
+            sysout(f'Three: {self.get_argument(1)}')
         else:
             sysout(f'INVALID => {str(self.args)}')
         sysout('Done')
