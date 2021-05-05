@@ -15,7 +15,6 @@
 """
 
 import logging as log
-import sys
 import uuid
 from abc import abstractmethod
 from typing import List, Optional, Tuple
@@ -26,6 +25,7 @@ from requests.structures import CaseInsensitiveDict as SqlFilter
 
 from hspylib.core.crud.db.db_repository import DBRepository
 from hspylib.core.crud.db.sql_factory import SqlFactory
+from hspylib.core.exception.exceptions import NotConnectedError
 from hspylib.core.model.entity import Entity
 
 
@@ -63,10 +63,9 @@ class MySqlRepository(DBRepository):
                     self._cursor = self._connector.cursor()
                     log.debug('Connection to {} established'.format(str(self)))
                     MySqlRepository._connections[cache_key] = self._connector
-                except (OperationalError, ConnectionRefusedError):
-                    log.error('Unable to connect to {}'.format(str(self)))
-                    sys.exit(1)
-    
+                except (OperationalError, ConnectionRefusedError) as err:
+                    raise ConnectionError('Unable to connect to {}'.format(str(self))) from err
+
     def disconnect(self) -> None:
         if self.is_connected():
             cache_key = self.__str__()
@@ -75,8 +74,7 @@ class MySqlRepository(DBRepository):
             del MySqlRepository._connections[cache_key]
             log.debug('Disconnected from {}.'.format(str(self)))
         else:
-            log.error('Unable to disconnect from {}'.format(str(self)))
-            sys.exit(1)
+            raise NotConnectedError('Not connected to database.')
     
     def insert(self, entity: Entity) -> None:
         if self.is_connected():
@@ -84,10 +82,10 @@ class MySqlRepository(DBRepository):
             stm = self._sql_factory \
                 .insert(entity) \
                 .replace(':tableName', self.table_name())
-            log.debug('Executing SQL statement: {}'.format(stm))
-            self._cursor.execute(stm)
+            log.debug(f"Executing SQL statement: {stm}")
+            self.execute(stm, True)
         else:
-            log.error('Not connected to database.')
+            raise NotConnectedError('Not connected to database.')
     
     def update(self, entity: Entity) -> None:
         if self.is_connected():
@@ -95,9 +93,9 @@ class MySqlRepository(DBRepository):
                 .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
-            self._cursor.execute(stm)
+            self.execute(stm, True)
         else:
-            log.error('Not connected to database.')
+            raise NotConnectedError('Not connected to database.')
     
     def delete(self, entity: Entity) -> None:
         if self.is_connected():
@@ -105,7 +103,9 @@ class MySqlRepository(DBRepository):
                 .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
-            self._cursor.execute(stm)
+            self.execute(stm, True)
+        else:
+            raise NotConnectedError('Not connected to database.')
     
     def find_all(
             self,
@@ -117,12 +117,11 @@ class MySqlRepository(DBRepository):
                 .select(column_set=column_set, filters=sql_filters) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
-            self._cursor.execute(stm)
+            self.execute(stm, True)
             result = self._cursor.fetchall()
             return list(map(self.row_to_entity, result)) if result else None
-        
-        log.error('Not connected to database.')
-        return None
+
+        raise NotConnectedError('Not connected to database.')
     
     def find_by_id(
             self,
@@ -135,25 +134,23 @@ class MySqlRepository(DBRepository):
                     .select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)})) \
                     .replace(':tableName', self.table_name())
                 log.debug('Executing SQL statement: {}'.format(stm))
-                self._cursor.execute(stm)
+                self.execute(stm, True)
                 result = self._cursor.fetchall()
                 if len(result) > 1:
                     raise ProgrammingError(f'Multiple results found {len(result)}')
                 return self.row_to_entity(result[0]) if len(result) > 0 else None
-            
             return None
-        
-        log.error('Not connected to database.')
-        return None
+
+        raise NotConnectedError('Not connected to database.')
     
-    def execute(self, sql_statement: str, auto_commit: bool = True, *params) -> None:
+    def execute(self, sql_statement: str, auto_commit: bool, *params) -> None:
         if self.is_connected():
-            self._cursor.execute(sql_statement, params)
-            log.debug('Executing SQL statement: {}'.format(sql_statement))
+            log.debug(f"Executing SQL statement: {sql_statement} with params: [{', '.join(params)}]")
+            self._cursor.execute(sql_statement, *params)
             if auto_commit:
                 self.commit()
         else:
-            log.error('Not connected to database.')
+            raise NotConnectedError('Not connected to database.')
     
     def commit(self) -> None:
         log.debug('Committing database changes')

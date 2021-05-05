@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import List, Optional
+from typing import List
 
 from hspylib.core.meta.singleton import Singleton
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -36,18 +36,18 @@ class CloudFoundry(metaclass=Singleton):
         """Attempt to connect to CloudFoundry"""
         if not self.connected:
             result = self._exec('orgs')
-            self.connected = result and 'FAILED' not in result
+            self.connected = result and 'FAILED' not in str(result)
         return self.connected
     
     def api(self, api: str) -> bool:
         """Set or view target api url"""
         result = self._exec(f"api {api}")
-        return result and 'FAILED' not in result
+        return result and 'FAILED' not in str(result)
     
     def auth(self, username: str, password: str) -> bool:
         """Authorize a CloudFoundry user"""
         result = self._exec(f"auth {username} {password}")
-        return result and 'FAILED' not in result
+        return result and 'FAILED' not in str(result)
     
     def target(self, **kwargs) -> dict:
         """Set or view the targeted org or space"""
@@ -60,7 +60,8 @@ class CloudFoundry(metaclass=Singleton):
             params.append('-s')
             params.append(kwargs['space'])
             self.targeted['space'] = kwargs['space']
-        self.targeted['targeted'] = 'FAILED' not in self._exec(' '.join(params))
+        result = self._exec(' '.join(params))
+        self.targeted['targeted'] = result and 'FAILED' not in str(result)
         
         return self.targeted
     
@@ -74,13 +75,13 @@ class CloudFoundry(metaclass=Singleton):
     def orgs(self) -> List[str]:
         """List all orgs"""
         all_orgs = self._exec('orgs').split('\n')
-        return all_orgs[3:] if all_orgs and 'FAILED' not in all_orgs else None
+        return all_orgs[3:] if all_orgs and 'FAILED' not in str(all_orgs) else None
     
     # Application lifecycle:
     def apps(self) -> List[str]:
         """List all apps in the target space"""
         all_apps = self._exec('apps').split('\n')
-        return all_apps[4:] if all_apps and 'FAILED' not in all_apps else None
+        return all_apps[4:] if all_apps and 'FAILED' not in str(all_apps) else None
     
     def start(self, **kwargs) -> str:
         """Start an app"""
@@ -99,10 +100,10 @@ class CloudFoundry(metaclass=Singleton):
         (variables, service bindings, buildpack, stack, etc.). This action will cause app downtime."""
         return self._exec(f"restage {kwargs['app']}")
     
-    def logs(self, **kwargs) -> None:
+    def logs(self, **kwargs) -> None:  # pylint: disable=no-self-use
         """Tail or show recent logs for an app"""
         Terminal.shell_poll(f"cf logs {kwargs['app']}")
     
-    def _exec(self, cmd_line: str) -> Optional[str]:
+    def _exec(self, cmd_line: str) -> str:
         self.last_result = Terminal.shell_exec(f"cf {cmd_line}")
         return self.last_result

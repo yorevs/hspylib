@@ -7,6 +7,7 @@
 
 __all__ = [
   '__main__', 
-  'core'
+  'core', 
+  'exception'
 ]
 __version__ = "0.9.0"
