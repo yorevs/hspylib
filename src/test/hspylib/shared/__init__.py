@@ -3,10 +3,12 @@
 # HSPyLib v0.10.4
 #
 # Package: test.hspylib.shared
+"""Package initialization."""
 
 __all__ = [
-  'test_entity', 
-  'test_file_db_repository', 
-  'test_firebase_repository', 
-  'test_mysql_repository'
+  'decorators', 
+  'entity_test', 
+  'file_db_repository_test', 
+  'firebase_repository_test', 
+  'mysql_repository_test'
 ]

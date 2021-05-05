@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: test.hspylib.core.enum
+"""Package initialization."""
 
 __all__ = [
   'test_enumeration'

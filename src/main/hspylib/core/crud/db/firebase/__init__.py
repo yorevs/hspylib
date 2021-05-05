@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: main.hspylib.core.crud.db.firebase
+"""Package initialization."""
 
 __all__ = [
   'firebase_config', 

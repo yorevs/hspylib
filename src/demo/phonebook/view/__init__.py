@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.phonebook.view
+"""Package initialization."""
 
 __all__ = [
   'create_view', 

@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.phonebook.entity.validator
+"""Package initialization."""
 
 __all__ = [
   'company_validator', 

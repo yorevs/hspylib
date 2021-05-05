@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.cli.menu
+"""Package initialization."""
 
 __all__ = [
   'dynamic_menu', 

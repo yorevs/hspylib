@@ -31,6 +31,7 @@ def initTemplate = """# _*_ coding: utf-8 _*_
 # ${project.ext.app_name} v${projectVersion}
 #
 # Package: %package%
+\"\"\"Package initialization.\"\"\"
 
 __all__ = %modules%
 %version%"""
@@ -95,6 +96,7 @@ task compileQrc(type: Task) {
 }
 
 /***** Install Group */
+
 /* Find and synchronize all python packages */
 task syncPythonPackages(type: Task) {
   group = 'Install'
@@ -229,7 +231,7 @@ task pylint(type: Task) {
   description = 'Run pylint on "${sourceRoot}"'
   doLast {
     exec {
-      commandLine rootProject.python, '-m', 'pylint', '-E', '--disable=E0603', sourceRoot
+      commandLine rootProject.python, '-m', 'pylint', '--disable=E0603', sourceRoot
     }
   }
 }

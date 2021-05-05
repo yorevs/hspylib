@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: test
+"""Package initialization."""
 
 __all__ = [
   'hspylib'

@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.cli.menu.extra
+"""Package initialization."""
 
 __all__ = [
   'menu_choose', 
