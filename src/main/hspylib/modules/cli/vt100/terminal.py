@@ -2,7 +2,7 @@ import logging as log
 import select
 import subprocess
 from abc import ABC
-from time import sleep
+from typing import Optional
 
 from hspylib.core.tools.commons import syserr
 
@@ -10,34 +10,35 @@ from hspylib.core.tools.commons import syserr
 class Terminal(ABC):
     
     @staticmethod
-    def shell_exec(*cmd_args, **kwargs) -> str:
+    def shell_exec(cmd_line: str, **kwargs) -> Optional[str]:
         try:
-            log.info(f"Executing shell command: {' '.join(*cmd_args)}")
-            result = subprocess.run(*cmd_args, **kwargs).stdout
-            log.debug(f"Execution result: {result}")
-            result = str(result).strip() if result else None
+            log.info(f"Executing shell command: {cmd_line}")
+            cmd_args = list(filter(None, cmd_line.split(' ')))
+            result = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
+            log.info(f"Execution result: {result}")
+            return result.strip() if result else None
         except subprocess.CalledProcessError as err:
-            log.debug(f'Failed => {str(err)}')
+            log.error(f'Failed => {str(err)}')
             syserr(str(err))
-            result = None
-        
-        return result
+            return None
     
     @staticmethod
-    def shell_poll(*cmd_args, **kwargs) -> None:
+    def shell_poll(cmd_line: str, **kwargs) -> None:
+        if 'stdout' in kwargs:
+            del kwargs['stdout']  # Deleted since we use our own
+        if 'stdout' in kwargs:
+            del kwargs['stderr']  # Deleted since we use our own
         try:
-            log.info(f"Polling shell command: {' '.join(*cmd_args)}")
-            with(subprocess.Popen(*cmd_args, **kwargs)) as file:
+            log.info(f"Polling shell command: {cmd_line}")
+            cmd_args = list(filter(None, cmd_line.split(' ')))
+            with(subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)) as file:
                 process = select.poll()
                 process.register(file.stdout)
-                line = None
-                while line != 'FAILED':
-                    if process.poll(1):
-                        line = file.stdout.readline().decode("utf-8").strip()
-                        print(line)
-                    sleep(1)
-        except InterruptedError:
-            pass
-        except Exception as err:
+                while True:
+                    line = bytes(file.stdout.readline()).decode('utf-8').strip()
+                    print('.' + line)
+        except (InterruptedError, KeyboardInterrupt):
+            log.warning(f"Polling process has been interrupted command='{cmd_line}'")
+        except subprocess.CalledProcessError as err:
             log.debug(f'Failed => {str(err)}')
             syserr(str(err))

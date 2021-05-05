@@ -14,7 +14,6 @@
    Copyright 2021, HSPyLib team
 """
 
-import logging as log
 import sys
 from time import sleep
 from typing import List
@@ -22,6 +21,7 @@ from typing import List
 from cfman.src.main.core.cf import CloudFoundry
 from cfman.src.main.core.cf_application import CFApplication
 from cfman.src.main.core.cf_endpoint import CFEndpoint
+from cfman.src.main.exception.exceptions import CFConnectionError, CFExecutionError, CFAuthenticationError
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.tools.commons import get_by_key_or_default, syserr, sysout
@@ -95,7 +95,7 @@ class CFManager:
             apps = list(map(CFApplication.of, apps if apps else []))
             if not apps:
                 if "OK" not in self.cf.last_result:
-                    raise Exception(f'Unable to retrieve applications: => {self.cf.last_result}')
+                    raise CFExecutionError(f'Unable to retrieve applications: => {self.cf.last_result}')
                 sysout('%YELLOW%No apps found%NC%')
             self.apps = apps
         
@@ -113,12 +113,11 @@ class CFManager:
                 if response.status_code and HttpCode.OK:
                     self.api = selected.host
                 else:
-                    raise Exception(f'Failed to connect to API ({response.status_code}): {selected}')
+                    syserr(f'Failed to connect to API ({response.status_code}): {selected}')
+                    sys.exit(0)
             except Exception as err:
-                log.error(f'Failed to connect to API => {err}')
-                syserr(f'Failed to connect to API => {selected.host}')
-                sys.exit(0)
-    
+                raise CFConnectionError(f'Failed to connect to API => {selected.host}') from err
+
     def _require_credentials(self) -> None:
         self.username = self.options['username'] if 'username' in self.options else self.username
         self.password = self.options['password'] if 'password' in self.options else self.password
@@ -135,11 +134,10 @@ class CFManager:
     
     def _authorize(self) -> bool:
         if not self.cf.api(self.api):
-            raise Exception(f'Unable to set API: => {self.cf.last_result}')
+            raise CFExecutionError(f'Unable to set API: => {self.cf.last_result}')
         if not self.cf.auth(self.username, self.password):
-            syserr(f'Unable to authenticate to => {self.api}')
-            return False
-        
+            raise CFAuthenticationError(f'Unable to authenticate to => {self.api}')
+
         return True
     
     def _set_org(self) -> None:
@@ -147,7 +145,7 @@ class CFManager:
             sysout('%YELLOW%Checking organization...%NC%')
             orgs = self.cf.orgs()
             if not orgs:
-                raise Exception(f'Unable to retrieve organizations: => {self.cf.last_result}')
+                raise CFExecutionError(f'Unable to retrieve organizations: => {self.cf.last_result}')
             self.org = mselect(orgs, title='Please select the organization')
             if not self.org:
                 sys.exit(1)
@@ -159,7 +157,7 @@ class CFManager:
             sysout('%YELLOW%Checking space...%NC%')
             spaces = self.cf.spaces()
             if not spaces:
-                raise Exception(f'Unable to retrieve spaces: => {self.cf.last_result}')
+                raise CFExecutionError(f'Unable to retrieve spaces: => {self.cf.last_result}')
             self.space = mselect(spaces, title='Please select a space')
             if not self.space:
                 sys.exit(1)
@@ -177,9 +175,9 @@ class CFManager:
         return mselect(self.apps, title='Please select the application you want to manage')
     
     def _do_target(self) -> None:
-        sysout(f"%GREEN%Targeting ORG = {self.org} and SPACE = {self.space}...%NC%")
+        sysout(f"%GREEN%Targeting ORG={self.org} and SPACE={self.space}...%NC%")
         if not self.cf.target(org=self.org, space=self.space):
-            raise Exception(f"Unable to target ORG: {self.org} => {self.cf.last_result}")
+            raise CFExecutionError(f"Unable to target ORG: {self.org} => {self.cf.last_result}")
     
     def _loop_actions(self) -> None:
         
@@ -191,7 +189,7 @@ class CFManager:
                 self._set_space()
             
             if not self.org or not self.space or not self.cf.is_targeted():
-                raise Exception(f"Unable to target ORG: {self.org}  SPACE: {self.space} => {self.cf.last_result}")
+                raise CFExecutionError(f"Unable to target ORG={self.org}  SPACE={self.space} => {self.cf.last_result}")
             
             action = mselect(CFManager.CF_ACTIONS, 'Please select an action to perform')
             
