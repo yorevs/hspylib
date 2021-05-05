@@ -19,7 +19,7 @@ import os
 import pathlib
 import re
 import sys
-from typing import Type, List, Tuple, Any, Optional
+from typing import Any, List, Optional, Tuple, Type
 
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
@@ -50,13 +50,13 @@ def log_init(
     """
     with open(log_file, 'w' if create_new else 'a'):
         os.utime(log_file, None)
-
+    
     log.basicConfig(
         filename=log_file,
         format=log_fmt,
         level=level,
         filemode=f_mode)
-
+    
     return log
 
 
@@ -112,18 +112,18 @@ def syserr(string: str, end: str = '\n') -> None:
         print(msg, file=sys.stderr, flush=True, end=end)
 
 
-def class_attribute_names(clazz: Type) -> tuple:
+def class_attribute_names(clazz: Type) -> Optional[Tuple]:
     """TODO
     :param clazz: TODO
     """
     return tuple(vars(clazz()).keys()) if clazz else None
 
 
-def class_attribute_values(instance: dict) -> tuple:
+def class_attribute_values(instance: dict) -> Optional[Tuple]:
     """TODO
     :param instance: TODO
     """
-    return tuple(instance.values()) if object else None
+    return tuple(instance.values()) if instance else None
 
 
 def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
@@ -134,7 +134,7 @@ def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = 
     """
     regex = re.compile(regex_filter)
     result_list = list(filter(regex.search, input_str.split(delimiter)))
-
+    
     return result_list
 
 
@@ -176,11 +176,11 @@ def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
     if os.path.exists(filename):
         os.remove(filename)
         return True
-    else:
-        if on_not_found_except:
-            raise FileNotFoundError('File was not found on the system: {}'.format(filename))
-        else:
-            return False
+    
+    if on_not_found_except:
+        raise FileNotFoundError('File was not found on the system: {}'.format(filename))
+    
+    return False
 
 
 def file_is_not_empty(filename: str) -> bool:
@@ -212,5 +212,5 @@ def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
             flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
         else:
             flat_dict.update({new_key: value})
-
+    
     return flat_dict

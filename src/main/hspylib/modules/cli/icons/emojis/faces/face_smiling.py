@@ -36,10 +36,10 @@ class FaceSmiling(Emoji):
     SLIGHTLY = '\U0001F642'
     UPSIDE_DOWN = '\U0001F643'
     ROFL = '\U0001F923'
-
+    
     @classmethod
     def demo_emojis(cls) -> bool:
-        list(map(lambda e: emj_print(e), cls.values()))
+        list(map(emj_print, cls.values()))
 
 
 if __name__ == '__main__':

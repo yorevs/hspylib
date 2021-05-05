@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
+  'terminal', 
   'vt_100', 
   'vt_codes', 
   'vt_colors', 

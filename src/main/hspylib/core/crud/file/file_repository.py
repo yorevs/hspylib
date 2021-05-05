@@ -18,7 +18,7 @@ import logging as log
 import re
 import uuid
 from abc import abstractmethod
-from typing import Optional, List, Any
+from typing import Any, List, Optional
 
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.file.file_storage import FileStorage
@@ -28,7 +28,7 @@ from hspylib.core.model.entity import Entity
 
 class FileRepository(CrudRepository):
     _storages = {}
-
+    
     @staticmethod
     def check_criteria(partial_value, whole_value) -> bool:
         """TODO
@@ -38,23 +38,23 @@ class FileRepository(CrudRepository):
         """
         if isinstance(whole_value, str):
             return str(partial_value).upper() in whole_value.upper()
-        elif isinstance(whole_value, int):
+        if isinstance(whole_value, int):
             return int(partial_value) == whole_value
-        elif isinstance(whole_value, float):
+        if isinstance(whole_value, float):
             return float(partial_value) == whole_value
-        elif isinstance(whole_value, bool):
+        if isinstance(whole_value, bool):
             return bool(partial_value) == whole_value
-        else:
-            return False
-
+        
+        return False
+    
     def __init__(self, filename: str):
         super().__init__()
         self.filename = filename
         self.storage = self.__create_or_get()
-
+    
     def __str__(self):
         return str(self.storage.data)
-
+    
     def insert(self, entity: Entity) -> None:
         """TODO
         :param entity:
@@ -63,7 +63,7 @@ class FileRepository(CrudRepository):
         self.storage.data.append(entity.to_dict())
         self.storage.commit()
         log.debug("{} has been inserted !".format(entity.__class__.__name__))
-
+    
     def update(self, entity: Entity) -> None:
         """TODO
         :param entity:
@@ -73,7 +73,7 @@ class FileRepository(CrudRepository):
                 self.storage.data[index] = entity.to_dict()
                 self.storage.commit()
                 log.debug("{} has been updated !".format(entity.__class__.__name__))
-
+    
     def delete(self, entity: Entity) -> None:
         """TODO
         :param entity:
@@ -83,7 +83,7 @@ class FileRepository(CrudRepository):
                 self.storage.data.remove(self.storage.data[index])
                 self.storage.commit()
                 log.debug("{} has been deleted !".format(entity.__class__.__name__))
-
+    
     def find_all(self, filters: str = None) -> List[Entity]:
         """TODO
         :param filters:
@@ -105,9 +105,9 @@ class FileRepository(CrudRepository):
                     continue  # Just skip the filter and continue
                 filtered.extend(found)
             return filtered
-        else:
-            return [self.dict_to_entity(data) for data in self.storage.data]
-
+        
+        return [self.dict_to_entity(data) for data in self.storage.data]
+    
     def find_by_id(self, entity_id: uuid.UUID) -> Optional[Entity]:
         """TODO
         :param entity_id:
@@ -118,20 +118,19 @@ class FileRepository(CrudRepository):
             if len(result) > 1:
                 raise ProgrammingError(f'Multiple results {len(result)} found with entity_id={entity_id}')
             return self.dict_to_entity(result[0]) if len(result) > 0 else None
-        else:
-            return None
-
+        
+        return None
+    
     @abstractmethod
     def dict_to_entity(self, row: dict) -> Entity:
         """TODO
         :param row:
         """
-        pass
-
+    
     def __create_or_get(self) -> Any:
         """TODO"""
         if self.filename in FileRepository._storages:
             return FileRepository._storages[self.filename]
-        else:
-            FileRepository._storages[self.filename] = FileStorage(self.filename)
-            return FileRepository._storages[self.filename]
+        
+        FileRepository._storages[self.filename] = FileStorage(self.filename)
+        return FileRepository._storages[self.filename]

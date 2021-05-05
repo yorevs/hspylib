@@ -18,7 +18,7 @@ import logging as log
 import sys
 import uuid
 from abc import abstractmethod
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 import pymysql
 from pymysql.err import OperationalError, ProgrammingError
@@ -31,16 +31,16 @@ from hspylib.core.model.entity import Entity
 
 class MySqlRepository(DBRepository):
     _connections = {}
-
+    
     def __init__(self):
         super().__init__()
         self._connector = None
         self._cursor = None
         self._sql_factory = SqlFactory()
-
+    
     def is_connected(self) -> bool:
         return self._connector is not None
-
+    
     def connect(self) -> None:
         if not self.is_connected():
             cache_key = self.__str__()
@@ -66,7 +66,7 @@ class MySqlRepository(DBRepository):
                 except (OperationalError, ConnectionRefusedError):
                     log.error('Unable to connect to {}'.format(str(self)))
                     sys.exit(1)
-
+    
     def disconnect(self) -> None:
         if self.is_connected():
             cache_key = self.__str__()
@@ -77,7 +77,7 @@ class MySqlRepository(DBRepository):
         else:
             log.error('Unable to disconnect from {}'.format(str(self)))
             sys.exit(1)
-
+    
     def insert(self, entity: Entity) -> None:
         if self.is_connected():
             entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
@@ -88,7 +88,7 @@ class MySqlRepository(DBRepository):
             self._cursor.execute(stm)
         else:
             log.error('Not connected to database.')
-
+    
     def update(self, entity: Entity) -> None:
         if self.is_connected():
             stm = self._sql_factory \
@@ -98,7 +98,7 @@ class MySqlRepository(DBRepository):
             self._cursor.execute(stm)
         else:
             log.error('Not connected to database.')
-
+    
     def delete(self, entity: Entity) -> None:
         if self.is_connected():
             stm = self._sql_factory \
@@ -106,8 +106,12 @@ class MySqlRepository(DBRepository):
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: {}'.format(stm))
             self._cursor.execute(stm)
-
-    def find_all(self, column_set: List[str] = None, sql_filters: SqlFilter = None) -> Optional[list]:
+    
+    def find_all(
+            self,
+            column_set: List[str] = None,
+            sql_filters: SqlFilter = None) -> Optional[list]:
+        
         if self.is_connected():
             stm = self._sql_factory \
                 .select(column_set=column_set, filters=sql_filters) \
@@ -116,10 +120,15 @@ class MySqlRepository(DBRepository):
             self._cursor.execute(stm)
             result = self._cursor.fetchall()
             return list(map(self.row_to_entity, result)) if result else None
-        else:
-            log.error('Not connected to database.')
-
-    def find_by_id(self, column_set: List[str] = None, entity_id: str = None) -> Optional[Entity]:
+        
+        log.error('Not connected to database.')
+        return None
+    
+    def find_by_id(
+            self,
+            column_set: List[str] = None,
+            entity_id: str = None) -> Optional[Entity]:
+        
         if self.is_connected():
             if entity_id:
                 stm = self._sql_factory \
@@ -131,11 +140,12 @@ class MySqlRepository(DBRepository):
                 if len(result) > 1:
                     raise ProgrammingError(f'Multiple results found {len(result)}')
                 return self.row_to_entity(result[0]) if len(result) > 0 else None
-            else:
-                return None
-        else:
-            log.error('Not connected to database.')
-
+            
+            return None
+        
+        log.error('Not connected to database.')
+        return None
+    
     def execute(self, sql_statement: str, auto_commit: bool = True, *params) -> None:
         if self.is_connected():
             self._cursor.execute(sql_statement, params)
@@ -144,19 +154,19 @@ class MySqlRepository(DBRepository):
                 self.commit()
         else:
             log.error('Not connected to database.')
-
+    
     def commit(self) -> None:
         log.debug('Committing database changes')
         self._connector.commit()
-
+    
     def rollback(self) -> None:
         log.debug('Rolling back database changes')
         self._connector.rollback()
-
+    
     @abstractmethod
     def row_to_entity(self, row: Tuple) -> Entity:
         pass
-
+    
     @abstractmethod
     def table_name(self) -> str:
         pass

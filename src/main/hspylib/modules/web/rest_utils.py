@@ -29,7 +29,6 @@ def rest_call(
         method: HttpMethod,
         data: str,
         headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
-
     all_headers = {} if not headers else headers
     all_headers.update({
         "Content-Type": "text/json",
@@ -39,5 +38,5 @@ def rest_call(
     response = fetch(url=url, method=method, headers=all_headers, body=data)
     log.info('Response <=  Status: {}  Payload: {}'.format(
         response.status_code, response))
-
+    
     return response

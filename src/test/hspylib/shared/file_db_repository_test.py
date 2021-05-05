@@ -14,14 +14,11 @@
    Copyright 2021, HSPyLib team
 """
 
-
 from hspylib.core.crud.file.file_repository import FileRepository
 from test.hspylib.shared.entity_test import EntityTest
 
 
 class FileDbRepositoryTest(FileRepository):
-    def __init__(self, filename: str):
-        super().__init__(filename)
-
+    
     def dict_to_entity(self, row: dict) -> EntityTest:
         return EntityTest(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])

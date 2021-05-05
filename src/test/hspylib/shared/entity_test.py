@@ -25,6 +25,6 @@ class EntityTest(Entity):
         self.comment = comment
         self.lucky_number = lucky_number
         self.is_working = is_working
-
+    
     def __str__(self):
         return 'uuid={} comment={} lucky_number={}'.format(self.uuid, self.comment, self.lucky_number)

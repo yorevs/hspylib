@@ -49,7 +49,7 @@ def mselect(
 
 
 class MenuSelect(ABC):
-
+    
     @classmethod
     def select(
             cls,
@@ -59,28 +59,28 @@ class MenuSelect(ABC):
             title_color: VtColors = VtColors.ORANGE,
             highlight_color: VtColors = VtColors.BLUE,
             nav_color: VtColors = VtColors.YELLOW) -> Any:
-
+        
         done = None
         sel_index = -1
         show_from = 0
         re_render = 1
         length = len(items)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
-
+        
         if length > 0:
             sel_index = 0
             show_to = max_rows - 1
             diff_index = show_to - show_from
-
+            
             # When only one option is provided, select the element at index 0 and return
             if length == 1:
                 return items[0]
-
+            
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
             vt_print(Vt100.save_cursor())
-
+            
             # Wait for user interaction
             while not done:
                 # Menu Renderization {
@@ -92,7 +92,7 @@ class MenuSelect(ABC):
                     vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
-
+                
                 # Navigation input {
                 keypress = Keyboard.read_keystroke()
                 if keypress in [Keyboard.VK_q, Keyboard.VK_Q, Keyboard.VK_ESC]:
@@ -108,7 +108,7 @@ class MenuSelect(ABC):
                             numpress = Keyboard.read_keystroke()
                             if not numpress:
                                 break
-                            elif not re.match(r'^[0-9]*$', numpress.value):
+                            if not re.match(r'^[0-9]*$', numpress.value):
                                 typed_index = None
                                 break
                             typed_index = f"{typed_index}{numpress.value if numpress else ''}"
@@ -117,9 +117,7 @@ class MenuSelect(ABC):
                         # Erase the index typed by the user
                         sysout(f"%CUB({index_len})%%EL0%", end='')
                         if 1 <= int(typed_index) <= length:
-                            show_to = int(typed_index)
-                            if show_to <= diff_index:
-                                show_to = diff_index
+                            show_to = max(int(typed_index), diff_index)
                             show_from = show_to - diff_index
                             sel_index = int(typed_index) - 1
                             re_render = 1
@@ -145,11 +143,11 @@ class MenuSelect(ABC):
                         sysout('\n%NC%')
                         break
                 # } Navigation input
-
+        
         vt_print('%HOM%%ED2%%MOD(0)%')
-
+        
         return items[sel_index] if sel_index >= 0 else None
-
+    
     @classmethod
     def __render__(
             cls,
@@ -158,14 +156,14 @@ class MenuSelect(ABC):
             show_to: int,
             sel_index: int,
             highlight_color: VtColors = VtColors.BLUE) -> None:
-
+        
         length = len(items)
-        rows, columns = screen_size()
+        dummy, columns = screen_size()
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
-
+        
         for idx in range(show_from, show_to):
             selector = ' '
             if idx >= length:

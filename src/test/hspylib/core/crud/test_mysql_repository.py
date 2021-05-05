@@ -32,7 +32,7 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 @integration_test
 class TestMySqlRepository(unittest.TestCase):
-
+    
     # Setup tests
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
@@ -56,15 +56,15 @@ class TestMySqlRepository(unittest.TestCase):
                 self.repository.execute("TRUNCATE TABLE {}".format(self.table))
             else:
                 pass
-
+    
     # Teardown tests
     def tearDown(self):
         self.repository.execute('DROP TABLE {}'.format(self.table))
         self.repository.disconnect()
         self.assertFalse(self.repository.is_connected())
-
+    
     # TEST CASES ----------
-
+    
     # TC1 - Test inserting a single row into the database.
     def test_should_insert_into_database(self):
         test_entity = EntityTest(comment='My-Test Data')
@@ -75,7 +75,7 @@ class TestMySqlRepository(unittest.TestCase):
         assert result_set, "Result set is empty"
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
-
+    
     # TC2 - Test updating a single row from the database.
     def test_should_update_database(self):
         test_entity = EntityTest(comment='My-Test Data')
@@ -88,7 +88,7 @@ class TestMySqlRepository(unittest.TestCase):
         assert result_set, "Result set is empty"
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.comment, result_set[0].comment)
-
+    
     # TC3 - Test selecting all rows from the database.
     def test_should_select_all_from_database(self):
         test_entity_1 = EntityTest(comment='My-Test Data')
@@ -100,7 +100,7 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertIsInstance(result_set, list)
         self.assertEqual(2, len(result_set))
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
-
+    
     # TC4 - Test selecting a single rows from the database.
     def test_should_select_one_from_database(self):
         test_entity_1 = EntityTest(comment='My-Test Data')
@@ -111,7 +111,7 @@ class TestMySqlRepository(unittest.TestCase):
         assert result_set, "Result set is empty"
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
-
+    
     # TC5 - Test selecting all rows and bring only specified columns.
     def test_should_select_columns_from_database(self):
         test_entity = EntityTest(comment='My-Test Data')
@@ -122,7 +122,7 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
         self.assertIsNone(result_set[0].comment)
-
+    
     # TC6 - Test deleting one row from the database.
     def test_should_delete_from_database(self):
         test_entity = EntityTest(comment='My-Test Data')

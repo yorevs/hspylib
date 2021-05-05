@@ -42,7 +42,7 @@ UUID={}
 
 
 class FirebaseConfig(metaclass=Singleton):
-
+    
     @staticmethod
     def of(config_dict: CaseInsensitiveDict) -> Any:
         return FirebaseConfig(
@@ -52,7 +52,7 @@ class FirebaseConfig(metaclass=Singleton):
             config_dict['USERNAME'],
             config_dict['PASSPHRASE'],
         )
-
+    
     @staticmethod
     def of_file(filename: str) -> Any:
         assert os.path.exists(filename), "Config file does not exist"
@@ -67,14 +67,14 @@ class FirebaseConfig(metaclass=Singleton):
             assert len(cfg) > 4, \
                 "Invalid configuration file. Must include at least: [PROJECT_ID, FIREBASE_URL, USERNAME, PASSPHRASE]"
             return FirebaseConfig.of(cfg) if len(cfg) == 5 else None
-
+    
     def __init__(self,
                  project_id: str = None,
                  database: str = None,
                  project_uuid: str = None,
                  username: str = None,
                  passphrase: str = None):
-
+        
         self.encoding = str(Charset.UTF_8).lower()
         self.current_state = None
         self.project_id = project_id if project_id else AppConfigs.INSTANCE['firebase.project.id']
@@ -89,7 +89,7 @@ class FirebaseConfig(metaclass=Singleton):
         self.project_uuid = str(self.project_uuid) if self.project_uuid else str(uuid.uuid4())
         assert self.validate_config(), "Your Firebase configuration is not valid"
         log.debug(f'Successfully connected to Firebase: {self.base_url()}')
-
+    
     def __str__(self):
         return FB_CONFIG_FMT.format(
             self.project_id,
@@ -98,22 +98,22 @@ class FirebaseConfig(metaclass=Singleton):
             str(base64.b64encode(self.passphrase.encode(self.encoding)), encoding=self.encoding),
             self.project_uuid
         )
-
+    
     def set_passphrase(self) -> None:
         assert self.passphrase and len(self.passphrase) >= 8, \
             "Passphrase must be have least 8 characters size and must be base64 encoded"
         self.passphrase = str(base64.b64decode(self.passphrase), encoding=self.encoding)
-
+    
     def validate_config(self) -> bool:
         response = get('{}.json'.format(self.base_url()))
         is_valid = response is not None and response.status_code == HttpCode.OK
         if is_valid:
             self.current_state = response.body if response.body and response.body != 'null' else None
         return is_valid
-
+    
     def base_url(self) -> str:
         return 'https://{}.firebaseio.com/{}/{}' \
             .format(self.project_id, self.database, self.project_uuid)
-
+    
     def url(self, db_alias: str) -> str:
         return '{}/{}.json'.format(self.base_url(), db_alias)

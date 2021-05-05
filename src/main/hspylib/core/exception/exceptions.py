@@ -19,7 +19,7 @@ import logging as log
 
 class HSBaseException(Exception):
     """This is a generic exception and should not be raised. It may be inherited instead"""
-
+    
     def __init__(self, message: str, cause: Exception = None):
         fmt_msg = f'{message}' + (' => {str(cause)}' if cause else '')
         super().__init__(fmt_msg)

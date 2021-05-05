@@ -27,11 +27,11 @@ from phonebook.service.person_service import PersonService
 
 
 class SearchView(metaclass=Singleton):
-
+    
     def __init__(self):
         self.person_service = PersonService()
         self.company_service = CompanyService()
-
+    
     def by_name(self) -> None:
         MenuUtils.title('SEARCH BY NAME')
         try:
@@ -41,7 +41,7 @@ class SearchView(metaclass=Singleton):
             self.display_contacts(all_persons, all_companies)
         except InputAbortedError:
             pass
-
+    
     def by_uuid(self) -> None:
         MenuUtils.title('SEARCH BY UUID')
         try:
@@ -51,12 +51,12 @@ class SearchView(metaclass=Singleton):
             self.display_contacts(all_persons, all_companies)
         except InputAbortedError:
             pass
-
+    
     def list_all(self) -> None:
         all_persons = self.person_service.list()
         all_companies = self.company_service.list()
         self.display_contacts(all_persons, all_companies)
-
+    
     @staticmethod
     def display_contacts(persons, companies) -> None:
         if len(persons) > 0 or len(companies) > 0:
@@ -67,7 +67,7 @@ class SearchView(metaclass=Singleton):
         else:
             sysout('-=- No results to be displayed -=-')
             MenuUtils.wait_enter()
-
+    
     @staticmethod
     def display_table(headers: List[str], entities: List[Entity], title: str) -> None:
         MenuUtils.title('LISTING ALL {}'.format(title))

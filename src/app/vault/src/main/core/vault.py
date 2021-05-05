@@ -20,31 +20,31 @@ import logging as log
 import os
 import uuid
 
-from hspylib.core.tools.commons import sysout, safe_del_file, file_is_not_empty, touch_file, syserr
+from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
-from hspylib.modules.security.security import encrypt, decrypt
+from hspylib.modules.security.security import decrypt, encrypt
 from vault.src.main.core.vault_config import VaultConfig
 from vault.src.main.core.vault_service import VaultService
 from vault.src.main.entity.vault_entry import VaultEntry
-from vault.src.main.exception.exceptions import VaultOpenError, VaultCloseError
+from vault.src.main.exception.exceptions import VaultCloseError, VaultOpenError
 
 
-class Vault(object):
+class Vault:
     """Represents the vault and it's functionalities"""
-
+    
     def __init__(self):
         self.is_open = False
         self.passphrase = None
         self.configs = VaultConfig()
         self.service = VaultService()
-
+    
     def __str__(self):
         data = set(self.service.list())
         vault_str = ""
         for entry in data:
             vault_str += entry.key
         return vault_str
-
+    
     def open(self) -> None:
         """Open and read the Vault file"""
         self.passphrase = self._get_passphrase()
@@ -56,8 +56,8 @@ class Vault(object):
             log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
         except Exception as err:
-            raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}", err)
-
+            raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}", err) from err
+    
     def close(self) -> None:
         """Close the Vault file and cleanup temporary file_paths"""
         try:
@@ -68,8 +68,8 @@ class Vault(object):
             log.error("Authentication failure => {}".format(str(err)))
             MenuUtils.print_error('Authentication failure')
         except Exception as err:
-            raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file()}", err)
-
+            raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file()}", err) from err
+    
     def list(self, filter_expr: str = None) -> None:
         """List all vault entries filtered by filter_expr
         :param filter_expr: The filter expression
@@ -87,7 +87,7 @@ class Vault(object):
             else:
                 sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
         log.debug("Vault list issued. User={}".format(getpass.getuser()))
-
+    
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
         :param key: The vault entry name to be added
@@ -105,7 +105,7 @@ class Vault(object):
             log.error("Attempt to add to Vault failed for name={}".format(key))
             syserr("### Entry specified by '{}' already exists in vault".format(key))
         log.debug("Vault add issued. User={}".format(getpass.getuser()))
-
+    
     def get(self, key) -> None:
         """Display the vault entry specified by name
         :param key: The vault entry name to get
@@ -117,7 +117,7 @@ class Vault(object):
             log.error("Attempt to get from Vault failed for name={}".format(key))
             syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault get issued. User={}".format(getpass.getuser()))
-
+    
     def update(self, key, hint, password) -> None:
         """Update a vault entry
         :param key: The vault entry name to be updated
@@ -137,7 +137,7 @@ class Vault(object):
             log.error("Attempt to update Vault failed for name={}".format(key))
             syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault update issued. User={}".format(getpass.getuser()))
-
+    
     def remove(self, key: str) -> None:
         """Remove a vault entry
         :param key: The vault entry name to be removed
@@ -150,7 +150,7 @@ class Vault(object):
             log.error("Attempt to remove to Vault failed for name={}".format(key))
             syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault remove issued. User={}".format(getpass.getuser()))
-
+    
     def _get_passphrase(self) -> str:
         """Retrieve the vault passphrase"""
         if file_is_not_empty(self.configs.vault_file()):
@@ -163,23 +163,23 @@ class Vault(object):
         passphrase = self.configs.passphrase()
         if passphrase:
             return "{}:{}".format(self.configs.vault_user(), base64.b64decode(passphrase).decode("utf-8"))
-        else:
-            while not passphrase and not confirm_flag:
-                passphrase = getpass.getpass("Enter passphrase:").strip()
-                confirm = None
-                if passphrase and confirm_flag:
-                    while not confirm:
-                        confirm = getpass.getpass("Repeat passphrase:").strip()
-                    if confirm != passphrase:
-                        syserr("### Passphrase and confirmation mismatch")
-                        safe_del_file(self.configs.vault_file())
-                    else:
-                        sysout("%GREEN%Passphrase successfully stored")
-                        log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
-                        touch_file(self.configs.vault_file())
-                        self.is_open = True
-            return "{}:{}".format(self.configs.vault_user(), passphrase)
-
+        
+        while not passphrase and not confirm_flag:
+            passphrase = getpass.getpass("Enter passphrase:").strip()
+            confirm = None
+            if passphrase and confirm_flag:
+                while not confirm:
+                    confirm = getpass.getpass("Repeat passphrase:").strip()
+                if confirm != passphrase:
+                    syserr("### Passphrase and confirmation mismatch")
+                    safe_del_file(self.configs.vault_file())
+                else:
+                    sysout("%GREEN%Passphrase successfully stored")
+                    log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
+                    touch_file(self.configs.vault_file())
+                    self.is_open = True
+        return "{}:{}".format(self.configs.vault_user(), passphrase)
+    
     def _lock_vault(self) -> None:
         """Encrypt the vault file"""
         if file_is_not_empty(self.configs.unlocked_vault_file()):
@@ -192,7 +192,7 @@ class Vault(object):
             os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
         self.is_open = False
         safe_del_file(self.configs.unlocked_vault_file())
-
+    
     def _unlock_vault(self) -> None:
         """Decrypt the vault file"""
         if file_is_not_empty(self.configs.vault_file()):

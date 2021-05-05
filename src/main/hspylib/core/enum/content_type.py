@@ -72,6 +72,6 @@ class ContentType(Enumeration):
     TEXT_PLAIN = 'text/plain'
     TEXT_VCARD = 'text/vcard'
     TEXT_XML = 'text/xml'
-
+    
     def __str__(self):
         return str(self.value)

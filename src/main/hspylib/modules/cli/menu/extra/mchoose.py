@@ -17,7 +17,7 @@
 import re
 import signal
 from abc import ABC
-from typing import List, Any
+from typing import Any, List
 
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.keyboard import Keyboard
@@ -51,7 +51,7 @@ def mchoose(
 
 
 class MenuChoose(ABC):
-
+    
     @classmethod
     def choose(
             cls,
@@ -62,7 +62,7 @@ class MenuChoose(ABC):
             title_color: VtColors = VtColors.ORANGE,
             highlight_color: VtColors = VtColors.BLUE,
             nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
-
+        
         done = None
         show_from = 0
         sel_index = -1
@@ -70,26 +70,26 @@ class MenuChoose(ABC):
         sel_options = []
         length = len(items)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
-
+        
         if length > 0:
             sel_index = 0
             init_value = 1 if checked else 0
             show_to = max_rows - 1
-
+            
             diff_index = show_to - show_from
             length = len(items)
-
+            
             # Initialize all options
             sel_options = [init_value for _ in range(length)]
-
+            
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
             vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
             vt_print(Vt100.save_cursor())
-
+            
             # Wait for user interaction
             while not done:
-
+                
                 # Menu Renderization {
                 if re_render:
                     cls.__render__(items, sel_options, show_from, show_to, sel_index, highlight_color)
@@ -99,7 +99,7 @@ class MenuChoose(ABC):
                     vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
-
+                
                 # Navigation input {
                 keypress = Keyboard.read_keystroke()
                 if keypress in [Keyboard.VK_q, Keyboard.VK_Q, Keyboard.VK_ESC]:
@@ -115,7 +115,7 @@ class MenuChoose(ABC):
                             numpress = Keyboard.read_keystroke()
                             if not numpress:
                                 break
-                            elif not re.match(r'^[0-9]*$', numpress.value):
+                            if not re.match(r'^[0-9]*$', numpress.value):
                                 typed_index = None
                                 break
                             typed_index = f"{typed_index}{numpress.value if numpress else ''}"
@@ -124,9 +124,7 @@ class MenuChoose(ABC):
                         # Erase the index typed by the user
                         sysout(f"%CUB({index_len})%%EL0%", end='')
                         if 1 <= int(typed_index) <= length:
-                            show_to = int(typed_index)
-                            if show_to <= diff_index:
-                                show_to = diff_index
+                            show_to = max(int(typed_index), diff_index)
                             show_from = show_to - diff_index
                             sel_index = int(typed_index) - 1
                             re_render = 1
@@ -163,11 +161,11 @@ class MenuChoose(ABC):
                         sysout('\n%NC%')
                         break
                 # } Navigation input
-
+        
         vt_print('%HOM%%ED2%%MOD(0)%')
-
+        
         return [op for idx, op in enumerate(items) if sel_options[idx] == 1] if sel_index >= 0 else None
-
+    
     @classmethod
     def __render__(
             cls,
@@ -177,14 +175,14 @@ class MenuChoose(ABC):
             show_to: int,
             sel_index: int,
             highlight_color: VtColors = VtColors.BLUE) -> None:
-
+        
         length = len(items)
-        rows, columns = screen_size()
+        dummy, columns = screen_size()
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
-
+        
         for idx in range(show_from, show_to):
             selector = ' '
             mark = ' '
