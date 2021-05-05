@@ -28,7 +28,7 @@ Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
 
 
 class Main(Application):
-
+    
     def setup_parameters(self, *params, **kwargs) -> None:
         self.with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
         self.with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
@@ -41,16 +41,16 @@ class Main(Application):
                 .build()
         )
         # @formatter:on
-
-    def main(self, *params) -> None:
+    
+    def main(self, *params, **kwargs) -> None:
         self._exec_application()
-
+    
     def _exec_application(self) -> None:
-        if 'one' == self.get_argument(0):
+        if self.get_argument(0) == 'one':
             sysout(f'One: {self.get_argument(1)}')
-        elif 'two' == self.get_argument(0):
+        elif self.get_argument(0) == 'two':
             sysout(f'Two: {self.get_argument(1)}')
-        elif 'three' == self.get_argument(0):
+        elif self.get_argument(0) == 'three':
             sysout(f'Three: {self.get_argument(1)}')
         else:
             sysout(f'INVALID => {str(self.args)}')
@@ -58,5 +58,5 @@ class Main(Application):
 
 
 if __name__ == "__main__":
-    """Application entry point"""
+    # Application entry point
     Main('AppTest', VERSION, USAGE).INSTANCE.run(sys.argv[1:])

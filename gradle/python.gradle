@@ -230,8 +230,27 @@ task pylint(type: Task) {
   group = 'Verification'
   description = 'Run pylint on "${sourceRoot}"'
   doLast {
+    def disabled_checks = [
+      'E0603', // undefined-all-variable
+      'C0114', // missing-module-docstring
+      'C0115', // missing-class-docstring
+      'C0116', // missing-function-docstring
+      'C0303', // trailing-whitespace
+      'C0103', // invalid-name
+      'R0903', // too-few-public-methods
+      'C0411', // wrong-import-order
+      'R0913', // too-many-arguments
+      'R0902', // too-many-instance-attributes
+      'R0914', // too-many-locals
+      'R0915', // too-many-statements
+      'W1203', // logging-fstring-interpolation TODO Remove this one
+      'W1202', // logging-format-interpolation TODO Remove this one
+      'R0801', // duplicate-code TODO Remove this one
+      'R0912', // too-many-branches TODO Remove this one
+      'R1702', // too-many-nested-blocks TODO Remove this one
+    ]
     exec {
-      commandLine rootProject.python, '-m', 'pylint', '--disable=E0603', sourceRoot
+      commandLine rootProject.python, '-m', 'pylint', "--disable=${disabled_checks.join(',')}", sourceRoot
     }
   }
 }

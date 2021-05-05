@@ -18,7 +18,7 @@ import sys
 import unittest
 
 from hspylib.core.tools.commons import safe_del_file
-from hspylib.modules.security.security import encode, encrypt, decrypt, decode
+from hspylib.modules.security.security import decode, decrypt, encode, encrypt
 
 PASSPHRASE = '12345'
 SALT = '1234567890'
@@ -34,7 +34,7 @@ ENCODED_FILE_CONTENTS = "SG9tZVNldHVwIFNlY3JldHM="
 
 
 class TestSecurity(unittest.TestCase):
-
+    
     # Setup tests
     def setUp(self):
         with open(SAMPLE_IN_FILE_NAME, 'w') as f_out:
@@ -47,28 +47,28 @@ class TestSecurity(unittest.TestCase):
         with open(SAMPLE_OUT_FILE_NAME) as f_in:
             contents = str(f_in.read().strip())
             self.assertEqual(ENCODED_FILE_CONTENTS, contents)
-
+    
     # Teardown tests
     def tearDown(self):
         safe_del_file(OUT_FILE)
         safe_del_file(OUT_FILE_GPG)
-
+    
     # TEST CASES ----------
-
+    
     # TC1 - Test encoding a file.
     def test_should_encode_file(self):
         encode(SAMPLE_IN_FILE_NAME, OUT_FILE)
         with open(OUT_FILE) as f_out:
             contents = str(f_out.read().strip())
             self.assertEqual(ENCODED_FILE_CONTENTS, contents)
-
+    
     # TC2 - Test decoding a file.
     def test_should_decode_file(self):
         decode(SAMPLE_OUT_FILE_NAME, OUT_FILE)
         with open(OUT_FILE) as f_out:
             contents = str(f_out.read().strip())
             self.assertEqual(ORIGINAL_FILE_CONTENTS, contents)
-
+    
     # TC3 - Test encrypting a file.
     def test_should_encrypt_decrypt_file(self):
         encrypt(SAMPLE_IN_FILE_NAME, OUT_FILE_GPG, PASSPHRASE, SALT)

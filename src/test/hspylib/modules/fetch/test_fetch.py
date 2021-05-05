@@ -21,14 +21,14 @@ import unittest
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enum.http_code import HttpCode
 from hspylib.core.enum.http_method import HttpMethod
-from hspylib.modules.fetch.fetch import get, post, put, patch, delete, head
+from hspylib.modules.fetch.fetch import delete, get, head, patch, post, put
 from hspylib.modules.mock.mock_server import MockServer
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestFetch(unittest.TestCase):
-
+    
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
@@ -37,10 +37,10 @@ class TestFetch(unittest.TestCase):
         )
         self.mock_server = MockServer('localhost', MockServer.RANDOM_PORT)
         self.mock_server.start()
-
+    
     def tearDown(self):
         self.mock_server.stop()
-
+    
     def test_should_get_from_server(self):
         expected_code = HttpCode.OK
         expected_resp = '{"name":"Mock Server"}'
@@ -51,7 +51,7 @@ class TestFetch(unittest.TestCase):
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
-
+    
     def test_should_head_from_server(self):
         expected_code = HttpCode.OK
         self.mock_server \
@@ -60,7 +60,7 @@ class TestFetch(unittest.TestCase):
         resp = head('localhost:{}/head'.format(self.mock_server.port))
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
-
+    
     def test_should_post_to_server(self):
         expected_code = HttpCode.CREATED
         expected_resp = '{"name":"Mock Server"}'
@@ -71,7 +71,7 @@ class TestFetch(unittest.TestCase):
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
-
+    
     def test_should_put_to_server(self):
         expected_code = HttpCode.OK
         expected_resp = '{"name":"Mock Server"}'
@@ -82,7 +82,7 @@ class TestFetch(unittest.TestCase):
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
-
+    
     def test_should_patch_to_server(self):
         expected_code = HttpCode.ACCEPTED
         expected_resp = '{"name":"Mock Server"}'
@@ -93,7 +93,7 @@ class TestFetch(unittest.TestCase):
         self.assertEqual(expected_code, resp.status_code)
         assert resp, "Response is empty or None"
         self.assertEqual(expected_resp, resp.body)
-
+    
     def test_should_delete_from_server(self):
         expected_code = HttpCode.OK
         self.mock_server \

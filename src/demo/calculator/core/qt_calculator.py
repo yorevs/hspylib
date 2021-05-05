@@ -23,7 +23,7 @@ class QtCalculator:
     def __init__(self):
         self.app = QApplication([])
         self.ui = MainView()
-
+    
     def show(self):
         self.ui.show()
         self.app.exec_()

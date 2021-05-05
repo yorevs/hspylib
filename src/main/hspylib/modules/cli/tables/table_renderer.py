@@ -21,7 +21,7 @@ from hspylib.core.tools.text_helper import TextAlignment, fit_text
 
 
 class TableRenderer:
-
+    
     def __init__(
             self,
             table_headers: List[str],
@@ -33,9 +33,8 @@ class TableRenderer:
         :param table_caption: table caption to be displayed.
         """
         self.headers = table_headers
-        self.data = table_data
+        self.rows = table_data if table_data else []
         self.caption = table_caption
-        self.rows = [row for row in self.data] if self.data else []
         self.header_alignment = TextAlignment.CENTER
         self.cell_alignment = TextAlignment.LEFT
         self.min_column_size = 6
@@ -46,7 +45,7 @@ class TableRenderer:
             max(self.min_column_size, len(header)) for header in self.headers
         ]
         self.indexes = range(0, len(self.column_sizes))
-
+    
     def set_header_alignment(self, alignment: TextAlignment) -> None:
         """
         Set table header justification.
@@ -54,7 +53,7 @@ class TableRenderer:
         :return:
         """
         self.header_alignment = alignment
-
+    
     def set_cell_alignment(self, alignment: TextAlignment) -> None:
         """
         Set table header justification.
@@ -62,7 +61,7 @@ class TableRenderer:
         :return:
         """
         self.cell_alignment = alignment
-
+    
     def set_min_column_size(self, size: int) -> None:
         """
         Set table header justification.
@@ -70,16 +69,16 @@ class TableRenderer:
         :return:
         """
         self.min_column_size = size
-
+    
     def adjust_sizes_by_largest_cell(self) -> None:
         """
         Render table based on the maximum size of all cell data.
         :return: None
         """
         for row in self.rows:
-            for idx in range(0, len(row)):
+            for idx, dummy in enumerate(row):
                 self.column_sizes[idx] = max(self.column_sizes[idx], len(str(row[idx])))
-
+    
     def set_fixed_cell_size(self, width: int) -> None:
         """
         Render table based on a fixed size for all cell data.
@@ -88,7 +87,7 @@ class TableRenderer:
         for row in self.rows:
             for idx in range(0, len(row)):
                 self.column_sizes[idx] = max(width, self.min_column_size)
-
+    
     def set_cell_sizes(self, cell_sizes: List[int]) -> None:
         """
         Render table based on a list of fixed sizes.
@@ -99,7 +98,7 @@ class TableRenderer:
         for row in self.rows:
             for idx in range(0, len(row)):
                 self.column_sizes[idx] = max(cell_sizes[idx], self.min_column_size)
-
+    
     def render(self, file=sys.stdout) -> None:
         """
         Render table based on the maximum size of a column header.
@@ -110,11 +109,11 @@ class TableRenderer:
         data_cols = self.__join_data_columns()
         table_borders = '+' + ''.join((('-' * (self.column_sizes[idx] + 2) + '+') for idx in self.indexes))
         self.__print_table(table_borders, header_cols, data_cols, file)
-
+    
     def __join_header_columns(self) -> list:
         cols = [self.header_alignment(self.__header_text(idx), self.column_sizes[idx]) for idx in self.indexes]
         return ['| ' + ' | '.join(cols) + ' |']
-
+    
     def __join_data_columns(self) -> list:
         return [
             '| ' + ''.join(
@@ -122,16 +121,16 @@ class TableRenderer:
                 in self.indexes
             ) for row in self.rows
         ]
-
+    
     def __header_text(self, idx: int) -> str:
         return fit_text(self.headers[idx], self.__cell_size(idx))
-
+    
     def __cell_text(self, row: tuple, idx: int) -> str:
         return fit_text(str(row[idx]), self.__cell_size(idx))
-
+    
     def __cell_size(self, idx: int) -> int:
         return self.column_sizes[idx]
-
+    
     def __print_table(
             self,
             table_line: str,

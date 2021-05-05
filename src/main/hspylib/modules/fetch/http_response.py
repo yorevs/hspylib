@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from requests.models import Response, CaseInsensitiveDict
+from requests.models import CaseInsensitiveDict, Response
 
 from hspylib.core.enum.charset import Charset
 from hspylib.core.enum.content_type import ContentType
@@ -33,7 +33,7 @@ class HttpResponse:
             response.headers,
             Charset(str(response.encoding).upper()) if response.encoding else None,
         )
-
+    
     def __init__(self,
                  method: HttpMethod,
                  url: str,

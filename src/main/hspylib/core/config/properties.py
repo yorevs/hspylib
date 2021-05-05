@@ -18,7 +18,7 @@ import logging as log
 import os
 import re
 from configparser import ConfigParser
-from typing import Optional, Any
+from typing import Any, Optional
 
 import yaml
 
@@ -30,13 +30,13 @@ class Properties:
     _default_extension = '.properties'
     _profiled_format = '{}-{}{}'
     _simple_format = '{}{}'
-
+    
     def __init__(
             self,
             filename: str = None,
             profile: str = None,
             load_dir: str = None):
-
+        
         filename, extension = os.path.splitext(
             filename if filename else f'{self._default_name}{self._default_extension}')
         self.filename = filename
@@ -46,52 +46,52 @@ class Properties:
         self.filepath = None
         self.properties = {}
         self._read()
-
+    
     def __str__(self):
         str_val = ''
         for key, value in self.properties.items():
             str_val += '{}{}={}'.format('\n' if str_val else '', key, value)
         return str_val
-
+    
     def __getitem__(self, item: str) -> Any:
         return self.get(item)
-
+    
     def __iter__(self):
         return self.properties.__iter__()
-
+    
     def get(self, key: str, default_value=None) -> Optional[str]:
         """Get a property value as string or default_value if the property was not found"""
         return self.properties[key.strip()] if key.strip() in self.properties else default_value
-
+    
     def get_int(self, key: str, default_value=None) -> Optional[int]:
         """Get and convert a property value into int or return a default value if any error occurred"""
         try:
             return int(self.get(key))
         except TypeError:
             return default_value
-
+    
     def get_float(self, key: str, default_value=None) -> Optional[float]:
         """Get and convert a property value into float or return a default value if any error occurred"""
         try:
             return float(self.get(key))
         except TypeError:
             return default_value
-
+    
     def get_bool(self, key: str, default_value=None) -> Optional[bool]:
         """Get and convert a property value into bool or return a default value if any error occurred"""
         try:
             return self.get(key).lower() in ['true', '1', 'on', 'yes']
         except TypeError:
             return default_value
-
+    
     def size(self) -> int:
         """Retrieve the amount of properties"""
         return len(self.properties) if self.properties else 0
-
+    
     def values(self) -> list:
         """Retrieve all values for all properties"""
         return list(self.properties.values())
-
+    
     def _read(self) -> None:
         """Read all properties from the file"""
         self.filepath = self._find_path()
@@ -100,7 +100,7 @@ class Properties:
         else:
             raise FileNotFoundError(
                 'File "{}" does not exist'.format(self.filepath))
-
+    
     def _find_path(self) -> str:
         """Find the proper path for the properties file"""
         if self.profile:
@@ -110,7 +110,7 @@ class Properties:
             filepath = self._simple_format \
                 .format(self.filename, self.extension)
         return f'{self.load_dir}/{filepath}'
-
+    
     def _parse(self) -> None:
         """Parse the properties file according to it's extension"""
         with open(self.filepath) as fh_props:

@@ -15,49 +15,50 @@
 """
 
 import signal
+import sys
 import time
 from abc import ABC
-from typing import Any, Optional, Callable
+from typing import Any, Callable, Optional
 
 from hspylib.core.exception.exceptions import InputAbortedError
-from hspylib.core.tools.commons import sysout, syserr
+from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 class MenuUtils(ABC):
-
+    
     @staticmethod
     def exit_app(
             exit_code: int = signal.SIGHUP,
             frame=None,
             exit_msg: str = "Done.") -> None:
-
+        
         sysout(str(frame) if frame else '', end='')
         sysout(f"%HOM%%ED2%%NC%\n{exit_msg}\n")
-        exit(exit_code if exit_code else 0)
-
+        sys.exit(exit_code if exit_code else 0)
+    
     @staticmethod
     def print_error(
             message: str,
             argument: Any = None,
             wait_interval: int = 2) -> None:
-
+        
         syserr(f"### Error: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
-
+    
     @staticmethod
     def print_warning(
             message: str,
             argument: str = None,
             wait_interval: int = 2,
             color: VtColors = VtColors.YELLOW) -> None:
-
+        
         sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
-
+    
     @staticmethod
     def prompt(
             prompt_msg: str = '',
@@ -67,10 +68,10 @@ class MenuUtils(ABC):
             on_blank_abort: bool = True,
             color: VtColors = VtColors.GREEN,
             end: str = ': ') -> Optional[Any]:
-
+        
         valid = False
         input_data = None
-
+        
         while not valid:
             try:
                 colorized = VtColors.colorize(
@@ -99,15 +100,15 @@ class MenuUtils(ABC):
             except EOFError as err:
                 MenuUtils.print_error("Input failed: ", str(err))
                 break
-
+        
         return input_data
-
+    
     @staticmethod
     def wait_enter(
             wait_msg: str = 'Press [Enter] to continue ...',
             color: VtColors = VtColors.YELLOW) -> None:
         MenuUtils.prompt(wait_msg, any_key=True, color=color, end='')
-
+    
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
         sysout(f"%ED2%%HOM%\n{color.placeholder()}{title_str}\n")
