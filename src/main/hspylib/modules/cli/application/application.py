@@ -107,9 +107,11 @@ class Application(metaclass=Singleton):
         self.exit_handler(args[0] if args and len(args) > 0 else 0)
     
     def get_option(self, item: str) -> Optional[Option]:
+        """Getter for application option"""
         return next((op for key, op in self.options.items() if op.is_eq(item)), None)
     
     def get_argument(self, index: int) -> Optional[Argument]:
+        """Getter for application arguments"""
         return self.args[index] if 0 <= index < len(self.args) else None
     
     def setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument
