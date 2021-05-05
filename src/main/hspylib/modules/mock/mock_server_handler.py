@@ -107,7 +107,8 @@ class MockServerHandler(BaseHTTPRequestHandler):
             allowed_methods.append('DELETE')
         return allowed_methods
 
-    def do_options(self) -> None:
+    def do_OPTIONS(self) -> None:
+        """ Handles: OPTIONS requests. Due to the base class, this name will not follow the naming conventions"""
         mock_request = self.parent.mock(HttpMethod.OPTIONS, self.path)
         headers = CaseInsensitiveDict({'Allow': ', '.join(self.find_allowed_methods())})
         if mock_request:
@@ -115,20 +116,26 @@ class MockServerHandler(BaseHTTPRequestHandler):
         else:
             self.process_default(HttpCode.NO_CONTENT, headers=headers)
 
-    def do_head(self):
+    def do_HEAD(self):
+        """ Handles: HEAD requests. Due to the base class, this name will not follow the naming conventions"""
         self.process_request(HttpMethod.HEAD)
 
-    def do_get(self):
+    def do_GET(self):
+        """ Handles: GET requests. Due to the base class, this name will not follow the naming conventions"""
         self.process_request(HttpMethod.GET)
 
-    def do_post(self):
+    def do_POST(self):
+        """ Handles: POST requests. Due to the base class, this name will not follow the naming conventions"""
         self.process_request(HttpMethod.POST)
 
-    def do_put(self):
+    def do_PUT(self):
+        """ Handles: PUT requests. Due to the base class, this name will not follow the naming conventions"""
         self.process_request(HttpMethod.PUT)
 
-    def do_patch(self):
+    def do_PATCH(self):
+        """ Handles: PATCH requests. Due to the base class, this name will not follow the naming conventions"""
         self.process_request(HttpMethod.PATCH)
 
-    def do_delete(self):
+    def do_DELETE(self):
+        """ Handles: DELETE requests. Due to the base class, this name will not follow the naming conventions"""
         self.process_request(HttpMethod.DELETE)

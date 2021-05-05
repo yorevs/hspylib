@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    @package: hspylib.test.hspylib.core.crud
-      @file: test_mysql_repository.py
+      @file: mysql_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -23,13 +23,14 @@ from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
-from test.hspylib.core.crud.resources.TestMysqlRepository import TestMysqlRepository
-
-from test.hspylib.core.crud.resources.TestEntity import TestEntity
+from test.hspylib.shared.decorators import integration_test
+from test.hspylib.shared.entity_test import EntityTest
+from test.hspylib.shared.mysql_repository_test import MysqlRepositoryTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
+@integration_test
 class TestMySqlRepository(unittest.TestCase):
 
     # Setup tests
@@ -40,7 +41,7 @@ class TestMySqlRepository(unittest.TestCase):
             source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
         )
         log.info(self.configs)
-        self.repository = TestMysqlRepository()
+        self.repository = MysqlRepositoryTest()
         self.table = self.repository.table_name()
         assert self.repository, "Unable to instantiate TestRepository"
         try:
@@ -65,9 +66,8 @@ class TestMySqlRepository(unittest.TestCase):
     # TEST CASES ----------
 
     # TC1 - Test inserting a single row into the database.
-    @unittest.skip("This test is disabled because it requires a MySql DB running")
     def test_should_insert_into_database(self):
-        test_entity = TestEntity(comment='My-Test Data')
+        test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
         result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
@@ -77,9 +77,8 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
 
     # TC2 - Test updating a single row from the database.
-    @unittest.skip("This test is disabled because it requires a MySql DB running")
     def test_should_update_database(self):
-        test_entity = TestEntity(comment='My-Test Data')
+        test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
         test_entity.comment = 'Updated My-Test Data'
         self.repository.update(test_entity)
@@ -91,10 +90,9 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertEqual(test_entity.comment, result_set[0].comment)
 
     # TC3 - Test selecting all rows from the database.
-    @unittest.skip("This test is disabled because it requires a MySql DB running")
     def test_should_select_all_from_database(self):
-        test_entity_1 = TestEntity(comment='My-Test Data')
-        test_entity_2 = TestEntity(comment='My-Test Data 2')
+        test_entity_1 = EntityTest(comment='My-Test Data')
+        test_entity_2 = EntityTest(comment='My-Test Data 2')
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_all()
@@ -104,21 +102,19 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
 
     # TC4 - Test selecting a single rows from the database.
-    @unittest.skip("This test is disabled because it requires a MySql DB running")
     def test_should_select_one_from_database(self):
-        test_entity_1 = TestEntity(comment='My-Test Data')
-        test_entity_2 = TestEntity(comment='My-Test Data 2')
+        test_entity_1 = EntityTest(comment='My-Test Data')
+        test_entity_2 = EntityTest(comment='My-Test Data 2')
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
         assert result_set, "Result set is empty"
-        self.assertIsInstance(result_set, TestEntity)
+        self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
 
     # TC5 - Test selecting all rows and bring only specified columns.
-    @unittest.skip("This test is disabled because it requires a MySql DB running")
     def test_should_select_columns_from_database(self):
-        test_entity = TestEntity(comment='My-Test Data')
+        test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
         result_set = self.repository.find_all(column_set=["UUID"])
         assert result_set, "Result set is empty"
@@ -128,13 +124,12 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertIsNone(result_set[0].comment)
 
     # TC6 - Test deleting one row from the database.
-    @unittest.skip("This test is disabled because it requires a MySql DB running")
     def test_should_delete_from_database(self):
-        test_entity = TestEntity(comment='My-Test Data')
+        test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
         assert result_set, "Result set is empty"
-        self.assertIsInstance(result_set, TestEntity)
+        self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))

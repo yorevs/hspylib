@@ -2,10 +2,11 @@
 #
 # HSPyLib v0.10.4
 #
-# Package: test.hspylib.core.crud
+# Package: test.hspylib.shared
 
 __all__ = [
-  'test_file_repository', 
+  'test_entity', 
+  'test_file_db_repository', 
   'test_firebase_repository', 
   'test_mysql_repository'
 ]

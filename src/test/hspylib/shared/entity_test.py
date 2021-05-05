@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    @package: hspylib.test.hspylib.core.crud.resources
-      @file: TestEntity.py
+      @file: entity_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -19,7 +19,7 @@ from uuid import UUID
 from hspylib.core.model.entity import Entity
 
 
-class TestEntity(Entity):
+class EntityTest(Entity):
     def __init__(self, entity_id: UUID = None, comment: str = None, lucky_number: int = 0, is_working: bool = False):
         super().__init__(entity_id)
         self.comment = comment
