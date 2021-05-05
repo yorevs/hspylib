@@ -1,23 +1,10 @@
 # HSPyLib TODOs
 
-1. Check execute SQLs, use params instead of values on the sql string
-2. Add a repository for the PostgresSql db + tests
-3. Remove asserts, convert then into specialized exceptions
-4. Add file headers for all files
-5. Create the widgets operation for the main hspylib app
-
-=== HEADERS ===
-
-```python
-# -*- coding: utf-8 -*-
-
-"""@package -
-   @file: print-uni.py
-  @purpose: TODO
-  @created: TODO
-   @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-   @mailto: yorevs@gmail.com
-     @site: https://github.com/yorevs/hspylib
-  @license: Please refer to <https://opensource.org/licenses/MIT>
-"""
-```
+1. **Improvement**: Check execute SQLs, use params instead of values on the sql string.
+2. **New-Feature**: Add a repository for the PostgresSql db + tests.
+3. **Continuous**: Remove asserts, convert then into specialized exceptions.
+4. **New-Feature**: Create the widgets add-in for the main hspylib app.
+5. **New-Feature**: Create the git module.
+6. **Optional**: Add an autodoc for usage when usage is not specified on application FW.
+7. **Improvement**: Finish the Terminal module.
+8. **Cleanup**: Finish cleaning pylint warnings.
