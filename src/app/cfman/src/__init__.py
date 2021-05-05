@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: app.cfman.src
+"""Package initialization."""
 
 __all__ = [
   'main'

@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.phonebook.repository
+"""Package initialization."""
 
 __all__ = [
   'company_repository', 

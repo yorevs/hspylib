@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.calculator.ui
+"""Package initialization."""
 
 __all__ = [
   'qt'

@@ -95,7 +95,7 @@ class MenuUtils(ABC):
                     if not on_blank_abort:
                         MenuUtils.print_error("Input can't be empty: ", input_data)
                     else:
-                        raise InputAbortedError()
+                        raise InputAbortedError('Input process was aborted')
             except EOFError as err:
                 MenuUtils.print_error("Input failed: ", str(err))
                 break

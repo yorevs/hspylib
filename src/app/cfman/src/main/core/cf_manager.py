@@ -79,7 +79,7 @@ class CFManager(object):
                     sleep(1)
                     self._require_credentials()
                 sysout(f'%GREEN%Authorizing {self.username}@{self.api}...%NC%')
-                authorized = self.__authorize__()
+                authorized = self._authorize()
                 if not authorized:
                     self.password = None
                     sleep(1)

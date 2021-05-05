@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: app.vault.src.main.entity.validator
+"""Package initialization."""
 
 __all__ = [
   'entry_validator'

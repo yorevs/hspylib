@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: test.hspylib.modules.json_search
+"""Package initialization."""
 
 __all__ = [
   'test_json_search'

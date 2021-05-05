@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: main.hspylib.modules.cli.menu
+"""Package initialization."""
 
 __all__ = [
   'extra', 

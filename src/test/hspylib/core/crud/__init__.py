@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: test.hspylib.core.crud
+"""Package initialization."""
 
 __all__ = [
   'test_file_repository', 
