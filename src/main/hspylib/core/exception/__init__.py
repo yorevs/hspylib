@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: main.hspylib.core.exception
+"""Package initialization."""
 
 __all__ = [
   'exceptions'

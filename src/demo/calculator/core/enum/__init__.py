@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: demo.calculator.core.enum
+"""Package initialization."""
 
 __all__ = [
   'calc_operations'

@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: test.hspylib.core.config
+"""Package initialization."""
 
 __all__ = [
   'test_app_config', 

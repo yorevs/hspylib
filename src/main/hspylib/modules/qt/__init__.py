@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: main.hspylib.modules.qt
+"""Package initialization."""
 
 __all__ = [
   'promotions', 

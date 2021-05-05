@@ -3,6 +3,7 @@
 # HSPyLib v0.10.4
 #
 # Package: app.firebase.src.main.entity
+"""Package initialization."""
 
 __all__ = [
   'file_entry', 
