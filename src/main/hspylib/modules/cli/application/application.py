@@ -114,15 +114,15 @@ class Application(metaclass=Singleton):
         """Getter for application arguments"""
         return self.args[index] if 0 <= index < len(self.args) else None
     
-    def setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument
+    def setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
         """Initialize application parameters and options"""
         log.info('setup_parameters was not overridden')
     
-    def main(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument
+    def main(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
         """Execute the application's main statements"""
         log.info('main was not overridden')
     
-    def cleanup(self) -> None:
+    def cleanup(self) -> None:  # pylint: disable=no-self-use
         """Execute code cleanup before exiting"""
         log.info('cleanup was not overridden')
     

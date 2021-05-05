@@ -23,6 +23,7 @@ from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import syserr
 from test.hspylib.shared.decorators import integration_test
 from test.hspylib.shared.entity_test import EntityTest
 from test.hspylib.shared.mysql_repository_test import MysqlRepositoryTest
@@ -48,20 +49,24 @@ class TestMySqlRepository(unittest.TestCase):
             self.repository.connect()
             self.assertTrue(self.repository.is_connected())
             self.repository.execute(
-                'CREATE TABLE {} (UUID varchar(36) NOT NULL, COMMENT varchar(128), LUCKY_NUMBER int, IS_WORKING '
-                'varchar(5), PRIMARY KEY (UUID)) '
-                    .format(self.table))
+                f"""CREATE TABLE {self.table} (
+                    UUID varchar(36) NOT NULL, 
+                    COMMENT varchar(128), 
+                    LUCKY_NUMBER int, 
+                    IS_WORKING varchar(5), 
+                    PRIMARY KEY (UUID))""", True)
         except (InternalError, OperationalError) as err:
-            if "Failed to create table 'TEST' => {}\n\t.Truncating it instead!" not in str(err):
-                self.repository.execute("TRUNCATE TABLE {}".format(self.table))
-            else:
-                pass
+            if f"Table '{self.table}' already exists" in str(err):
+                self.repository.execute(f"TRUNCATE TABLE {self.table}", True)
     
     # Teardown tests
     def tearDown(self):
-        self.repository.execute('DROP TABLE {}'.format(self.table))
-        self.repository.disconnect()
-        self.assertFalse(self.repository.is_connected())
+        try:
+            self.repository.execute(f"DROP TABLE {self.table}", True)
+            self.repository.disconnect()
+            self.assertFalse(self.repository.is_connected())
+        except (InternalError, OperationalError) as err:
+            syserr(str(err))
     
     # TEST CASES ----------
     
@@ -132,8 +137,8 @@ class TestMySqlRepository(unittest.TestCase):
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
-        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
-        assert not result_set, "Result set is not empty"
+        assert not self.repository.find_by_id(entity_id=str(test_entity.uuid)), \
+            "Result set is not empty"
 
 
 # Program entry point.
