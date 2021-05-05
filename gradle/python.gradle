@@ -229,6 +229,7 @@ task check(type: Task) {
 task pylint(type: Task) {
   group = 'Verification'
   description = 'Run pylint on "${sourceRoot}"'
+  dependsOn cleanDist
   doLast {
     def disabled_checks = [
       'E0603', // undefined-all-variable
