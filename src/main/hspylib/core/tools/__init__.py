@@ -7,8 +7,10 @@
 
 __all__ = [
   'commons', 
+  'git_utils', 
   'keyboard', 
   'regex_commons', 
   'text_helper', 
-  'validator'
+  'validator', 
+  'versioner'
 ]
