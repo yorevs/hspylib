@@ -12,3 +12,4 @@ __all__ = [
   'enums', 
   'exception'
 ]
+__version__ = "0.1.0"
