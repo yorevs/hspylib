@@ -112,7 +112,7 @@ class Application(metaclass=Singleton):
     
     def get_argument(self, index: int) -> Optional[Argument]:
         """Getter for application arguments"""
-        return self.args[index] if 0 <= index < len(self.args) else None
+        return self.args[index] if self.args and 0 <= index < len(self.args) else None
     
     def setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
         """Initialize application parameters and options"""
