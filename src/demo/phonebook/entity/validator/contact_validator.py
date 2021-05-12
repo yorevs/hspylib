@@ -16,7 +16,7 @@
 
 from typing import List, Tuple
 
-from hspylib.core.tools.regex_commons import RegexCommons
+from hspylib.core.tools.regex_constants import RegexConstants
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Contact import Contact
 from phonebook.entity.Person import Person
@@ -38,12 +38,12 @@ class ContactValidator(Validator):
     @staticmethod
     def validate_name(name: str) -> (bool, str):
         return Validator \
-                   .matches(name, RegexCommons.COMMON_3_30_NAME), "Invalid name"
+                   .matches(name, RegexConstants.COMMON_3_30_NAME), "Invalid name"
     
     @staticmethod
     def validate_phone(phone: str) -> (bool, str):
         return Validator \
-                   .matches(phone, RegexCommons.PHONE_NUMBER), "Invalid phone"
+                   .matches(phone, RegexConstants.PHONE_NUMBER), "Invalid phone"
     
     @staticmethod
     def validate_address(address: str) -> (bool, str):

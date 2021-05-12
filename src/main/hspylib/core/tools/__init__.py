@@ -9,7 +9,7 @@ __all__ = [
   'commons', 
   'git_utils', 
   'keyboard', 
-  'regex_commons', 
+  'regex_constants', 
   'text_helper', 
   'validator', 
   'versioner'

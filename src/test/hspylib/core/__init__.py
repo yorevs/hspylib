@@ -8,5 +8,5 @@
 __all__ = [
   'config', 
   'crud', 
-  'enum'
+  'enums'
 ]

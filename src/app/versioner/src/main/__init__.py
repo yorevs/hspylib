@@ -9,5 +9,6 @@ __all__ = [
   '__main__', 
   'core', 
   'entity', 
-  'enum'
+  'enums', 
+  'exception'
 ]
