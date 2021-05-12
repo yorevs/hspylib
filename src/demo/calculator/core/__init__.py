@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'enum', 
+  'enums', 
   'qt_calculator'
 ]
