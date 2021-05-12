@@ -1,4 +1,4 @@
-from hspylib.core.enum.enumeration import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class Extension(Enumeration):

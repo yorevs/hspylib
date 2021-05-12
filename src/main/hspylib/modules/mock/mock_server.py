@@ -19,7 +19,7 @@ from random import randint
 from threading import Thread
 from typing import Any, Optional, Tuple
 
-from hspylib.core.enum.http_method import HttpMethod
+from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.mock.mock_request import MockResponse
 from hspylib.modules.mock.mock_server_handler import MockServerHandler
 

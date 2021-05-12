@@ -22,7 +22,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLCDNumber, QWidget
 
-from calculator.core.enum.calc_operations import CalcOperations
+from calculator.core.enums.calc_operations import CalcOperations
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.qt.views.qt_view import QtView
 

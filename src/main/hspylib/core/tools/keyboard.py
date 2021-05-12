@@ -19,7 +19,7 @@ from typing import Any, Optional
 
 import getkey
 
-from hspylib.core.enum.enumeration import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.vt100.vt_utils import require_terminal
 

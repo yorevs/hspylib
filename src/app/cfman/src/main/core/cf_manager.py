@@ -23,7 +23,7 @@ from cfman.src.main.core.cf_application import CFApplication
 from cfman.src.main.core.cf_endpoint import CFEndpoint
 from cfman.src.main.exception.exceptions import CFConnectionError, CFExecutionError, CFAuthenticationError
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enum.http_code import HttpCode
+from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import get_by_key_or_default, syserr, sysout
 from hspylib.modules.cli.menu.extra.mchoose import mchoose
 from hspylib.modules.cli.menu.extra.minput import MenuInput, minput

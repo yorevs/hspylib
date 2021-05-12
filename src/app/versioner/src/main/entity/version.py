@@ -1,7 +1,7 @@
 import re
 from typing import Any
 
-from versioner.src.main.enum.extension import Extension
+from versioner.src.main.enums.extension import Extension
 
 
 class Version:
