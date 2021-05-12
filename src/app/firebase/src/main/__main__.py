@@ -44,9 +44,9 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.firebase = Firebase()
     
-    def setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
-        self.with_arguments(
+        self._with_arguments(
             ArgumentChain.builder()
                 .when('Operation', 'setup')
                     .end()
@@ -62,11 +62,11 @@ class Main(Application):
         )
         # @formatter:on
     
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         log.info(
             self.WELCOME.format(
-                self.app_name,
+                self._app_name,
                 self.VERSION,
                 AgentConfig.INSTANCE.username(),
                 AgentConfig.INSTANCE.config_file(),

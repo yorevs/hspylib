@@ -39,7 +39,7 @@ class Main(Application):
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE)
     
-    def setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
         if len(*params) == 0:
             welcome = self.WELCOME
@@ -47,7 +47,7 @@ class Main(Application):
             self.usage()
         else:
             # @formatter:off
-            self.with_arguments(
+            self._with_arguments(
                 ArgumentChain.builder()
                     .when('Operation', 'create')
                     .require('AppName', '.+')
@@ -58,7 +58,7 @@ class Main(Application):
             )
             # @formatter:on
     
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Main entry point handler"""
         self._exec_application()
     

@@ -43,9 +43,9 @@ class Main(Application):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.vault = Vault()
     
-    def setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
-        self.with_arguments(
+        self._with_arguments(
             ArgumentChain.builder()
                 .when('Operation', 'list')
                     .accept('Filter', '.+')
@@ -62,11 +62,11 @@ class Main(Application):
         )
         # @formatter:on
     
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         log.info(
             self.WELCOME.format(
-                self.app_name,
+                self._app_name,
                 self.VERSION,
                 VaultConfig.INSTANCE.vault_user(),
                 VaultConfig.INSTANCE.vault_file(),
@@ -74,7 +74,7 @@ class Main(Application):
         )
         self._exec_application()
     
-    def cleanup(self) -> None:
+    def _cleanup(self) -> None:
         self.vault.close()
     
     def _exec_application(self, ) -> None:

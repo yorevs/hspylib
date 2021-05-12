@@ -35,14 +35,14 @@ class Main(Application):
         # Invoke the super constructor without source_dir parameter to skip creation of log and properties
         super().__init__(app_name, self.VERSION, self.USAGE, source_dir=dirname(__file__))
     
-    def setup_parameters(self, *params, **kwargs):
+    def _setup_parameters(self, *params, **kwargs):
         """Initialize application parameters and options"""
     
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        sysout(f'Hello {self.app_name}')
+        sysout(f'Hello {self._app_name}')
     
-    def cleanup(self):
+    def _cleanup(self):
         """Execute code cleanup before exiting"""
 
 
