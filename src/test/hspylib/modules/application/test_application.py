@@ -13,15 +13,16 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import sys
 import unittest
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.exception.exceptions import InvalidOptionError, InvalidArgumentError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.option import Option
+from test.hspylib.shared.application_test import ApplicationTest
 
 
 class TestApplication(unittest.TestCase):
@@ -62,6 +63,30 @@ class TestApplication(unittest.TestCase):
         self.assertIsNotNone(op_help)
         self.assertEqual(str(op_version), str(expected_op_version))
         self.assertEqual(str(op_help), str(expected_op_help))
+
+    # TC5 - Check when passing defined options and arguments
+    def test_calling_an_app_with_correct_opts_and_args_should_not_raise_errors(self):
+        app = ApplicationTest('APP-TEST')
+        params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
+        app.run(params)
+
+    # TC6 - Check when passing undefined options and arguments
+    def test_calling_an_app_with_incorrect_opts_should_raise_errors(self):
+        app = ApplicationTest('APP-TEST')
+        params = ['-g', 'input.txt', '-j', 'output.txt', 'one', 'donut']
+        self.assertRaises(InvalidOptionError, app.run, params)
+
+    # TC7 - Check when passing undefined options and arguments
+    def test_calling_an_app_with_incorrect_args_should_raise_errors_part_1(self):
+        app = ApplicationTest('APP-TEST')
+        params = ['-i', 'input.txt', '-o', 'output.txt', 'four', 'donut']
+        self.assertRaises(InvalidArgumentError, app.run, params)
+
+    # TC8 - Check when passing undefined options and arguments
+    def test_calling_an_app_with_incorrect_args_should_raise_errors_part_2(self):
+        app = ApplicationTest('APP-TEST')
+        params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'pretzel']
+        self.assertRaises(InvalidArgumentError, app.run, params)
 
 
 # Program entry point.
