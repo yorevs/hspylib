@@ -15,23 +15,22 @@ class ApplicationTest(Application):
     WELCOME = 'Welcome to test app'
 
     def __init__(self, app_name: str):
-        self.opts = set({})
         super().__init__(app_name, self.VERSION, self.USAGE)
 
-    def setup_parameters(self, *params, **kwargs) -> None:
-        self.with_option('i', 'input', True, lambda arg: self.opts.add(f'input {arg}'))
-        self.with_option('o', 'output', True, lambda arg: self.opts.add(f'output {arg}'))
+    def _setup_parameters(self, *params, **kwargs) -> None:
+        self._with_option('i', 'input', True)
+        self._with_option('o', 'output', True)
         # @formatter:off
-        self.with_arguments(
+        self._with_arguments(
             ArgumentChain.builder()
-                .when('Number', 'one|two|three', False)
-                    .require('Object', 'donut|bagel')
+                .when('amount', 'one|two|three', False)
+                    .require('item', 'donut|bagel')
                 .end()
                 .build()
         )
         # @formatter:on
 
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         self._exec_application()
 

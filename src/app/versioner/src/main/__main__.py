@@ -40,13 +40,13 @@ class Main(Application):
         self.option_map = {}
         self.versioner = None
 
-    def setup_parameters(self, *params, **kwargs) -> None:
-        self.with_option('b', 'backup', True, lambda arg: print(f'Option -b | --backup = {arg}'))
-        self.with_option('d', 'search-dir', True, lambda arg: print(f'Option -d | --search-dir = {arg}'))
+    def _setup_parameters(self, *params, **kwargs) -> None:
+        self._with_option('b', 'backup', True, lambda arg: print(f'Option -b | --backup = {arg}'))
+        self._with_option('d', 'search-dir', True, lambda arg: print(f'Option -d | --search-dir = {arg}'))
 
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.versioner = Versioner(self.get_argument(0).value, self.get_option('d'), self.args[2:])
+        self.versioner = Versioner(self._get_argument(0).value, self._find_option('d'), self.args[2:])
         self._exec_application()
 
     def _exec_application(self) -> None:

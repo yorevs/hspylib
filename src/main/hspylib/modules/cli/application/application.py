@@ -42,12 +42,13 @@ class Application(metaclass=Singleton):
             log_dir: str = None):
 
         signal.signal(signal.SIGINT, self.exit_handler)
-        self.app_name = app_name
-        self.app_version = app_version
-        self.app_usage = app_usage
-        self.options = {}
-        self.cond_args_chain = {}
-        self.args = None
+        self._app_name = app_name
+        self._app_version = app_version
+        self._app_usage = app_usage
+        self._options = {}
+        self._arguments = {}
+        self._args = {}
+        self._opts = {}
         if source_dir:
             self.configs = AppConfigs(
                 source_root=source_dir,
@@ -55,17 +56,17 @@ class Application(metaclass=Singleton):
                 log_dir=log_dir
             )
         if app_usage:
-            self.with_option('h', 'help', handler=self.usage)
+            self._with_option('h', 'help', handler=self.usage)
         if app_version:
-            self.with_option('v', 'version', handler=self.version)
+            self._with_option('v', 'version', handler=self.version)
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
         log.info('Run started {}'.format(datetime.now()))
         try:
-            self.setup_parameters(*params, **kwargs)
+            self._setup_parameters(*params, **kwargs)
             self._parse_parameters(*params, **kwargs)
-            self.main(*params, **kwargs)
+            self._main(*params, **kwargs)
         except (InvalidOptionError, InvalidArgumentError) as err:
             self.usage(exit_code=1, no_exit=True)
             raise err  # Re-Raise the exception so upper level layers can catch
@@ -85,7 +86,7 @@ class Application(metaclass=Singleton):
         else:
             log.info('Exit handler called')
             exit_code = signum
-        self.cleanup()
+        self._cleanup()
         if clear_screen:
             sysout('%ED2%%HOM%')
         self.exit_handler(exit_code)
@@ -95,7 +96,7 @@ class Application(metaclass=Singleton):
         :param no_exit: Do no exit the application on usage call
         :param exit_code: The exit code
         """
-        sysout(self.app_usage)
+        sysout(self._app_usage)
         if not no_exit:
             self.exit_handler(exit_code)
 
@@ -104,50 +105,52 @@ class Application(metaclass=Singleton):
         :param no_exit: Do no exit the application on usage call
         :param exit_code: The exit code
         """
-        sysout('{} v{}'.format(self.app_name, '.'.join(map(str, self.app_version))))
+        sysout('{} v{}'.format(self._app_name, '.'.join(map(str, self._app_version))))
         if not no_exit:
             self.exit_handler(exit_code)
 
-    def get_option(self, item: str) -> Optional[Option]:
+    def getopt(self, opt_name: str) -> Optional[str]:
+        return next((val for opt, val in self._opts.items() if opt == opt_name), None)
+
+    def getarg(self, arg_name: str) -> Optional[str]:
+        return next((val for arg, val in self._args.items() if arg == arg_name), None)
+
+    def _find_option(self, item: str) -> Optional[Option]:
         """Getter for application option"""
-        return next((op for key, op in self.options.items() if op.is_eq(item)), None)
+        return next((op for key, op in self._options.items() if op.is_eq(item)), None)
 
-    def get_argument(self, index: int) -> Optional[Argument]:
-        """Getter for application arguments"""
-        return self.args[index] if self.args and 0 <= index < len(self.args) else None
-
-    def setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
+    def _setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
         """Initialize application parameters and options"""
         log.info('setup_parameters was not overridden')
 
-    def main(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
+    def _main(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
         """Execute the application's main statements"""
         log.info('main was not overridden')
 
-    def cleanup(self) -> None:  # pylint: disable=no-self-use
+    def _cleanup(self) -> None:  # pylint: disable=no-self-use
         """Execute code cleanup before exiting"""
         log.info('cleanup was not overridden')
 
-    def with_option(
+    def _with_option(
             self,
             shortopt: chr,
             longopt: str,
             has_argument: bool = False,
             handler: Callable = None) -> None:
         """Specify an option for the command line"""
-        self.options[longopt] = Option(shortopt, longopt, has_argument, handler)
+        self._options[longopt] = Option(shortopt, longopt, has_argument, handler)
 
-    def with_arguments(
+    def _with_arguments(
             self,
             chained_args: Set[ArgumentChain.ChainedArgument]) -> None:
         """Specify an argument for the command line"""
-        self.cond_args_chain = chained_args
+        self._arguments = chained_args
 
     def _parse_parameters(self, parameters: List[str]) -> None:
         """ Handle program parameters.
         :param parameters: The list of unparsed program parameters passed by the command line
         """
-        # First parse all options, then, parse arguments
+        # First parse all options, then, arguments
         self._parse_arguments(self._parse_options(parameters))
 
     def _parse_options(self, parameters: List[str]) -> List[str]:
@@ -158,9 +161,11 @@ class Application(metaclass=Singleton):
         try:
             opts, args = getopt.getopt(parameters, self._shortopts(), self._longopts())
             for op, arg in opts:
-                opt = self.get_option(op)
-                if opt and opt.cb_handler:
-                    opt.cb_handler(arg)
+                option = self._find_option(op)
+                if option:
+                    if option.cb_handler:
+                        option.cb_handler(arg)
+                    self._opts[option.name] = arg
                 else:
                     raise InvalidOptionError(f'Option "{op}" not recognized')
             return args
@@ -172,16 +177,16 @@ class Application(metaclass=Singleton):
         :param provided_args: Arguments left after processing all options
         """
         valid = False
-        if self.cond_args_chain:
+        if self._arguments:
             # Walk through all argument conditions in chain and validate the provided arguments
-            for cond_arg in self.cond_args_chain:
-                arg = cond_arg.argument
+            for argument in self._arguments:
+                arg = argument.argument
                 try:
+                    self._args = {}
                     self._recursive_set(0, arg, provided_args)
                     # At this point, we found a valid argument chain
-                    valid = self._validate_args_in_chain(arg)
+                    valid = Argument.validate_chained_args(arg)
                     # Will be true if all required args were set
-                    self.args = provided_args
                     break
                 except getopt.GetoptError as err:
                     log.debug(str(err))
@@ -200,20 +205,11 @@ class Application(metaclass=Singleton):
         if not argument.set_value(provided_args[idx]):
             raise LookupError(
                 f'Invalid argument "{provided_args[idx]}"')
+        self._args[argument.name] = argument.value
         self._recursive_set(idx + 1, argument.next_in_chain, provided_args)
 
-    @staticmethod
-    def _validate_args_in_chain(arg: Argument) -> bool:
-        """Validate all arguments following the chain path"""
-        missing = 0
-        next_arg = arg
-        while next_arg:
-            missing += 1 if not next_arg.value and next_arg.required else 0
-            next_arg = next_arg.next_in_chain
-        return missing == 0
-
     def _shortopts(self) -> str:
-        return ''.join([op.shortopt.replace('-', '') for key, op in self.options.items()])
+        return ''.join([op.shortopt.replace('-', '') for key, op in self._options.items()])
 
     def _longopts(self) -> List[str]:
-        return [op.longopt.replace('-', '') + ' ' for key, op in self.options.items()]
+        return [op.longopt.replace('--', '') + ' ' for key, op in self._options.items()]
