@@ -26,7 +26,7 @@ class Option:
             has_argument: bool = False,
             cb_handler: Callable = None):
         self.shortopt = f"-{shortopt.replace('-', '')}{':' if has_argument > 0 else ''}"
-        self.longopt = f"--{longopt.replace('-', '')}{'=' if has_argument > 0 else ''}"
+        self.longopt = f"--{longopt.replace('--', '')}{'=' if has_argument > 0 else ''}"
         self.has_argument = has_argument
         self.cb_handler = cb_handler
     
@@ -35,10 +35,10 @@ class Option:
             self.shortopt, self.longopt, self.has_argument, self.cb_handler))
     
     def __repr__(self):
-        return f"[{self.shortopt.replace('-', '').replace(':', '')}, {self.longopt.replace('-', '').replace('=', '')}]"
+        return f"[{self.shortopt.replace('-', '').replace(':', '')}, {self.longopt.replace('--', '').replace('=', '')}]"
     
     def is_eq(self, opt: str) -> bool:
         clean_opt = opt.replace('-', '').replace(':', '').replace('=', '').strip()
         return \
             clean_opt == self.shortopt.replace('-', '').replace(':', '').strip() or \
-            clean_opt == self.longopt.replace('-', '').replace('=', '').strip()
+            clean_opt == self.longopt.replace('--', '').replace('=', '').strip()

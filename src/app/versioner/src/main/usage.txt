@@ -1,0 +1,17 @@
+Versioner v{} - Provides an engine to manage app versions.
+
+Usage: versioner [options] <version> <part> <file...>
+
+  Options:
+    -v |  --version              : Display current program version and exit.
+    -h |     --help              : Display this help message and exit.
+    -b | --backup <ext>          : Create a backup of the original files using the specified extension.
+    -d | --search-dir <path>     : Specify the search directory.
+
+
+  Arguments:
+    version  : The searching version to be updated.
+       part  : The part of the version to be updated. One of [major,minor,patch].
+       file  : The list of files containing te version to be updated.
+        ext  : The extension of the backup files.
+       path  : Search directory. If omitted, current execution path will be used.
