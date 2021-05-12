@@ -2,10 +2,9 @@
 #
 # HSPyLib v0.10.4
 #
-# Package: app.versioner.src.main.enums
+# Package: app.versioner.src.main.exception
 """Package initialization."""
 
 __all__ = [
-  'extension', 
-  'part'
+  'exceptions'
 ]

@@ -8,7 +8,7 @@
 __all__ = [
   'config', 
   'crud', 
-  'enum', 
+  'enums', 
   'exception', 
   'meta', 
   'model', 

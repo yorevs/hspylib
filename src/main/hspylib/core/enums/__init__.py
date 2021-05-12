@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.10.4
 #
-# Package: main.hspylib.core.enum
+# Package: main.hspylib.core.enums
 """Package initialization."""
 
 __all__ = [

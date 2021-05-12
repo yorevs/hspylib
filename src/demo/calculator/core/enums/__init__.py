@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.10.4
 #
-# Package: demo.calculator.core.enum
+# Package: demo.calculator.core.enums
 """Package initialization."""
 
 __all__ = [
