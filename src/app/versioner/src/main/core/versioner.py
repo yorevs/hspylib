@@ -10,7 +10,7 @@
 """
 from hspylib.core.meta.singleton import Singleton
 from versioner.src.main.entity.version import Version
-from versioner.src.main.enum.extension import Extension
+from versioner.src.main.enums.extension import Extension
 
 
 class Versioner(metaclass=Singleton):

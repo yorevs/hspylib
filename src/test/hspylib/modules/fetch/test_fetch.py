@@ -19,8 +19,8 @@ import sys
 import unittest
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enum.http_code import HttpCode
-from hspylib.core.enum.http_method import HttpMethod
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.fetch import delete, get, head, patch, post, put
 from hspylib.modules.mock.mock_server import MockServer
 

@@ -17,10 +17,10 @@ from typing import Any
 
 from requests.structures import CaseInsensitiveDict
 
-from hspylib.core.enum.charset import Charset
-from hspylib.core.enum.content_type import ContentType
-from hspylib.core.enum.http_code import HttpCode
-from hspylib.core.enum.http_method import HttpMethod
+from hspylib.core.enums.charset import Charset
+from hspylib.core.enums.content_type import ContentType
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.http_response import HttpResponse
 
 

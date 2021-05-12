@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import Any, List
 
 from firebase.src.main.entity.file_entry import FileEntry
-from hspylib.core.enum.charset import Charset
+from hspylib.core.enums.charset import Charset
 
 
 class FirebaseEntry:

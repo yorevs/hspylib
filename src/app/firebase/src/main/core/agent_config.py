@@ -22,7 +22,7 @@ from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
-from hspylib.core.enum.charset import Charset
+from hspylib.core.enums.charset import Charset
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 

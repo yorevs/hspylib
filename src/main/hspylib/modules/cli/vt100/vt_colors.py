@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.enum.enumeration import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
