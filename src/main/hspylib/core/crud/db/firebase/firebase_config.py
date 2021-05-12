@@ -23,8 +23,8 @@ from typing import Any
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enum.charset import Charset
-from hspylib.core.enum.http_code import HttpCode
+from hspylib.core.enums.charset import Charset
+from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.modules.fetch.fetch import get
 
