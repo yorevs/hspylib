@@ -42,19 +42,19 @@ class Main(Application):
         self.option_map = {}
         self.cfman = None
     
-    def setup_parameters(self, *params, **kwargs) -> None:
-        self.with_option('a', 'api', True)
-        self.with_option('o', 'org', True)
-        self.with_option('s', 'space', True)
-        self.with_option('u', 'username', True)
-        self.with_option('p', 'password', True)
+    def _setup_parameters(self, *params, **kwargs) -> None:
+        self._with_option('a', 'api', True)
+        self._with_option('o', 'org', True)
+        self._with_option('s', 'space', True)
+        self._with_option('u', 'username', True)
+        self._with_option('p', 'password', True)
     
-    def main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(self.option_map)
         log.info(
             self.WELCOME.format(
-                self.app_name,
+                self._app_name,
                 self.VERSION,
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )

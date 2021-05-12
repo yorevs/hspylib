@@ -39,7 +39,7 @@ class Main(Application):
         super().__init__(app_name, read_version(), self.USAGE, dirname(__file__))
         self.calc = QtCalculator()
     
-    def main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
+    def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         self.calc.show()
 
 
