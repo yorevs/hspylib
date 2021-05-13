@@ -39,7 +39,6 @@ class Main(Application):
     
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
-        self.option_map = {}
         self.cfman = None
     
     def _setup_parameters(self, *params, **kwargs) -> None:
@@ -51,7 +50,7 @@ class Main(Application):
     
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.cfman = CFManager(self.option_map)
+        self.cfman = CFManager(self._opts)
         log.info(
             self.WELCOME.format(
                 self._app_name,

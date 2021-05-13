@@ -31,6 +31,11 @@ class ArgumentChain:
             next_in_chain = ArgumentChain.ChainedArgument(self, argument)
             self.chained_arguments.add(next_in_chain)
             return next_in_chain
+
+        def just(self, arg_name: str, val_regex: str, required: bool = True) -> Any:
+            argument = Argument(arg_name, val_regex, required)
+            self.chained_arguments.add(ArgumentChain.ChainedArgument(self, argument))
+            return self
         
         def build(self) -> set:
             return self.chained_arguments

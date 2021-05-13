@@ -17,8 +17,11 @@
 import sys
 
 from hspylib.core.tools.commons import get_path, read_version
+from hspylib.core.tools.regex_constants import RegexConstants
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.argument_chain import ArgumentChain
 from versioner.src.main.core.versioner import Versioner
+from versioner.src.main.enums.part import Part
 
 HERE = get_path(__file__)
 
@@ -41,17 +44,29 @@ class Main(Application):
         self.versioner = None
 
     def _setup_parameters(self, *params, **kwargs) -> None:
-        self._with_option('b', 'backup', True, lambda arg: print(f'Option -b | --backup = {arg}'))
-        self._with_option('d', 'search-dir', True, lambda arg: print(f'Option -d | --search-dir = {arg}'))
+        self._with_option('b', 'backup', True)
+        self._with_option('d', 'search-dir', True)
+        # @formatter:off
+        self._with_arguments(
+            ArgumentChain.builder()
+                .when('version', RegexConstants.VERSION_EXT)
+                .require('part', '|'.join(list(map(str.lower, Part.names()))))
+                .require('files', '.*')
+                .end()
+                .build()
+        )
+        # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.versioner = Versioner(self._get_argument(0).value, self._find_option('d'), self.args[2:])
+        self.versioner = Versioner(self.getarg('version'), self.getopt('search-dir'), self.getarg('files').split(','))
         self._exec_application()
 
     def _exec_application(self) -> None:
         """Execute the application"""
-        self.versioner.run()
+        caller = getattr(self.versioner, self.getarg('part'))
+        caller()
+        self.versioner.save(self.getopt('backup'))
 
 
 if __name__ == "__main__":

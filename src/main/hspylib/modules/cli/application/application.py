@@ -17,6 +17,7 @@
 import getopt
 import logging as log
 import signal
+import sys
 from datetime import datetime
 from typing import Callable, List, Optional, Set, Tuple
 
@@ -46,7 +47,7 @@ class Application(metaclass=Singleton):
         self._app_version = app_version
         self._app_usage = app_usage
         self._options = {}
-        self._arguments = {}
+        self._arguments = []
         self._args = {}
         self._opts = {}
         if source_dir:
@@ -89,7 +90,7 @@ class Application(metaclass=Singleton):
         self._cleanup()
         if clear_screen:
             sysout('%ED2%%HOM%')
-        self.exit_handler(exit_code)
+        sys.exit(exit_code)
 
     def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
         """Display the usage message and exit with the specified code ( or zero as default )
@@ -205,7 +206,8 @@ class Application(metaclass=Singleton):
         if not argument.set_value(provided_args[idx]):
             raise LookupError(
                 f'Invalid argument "{provided_args[idx]}"')
-        self._args[argument.name] = argument.value
+        self._args[argument.name] = \
+            provided_args[idx] if argument.next_in_chain else ','.join(provided_args[idx:])
         self._recursive_set(idx + 1, argument.next_in_chain, provided_args)
 
     def _shortopts(self) -> str:
