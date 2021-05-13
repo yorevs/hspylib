@@ -148,5 +148,5 @@ project.ext.set("siteUrl", "YourSiteUrl")
         Terminal.shell_exec(
             'git add .', cwd=self.app_dir)
         result = Terminal.shell_exec(
-            'git commit -m First commit [@HSPyLib]', cwd=self.app_dir)
+            'git commit -m "First commit [@HSPyLib]"', cwd=self.app_dir)
         sysout('Git commit result: {}'.format(result))

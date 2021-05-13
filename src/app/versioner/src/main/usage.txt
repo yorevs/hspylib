@@ -1,6 +1,6 @@
 Versioner v{} - Provides an engine to manage app versions.
 
-Usage: versioner [options] <version> <part> <file...>
+Usage: versioner [options] <version> <part> <files...>
 
   Options:
     -v |  --version              : Display current program version and exit.
@@ -12,6 +12,6 @@ Usage: versioner [options] <version> <part> <file...>
   Arguments:
     version  : The searching version to be updated.
        part  : The part of the version to be updated. One of [major,minor,patch].
-       file  : The list of files containing te version to be updated.
+      files  : The list of files containing te version to be updated.
         ext  : The extension of the backup files.
        path  : Search directory. If omitted, current execution path will be used.

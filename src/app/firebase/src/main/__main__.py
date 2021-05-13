@@ -46,17 +46,18 @@ class Main(Application):
     
     def _setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
+        self._with_option('d', 'dest-dir', True)
         self._with_arguments(
             ArgumentChain.builder()
-                .when('Operation', 'setup')
+                .when('operation', 'setup')
                     .end()
-                .when('Operation', 'upload')
-                    .require('Db_Alias', '.+')
-                    .require('Files', '.+')
+                .when('operation', 'upload')
+                    .require('db_alias', '.+')
+                    .require('files', '.+')
                     .end()
-                .when('Operation', 'download')
-                    .require('Db_Alias', '.+')
-                    .accept('DestDir', '.+')
+                .when('operation', 'download')
+                    .require('db_alias', '.+')
+                    .accept('files', '.+')
                     .end()
                 .build()
         )
@@ -76,7 +77,7 @@ class Main(Application):
     
     def _exec_application(self) -> None:
         """Execute the specified firebase operation"""
-        op = self.args[0]
+        op = self.getarg('operation')
         if op == 'setup' or not self.firebase.is_configured():
             self.firebase.setup()
         # Already handled above
@@ -84,13 +85,13 @@ class Main(Application):
             pass
         elif op == 'upload':
             self.firebase.upload(
-                self.args[1],
-                self.args[2:]
+                self.getarg('db_alias'),
+                self.getarg('files').split(',')
             )
         elif op == 'download':
             self.firebase.download(
-                self.args[1],
-                self.args[2] if len(self.args) > 2 else os.environ.get('HOME')
+                self.getarg('db_alias'),
+                self.getopt('dest-dir')
             )
         else:
             syserr('### Unhandled operation: {}'.format(op))

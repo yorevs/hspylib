@@ -16,6 +16,7 @@
 
 import logging as log
 import select
+import shlex
 import subprocess
 from abc import ABC
 from typing import Optional
@@ -29,7 +30,7 @@ class Terminal(ABC):
     def shell_exec(cmd_line: str, **kwargs) -> Optional[str]:
         try:
             log.info(f"Executing shell command: {cmd_line}")
-            cmd_args = list(filter(None, cmd_line.split(' ')))
+            cmd_args = list(filter(None, shlex.split(cmd_line)))
             result = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
             log.info(f"Execution result: {result}")
             return result.strip() if result else None
@@ -46,7 +47,7 @@ class Terminal(ABC):
             del kwargs['stderr']  # Deleted since we use our own
         try:
             log.info(f"Polling shell command: {cmd_line}")
-            cmd_args = list(filter(None, cmd_line.split(' ')))
+            cmd_args = list(filter(None, shlex.split(cmd_line)))
             with(subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)) as file:
                 process = select.poll()
                 process.register(file.stdout)

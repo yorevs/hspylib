@@ -49,10 +49,10 @@ class Main(Application):
             # @formatter:off
             self._with_arguments(
                 ArgumentChain.builder()
-                    .when('Operation', 'create')
-                    .require('AppName', '.+')
-                    .require('MngType', 'basic|gradle|git|all')
-                    .accept('DestDir', '.+')
+                    .when('operation', 'create')
+                    .require('app-name', '.+')
+                    .require('mng-type', 'basic|gradle|git|all')
+                    .accept('dest-dir', '.+')
                     .end()
                     .build()
             )
@@ -64,19 +64,18 @@ class Main(Application):
     
     def _exec_application(self) -> None:
         """Execute the application"""
-        op = self.args[0]
+        op = self.getarg('operation')
         if op == 'create':
             manager = AppManager(self)
             manager.create_app(
-                self.args[1],
-                AppManager.AppType.value_of(self.args[2], ignore_case=True),
-                self.args[3] if len(self.args) > 3 else run_dir())
+                self.getarg('app-name'),
+                AppManager.AppType.value_of(self.getarg('mng-type'), ignore_case=True),
+                self.getarg('dest-dir') or run_dir())
         else:
             syserr('### Invalid operation: {}'.format(op))
             self.usage(1)
 
 
-# Application entry point
 if __name__ == "__main__":
-    # Application entry point
+    """ Application entry point """
     Main('HSPyLib Manager').INSTANCE.run(sys.argv[1:])
