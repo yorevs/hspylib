@@ -138,6 +138,24 @@ def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = 
     return result_list
 
 
+def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
+    """TODO
+    :param dictionary:
+    :param parent_key:
+    :param sep:
+    :return:
+    """
+    flat_dict = {}
+    for key, value in dictionary.items():
+        new_key = parent_key + sep + key if parent_key else key
+        if isinstance(value, dict):
+            flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
+        else:
+            flat_dict.update({new_key: value})
+
+    return flat_dict
+
+
 def get_or_default(options: tuple, index: int, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or None if index is out of range
     :param options: The available list of options
@@ -198,19 +216,28 @@ def touch_file(filename: str) -> None:
         os.utime(filename, None)
 
 
-def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
+def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
     """TODO
-    :param dictionary:
-    :param parent_key:
-    :param sep:
-    :return:
+    :param size_in_bytes:
     """
-    flat_dict = {}
-    for key, value in dictionary.items():
-        new_key = parent_key + sep + key if parent_key else key
-        if isinstance(value, dict):
-            flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
-        else:
-            flat_dict.update({new_key: value})
-    
-    return flat_dict
+
+    byte_size = float(size_in_bytes)
+    kb, mb, gb, tb = 2 ** 10, 2 ** 20, 2 ** 30, 2 ** 40
+
+    if 0 <= byte_size <= kb:
+        ret_val = '%3.2f' % byte_size
+        ret_unit = '[B]'
+    elif kb < byte_size <= mb:
+        ret_val = '%3.2f' % (byte_size / kb)
+        ret_unit = '[Kb]'
+    elif mb < byte_size <= gb:
+        ret_val = '%3.2f' % (byte_size / mb)
+        ret_unit = '[Mb]'
+    elif gb < byte_size <= tb:
+        ret_val = '%3.2f' % (byte_size / gb)
+        ret_unit = '[Gb]'
+    else:
+        ret_val = '%3.2f' % (byte_size / tb)
+        ret_unit = '[Tb]'
+
+    return ret_val, ret_unit
