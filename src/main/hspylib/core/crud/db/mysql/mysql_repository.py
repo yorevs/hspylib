@@ -107,7 +107,7 @@ class MySqlRepository(DBRepository):
         else:
             raise NotConnectedError('Not connected to database.')
     
-    def find_all(
+    def find_all(  # pylint: disable=arguments-differ
             self,
             column_set: List[str] = None,
             sql_filters: SqlFilter = None) -> Optional[list]:
@@ -123,7 +123,7 @@ class MySqlRepository(DBRepository):
 
         raise NotConnectedError('Not connected to database.')
     
-    def find_by_id(
+    def find_by_id(  # pylint: disable=arguments-differ
             self,
             column_set: List[str] = None,
             entity_id: str = None) -> Optional[Entity]:

@@ -36,11 +36,10 @@ def screen_size() -> Optional[List[str]]:
     return None
 
 
+# Solution taken from:
+# https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
 def get_cursor_position() -> Optional[Tuple[int, int]]:
-    """ Get the terminal cursor position
-    Solution taken from:
-    - https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
-    """
+    """ Get the terminal cursor position """
     if sys.stdout.isatty():
         buf = ""
         stdin = sys.stdin.fileno()

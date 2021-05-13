@@ -111,9 +111,11 @@ class Application(metaclass=Singleton):
             self.exit_handler(exit_code)
 
     def getopt(self, opt_name: str) -> Optional[str]:
+        """Get the option value named by the opt_name"""
         return next((val for opt, val in self._opts.items() if opt == opt_name), None)
 
     def getarg(self, arg_name: str) -> Optional[str]:
+        """Get the argument value named by the opt_name"""
         return next((val for arg, val in self._args.items() if arg == arg_name), None)
 
     def _find_option(self, item: str) -> Optional[Option]:

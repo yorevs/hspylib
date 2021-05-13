@@ -44,6 +44,7 @@ class Main(Application):
         self.versioner = None
 
     def _setup_parameters(self, *params, **kwargs) -> None:
+        """Initialize application parameters and options"""
         self._with_option('b', 'backup', True)
         self._with_option('d', 'search-dir', True)
         # @formatter:off

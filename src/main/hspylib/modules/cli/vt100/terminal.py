@@ -22,6 +22,7 @@ from abc import ABC
 from typing import Optional
 
 from hspylib.core.tools.commons import syserr
+from hspylib.modules.cli.vt100.vt_utils import require_terminal
 
 
 class Terminal(ABC):

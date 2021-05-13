@@ -51,6 +51,8 @@ def mchoose(
 
 
 class MenuChoose(ABC):
+
+    NAV_FMT = "{} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"
     
     @classmethod
     def choose(
@@ -93,9 +95,7 @@ class MenuChoose(ABC):
                 # Menu Renderization {
                 if re_render:
                     cls.__render__(items, sel_options, show_from, show_to, sel_index, highlight_color)
-                    sysout(
-                        f"{nav_color.placeholder()} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{str(length)}] Goto: %EL0%",
-                        end='')
+                    sysout(MenuChoose.NAV_FMT.format(nav_color.placeholder(), str(length)), end='')
                     vt_print(Vt100.set_show_cursor(True))
                     re_render = None
                 # } Menu Renderization
