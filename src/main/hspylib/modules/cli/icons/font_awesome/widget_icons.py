@@ -8,7 +8,8 @@ class WidgetIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    FREE = '\uFB19'
+    FREE = '\uFB19'  # ﬙
+    PRUNI = '\uFA9E'  # 爵
 
 if __name__ == '__main__':
     WidgetIcons.demo_icons()

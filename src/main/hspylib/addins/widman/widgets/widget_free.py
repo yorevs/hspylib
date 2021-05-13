@@ -11,7 +11,7 @@ class WidgetFree(Widget):
     def __init__(self):
         super().__init__(WidgetIcons.FREE, "Free", (0, 2, 0), "Report system memory usage")
 
-    def execute(self):
+    def execute(self, *args, **kwargs):
         # Get process info
         ps = Terminal.shell_exec('ps -caxm -orss,comm')
         vm = Terminal.shell_exec('vm_stat')

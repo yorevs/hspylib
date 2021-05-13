@@ -6,10 +6,10 @@ from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 class Widget(ABC):
     USAGE = """
-    HSPyLib Widget: {} v{}
-    
-    Report system memory usage.
-    """
+HSPyLib Widget: {} v{}
+
+{}
+"""
 
     def __init__(
             self,
@@ -46,11 +46,11 @@ class Widget(ABC):
         return self._tooltip
 
     @final
-    def version(self) -> Tuple[int, int, int]:
+    def version(self) -> str:
         """Return the version of the widget"""
-        return self._version
+        return str(self._version)
 
     @final
     def usage(self) -> str:
         """Return a usage message about the widget"""
-        return self.USAGE
+        return self.USAGE.format(self._name, self._version, self._tooltip)

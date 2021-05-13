@@ -15,9 +15,10 @@ import os
 import sys
 import re
 
-from hhslib.commons import sysout
 
 # This application name.
+from hspylib.core.tools.commons import sysout
+
 APP_NAME = os.path.basename(__file__)
 
 # Version tuple: (major,minor,build)
