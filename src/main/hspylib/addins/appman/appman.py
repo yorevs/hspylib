@@ -32,7 +32,8 @@ class AppManager(metaclass=Singleton):
     
     # The directory containing all template files
     TEMPLATES = (HERE / "templates")
-    
+
+    # The general gradle properties
     GRADLE_PROPS = """
 project.ext.set("projectVersion", "{}")
 project.ext.set("pythonVersion", "3")
@@ -80,7 +81,6 @@ project.ext.set("siteUrl", "YourSiteUrl")
             self._mkdir('src/test/resources/log')
             self._mkfile('README.md', f'# {app_name}')
             self._mkfile('MANIFEST.in')
-            # TODO Create setup.py
             self._mkfile('.env', '# Type in here the environment variables your app requires')
             self._mkfile('run-it.sh', (self.TEMPLATES / "tpl-run-it.sh").read_text())
             os.chmod(f'{self.app_dir}/run-it.sh', 0o755)
