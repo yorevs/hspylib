@@ -18,7 +18,7 @@ import subprocess
 import sys
 
 # This application name.
-from hhslib.commons import human_readable_bytes
+from hspylib.core.tools.commons import human_readable_bytes
 
 APP_NAME = os.path.basename(__file__)
 
