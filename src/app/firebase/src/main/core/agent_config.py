@@ -100,4 +100,4 @@ class AgentConfig(metaclass=Singleton):
     def save(self) -> None:
         with open(self.config_file(), 'w') as f_config:
             f_config.write(str(self))
-            AppConfigs.INSTANCE.logger().info("Firebase configuration saved !")
+            AppConfigs.INSTANCE.logger().tooltip("Firebase configuration saved !")
