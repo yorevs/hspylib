@@ -2,6 +2,7 @@ import os
 import sys
 from typing import Any
 
+from hspylib.addins.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path
@@ -36,12 +37,7 @@ class WidgetManager(metaclass=Singleton):
         self._load_widgets()
 
     def execute(self, widget_name: str) -> Any:
-        widget_entry = next((w for w in self._widgets if w.name == widget_name), None)
-        if not widget_entry:
-            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths.")
-        widget_module = __import__(widget_entry.module)
-        widget_clazz = getattr(widget_module, widget_entry.clazz)
-        widget = widget_clazz()
+        widget = self._find_widget(widget_name)
         try:
             widget.execute()
             widget.cleanup()
@@ -54,18 +50,16 @@ class WidgetManager(metaclass=Singleton):
         widget_entry = None
         try:
             for widget_entry in self._widgets:
-                widget_module = __import__(widget_entry.module)
-                widget_clazz = getattr(widget_module, widget_entry.clazz)
-                widget = widget_clazz()
+                widget = self._find_widget(widget_entry.name)
                 item = MenuDashBoard.DashBoardItem(
                     widget.icon(),
-                    f"{widget.name()}: {widget.tooltip()}",
+                    f"{widget.name()} v{widget.version()}: {widget.tooltip()}",
                     widget.execute
                 )
                 items.append(item)
             mdashboard(items, 6)
         except Exception as err:
-            raise WidgetExecutionError(f"Unable to retrieve widget tooltip'{widget_entry.name}' -> {err}") from err
+            raise WidgetExecutionError(f"Unable to access widget '{widget_entry.name}' -> {err}") from err
 
     def _load_widgets(self):
         """Search and load all widgets from the lookup paths"""
@@ -76,3 +70,14 @@ class WidgetManager(metaclass=Singleton):
                     map(lambda w: self.WidgetEntry(w, f"{root}/{w}"), filtered)
                 )
                 self._widgets.extend(widgets)
+
+    def _find_widget(self, widget_name: str):
+        widget_entry = next((w for w in self._widgets if w.name == widget_name), None)
+        if not widget_entry:
+            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths.")
+        widget_module = __import__(widget_entry.module)
+        widget_clazz = getattr(widget_module, widget_entry.clazz)
+        widget = widget_clazz()
+        assert isinstance(widget, Widget), \
+            'All widgets must inherit from "hspylib.addins.widman.widget.Widget"'
+        return widget
