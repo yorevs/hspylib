@@ -51,6 +51,8 @@ class MenuInput:
     __mi_access_types__ = ['read-only', 'read-write']
     
     SELECTED_BG = '%MOD(44)%'
+
+    NAV_FMT = "{}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%"
     
     @staticmethod
     class Field:
@@ -282,8 +284,7 @@ class MenuInput:
                 return
         
         sysout('\n')
-        sysout(
-            f"{nav_color.placeholder()}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%", end='')
+        sysout(MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
         self.re_render = False
     
     def __display_error__(self) -> None:

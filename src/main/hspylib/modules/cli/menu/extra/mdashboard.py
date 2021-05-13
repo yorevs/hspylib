@@ -48,6 +48,8 @@ class MenuDashBoard:
         [' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '],
         [' ', '\u2517', '\u2501', ' ', ' ', '\u2501', '\u251B', ' ']
     ]
+
+    NAV_FMT = "{}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%"
     
     @staticmethod
     class DashBoardItem:
@@ -161,9 +163,7 @@ class MenuDashBoard:
                 self.__print_cell__(idx, item, MenuDashBoard.SEL_CELL_TPL)
         # Print selected tab tooltip
         sysout(f'\r%EL2%> %GREEN%{self.all_items[self.tab_index].tooltip}%NC%\n\n')
-        sysout(
-            f"{nav_color.placeholder()}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%",
-            end='')
+        sysout(MenuDashBoard.NAV_FMT.format(nav_color.placeholder()), end='')
     
     def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]) -> None:
         num_cols = len(cell_template[0])

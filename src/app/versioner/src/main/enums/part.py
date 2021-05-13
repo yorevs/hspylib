@@ -23,7 +23,7 @@ class Part(Enumeration):
     PATCH = 4
 
     def __str__(self):
-        return self.name.lower()
+        return str(self.name).lower()
 
     def __repr__(self):
         return str(self)

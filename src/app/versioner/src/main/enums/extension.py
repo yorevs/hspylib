@@ -23,7 +23,7 @@ class Extension(Enumeration):
     RELEASE = 4
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def __repr__(self):
         return str(self)
