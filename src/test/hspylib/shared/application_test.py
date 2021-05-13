@@ -36,4 +36,3 @@ class ApplicationTest(Application):
 
     def _exec_application(self) -> None:
         """Execute the application"""
-        pass

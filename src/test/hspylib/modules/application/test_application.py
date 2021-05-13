@@ -55,11 +55,11 @@ class TestApplication(unittest.TestCase):
         app = Application('App-test', app_version=(0, 0, 1), app_usage="Usage: This is a test")
         expected_op_version = Option('-v', '--version', cb_handler=app.version)
         expected_op_help = Option('-h', '--help', cb_handler=app.usage)
-        self.assertTrue('version' in app._options)
-        self.assertTrue('help' in app._options)
-        op_version = app._find_option('version')
+        self.assertTrue('version' in app._options)  # pylint: disable=protected-access
+        self.assertTrue('help' in app._options)  # pylint: disable=protected-access
+        op_version = app._find_option('version')  # pylint: disable=protected-access
         self.assertIsNotNone(op_version)
-        op_help = app._find_option('help')
+        op_help = app._find_option('help')  # pylint: disable=protected-access
         self.assertIsNotNone(op_help)
         self.assertEqual(str(op_version), str(expected_op_version))
         self.assertEqual(str(op_help), str(expected_op_help))
@@ -69,6 +69,10 @@ class TestApplication(unittest.TestCase):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
         app.run(params)
+        self.assertEqual('input.txt', app.getopt('input'))
+        self.assertEqual('output.txt', app.getopt('output'))
+        self.assertEqual('one', app.getarg('amount'))
+        self.assertEqual('donut', app.getarg('item'))
 
     # TC6 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_opts_should_raise_errors(self):

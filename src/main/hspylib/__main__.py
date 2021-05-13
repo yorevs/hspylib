@@ -76,6 +76,6 @@ class Main(Application):
             self.usage(1)
 
 
+# Application entry point
 if __name__ == "__main__":
-    """ Application entry point """
     Main('HSPyLib Manager').INSTANCE.run(sys.argv[1:])

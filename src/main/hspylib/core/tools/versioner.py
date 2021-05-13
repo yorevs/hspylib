@@ -12,21 +12,20 @@
 import re
 from os.path import exists
 
-"""
-Labels:
-    MAJOR version when you make incompatible API changes.
-    MINOR version when you add functionality in a backwards compatible manner.
-    PATCH version when you make backwards compatible bug fixes.
-
-@Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
-
-Extensions:
-    SNAPSHOT => STABLE => RELEASE
-"""
 
 
 class Versioner:
-    """ TODO Comment it """
+    """
+    Labels:
+        MAJOR version when you make incompatible API changes.
+        MINOR version when you add functionality in a backwards compatible manner.
+        PATCH version when you make backwards compatible bug fixes.
+
+    @Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+
+    Extensions:
+        SNAPSHOT => STABLE => RELEASE
+    """
 
     def __init__(self, version_field, version_file):
         self.version = [0, 0, 0]

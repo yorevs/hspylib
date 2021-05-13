@@ -22,21 +22,21 @@ if __name__ == '__main__':
     # @formatter:off
     main_menu = MenuFactory().INSTANCE \
         .create(None, 'Dynamic Main Menu') \
-        ._with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
-        ._with_option('Sub-Menu-1').on_trigger(lambda x: sub_menu_1) \
-        ._with_option('Sub-Menu-2').on_trigger(lambda x: sub_menu_2) \
+        .with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
+        .with_option('Sub-Menu-1').on_trigger(lambda x: sub_menu_1) \
+        .with_option('Sub-Menu-2').on_trigger(lambda x: sub_menu_2) \
         .build()
     sub_menu_1 = MenuFactory().INSTANCE \
         .create(main_menu, 'Sub-Menu-1') \
-        ._with_option('Back').on_trigger(lambda x: main_menu) \
-        ._with_option('Print Hey').on_trigger(lambda t: print('Hey')) \
-        ._with_option('Print Hoo').on_trigger(lambda t: print('Hoo')) \
+        .with_option('Back').on_trigger(lambda x: main_menu) \
+        .with_option('Print Hey').on_trigger(lambda t: print('Hey')) \
+        .with_option('Print Hoo').on_trigger(lambda t: print('Hoo')) \
         .build()
     sub_menu_2 = MenuFactory().INSTANCE \
         .create(main_menu, 'Sub-Menu-2') \
-        ._with_option('Back').on_trigger(lambda x: main_menu) \
-        ._with_option('Print Hello').on_trigger(lambda t: print('Hello')) \
-        ._with_option('Print Hi').on_trigger(lambda t: print('Hi')) \
+        .with_option('Back').on_trigger(lambda x: main_menu) \
+        .with_option('Print Hello').on_trigger(lambda t: print('Hello')) \
+        .with_option('Print Hi').on_trigger(lambda t: print('Hi')) \
         .build()
     # @formatter:on
     mm = MenuUi(main_menu)
