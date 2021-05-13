@@ -50,3 +50,11 @@ class InvalidOptionError(HSBaseException):
 
 class NotConnectedError(HSBaseException):
     """Raised when an attempt to execute without being connected but a connection is required"""
+
+
+class WidgetNotFoundError(HSBaseException):
+    """Raised when widget is not found on any of the widget paths"""
+
+
+class WidgetExecutionError(HSBaseException):
+    """Raised when widget failed to execute"""

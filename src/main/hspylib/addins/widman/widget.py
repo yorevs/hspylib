@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Tuple, final
 
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+
 
 class Widget(ABC):
     USAGE = """
@@ -11,12 +13,14 @@ class Widget(ABC):
 
     def __init__(
             self,
+            icon: Awesome,
             name: str,
             version: Tuple[int, int, int],
-            info: str):
+            tooltip: str):
 
+        self._icon = icon
         self._name = name
-        self._info = info
+        self._tooltip = tooltip
         self._version = version
 
     @abstractmethod
@@ -28,14 +32,18 @@ class Widget(ABC):
         """Execute the widget cleanup"""
 
     @final
+    def icon(self) -> Awesome:
+        return self._icon
+
+    @final
     def name(self) -> str:
         """Return the name about the widget"""
         return self._name
 
     @final
-    def info(self) -> str:
+    def tooltip(self) -> str:
         """Return information about the widget"""
-        return self._info
+        return self._tooltip
 
     @final
     def version(self) -> Tuple[int, int, int]:

@@ -2,13 +2,14 @@ import re
 
 from hspylib.addins.widman.widget import Widget
 from hspylib.core.tools.commons import human_readable_bytes
+from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class WidgetFree(Widget):
 
     def __init__(self):
-        super().__init__("Free", (0, 2, 0), "Report system memory usage")
+        super().__init__(WidgetIcons.FREE, "Free", (0, 2, 0), "Report system memory usage")
 
     def execute(self):
         # Get process info
@@ -45,7 +46,7 @@ class WidgetFree(Widget):
         free, fu = human_readable_bytes(vm_stats["Pages free"])
         real, ru = human_readable_bytes(rss_total)  # Total memory
 
-        print(' ')
+        print(f"\nReporting system memory usage: \n{'-' * 30}")
         print('    Wired Memory: %06s %s' % (wired, wu))
         print('   Active Memory: %06s %s' % (active, au))
         print(' Inactive Memory: %06s %s' % (inactive, iu))
@@ -55,4 +56,3 @@ class WidgetFree(Widget):
 
     def cleanup(self):
         pass
-
