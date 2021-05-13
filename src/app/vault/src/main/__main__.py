@@ -18,7 +18,7 @@ import logging as log
 import sys
 from datetime import datetime
 
-from hspylib.core.tools.commons import dirname, get_or_default, get_path, read_version, syserr
+from hspylib.core.tools.commons import dirname, get_path, read_version, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 from vault.src.main.core.vault import Vault
@@ -47,16 +47,16 @@ class Main(Application):
         # @formatter:off
         self._with_arguments(
             ArgumentChain.builder()
-                .when('Operation', 'list')
-                    .accept('Filter', '.+')
+                .when('operation', 'list')
+                    .accept('filter', '.+')
                     .end()
-                .when('Operation', 'add|upd')
-                    .require('Name', '.+')
-                    .require('Hint', '.+')
-                    .accept('Password', '.+')
+                .when('operation', 'add|upd')
+                    .require('name', '.+')
+                    .require('hint', '.+')
+                    .accept('password', '.+')
                     .end()
-                .when('Operation', 'del|get')
-                    .require('Name', '.+')
+                .when('operation', 'del|get')
+                    .require('name', '.+')
                     .end()
                 .build()
         )
@@ -79,19 +79,19 @@ class Main(Application):
     
     def _exec_application(self, ) -> None:
         """Execute the specified vault operation"""
-        op = self.args[0]
+        op = self.getarg('operation')
         try:
             self.vault.open()
             if op == 'add':
-                self.vault.add(self.args[1], self.args[2], get_or_default(self.args, 3))
+                self.vault.add(self.getarg('name'), self.getarg('hint'), self.getarg('password'))
             elif op == 'get':
-                self.vault.get(self.args[1])
+                self.vault.get(self.getarg('name'))
             elif op == 'del':
-                self.vault.remove(self.args[1])
+                self.vault.remove(self.getarg('name'))
             elif op == 'upd':
-                self.vault.update(self.args[1], self.args[2], get_or_default(self.args, 3))
+                self.vault.update(self.getarg('name'), self.getarg('hint'), self.getarg('password'))
             elif op == 'list':
-                self.vault.list(get_or_default(self.args, 1))
+                self.vault.list(self.getarg('filter'))
             else:
                 syserr('### Invalid operation: {}'.format(op))
                 self.usage(1)
