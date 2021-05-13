@@ -81,7 +81,7 @@ class Main(Application):
             if widget_name:
                 manager.execute(widget_name)
             else:
-                manager.list()
+                manager.dashboard()
         else:
             syserr('### Invalid operation: {}'.format(op))
             self.usage(1)
