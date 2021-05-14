@@ -9,7 +9,8 @@ class WidgetIcons(Awesome):
     """
 
     FREE = '\uFB19'  # ﬙
-    PRUNI = '\uFA9E'  # 爵
+    TCALC = '\uF651'  # 
+    MSEND = '\uF819'  # 
 
 if __name__ == '__main__':
     WidgetIcons.demo_icons()
