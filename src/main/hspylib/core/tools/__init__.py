@@ -11,6 +11,5 @@ __all__ = [
   'keyboard', 
   'regex_constants', 
   'text_helper', 
-  'validator', 
-  'versioner'
+  'validator'
 ]

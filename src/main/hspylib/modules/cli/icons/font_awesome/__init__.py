@@ -8,5 +8,6 @@
 __all__ = [
   'awesome', 
   'dashboard_icons', 
-  'form_icons'
+  'form_icons', 
+  'widget_icons'
 ]

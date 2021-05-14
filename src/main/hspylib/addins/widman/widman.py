@@ -5,7 +5,7 @@ from typing import Any
 from hspylib.addins.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import get_path
+from hspylib.core.tools.commons import get_path, syserr
 from hspylib.modules.cli.menu.extra.mdashboard import MenuDashBoard, mdashboard
 
 HERE = get_path(__file__)
@@ -42,6 +42,7 @@ class WidgetManager(metaclass=Singleton):
             widget.execute()
             widget.cleanup()
         except Exception as err:
+            syserr("Current widget paths: \n{}".format('\n'.join(self._lookup_paths)))
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err
 
     def dashboard(self) -> None:
@@ -59,6 +60,7 @@ class WidgetManager(metaclass=Singleton):
                 items.append(item)
             mdashboard(items, 6)
         except Exception as err:
+            syserr("Current widget paths: \n{}".format('\n'.join(self._lookup_paths)))
             raise WidgetExecutionError(f"Unable to access widget '{widget_entry.name}' -> {err}") from err
 
     def _load_widgets(self):
@@ -74,8 +76,11 @@ class WidgetManager(metaclass=Singleton):
     def _find_widget(self, widget_name: str):
         widget_entry = next((w for w in self._widgets if w.name == widget_name), None)
         if not widget_entry:
-            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths.")
-        widget_module = __import__(widget_entry.module)
+            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
+        try:
+            widget_module = __import__(widget_entry.module)
+        except ModuleNotFoundError as err:
+            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}") from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
         assert isinstance(widget, Widget), \
