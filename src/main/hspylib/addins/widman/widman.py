@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Any
+from typing import Any, List
 
 from hspylib.addins.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
@@ -36,10 +36,11 @@ class WidgetManager(metaclass=Singleton):
         list(map(sys.path.append, self._lookup_paths))
         self._load_widgets()
 
-    def execute(self, widget_name: str) -> Any:
+    def execute(self, widget_name: str, widget_args: List[Any]) -> Any:
+        """Execute the specified widget"""
         widget = self._find_widget(widget_name)
         try:
-            widget.execute()
+            widget.execute(*widget_args)
             widget.cleanup()
         except Exception as err:
             syserr("Current widget paths: \n{}".format('\n'.join(self._lookup_paths)))
@@ -58,7 +59,7 @@ class WidgetManager(metaclass=Singleton):
                     widget.execute
                 )
                 items.append(item)
-            mdashboard(items, 6)
+            mdashboard(items, 6, 'Please select a widget to execute')
         except Exception as err:
             syserr("Current widget paths: \n{}".format('\n'.join(self._lookup_paths)))
             raise WidgetExecutionError(f"Unable to access widget '{widget_entry.name}' -> {err}") from err
@@ -67,7 +68,9 @@ class WidgetManager(metaclass=Singleton):
         """Search and load all widgets from the lookup paths"""
         for path in self._lookup_paths:
             for root, _, files in os.walk(path):
-                filtered = [ f for f in list(filter(lambda p: p.startswith(self.WIDGET_PREFIX), files)) ]
+                filtered = list(filter(
+                    lambda p: p.startswith(self.WIDGET_PREFIX) and p.endswith('py'), files)
+                )
                 widgets = list(
                     map(lambda w: self.WidgetEntry(w, f"{root}/{w}"), filtered)
                 )
@@ -76,11 +79,13 @@ class WidgetManager(metaclass=Singleton):
     def _find_widget(self, widget_name: str):
         widget_entry = next((w for w in self._widgets if w.name == widget_name), None)
         if not widget_entry:
-            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
+            raise WidgetNotFoundError(
+                f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
         try:
             widget_module = __import__(widget_entry.module)
         except ModuleNotFoundError as err:
-            raise WidgetNotFoundError(f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}") from err
+            raise WidgetNotFoundError(
+                f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}") from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
         assert isinstance(widget, Widget), \

@@ -7,5 +7,5 @@
 
 __all__ = [
   'widget_free', 
-  'widget_pruni'
+  'widget_tcalc'
 ]
