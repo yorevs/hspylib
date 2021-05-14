@@ -38,7 +38,7 @@ class WidgetManager(metaclass=Singleton):
 
     def execute(self, widget_name: str, widget_args: List[Any]) -> Any:
         """Execute the specified widget"""
-        widget = self._find_widget(widget_name)
+        widget = self._find_widget(widget_name.capitalize())
         try:
             widget.execute(*widget_args)
             widget.cleanup()
@@ -77,7 +77,7 @@ class WidgetManager(metaclass=Singleton):
                 self._widgets.extend(widgets)
 
     def _find_widget(self, widget_name: str):
-        widget_entry = next((w for w in self._widgets if w.name == widget_name), None)
+        widget_entry = next((w for w in self._widgets if w.name.lower() == widget_name.lower()), None)
         if not widget_entry:
             raise WidgetNotFoundError(
                 f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
