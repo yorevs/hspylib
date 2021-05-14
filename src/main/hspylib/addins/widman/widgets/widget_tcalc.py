@@ -29,7 +29,7 @@ class WidgetTcalc(Widget):
     def execute(self, *args):
         if len(args) < 3:
             # TODO Ask for the parameters
-            pass
+            sysout('Ask for parameters')
         elif args[0] in ['-h', '--help']:
             sysout(self.usage())
             return
