@@ -6,5 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'appman'
+  'appman', 
+  'widman'
 ]
