@@ -57,6 +57,7 @@ class Main(Application):
                         .end()
                     .when('operation', 'widgets')
                         .accept('widget-name', '.+')
+                        .accept('widget-args', '.+')
                         .end()
                     .build()
             )
@@ -79,7 +80,8 @@ class Main(Application):
             manager = WidgetManager(self)
             widget_name = self.getarg('widget-name')
             if widget_name:
-                manager.execute(widget_name)
+                widget_args = str(self.getarg('widget-args')).split(',')
+                manager.execute(widget_name, widget_args)
             else:
                 manager.dashboard()
         else:

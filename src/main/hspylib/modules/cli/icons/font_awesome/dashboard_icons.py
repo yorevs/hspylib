@@ -71,6 +71,8 @@ class DashboardIcons(Awesome):
     DOCKER = '\uF308'  # 
     MUSIC = '\uF3B5'  # 
     SECRET = '\uF49C'  # 
+    IE = '\uF7FF'  # 
+    GIT = '\uF813'  # 
 
 
 if __name__ == '__main__':

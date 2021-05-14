@@ -8,10 +8,22 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 
 class WidgetFree(Widget):
 
-    def __init__(self):
-        super().__init__(WidgetIcons.FREE, "Free", (0, 2, 0), "Report system memory usage")
+    WIDGET_ICON  = WidgetIcons.FREE
+    WIDGET_NAME = "Free"
+    TOOLTIP = "Report system memory usage"
+    USAGE = "Usage: free"
+    VERSION = (0, 2, 0)
 
-    def execute(self, *args, **kwargs):
+    def __init__(self):
+        super().__init__(
+            WidgetFree.WIDGET_ICON,
+            WidgetFree.WIDGET_NAME,
+            WidgetFree.TOOLTIP,
+            WidgetFree.USAGE,
+            WidgetFree.VERSION)
+
+
+    def execute(self, *args):
         # Get process info
         ps = Terminal.shell_exec('ps -caxm -orss,comm')
         vm = Terminal.shell_exec('vm_stat')

@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Tuple, final
+from typing import Tuple
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):
-    USAGE = """
+    _USAGE_FMT = """
 HSPyLib Widget: {} v{}
+
+{}
 
 {}
 """
@@ -15,42 +17,39 @@ HSPyLib Widget: {} v{}
             self,
             icon: Awesome,
             name: str,
-            version: Tuple[int, int, int],
-            tooltip: str):
+            tooltip: str,
+            usage: str,
+            version: Tuple[int, int, int]):
 
         self._icon = icon
         self._name = name
         self._tooltip = tooltip
+        self._usage = usage
         self._version = version
 
     @abstractmethod
-    def execute(self):
+    def execute(self, *args):
         """Execute the widget main flow"""
 
     @abstractmethod
     def cleanup(self):
         """Execute the widget cleanup"""
 
-    @final
     def icon(self) -> Awesome:
         return self._icon
 
-    @final
     def name(self) -> str:
         """Return the name about the widget"""
         return self._name
 
-    @final
     def tooltip(self) -> str:
         """Return information about the widget"""
         return self._tooltip
 
-    @final
     def version(self) -> str:
         """Return the version of the widget"""
         return str(self._version)
 
-    @final
     def usage(self) -> str:
         """Return a usage message about the widget"""
-        return self.USAGE.format(self._name, self._version, self._tooltip)
+        return self._USAGE_FMT.format(self._name, self._version, self._tooltip, self._usage)
