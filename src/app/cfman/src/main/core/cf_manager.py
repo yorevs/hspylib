@@ -26,7 +26,7 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import get_by_key_or_default, syserr, sysout
 from hspylib.modules.cli.menu.extra.mchoose import mchoose
-from hspylib.modules.cli.menu.extra.minput import MenuInput, minput
+from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.menu.extra.mselect import mselect
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.fetch.fetch import head

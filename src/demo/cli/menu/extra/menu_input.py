@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.menu.extra.minput import MenuInput, minput
+from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
 
 if __name__ == '__main__':
     # @formatter:off
