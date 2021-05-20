@@ -34,7 +34,7 @@ def minput(
         form_fields: List[Any],
         title: str = 'Please fill all fields of the form fields below',
         title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> Any:
+        nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
     """
     TODO
     :param form_fields:
@@ -242,7 +242,7 @@ class MenuInput:
             self,
             title: str = 'Please fill all fields of the form below',
             title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
+            nav_color: VtColors = VtColors.YELLOW) -> List[Field]:
 
         ret_val = None
         length = len(self.all_fields)
