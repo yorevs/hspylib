@@ -110,7 +110,7 @@ class WidgetTimeCalc(Widget):
                 .build() \
             .field() \
                 .label('Operation') \
-                .mode('select') \
+                .itype('select') \
                 .value('+|-') \
                 .build() \
             .field() \

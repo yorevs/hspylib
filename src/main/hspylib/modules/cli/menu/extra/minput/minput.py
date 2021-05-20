@@ -22,8 +22,10 @@ from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.keyboard import Keyboard
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.menu.extra.minput.access_type import AccessType
 from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
-from hspylib.modules.cli.menu.extra.minput.input_field import InputField
+from hspylib.modules.cli.menu.extra.minput.form_field import FormField
+from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.vt_100 import Vt100
@@ -66,7 +68,6 @@ class MenuInput:
         self.cur_row = 0
         self.cur_col = 0
         self.tab_index = 0
-        self.err_msg = ''
         self.max_label_length = max([len(field.label) for field in all_fields])
         self.max_value_length = max([field.max_length for field in all_fields])
         self.max_detail_length = max([MInputUtils.detail_len(field) for field in all_fields])
@@ -77,7 +78,7 @@ class MenuInput:
             self,
             title: str = 'Please fill all fields of the form below',
             title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW) -> List[InputField]:
+            nav_color: VtColors = VtColors.YELLOW) -> List[FormField]:
 
         ret_val = None
         length = len(self.all_fields)
@@ -86,8 +87,9 @@ class MenuInput:
 
         if length > 0:
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
-            vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
+            vt_print(Vt100.set_auto_wrap(False))
+            vt_print(Vt100.set_show_cursor(False))
             vt_print(Vt100.save_cursor())
 
             # Wait for user interaction
@@ -97,31 +99,20 @@ class MenuInput:
                     self._render(nav_color)
                 # } Menu Renderization
 
-                vt_print(Vt100.set_show_cursor(True))
-
-                # Position the cursor to edit the current field
-                if self.cur_field.mode != 'checkbox' and self.cur_field.mode != 'select':
-                    vt_print(f"%CUP({self.cur_row};{self.cur_col})%")
-                else:
-                    vt_print(f"%CUP({self.cur_row};{self.max_label_length + 6})%")
-
                 # Navigation input {
                 ret_val = self._nav_input()
-                self.re_render = True
                 # } Navigation input
 
-        vt_print('%HOM%%ED2%%MOD(0)%')
+        vt_print('%HOM%%ED2%%MOD(0)%')  # Clean screen before exiting
 
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
 
     def _render(self, nav_color: VtColors) -> None:
         icon = ''
-        vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
         set_enable_echo()
-        vt_print(Vt100.set_show_cursor(False))
 
         for idx, field in enumerate(self.all_fields):
             field_size = len(str(field.value))
@@ -139,19 +130,19 @@ class MenuInput:
                 self.cur_field = field
 
             # Choose the icon to display
-            if field.mode == "input":
+            if field.itype == InputType.TEXT:
                 icon = FormIcons.EDITABLE
                 MInputUtils.mi_print(self.max_value_length, field.value)
-            elif field.mode == "password":
+            elif field.itype == InputType.PASSWORD:
                 icon = FormIcons.HIDDEN
                 MInputUtils.mi_print(self.max_value_length, '*' * field_size)
-            elif field.mode == "checkbox":
+            elif field.itype == InputType.CHECKBOX:
                 icon = FormIcons.EDITABLE
                 if field.value:
                     MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE))
                 else:
                     MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
-            elif field.mode == "select":
+            elif field.itype == InputType.SELECT:
                 icon = FormIcons.EDITABLE
                 field_size = 1
                 if field.value:
@@ -164,22 +155,17 @@ class MenuInput:
                         sel_value = field.value.split('|')[0]
                         MInputUtils.mi_print(
                             self.max_value_length - 1, f' {sel_value}', str(FormIcons.SELECTABLE))
-            if field.access_type == 'read-only' and field.mode not in ['checkbox', 'select']:
+            if field.access_type == AccessType.READ_ONLY and field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
                 icon = FormIcons.LOCKED
 
             # Remaining/max characters
             padding = 1 - len(str(self.max_detail_length / 2))
             fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
-            if field.mode != "select":
+            if field.itype != InputType.SELECT:
                 sysout(fmt.format(icon, field_size, field.max_length))
             else:
                 idx, _ = MInputUtils.get_selected(field.value)
                 sysout(fmt.format(icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
-
-            # Display any previously set error message
-            if self.tab_index == idx and self.err_msg:
-                self._display_error()
-                return
 
         sysout('\n')
         sysout(MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
@@ -197,41 +183,42 @@ class MenuInput:
             sysout('\n%NC%')
         else:
             if keypress == Keyboard.VK_TAB:  # Handle TAB
-                # Validate and move next. First case statement because next one also captures it
-                min_len = self.cur_field.min_length
-                if min_len <= len(str(self.cur_field.value)):
-                    if self.tab_index + 1 < length:
-                        self.tab_index += 1
-                    else:
-                        self.tab_index = 0
-                else:
-                    self.err_msg = f"This field does not match the minimum length of {min_len}"
+                self.tab_index = min(length - 1, self.tab_index + 1)
+            elif keypress == Keyboard.VK_SHIFT_TAB:  # Handle Shift + TAB
+                self.tab_index = max(0, self.tab_index - 1)
             elif keypress == Keyboard.VK_BACKSPACE:  # Handle backspace
-                if self.cur_field.can_write() and len(self.cur_field.value) >= 1:
-                    self.cur_field.value = self.cur_field.value[:-1]
-                elif self.cur_field.access_type == 'read-only':
-                    self.err_msg = 'This field is read only !'
+                if self.cur_field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
+                    if self.cur_field.can_write() and len(self.cur_field.value) >= 1:
+                        self.cur_field.value = self.cur_field.value[:-1]
+                    elif not self.cur_field.can_write():
+                        self._display_error('This field is read only !')
             elif keypress.isalnum() or keypress.ispunct() or keypress == Keyboard.VK_SPACE:  # Handle an input
                 if not self.cur_field.can_write():
-                    self.err_msg = 'This field is read only !'
+                    self._display_error('This field is read only !')
                 else:
-                    if self.cur_field.mode == 'checkbox':
+                    if self.cur_field.itype == InputType.CHECKBOX:
                         if keypress == Keyboard.VK_SPACE:
-                            if not self.cur_field.value:
+                            if not self.cur_field.can_write():
+                                self._display_error('This field is read only !')
+                            elif not self.cur_field.value:
                                 self.cur_field.value = 1
                             else:
                                 self.cur_field.value = 0
-                    elif self.cur_field.mode == 'select':
+                    elif self.cur_field.itype == InputType.SELECT:
                         if keypress == Keyboard.VK_SPACE:
-                            if self.cur_field.value:
+                            if not self.cur_field.can_write():
+                                self._display_error('This field is read only !')
+                            elif self.cur_field.value:
                                 self.cur_field.value = MInputUtils.toggle_selected(self.cur_field.value)
                     else:
                         if len(str(self.cur_field.value)) < self.cur_field.max_length:
-                            if re.match(self.cur_field.val_regex(1, self.cur_field.max_length), keypress.value):
+                            if self.cur_field.validate(keypress.value):
                                 # Append value to the current field if the value matches the input type
                                 self.cur_field.value += keypress.value
                             else:
-                                self.err_msg = f"This {self.cur_field.mode} field only accept {self.cur_field.kind}s !"
+                                self._display_error(
+                                    f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !"
+                                )
             elif keypress == Keyboard.VK_UP:  # Cursor up
                 if self.tab_index - 1 >= 0:
                     self.tab_index -= 1
@@ -241,26 +228,24 @@ class MenuInput:
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
                 for idx in range(0, length):
                     field = self.all_fields[idx]
-                    val_regex = field.val_regex(field.min_length, field.max_length)
-                    if field.mode != 'select':
-                        if not re.match(val_regex, str(field.value)):
-                            self.err_msg = f"Field \"{camelcase(field.label)}\" is not valid => \"{val_regex}\" !"
+                    if field.itype != InputType.SELECT:
+                        if not field.validate(field.value):
                             keypress = None
-                            self._display_error()
+                            self._display_error(
+                                f"Field \"{camelcase(field.label)}\" is not valid => \"{field.validator}\" !"
+                            )
                             break
                     else:
                         _, field.value = MInputUtils.get_selected(field.value)
-
+        self.re_render = True
         return keypress
 
-    def _display_error(self) -> None:
+    def _display_error(self, err_msg) -> None:
         err_offset = 12 + self.max_detail_length
         set_enable_echo(False)
         err_pos = self.max_label_length + self.max_value_length + err_offset
         vt_print(f"%CUP({self.cur_row};{err_pos})%")
-        sysout(f"%RED% {FormIcons.ERROR}  {self.err_msg}", end='')
-        dismiss_timeout = 1 + (len(self.err_msg) / 25)
-        time.sleep(dismiss_timeout)
+        sysout(f"%RED% {FormIcons.ERROR}  {err_msg}", end='')
+        time.sleep(max(2, int(len(err_msg) / 20)))
         set_enable_echo()
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")  # Remove the message after the timeout
-        self.err_msg = ''

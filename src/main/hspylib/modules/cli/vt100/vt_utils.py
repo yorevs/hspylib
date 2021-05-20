@@ -21,6 +21,8 @@ import termios
 import tty
 from typing import List, Optional, Tuple
 
+from hspylib.core.tools.commons import is_debugging
+
 assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
 
 
@@ -40,7 +42,7 @@ def screen_size() -> Optional[List[str]]:
 # https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
 def get_cursor_position() -> Optional[Tuple[int, int]]:
     """ Get the terminal cursor position """
-    if sys.stdout.isatty():
+    if sys.stdout.isatty() and not is_debugging():
         buf = ""
         stdin = sys.stdin.fileno()
         attrs = termios.tcgetattr(stdin)
