@@ -16,9 +16,9 @@
 
 import re
 from typing import Any
-
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.menu.extra.minput.input_field import InputField
+
 
 
 class FieldBuilder:

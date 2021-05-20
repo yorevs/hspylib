@@ -15,8 +15,8 @@
 """
 
 from PyQt5.QtWidgets import QApplication
-
 from calculator.ui.qt.views.main_view import MainView
+
 
 
 class QtCalculator:

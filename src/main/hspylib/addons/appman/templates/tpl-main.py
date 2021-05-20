@@ -15,9 +15,9 @@
 """
 
 import sys
-
 from hspylib.core.tools.commons import dirname, get_path, read_version, sysout
 from hspylib.modules.cli.application.application import Application
+
 
 HERE = get_path(__file__)
 

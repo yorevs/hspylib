@@ -16,9 +16,9 @@
 
 import signal
 from typing import Optional
-
 from hspylib.modules.cli.menu.menu import Menu
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
+
 
 
 class MenuUi:

@@ -15,9 +15,9 @@
 """
 
 import getpass
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.meta.singleton import Singleton
+
 
 
 class VaultConfig(metaclass=Singleton):
