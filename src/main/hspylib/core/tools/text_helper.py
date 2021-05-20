@@ -48,12 +48,13 @@ def lowercase(string: str) -> str:
     return string.lower()
 
 
-def camelcase(string: str) -> str:
-    return string.capitalize()
+def camelcase(string: str, separator: str = '_') -> str:
+    parts = re.split(rf'{separator}+', string)
+    return '_'.join([p.capitalize() for p in parts])
 
 
-def cut(string: str, index: int) -> str:
-    result = tuple(re.split(r' +', string))
+def cut(string: str, index: int, separator: str = ' ') -> str:
+    result = tuple(re.split(rf'{separator}+', string))
     return get_or_default(result, index)
 
 

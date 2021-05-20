@@ -1,35 +1,35 @@
 import math
 import re
 
-from hspylib.addins.widman.widget import Widget
+from hspylib.addons.widman.widget import Widget
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 
 
-class WidgetTcalc(Widget):
+class WidgetTimeCalc(Widget):
 
     WIDGET_ICON  = WidgetIcons.TCALC
-    WIDGET_NAME = "TCalc"
+    WIDGET_NAME = "TimeCalc"
     TOOLTIP = "Calculate time based operations"
-    USAGE = "Usage: tcalc [-d|--decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
+    USAGE = "Usage: TimeCalc [-d|--decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
     VERSION = (0, 1, 0)
 
     def __init__(self):
         super().__init__(
-            WidgetTcalc.WIDGET_ICON,
-            WidgetTcalc.WIDGET_NAME,
-            WidgetTcalc.TOOLTIP,
-            WidgetTcalc.USAGE,
-            WidgetTcalc.VERSION)
+            WidgetTimeCalc.WIDGET_ICON,
+            WidgetTimeCalc.WIDGET_NAME,
+            WidgetTimeCalc.TOOLTIP,
+            WidgetTimeCalc.USAGE,
+            WidgetTimeCalc.VERSION)
 
         self.total_seconds = 0
         self.op = '+'
         self.decimal = False
 
     def execute(self, *args):
-        if len(args) < 3:
-            # TODO Ask for the parameters
-            sysout('Ask for parameters')
+        if (not args or len(args) < 3) and not any(a in args for a in ['-h', '--help']):
+            if not self._read_args():
+                return
         elif args[0] in ['-h', '--help']:
             sysout(self.usage())
             return
@@ -69,3 +69,6 @@ class WidgetTcalc(Widget):
     # @purpose: Convert a raw time into decimal
     def _decimal(self, time_raw: int = 0) -> int:
         return int(round(((time_raw / 60.00) * 100.00) if self.decimal else time_raw))
+
+    def _read_args(self) -> bool:
+        return False

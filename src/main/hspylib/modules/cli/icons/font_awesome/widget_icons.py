@@ -8,7 +8,7 @@ class WidgetIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    FREE = '\uFB19'  # ﬙
+    FREE = '\uFB19'   # ﬙
     TCALC = '\uF651'  # 
     MSEND = '\uF819'  # 
 
