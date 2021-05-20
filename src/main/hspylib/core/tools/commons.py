@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import inspect
 import logging as log
 import os
 import pathlib
@@ -241,3 +241,9 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
         ret_unit = '[Tb]'
 
     return ret_val, ret_unit
+
+def is_debugging():
+  for frame in inspect.stack():
+    if frame[1].endswith("pydevd.py"):
+      return True
+  return False
