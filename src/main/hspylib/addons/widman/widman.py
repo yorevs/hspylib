@@ -3,6 +3,7 @@ import sys
 from typing import Any, List
 
 from hspylib.addons.widman.widget import Widget
+from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr
@@ -41,8 +42,11 @@ class WidgetManager(metaclass=Singleton):
         """Execute the specified widget"""
         widget = self._find_widget(camelcase(widget_name))
         try:
-            widget.execute(*widget_args)
-            widget.cleanup()
+            exit_code = widget.execute(*widget_args)
+            if exit_code == ExitCode.SUCCESS:
+                widget.cleanup()
+            else:
+                raise WidgetExecutionError(f"Widget '{widget_name}' failed to execute. exit_code={exit_code}")
         except Exception as err:
             syserr("Current widget paths: \n{}".format('\n'.join(self._lookup_paths)))
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err

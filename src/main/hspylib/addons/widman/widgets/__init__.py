@@ -7,5 +7,5 @@
 
 __all__ = [
   'widget_free', 
-  'widget_tcalc'
+  'widget_time_calc'
 ]

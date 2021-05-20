@@ -20,32 +20,38 @@ if __name__ == '__main__':
     # @formatter:off
     form_fields = MenuInput.builder() \
         .field() \
-            .label('Letters') \
+            .label('letters') \
             .kind('letter') \
             .build() \
         .field() \
-            .label('Word') \
+            .label('word') \
             .kind('word') \
             .build() \
         .field() \
-            .label('Number') \
+            .label('number') \
             .kind('number') \
             .min_max_length(1, 2) \
             .build() \
         .field() \
-            .label('Checkbox') \
+            .label('selectable') \
+            .mode('select') \
+            .kind('token') \
+            .value('one|two|three') \
+            .build() \
+        .field() \
+            .label('checkbox') \
             .mode('checkbox') \
             .kind('number') \
             .value('1') \
             .build() \
         .field() \
-            .label('Password') \
+            .label('password') \
             .mode('password') \
-            .kind('word') \
+            .kind('any') \
             .min_max_length(4, 8) \
             .build() \
         .field() \
-            .label('Read-Only') \
+            .label('read-only') \
             .kind('any') \
             .access_type('read-only') \
             .value('READ-ONLY') \

@@ -10,6 +10,7 @@ __all__ = [
   'content_type', 
   'database_type', 
   'enumeration', 
+  'exit_code', 
   'http_code', 
   'http_method'
 ]
