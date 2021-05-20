@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.modules.cli.menu.extra.minput
+      @file: field_builder.py
+   @created: Thu, 20 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import re
 from typing import Any
 
@@ -62,7 +78,7 @@ class FieldBuilder:
         self.field.min_length = self.field.min_length or 1
         self.field.max_length = self.field.max_length or 30
         self.field.kind = self.field.kind or 'any'
-        self.field.kind = self.field.kind or 'input'
+        self.field.mode = self.field.mode or 'input'
         self.field.value = self.field.value or ''
         self.parent.fields.append(self.field)
         return self.parent
