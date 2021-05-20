@@ -175,6 +175,7 @@ class MenuInput:
             else:
                 idx, _ = MInputUtils.get_selected(field.value)
                 sysout(fmt.format(icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
+
             # Display any previously set error message
             if self.tab_index == idx and self.err_msg:
                 self._display_error()
