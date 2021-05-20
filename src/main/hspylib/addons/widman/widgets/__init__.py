@@ -2,9 +2,10 @@
 #
 # HSPyLib v0.10.5
 #
-# Package: main.hspylib.addins.appman
+# Package: main.hspylib.addons.widman.widgets
 """Package initialization."""
 
 __all__ = [
-  'appman'
+  'widget_free', 
+  'widget_tcalc'
 ]

@@ -16,8 +16,8 @@
 
 import sys
 
-from hspylib.addins.appman.appman import AppManager
-from hspylib.addins.widman.widman import WidgetManager
+from hspylib.addons.appman.appman import AppManager
+from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.tools.commons import get_path, read_version, run_dir, syserr, sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
