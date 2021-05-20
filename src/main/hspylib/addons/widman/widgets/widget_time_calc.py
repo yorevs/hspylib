@@ -5,6 +5,7 @@ from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
 
 
 class WidgetTimeCalc(Widget):
@@ -26,6 +27,7 @@ class WidgetTimeCalc(Widget):
         self.total_seconds = 0
         self.op = '+'
         self.decimal = False
+        self.args = None
 
     def execute(self, *args) -> ExitCode:
 
@@ -41,7 +43,10 @@ class WidgetTimeCalc(Widget):
             self.decimal = True
             args = args[1:]
 
-        for tm in args:
+        if not self.args:
+            self.args = args
+
+        for tm in self.args:
             if re.match(r"[+-]", tm):
                 self.op = tm
             elif re.match(r"^([0-9]{1,2}:?)+", tm):
@@ -79,4 +84,23 @@ class WidgetTimeCalc(Widget):
 
     def _read_args(self) -> bool:
         """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
-        return False
+        # @formatter:off
+        form_fields = MenuInput.builder() \
+            .field() \
+                .label('Time 1') \
+                .build() \
+            .field() \
+                .label('Operation') \
+                .mode('select') \
+                .value('+|-') \
+                .build() \
+            .field() \
+                .label('Time 2') \
+                .build() \
+            .build()
+        # @formatter:on
+
+        result = minput(form_fields)
+        self.args = [f.value for f in result]
+
+        return True if result else False
