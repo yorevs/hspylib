@@ -1,8 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.addons.widman.widgets
+      @file: widget_time_calc.py
+   @created: Thu, 20 May 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import math
 import re
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
@@ -64,6 +81,8 @@ class WidgetTimeCalc(Widget):
                     self.total_seconds += tm_amount
                 elif self.op == '-':
                     self.total_seconds -= tm_amount
+            else:
+                raise WidgetExecutionError(f"Invalid time input: '{tm}'")
 
         self.total_seconds, seconds = divmod(self.total_seconds, 60)
         hours, minutes = divmod(self.total_seconds, 60)
