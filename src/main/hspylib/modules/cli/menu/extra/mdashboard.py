@@ -104,7 +104,7 @@ class MenuDashBoard:
             items: List[Any],
             items_per_line: int = 5):
         
-        self.all_items = items
+        self.items = items
         self.done = None
         self.re_render = True
         self.tab_index = 0
@@ -114,10 +114,10 @@ class MenuDashBoard:
             self,
             title: str = 'Please select one item',
             title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW
-    ) -> DashBoardItem:
+            nav_color: VtColors = VtColors.YELLOW) -> DashBoardItem:
+
         ret_val = None
-        length = len(self.all_items)
+        length = len(self.items)
         signal.signal(signal.SIGINT, MenuUtils.exit_app)
         signal.signal(signal.SIGHUP, MenuUtils.exit_app)
         
@@ -142,27 +142,26 @@ class MenuDashBoard:
         vt_print('%HOM%%ED2%%MOD(0)%')
         vt_print(Vt100.set_show_cursor(True))
         
-        selected = self.all_items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
+        selected = self.items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
         if selected and selected.action:
             selected.action()
         
         return selected
     
     def __render__(self, nav_color: VtColors) -> None:
-        
         vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
         set_enable_echo()
         # Print cells
-        for idx, item in enumerate(self.all_items):
+        for idx, item in enumerate(self.items):
             if self.tab_index != idx:
                 self.__print_cell__(idx, item, MenuDashBoard.CELL_TPL)
             else:
                 self.__print_cell__(idx, item, MenuDashBoard.SEL_CELL_TPL)
         # Print selected tab tooltip
-        sysout(f'\r%EL2%> %GREEN%{self.all_items[self.tab_index].tooltip}%NC%\n\n')
+        sysout(f'\r%EL2%> %GREEN%{self.items[self.tab_index].tooltip}%NC%\n\n')
         sysout(MenuDashBoard.NAV_FMT.format(nav_color.placeholder()), end='')
     
     def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]) -> None:
@@ -178,14 +177,14 @@ class MenuDashBoard:
         if idx > 0 and (idx + 1) % self.items_per_line == 0:
             # Break the line
             vt_print(f'%CUD(1)%%CUB({num_cols * self.items_per_line})%')
-        elif idx + 1 < len(self.all_items):
+        elif idx + 1 < len(self.items):
             # Same line
             vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')
         else:
             vt_print('%CUD(1)%%EL2%')
     
     def __nav_input__(self) -> chr:
-        length = len(self.all_items)
+        length = len(self.items)
         keypress = Keyboard.read_keystroke()
         
         if not keypress:
