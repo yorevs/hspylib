@@ -16,10 +16,10 @@
 
 from abc import abstractmethod
 from typing import Tuple
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.model.entity import Entity
+
 
 
 class DBRepository(CrudRepository):

@@ -19,11 +19,11 @@ import sys
 import time
 from abc import ABC
 from typing import Any, Callable, Optional
-
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_colors import VtColors
+
 
 
 class MenuUtils(ABC):

@@ -16,12 +16,12 @@
 
 import logging as log
 from typing import Any, Type
-
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTableView
-
 from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
+
+
 
 
 class DefaultTableModel(QAbstractTableModel):

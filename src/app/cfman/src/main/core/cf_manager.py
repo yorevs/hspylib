@@ -17,7 +17,6 @@
 import sys
 from time import sleep
 from typing import List
-
 from cfman.src.main.core.cf import CloudFoundry
 from cfman.src.main.core.cf_application import CFApplication
 from cfman.src.main.core.cf_endpoint import CFEndpoint
@@ -30,6 +29,7 @@ from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.menu.extra.mselect import mselect
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.fetch.fetch import head
+
 
 
 class CFManager:

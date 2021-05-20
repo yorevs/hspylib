@@ -15,12 +15,12 @@
 """
 
 import re
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import human_readable_bytes
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.vt100.terminal import Terminal
+
 
 
 class WidgetFree(Widget):

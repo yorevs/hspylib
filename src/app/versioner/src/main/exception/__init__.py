@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.10.5
+# HSPyLib v0.10.6
 #
 # Package: app.versioner.src.main.exception
 """Package initialization."""

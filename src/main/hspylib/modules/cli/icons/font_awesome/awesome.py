@@ -15,10 +15,10 @@
 """
 
 import struct
-
 from idna.core import unicode
-
 from hspylib.core.enums.enumeration import Enumeration
+
+
 
 
 def awe_print(awesome_str: str) -> None:
