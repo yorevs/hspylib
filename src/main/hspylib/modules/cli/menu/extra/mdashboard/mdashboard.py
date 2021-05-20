@@ -15,11 +15,12 @@
 """
 
 import signal
-from typing import Any, Callable, List
+from typing import Any, List
 
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.keyboard import Keyboard
-from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.modules.cli.menu.extra.mdashboard.dashboard_builder import DashboardBuilder
+from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
@@ -51,53 +52,9 @@ class MenuDashBoard:
 
     NAV_FMT = "{}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%"
     
-    @staticmethod
-    class DashBoardItem:
-        def __init__(
-                self,
-                icon: Awesome = None,
-                tooltip: str = None,
-                action: Callable = None):
-            self.icon = icon
-            self.tooltip = tooltip
-            self.action = action
-    
-    @staticmethod
-    class DashBoardBuilder:
-        def __init__(self):
-            self.items = []
-        
-        def item(self) -> Any:
-            return MenuDashBoard.ItemBuilder(self)
-        
-        def build(self) -> list:
-            return self.items
-    
-    @staticmethod
-    class ItemBuilder:
-        def __init__(self, parent: Any):
-            self.parent = parent
-            self.item = MenuDashBoard.DashBoardItem()
-        
-        def icon(self, icon: Awesome) -> Any:
-            self.item.icon = icon
-            return self
-        
-        def tooltip(self, tooltip: str) -> Any:
-            self.item.tooltip = tooltip
-            return self
-        
-        def action(self, action: Callable) -> Any:
-            self.item.action = action
-            return self
-        
-        def build(self) -> Any:
-            self.parent.items.append(self.item)
-            return self.parent
-    
     @classmethod
     def builder(cls):
-        return cls.DashBoardBuilder()
+        return DashboardBuilder()
     
     def __init__(
             self,
@@ -114,7 +71,7 @@ class MenuDashBoard:
             self,
             title: str = 'Please select one item',
             title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW) -> DashBoardItem:
+            nav_color: VtColors = VtColors.YELLOW) -> DashboardItem:
 
         ret_val = None
         length = len(self.items)
@@ -164,7 +121,7 @@ class MenuDashBoard:
         sysout(f'\r%EL2%> %GREEN%{self.items[self.tab_index].tooltip}%NC%\n\n')
         sysout(MenuDashBoard.NAV_FMT.format(nav_color.placeholder()), end='')
     
-    def __print_cell__(self, idx: int, item: DashBoardItem, cell_template: List[List[str]]) -> None:
+    def __print_cell__(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
         num_cols = len(cell_template[0])
         num_rows = len(cell_template)
         for row in range(0, num_rows):

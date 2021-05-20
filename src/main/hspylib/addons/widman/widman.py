@@ -8,7 +8,8 @@ from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecuti
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr
 from hspylib.core.tools.text_helper import camelcase
-from hspylib.modules.cli.menu.extra.mdashboard import MenuDashBoard, mdashboard
+from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.menu.extra.mdashboard.mdashboard import mdashboard
 
 HERE = get_path(__file__)
 
@@ -58,7 +59,7 @@ class WidgetManager(metaclass=Singleton):
         try:
             for widget_entry in self._widgets:
                 widget = self._find_widget(widget_entry.name)
-                item = MenuDashBoard.DashBoardItem(
+                item = DashboardItem(
                     widget.icon(),
                     f"{widget.name()} v{widget.version()}: {widget.tooltip()}",
                     widget.execute
