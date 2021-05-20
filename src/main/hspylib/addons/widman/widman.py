@@ -2,10 +2,11 @@ import os
 import sys
 from typing import Any, List
 
-from hspylib.addins.widman.widget import Widget
+from hspylib.addons.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr
+from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.menu.extra.mdashboard import MenuDashBoard, mdashboard
 
 HERE = get_path(__file__)
@@ -21,8 +22,8 @@ class WidgetManager(metaclass=Singleton):
     class WidgetEntry:
         def __init__(self, file: str, path: str):
             self.module = os.path.splitext(file)[0]
-            self.name = self.module.replace(WidgetManager.WIDGET_PREFIX, '').capitalize()
-            self.clazz = f"Widget{self.name}"
+            self.name = camelcase(self.module.replace(WidgetManager.WIDGET_PREFIX, ''))
+            self.clazz = f"Widget{self.name.replace('_', '')}"
             self.path = path
 
         def __str__(self):
@@ -38,7 +39,7 @@ class WidgetManager(metaclass=Singleton):
 
     def execute(self, widget_name: str, widget_args: List[Any]) -> Any:
         """Execute the specified widget"""
-        widget = self._find_widget(widget_name.capitalize())
+        widget = self._find_widget(camelcase(widget_name))
         try:
             widget.execute(*widget_args)
             widget.cleanup()
@@ -77,7 +78,7 @@ class WidgetManager(metaclass=Singleton):
                 self._widgets.extend(widgets)
 
     def _find_widget(self, widget_name: str):
-        widget_entry = next((w for w in self._widgets if w.name.lower() == widget_name.lower()), None)
+        widget_entry = next((w for w in self._widgets if self.name_matches(widget_name, w.name)), None)
         if not widget_entry:
             raise WidgetNotFoundError(
                 f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
@@ -89,5 +90,14 @@ class WidgetManager(metaclass=Singleton):
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
         assert isinstance(widget, Widget), \
-            'All widgets must inherit from "hspylib.addins.widman.widget.Widget"'
+            'All widgets must inherit from "hspylib.addons.widman.widget.Widget"'
         return widget
+
+    @staticmethod
+    def name_matches(widget_1_name: str, widget_2_name: str):
+        return \
+            widget_1_name.lower() == widget_2_name.lower() \
+            or widget_1_name == widget_2_name.capitalize() \
+            or widget_1_name == camelcase(widget_2_name) \
+            or widget_1_name.lower() == widget_2_name.lower().replace('_', '')
+

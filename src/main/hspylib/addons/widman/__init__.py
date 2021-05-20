@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.10.5
 #
-# Package: main.hspylib.addins.widman
+# Package: main.hspylib.addons.widman
 """Package initialization."""
 
 __all__ = [

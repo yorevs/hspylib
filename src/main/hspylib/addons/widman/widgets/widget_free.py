@@ -1,6 +1,6 @@
 import re
 
-from hspylib.addins.widman.widget import Widget
+from hspylib.addons.widman.widget import Widget
 from hspylib.core.tools.commons import human_readable_bytes
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -11,7 +11,7 @@ class WidgetFree(Widget):
     WIDGET_ICON  = WidgetIcons.FREE
     WIDGET_NAME = "Free"
     TOOLTIP = "Report system memory usage"
-    USAGE = "Usage: free"
+    USAGE = "Usage: Free"
     VERSION = (0, 2, 0)
 
     def __init__(self):
