@@ -17,12 +17,15 @@
 import re
 import signal
 import time
-from typing import Any, List, Optional, Tuple
+from typing import Any, List
 
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.keyboard import Keyboard
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
+from hspylib.modules.cli.menu.extra.minput.input_field import InputField
+from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
@@ -47,182 +50,14 @@ def minput(
 
 
 class MenuInput:
-    _modes = ['input', 'password', 'checkbox', 'select']
-    _kinds = ['letter', 'number', 'word', 'token', 'any']
-    _access_types = ['read-only', 'read-write']
 
     SELECTED_BG = '%MOD(44)%'
 
     NAV_FMT = "{}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
-    @staticmethod
-    class Field:
-        def __init__(
-                self,
-                label: str = None,
-                mode: str = 'input',
-                kind: str = 'any',
-                min_length: int = 0,
-                max_length: int = 30,
-                access_type: str = 'read-write',
-                value: Any = None):
-
-            self.label = label
-            self.mode = mode
-            self.kind = kind
-            self.min_length = min_length
-            self.max_length = max_length
-            self.access_type = access_type
-            self.value = value
-
-        def __str__(self) -> str:
-            return str(self.__dict__)
-
-        def can_write(self) -> bool:
-            return self.access_type == 'read-write'
-
-        def val_regex(self, min_length: int, max_length: int) -> str:
-            if self.kind == 'letter':
-                regex = r'^[a-zA-Z]{' + str(min_length) + ',' + str(max_length) + '}$'
-            elif self.kind == 'number':
-                regex = r'^[0-9]{' + str(min_length) + ',' + str(max_length) + '}$'
-            elif self.kind == 'word':
-                regex = r'^[a-zA-Z0-9 _]{' + str(min_length) + ',' + str(max_length) + '}$'
-            elif self.kind == 'token':
-                regex = r'\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*'
-            else:
-                regex = r'.{' + str(min_length) + ',' + str(max_length) + '}$'
-
-            return regex
-
-    @staticmethod
-    class FormBuilder:
-        def __init__(self):
-            self.fields = []
-
-        def field(self) -> Any:
-            return MenuInput.FieldBuilder(self)
-
-        def build(self) -> list:
-            return self.fields
-
-    @staticmethod
-    class FieldBuilder:
-        def __init__(self, parent: Any):
-            self.parent = parent
-            self.field = MenuInput.Field()
-
-        def label(self, label: str) -> Any:
-            self.field.label = label
-            return self
-
-        def mode(self, mode: str) -> Any:
-            assert mode in MenuInput._modes, \
-                f"Not a valid mode: {mode}. Valid modes are: {str(MenuInput._modes)}"
-            self.field.mode = mode
-            return self
-
-        def kind(self, kind: str) -> Any:
-            assert kind in MenuInput._kinds, \
-                f"Not a valid kind: {kind}. Valid kinds are: {str(MenuInput._kinds)}"
-            self.field.kind = kind
-            return self
-
-        def min_max_length(self, min_length: int, max_length: int) -> Any:
-            assert max_length >= min_length, f"Not a valid field length: ({min_length}-{max_length})"
-            assert max_length > 0 and min_length > 0, f"Not a valid field length: ({min_length}-{max_length})"
-            self.field.min_length = min_length
-            self.field.max_length = max_length
-            return self
-
-        def access_type(self, access_type: str) -> Any:
-            assert access_type in MenuInput._access_types, \
-                f"Not a valid access type {access_type}. Valid access types are: {str(MenuInput._access_types)}"
-            self.field.access_type = access_type
-            return self
-
-        def value(self, value: Any) -> Any:
-            re_valid = self.field.val_regex(0, len(str(value)))
-            if value:
-                assert re.match(re_valid, value), f"Not a valid value: \"{value}\". Valid regex is \"{re_valid}\""
-            self.field.value = value
-            return self
-
-        def build(self) -> Any:
-            if self.field.mode == "checkbox":
-                self.field.value = self.field.value if self.field.value in ['0', '1'] else 0
-                self.field.min_length = self.field.max_length = 1
-            elif self.field.mode == "select":
-                self.field.min_length = self.field.max_length = 1
-            self.field.label = camelcase(self.field.label) or 'Field'
-            self.field.access_type = self.field.access_type or 'read-write'
-            self.field.min_length = self.field.min_length or 1
-            self.field.max_length = self.field.max_length or 30
-            self.field.kind = self.field.kind or 'any'
-            self.field.kind = self.field.kind or 'input'
-            self.field.value = self.field.value or ''
-            self.parent.fields.append(self.field)
-            return self.parent
-
-    @staticmethod
-    def _detail_len(field: Any) -> int:
-        max_len = len(str(field.max_length))
-        return 1 + (2 * max_len)
-
-    @classmethod
-    def _mi_print(cls, size: int, text: str, prepend: str = None, end: str = '') -> None:
-        fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
-        if prepend:
-            vt_print(fmt.format(prepend, text), end=end)
-        else:
-            vt_print(fmt.format(text), end=end)
-
-    @staticmethod
-    def _toggle_selected(tokenized_values: str) -> str:
-        values = tokenized_values.split('|')
-        cur_idx = next((idx for idx, val in enumerate(values) if val.find('<') >= 0), -1)
-        if cur_idx < 0:
-            if len(values) > 1:
-                values[1] = f'<{values[1]}>'
-            else:
-                values[0] = f'<{values[0]}>'
-            return '|'.join(values)
-        else:
-            unselected = list(map(lambda x: x.replace('<', '').replace('>', ''), values))
-            # @formatter:off
-            return '|'.join([
-                f'<{val}>'
-                if
-                    idx == (cur_idx + 1)
-                    or ((cur_idx + 1) >= len(unselected) and idx == 0)
-                else
-                    val
-                for idx, val in enumerate(unselected)
-            ])
-            # @formatter:on
-
-    @staticmethod
-    def _selected_item(tokenized_values: str) -> Optional[Tuple[int, str]]:
-        values = tokenized_values.split('|')
-        # @formatter:off
-        sel_item = next(
-            (
-                val.replace('<', '').replace('>', '')
-                for val in values if val.startswith('<') and val.endswith('>')
-            ), values[0]
-        )
-        # @formatter:on
-        try:
-            return values.index(sel_item), sel_item
-        except ValueError:
-            try:
-                return values.index(f"<{sel_item}>"), sel_item
-            except ValueError:
-                return -1, sel_item
-
     @classmethod
     def builder(cls) -> Any:
-        return cls.FormBuilder()
+        return FormBuilder()
 
     def __init__(self, all_fields: List[Any]):
         self.all_fields = all_fields
@@ -234,7 +69,7 @@ class MenuInput:
         self.err_msg = ''
         self.max_label_length = max([len(field.label) for field in all_fields])
         self.max_value_length = max([field.max_length for field in all_fields])
-        self.max_detail_length = max([self._detail_len(field) for field in all_fields])
+        self.max_detail_length = max([MInputUtils.detail_len(field) for field in all_fields])
         self.done = None
         self.re_render = True
 
@@ -242,7 +77,7 @@ class MenuInput:
             self,
             title: str = 'Please fill all fields of the form below',
             title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW) -> List[Field]:
+            nav_color: VtColors = VtColors.YELLOW) -> List[InputField]:
 
         ret_val = None
         length = len(self.all_fields)
@@ -291,9 +126,9 @@ class MenuInput:
         for idx, field in enumerate(self.all_fields):
             field_size = len(str(field.value))
             if self.tab_index != idx:
-                MenuInput._mi_print(self.max_label_length, camelcase(field.label))
+                MInputUtils.mi_print(self.max_label_length, camelcase(field.label))
             else:
-                MenuInput._mi_print(self.max_label_length, camelcase(field.label), MenuInput.SELECTED_BG)
+                MInputUtils.mi_print(self.max_label_length, camelcase(field.label), MenuInput.SELECTED_BG)
                 # Buffering the all positions to avoid calling get_cursor_pos
                 f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
                 if f_pos:
@@ -306,16 +141,16 @@ class MenuInput:
             # Choose the icon to display
             if field.mode == "input":
                 icon = FormIcons.EDITABLE
-                MenuInput._mi_print(self.max_value_length, field.value)
+                MInputUtils.mi_print(self.max_value_length, field.value)
             elif field.mode == "password":
                 icon = FormIcons.HIDDEN
-                MenuInput._mi_print(self.max_value_length, '*' * field_size)
+                MInputUtils.mi_print(self.max_value_length, '*' * field_size)
             elif field.mode == "checkbox":
                 icon = FormIcons.EDITABLE
                 if field.value:
-                    MenuInput._mi_print(self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE))
+                    MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE))
                 else:
-                    MenuInput._mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
+                    MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
             elif field.mode == "select":
                 icon = FormIcons.EDITABLE
                 field_size = 1
@@ -323,11 +158,11 @@ class MenuInput:
                     mat = re.search(r'.*\|?<(.+)>\|?.*', field.value)
                     if mat:
                         sel_value = mat.group(1)
-                        MenuInput._mi_print(
+                        MInputUtils.mi_print(
                             self.max_value_length - 1, f' {sel_value}', str(FormIcons.SELECTABLE))
                     else:
                         sel_value = field.value.split('|')[0]
-                        MenuInput._mi_print(
+                        MInputUtils.mi_print(
                             self.max_value_length - 1, f' {sel_value}', str(FormIcons.SELECTABLE))
             if field.access_type == 'read-only' and field.mode not in ['checkbox', 'select']:
                 icon = FormIcons.LOCKED
@@ -338,7 +173,7 @@ class MenuInput:
             if field.mode != "select":
                 sysout(fmt.format(icon, field_size, field.max_length))
             else:
-                idx, _ = self._selected_item(field.value)
+                idx, _ = MInputUtils.get_selected(field.value)
                 sysout(fmt.format(icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
             # Display any previously set error message
             if self.tab_index == idx and self.err_msg:
@@ -388,7 +223,7 @@ class MenuInput:
                     elif self.cur_field.mode == 'select':
                         if keypress == Keyboard.VK_SPACE:
                             if self.cur_field.value:
-                                self.cur_field.value = self._toggle_selected(self.cur_field.value)
+                                self.cur_field.value = MInputUtils.toggle_selected(self.cur_field.value)
                     else:
                         if len(str(self.cur_field.value)) < self.cur_field.max_length:
                             if re.match(self.cur_field.val_regex(1, self.cur_field.max_length), keypress.value):
@@ -413,7 +248,7 @@ class MenuInput:
                             self._display_error()
                             break
                     else:
-                        _, field.value = self._selected_item(field.value)
+                        _, field.value = MInputUtils.get_selected(field.value)
 
         return keypress
 
