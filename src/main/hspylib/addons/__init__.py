@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.10.5
 #
-# Package: main.hspylib.addins
+# Package: main.hspylib.addons
 """Package initialization."""
 
 __all__ = [

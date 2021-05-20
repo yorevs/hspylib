@@ -23,27 +23,30 @@ class FormIcons(Awesome):
         Codes can be found here:
         - https://fontawesome.com/cheatsheet?from=io
     """
+
+    # @formatter:off
+    ARROW_LEFT = '\uF060'      # 
+    ARROW_RIGHT = '\uF061'     # 
+    ARROW_UP = '\uF062'        # 
+    ARROW_DOWN = '\uF063'      # 
     
-    ARROW_LEFT = '\uF060'  # 
-    ARROW_RIGHT = '\uF061'  # 
-    ARROW_UP = '\uF062'  # 
-    ARROW_DOWN = '\uF063'  # 
-    
-    CHECK = '\uF00C'  # 
-    ERROR = '\uf057'  # 
-    CHECK_CIRCLE = '\uF058'  # 
+    CHECK = '\uF00C'           # 
+    ERROR = '\uf057'           # 
+    CHECK_CIRCLE = '\uF058'    # 
     UNCHECK_CIRCLE = '\uF111'  # 
-    CHECK_SQUARE = '\uF14A'  # 
+    CHECK_SQUARE = '\uF14A'    # 
     UNCHECK_SQUARE = '\uF0C8'  # 
-    ON = '\uF205'  # 
-    OFF = '\uF204'  # 
+    ON = '\uF205'              # 
+    OFF = '\uF204'             # 
     
-    HIDDEN = '\uF070'  # 
-    VISIBLE = '\uF06E'  # 
-    LOCKED = '\uF023'  # 
-    UNLOCKED = '\uF09C'  # 
-    EDITABLE = '\uF044'  # 
-    DELETE = '\uF014'  # 
+    HIDDEN = '\uF070'          # 
+    VISIBLE = '\uF06E'         # 
+    LOCKED = '\uF023'          # 
+    UNLOCKED = '\uF09C'        # 
+    EDITABLE = '\uF044'        # 
+    SELECTABLE = '\uF150'      # 
+    DELETE = '\uF014'          # 
+    # @formatter:on
 
 
 if __name__ == '__main__':
