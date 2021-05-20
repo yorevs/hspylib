@@ -2,15 +2,16 @@ import math
 import re
 
 from hspylib.addons.widman.widget import Widget
+from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class WidgetTimeCalc(Widget):
 
-    WIDGET_ICON  = WidgetIcons.TCALC
+    WIDGET_ICON = WidgetIcons.TCALC
     WIDGET_NAME = "TimeCalc"
-    TOOLTIP = "Calculate time based operations"
+    TOOLTIP = "Calculate time based operations."
     USAGE = "Usage: TimeCalc [-d|--decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
     VERSION = (0, 1, 0)
 
@@ -26,13 +27,16 @@ class WidgetTimeCalc(Widget):
         self.op = '+'
         self.decimal = False
 
-    def execute(self, *args):
+    def execute(self, *args) -> ExitCode:
+
+        ret_val = ExitCode.SUCCESS
+
         if (not args or len(args) < 3) and not any(a in args for a in ['-h', '--help']):
             if not self._read_args():
-                return
+                return ExitCode.ERROR
         elif args[0] in ['-h', '--help']:
             sysout(self.usage())
-            return
+            return ExitCode.SUCCESS
         elif args[0] in ['-d', '--decimal']:
             self.decimal = True
             args = args[1:]
@@ -45,6 +49,7 @@ class WidgetTimeCalc(Widget):
                     parts = [int(math.floor(float(s))) for s in tm.split(':')]
                 except ValueError:
                     parts = [0, 0, 0]
+                    ret_val = ExitCode.ERROR
                 f_hours = parts[0] if len(parts) > 0 else 0
                 f_minutes = parts[1] if len(parts) > 1 else 0
                 f_secs = parts[2] if len(parts) > 2 else 0
@@ -63,12 +68,15 @@ class WidgetTimeCalc(Widget):
         else:
             sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
 
+        return ret_val
+
     def cleanup(self):
         pass
 
-    # @purpose: Convert a raw time into decimal
     def _decimal(self, time_raw: int = 0) -> int:
+        """ Convert a raw time into decimal """
         return int(round(((time_raw / 60.00) * 100.00) if self.decimal else time_raw))
 
     def _read_args(self) -> bool:
+        """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
         return False

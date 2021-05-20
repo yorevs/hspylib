@@ -48,7 +48,7 @@ def lowercase(string: str) -> str:
     return string.lower()
 
 
-def camelcase(string: str, separator: str = '_') -> str:
+def camelcase(string: str, separator: str = '_|-') -> str:
     parts = re.split(rf'{separator}+', string)
     return '_'.join([p.capitalize() for p in parts])
 

@@ -1,6 +1,7 @@
 import re
 
 from hspylib.addons.widman.widget import Widget
+from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import human_readable_bytes
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -10,7 +11,7 @@ class WidgetFree(Widget):
 
     WIDGET_ICON  = WidgetIcons.FREE
     WIDGET_NAME = "Free"
-    TOOLTIP = "Report system memory usage"
+    TOOLTIP = "Report system memory usage."
     USAGE = "Usage: Free"
     VERSION = (0, 2, 0)
 
@@ -23,7 +24,7 @@ class WidgetFree(Widget):
             WidgetFree.VERSION)
 
 
-    def execute(self, *args):
+    def execute(self, *args) -> ExitCode:
         # Get process info
         ps = Terminal.shell_exec('ps -caxm -orss,comm')
         vm = Terminal.shell_exec('vm_stat')
@@ -65,6 +66,8 @@ class WidgetFree(Widget):
         print('     Free Memory: %06s %s' % (free, fu))
         print('     Real Memory: %06s %s' % (real, ru))
         print(' ')
+
+        return ExitCode.SUCCESS
 
     def cleanup(self):
         pass
