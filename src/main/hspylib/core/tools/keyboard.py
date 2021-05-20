@@ -15,15 +15,13 @@
 """
 
 import string
+import sys
 from typing import Any, Optional
+
 import getkey
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import syserr
-from hspylib.modules.cli.vt100.vt_utils import require_terminal
-
-
-
-require_terminal()
 
 
 class Keyboard(Enumeration):
@@ -149,15 +147,15 @@ class Keyboard(Enumeration):
             keystroke = getkey.getkey()
             if keystroke:
                 return cls.of_value(keystroke)
-            
+
             return None
-        except KeyboardInterrupt as err:
+        except (KeyboardInterrupt, AssertionError) as err:
             syserr(str(err))
-        except AssertionError:
-            pass
-        
+        finally:
+            sys.stdin.flush()
+
         return None
-    
+
     def isdigit(self) -> bool:
         return str(self.value).isdigit()
     

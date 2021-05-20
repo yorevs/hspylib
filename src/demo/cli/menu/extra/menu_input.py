@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
 
 if __name__ == '__main__':
@@ -21,38 +21,35 @@ if __name__ == '__main__':
     form_fields = MenuInput.builder() \
         .field() \
             .label('letters') \
-            .kind('letter') \
+            .validator(InputValidator.letters()) \
             .build() \
         .field() \
             .label('word') \
-            .kind('word') \
+            .validator(InputValidator.words()) \
             .build() \
         .field() \
             .label('number') \
-            .kind('number') \
+            .validator(InputValidator.numbers()) \
             .min_max_length(1, 2) \
             .build() \
         .field() \
             .label('selectable') \
-            .mode('select') \
-            .kind('token') \
+            .itype('select') \
             .value('one|two|three') \
             .build() \
         .field() \
             .label('checkbox') \
-            .mode('checkbox') \
-            .kind('number') \
-            .value('1') \
-            .build() \
+            .itype('checkbox') \
+            .value(False) \
+        .build() \
         .field() \
             .label('password') \
-            .mode('password') \
-            .kind('any') \
+            .itype('password') \
+            .validator(InputValidator.anything()) \
             .min_max_length(4, 8) \
             .build() \
         .field() \
             .label('read-only') \
-            .kind('any') \
             .access_type('read-only') \
             .value('READ-ONLY') \
             .build() \
