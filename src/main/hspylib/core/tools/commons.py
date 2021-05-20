@@ -20,10 +20,10 @@ import pathlib
 import re
 import sys
 from typing import Any, List, Optional, Tuple, Type
-
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
+
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',

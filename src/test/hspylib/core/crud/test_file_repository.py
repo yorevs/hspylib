@@ -18,11 +18,11 @@ import logging as log
 import os
 import sys
 import unittest
-
 from test.hspylib.shared.entity_test import EntityTest
 from test.hspylib.shared.file_db_repository_test import FileDbRepositoryTest
-
 from hspylib.core.config.app_config import AppConfigs
+
+
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

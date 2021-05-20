@@ -17,10 +17,10 @@
 import logging as log
 import os
 from typing import List
-
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.file_processor import FileProcessor
 from hspylib.core.tools.commons import file_is_not_empty
+
 
 
 class Firebase:

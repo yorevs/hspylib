@@ -16,8 +16,8 @@
 
 import re
 from typing import Any
-
 from idna.core import unicode
+
 
 RE_JSON_NAME = '[a-zA-Z0-9_\\- ]'
 RE_JSON_ARRAY_INDEX = '[0-9]{1,}'

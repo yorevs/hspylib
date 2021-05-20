@@ -16,8 +16,8 @@
 
 import random
 import re
-
 from hspylib.core.tools.commons import get_or_default
+
 
 
 def fit_text(text: str, width: int) -> str:

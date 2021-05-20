@@ -17,8 +17,8 @@
 import base64
 import os
 from typing import Any
-
 from hspylib.core.enums.charset import Charset
+
 
 
 class FileEntry:

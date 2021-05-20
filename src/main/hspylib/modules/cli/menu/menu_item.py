@@ -16,11 +16,11 @@
 
 from abc import ABC
 from typing import Optional
-
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.menu.menu import Menu
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
+
 
 
 class MenuItem(Menu, ABC):

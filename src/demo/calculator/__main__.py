@@ -16,10 +16,10 @@
 
 import os
 import sys
-
 from calculator.core.qt_calculator import QtCalculator
 from hspylib.core.tools.commons import dirname, read_version
 from hspylib.modules.cli.application.application import Application
+
 
 
 class Main(Application):
