@@ -200,8 +200,9 @@ class CFManager:
                     if self._allow_multiple(action.lower()):
                         apps = self._choose_apps()
                     else:
-                        apps = [self._select_app()]
-                    if len(apps) > 0:
+                        app = self._select_app()
+                        apps = [app] if app else None
+                    if apps:
                         for app in apps:
                             self._perform(action, app=app.name, org=self.org, space=self.space)
                 else:
