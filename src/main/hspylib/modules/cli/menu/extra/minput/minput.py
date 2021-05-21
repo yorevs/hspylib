@@ -214,15 +214,18 @@ class MenuInput:
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
                 for idx in range(0, length):
                     field = self.all_fields[idx]
-                    if field.itype != InputType.SELECT:
+                    if field.itype == InputType.SELECT:
+                        _, field.value = MInputUtils.get_selected(field.value)
+                    else:
                         if not field.validate(field.value):
                             keypress = None
                             self._display_error(
                                 f"Field \"{camelcase(field.label)}\" is not valid => \"{field.validator}\" !"
                             )
                             break
-                    else:
-                        _, field.value = MInputUtils.get_selected(field.value)
+                        if field.itype == InputType.MASKED:
+                            field.value = field.value.split('|')[0]
+
         self.re_render = True
         return keypress
 
