@@ -18,9 +18,7 @@ from abc import ABC
 from typing import Optional, Type
 
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QComboBox, QDateEdit, QDialogButtonBox, QDoubleSpinBox, QLabel, QLineEdit, QSpinBox, \
- \
-QWidget, QStackedWidget, QToolBox, QToolButton, QTableView
+from PyQt5.QtWidgets import *
 
 
 class QtFinder(ABC):
