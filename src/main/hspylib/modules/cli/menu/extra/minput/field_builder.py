@@ -21,6 +21,7 @@ from hspylib.modules.cli.menu.extra.minput.access_type import AccessType
 from hspylib.modules.cli.menu.extra.minput.form_field import FormField
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
 
 
 class FieldBuilder:
@@ -64,7 +65,11 @@ class FieldBuilder:
             self.validator(InputValidator.custom(r'[01]'))
         elif self.field.itype == InputType.SELECT:
             self.field.min_length = self.field.max_length = 1
-            self.validator(InputValidator.token(max_length=1))
+            self.validator(InputValidator.token())
+        elif self.field.itype == InputType.MASKED:
+            value, mask = MInputUtils.unpack_masked(self.field.value)
+            self.field.min_length = self.field.max_length = len(mask)
+            self.validator(InputValidator.custom(mask.replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')))
         self.field.label = camelcase(self.field.label) or 'Field'
         self.field.access_type = self.field.access_type or AccessType.READ_WRITE
         self.field.min_length = self.field.min_length or 1

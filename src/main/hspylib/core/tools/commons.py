@@ -157,7 +157,7 @@ def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
 
 
 def get_or_default(options: tuple, index: int, default_value=None) -> Optional[Any]:
-    """Retrieve an item from the options list or None if index is out of range
+    """Retrieve an item from the options list or default_value if index is out of range
     :param options: The available list of options
     :param index: The index of the item
     :param default_value: The default value if the index is out of range
@@ -166,7 +166,7 @@ def get_or_default(options: tuple, index: int, default_value=None) -> Optional[A
 
 
 def get_by_key_or_default(options: dict, key: str, default_value=None) -> Optional[Any]:
-    """Retrieve an item from the options list or None if key was not found
+    """Retrieve an item from the options list or default_value if key was not found
     :param options: The available list of options
     :param key: The key of the item
     :param default_value: The default value if the index is not found

@@ -21,6 +21,7 @@ class InputType(Enumeration):
     PASSWORD = 'password'
     CHECKBOX = 'checkbox'
     SELECT = 'select'
+    MASKED = 'masked'
 
     def __str__(self):
         return self.value
