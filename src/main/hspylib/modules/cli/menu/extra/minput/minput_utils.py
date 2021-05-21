@@ -16,8 +16,8 @@
 
 from abc import ABC
 from typing import Optional, Tuple, Any
-from hspylib.modules.cli.vt100.vt_codes import vt_print
 
+from hspylib.modules.cli.vt100.vt_codes import vt_print
 
 
 class MInputUtils(ABC):

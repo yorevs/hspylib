@@ -18,10 +18,11 @@ import re
 import signal
 import time
 from typing import Any, List
+
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.keyboard import Keyboard
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.menu.extra.minput.access_type import AccessType
 from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
 from hspylib.modules.cli.menu.extra.minput.form_field import FormField
@@ -32,7 +33,6 @@ from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo
-
 
 
 def minput(

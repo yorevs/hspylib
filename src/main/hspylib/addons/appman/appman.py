@@ -16,13 +16,13 @@
 
 import os
 from typing import Any
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
-
 
 HERE = get_path(__file__)
 

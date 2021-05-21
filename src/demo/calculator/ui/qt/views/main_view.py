@@ -17,14 +17,14 @@
 import logging as log
 from threading import Thread
 from time import sleep
+
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLCDNumber, QWidget
+
 from calculator.core.enums.calc_operations import CalcOperations
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.qt.views.qt_view import QtView
-
-
 
 
 class MainView(QtView):

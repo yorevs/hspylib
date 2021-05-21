@@ -16,9 +16,9 @@
 
 import re
 from typing import Any
+
 from hspylib.core.tools.regex_constants import RegexConstants
 from versioner.src.main.enums.extension import Extension
-
 
 
 class Version:

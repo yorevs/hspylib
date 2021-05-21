@@ -16,13 +16,13 @@
 
 import math
 import re
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
-
 
 
 class WidgetTimeCalc(Widget):

@@ -15,8 +15,8 @@
 """
 
 from uuid import UUID
-from hspylib.core.model.entity import Entity
 
+from hspylib.core.model.entity import Entity
 
 
 class Contact(Entity):

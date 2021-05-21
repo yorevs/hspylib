@@ -16,8 +16,8 @@
 
 import sys
 from typing import List, Optional
-from hspylib.core.tools.text_helper import TextAlignment, fit_text
 
+from hspylib.core.tools.text_helper import TextAlignment, fit_text
 
 
 class TableRenderer:
