@@ -16,9 +16,9 @@
 
 import sys
 import unittest
-
 from hspylib.core.tools.commons import safe_del_file
 from hspylib.modules.security.security import decode, decrypt, encode, encrypt
+
 
 PASSPHRASE = '12345'
 SALT = '1234567890'
