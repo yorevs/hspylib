@@ -29,6 +29,7 @@ class FormIcons(Awesome):
     ARROW_RIGHT = '\uF061'     # 
     ARROW_UP = '\uF062'        # 
     ARROW_DOWN = '\uF063'      # 
+    SELECTOR = '\uFC32'        # ﰲ
     
     CHECK = '\uF00C'           # 
     ERROR = '\uf057'           # 
@@ -38,6 +39,8 @@ class FormIcons(Awesome):
     UNCHECK_SQUARE = '\uF0C8'  # 
     ON = '\uF205'              # 
     OFF = '\uF204'             # 
+    MARKED = '\uF634'          # 
+    UNMARKED = '\uF630'        # 
     
     HIDDEN = '\uF070'          # 
     VISIBLE = '\uF06E'         # 
