@@ -23,11 +23,10 @@ from typing import List, Optional, Tuple
 
 from hspylib.core.tools.commons import is_debugging
 
-assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
-
-
 def require_terminal():
     assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
+
+require_terminal()
 
 
 def screen_size() -> Optional[List[str]]:

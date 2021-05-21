@@ -39,9 +39,9 @@ def mdashboard(
 
 class MenuDashBoard:
     CELL_TPL = [
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        [' ', ' ', ' ', ' ', ' ', ' ',' ', ' '],
+        [' ', ' ', ' ', 'X', ' ', ' ',' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' ',' ', ' ']
     ]
     
     SEL_CELL_TPL = [
@@ -66,6 +66,8 @@ class MenuDashBoard:
         self.re_render = True
         self.tab_index = 0
         self.items_per_line = items_per_line
+        assert len(self.CELL_TPL) == len(self.SEL_CELL_TPL) and len(self.CELL_TPL[0]) == len(self.SEL_CELL_TPL[0]), \
+            'Invalid CELL definitions'
     
     def show(
             self,
@@ -80,8 +82,9 @@ class MenuDashBoard:
         
         if length > 0:
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
-            vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
+            vt_print(Vt100.set_auto_wrap(False))
+            vt_print(Vt100.set_show_cursor(False))
             vt_print(Vt100.save_cursor())
             
             # Wait for user interaction
@@ -97,8 +100,7 @@ class MenuDashBoard:
                 # } Navigation input
         
         vt_print('%HOM%%ED2%%MOD(0)%')
-        vt_print(Vt100.set_show_cursor(True))
-        
+
         selected = self.items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
         if selected and selected.action:
             selected.action()
@@ -106,7 +108,6 @@ class MenuDashBoard:
         return selected
     
     def __render__(self, nav_color: VtColors) -> None:
-        vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
