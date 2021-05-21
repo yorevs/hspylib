@@ -91,11 +91,12 @@ class MInputUtils(ABC):
         while idx < len(mask) and mask[idx] not in ['#', '@', '*']:
             masked_value += mask[idx]
             idx += 1
-        mask_regex = mask[idx].replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')
-        if re.search(mask_regex, keypress_value):
-            masked_value += keypress_value
-        else:
-            raise InvalidInputError(f"Value {keypress_value} is not a valid value against mask: {mask}")
+        if mask and idx < len(mask):
+            mask_regex = mask[idx].replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')
+            if re.search(mask_regex, keypress_value):
+                masked_value += keypress_value
+            else:
+                raise InvalidInputError(f"Value {keypress_value} is not a valid value against mask: {mask}")
 
         return f"{masked_value}|{mask}"
 

@@ -107,6 +107,8 @@ class WidgetTimeCalc(Widget):
         form_fields = MenuInput.builder() \
             .field() \
                 .label('Time 1') \
+                .itype('masked') \
+                .value('|##:##:##') \
                 .build() \
             .field() \
                 .label('Operation') \
@@ -115,6 +117,8 @@ class WidgetTimeCalc(Widget):
                 .build() \
             .field() \
                 .label('Time 2') \
+                .itype('masked') \
+                .value('|##:##:##') \
                 .build() \
             .build()
         # @formatter:on
