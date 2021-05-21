@@ -33,6 +33,12 @@ if __name__ == '__main__':
             .min_max_length(1, 2) \
             .build() \
         .field() \
+            .label('masked') \
+            .itype('masked') \
+            .validator(InputValidator.masked()) \
+            .value('|##::##::## @@') \
+            .build() \
+        .field() \
             .label('selectable') \
             .itype('select') \
             .value('one|two|three') \

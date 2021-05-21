@@ -19,6 +19,7 @@ import signal
 import time
 from typing import Any, List
 
+from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -155,17 +156,25 @@ class MenuInput:
                         sel_value = field.value.split('|')[0]
                         MInputUtils.mi_print(
                             self.max_value_length - 1, f' {sel_value}', str(FormIcons.SELECTABLE))
-            if field.access_type == AccessType.READ_ONLY and field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
+            elif field.itype == InputType.MASKED:
+                icon = FormIcons.MASKED
+                value, mask = MInputUtils.unpack_masked(str(field.value))
+                MInputUtils.mi_print(self.max_value_length, MInputUtils.over_masked(value, mask))
+
+            if field.access_type == AccessType.READ_ONLY:
                 icon = FormIcons.LOCKED
 
             # Remaining/max characters
             padding = 1 - len(str(self.max_detail_length / 2))
             fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
-            if field.itype != InputType.SELECT:
-                sysout(fmt.format(icon, field_size, field.max_length))
-            else:
+            if field.itype == InputType.SELECT:
                 idx, _ = MInputUtils.get_selected(field.value)
                 sysout(fmt.format(icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
+            elif field.itype == InputType.MASKED:
+                value, mask = MInputUtils.unpack_masked(str(field.value))
+                sysout(fmt.format(icon, len(value), field.max_length))
+            else:
+                sysout(fmt.format(icon, field_size, field.max_length))
 
         sysout('\n')
         sysout(MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
@@ -187,38 +196,15 @@ class MenuInput:
             elif keypress == Keyboard.VK_SHIFT_TAB:  # Handle Shift + TAB
                 self.tab_index = max(0, self.tab_index - 1)
             elif keypress == Keyboard.VK_BACKSPACE:  # Handle backspace
-                if self.cur_field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
-                    if self.cur_field.can_write() and len(self.cur_field.value) >= 1:
-                        self.cur_field.value = self.cur_field.value[:-1]
-                    elif not self.cur_field.can_write():
-                        self._display_error('This field is read only !')
+                if not self.cur_field.can_write():
+                    self._display_error('This field is read only !')
+                else:
+                    self._handle_backspace()
             elif keypress.isalnum() or keypress.ispunct() or keypress == Keyboard.VK_SPACE:  # Handle an input
                 if not self.cur_field.can_write():
                     self._display_error('This field is read only !')
                 else:
-                    if self.cur_field.itype == InputType.CHECKBOX:
-                        if keypress == Keyboard.VK_SPACE:
-                            if not self.cur_field.can_write():
-                                self._display_error('This field is read only !')
-                            elif not self.cur_field.value:
-                                self.cur_field.value = 1
-                            else:
-                                self.cur_field.value = 0
-                    elif self.cur_field.itype == InputType.SELECT:
-                        if keypress == Keyboard.VK_SPACE:
-                            if not self.cur_field.can_write():
-                                self._display_error('This field is read only !')
-                            elif self.cur_field.value:
-                                self.cur_field.value = MInputUtils.toggle_selected(self.cur_field.value)
-                    else:
-                        if len(str(self.cur_field.value)) < self.cur_field.max_length:
-                            if self.cur_field.validate(keypress.value):
-                                # Append value to the current field if the value matches the input type
-                                self.cur_field.value += keypress.value
-                            else:
-                                self._display_error(
-                                    f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !"
-                                )
+                    self._handle_input(keypress)
             elif keypress == Keyboard.VK_UP:  # Cursor up
                 if self.tab_index - 1 >= 0:
                     self.tab_index -= 1
@@ -239,6 +225,50 @@ class MenuInput:
                         _, field.value = MInputUtils.get_selected(field.value)
         self.re_render = True
         return keypress
+
+    def _handle_input(self, keypress: chr):
+        if self.cur_field.itype == InputType.CHECKBOX:
+            if keypress == Keyboard.VK_SPACE:
+                if not self.cur_field.can_write():
+                    self._display_error('This field is read only !')
+                elif not self.cur_field.value:
+                    self.cur_field.value = 1
+                else:
+                    self.cur_field.value = 0
+        elif self.cur_field.itype == InputType.SELECT:
+            if keypress == Keyboard.VK_SPACE:
+                if not self.cur_field.can_write():
+                    self._display_error('This field is read only !')
+                elif self.cur_field.value:
+                    self.cur_field.value = MInputUtils.toggle_selected(str(self.cur_field.value))
+        elif self.cur_field.itype == InputType.MASKED:
+            value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
+            if len(value) < self.cur_field.max_length:
+                try:
+                    self.cur_field.value = MInputUtils.append_masked(value, mask, keypress.value)
+                except InvalidInputError as err:
+                    self._display_error(f"{str(err)}")
+        else:
+            if len(str(self.cur_field.value)) < self.cur_field.max_length:
+                if self.cur_field.validate(keypress.value):
+                    self.cur_field.value += keypress.value
+                else:
+                    self._display_error(
+                        f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !"
+                    )
+
+    def _handle_backspace(self):
+        if self.cur_field.itype == InputType.MASKED:
+            value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
+            value = value[:-1]
+            while mask[len(value)-1] not in ['#', '@', '*']:
+                value = value[:-1]
+            self.cur_field.value = f"{value}|{mask}"
+        elif self.cur_field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
+            if self.cur_field.can_write() and len(self.cur_field.value) >= 1:
+                self.cur_field.value = self.cur_field.value[:-1]
+            elif not self.cur_field.can_write():
+                self._display_error('This field is read only !')
 
     def _display_error(self, err_msg) -> None:
         err_offset = 12 + self.max_detail_length

@@ -24,6 +24,7 @@ class InputValidator:
     RE_FMT_WORD = r'^[a-zA-Z0-9 _]{%min%,%max%}$'
     RE_FMT_NUMBER = r'^[0-9]{%min%,%max%}$'
     RE_FMT_TOKEN = r'^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$'
+    RE_FMT_MASKED = r'.*\|.+'
     RE_FMT_ANYTHING = r'^.{%min%,%max%}$'
 
     def __init__(self, min_length: int = 1, max_length: int = 30, pattern: typing.re = None):
@@ -50,8 +51,12 @@ class InputValidator:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_NUMBER)
 
     @staticmethod
-    def token(min_length: int = 1, max_length: int = 30) -> Any:
-        return InputValidator(min_length, max_length, InputValidator.RE_FMT_TOKEN)
+    def token() -> Any:
+        return InputValidator(pattern=InputValidator.RE_FMT_TOKEN)
+
+    @staticmethod
+    def masked() -> Any:
+        return InputValidator(pattern=InputValidator.RE_FMT_MASKED)
 
     @staticmethod
     def anything(min_length: int = 1, max_length: int = 30) -> Any:

@@ -48,6 +48,10 @@ class InvalidOptionError(HSBaseException):
     """Raised when an invalid option is received by the application"""
 
 
+class InvalidInputError(Exception):
+    """Raised when an invalid input is provided """
+
+
 class NotConnectedError(HSBaseException):
     """Raised when an attempt to execute without being connected but a connection is required"""
 

@@ -13,10 +13,11 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import re
 from abc import ABC
 from typing import Optional, Tuple, Any
 
+from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 
 
@@ -76,3 +77,35 @@ class MInputUtils(ABC):
                 return values.index(f"<{sel_item}>"), sel_item
             except ValueError:
                 return -1, sel_item
+
+    @staticmethod
+    def unpack_masked(value: str) -> Tuple[str, str]:
+        parts = value.split('|')
+        assert len(parts) == 2, f"Invalid masked value: {value}"
+        return parts[0], parts[1]
+
+    @staticmethod
+    def append_masked(value: str, mask: str, keypress_value: chr) -> str:
+        masked_value = value
+        idx = len(value)
+        while idx < len(mask) and mask[idx] not in ['#', '@', '*']:
+            masked_value += mask[idx]
+            idx += 1
+        mask_regex = mask[idx].replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')
+        if re.search(mask_regex, keypress_value):
+            masked_value += keypress_value
+        else:
+            raise InvalidInputError(f"Value {keypress_value} is not a valid value against mask: {mask}")
+
+        return f"{masked_value}|{mask}"
+
+    @staticmethod
+    def over_masked(value: str, mask: str) -> str:
+        masked_value = ''
+        for idx, element in enumerate(mask):
+            if element in ['#', '@', '*']:
+                masked_value += value[idx] if idx < len(value) else '_'
+            else:
+                masked_value += element
+        return masked_value
+
