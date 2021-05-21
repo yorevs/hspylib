@@ -35,7 +35,6 @@ if __name__ == '__main__':
         .field() \
             .label('masked') \
             .itype('masked') \
-            .validator(InputValidator.masked()) \
             .value('|##::##::## @@') \
             .build() \
         .field() \
