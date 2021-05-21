@@ -65,7 +65,7 @@ class FieldBuilder:
             self.validator(InputValidator.custom(r'[01]'))
         elif self.field.itype == InputType.SELECT:
             self.field.min_length = self.field.max_length = 1
-            self.validator(InputValidator.token())
+            self.validator(InputValidator.custom(self.field.value.replace('<', '').replace('>', '')))
         elif self.field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(self.field.value)
             self.field.min_length = self.field.max_length = len(mask)
