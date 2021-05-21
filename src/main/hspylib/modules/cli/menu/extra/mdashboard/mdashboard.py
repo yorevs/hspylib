@@ -99,12 +99,13 @@ class MenuDashBoard:
                 self.re_render = True
                 # } Navigation input
         
-        vt_print('%HOM%%ED2%%MOD(0)%')
-
         selected = self.items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
         if selected and selected.action:
             selected.action()
-        
+
+        vt_print('%HOM%%ED2%%MOD(0)%')
+        sysout(Vt100.set_show_cursor(True))
+
         return selected
     
     def __render__(self, nav_color: VtColors) -> None:

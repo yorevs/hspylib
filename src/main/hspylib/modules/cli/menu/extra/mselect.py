@@ -107,6 +107,7 @@ class MenuSelect(ABC):
                 # } Navigation input
         
         vt_print('%HOM%%ED2%%MOD(0)%')
+        sysout(Vt100.set_show_cursor(True))
         
         return self.items[self.sel_index] \
             if self.sel_index >= 0 and ret_val == Keyboard.VK_ENTER else None
