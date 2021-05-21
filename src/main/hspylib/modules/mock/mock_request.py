@@ -14,14 +14,14 @@
    Copyright 2021, HSPyLib team
 """
 from typing import Any
+
 from requests.structures import CaseInsensitiveDict
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.content_type import ContentType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.http_response import HttpResponse
-
-
 
 
 class MockResponse(HttpResponse):

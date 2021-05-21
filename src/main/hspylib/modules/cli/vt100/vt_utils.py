@@ -23,6 +23,7 @@ from typing import List, Optional, Tuple
 
 from hspylib.core.tools.commons import is_debugging
 
+
 def require_terminal():
     assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
 

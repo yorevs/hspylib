@@ -17,12 +17,12 @@
 import fileinput
 import os
 from typing import List
+
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import run_dir
 from versioner.src.main.entity.version import Version
 from versioner.src.main.enums.extension import Extension
 from versioner.src.main.exception.exceptions import MissingExtensionError
-
 
 
 class Versioner(metaclass=Singleton):

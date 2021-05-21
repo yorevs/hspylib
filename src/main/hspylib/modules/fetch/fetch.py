@@ -15,12 +15,12 @@
 """
 
 from typing import Any, Optional
+
 import requests
+
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
-
-
 
 
 def fetch(

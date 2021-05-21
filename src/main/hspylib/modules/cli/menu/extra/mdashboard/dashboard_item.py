@@ -15,8 +15,8 @@
 """
 
 from collections import Callable
-from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class DashboardItem:

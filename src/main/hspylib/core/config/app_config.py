@@ -17,10 +17,10 @@
 import logging as log
 import os
 from typing import Any, Optional
+
 from hspylib.core.config.properties import Properties
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import dirname, environ_name, log_init
-
 
 APP_CONFIG_FORMAT = """
 AppConfigs
