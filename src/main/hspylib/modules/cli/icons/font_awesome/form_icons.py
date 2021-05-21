@@ -47,6 +47,7 @@ class FormIcons(Awesome):
     LOCKED = '\uF023'          # 
     UNLOCKED = '\uF09C'        # 
     EDITABLE = '\uF044'        # 
+    MASKED = '\uF0CE'          # 
     SELECTABLE = '\uF150'      # 
     DELETE = '\uF014'          # 
     # @formatter:on
