@@ -105,6 +105,7 @@ class MenuInput:
                 # } Navigation input
 
         vt_print('%HOM%%ED2%%MOD(0)%')  # Clean screen before exiting
+        sysout(Vt100.set_show_cursor(True))
 
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
 
