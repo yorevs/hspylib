@@ -17,6 +17,7 @@
 import os
 import sys
 from typing import Any, List
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
@@ -25,7 +26,6 @@ from hspylib.core.tools.commons import get_path, syserr
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.menu.extra.mdashboard.mdashboard import mdashboard
-
 
 HERE = get_path(__file__)
 

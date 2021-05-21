@@ -16,8 +16,9 @@
 
 import signal
 from typing import Any, List
+
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.keyboard import Keyboard
+from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
@@ -25,7 +26,6 @@ from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import set_enable_echo
-
 
 
 def mdashboard(

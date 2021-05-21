@@ -15,8 +15,8 @@
 """
 
 from typing import Any
-from hspylib.modules.cli.application.argument import Argument
 
+from hspylib.modules.cli.application.argument import Argument
 
 
 class ArgumentChain:

@@ -17,9 +17,9 @@
 import re
 from datetime import datetime
 from uuid import UUID
+
 from hspylib.core.model.entity import Entity
 from hspylib.core.tools.validator import DEFAULT_DATE_FORMAT
-
 
 DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
         Name: %GREEN%{}%NC%

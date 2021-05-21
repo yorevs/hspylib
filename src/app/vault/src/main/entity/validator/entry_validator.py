@@ -16,10 +16,10 @@
 
 from datetime import datetime
 from typing import List, Tuple
+
 from hspylib.core.tools.regex_constants import RegexConstants
 from hspylib.core.tools.validator import Validator
 from vault.src.main.entity.vault_entry import VaultEntry
-
 
 
 class EntryValidator(Validator):

@@ -15,8 +15,8 @@
 """
 
 from test.hspylib.shared.entity_test import EntityTest
-from hspylib.core.crud.file.file_repository import FileRepository
 
+from hspylib.core.crud.file.file_repository import FileRepository
 
 
 class FileDbRepositoryTest(FileRepository):
