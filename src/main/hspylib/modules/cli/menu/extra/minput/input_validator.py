@@ -51,14 +51,6 @@ class InputValidator:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_NUMBER)
 
     @staticmethod
-    def token() -> Any:
-        return InputValidator(pattern=InputValidator.RE_FMT_TOKEN)
-
-    @staticmethod
-    def masked() -> Any:
-        return InputValidator(pattern=InputValidator.RE_FMT_MASKED)
-
-    @staticmethod
     def anything(min_length: int = 1, max_length: int = 30) -> Any:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_ANYTHING)
 
