@@ -20,6 +20,7 @@ from abc import ABC
 from typing import Any, List
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.keyboard import Keyboard
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
@@ -51,6 +52,11 @@ def mchoose(
 
 
 class MenuChoose(ABC):
+
+    UNSELECTED = ' '
+    SELECTED = FormIcons.SELECTOR.value
+    MARKED = FormIcons.MARKED.value
+    UNMARKED = FormIcons.UNMARKED.value
 
     NAV_FMT = "{} [Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"
 
@@ -84,8 +90,9 @@ class MenuChoose(ABC):
         
         if length > 0:
             sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
-            vt_print(Vt100.set_auto_wrap(False))
             vt_print('%HOM%%CUD(1)%%ED0%')
+            vt_print(Vt100.set_auto_wrap(False))
+            vt_print(Vt100.set_show_cursor(False))
             vt_print(Vt100.save_cursor())
             
             # Wait for user interaction
@@ -110,14 +117,13 @@ class MenuChoose(ABC):
         
         length = len(self.items)
         dummy, columns = screen_size()
-        vt_print(Vt100.set_show_cursor(False))
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
         
         for idx in range(self.show_from, self.show_to):
-            selector = ' '
-            mark = ' '
+            selector = self.UNSELECTED
+            mark = self.UNMARKED
             if idx >= length:
                 break  # When the number of items is lower than the max_rows, skip the other lines
             option_line = str(self.items[idx])[0:int(columns)]
@@ -125,11 +131,12 @@ class MenuChoose(ABC):
             # Print the selector if the index is current
             if idx == self.sel_index:
                 vt_print(highlight_color.code())
-                selector = '>'
+                selector = self.SELECTED
             # Print the marker if the option is checked
             if self.sel_options[idx] == 1:
-                mark = 'x'
-            fmt = " {:>" + str(len(str(length))) + "}  {:>2} [{}] {}"
+                mark = self.MARKED
+            fmt = " {:>" + str(len(str(length))) + "}{:>" + \
+                  str(1 + len(str(selector))) + "} {:>" + str(len(str(mark))) + "} {}"
             sysout(fmt.format(idx + 1, selector, mark, option_line))
             # Check if the text fits the screen and print it, otherwise print '...'
             if len(option_line) >= int(columns):
@@ -138,7 +145,6 @@ class MenuChoose(ABC):
 
         sysout('\n')
         sysout(MenuChoose.NAV_FMT.format(nav_color.placeholder(), str(length)), end='')
-        vt_print(Vt100.set_show_cursor(True))
         self.re_render = False
 
     def _nav_input(self) -> chr:

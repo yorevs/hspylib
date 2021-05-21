@@ -48,6 +48,9 @@ class Awesome(Enumeration):
     
     def __str__(self) -> str:
         return str(self.value)
+
+    def __repr__(self):
+        return str(self)
     
     def placeholder(self) -> str:
         return f":{self.name}:"
