@@ -47,6 +47,17 @@ class WidgetManager(metaclass=Singleton):
         def __str__(self):
             return f"{self.name}: {self.module}.{self.clazz} => {self.path}"
 
+        def __repr__(self):
+            return str(self)
+
+    @staticmethod
+    def _name_matches(widget_1_name: str, widget_2_name: str):
+        return \
+            widget_1_name.lower() == widget_2_name.lower() \
+            or widget_1_name == widget_2_name.capitalize() \
+            or widget_1_name == camelcase(widget_2_name) \
+            or widget_1_name.lower() == widget_2_name.lower().replace('_', '')
+
     def __init__(self, parent: Any):
         self._parent = parent
         self._widgets = []
@@ -99,7 +110,7 @@ class WidgetManager(metaclass=Singleton):
                 self._widgets.extend(widgets)
 
     def _find_widget(self, widget_name: str):
-        widget_entry = next((w for w in self._widgets if self.name_matches(widget_name, w.name)), None)
+        widget_entry = next((w for w in self._widgets if self._name_matches(widget_name, w.name)), None)
         if not widget_entry:
             raise WidgetNotFoundError(
                 f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
@@ -113,12 +124,3 @@ class WidgetManager(metaclass=Singleton):
         assert isinstance(widget, Widget), \
             'All widgets must inherit from "hspylib.addons.widman.widget.Widget"'
         return widget
-
-    @staticmethod
-    def name_matches(widget_1_name: str, widget_2_name: str):
-        return \
-            widget_1_name.lower() == widget_2_name.lower() \
-            or widget_1_name == widget_2_name.capitalize() \
-            or widget_1_name == camelcase(widget_2_name) \
-            or widget_1_name.lower() == widget_2_name.lower().replace('_', '')
-

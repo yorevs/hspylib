@@ -23,6 +23,7 @@ from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
 
 
 class WidgetTimeCalc(Widget):
@@ -87,10 +88,13 @@ class WidgetTimeCalc(Widget):
         self.total_seconds, seconds = divmod(self.total_seconds, 60)
         hours, minutes = divmod(self.total_seconds, 60)
 
+        sysout('%HOM%%ED2%%MOD(0)%', end='')
         if self.decimal:
-            sysout(f"{hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
+            sysout(f"=> {hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
         else:
-            sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
+            sysout(f"=> {hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
+
+        MenuUtils.wait_enter()
 
         return ret_val
 
