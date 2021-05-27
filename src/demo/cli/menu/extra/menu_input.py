@@ -45,7 +45,6 @@ if __name__ == '__main__':
         .field() \
             .label('checkbox') \
             .itype('checkbox') \
-            .value(False) \
         .build() \
         .field() \
             .label('password') \

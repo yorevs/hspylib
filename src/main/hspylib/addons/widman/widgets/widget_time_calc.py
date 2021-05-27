@@ -90,9 +90,9 @@ class WidgetTimeCalc(Widget):
 
         sysout('%HOM%%ED2%%MOD(0)%', end='')
         if self.decimal:
-            sysout(f"=> {hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
+            sysout(f"{hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
         else:
-            sysout(f"=> {hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
+            sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
 
         MenuUtils.wait_enter()
 

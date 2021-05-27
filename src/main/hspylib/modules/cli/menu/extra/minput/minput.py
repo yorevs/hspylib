@@ -139,24 +139,24 @@ class MenuInput:
                 icon = FormIcons.HIDDEN
                 MInputUtils.mi_print(self.max_value_length, '*' * field_size)
             elif field.itype == InputType.CHECKBOX:
-                icon = FormIcons.EDITABLE
+                icon = FormIcons.MARKED
                 if field.value:
                     MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE))
                 else:
                     MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
             elif field.itype == InputType.SELECT:
-                icon = FormIcons.EDITABLE
+                icon = FormIcons.SELECTABLE
                 field_size = 1
                 if field.value:
                     mat = re.search(r'.*\|?<(.+)>\|?.*', field.value)
                     if mat:
                         sel_value = mat.group(1)
                         MInputUtils.mi_print(
-                            self.max_value_length - 1, f' {sel_value}', str(FormIcons.SELECTABLE))
+                            self.max_value_length, f'{sel_value}')
                     else:
                         sel_value = field.value.split('|')[0]
                         MInputUtils.mi_print(
-                            self.max_value_length - 1, f' {sel_value}', str(FormIcons.SELECTABLE))
+                            self.max_value_length, f'{sel_value}')
             elif field.itype == InputType.MASKED:
                 icon = FormIcons.MASKED
                 value, mask = MInputUtils.unpack_masked(str(field.value))
