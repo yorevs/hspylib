@@ -15,12 +15,13 @@
 """
 
 import os
-from typing import Any
+from typing import Any, List
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.meta.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
 
@@ -29,7 +30,7 @@ HERE = get_path(__file__)
 
 class AppManager(metaclass=Singleton):
     """TODO"""
-    
+
     # The directory containing all template files
     TEMPLATES = (HERE / "templates")
 
@@ -42,71 +43,89 @@ project.ext.set("author", "YourUser")
 project.ext.set("mailTo", "YourEmail")
 project.ext.set("siteUrl", "YourSiteUrl")
 """
-    
+
     class AppType(Enumeration):
         """Possible application creation type"""
-        BASIC = 1
-        GRADLE = 2
-        GIT = 4
-        ALL = 8
-    
+        APP = 'application'
+        WIDGET = 'widget'
+
+    class AppExt(Enumeration):
+        GRADLE = 'gradle'
+        GIT = 'git'
+
     def __init__(self, parent: Any):
         self.parent = parent
         self.app_name = None
         self.app_dir = None
         self.init_gradle = False
         self.init_git = False
-    
-    def create_app(self, app_name: str, app_type: AppType, dest_dir: str) -> None:
+
+    def create(self, app_name: str, app_type: AppType, app_ext: List[AppExt], dest_dir: str) -> None:
         """Create the application based on the parameters"""
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')
         try:
             assert os.path.exists(dest_dir), f'Destination not found: {dest_dir}'
             self.app_name = app_name
-            self.app_dir = f'{dest_dir}/{app_name}'
-            sysout(f'App: {app_name}')
-            self._mkdir('')
-            self._mkdir('src')
-            self._mkdir('src/test')
-            self._mkfile('src/test/test_main.py', (self.TEMPLATES / "tpl-test_main.py").read_text())
-            self._mkdir('src/main')
-            self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
-            self._mkfile('src/main/.version', '0.1.0')
-            self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
-            self._mkdir('src/main/resources')
-            self._mkdir('src/test/resources')
-            self._mkfile('src/main/resources/application.properties', '# Main application property file')
-            self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
-            self._mkdir('src/main/resources/log')
-            self._mkdir('src/test/resources/log')
-            self._mkfile('README.md', f'# {app_name}')
-            self._mkfile('MANIFEST.in')
-            self._mkfile('.env', '# Type in here the environment variables your app requires')
-            self._mkfile('run-it.sh', (self.TEMPLATES / "tpl-run-it.sh").read_text())
-            os.chmod(f'{self.app_dir}/run-it.sh', 0o755)
-            if app_type in [AppManager.AppType.GRADLE, AppManager.AppType.ALL]:
-                self._init_gradle(app_name)
-            if app_type in [AppManager.AppType.GIT, AppManager.AppType.ALL]:
-                self._init_git()
+            if app_type == self.AppType.APP:
+                self.app_dir = f'{dest_dir}/{app_name}'
+                self._create_app(app_name, app_ext)
+            elif app_type == self.AppType.WIDGET:
+                self.app_dir = f'{dest_dir}'
+                self._create_widget(app_name)
         except OSError as err:
             syserr(f"Creation of the application {dest_dir}/{app_name} failed")
             syserr(str(err))
         else:
-            sysout(f"Successfully created the application {dest_dir}/{app_name}")
-    
+            sysout(f"Successfully created the {app_type.value} {app_name}")
+
+    def _create_app(self, app_name: str, app_ext: List[AppExt]):
+        sysout(f'App: {app_name}')
+        self._mkdir('')
+        self._mkdir('src')
+        self._mkdir('src/test')
+        self._mkfile('src/test/test_main.py', (self.TEMPLATES / "tpl-test_main.py").read_text())
+        self._mkdir('src/main')
+        self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
+        self._mkfile('src/main/.version', '0.1.0')
+        self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
+        self._mkdir('src/main/resources')
+        self._mkdir('src/test/resources')
+        self._mkfile('src/main/resources/application.properties', '# Main application property file')
+        self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
+        self._mkdir('src/main/resources/log')
+        self._mkdir('src/test/resources/log')
+        self._mkfile('README.md', f'# {app_name}')
+        self._mkfile('MANIFEST.in')
+        self._mkfile('.env', '# Type in here the environment variables your app requires')
+        self._mkfile('run-it.sh', (self.TEMPLATES / "tpl-run-it.sh").read_text())
+        os.chmod(f'{self.app_dir}/run-it.sh', 0o755)
+
+        if self.AppExt.GRADLE in app_ext:
+            self._init_gradle(app_name)
+        if self.AppExt.GIT in app_ext:
+            self._init_git()
+
+    def _create_widget(self, app_name: str):
+        widget_name = camelcase(app_name).replace('_', '').replace(' ', '')
+        sysout(f'Widget: {widget_name}')
+        self._mkfile(
+            f"widget_{app_name.lower()}.py",
+            (self.TEMPLATES / "tpl-widget.py").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
+        )
+
     def _mkdir(self, dirname: str) -> None:
         """Create a directory from the destination path"""
         dir_path = f"{self.app_dir}/{dirname}"
         sysout(f'  |- {dir_path}')
         os.mkdir(dir_path)
-    
+
     def _mkfile(self, filename: str, contents: str = '') -> None:
         """Create a file from the destination path with the specified contents"""
         file_path = f"{self.app_dir}/{filename}"
         sysout(f'  |- {file_path}')
         with open(f'{file_path}', 'w') as fh:
             fh.write(contents)
-    
+
     def _init_gradle(self, app_name: str) -> None:
         """Initialize the as a gradle project"""
         sysout('Initializing gradle project')
@@ -129,13 +148,13 @@ project.ext.set("siteUrl", "YourSiteUrl")
         result = Terminal.shell_exec(
             './gradlew build', cwd=self.app_dir)
         sysout('Gradle execution result: {}'.format(result))
-    
+
     def _download_ext(self, extension: str) -> None:
         """Download a gradle extension from the HSPyLib repository"""
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')
         assert resp.status_code == HttpCode.OK, f'Unable to download {extension}'
         self._mkfile(f'gradle/{extension}', resp.body)
-    
+
     def _init_git(self) -> None:
         """Initialize a git repository for the project"""
         self._mkfile('src/main/resources/log/.gitkeep')
