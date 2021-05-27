@@ -18,8 +18,9 @@ import re
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
-from hspylib.core.tools.commons import human_readable_bytes
+from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.terminal import Terminal
 
 
@@ -75,13 +76,16 @@ class WidgetFree(Widget):
         free, fu = human_readable_bytes(vm_stats["Pages free"])
         real, ru = human_readable_bytes(rss_total)  # Total memory
 
-        print(f"\nReporting system memory usage: \n{'-' * 30}")
-        print('    Wired Memory: %06s %s' % (wired, wu))
-        print('   Active Memory: %06s %s' % (active, au))
-        print(' Inactive Memory: %06s %s' % (inactive, iu))
-        print('     Free Memory: %06s %s' % (free, fu))
-        print('     Real Memory: %06s %s' % (real, ru))
-        print(' ')
+        sysout('%HOM%%ED2%%MOD(0)%', end='')
+        sysout(f"\n%ORANGE%Reporting system memory usage:%NC% \n{'-' * 30}")
+        sysout(f"    %GREEN%Wired Memory%NC%: {wired:6s} {wu:2s}")
+        sysout(f"   %GREEN%Active Memory%NC%: {active:6s} {au:2s}")
+        sysout(f" %GREEN%Inactive Memory%NC%: {inactive:6s} {iu:2s}")
+        sysout(f"     %GREEN%Free Memory%NC%: {free:6s} {fu:2s}")
+        sysout(f"     %GREEN%Real Memory%NC%: {real:6s} {ru:2s}")
+        sysout(' ')
+
+        MenuUtils.wait_enter()
 
         return ExitCode.SUCCESS
 
