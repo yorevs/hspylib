@@ -28,7 +28,7 @@ from hspylib.modules.cli.menu.menu_utils import MenuUtils
 
 class WidgetTimeCalc(Widget):
 
-    WIDGET_ICON = WidgetIcons.TCALC
+    WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
     TOOLTIP = "Calculate time based operations."
     USAGE = "Usage: TimeCalc [-d|--decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
@@ -36,11 +36,11 @@ class WidgetTimeCalc(Widget):
 
     def __init__(self):
         super().__init__(
-            WidgetTimeCalc.WIDGET_ICON,
-            WidgetTimeCalc.WIDGET_NAME,
-            WidgetTimeCalc.TOOLTIP,
-            WidgetTimeCalc.USAGE,
-            WidgetTimeCalc.VERSION)
+            self.WIDGET_ICON,
+            self.WIDGET_NAME,
+            self.TOOLTIP,
+            self.USAGE,
+            self.VERSION)
 
         self.total_seconds = 0
         self.op = '+'

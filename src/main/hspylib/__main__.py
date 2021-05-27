@@ -21,7 +21,6 @@ from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.tools.commons import get_path, read_version, run_dir, syserr, sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
 
 HERE = get_path(__file__)
 
@@ -49,12 +48,13 @@ class Main(Application):
             self.usage()
         else:
             # @formatter:off
+            self._with_option('d', 'dest-dir', True)
             self._with_arguments(
                 ArgumentChain.builder()
                     .when('operation', 'create')
                         .require('app-name', '.+')
-                        .require('mng-type', 'basic|gradle|git|all')
-                        .accept('dest-dir', '.+')
+                        .require('app-type', 'app|widget')
+                        .accept('app-ext', '.*')
                         .end()
                     .when('operation', 'widgets')
                         .accept('widget-name', '.+')
@@ -73,10 +73,13 @@ class Main(Application):
         op = self.getarg('operation')
         if op == 'create':
             manager = AppManager(self)
-            manager.create_app(
+            app_type = AppManager.AppType.value_of(self.getarg('app-type'))
+            exts = self.getarg('app-ext').split(',') if self.getarg('app-ext') else []
+            manager.create(
                 self.getarg('app-name'),
-                AppManager.AppType.value_of(self.getarg('mng-type'), ignore_case=True),
-                self.getarg('dest-dir') or run_dir())
+                app_type,
+                list(map(AppManager.AppExt.value_of, exts)),
+                self.getopt('dest-dir') or run_dir())
         elif op == 'widgets':
             manager = WidgetManager(self)
             widget_name = self.getarg('widget-name')

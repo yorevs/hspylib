@@ -29,7 +29,7 @@ class Enumeration(Enum):
         return list(map(lambda e: e.value, cls))
     
     @classmethod
-    def value_of(cls, name: str, ignore_case: bool = False) -> Any:
+    def value_of(cls, name: str, ignore_case: bool = True) -> Any:
         if ignore_case:
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:

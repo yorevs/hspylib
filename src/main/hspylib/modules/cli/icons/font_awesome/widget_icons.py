@@ -24,9 +24,15 @@ class WidgetIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    FREE = '\uFB19'   # ﬙
-    TCALC = '\uF651'  # 
-    MSEND = '\uF819'  # 
+    WIDGET = '\uFC65'    # ﱥ
+    DATABASE = '\uFB19'  # ﬙
+    CLOCK = '\uF651'     # 
+    NETWORK = '\uF819'   # 
+    CHART_1 = '\uFC67'   # ﱨ
+    CHART_2 = '\uFC68'   # ﱩ
+    MUSIC = '\uFC6E'     # ﱯ
+    SIGN = '\uFC7E'      # ﱿ
+    SWORDS = '\uFC84'    # ﲅ
 
 if __name__ == '__main__':
     WidgetIcons.demo_icons()
