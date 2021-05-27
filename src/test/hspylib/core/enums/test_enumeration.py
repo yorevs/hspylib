@@ -42,17 +42,17 @@ class TestClass(unittest.TestCase):
     
     # TC2 - Test value of from strings ignoring case.
     def test_should_convert_string_to_enum_ignoring_case(self):
-        self.assertEqual(self.MyIntEnum.ENUM_1, self.MyIntEnum.value_of('enum_1', ignore_case=True))
-        self.assertEqual(self.MyIntEnum.ENUM_2, self.MyIntEnum.value_of('EnuM_2', ignore_case=True))
-        self.assertEqual(self.MyIntEnum.ENUM_3, self.MyIntEnum.value_of('ENum_3', ignore_case=True))
-        self.assertEqual(self.MyIntEnum.ENUM_4, self.MyIntEnum.value_of('enUM_4', ignore_case=True))
+        self.assertEqual(self.MyIntEnum.ENUM_1, self.MyIntEnum.value_of('enum_1'))
+        self.assertEqual(self.MyIntEnum.ENUM_2, self.MyIntEnum.value_of('EnuM_2'))
+        self.assertEqual(self.MyIntEnum.ENUM_3, self.MyIntEnum.value_of('ENum_3'))
+        self.assertEqual(self.MyIntEnum.ENUM_4, self.MyIntEnum.value_of('enUM_4'))
     
     # TC3 - Test value of from strings not ignoring case.
     def test_should_not_convert_string_to_enum_when_not_ignoring_case(self):
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'enum_1')
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'EnuM_2')
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'ENum_3')
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'enUM_4')
+        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'enum_1', ignore_case=False)
+        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'EnuM_2', ignore_case=False)
+        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'ENum_3', ignore_case=False)
+        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'enUM_4', ignore_case=False)
     
     # TC4 - Test of value from Any
     def test_should_convert_value_to_enum(self):
