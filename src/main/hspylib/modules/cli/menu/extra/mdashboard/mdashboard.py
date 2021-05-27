@@ -38,9 +38,12 @@ def mdashboard(
 
 
 class MenuDashBoard:
+
+    ICN = 'X'
+
     CELL_TPL = [
         [' ', ' ', ' ', ' ', ' ', ' ',' ', ' '],
-        [' ', ' ', ' ', 'X', ' ', ' ',' ', ' '],
+        [' ', ' ', ' ', ICN, ' ', ' ',' ', ' '],
         [' ', ' ', ' ', ' ', ' ', ' ',' ', ' ']
     ]
     
@@ -91,11 +94,11 @@ class MenuDashBoard:
             while not self.done and ret_val != Keyboard.VK_ENTER and ret_val != Keyboard.VK_ESC:
                 # Menu Renderization {
                 if self.re_render:
-                    self.__render__(nav_color)
+                    self._render(nav_color)
                 # } Menu Renderization
                 
                 # Navigation input {
-                ret_val = self.__nav_input__()
+                ret_val = self._nav_input()
                 self.re_render = True
                 # } Navigation input
         
@@ -108,41 +111,34 @@ class MenuDashBoard:
 
         return selected
     
-    def __render__(self, nav_color: VtColors) -> None:
-        # Restore the cursor to the home position
-        vt_print(Vt100.restore_cursor())
+    def _render(self, nav_color: VtColors) -> None:
+        vt_print(Vt100.restore_cursor())  # Restore the cursor to the home position
         sysout('%NC%')
         set_enable_echo()
-        # Print cells
-        for idx, item in enumerate(self.items):
+        for idx, item in enumerate(self.items):  # Print all cells
             if self.tab_index != idx:
-                self.__print_cell__(idx, item, MenuDashBoard.CELL_TPL)
+                self._print_cell(idx, item, MenuDashBoard.CELL_TPL)
             else:
-                self.__print_cell__(idx, item, MenuDashBoard.SEL_CELL_TPL)
-        # Print selected tab tooltip
-        sysout(f'\r%EL2%> %GREEN%{self.items[self.tab_index].tooltip}%NC%\n\n')
+                self._print_cell(idx, item, MenuDashBoard.SEL_CELL_TPL)
+        sysout(f'\r%EL2%> %GREEN%{self.items[self.tab_index].tooltip}%NC%\n\n')  # Print selected item tooltip
         sysout(MenuDashBoard.NAV_FMT.format(nav_color.placeholder()), end='')
     
-    def __print_cell__(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
+    def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
         num_cols = len(cell_template[0])
         num_rows = len(cell_template)
         for row in range(0, num_rows):
             for col in range(0, num_cols):
-                if cell_template[row][col] == 'X':
+                if cell_template[row][col] == self.ICN:  # Icon mark is found
                     vt_print(f'{item.icon}')
                 else:
                     vt_print(f'{cell_template[row][col]}')
             vt_print(f'%CUD(1)%%CUB({num_cols})%')
         if idx > 0 and (idx + 1) % self.items_per_line == 0:
-            # Break the line
-            vt_print(f'%CUD(1)%%CUB({num_cols * self.items_per_line})%')
+            vt_print(f'%CUD(1)%%CUB({num_cols * self.items_per_line})%')  # Break the line
         elif idx + 1 < len(self.items):
-            # Same line
-            vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')
-        else:
-            vt_print('%CUD(1)%%EL2%')
-    
-    def __nav_input__(self) -> chr:
+            vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')  # Continue with the same line
+
+    def _nav_input(self) -> chr:
         length = len(self.items)
         keypress = Keyboard.read_keystroke()
         

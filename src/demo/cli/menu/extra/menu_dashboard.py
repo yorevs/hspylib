@@ -52,4 +52,4 @@ if __name__ == '__main__':
             .build() \
         .build()
     # @formatter:on
-    result = mdashboard(dashboard_items, 3)
+    result = mdashboard(dashboard_items, 6)
