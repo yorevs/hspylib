@@ -82,7 +82,6 @@ class WidgetManager(metaclass=Singleton):
     def dashboard(self) -> None:
         """Display all available widgets from the lookup paths"""
         items = []
-        widget = None
         try:
             for widget_entry in self._widgets:
                 widget = self._find_widget(widget_entry.name)
