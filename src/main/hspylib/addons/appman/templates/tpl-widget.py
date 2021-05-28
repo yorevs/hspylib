@@ -35,6 +35,6 @@ class Widget_WIDGET_NAME_(Widget):
 
         return ExitCode.SUCCESS
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         # If your widget requires any cleanup procedures
         pass

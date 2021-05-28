@@ -48,7 +48,7 @@ HSPyLib Widget: {} v{}
         """Execute the widget main flow"""
 
     @abstractmethod
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Execute the widget cleanup"""
 
     def icon(self) -> Awesome:
