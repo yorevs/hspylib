@@ -17,12 +17,11 @@
 import random
 import re
 
-from hspylib.core.tools.commons import get_or_default
+from hspylib.core.tools.commons import get_or_default, human_readable_bytes
 
 
 def fit_text(text: str, width: int) -> str:
     return text if len(text) <= width else text[0:width - 3] + '...'
-
 
 def rand_string(choices: str, length: int) -> str:
     return ''.join(random.choices(choices, k=length))

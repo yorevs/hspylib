@@ -89,5 +89,5 @@ class WidgetFree(Widget):
 
         return ExitCode.SUCCESS
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         pass
