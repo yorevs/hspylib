@@ -5,16 +5,16 @@ Usage: hspylib [options] <operation> <arguments>
   Options:
     -v |  --version  : Display current program version and exit.
     -h |     --help  : Display this help message and exit.
+    -d | --dist-dir  : Set the destination directory. If omitted, the current directory will be used.
 
   Operations:
-     create <app_name> <app_type> [dest_dir] : Create an HSPyLib based application.
+     create <app_name> <app_type> <app_ext>  : Create an HSPyLib based application.
     widgets [widget_name]                    : Execute or list HS widgets.
 
   Arguments:
     app_name     : The application name.
-    app_type     : One of basic|gradle|git|all. "basic" is going to scaffold a basic app based on HSPyLib application
-                   structure. "gradle" is going to initialize you project with gradle (requires gradle installed).
-                   "git" is going to initialize a git repository (requires git installed). "all" is going to create a
-                   gradle project and also initialize a git repository.
-    dest_dir     : Destination directory. If omitted, the current directory will be used.
+    app_type     : One of app|widget. "app" is going to scaffold a basic app based on HSPyLib application
+                   structure. "widget" is going to create an HSPyLib widget.
+     app_ext     : One or more [gradle, git]. "gradle" is going to initialize you project with gradle (requires gradle
+                   installed). "git" is going to initialize a git repository (requires git installed).
     widget_name  : The name of the widget to be executed. If omitted, all available widgets will be listed.

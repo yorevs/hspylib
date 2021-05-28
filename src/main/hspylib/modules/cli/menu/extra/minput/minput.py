@@ -255,7 +255,7 @@ class MenuInput:
         else:
             if len(str(self.cur_field.value)) < self.cur_field.max_length:
                 if self.cur_field.validate(keypress.value):
-                    self.cur_field.value += keypress.value
+                    self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                 else:
                     self._display_error(
                         f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !"
