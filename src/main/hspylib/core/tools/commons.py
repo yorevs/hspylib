@@ -19,6 +19,7 @@ import os
 import pathlib
 import re
 import sys
+from datetime import timedelta
 from typing import Any, List, Optional, Tuple, Type
 
 from hspylib.core.tools.validator import Validator
@@ -58,6 +59,14 @@ def log_init(
         filemode=f_mode)
     
     return log
+
+
+
+def is_debugging():
+  for frame in inspect.stack():
+    if frame[1].endswith("pydevd.py"):
+      return True
+  return False
 
 
 def read_version(version_filepath: str = ".version") -> Tuple:
@@ -242,8 +251,15 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
 
     return ret_val, ret_unit
 
-def is_debugging():
-  for frame in inspect.stack():
-    if frame[1].endswith("pydevd.py"):
-      return True
-  return False
+def human_readable_time(time_us: int):
+    delta = timedelta(microseconds=time_us)
+    total_seconds = delta.seconds
+    seconds = total_seconds % 60
+    minutes = total_seconds / 60 % 60
+    hours = total_seconds / 3600
+    microseconds = delta.microseconds
+    # Using format: HH:MM:SS.uuuuuu
+    str_line = f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
+
+    return str_line
+
