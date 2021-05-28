@@ -51,11 +51,10 @@ class MInputUtils(ABC):
             return '|'.join([
                 f'<{val}>'
                 if
-                idx == (cur_idx + 1)
-                or ((cur_idx + 1) >= len(unselected) and idx == 0)
+                    idx == (cur_idx + 1)
+                    or ((cur_idx + 1) >= len(unselected) and idx == 0)
                 else
-                val
-                for idx, val in enumerate(unselected)
+                    val for idx, val in enumerate(unselected)
             ])
             # @formatter:on
 
@@ -63,12 +62,10 @@ class MInputUtils(ABC):
     def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:
         values = tokenized_values.split('|')
         # @formatter:off
-        sel_item = next(
-            (
-                val.replace('<', '').replace('>', '')
-                for val in values if val.startswith('<') and val.endswith('>')
-            ), values[0]
-        )
+        sel_item = next((
+            val.replace('<', '').replace('>', '')
+            for val in values if val.startswith('<') and val.endswith('>')
+        ), values[0])
         # @formatter:on
         try:
             return values.index(sel_item), sel_item
@@ -108,5 +105,6 @@ class MInputUtils(ABC):
                 masked_value += value[idx] if idx < len(value) else '_'
             else:
                 masked_value += element
+
         return masked_value
 

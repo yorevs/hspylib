@@ -65,14 +65,11 @@ class MenuInput:
     def __init__(self, all_fields: List[Any]):
         self.all_fields = all_fields
         self.all_pos = [(0, 0) for _ in all_fields]
-        self.cur_field = None
-        self.cur_row = 0
-        self.cur_col = 0
-        self.tab_index = 0
+        self.cur_field = self.done = None
+        self.cur_row = self.cur_col = self.tab_index = 0
         self.max_label_length = max([len(field.label) for field in all_fields])
         self.max_value_length = max([field.max_length for field in all_fields])
         self.max_detail_length = max([MInputUtils.detail_len(field) for field in all_fields])
-        self.done = None
         self.re_render = True
 
     def input(
@@ -122,17 +119,15 @@ class MenuInput:
                 MInputUtils.mi_print(self.max_label_length, camelcase(field.label))
             else:
                 MInputUtils.mi_print(self.max_label_length, camelcase(field.label), MenuInput.SELECTED_BG)
-                # Buffering the all positions to avoid calling get_cursor_pos
+                # Buffering the all positions to avoid calling get_cursor_pos over and over
                 f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
                 if f_pos:
                     self.cur_row = f_pos[0]
                     self.cur_col = f_pos[1] + field_size
                     self.all_pos[idx] = f_pos
-                # Keep the selected field on hand
-                self.cur_field = field
+                self.cur_field = field  # Keep the selected field on hand
 
-            # Choose the icon to display
-            if field.itype == InputType.TEXT:
+            if field.itype == InputType.TEXT:  # Choose the icon to display
                 icon = FormIcons.EDITABLE
                 MInputUtils.mi_print(self.max_value_length, field.value)
             elif field.itype == InputType.PASSWORD:
@@ -165,8 +160,7 @@ class MenuInput:
             if field.access_type == AccessType.READ_ONLY:
                 icon = FormIcons.LOCKED
 
-            # Remaining/max characters
-            padding = 1 - len(str(self.max_detail_length / 2))
+            padding = 1 - len(str(self.max_detail_length / 2))  # Remaining/max characters
             fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
             if field.itype == InputType.SELECT:
                 idx, _ = MInputUtils.get_selected(field.value)
@@ -177,8 +171,7 @@ class MenuInput:
             else:
                 sysout(fmt.format(icon, field_size, field.max_length))
 
-        sysout('\n')
-        sysout(MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
+        sysout('\n' + MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
         self.re_render = False
 
     def _nav_input(self) -> chr:

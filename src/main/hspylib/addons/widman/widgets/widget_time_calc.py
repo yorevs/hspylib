@@ -94,8 +94,6 @@ class WidgetTimeCalc(Widget):
         else:
             sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
 
-        MenuUtils.wait_enter()
-
         return ret_val
 
     def cleanup(self):
