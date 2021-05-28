@@ -16,18 +16,17 @@
 
 import re
 import typing
-from typing import Any
 
 
 class InputValidator:
     RE_FMT_LETTER = r'^[a-zA-Z]{%min%,%max%}$'
     RE_FMT_WORD = r'^[a-zA-Z0-9 _]{%min%,%max%}$'
-    RE_FMT_NUMBER = r'^[0-9]{%min%,%max%}$'
+    RE_FMT_NUMBER = r'^[0-9\.]{%min%,%max%}$'
     RE_FMT_TOKEN = r'^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$'
     RE_FMT_MASKED = r'.*\|.+'
     RE_FMT_ANYTHING = r'^.{%min%,%max%}$'
 
-    def __init__(self, min_length: int = 1, max_length: int = 30, pattern: typing.re = None):
+    def __init__(self, min_length: int = 1, max_length: int = 30, pattern: str = None):
         self._min_length = min_length
         self._max_length = max_length
         self._pattern = pattern or self.RE_FMT_ANYTHING
@@ -39,23 +38,23 @@ class InputValidator:
         return str(self)
 
     @staticmethod
-    def letters(min_length: int = 1, max_length: int = 30) -> Any:
+    def letters(min_length: int = 1, max_length: int = 30) -> typing.Any:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_LETTER)
 
     @staticmethod
-    def words(min_length: int = 1, max_length: int = 30) -> Any:
+    def words(min_length: int = 1, max_length: int = 30) -> typing.Any:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_WORD)
 
     @staticmethod
-    def numbers(min_length: int = 1, max_length: int = 30) -> Any:
+    def numbers(min_length: int = 1, max_length: int = 30) -> typing.Any:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_NUMBER)
 
     @staticmethod
-    def anything(min_length: int = 1, max_length: int = 30) -> Any:
+    def anything(min_length: int = 1, max_length: int = 30) -> typing.Any:
         return InputValidator(min_length, max_length, InputValidator.RE_FMT_ANYTHING)
 
     @staticmethod
-    def custom(pattern: typing.re) -> Any:
+    def custom(pattern: str) -> typing.Any:
         return InputValidator(pattern=pattern)
 
     def validate(self, value: str) -> bool:
@@ -63,4 +62,6 @@ class InputValidator:
         return re.search(regex, value) is not None
 
     def _get_pattern(self):
-        return self._pattern.replace('%min%', str(self._min_length)).replace('%max%', str(self._max_length))
+        return self._pattern\
+            .replace('%min%', str(self._min_length or 1)) \
+            .replace('%max%', str(self._max_length or 30))
