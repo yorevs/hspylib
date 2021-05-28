@@ -82,7 +82,7 @@ class WidgetManager(metaclass=Singleton):
     def dashboard(self) -> None:
         """Display all available widgets from the lookup paths"""
         items = []
-        widget_entry = None
+        widget = None
         try:
             for widget_entry in self._widgets:
                 widget = self._find_widget(widget_entry.name)
@@ -95,7 +95,7 @@ class WidgetManager(metaclass=Singleton):
             mdashboard(items, 6, 'Please select a widget to execute')
         except Exception as err:
             syserr("Current widget paths: \n{}".format('\n'.join(self._lookup_paths)))
-            raise WidgetExecutionError(f"Unable to access widget '{widget_entry.name}' -> {err}") from err
+            raise WidgetExecutionError(f"Failed to execute widget :: {err}") from err
 
     def _load_widgets(self):
         """Search and load all widgets from the lookup paths"""
