@@ -5,4 +5,5 @@ IP: In-progress
 
 1. [ ] NS **Improvement**: Check if execute SQLs, use params instead of values inside sql string.
 2. [ ] NS **New-Feature**: Add a repository for the PostgresSql, SQLite db + tests.
-3. [ ] NS **Improvement**: Each input type should render it's own text.
+3. [ ] NS **Improvement**: Each minput type should render it's own text.
+4. [ ] NS **Improvement**: Include a form validator for minput.

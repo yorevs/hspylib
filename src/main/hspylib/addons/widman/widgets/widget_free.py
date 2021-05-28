@@ -13,14 +13,15 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import re
+import threading
+from time import sleep
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.terminal import Terminal
 
 
@@ -39,15 +40,27 @@ class WidgetFree(Widget):
             self.TOOLTIP,
             self.USAGE,
             self.VERSION)
+        self.is_alive = True
+        self.report_interval = 1.5
 
 
     def execute(self, *args) -> ExitCode:
-        # Get process info
-        ps = Terminal.shell_exec('ps -caxm -orss,comm')
+
+        while not Keyboard.kbhit():
+            tr = threading.Thread(target=self._report_usage)
+            tr.start()
+            sleep(self.report_interval)
+
+        return ExitCode.SUCCESS
+
+    def cleanup(self) -> None:
+        pass
+
+    def _report_usage(self):
+        ps = Terminal.shell_exec('ps -caxm -orss,comm')  # Get process info
         vm = Terminal.shell_exec('vm_stat')
 
-        # Iterate processes
-        process_lines = ps.split('\n')
+        process_lines = ps.split('\n')  # Iterate processes
         sep = re.compile(' +')
         rss_total = 0  # kB
 
@@ -60,8 +73,7 @@ class WidgetFree(Widget):
                 rss = 0
             rss_total += rss
 
-        # Process vm_stat
-        vm_lines = vm.split('\n')
+        vm_lines = vm.split('\n')  # Process vm_stat
         sep = re.compile(': +')
         vm_stats = {}
 
@@ -83,11 +95,4 @@ class WidgetFree(Widget):
         sysout(f" %GREEN%Inactive Memory%NC%: {inactive:6s} {iu:2s}")
         sysout(f"     %GREEN%Free Memory%NC%: {free:6s} {fu:2s}")
         sysout(f"     %GREEN%Real Memory%NC%: {real:6s} {ru:2s}")
-        sysout(' ')
-
-        MenuUtils.wait_enter()
-
-        return ExitCode.SUCCESS
-
-    def cleanup(self) -> None:
-        pass
+        sysout('\n%YELLOW%Press [Enter] to exit ...%NC%', end='')
