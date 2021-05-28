@@ -16,6 +16,7 @@
 
 import string
 import sys
+from select import select
 from typing import Any, Optional
 
 import getkey
@@ -143,11 +144,20 @@ class Keyboard(Enumeration):
     VK_PERIOD = '.'
     VK_SLASH = '/'
     VK_QUESTION_MARK = '?'
-    
+
+    @staticmethod
+    def kbhit():
+        dr, dw, de = select([sys.stdin], [], [], 0)
+        return dr != []
+
+    @staticmethod
+    def getch():
+        return sys.stdin.read(1)
+
     @classmethod
-    def read_keystroke(cls) -> Optional[Any]:
+    def read_keystroke(cls, blocking=True) -> Optional[Any]:
         try:
-            keystroke = getkey.getkey()
+            keystroke = getkey.getkey(blocking)
             if keystroke:
                 return cls.of_value(keystroke)
 
