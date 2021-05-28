@@ -262,8 +262,8 @@ class MenuInput:
                 value = value[:-1]
             self.cur_field.value = f"{value}|{mask}"
         elif self.cur_field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
-            if self.cur_field.can_write() and len(self.cur_field.value) >= 1:
-                self.cur_field.value = self.cur_field.value[:-1]
+            if self.cur_field.can_write() and len(str(self.cur_field.value)) >= 1:
+                self.cur_field.value = str(self.cur_field.value)[:-1]
             elif not self.cur_field.can_write():
                 self._display_error('This field is read only !')
 
