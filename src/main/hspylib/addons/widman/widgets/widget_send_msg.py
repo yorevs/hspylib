@@ -24,7 +24,6 @@ from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.regex_constants import RegexConstants
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
