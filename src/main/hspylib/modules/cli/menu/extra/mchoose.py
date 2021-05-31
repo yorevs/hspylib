@@ -150,7 +150,12 @@ class MenuChoose(ABC):
 
     def _nav_input(self) -> chr:
         length = len(self.items)
-        keypress = Keyboard.read_keystroke()
+        keypress = None
+
+        try:
+            keypress = Keyboard.read_keystroke()
+        except (KeyboardInterrupt, AssertionError) as err:
+            pass
 
         if not keypress:
             return None
