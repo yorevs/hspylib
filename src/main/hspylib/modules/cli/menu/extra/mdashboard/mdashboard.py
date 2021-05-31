@@ -17,7 +17,7 @@
 import signal
 from typing import Any, List
 
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, syserr
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
@@ -140,7 +140,12 @@ class MenuDashBoard:
 
     def _nav_input(self) -> chr:
         length = len(self.items)
-        keypress = Keyboard.read_keystroke()
+        keypress = None
+
+        try:
+            keypress = Keyboard.read_keystroke()
+        except (KeyboardInterrupt, AssertionError) as err:
+            pass
         
         if not keypress:
             return None

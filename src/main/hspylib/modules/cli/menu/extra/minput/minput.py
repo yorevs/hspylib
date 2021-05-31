@@ -101,7 +101,6 @@ class MenuInput:
                 # } Navigation input
 
         vt_print('%HOM%%ED2%%MOD(0)%')  # Clean screen before exiting
-        sysout(Vt100.set_show_cursor(True))
 
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
 
@@ -112,12 +111,15 @@ class MenuInput:
         set_enable_echo()
 
         for idx, field in enumerate(self.all_fields):
+
             field_size = len(str(field.value))
-            MInputUtils.mi_print(
-                self.max_label_length, camelcase(field.label),
-                MenuInput.SELECTED_BG if self.tab_index == idx else None)
+            if self.tab_index == idx:
+                MInputUtils.mi_print(self.max_label_length, camelcase(field.label), MenuInput.SELECTED_BG)
+                self.cur_field = field
+            else:
+                MInputUtils.mi_print(self.max_label_length, camelcase(field.label))
+
             self._buffer_pos(field_size, idx)
-            self.cur_field = field
 
             if field.itype == InputType.TEXT:
                 MInputUtils.mi_print(self.max_value_length, field.value)
@@ -147,9 +149,10 @@ class MenuInput:
         # Buffering the all positions to avoid calling get_cursor_pos over and over
         f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
         if f_pos:
-            self.cur_row = f_pos[0]
-            self.cur_col = f_pos[1] + field_size
             self.all_pos[idx] = f_pos
+            if self.tab_index == idx:
+                self.cur_row = f_pos[0]
+                self.cur_col = f_pos[1] + field_size
 
     def _render_details(self, field: Any, field_size: int) -> None:
         # Print details about total/remaining field characters
@@ -166,7 +169,14 @@ class MenuInput:
 
     def _nav_input(self) -> chr:
         length = len(self.all_fields)
-        keypress = Keyboard.read_keystroke()
+        vt_print(f"%CUP({self.cur_row};{self.cur_col})%")
+        vt_print(Vt100.set_show_cursor(True))
+        keypress = None
+
+        try:
+            keypress = Keyboard.read_keystroke()
+        except (KeyboardInterrupt, AssertionError) as err:
+            self._display_error(str(err))
 
         if not keypress:
             return None
@@ -216,17 +226,10 @@ class MenuInput:
     def _handle_input(self, keypress: chr):
         if self.cur_field.itype == InputType.CHECKBOX:
             if keypress == Keyboard.VK_SPACE:
-                if not self.cur_field.can_write():
-                    self._display_error('This field is read only !')
-                elif not self.cur_field.value:
-                    self.cur_field.value = 1
-                else:
-                    self.cur_field.value = 0
+                self.cur_field.value = 1 if not self.cur_field.value else 0
         elif self.cur_field.itype == InputType.SELECT:
             if keypress == Keyboard.VK_SPACE:
-                if not self.cur_field.can_write():
-                    self._display_error('This field is read only !')
-                elif self.cur_field.value:
+                if self.cur_field.value:
                     self.cur_field.value = MInputUtils.toggle_selected(str(self.cur_field.value))
         elif self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
@@ -241,8 +244,7 @@ class MenuInput:
                     self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                 else:
                     self._display_error(
-                        f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !"
-                    )
+                        f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !")
 
     def _handle_backspace(self):
         if self.cur_field.itype == InputType.MASKED:

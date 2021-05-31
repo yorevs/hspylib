@@ -160,10 +160,6 @@ class Keyboard(Enumeration):
             keystroke = getkey.getkey(blocking)
             if keystroke:
                 return cls.of_value(keystroke)
-
-            return None
-        except (KeyboardInterrupt, AssertionError) as err:
-            syserr(str(err))
         finally:
             sys.stdin.flush()
 
