@@ -16,6 +16,7 @@
 
 from typing import Any
 
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.menu.extra.minput.access_type import AccessType
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
@@ -38,6 +39,7 @@ class FormField:
         self.min_length = min_length
         self.max_length = max_length
         self.access_type = access_type
+        self._set_icon()
         self.validator = validator or InputValidator.anything(min_length, max_length)
 
     def __str__(self) -> str:
@@ -45,6 +47,18 @@ class FormField:
 
     def __repr__(self):
         return str(self)
+
+    def _set_icon(self) -> None:
+        if self.access_type == AccessType.READ_ONLY:
+            self.icon = FormIcons.LOCKED
+        elif self.itype == InputType.PASSWORD:
+            self.icon = FormIcons.HIDDEN
+        elif self.itype == InputType.CHECKBOX:
+            self.icon = FormIcons.MARKED
+        elif self.itype == InputType.SELECT:
+            self.icon = FormIcons.SELECTABLE
+        else:
+            self.icon = FormIcons.EDITABLE
 
     def can_write(self) -> bool:
         return self.access_type == AccessType.READ_WRITE

@@ -24,7 +24,6 @@ from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.menu.extra.minput.access_type import AccessType
 from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
 from hspylib.modules.cli.menu.extra.minput.form_field import FormField
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
@@ -107,7 +106,6 @@ class MenuInput:
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
 
     def _render(self, nav_color: VtColors) -> None:
-        icon = ''
         # Restore the cursor to the home position
         vt_print(Vt100.restore_cursor())
         sysout('%NC%')
@@ -115,64 +113,56 @@ class MenuInput:
 
         for idx, field in enumerate(self.all_fields):
             field_size = len(str(field.value))
-            if self.tab_index != idx:
-                MInputUtils.mi_print(self.max_label_length, camelcase(field.label))
-            else:
-                MInputUtils.mi_print(self.max_label_length, camelcase(field.label), MenuInput.SELECTED_BG)
-                # Buffering the all positions to avoid calling get_cursor_pos over and over
-                f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
-                if f_pos:
-                    self.cur_row = f_pos[0]
-                    self.cur_col = f_pos[1] + field_size
-                    self.all_pos[idx] = f_pos
-                self.cur_field = field  # Keep the selected field on hand
+            MInputUtils.mi_print(
+                self.max_label_length, camelcase(field.label),
+                MenuInput.SELECTED_BG if self.tab_index == idx else None)
+            self._buffer_pos(field_size, idx)
+            self.cur_field = field
 
-            if field.itype == InputType.TEXT:  # Choose the icon to display
-                icon = FormIcons.EDITABLE
+            if field.itype == InputType.TEXT:
                 MInputUtils.mi_print(self.max_value_length, field.value)
             elif field.itype == InputType.PASSWORD:
-                icon = FormIcons.HIDDEN
                 MInputUtils.mi_print(self.max_value_length, '*' * field_size)
             elif field.itype == InputType.CHECKBOX:
-                icon = FormIcons.MARKED
-                if field.value:
-                    MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE))
-                else:
-                    MInputUtils.mi_print(self.max_value_length - 1, ' ', str(FormIcons.UNCHECK_SQUARE))
+                MInputUtils.mi_print(
+                    self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE)
+                    if field.value else str(FormIcons.UNCHECK_SQUARE))
             elif field.itype == InputType.SELECT:
-                icon = FormIcons.SELECTABLE
                 field_size = 1
                 if field.value:
                     mat = re.search(r'.*\|?<(.+)>\|?.*', field.value)
-                    if mat:
-                        sel_value = mat.group(1)
-                        MInputUtils.mi_print(
-                            self.max_value_length, f'{sel_value}')
-                    else:
-                        sel_value = field.value.split('|')[0]
-                        MInputUtils.mi_print(
-                            self.max_value_length, f'{sel_value}')
+                    sel_value = mat.group(1) if mat else field.value.split('|')[0]
+                    MInputUtils.mi_print(self.max_value_length, f'{sel_value}')
             elif field.itype == InputType.MASKED:
-                icon = FormIcons.MASKED
                 value, mask = MInputUtils.unpack_masked(str(field.value))
                 MInputUtils.mi_print(self.max_value_length, MInputUtils.over_masked(value, mask))
 
-            if field.access_type == AccessType.READ_ONLY:
-                icon = FormIcons.LOCKED
-
-            padding = 1 - len(str(self.max_detail_length / 2))  # Remaining/max characters
-            fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
-            if field.itype == InputType.SELECT:
-                idx, _ = MInputUtils.get_selected(field.value)
-                sysout(fmt.format(icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
-            elif field.itype == InputType.MASKED:
-                value, mask = MInputUtils.unpack_masked(str(field.value))
-                sysout(fmt.format(icon, len(value), field.max_length))
-            else:
-                sysout(fmt.format(icon, field_size, field.max_length))
+            # Remaining/max characters
+            self._render_details(field, field_size)
 
         sysout('\n' + MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
         self.re_render = False
+
+    def _buffer_pos(self, field_size: int, idx: int) -> None:
+        # Buffering the all positions to avoid calling get_cursor_pos over and over
+        f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
+        if f_pos:
+            self.cur_row = f_pos[0]
+            self.cur_col = f_pos[1] + field_size
+            self.all_pos[idx] = f_pos
+
+    def _render_details(self, field: Any, field_size: int) -> None:
+        # Print details about total/remaining field characters
+        padding = 1 - len(str(self.max_detail_length / 2))
+        fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
+        if field.itype == InputType.SELECT:
+            idx, _ = MInputUtils.get_selected(field.value)
+            sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
+        elif field.itype == InputType.MASKED:
+            value, mask = MInputUtils.unpack_masked(str(field.value))
+            sysout(fmt.format(field.icon, len(value), field.max_length))
+        else:
+            sysout(fmt.format(field.icon, field_size, field.max_length))
 
     def _nav_input(self) -> chr:
         length = len(self.all_fields)
