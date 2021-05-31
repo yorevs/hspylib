@@ -169,14 +169,12 @@ class MenuInput:
 
     def _nav_input(self) -> chr:
         length = len(self.all_fields)
-        vt_print(f"%CUP({self.cur_row};{self.cur_col})%")
-        vt_print(Vt100.set_show_cursor(True))
         keypress = None
 
         try:
             keypress = Keyboard.read_keystroke()
         except (KeyboardInterrupt, AssertionError) as err:
-            self._display_error(str(err))
+            pass
 
         if not keypress:
             return None
