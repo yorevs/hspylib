@@ -59,6 +59,7 @@ class FieldBuilder:
         return self
 
     def build(self) -> Any:
+        self.field.itype = self.field.itype or InputType.TEXT
         if self.field.itype == InputType.CHECKBOX:
             self.field.value = self.field.value if self.field.value in ['0', '1'] else 0
             self.field.min_length = self.field.max_length = 1
@@ -71,9 +72,8 @@ class FieldBuilder:
             self.field.min_length = self.field.max_length = len(mask)
             self.validator(InputValidator.custom(mask.replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')))
         self.field.label = camelcase(self.field.label) or 'Field'
-        self.field.access_type = self.field.access_type or AccessType.READ_WRITE
         self.field.min_length = self.field.min_length or 1
         self.field.max_length = self.field.max_length or 30
-        self.field.itype = self.field.itype or InputType.TEXT
+        self.field.access_type = self.field.access_type or AccessType.READ_WRITE
         self.parent.fields.append(self.field)
         return self.parent
