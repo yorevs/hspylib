@@ -18,7 +18,7 @@ from typing import Callable
 
 
 class Option:
-    
+
     def __init__(
             self,
             shortopt: chr,
@@ -30,11 +30,11 @@ class Option:
         self.longopt = f"--{longopt.replace('--', '')}{'=' if has_argument > 0 else ''}"
         self.has_argument = has_argument
         self.cb_handler = cb_handler
-    
+
     def __str__(self) -> str:
         return ("name: {}, shortopt: {}, longopt: {}, has_argument: {}, cb_handler: {}".format(
             self.name, self.shortopt, self.longopt, self.has_argument, self.cb_handler))
-    
+
     def __repr__(self):
         return f"[{self.shortopt.replace('-', '').replace(':', '')}, {self.longopt.replace('--', '').replace('=', '')}]"
 

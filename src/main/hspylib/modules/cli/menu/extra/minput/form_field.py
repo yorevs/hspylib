@@ -43,7 +43,7 @@ class FormField:
         self.icon = self.get_icon()
 
     def __str__(self) -> str:
-        return str(self.__dict__)
+        return f"{self.label}: {self.itype}({self.min_length}-{self.max_length}) [{self.access_type}] = '{self.value}'"
 
     def __repr__(self):
         return str(self)

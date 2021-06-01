@@ -33,7 +33,7 @@ class HttpResponse:
             response.headers,
             Charset(str(response.encoding).upper()) if response.encoding else None,
         )
-    
+
     def __init__(self,
                  method: HttpMethod,
                  url: str,

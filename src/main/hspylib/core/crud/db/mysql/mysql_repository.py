@@ -31,16 +31,16 @@ from hspylib.core.model.entity import Entity
 
 class MySqlRepository(DBRepository):
     _connections = {}
-    
+
     def __init__(self):
         super().__init__()
         self._connector = None
         self._cursor = None
         self._sql_factory = SqlFactory()
-    
+
     def is_connected(self) -> bool:
         return self._connector is not None
-    
+
     def connect(self) -> None:
         if not self.is_connected():
             cache_key = self.__str__()
@@ -75,7 +75,7 @@ class MySqlRepository(DBRepository):
             log.debug('Disconnected from {}.'.format(str(self)))
         else:
             raise NotConnectedError('Not connected to database.')
-    
+
     def insert(self, entity: Entity) -> None:
         if self.is_connected():
             entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
@@ -86,7 +86,7 @@ class MySqlRepository(DBRepository):
             self.execute(stm, True)
         else:
             raise NotConnectedError('Not connected to database.')
-    
+
     def update(self, entity: Entity) -> None:
         if self.is_connected():
             stm = self._sql_factory \
@@ -96,7 +96,7 @@ class MySqlRepository(DBRepository):
             self.execute(stm, True)
         else:
             raise NotConnectedError('Not connected to database.')
-    
+
     def delete(self, entity: Entity) -> None:
         if self.is_connected():
             stm = self._sql_factory \
@@ -106,12 +106,12 @@ class MySqlRepository(DBRepository):
             self.execute(stm, True)
         else:
             raise NotConnectedError('Not connected to database.')
-    
+
     def find_all(  # pylint: disable=arguments-differ
             self,
             column_set: List[str] = None,
             sql_filters: SqlFilter = None) -> Optional[list]:
-        
+
         if self.is_connected():
             stm = self._sql_factory \
                 .select(column_set=column_set, filters=sql_filters) \
@@ -122,12 +122,12 @@ class MySqlRepository(DBRepository):
             return list(map(self.row_to_entity, result)) if result else None
 
         raise NotConnectedError('Not connected to database.')
-    
+
     def find_by_id(  # pylint: disable=arguments-differ
             self,
             column_set: List[str] = None,
             entity_id: str = None) -> Optional[Entity]:
-        
+
         if self.is_connected():
             if entity_id:
                 stm = self._sql_factory \
@@ -142,7 +142,7 @@ class MySqlRepository(DBRepository):
             return None
 
         raise NotConnectedError('Not connected to database.')
-    
+
     def execute(self, sql_statement: str, auto_commit: bool, *params) -> None:
         if self.is_connected():
             log.debug(f"Executing SQL statement: {sql_statement} with params: [{', '.join(params)}]")
@@ -151,19 +151,19 @@ class MySqlRepository(DBRepository):
                 self.commit()
         else:
             raise NotConnectedError('Not connected to database.')
-    
+
     def commit(self) -> None:
         log.debug('Committing database changes')
         self._connector.commit()
-    
+
     def rollback(self) -> None:
         log.debug('Rolling back database changes')
         self._connector.rollback()
-    
+
     @abstractmethod
     def row_to_entity(self, row: Tuple) -> Entity:
         pass
-    
+
     @abstractmethod
     def table_name(self) -> str:
         pass

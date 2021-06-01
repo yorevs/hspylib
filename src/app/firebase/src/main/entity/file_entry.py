@@ -31,7 +31,7 @@ class FileEntry:
         assert file_entry.size == expected_size, \
             "Retrieved data and expected data length mismatch: {} vs {}".format(expected_size, len(file_entry.data))
         return file_entry
-    
+
     def __init__(self, file_path: str):
         self.path = file_path
         self.size = 0
@@ -41,18 +41,18 @@ class FileEntry:
             with open(file_path, 'r') as f_in:
                 self.data = f_in.read()
                 assert len(self.data) > 0, "File \"{}\" is empty".format(file_path)
-    
+
     def __str__(self) -> str:
         return '{"path" : "' + self.path + '", "size" : ' + str(self.size) + ', "data" : "' + self.data + '"}'
-    
+
     def encode(self) -> Any:
         self.data = base64.urlsafe_b64encode(self.data.encode(str(Charset.UTF_8))).decode(str(Charset.UTF_8))
         return self
-    
+
     def decode(self) -> Any:
         self.data = str(base64.urlsafe_b64decode(self.data), str(Charset.UTF_8))
         return self
-    
+
     def save(self) -> Any:
         with open(self.path, 'w') as f_in:
             f_in.write(self.data)

@@ -51,22 +51,21 @@ def log_init(
     """
     with open(log_file, 'w' if create_new else 'a'):
         os.utime(log_file, None)
-    
+
     log.basicConfig(
         filename=log_file,
         format=log_fmt,
         level=level,
         filemode=f_mode)
-    
+
     return log
 
 
-
 def is_debugging():
-  for frame in inspect.stack():
-    if frame[1].endswith("pydevd.py"):
-      return True
-  return False
+    for frame in inspect.stack():
+        if frame[1].endswith("pydevd.py"):
+            return True
+    return False
 
 
 def read_version(version_filepath: str = ".version") -> Tuple:
@@ -143,7 +142,7 @@ def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = 
     """
     regex = re.compile(regex_filter)
     result_list = list(filter(regex.search, input_str.split(delimiter)))
-    
+
     return result_list
 
 
@@ -203,10 +202,10 @@ def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
     if os.path.exists(filename):
         os.remove(filename)
         return True
-    
+
     if on_not_found_except:
         raise FileNotFoundError('File was not found on the system: {}'.format(filename))
-    
+
     return False
 
 
@@ -251,6 +250,7 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
 
     return ret_val, ret_unit
 
+
 def human_readable_time(time_us: int):
     delta = timedelta(microseconds=time_us)
     total_seconds = delta.seconds
@@ -262,4 +262,3 @@ def human_readable_time(time_us: int):
     str_line = f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
 
     return str_line
-

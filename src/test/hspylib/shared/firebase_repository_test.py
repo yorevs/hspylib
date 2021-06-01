@@ -21,9 +21,9 @@ from hspylib.core.model.entity import Entity
 
 
 class FirebaseRepositoryTest(FirebaseRepository):
-    
+
     def row_to_entity(self, row: dict) -> Entity:
         return EntityTest(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])
-    
+
     def database_name(self) -> str:
         return 'hspylib'

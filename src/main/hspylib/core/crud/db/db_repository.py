@@ -30,38 +30,38 @@ class DBRepository(CrudRepository):
         self.user = AppConfigs.INSTANCE['datasource.username']
         self.password = AppConfigs.INSTANCE['datasource.password']
         self.database = AppConfigs.INSTANCE['datasource.database']
-    
+
     def __str__(self):
         return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)
-    
+
     @abstractmethod
     def connect(self):
         pass
-    
+
     @abstractmethod
     def disconnect(self):
         pass
-    
+
     @abstractmethod
     def is_connected(self):
         pass
-    
+
     @abstractmethod
     def execute(self, sql_statement: str, auto_commit: bool, *params):
         pass
-    
+
     @abstractmethod
     def commit(self):
         pass
-    
+
     @abstractmethod
     def rollback(self):
         pass
-    
+
     @abstractmethod
     def row_to_entity(self, row: Tuple) -> Entity:
         pass
-    
+
     @abstractmethod
     def table_name(self) -> str:
         pass

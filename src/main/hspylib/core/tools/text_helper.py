@@ -23,6 +23,7 @@ from hspylib.core.tools.commons import get_or_default
 def fit_text(text: str, width: int) -> str:
     return text if len(text) <= width else text[0:width - 3] + '...'
 
+
 def rand_string(choices: str, length: int) -> str:
     return ''.join(random.choices(choices, k=length))
 

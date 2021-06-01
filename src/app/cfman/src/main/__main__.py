@@ -27,27 +27,27 @@ HERE = get_path(__file__)
 
 class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
-    
+
     # The application version
     VERSION = read_version('src/main/.version')
-    
+
     # CloudFoundry manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-    
+
     # The welcome message
     WELCOME = (HERE / "welcome.txt").read_text()
-    
+
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.cfman = None
-    
+
     def _setup_parameters(self, *params, **kwargs) -> None:
         self._with_option('a', 'api', True)
         self._with_option('o', 'org', True)
         self._with_option('s', 'space', True)
         self._with_option('u', 'username', True)
         self._with_option('p', 'password', True)
-    
+
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(self._opts)
@@ -58,7 +58,7 @@ class Main(Application):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self._exec_application()
-    
+
     def _exec_application(self) -> None:
         """Execute the application"""
         self.cfman.run()

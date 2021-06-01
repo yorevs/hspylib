@@ -107,4 +107,3 @@ class MInputUtils(ABC):
                 masked_value += element
 
         return masked_value
-

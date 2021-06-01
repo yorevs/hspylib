@@ -28,7 +28,7 @@ class MenuUi:
         self.current = root
         self.next = None
         signal.signal(signal.SIGINT, exit_app)
-    
+
     def show(self) -> None:
         while not self.done:
             if self.current:
@@ -39,7 +39,7 @@ class MenuUi:
                     self.change_menu(self.next)
             else:
                 self.done = True
-    
+
     def change_menu(self, menu: Menu) -> None:
         self.previous = self.current
         self.current = menu

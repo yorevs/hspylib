@@ -23,11 +23,11 @@ from vault.src.main.entity.vault_entry import VaultEntry
 
 
 class VaultService(CrudService, metaclass=Singleton):
-    
+
     def __init__(self):
         self.repository = VaultRepository()
         super().__init__(self.repository)
-    
+
     def get_by_key(self, key: str) -> Optional[VaultEntry]:
         """TODO
         :param key: The vault key to find

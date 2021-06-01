@@ -38,7 +38,7 @@ class MainMenu(MenuItem):
             '1': SubMenu1(parent=self),
             '2': SubMenu2(parent=self)
         }
-    
+
     def trigger_menu_item(self) -> Menu:  # pylint: disable=inconsistent-return-statements
         int_op = int(str(self.selected).strip())
         if int_op == 0:

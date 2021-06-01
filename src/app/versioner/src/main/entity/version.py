@@ -25,7 +25,6 @@ class Version:
 
     @classmethod
     def of(cls, version_str: str) -> Any:
-
         assert re.match(RegexConstants.VERSION_EXT, version_str), \
             f"Version string {version_str} does not match the expected syntax: {RegexConstants.VERSION_EXT}"
         parts = list(map(str.strip, re.split(r'[.-]', version_str)))
