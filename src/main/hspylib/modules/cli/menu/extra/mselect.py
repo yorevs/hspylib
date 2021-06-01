@@ -16,7 +16,7 @@
 
 import re
 from abc import ABC
-from typing import Any, List
+from typing import Any, List, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -71,7 +71,7 @@ class MenuSelect(ABC):
             title: str = 'Please select one',
             title_color: VtColors = VtColors.ORANGE,
             highlight_color: VtColors = VtColors.BLUE,
-            nav_color: VtColors = VtColors.YELLOW) -> Any:
+            nav_color: VtColors = VtColors.YELLOW) -> Optional[Any]:
 
         ret_val = None
         length = len(self.items)
@@ -95,8 +95,7 @@ class MenuSelect(ABC):
         
         restore_terminal()
         
-        return self.items[self.sel_index] \
-            if self.sel_index >= 0 and ret_val == Keyboard.VK_ENTER else None
+        return self.items[self.sel_index] if ret_val == Keyboard.VK_ENTER else None
     
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
 

@@ -16,7 +16,7 @@
 
 import sys
 from time import sleep
-from typing import List
+from typing import List, Optional
 
 from cfman.src.main.core.cf import CloudFoundry
 from cfman.src.main.core.cf_application import CFApplication
@@ -164,7 +164,7 @@ class CFManager:
             else:
                 self._do_target()
     
-    def _choose_apps(self) -> List[CFApplication]:
+    def _choose_apps(self) -> Optional[List[CFApplication]]:
         if not self.apps:
             self.apps = self._get_apps()
         return mchoose(self.apps, checked=False, title='Please choose the applications you want to manage')
