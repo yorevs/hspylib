@@ -16,7 +16,7 @@
 
 from hspylib.modules.cli.menu.menu import Menu
 from hspylib.modules.cli.menu.menu_item import MenuItem
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 MENU = """%ED2%%HOM%
 {}
@@ -44,6 +44,6 @@ class SubMenu1(MenuItem):
         elif int_op == 2:
             print('Hoo')
         elif int_op == 3:
-            MenuUtils.exit_app(0)
+            exit_app(0)
         
         return self

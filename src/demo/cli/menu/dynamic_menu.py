@@ -16,13 +16,13 @@
 
 from hspylib.modules.cli.menu.factory.menu_factory import MenuFactory
 from hspylib.modules.cli.menu.menu_ui import MenuUi
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == '__main__':
     # @formatter:off
     main_menu = MenuFactory().INSTANCE \
         .create(None, 'Dynamic Main Menu') \
-        .with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
+        .with_option('Exit').on_trigger(lambda t: exit_app(0)) \
         .with_option('Sub-Menu-1').on_trigger(lambda x: sub_menu_1) \
         .with_option('Sub-Menu-2').on_trigger(lambda x: sub_menu_2) \
         .build()

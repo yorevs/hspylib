@@ -48,10 +48,6 @@ class InvalidOptionError(HSBaseException):
     """Raised when an invalid option is received by the application"""
 
 
-class InvalidInputError(Exception):
-    """Raised when an invalid input is provided """
-
-
 class NotConnectedError(HSBaseException):
     """Raised when an attempt to execute without being connected but a connection is required"""
 
@@ -62,3 +58,11 @@ class WidgetNotFoundError(HSBaseException):
 
 class WidgetExecutionError(HSBaseException):
     """Raised when widget failed to execute"""
+
+
+class InvalidInputError(Exception):
+    """Raised when an invalid input is provided """
+
+
+class KeyboardInputError(HSBaseException):
+    """Raised when an invalid keystroke input is provided """
