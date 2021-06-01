@@ -53,6 +53,10 @@ def camelcase(string: str, separator: str = '_|-') -> str:
     return '_'.join([p.capitalize() for p in parts])
 
 
+def snakecase(string: str) -> str:
+    return string.strip().lower().replace(' ', '_').replace('-', '_')
+
+
 def cut(string: str, index: int, separator: str = ' ') -> str:
     result = tuple(re.split(rf'{separator}+', string))
     return get_or_default(result, index)

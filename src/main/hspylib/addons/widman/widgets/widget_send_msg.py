@@ -14,6 +14,7 @@
 
    Copyright 2021, HSPyLib team
 """
+import argparse
 import os
 import signal
 import socket
@@ -24,6 +25,7 @@ from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_helper import snakecase
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
@@ -43,15 +45,15 @@ class WidgetSendMsg(Widget):
     USAGE = """Usage: SendMsg [options]
 
   Options:
-    -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the
-                                          file is read and the content sent instead.
+    -n, --net_type   <network_type>     : The network type to be used. Either UDP or TCP ( default is TCP ).
     -p, --port       <port_num>         : The port number [1-65535] ( default is 12345).
     -a, --address    <host_address>     : The address of the datagram receiver ( default is 127.0.0.1 ).
     -k, --packets    <num_packets>      : The number of max datagrams to be send. If zero is specified, then the app
                                           is going to send indefinitely ( default is 100 ).
-    -i, --interval   <interval_MS>      : The interval between each datagram ( default is 1 Second ).
+    -i, --interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
     -t, --threads    <threads_num>      : Number of threads [1-{}] to be opened to send simultaneously ( default is 1 ).
-    -n, --net_type    <network_type>     : The network type to be used. Either UDP or TCP ( default is TCP ).
+    -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the file 
+                                          contents sent instead.
 
     E.g:. send-msg.py -m "Hello" -p 12345 -a 0.0.0.0 -k 100 -i 500 -t 2
 """.format(str(VERSION), MAX_THREADS)
@@ -80,29 +82,33 @@ class WidgetSendMsg(Widget):
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
 
-        if (not args or len(args) < 7) and not any(a in args for a in ['-h', '--help']):
-            if not self._read_args():
-                return ExitCode.ERROR
-        elif args[0] in ['-h', '--help']:
+        if args and args[0] in ['-h', '--help']:
             sysout(self.usage())
             return ExitCode.SUCCESS
+        elif args and args[0] in ['-v', '--version']:
+            sysout(self.version())
+            return ExitCode.SUCCESS
 
-        if not self.args:
-            self.args = args
+        if not args:
+            if not self._read_args():
+                return ExitCode.ERROR
+        else:
+            if not self._parse_args(*args):
+                return ExitCode.ERROR
 
-        self.net_type = self.args[0]
-        self.host = (self.args[1], self.args[2])
-        self.packets = int(self.args[3])
-        self.interval = float(self.args[4])
-        self.threads = int(self.args[5])
+        self.net_type = self.args.net_type or self.NET_TYPE_TCP
+        self.host = (self.args.address or '127.0.0.1', self.args.port or 12345)
+        self.packets = self.args.packets or 100
+        self.interval = self.args.interval or 1
+        self.threads = self.args.threads or 1
 
-        if os.path.isfile(self.args[6]):
-            file_size = os.stat(self.args[6]).st_size
-            sysout('Reading contents from file: %s (%d) [Bs] instead' % (self.args[6], file_size))
-            with open(self.args[6], 'r') as f_msg:
+        if self.args.message and os.path.isfile(self.args.message):
+            file_size = os.stat(self.args.message).st_size
+            sysout(f"Reading contents from file: {self.args.message} ({file_size}) [Bs] instead")
+            with open(self.args.message, 'r') as f_msg:
                 self.message = f_msg.read()
         else:
-            self.message = self.args[6]
+            self.message = self.args.message or f"This is a {self.args.net_type} test"
 
         self._start_send()
 
@@ -122,7 +128,7 @@ class WidgetSendMsg(Widget):
         # @formatter:off
         form_fields = MenuInput.builder() \
             .field() \
-                .label('Network Type') \
+                .label('Net Type') \
                 .itype('select') \
                 .value(f"{self.NET_TYPE_TCP}|{self.NET_TYPE_UDP}") \
                 .build() \
@@ -147,7 +153,7 @@ class WidgetSendMsg(Widget):
                 .label('Interval') \
                 .validator(InputValidator.numbers()) \
                 .min_max_length(1, 4) \
-                .value(1.5) \
+                .value(1) \
                 .build() \
             .field() \
                 .label('Threads') \
@@ -156,18 +162,51 @@ class WidgetSendMsg(Widget):
                 .value(1) \
                 .build() \
             .field() \
-                .label('Message/Filename') \
+                .label('Message') \
                 .validator(InputValidator.words()) \
                 .min_max_length(1, 40) \
-                .value('SendMsg SELF TEST') \
+                .value(f"This is a test") \
                 .build() \
             .build()
         # @formatter:on
+        self.args = type('args', (object,), {})() # Create an empty generic object
+        for f in minput(form_fields):
+            setattr(self.args, snakecase(f.label), f.value)
 
-        result = minput(form_fields)
-        self.args = [f.value for f in result]
+        return bool(self.args)
 
-        return bool(result)
+    def _parse_args(self, *args):
+
+        try:
+            parser = argparse.ArgumentParser(description='Sends TCP/UDP messages (multi-threaded)')
+            parser.add_argument(
+                '--net-type', action='store', type=str, required=False,
+                help='The network type to be used. Either UDP or TCP ( default is TCP )')
+            parser.add_argument(
+                '--address', action='store', type=str, required=False,
+                help='The address of the datagram receiver ( default is 127.0.0.1 )')
+            parser.add_argument(
+                '--port', action='store', type=int, required=False,
+                help='The port number [1-65535] ( default is 12345)')
+            parser.add_argument(
+                '--packets', action='store', type=int, required=False,
+                help='The number of max datagrams to be send. If zero is specified, then the app '
+                     'is going to send indefinitely ( default is 100 ).')
+            parser.add_argument(
+                '--interval', action='store', type=float, required=False,
+                help='The interval in seconds between each datagram ( default is 1 Second )')
+            parser.add_argument(
+                '--threads', action='store', type=int, required=False,
+                help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
+            parser.add_argument(
+                '--message', action='store', type=str, required=False,
+                help='The message to be sent. If the message matches a filename, then the file contents sent instead')
+            self.args = parser.parse_args(args)
+        finally:
+            pass
+
+        return bool(self.args)
+
 
     def _init_sockets(self) -> None:
         if self.net_type == self.NET_TYPE_UDP:
@@ -182,8 +221,8 @@ class WidgetSendMsg(Widget):
     def _start_send(self) -> None:
 
         self._init_sockets()
-        sysout('\n%ORANGE%Start sending {} packets every {} seconds: max. of[{}] to {}. Threads = {}%NC%'.format(
-            self.net_type, self.interval, self.packets, self.host, self.threads))
+        sysout('\n%ORANGE%Start sending {} {} packet(s) every {} second(s) to {} using {} thread(s) %NC%'.format(
+            self.packets, self.net_type.upper(), self.interval, self.host, self.threads))
         threads_num = threading.active_count()
 
         for i in range(1, int(self.threads) + 1):
@@ -201,9 +240,9 @@ class WidgetSendMsg(Widget):
         length = len(self.message)
 
         while self.is_alive and self.packets <= 0 or counter <= self.packets:
-            sysout(f"%BLUE%[Thread-{i:02d}] "
-                   f"%GREEN%Sending [{length:d}] bytes, "
-                   f"Pkt = {counter:d}/{self.packets:d} %NC%...")
+            sysout(f"%BLUE%[Thread-{i:d}] "
+                   f"%GREEN%Sending \"{self.message:s}\" ({length:d}) bytes, "
+                   f"Pkt = {counter:>d}/{self.packets:>d} %NC%...")
             if self.net_type == self.NET_TYPE_UDP:
                 self.socket.sendto(self.message.encode(), self.host)
             else:
