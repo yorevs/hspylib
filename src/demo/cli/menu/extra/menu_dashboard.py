@@ -23,33 +23,33 @@ if __name__ == '__main__':
         .item() \
             .icon(DashboardIcons.PLUS) \
             .tooltip('Add something') \
-            .cb_action(lambda: print('Add')) \
+            .on_trigger(lambda: print('Add')) \
             .build() \
         .item() \
             .icon(DashboardIcons.MINUS) \
             .tooltip('Remove something') \
-            .cb_action(lambda: print('Del')) \
+            .on_trigger(lambda: print('Del')) \
             .build() \
         .item() \
             .icon(DashboardIcons.EDIT) \
             .tooltip('Edit something') \
-            .cb_action(lambda: print('Edit')) \
+            .on_trigger(lambda: print('Edit')) \
             .build() \
         .item() \
             .icon(DashboardIcons.LIST) \
             .tooltip('List everything') \
-            .cb_action(lambda: print('List')) \
+            .on_trigger(lambda: print('List')) \
             .build() \
         .item() \
             .icon(DashboardIcons.DATABASE) \
             .tooltip('Database console') \
-            .cb_action(lambda: print('Database')) \
+            .on_trigger(lambda: print('Database')) \
             .build() \
         .item() \
             .icon(DashboardIcons.EXIT) \
             .tooltip('Exit application') \
-            .cb_action(lambda: print('Exit')) \
+            .on_trigger(lambda: print('Exit')) \
             .build() \
         .build()
     # @formatter:on
-    result = mdashboard(dashboard_items, 6)
+    result = mdashboard(dashboard_items, 4)

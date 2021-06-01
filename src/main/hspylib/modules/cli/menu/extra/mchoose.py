@@ -13,13 +13,16 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import re
 from abc import ABC
-from typing import Any
+from typing import Any, List, Optional
 
+from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import *
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_terminal, screen_size, restore_cursor
 
 
 def mchoose(
@@ -46,9 +49,9 @@ def mchoose(
 
 class MenuChoose(ABC):
     UNSELECTED = ' '
-    SELECTED = FormIcons.SELECTOR.value
-    MARKED = FormIcons.MARKED.value
-    UNMARKED = FormIcons.UNMARKED.value
+    SELECTED = FormIcons.SELECTOR
+    MARKED = FormIcons.MARKED
+    UNMARKED = FormIcons.UNMARKED
 
     NAV_ICONS = '\u2191\u2193'
     NAV_FMT = "\n{}[Enter] Accept  [{}] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"

@@ -40,10 +40,7 @@ class WidgetSendMsg(Widget):
     NET_TYPE_TCP = 'TCP'
 
     # Help message to be displayed by the application.
-    USAGE = """
-IP Message Sender v{}
-
-Usage: SendMsg [options]
+    USAGE = """Usage: SendMsg [options]
 
   Options:
     -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the
@@ -75,6 +72,7 @@ Usage: SendMsg [options]
         self.threads = None
         self.message = None
         self.args = None
+        self.socket = None
 
     def execute(self, *args) -> ExitCode:
 
@@ -94,9 +92,9 @@ Usage: SendMsg [options]
 
         self.net_type = self.args[0]
         self.host = (self.args[1], self.args[2])
-        self.packets = self.args[3]
-        self.interval = self.args[4]
-        self.threads = self.args[5]
+        self.packets = int(self.args[3])
+        self.interval = float(self.args[4])
+        self.threads = int(self.args[5])
 
         if os.path.isfile(self.args[6]):
             file_size = os.stat(self.args[6]).st_size
@@ -169,7 +167,7 @@ Usage: SendMsg [options]
         result = minput(form_fields)
         self.args = [f.value for f in result]
 
-        return True if result else False
+        return bool(result)
 
     def _init_sockets(self) -> None:
         if self.net_type == self.NET_TYPE_UDP:

@@ -68,7 +68,7 @@ class FieldBuilder:
             self.field.min_length = self.field.max_length = 1
             self.validator(InputValidator.custom(self.field.value.replace('<', '').replace('>', '')))
         elif self.field.itype == InputType.MASKED:
-            value, mask = MInputUtils.unpack_masked(self.field.value)
+            _, mask = MInputUtils.unpack_masked(self.field.value)
             self.field.min_length = self.field.max_length = len(mask)
             self.validator(InputValidator.custom(mask.replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')))
         self.field.label = camelcase(self.field.label) or 'Field'

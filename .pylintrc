@@ -3,7 +3,7 @@ extension-pkg-whitelist=PyQt5
 init-hook='import sys; sys.path.append("src/main"); sys.path.append("src/demo"); sys.path.append("src/app"); sys.path.append("src/test");'
 
 [TYPECHECK]
-ignored-classes=struct,termios,select
+ignored-classes=struct,termios,select,socket,math
 
 [FORMAT]
 max-line-length=120
