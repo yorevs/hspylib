@@ -28,12 +28,12 @@ class MInputUtils(ABC):
         return 1 + (2 * max_len)
 
     @staticmethod
-    def mi_print(size: int, text: str, prepend: str = None, end: str = '') -> None:
+    def mi_print(size: int = 0, text: str = None, prepend: str = None, end: str = '') -> None:
         fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
         if prepend:
             vt_print(fmt.format(prepend, text), end=end)
         else:
-            vt_print(fmt.format(text), end=end)
+            vt_print(fmt.format(text or ''), end=end)
 
     @staticmethod
     def toggle_selected(tokenized_values: str) -> str:
