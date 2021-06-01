@@ -25,7 +25,7 @@ from hspylib.core.tools.commons import syserr
 
 
 class Terminal(ABC):
-    
+
     @staticmethod
     def shell_exec(cmd_line: str, **kwargs) -> Optional[str]:
         try:
@@ -38,7 +38,7 @@ class Terminal(ABC):
             log.error(f'Failed => {str(err)}')
             syserr(str(err))
             return None
-    
+
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
         if 'stdout' in kwargs:

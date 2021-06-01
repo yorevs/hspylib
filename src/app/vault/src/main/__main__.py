@@ -29,20 +29,20 @@ HERE = get_path(__file__)
 
 class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
-    
+
     # The application version
     VERSION = read_version('src/main/.version')
-    
+
     # Vault usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-    
+
     # Welcome message
     WELCOME = (HERE / "welcome.txt").read_text()
-    
+
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.vault = Vault()
-    
+
     def _setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
         self._with_arguments(
@@ -61,7 +61,7 @@ class Main(Application):
                 .build()
         )
         # @formatter:on
-    
+
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         log.info(
@@ -73,10 +73,10 @@ class Main(Application):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self._exec_application()
-    
+
     def _cleanup(self) -> None:
         self.vault.close()
-    
+
     def _exec_application(self, ) -> None:
         """Execute the specified vault operation"""
         op = self.getarg('operation')

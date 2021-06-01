@@ -26,7 +26,6 @@ from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
 
 
 class WidgetTimeCalc(Widget):
-
     WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
     TOOLTIP = "Calculate time based operations."

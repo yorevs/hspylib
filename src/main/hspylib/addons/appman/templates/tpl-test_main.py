@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.addons.appman.templates
+      @file: tpl-test_main.py
+   @created: Tue, 1 Jun 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
 
 import logging as log
 import os
@@ -14,7 +26,7 @@ TEST_DIR = dirname(__file__)
 
 
 class TestMain(unittest.TestCase):
-    
+
     # Setup tests
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
@@ -25,13 +37,13 @@ class TestMain(unittest.TestCase):
         self.assertIsNotNone(self.configs)
         self.assertIsNotNone(AppConfigs.INSTANCE)
         log.info(self.configs)
-    
+
     # Teardown tests
     def tearDown(self):
         pass
-    
+
     # TEST CASES ----------
-    
+
     def test_should_test_something(self):
         pass
 

@@ -14,12 +14,10 @@
    Copyright 2021, HSPyLib team
 """
 
-import re
 import time
-from typing import Any, List
+from typing import Any
 
 from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -27,18 +25,14 @@ from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
 from hspylib.modules.cli.menu.extra.minput.form_field import FormField
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo, restore_terminal, prepare_render, \
-    restore_cursor
+from hspylib.modules.cli.vt100.vt_utils import *
 
 
 def minput(
         form_fields: List[Any],
         title: str = 'Please fill all fields of the form fields below',
         title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[FormField]]:
     """
     TODO
     :param form_fields:
@@ -51,10 +45,10 @@ def minput(
 
 
 class MenuInput:
-
     SELECTED_BG = '%MOD(44)%'
 
-    NAV_FMT = "\n{}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
+    NAV_ICONS = '\u2191\u2193'
+    NAV_FMT = "\n{}[Enter] Submit  [{}] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
     @classmethod
     def builder(cls) -> Any:
@@ -72,14 +66,13 @@ class MenuInput:
 
     def input(
             self,
-            title: str = 'Please fill all fields of the form below',
-            title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW) -> List[FormField]:
+            title: str,
+            title_color: VtColors,
+            nav_color: VtColors) -> Optional[List[FormField]]:
 
         ret_val = None
-        length = len(self.all_fields)
 
-        if length > 0:
+        if len(self.all_fields) > 0:
             prepare_render(title, title_color)
 
             # Wait for user interaction
@@ -90,11 +83,10 @@ class MenuInput:
 
                 # Navigation input
                 ret_val = self._nav_input()
-                self.re_render = True
 
         restore_terminal()
 
-        return self.all_fields if ret_val == Keyboard.VK_ENTER else []
+        return self.all_fields if ret_val == Keyboard.VK_ENTER else None
 
     def _render(self, nav_color: VtColors) -> None:
         restore_cursor()
@@ -131,7 +123,7 @@ class MenuInput:
             # Remaining/max characters
             self._render_details(field, field_size)
 
-        sysout(MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
+        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS), end='')
         self.re_render = False
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:
@@ -163,9 +155,9 @@ class MenuInput:
         if keypress:
             if keypress == Keyboard.VK_ESC:
                 self.done = True
-            elif keypress == Keyboard.VK_TAB:  # Handle TAB
+            elif keypress in [Keyboard.VK_TAB, Keyboard.VK_DOWN]:  # Handle TAB and Cursor down
                 self.tab_index = min(length - 1, self.tab_index + 1)
-            elif keypress == Keyboard.VK_SHIFT_TAB:  # Handle Shift + TAB
+            elif keypress in [Keyboard.VK_SHIFT_TAB, Keyboard.VK_UP]:  # Handle Shift + TAB and Cursor up
                 self.tab_index = max(0, self.tab_index - 1)
             elif keypress == Keyboard.VK_BACKSPACE:  # Handle backspace
                 if not self.cur_field.can_write():
@@ -177,15 +169,8 @@ class MenuInput:
                     self._display_error('This field is read only !')
                 else:
                     self._handle_input(keypress)
-            elif keypress == Keyboard.VK_UP:  # Cursor up
-                if self.tab_index - 1 >= 0:
-                    self.tab_index -= 1
-            elif keypress == Keyboard.VK_DOWN:  # Cursor down
-                if self.tab_index + 1 < length:
-                    self.tab_index += 1
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
-                for idx in range(0, length):
-                    field = self.all_fields[idx]
+                for field in self.all_fields:
                     if field.itype == InputType.SELECT:
                         _, field.value = MInputUtils.get_selected(field.value)
                     else:
@@ -228,7 +213,7 @@ class MenuInput:
         if self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
             value = value[:-1]
-            while mask[len(value)-1] not in ['#', '@', '*']:
+            while mask[len(value) - 1] not in ['#', '@', '*']:
                 value = value[:-1]
             self.cur_field.value = f"{value}|{mask}"
         elif self.cur_field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
@@ -243,6 +228,6 @@ class MenuInput:
         err_pos = self.max_label_length + self.max_value_length + err_offset
         vt_print(f"%CUP({self.cur_row};{err_pos})%")
         sysout(f"%RED% {FormIcons.ERROR}  {err_msg}", end='')
-        time.sleep(max(2, int(len(err_msg) / 20)))
+        time.sleep(max(2, int(len(err_msg) / 25)))
         set_enable_echo()
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")  # Remove the message after the timeout

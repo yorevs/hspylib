@@ -14,15 +14,12 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Any, List
+from typing import Any
 
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import set_enable_echo, restore_terminal, prepare_render, restore_cursor
+from hspylib.modules.cli.vt100.vt_utils import *
 
 
 def mdashboard(
@@ -30,37 +27,37 @@ def mdashboard(
         items_per_line: int = 5,
         title: str = 'Please select one item',
         title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> Any:
-    return MenuDashBoard(items, items_per_line).show(title, title_color, nav_color)
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[DashboardItem]:
+    return MenuDashBoard(items, items_per_line).dashboard(title, title_color, nav_color)
 
 
 class MenuDashBoard:
-
     ICN = 'X'
 
     CELL_TPL = [
-        [' ', ' ', ' ', ' ', ' ', ' ',' ', ' '],
-        [' ', ' ', ' ', ICN, ' ', ' ',' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ',' ', ' ']
-    ]
-    
-    SEL_CELL_TPL = [
-        [' ', '\u250F', '\u2501', ' ', ' ', '\u2501', '\u2513', ' '],
-        [' ', ' ', ' ', 'X', ' ', ' ', ' ', ' '],
-        [' ', '\u2517', '\u2501', ' ', ' ', '\u2501', '\u251B', ' ']
+        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ICN, ' ', ' ', ' ', ' '],
+        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ]
 
-    NAV_FMT = "\n{}[Enter] Select  [\u2190\u2191\u2192\u2193] Navigate  [Tab] Next  [Esc] Quit %EL0%"
-    
+    SEL_CELL_TPL = [
+        [' ', '┏', '━', ' ', ' ', '━', '┓', ' '],
+        [' ', ' ', ' ', ICN, ' ', ' ', ' ', ' '],
+        [' ', '┗', '━', ' ', ' ', '━', '┛', ' '],
+    ]
+
+    NAV_ICONS = '\u2190\u2191\u2192\u2193'
+    NAV_FMT = "\n{}[Enter] Select  [{}] Navigate  [Tab] Next  [Esc] Quit %EL0%"
+
     @classmethod
     def builder(cls):
         return DashboardBuilder()
-    
+
     def __init__(
             self,
             items: List[Any],
             items_per_line: int = 5):
-        
+
         self.items = items
         self.done = None
         self.re_render = True
@@ -70,19 +67,18 @@ class MenuDashBoard:
             len(self.CELL_TPL) == len(self.SEL_CELL_TPL) \
             and len(self.CELL_TPL[0]) == len(self.SEL_CELL_TPL[0]), \
             'Invalid CELL definitions. Selected and unselected matrices should have the same dimensions.'
-    
-    def show(
+
+    def dashboard(
             self,
-            title: str = 'Please select one item',
-            title_color: VtColors = VtColors.ORANGE,
-            nav_color: VtColors = VtColors.YELLOW) -> DashboardItem:
+            title: str,
+            title_color: VtColors,
+            nav_color: VtColors) -> Optional[DashboardItem]:
 
         ret_val = None
-        length = len(self.items)
 
-        if length > 0:
+        if len(self.items) > 0:
             prepare_render(title, title_color)
-            
+
             # Wait for user interaction
             while not self.done and ret_val not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
                 # Menu Renderization
@@ -91,7 +87,6 @@ class MenuDashBoard:
 
                 # Navigation input
                 ret_val = self._nav_input()
-                self.re_render = True
 
         restore_terminal()
         selected = self.items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
@@ -100,7 +95,7 @@ class MenuDashBoard:
             selected.cb_action()
 
         return selected
-    
+
     def _render(self, nav_color: VtColors) -> None:
         restore_cursor()
         set_enable_echo()
@@ -109,9 +104,9 @@ class MenuDashBoard:
             self._print_cell(idx, item, MenuDashBoard.CELL_TPL if self.tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
 
         sysout(f'%EL2%\r> %GREEN%{self.items[self.tab_index].tooltip}%NC%')
-        sysout(MenuDashBoard.NAV_FMT.format(nav_color.placeholder()), end='')
+        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS), end='')
         self.re_render = False
-    
+
     def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
         num_cols = len(cell_template[0])
         num_rows = len(cell_template)
@@ -142,6 +137,6 @@ class MenuDashBoard:
                 self.tab_index = min(length - 1, self.tab_index + 1)
             elif keypress == Keyboard.VK_ENTER:
                 pass  # Just exit
-        
+
         self.re_render = True
         return keypress

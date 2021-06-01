@@ -25,7 +25,7 @@ TEST_DIR = get_path(__file__)
 
 
 class TestProperties(unittest.TestCase):
-    
+
     # TEST CASES ----------
     def test_should_load_properties_using_defaults(self):
         expected_size = 6
@@ -33,7 +33,7 @@ class TestProperties(unittest.TestCase):
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, properties.size())
         log.info(properties)
-    
+
     def test_should_load_properties_using_custom_attributes(self):
         expected_size = 6
         load_dir = f'{TEST_DIR}/resources'
@@ -44,7 +44,7 @@ class TestProperties(unittest.TestCase):
         )
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, properties.size())
-    
+
     def test_should_load_properties_from_ini_file(self):
         expected_size = 6
         load_dir = f'{TEST_DIR}/resources'
@@ -54,7 +54,7 @@ class TestProperties(unittest.TestCase):
         )
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, properties.size())
-    
+
     def test_should_load_properties_from_yaml_file(self):
         expected_size = 6
         load_dir = f'{TEST_DIR}/resources'
@@ -64,7 +64,7 @@ class TestProperties(unittest.TestCase):
         )
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, properties.size())
-    
+
     def test_properties_should_be_subscriptable(self):
         expected_size = 6
         properties = Properties(
@@ -74,7 +74,7 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(expected_size, properties.size())
         expected_value = 'this is. = a weird value'
         self.assertEqual(expected_value, properties['test.weird.property'])
-    
+
     def test_properties_should_be_iterable(self):
         expected_properties = [
             'this is. = a weird value', '1055', '3.14', 'FALse', 'TRue', 'should not be gotten',

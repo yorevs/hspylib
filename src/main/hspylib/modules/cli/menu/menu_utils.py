@@ -31,22 +31,22 @@ class MenuUtils(ABC):
             message: str,
             argument: Any = None,
             wait_interval: int = 2) -> None:
-        
+
         syserr(f"### Error: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
-    
+
     @staticmethod
     def print_warning(
             message: str,
             argument: str = None,
             wait_interval: int = 2,
             color: VtColors = VtColors.YELLOW) -> None:
-        
+
         sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"%NC%")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
-    
+
     @staticmethod
     def prompt(
             prompt_msg: str = '',
@@ -56,10 +56,10 @@ class MenuUtils(ABC):
             on_blank_abort: bool = True,
             color: VtColors = VtColors.GREEN,
             end: str = ': ') -> Optional[Any]:
-        
+
         valid = False
         input_data = None
-        
+
         while not valid:
             try:
                 colorized = VtColors.colorize(
@@ -88,15 +88,15 @@ class MenuUtils(ABC):
             except EOFError as err:
                 MenuUtils.print_error("Input failed: ", str(err))
                 break
-        
+
         return input_data
-    
+
     @staticmethod
     def wait_enter(
             wait_msg: str = 'Press [Enter] to continue ...',
             color: VtColors = VtColors.YELLOW) -> None:
         MenuUtils.prompt(wait_msg, any_key=True, color=color, end='')
-    
+
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
         sysout(f"%ED2%%HOM%\n{color.placeholder()}{title_str}\n")

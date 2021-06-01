@@ -29,20 +29,20 @@ HERE = get_path(__file__)
 
 class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
-    
+
     # The application version
     VERSION = read_version('src/main/.version')
-    
+
     # Usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-    
+
     # The welcome message
     WELCOME = (HERE / "welcome.txt").read_text()
-    
+
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
         self.firebase = Firebase()
-    
+
     def _setup_parameters(self, *params, **kwargs) -> None:
         # @formatter:off
         self._with_option('d', 'dest-dir', True)
@@ -61,7 +61,7 @@ class Main(Application):
                 .build()
         )
         # @formatter:on
-    
+
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         log.info(
@@ -73,7 +73,7 @@ class Main(Application):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         )
         self._exec_application()
-    
+
     def _exec_application(self) -> None:
         """Execute the specified firebase operation"""
         op = self.getarg('operation')

@@ -22,15 +22,15 @@ from uuid import UUID
 class Entity:
     def __init__(self, entity_id: UUID = None):
         self.uuid = entity_id
-    
+
     def __str__(self):
         return "{}:{}".format(
             self.__class__.__name__,
             str(self.to_dict()))
-    
+
     def __eq__(self, other):
         return isinstance(other, Entity) and all(item in self.to_dict().items() for item in other.to_dict().items())
-    
+
     def to_dict(self) -> dict:
         ret_dict = {}
         for key, value in self.__dict__.items():
@@ -45,26 +45,26 @@ class Entity:
             else:
                 ret_dict[key] = value.__dict__() if value else {}
         return ret_dict
-    
+
     def to_json(self) -> str:
         dict_obj = self.to_dict()
         json_str = json.dumps(dict_obj)
         return json_str
-    
+
     def to_columns(self) -> Tuple[str]:
         cols = []
         for key in self.__dict__:
             if not key.startswith('_'):
                 cols.append(key.replace("'", "").upper())
         return tuple(cols)
-    
+
     def to_column_set(self) -> dict:
         fields = {}
         for key, value in self.__dict__.items():
             if not key.startswith('_'):
                 fields[key.replace("'", "").upper()] = "{}".format(str(value))
         return fields
-    
+
     def to_values(self) -> Tuple[str]:
         values = []
         for key, value in self.__dict__.items():

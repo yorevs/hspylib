@@ -28,7 +28,7 @@ Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
 
 
 class Main(Application):
-    
+
     def _setup_parameters(self, *params, **kwargs) -> None:
         self._with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
         self._with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
@@ -41,10 +41,10 @@ class Main(Application):
                 .build()
         )
         # @formatter:on
-    
+
     def _main(self, *params, **kwargs) -> None:
         self._exec_application()
-    
+
     def _exec_application(self) -> None:
         if self.getarg('number') == 'one':
             sysout(f"One: {self.getarg('anything')}")

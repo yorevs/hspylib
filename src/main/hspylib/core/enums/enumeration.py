@@ -19,15 +19,15 @@ from typing import Any, List
 
 
 class Enumeration(Enum):
-    
+
     @classmethod
     def names(cls) -> List[str]:
         return list(map(lambda e: e.name, cls))
-    
+
     @classmethod
     def values(cls) -> List[Any]:
         return list(map(lambda e: e.value, cls))
-    
+
     @classmethod
     def value_of(cls, name: str, ignore_case: bool = True) -> Any:
         if ignore_case:
@@ -36,7 +36,7 @@ class Enumeration(Enum):
             found = next(filter(lambda en: en.name == name, list(cls)), None)
         assert found, f"{name} name is not a valid \"{cls.__name__}\""
         return found
-    
+
     @classmethod
     def of_value(cls, value: Any, ignore_case: bool = False) -> Any:
         if ignore_case:

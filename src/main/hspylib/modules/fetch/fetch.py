@@ -37,7 +37,7 @@ def fetch(
     :param silent: Omits all informational messages.
     :return:
     """
-    
+
     url = url if url and url.startswith("http") else 'http://{}'.format(url)
     if not silent:
         sysout('Fetching: method={} table_headers={} body={} url={} ...'.format(

@@ -23,12 +23,12 @@ from hspylib.core.enums.charset import Charset
 
 
 class FirebaseEntry:
-    
+
     @staticmethod
     def of() -> Any:
         entry = FirebaseEntry()
         return entry
-    
+
     def __init__(self,
                  name: str = None,
                  last_update_user: str = None,
@@ -39,10 +39,10 @@ class FirebaseEntry:
         self.files = files if files else []
         self.str_encoding = str(encoding).lower()
         self.last_modified = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    
+
     def __str__(self):
         return json.dumps(self.__dict__)
-    
+
     def payload(self) -> str:
         return str({
             'encoding': self.str_encoding,

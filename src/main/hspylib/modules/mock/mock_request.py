@@ -34,18 +34,18 @@ class MockResponse(HttpResponse):
                  headers=None,
                  encoding: Charset = Charset.UTF_8,
                  content_type=ContentType.APPLICATION_JSON):
-        
+
         super().__init__(method, url, status_code, body, headers, encoding, content_type)
         self.parent = parent
         self.received_body = False
-    
+
     def then_return(self,
                     code: HttpCode,
                     body: str = None,
                     headers=None,
                     encoding: Charset = Charset.UTF_8,
                     content_type=ContentType.APPLICATION_JSON) -> Any:
-        
+
         response = self.parent.mock(self.method, self.url)
         response.status_code = code
         response.body = body
@@ -55,7 +55,7 @@ class MockResponse(HttpResponse):
         if response.content_type:
             response.content_type.charset = encoding
         return self.parent
-    
+
     def then_return_with_received_body(self,
                                        code: HttpCode,
                                        headers: CaseInsensitiveDict = None,

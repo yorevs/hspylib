@@ -14,16 +14,12 @@
    Copyright 2021, HSPyLib team
 """
 
-import re
 from abc import ABC
-from typing import Any, List, Optional
+from typing import Any
 
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import screen_size, restore_terminal, prepare_render, restore_cursor
+from hspylib.modules.cli.vt100.vt_utils import *
 
 
 def mselect(
@@ -32,7 +28,7 @@ def mselect(
         max_rows: int = 15,
         title_color: VtColors = VtColors.ORANGE,
         highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Any:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[Any]:
     """
     TODO
     :param items:
@@ -47,11 +43,11 @@ def mselect(
 
 
 class MenuSelect(ABC):
-
     UNSELECTED = ' '
     SELECTED = FormIcons.SELECTOR.value
 
-    NAV_FMT = "\n{}[Enter] Select  [\u2191\u2193] Navigate  [Q] Quit  [1..{}] Goto: %EL0%"
+    NAV_ICONS = '\u2191\u2193'
+    NAV_FMT = "\n{}[Enter] Select  [{}] Navigate  [Q] Quit  [1..{}] Goto: %EL0%"
 
     def __init__(
             self,
@@ -68,19 +64,18 @@ class MenuSelect(ABC):
 
     def select(
             self,
-            title: str = 'Please select one',
-            title_color: VtColors = VtColors.ORANGE,
-            highlight_color: VtColors = VtColors.BLUE,
-            nav_color: VtColors = VtColors.YELLOW) -> Optional[Any]:
+            title: str,
+            title_color: VtColors,
+            highlight_color: VtColors,
+            nav_color: VtColors) -> Optional[Any]:
 
         ret_val = None
         length = len(self.items)
 
         # When only one option is provided, select the element at index 0 and return
-        if length == 1:
+        if length <= 1:
             return self.items[0]
-
-        if length > 0:
+        else:
             prepare_render(title, title_color)
 
             # Wait for user interaction
@@ -91,12 +86,11 @@ class MenuSelect(ABC):
 
                 # Navigation input
                 ret_val = self._nav_input()
-                self.re_render = True
-        
+
         restore_terminal()
-        
+
         return self.items[self.sel_index] if ret_val == Keyboard.VK_ENTER else None
-    
+
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
 
         length = len(self.items)
@@ -124,7 +118,7 @@ class MenuSelect(ABC):
             else:
                 break
 
-        sysout(MenuSelect.NAV_FMT.format(nav_color.placeholder(), str(length)), end='')
+        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS, str(length)), end='')
         self.re_render = False
 
     def _nav_input(self) -> chr:

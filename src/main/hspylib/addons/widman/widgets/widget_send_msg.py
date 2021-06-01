@@ -31,8 +31,7 @@ from hspylib.modules.cli.menu.menu_utils import MenuUtils
 
 
 class WidgetSendMsg(Widget):
-
-    WIDGET_ICON  = WidgetIcons.NETWORK
+    WIDGET_ICON = WidgetIcons.NETWORK
     WIDGET_NAME = "SendMsg"
     TOOLTIP = "IP Message Sender. Sends TCP/UDP messages (multi-threaded)"
     VERSION = (0, 3, 0)
@@ -60,7 +59,6 @@ Usage: SendMsg [options]
     E.g:. send-msg.py -m "Hello" -p 12345 -a 0.0.0.0 -k 100 -i 500 -t 2
 """.format(str(VERSION), MAX_THREADS)
 
-
     def __init__(self):
         super().__init__(
             self.WIDGET_ICON,
@@ -77,7 +75,6 @@ Usage: SendMsg [options]
         self.threads = None
         self.message = None
         self.args = None
-
 
     def execute(self, *args) -> ExitCode:
 

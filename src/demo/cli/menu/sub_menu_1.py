@@ -33,17 +33,17 @@ class SubMenu1(MenuItem):
         super().__init__(parent, '-= Sub Menu 1 =-')
         self.menu_data = str(MENU).format(self.title)
         self.options = range(0, 4)
-    
+
     def trigger_menu_item(self) -> Menu:
         int_op = int(str(self.selected).strip())
         if int_op == 0:
             return self.parent
-        
+
         if int_op == 1:
             print('Hey')
         elif int_op == 2:
             print('Hoo')
         elif int_op == 3:
             exit_app(0)
-        
+
         return self

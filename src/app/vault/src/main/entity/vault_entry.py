@@ -33,7 +33,7 @@ ENTRY_FORMAT = """{}|{}|{}|{}\n"""
 
 class VaultEntry(Entity):
     """Represents a vault entity"""
-    
+
     def __init__(self, uuid: UUID, key: str, name: str, password: str, hint: str, modified: datetime = None):
         super().__init__(uuid)
         self.key = key
@@ -41,10 +41,10 @@ class VaultEntry(Entity):
         self.password = password
         self.hint = hint
         self.modified = modified if modified else datetime.now().strftime(DEFAULT_DATE_FORMAT)
-    
+
     def __str__(self):
         return ENTRY_FORMAT.format(self.key, self.name, self.password, self.hint, self.modified)
-    
+
     def to_string(self, show_password: bool = False, show_hint: bool = False) -> str:
         """Return the string representation of this entry
         :param show_password: Whether to exhibit the password or not

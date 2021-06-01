@@ -31,6 +31,7 @@ from hspylib.modules.cli.vt100.vt_colors import VtColors
 def require_terminal():
     assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
 
+
 require_terminal()
 
 
@@ -38,7 +39,7 @@ def screen_size() -> Optional[List[str]]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
         return os.popen('stty size').read().split()
-    
+
     return None
 
 
@@ -66,7 +67,7 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
         except AttributeError:
             return None
         return int(groups[0]), int(groups[1])
-    
+
     return None
 
 
@@ -77,11 +78,13 @@ def set_enable_echo(enabled: bool = True) -> None:
     if sys.stdout.isatty():
         os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
 
+
 def set_auto_wrap(auto_wrap: bool = True) -> None:
     """Set auto-wrap mode in the terminal
     :param auto_wrap: whether auto_wrap is set or not
     """
     vt_print(Vt100.set_auto_wrap(auto_wrap))
+
 
 def set_show_cursor(show_cursor: bool = True):
     """Show or hide cursor in the terminal
@@ -89,13 +92,16 @@ def set_show_cursor(show_cursor: bool = True):
     """
     vt_print(Vt100.set_show_cursor(show_cursor))
 
+
 def save_cursor():
     """Save cursor position and attributes"""
     vt_print(Vt100.save_cursor())
 
+
 def restore_cursor():
     """Restore cursor position and attributes"""
     vt_print(Vt100.restore_cursor())
+
 
 def restore_terminal(clear_screen: bool = True):
     """Clear terminal and restore default attributes"""
@@ -106,12 +112,14 @@ def restore_terminal(clear_screen: bool = True):
     set_enable_echo()
     sysout('%NC%')
 
-def exit_app(exit_code: int = signal.SIGHUP, frame=None,exit_msg: str = "Done.") -> None:
+
+def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done.") -> None:
     """Exit the application. Commonly hooked to signals"""
     sysout(str(frame) if frame else '', end='')
     sysout(f"%HOM%%ED2%%NC%\n{exit_msg}\n")
     restore_terminal(False)
     sys.exit(exit_code if exit_code else 0)
+
 
 def prepare_render(render_msg: str = '', render_color: VtColors = VtColors.ORANGE):
     """Prepare the terminal for TUI renderization"""

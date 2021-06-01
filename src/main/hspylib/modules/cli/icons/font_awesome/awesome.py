@@ -31,7 +31,7 @@ class Awesome(Enumeration):
         Full list of font awesome icons can be found here:
           - https://fontawesome.com/cheatsheet?from=io
     """
-    
+
     @staticmethod
     def demo_unicode() -> None:
         i = 0
@@ -41,17 +41,17 @@ class Awesome(Enumeration):
             endz = '\n' if i != 0 and i % 10 == 0 else ' '
             print('{} {}'.format(hexa, n), end=endz)
             i += 1
-    
+
     @classmethod
     def demo_icons(cls) -> None:
         list(map(awe_print, cls.values()))
-    
+
     def __str__(self) -> str:
         return str(self.value)
 
     def __repr__(self):
         return str(self)
-    
+
     def placeholder(self) -> str:
         return f":{self.name}:"
 

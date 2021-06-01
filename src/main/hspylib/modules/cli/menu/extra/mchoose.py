@@ -14,16 +14,12 @@
    Copyright 2021, HSPyLib team
 """
 
-import re
 from abc import ABC
-from typing import Any, List, Optional
+from typing import Any
 
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import screen_size, restore_terminal, prepare_render, restore_cursor
+from hspylib.modules.cli.vt100.vt_utils import *
 
 
 def mchoose(
@@ -49,13 +45,13 @@ def mchoose(
 
 
 class MenuChoose(ABC):
-
     UNSELECTED = ' '
     SELECTED = FormIcons.SELECTOR.value
     MARKED = FormIcons.MARKED.value
     UNMARKED = FormIcons.UNMARKED.value
 
-    NAV_FMT = "\n{}[Enter] Accept  [\u2191\u2193] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"
+    NAV_ICONS = '\u2191\u2193'
+    NAV_FMT = "\n{}[Enter] Accept  [{}] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"
 
     def __init__(
             self,
@@ -75,15 +71,14 @@ class MenuChoose(ABC):
 
     def choose(
             self,
-            title: str = 'Please select one',
-            title_color: VtColors = VtColors.ORANGE,
-            highlight_color: VtColors = VtColors.BLUE,
-            nav_color: VtColors = VtColors.YELLOW) -> Optional[List[Any]]:
+            title: str,
+            title_color: VtColors,
+            highlight_color: VtColors,
+            nav_color: VtColors) -> Optional[List[Any]]:
 
         ret_val = None
-        length = len(self.items)
 
-        if length > 0:
+        if len(self.items) > 0:
             prepare_render(title, title_color)
 
             # Wait for user interaction
@@ -94,15 +89,14 @@ class MenuChoose(ABC):
 
                 # Navigation input
                 ret_val = self._nav_input()
-                self.re_render = True
 
         restore_terminal()
-        
+
         return [op for idx, op in enumerate(self.items) if self.sel_options[idx]] \
             if ret_val == Keyboard.VK_ENTER else None
-    
+
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
-        
+
         length = len(self.items)
         dummy, columns = screen_size()
         restore_cursor()
@@ -122,7 +116,7 @@ class MenuChoose(ABC):
                 # Print the marked or unmarked option
                 mark = self.MARKED if self.sel_options[idx] == 1 else self.UNMARKED
                 fmt = "  {:>" + str(len(str(length))) + "}{:>" \
-                    + str(1 + len(str(selector))) + "} {:>" + str(len(str(mark))) + "} {}"
+                      + str(1 + len(str(selector))) + "} {:>" + str(len(str(mark))) + "} {}"
                 sysout(fmt.format(idx + 1, selector, mark, option_line))
 
                 # Check if the text fits the screen and print it, otherwise print '...'
@@ -131,7 +125,7 @@ class MenuChoose(ABC):
             else:
                 break
 
-        sysout(MenuChoose.NAV_FMT.format(nav_color.placeholder(), str(length)), end='')
+        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS, str(length)), end='')
         self.re_render = False
 
     def _nav_input(self) -> chr:

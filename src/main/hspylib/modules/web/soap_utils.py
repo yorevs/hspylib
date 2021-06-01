@@ -39,5 +39,5 @@ def soap_call(
     log.info(
         'Response <=  Status: {}  Payload: {}'.format(
             response.status_code, response.body if response.body else '<None>'))
-    
+
     return response

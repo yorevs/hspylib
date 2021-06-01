@@ -23,13 +23,13 @@ from hspylib.core.tools.commons import get_or_default, str_to_bool
 
 
 class MysqlRepositoryTest(MySqlRepository):
-    
+
     def row_to_entity(self, row: Tuple) -> EntityTest:
         return EntityTest(
             get_or_default(row, 0),
             get_or_default(row, 1),
             get_or_default(row, 2),
             str_to_bool(get_or_default(row, 3)))
-    
+
     def table_name(self) -> str:
         return 'TEST'

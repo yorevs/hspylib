@@ -34,7 +34,7 @@ from hspylib.modules.fetch.fetch import head
 
 class CFManager:
     """Represents the cloud foundry manager and it's functionalities"""
-    
+
     CF_ACTIONS = [
         'Logs',
         'Restart',
@@ -44,15 +44,15 @@ class CFManager:
         'Stop',
         'Target',
     ]
-    
+
     @staticmethod
     def _allow_multiple(action: str) -> bool:
         return action.lower() not in ['logs', 'target']
-    
+
     @staticmethod
     def _is_callable(action: str) -> bool:
         return action.lower() not in ['status', 'target']
-    
+
     def __init__(self, options: dict):
         self.configs = AppConfigs.INSTANCE
         self.options = options
@@ -64,7 +64,7 @@ class CFManager:
         self.space = get_by_key_or_default(self.options, 'space')
         self.apps = None
         self.done = False
-    
+
     def run(self):
         sysout('%GREEN%Checking CloudFoundry authorization...%NC%')
         if self.cf.connect():
@@ -85,9 +85,9 @@ class CFManager:
                     self.password = None
                     sleep(1)
             sysout('%GREEN%Successfully authorized!%NC%')
-        
+
         self._loop_actions()
-    
+
     def _get_apps(self, refresh: bool = False) -> List[CFApplication]:
         if refresh or not self.apps:
             sysout(f'%GREEN%Retrieving {self.space} applications ...%NC%')
@@ -98,9 +98,9 @@ class CFManager:
                     raise CFExecutionError(f'Unable to retrieve applications: => {self.cf.last_result}')
                 sysout('%YELLOW%No apps found%NC%')
             self.apps = apps
-        
+
         return self.apps
-    
+
     def _select_endpoint(self) -> None:
         with open(f'{self.configs.resource_dir()}/api_endpoints.txt', 'r+') as f_hosts:
             endpoints = list(map(lambda x: CFEndpoint(x.split(',')), f_hosts.readlines()))
@@ -131,7 +131,7 @@ class CFManager:
             self.password = result[1].value
         else:
             sys.exit(0)
-    
+
     def _authorize(self) -> bool:
         if not self.cf.api(self.api):
             raise CFExecutionError(f'Unable to set API: => {self.cf.last_result}')
@@ -139,7 +139,7 @@ class CFManager:
             raise CFAuthenticationError(f'Unable to authenticate to => {self.api}')
 
         return True
-    
+
     def _set_org(self) -> None:
         if not self.org:
             sysout('%YELLOW%Checking organization...%NC%')
@@ -151,7 +151,7 @@ class CFManager:
                 sys.exit(1)
             else:
                 self._do_target()
-    
+
     def _set_space(self) -> None:
         if not self.space:
             sysout('%YELLOW%Checking space...%NC%')
@@ -163,36 +163,36 @@ class CFManager:
                 sys.exit(1)
             else:
                 self._do_target()
-    
+
     def _choose_apps(self) -> Optional[List[CFApplication]]:
         if not self.apps:
             self.apps = self._get_apps()
         return mchoose(self.apps, checked=False, title='Please choose the applications you want to manage')
-    
+
     def _select_app(self) -> CFApplication:
         if not self.apps:
             self.apps = self._get_apps()
         return mselect(self.apps, title='Please select the application you want to manage')
-    
+
     def _do_target(self) -> None:
         sysout(f"%GREEN%Targeting ORG={self.org} and SPACE={self.space}...%NC%")
         if not self.cf.target(org=self.org, space=self.space):
             raise CFExecutionError(f"Unable to target ORG: {self.org} => {self.cf.last_result}")
-    
+
     def _loop_actions(self) -> None:
-        
+
         while not self.done:
             if self.org and self.space and not self.cf.is_targeted():
                 self._do_target()
             else:
                 self._set_org()
                 self._set_space()
-            
+
             if not self.org or not self.space or not self.cf.is_targeted():
                 raise CFExecutionError(f"Unable to target ORG={self.org}  SPACE={self.space} => {self.cf.last_result}")
-            
+
             action = mselect(CFManager.CF_ACTIONS, 'Please select an action to perform')
-            
+
             if not action:
                 self.done = True
             else:
@@ -224,9 +224,9 @@ class CFManager:
                         self.org = None
                         self.cf.targeted = {'org': None, 'space': None, 'targeted': False}
                         continue
-                    
+
                     MenuUtils.wait_enter()
-    
+
     def _perform(self, action: str, **kwargs):
         sysout(f'%GREEN%Performing {action.lower()} {str(kwargs)}...%NC%')
         method_to_call = getattr(self.cf, action.lower())
