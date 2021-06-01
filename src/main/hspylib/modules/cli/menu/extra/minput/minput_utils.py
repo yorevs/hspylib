@@ -45,18 +45,18 @@ class MInputUtils(ABC):
             else:
                 values[0] = f'<{values[0]}>'
             return '|'.join(values)
-        else:
-            unselected = list(map(lambda x: x.replace('<', '').replace('>', ''), values))
-            # @formatter:off
-            return '|'.join([
-                f'<{val}>'
-                if
-                    idx == (cur_idx + 1)
-                    or ((cur_idx + 1) >= len(unselected) and idx == 0)
-                else
-                    val for idx, val in enumerate(unselected)
-            ])
-            # @formatter:on
+
+        unselected = list(map(lambda x: x.replace('<', '').replace('>', ''), values))
+        # @formatter:off
+        return '|'.join([
+            f'<{val}>'
+            if
+                idx == (cur_idx + 1)
+                or ((cur_idx + 1) >= len(unselected) and idx == 0)
+            else
+                val for idx, val in enumerate(unselected)
+        ])
+        # @formatter:on
 
     @staticmethod
     def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:

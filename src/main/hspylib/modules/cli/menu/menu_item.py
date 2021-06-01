@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Optional
 
 from hspylib.core.exception.exceptions import InputAbortedError
@@ -50,8 +50,9 @@ class MenuItem(Menu, ABC):
             except InputAbortedError:
                 continue
 
+    @abstractmethod
     def trigger_menu_item(self) -> Optional[Menu]:
-        return None
+        pass
 
     def is_valid_option(self) -> bool:
         if not self.options or not self.selected:

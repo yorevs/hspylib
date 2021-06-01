@@ -122,8 +122,8 @@ class CFManager:
         self.username = self.options['username'] if 'username' in self.options else self.username
         self.password = self.options['password'] if 'password' in self.options else self.password
         form_fields = MenuInput.builder() \
-            .field().label('Username').kind('any').value(self.username).build() \
-            .field().label('Password').kind('any').itype('password').value(self.password).build() \
+            .field().label('Username').value(self.username).build() \
+            .field().label('Password').itype('password').value(self.password).build() \
             .build()
         result = minput(form_fields, title='Please type your Cloud Foundry credentials')
         if result:

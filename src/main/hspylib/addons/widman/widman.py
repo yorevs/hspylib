@@ -80,7 +80,7 @@ class WidgetManager(metaclass=Singleton):
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err
 
     def dashboard(self) -> None:
-        """Display all available widgets from the lookup paths"""
+        """Display all available widgets from the widget lookup paths"""
         items = []
         try:
             for widget_entry in self._widgets:
@@ -97,14 +97,14 @@ class WidgetManager(metaclass=Singleton):
             raise WidgetExecutionError(f"Failed to execute widget :: {err}") from err
 
     def _load_widgets(self):
-        """Search and load all widgets from the lookup paths"""
+        """Search and load all widgets from the widget lookup paths"""
         for path in self._lookup_paths:
             for root, _, files in os.walk(path):
                 filtered = list(filter(
                     lambda p: p.startswith(self.WIDGET_PREFIX) and p.endswith('py'), files)
                 )
                 widgets = list(
-                    map(lambda w: self.WidgetEntry(w, f"{root}/{w}"), filtered)
+                    map(lambda w: self.WidgetEntry(w, f"{root}/{w}"), filtered) # pylint: disable=W0640
                 )
                 self._widgets.extend(widgets)
 
@@ -112,12 +112,12 @@ class WidgetManager(metaclass=Singleton):
         widget_entry = next((w for w in self._widgets if self._name_matches(widget_name, w.name)), None)
         if not widget_entry:
             raise WidgetNotFoundError(
-                f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}")
+                f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}")
         try:
             widget_module = __import__(widget_entry.module)
         except ModuleNotFoundError as err:
             raise WidgetNotFoundError(
-                f"Widget '{widget_name}' was not found on configured paths: {str(self._lookup_paths)}") from err
+                f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}") from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
         assert isinstance(widget, Widget), \

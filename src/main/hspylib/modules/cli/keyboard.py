@@ -16,7 +16,7 @@
 
 import string
 import sys
-from select import select
+import select
 from typing import Any, Optional
 
 import getkey
@@ -147,7 +147,7 @@ class Keyboard(Enumeration):
 
     @staticmethod
     def kbhit():
-        dr, dw, de = select([sys.stdin], [], [], 0)
+        dr, _, _ = select.select([sys.stdin], [], [], 0)
         return dr != []
 
     @staticmethod
