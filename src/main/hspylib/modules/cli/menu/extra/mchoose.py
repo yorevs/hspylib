@@ -16,7 +16,7 @@
 
 import re
 from abc import ABC
-from typing import Any, List
+from typing import Any, List, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -33,7 +33,7 @@ def mchoose(
         max_rows: int = 15,
         title_color: VtColors = VtColors.ORANGE,
         highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[Any]]:
     """
     TODO
     :param items:
@@ -78,7 +78,7 @@ class MenuChoose(ABC):
             title: str = 'Please select one',
             title_color: VtColors = VtColors.ORANGE,
             highlight_color: VtColors = VtColors.BLUE,
-            nav_color: VtColors = VtColors.YELLOW) -> List[Any]:
+            nav_color: VtColors = VtColors.YELLOW) -> Optional[List[Any]]:
 
         ret_val = None
         length = len(self.items)
@@ -98,8 +98,8 @@ class MenuChoose(ABC):
 
         restore_terminal()
         
-        return [op for idx, op in enumerate(self.items) if self.sel_options[idx] == 1] \
-            if ret_val == Keyboard.VK_ENTER else []
+        return [op for idx, op in enumerate(self.items) if self.sel_options[idx]] \
+            if ret_val == Keyboard.VK_ENTER else None
     
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
         
@@ -109,7 +109,6 @@ class MenuChoose(ABC):
 
         for idx in range(self.show_from, self.show_to):
             selector = self.UNSELECTED
-            mark = self.UNMARKED
 
             if idx < length:  # When the number of items is lower than the max_rows, skip the other lines
                 option_line = str(self.items[idx])[0:int(columns)]
@@ -120,11 +119,10 @@ class MenuChoose(ABC):
                     vt_print(highlight_color.code())
                     selector = self.SELECTED
 
-                # Print the marker if the option is checked
-                if self.sel_options[idx] == 1:
-                    mark = self.MARKED
-                fmt = "  {:>" + str(len(str(length))) + "}{:>" + \
-                      str(1 + len(str(selector))) + "} {:>" + str(len(str(mark))) + "} {}"
+                # Print the marked or unmarked option
+                mark = self.MARKED if self.sel_options[idx] == 1 else self.UNMARKED
+                fmt = "  {:>" + str(len(str(length))) + "}{:>" \
+                    + str(1 + len(str(selector))) + "} {:>" + str(len(str(mark))) + "} {}"
                 sysout(fmt.format(idx + 1, selector, mark, option_line))
 
                 # Check if the text fits the screen and print it, otherwise print '...'
