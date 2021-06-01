@@ -76,5 +76,6 @@ class FieldBuilder:
         self.field.max_length = self.field.max_length or 30
         self.field.access_type = self.field.access_type or AccessType.READ_WRITE
         self.field.icon = self.field.get_icon()
+        self.field.value = self.field.value if self.field.value else ''
         self.parent.fields.append(self.field)
         return self.parent

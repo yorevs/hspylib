@@ -127,8 +127,8 @@ class CFManager:
             .build()
         result = minput(form_fields, title='Please type your Cloud Foundry credentials')
         if result:
-            self.username = result[0].value
-            self.password = result[1].value
+            self.username = result.username
+            self.password = result.password
         else:
             sys.exit(0)
 

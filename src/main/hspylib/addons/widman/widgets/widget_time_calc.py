@@ -127,6 +127,6 @@ class WidgetTimeCalc(Widget):
         # @formatter:on
 
         result = minput(form_fields)
-        self.args = [f.value for f in result]
+        self.args = [value for _, value in result.__dict__.items()]
 
         return bool(result)

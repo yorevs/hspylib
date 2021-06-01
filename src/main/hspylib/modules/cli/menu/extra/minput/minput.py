@@ -19,11 +19,10 @@ from typing import Any, List, Optional
 
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import syserr, sysout
-from hspylib.core.tools.text_helper import camelcase
+from hspylib.core.tools.text_helper import camelcase, snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
-from hspylib.modules.cli.menu.extra.minput.form_field import FormField
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.vt100.vt_codes import vt_print
@@ -36,7 +35,7 @@ def minput(
         form_fields: List[Any],
         title: str = 'Please fill all fields of the form fields below',
         title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[FormField]]:
+        nav_color: VtColors = VtColors.YELLOW) -> Any:
     """
     TODO
     :param form_fields:
@@ -72,7 +71,7 @@ class MenuInput:
             self,
             title: str,
             title_color: VtColors,
-            nav_color: VtColors) -> Optional[List[FormField]]:
+            nav_color: VtColors) -> Any:
 
         ret_val = None
 
@@ -90,7 +89,12 @@ class MenuInput:
 
         restore_terminal()
 
-        return self.all_fields if ret_val == Keyboard.VK_ENTER else None
+        form_fields = type('form_fields', (object,), {})()  # Create an empty generic object
+        if ret_val == Keyboard.VK_ENTER:
+            for field in self.all_fields:
+                setattr(form_fields, snakecase(field.label), field.value)
+
+        return form_fields
 
     def _render(self, nav_color: VtColors) -> None:
         restore_cursor()
