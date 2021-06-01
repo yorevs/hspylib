@@ -25,14 +25,14 @@ class Menu(ABC):
         Execute the current menu actions.
         :return: The next menu action to proceed after processing.
         """
-    
+
     @abstractmethod
     def trigger_menu_item(self) -> Any:
         """
         Trigger the option action selected by the user.
         :return: The next menu action to trigger.
         """
-    
+
     @abstractmethod
     def is_valid_option(self) -> bool:
         """

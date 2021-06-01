@@ -170,12 +170,12 @@ class Keyboard(Enumeration):
 
     def isdigit(self) -> bool:
         return str(self.value).isdigit()
-    
+
     def isalpha(self) -> bool:
         return str(self.value).isalpha()
-    
+
     def isalnum(self) -> bool:
         return str(self.value).isalnum()
-    
+
     def ispunct(self) -> bool:
         return all(ch in string.punctuation for ch in str(self.value))

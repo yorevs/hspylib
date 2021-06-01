@@ -27,19 +27,19 @@ HERE = get_path(__file__)
 
 class Main(Application):
     """HSPyLib Manager v{} - Manage HSPyLib applications."""
-    
+
     # The hspylib version
     VERSION = read_version(f"{HERE}/.version")
-    
+
     # HSPyLib manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-    
+
     # The welcome message
     WELCOME = (HERE / "welcome.txt").read_text()
-    
+
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.USAGE)
-    
+
     def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
         if len(*params) == 0:
@@ -63,11 +63,11 @@ class Main(Application):
                     .build()
             )
             # @formatter:on
-    
+
     def _main(self, *params, **kwargs) -> None:
         """Main entry point handler"""
         self._exec_application()
-    
+
     def _exec_application(self) -> None:
         """Execute the application"""
         op = self.getarg('operation')

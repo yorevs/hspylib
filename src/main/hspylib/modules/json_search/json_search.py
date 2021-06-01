@@ -24,7 +24,7 @@ RE_JSON_ARRAY_INDEX = '[0-9]{1,}'
 
 
 class JsonSearch:
-    
+
     # Construction
     def __init__(self, separator='.', json_name_re=RE_JSON_NAME, json_array_index_re=RE_JSON_ARRAY_INDEX):
         self.separator = separator
@@ -34,7 +34,7 @@ class JsonSearch:
         self.pat_sel_elem_val = None
         self.pat_sub_expr = None
         self.pat_sub_expr_val = None
-    
+
     # find the next element in the list matching the specified value.
     def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False) -> Any:
         selected_element = root_element
@@ -62,22 +62,22 @@ class JsonSearch:
                 selected_element = None
         else:
             selected_element = None
-        
+
         return selected_element
-    
+
     # Find the element in the sub-expressions.
     def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False) -> Any:
         for nextSubExpr in sub_expressions:
-            
+
             if nextSubExpr:
                 sub_parts = re.search(pat_subst_expr_val, nextSubExpr)
                 sub_elem_id = sub_parts.group(1)
                 sub_elem_val = sub_parts.group(3)
                 sub_selected_element = self.__find_next_element__(
                     sub_selected_element, sub_elem_id, sub_elem_val, fetch_parent)
-        
+
         return sub_selected_element
-    
+
     # Purpose: Get the json element through it's path. Returned object is either [dict, list or unicode].
     #
     #   Search patterns:
@@ -124,7 +124,7 @@ class JsonSearch:
                         # Check if there are indexed elements.
                         if elem_array_group and elem_array_index and isinstance(selected_element, list):
                             selected_element = selected_element[int(elem_array_index)]
-                
+
                 elif nextElement.find('[') >= 0:  # Next element is indexed
                     pat_sel_elem_idx = '(%s)\\[(%s)\\]' % (self.pat_elem, self.jsonArrayIndexRe)
                     parts = re.search(pat_sel_elem_idx, nextElement)
@@ -139,5 +139,5 @@ class JsonSearch:
                     selected_element = selected_element.get(nextElement)
         except (AttributeError, IndexError):
             selected_element = None
-        
+
         return selected_element

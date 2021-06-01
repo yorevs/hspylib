@@ -22,21 +22,21 @@ from hspylib.modules.eventbus.eventbus import EventBus
 
 
 class TestEventBus(unittest.TestCase):
-    
+
     def test_should_return_the_same_instance(self):
         bus1 = EventBus.get('test-bus')
         self.assertIsNotNone(bus1)
         bus2 = EventBus.get('test-bus')
         self.assertIsNotNone(bus2)
         self.assertIs(bus1, bus2)
-    
+
     def test_should_not_return_the_same_instance(self):
         bus1 = EventBus.get('test-bus1')
         self.assertIsNotNone(bus1)
         bus2 = EventBus.get('test-bus2')
         self.assertIsNotNone(bus2)
         self.assertIsNot(bus1, bus2)
-    
+
     def test_should_invoke_all_callbacks_from_subscribed_events(self):
         bus1 = EventBus.get('test-bus1')
         self.assertIsNotNone(bus1)
@@ -50,7 +50,7 @@ class TestEventBus(unittest.TestCase):
         bus1.emit('test-event', age=25, name='jose')
         method1.assert_called_with({'age': 25, 'name': 'jose'})
         method2.assert_called_with({'age': 25, 'name': 'jose'})
-    
+
     def test_should_not_invoke_callbacks_from_unsubscribed_events(self):
         bus1 = EventBus.get('test-bus1')
         self.assertIsNotNone(bus1)

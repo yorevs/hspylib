@@ -24,21 +24,21 @@ from hspylib.modules.cli.application.application import Application
 
 class Main(Application):
     """TODO"""
-    
+
     # The application name
     APP_NAME = os.path.basename(__file__)
-    
+
     # Version tuple: (major,minor,build)
     VERSION = (0, 9, 0)
-    
+
     # CloudFoundry manager usage message
     USAGE = f"""
     Usage: {APP_NAME} <option> [arguments]"""
-    
+
     def __init__(self, app_name: str):
         super().__init__(app_name, read_version(), self.USAGE, dirname(__file__))
         self.calc = QtCalculator()
-    
+
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         self.calc.show()
 

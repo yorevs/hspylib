@@ -28,7 +28,7 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestClass(unittest.TestCase):
-    
+
     # Setup tests
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
@@ -39,14 +39,14 @@ class TestClass(unittest.TestCase):
         )
         log.info(self.configs)
         self.repository = FileDbRepositoryTest(self.db_file)
-    
+
     # Teardown tests
     def tearDown(self):
         if os.path.exists(self.db_file):
             os.remove(self.db_file)
-    
+
     # TEST CASES ----------
-    
+
     # TC1 - Test inserting a single object into firebase.
     def test_should_insert_into_file_db(self):
         test_entity = EntityTest(comment='My-Test Data', lucky_number=51, is_working=True)
@@ -58,7 +58,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity.comment, result_set[0].comment)
         self.assertEqual(test_entity.lucky_number, result_set[0].lucky_number)
         self.assertEqual(test_entity.is_working, result_set[0].is_working)
-    
+
     # TC2 - Test updating a single object from firebase.
     def test_should_update_file_db(self):
         test_entity = EntityTest(comment='My-Test Data', lucky_number=51, is_working=True)
@@ -72,7 +72,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity.comment, result_set[0].comment)
         self.assertEqual(test_entity.lucky_number, result_set[0].lucky_number)
         self.assertEqual(test_entity.is_working, result_set[0].is_working)
-    
+
     # TC3 - Test selecting all objects from firebase.
     def test_should_select_all_from_file_db(self):
         test_entity_1 = EntityTest(comment='My-Test Data', lucky_number=51, is_working=True)
@@ -83,7 +83,7 @@ class TestClass(unittest.TestCase):
         assert result_set, "Result set is empty"
         self.assertIsInstance(result_set, list)
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
-    
+
     # TC4 - Test selecting a single object from firebase.
     def test_should_select_one_from_file_db(self):
         test_entity_1 = EntityTest(comment='My-Test Data', lucky_number=51, is_working=True)
@@ -97,7 +97,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity_1.comment, result_set.comment)
         self.assertEqual(test_entity_1.lucky_number, result_set.lucky_number)
         self.assertEqual(test_entity_1.is_working, result_set.is_working)
-    
+
     # TC5 - Test deleting one object from firebase.
     def test_should_delete_from_file_db(self):
         test_entity = EntityTest(comment='My-Test Data', lucky_number=51, is_working=True)

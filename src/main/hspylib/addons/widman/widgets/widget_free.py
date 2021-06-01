@@ -26,8 +26,7 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class WidgetFree(Widget):
-
-    WIDGET_ICON  = WidgetIcons.DATABASE
+    WIDGET_ICON = WidgetIcons.DATABASE
     WIDGET_NAME = "Free"
     TOOLTIP = "Report system memory usage."
     USAGE = "Usage: Free"
@@ -42,7 +41,6 @@ class WidgetFree(Widget):
             self.VERSION)
         self.is_alive = True
         self.report_interval = 1.5
-
 
     def execute(self, *args) -> ExitCode:
 

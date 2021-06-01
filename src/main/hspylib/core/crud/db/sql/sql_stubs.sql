@@ -1,29 +1,22 @@
-SELECT
-  :columnSet
-  FROM
+SELECT :columnSet
+FROM
     :tableName
-  WHERE
-    1 = 1
-    :filters
+WHERE 1 = 1 :filters
 ;
 
 INSERT
-  INTO :tableName
+INTO :tableName
     :columnSet
-  VALUES
+VALUES
     :valueSet
 ;
 
 UPDATE :tableName
-  SET :fieldSet
-  WHERE
-    1 = 1
-    :filters
+SET :fieldSet
+WHERE 1 = 1 :filters
 ;
 
 DELETE
-  FROM :tableName
-  WHERE
-    1 = 1
-    :filters
+FROM :tableName
+WHERE 1 = 1 :filters
 ;

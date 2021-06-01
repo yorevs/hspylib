@@ -103,9 +103,9 @@ class Charset(Enumeration):
     UTF_16_LE = 'UTF-16-LE'
     UTF_7 = 'UTF-7'
     UTF_8 = 'UTF-8'
-    
+
     def __str__(self):
         return str(self.value)
-    
+
     def __repr__(self):
         return str(self)

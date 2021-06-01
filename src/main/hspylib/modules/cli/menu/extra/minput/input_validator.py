@@ -62,6 +62,6 @@ class InputValidator:
         return re.search(regex, value) is not None
 
     def _get_pattern(self):
-        return self._pattern\
+        return self._pattern \
             .replace('%min%', str(self._min_length or 1)) \
             .replace('%max%', str(self._max_length or 30))

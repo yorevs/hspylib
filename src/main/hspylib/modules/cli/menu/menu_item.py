@@ -32,10 +32,10 @@ class MenuItem(Menu, ABC):
         self.items = None
         self.options = None
         self.menu_data = None
-    
+
     def __str__(self):
         return self.menu_data if self.menu_data else ''
-    
+
     def execute(self) -> Optional[Menu]:
         while not self.selected == 0 and not self.done:
             sysout(str(self))
@@ -49,14 +49,14 @@ class MenuItem(Menu, ABC):
                 self.selected = None
             except InputAbortedError:
                 continue
-    
+
     def trigger_menu_item(self) -> Optional[Menu]:
         return None
-    
+
     def is_valid_option(self) -> bool:
         if not self.options or not self.selected:
             return False
         if self.selected.isdigit():
             return int(self.selected) in self.options
-        
+
         return str(self.selected) in self.options

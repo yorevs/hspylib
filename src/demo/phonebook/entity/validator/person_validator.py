@@ -23,7 +23,7 @@ from phonebook.entity.validator.contact_validator import ContactValidator
 
 
 class PersonValidator(ContactValidator):
-    
+
     def __call__(self, *persons: Person, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         assert len(persons) == 1, "Exactly one person can be validated at a time. Given: {}".format(len(persons))
@@ -34,13 +34,13 @@ class PersonValidator(ContactValidator):
         self.assert_valid(errors, self.validate_email(persons[0].email))
         self.assert_valid(errors, self.validate_address(persons[0].address))
         self.assert_valid(errors, self.validate_complement(persons[0].complement))
-        
+
         return len(errors) == 0, errors
-    
+
     @staticmethod
     def validate_age(age: str) -> (bool, str):
         return Validator.is_integer(age, min_value=10, max_value=115), "Invalid age"
-    
+
     @staticmethod
     def validate_email(email: str) -> (bool, str):
         return Validator \

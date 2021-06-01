@@ -27,11 +27,11 @@ from phonebook.service.person_service import PersonService
 
 
 class CreateView(metaclass=Singleton):
-    
+
     def __init__(self):
         self.person_service = PersonService()
         self.company_service = CompanyService()
-    
+
     def person(self) -> None:
         MenuUtils.title('CREATE PERSON')
         person = Person()
@@ -47,9 +47,9 @@ class CreateView(metaclass=Singleton):
             self.person_service.save(person)
         except InputAbortedError:
             MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
-        
+
         MenuUtils.wait_enter()
-    
+
     def company(self) -> None:
         MenuUtils.title('CREATE COMPANY')
         company = Company()
@@ -64,5 +64,5 @@ class CreateView(metaclass=Singleton):
             self.company_service.save(company)
         except InputAbortedError:
             MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
-        
+
         MenuUtils.wait_enter()

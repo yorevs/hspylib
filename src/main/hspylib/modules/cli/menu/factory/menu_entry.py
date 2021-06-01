@@ -39,9 +39,9 @@ class MenuEntry(MenuItem):
         )
         self.options = range(0, len(items))
         self.items = items
-    
+
     def trigger_menu_item(self) -> Menu:
         int_op = int(str(self.selected).strip())
         ret_val = self.items[str(int_op)].action_trigger(self)
-        
+
         return ret_val if ret_val else self

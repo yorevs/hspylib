@@ -23,7 +23,7 @@ from phonebook.entity.validator.contact_validator import ContactValidator
 
 
 class CompanyValidator(ContactValidator):
-    
+
     def __call__(self, *companies: Company, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         assert len(companies) == 1, "Exactly one company can be validated at a time. Given: {}".format(len(companies))
@@ -33,9 +33,9 @@ class CompanyValidator(ContactValidator):
         self.assert_valid(errors, self.validate_website(companies[0].website))
         self.assert_valid(errors, self.validate_address(companies[0].address))
         self.assert_valid(errors, self.validate_complement(companies[0].complement))
-        
+
         return len(errors) == 0, errors
-    
+
     @staticmethod
     def validate_website(website: str) -> (bool, str):
         return Validator \
