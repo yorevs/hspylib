@@ -13,13 +13,16 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import re
 from abc import ABC
-from typing import Any
+from typing import Any, List, Optional
 
+from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import *
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_utils import restore_cursor, screen_size, restore_terminal, prepare_render
 
 
 def mselect(
@@ -44,7 +47,7 @@ def mselect(
 
 class MenuSelect(ABC):
     UNSELECTED = ' '
-    SELECTED = FormIcons.SELECTOR.value
+    SELECTED = FormIcons.SELECTOR
 
     NAV_ICONS = '\u2191\u2193'
     NAV_FMT = "\n{}[Enter] Select  [{}] Navigate  [Q] Quit  [1..{}] Goto: %EL0%"
@@ -75,17 +78,17 @@ class MenuSelect(ABC):
         # When only one option is provided, select the element at index 0 and return
         if length <= 1:
             return self.items[0]
-        else:
-            prepare_render(title, title_color)
 
-            # Wait for user interaction
-            while not self.done and ret_val not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
-                # Menu Renderization
-                if self.re_render:
-                    self._render(highlight_color, nav_color)
+        prepare_render(title, title_color)
 
-                # Navigation input
-                ret_val = self._nav_input()
+        # Wait for user interaction
+        while not self.done and ret_val not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+            # Menu Renderization
+            if self.re_render:
+                self._render(highlight_color, nav_color)
+
+            # Navigation input
+            ret_val = self._nav_input()
 
         restore_terminal()
 

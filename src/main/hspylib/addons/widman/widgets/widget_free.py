@@ -54,7 +54,8 @@ class WidgetFree(Widget):
     def cleanup(self) -> None:
         pass
 
-    def _report_usage(self):
+    @staticmethod
+    def _report_usage():
         ps = Terminal.shell_exec('ps -caxm -orss,comm')  # Get process info
         vm = Terminal.shell_exec('vm_stat')
 

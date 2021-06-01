@@ -55,6 +55,9 @@ class WidgetTimeCalc(Widget):
         elif args[0] in ['-h', '--help']:
             sysout(self.usage())
             return ExitCode.SUCCESS
+        elif args[0] in ['-v', '--version']:
+            sysout(self.version())
+            return ExitCode.SUCCESS
         elif args[0] in ['-d', '--decimal']:
             self.decimal = True
             args = args[1:]
@@ -126,4 +129,4 @@ class WidgetTimeCalc(Widget):
         result = minput(form_fields)
         self.args = [f.value for f in result]
 
-        return True if result else False
+        return bool(result)

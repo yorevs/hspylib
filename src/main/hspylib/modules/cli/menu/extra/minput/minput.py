@@ -13,11 +13,12 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import re
 import time
-from typing import Any
+from typing import Any, List, Optional
 
 from hspylib.core.exception.exceptions import InvalidInputError
+from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.text_helper import camelcase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -25,7 +26,10 @@ from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
 from hspylib.modules.cli.menu.extra.minput.form_field import FormField
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
-from hspylib.modules.cli.vt100.vt_utils import *
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, get_cursor_position, \
+    set_enable_echo
 
 
 def minput(
@@ -143,7 +147,7 @@ class MenuInput:
             idx, _ = MInputUtils.get_selected(field.value)
             sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
         elif field.itype == InputType.MASKED:
-            value, mask = MInputUtils.unpack_masked(str(field.value))
+            value, _ = MInputUtils.unpack_masked(str(field.value))
             sysout(fmt.format(field.icon, len(value), field.max_length))
         else:
             sysout(fmt.format(field.icon, field_size, field.max_length))
@@ -223,11 +227,10 @@ class MenuInput:
                 self._display_error('This field is read only !')
 
     def _display_error(self, err_msg) -> None:
-        err_offset = 12 + self.max_detail_length
         set_enable_echo(False)
-        err_pos = self.max_label_length + self.max_value_length + err_offset
+        err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + 12
         vt_print(f"%CUP({self.cur_row};{err_pos})%")
-        sysout(f"%RED% {FormIcons.ERROR}  {err_msg}", end='')
+        syserr(f"{FormIcons.ERROR}  {err_msg}", end='')
         time.sleep(max(2, int(len(err_msg) / 25)))
         set_enable_echo()
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")  # Remove the message after the timeout

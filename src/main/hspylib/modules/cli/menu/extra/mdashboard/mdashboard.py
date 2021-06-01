@@ -14,12 +14,15 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Any
+from typing import Any, List, Optional
 
+from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.vt100.vt_utils import *
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_utils import restore_terminal, restore_cursor, set_enable_echo, prepare_render
 
 
 def mdashboard(
@@ -91,8 +94,8 @@ class MenuDashBoard:
         restore_terminal()
         selected = self.items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
 
-        if selected and selected.cb_action:
-            selected.cb_action()
+        if selected and selected.on_trigger:
+            selected.on_trigger()
 
         return selected
 
@@ -108,8 +111,7 @@ class MenuDashBoard:
         self.re_render = False
 
     def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
-        num_cols = len(cell_template[0])
-        num_rows = len(cell_template)
+        num_cols, num_rows = len(cell_template[0]), len(cell_template)
 
         for row in range(0, num_rows):
             for col in range(0, num_cols):

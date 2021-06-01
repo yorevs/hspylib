@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
@@ -33,8 +33,8 @@ class DashboardItemBuilder:
         self.item.tooltip = tooltip
         return self
 
-    def cb_action(self, cb_action: Callable) -> Any:
-        self.item.cb_action = cb_action
+    def on_trigger(self, on_trigger: Callable) -> Optional[Any]:
+        self.item.on_trigger = on_trigger
         return self
 
     def build(self) -> Any:
