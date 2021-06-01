@@ -23,32 +23,32 @@ if __name__ == '__main__':
         .item() \
             .icon(DashboardIcons.PLUS) \
             .tooltip('Add something') \
-            .action(lambda: print('Add')) \
+            .cb_action(lambda: print('Add')) \
             .build() \
         .item() \
             .icon(DashboardIcons.MINUS) \
             .tooltip('Remove something') \
-            .action(lambda: print('Del')) \
+            .cb_action(lambda: print('Del')) \
             .build() \
         .item() \
             .icon(DashboardIcons.EDIT) \
             .tooltip('Edit something') \
-            .action(lambda: print('Edit')) \
+            .cb_action(lambda: print('Edit')) \
             .build() \
         .item() \
             .icon(DashboardIcons.LIST) \
             .tooltip('List everything') \
-            .action(lambda: print('List')) \
+            .cb_action(lambda: print('List')) \
             .build() \
         .item() \
             .icon(DashboardIcons.DATABASE) \
             .tooltip('Database console') \
-            .action(lambda: print('Database')) \
+            .cb_action(lambda: print('Database')) \
             .build() \
         .item() \
             .icon(DashboardIcons.EXIT) \
             .tooltip('Exit application') \
-            .action(lambda: print('Exit')) \
+            .cb_action(lambda: print('Exit')) \
             .build() \
         .build()
     # @formatter:on

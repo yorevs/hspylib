@@ -24,7 +24,7 @@ class DashboardItem:
             self,
             icon: Awesome = None,
             tooltip: str = None,
-            action: Callable = None):
+            cb_action: Callable = None):
         self.icon = icon
         self.tooltip = tooltip
-        self.action = action
+        self.cb_action = cb_action

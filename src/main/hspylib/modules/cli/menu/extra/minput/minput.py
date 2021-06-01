@@ -15,7 +15,6 @@
 """
 
 import re
-import signal
 import time
 from typing import Any, List
 
@@ -28,11 +27,11 @@ from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
 from hspylib.modules.cli.menu.extra.minput.form_field import FormField
 from hspylib.modules.cli.menu.extra.minput.input_type import InputType
 from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo
+from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo, restore_terminal, prepare_render, \
+    restore_cursor
 
 
 def minput(
@@ -55,7 +54,7 @@ class MenuInput:
 
     SELECTED_BG = '%MOD(44)%'
 
-    NAV_FMT = "{}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
+    NAV_FMT = "\n{}[Enter] Submit  [\u2191\u2193] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
     @classmethod
     def builder(cls) -> Any:
@@ -79,36 +78,26 @@ class MenuInput:
 
         ret_val = None
         length = len(self.all_fields)
-        signal.signal(signal.SIGINT, MenuUtils.exit_app)
-        signal.signal(signal.SIGHUP, MenuUtils.exit_app)
 
         if length > 0:
-            sysout(f"%ED2%%HOM%{title_color.placeholder()}{title}")
-            vt_print('%HOM%%CUD(1)%%ED0%')
-            vt_print(Vt100.set_auto_wrap(False))
-            vt_print(Vt100.set_show_cursor(False))
-            vt_print(Vt100.save_cursor())
+            prepare_render(title, title_color)
 
             # Wait for user interaction
-            while not self.done and ret_val != Keyboard.VK_ENTER:
-                # Menu Renderization {
+            while not self.done and ret_val not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+                # Menu Renderization
                 if self.re_render:
                     self._render(nav_color)
-                # } Menu Renderization
 
-                # Navigation input {
+                # Navigation input
                 ret_val = self._nav_input()
-                # } Navigation input
+                self.re_render = True
 
-        vt_print('%HOM%%ED2%%MOD(0)%')  # Clean screen before exiting
+        restore_terminal()
 
         return self.all_fields if ret_val == Keyboard.VK_ENTER else []
 
     def _render(self, nav_color: VtColors) -> None:
-        # Restore the cursor to the home position
-        vt_print(Vt100.restore_cursor())
-        sysout('%NC%')
-        set_enable_echo()
+        restore_cursor()
 
         for idx, field in enumerate(self.all_fields):
 
@@ -142,7 +131,7 @@ class MenuInput:
             # Remaining/max characters
             self._render_details(field, field_size)
 
-        sysout('\n' + MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
+        sysout(MenuInput.NAV_FMT.format(nav_color.placeholder()), end='')
         self.re_render = False
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:
@@ -169,21 +158,12 @@ class MenuInput:
 
     def _nav_input(self) -> chr:
         length = len(self.all_fields)
-        keypress = None
+        keypress = Keyboard.read_keystroke()
 
-        try:
-            keypress = Keyboard.read_keystroke()
-        except (KeyboardInterrupt, AssertionError) as err:
-            pass
-
-        if not keypress:
-            return None
-
-        if keypress == Keyboard.VK_ESC:
-            self.done = True
-            sysout('\n%NC%')
-        else:
-            if keypress == Keyboard.VK_TAB:  # Handle TAB
+        if keypress:
+            if keypress == Keyboard.VK_ESC:
+                self.done = True
+            elif keypress == Keyboard.VK_TAB:  # Handle TAB
                 self.tab_index = min(length - 1, self.tab_index + 1)
             elif keypress == Keyboard.VK_SHIFT_TAB:  # Handle Shift + TAB
                 self.tab_index = max(0, self.tab_index - 1)
@@ -221,7 +201,7 @@ class MenuInput:
         self.re_render = True
         return keypress
 
-    def _handle_input(self, keypress: chr):
+    def _handle_input(self, keypress: chr) -> None:
         if self.cur_field.itype == InputType.CHECKBOX:
             if keypress == Keyboard.VK_SPACE:
                 self.cur_field.value = 1 if not self.cur_field.value else 0
@@ -244,7 +224,7 @@ class MenuInput:
                     self._display_error(
                         f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !")
 
-    def _handle_backspace(self):
+    def _handle_backspace(self) -> None:
         if self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
             value = value[:-1]

@@ -14,8 +14,6 @@
    Copyright 2021, HSPyLib team
 """
 
-import signal
-import sys
 import time
 from abc import ABC
 from typing import Any, Callable, Optional
@@ -27,17 +25,7 @@ from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 class MenuUtils(ABC):
-    
-    @staticmethod
-    def exit_app(
-            exit_code: int = signal.SIGHUP,
-            frame=None,
-            exit_msg: str = "Done.") -> None:
-        
-        sysout(str(frame) if frame else '', end='')
-        sysout(f"%HOM%%ED2%%NC%\n{exit_msg}\n")
-        sys.exit(exit_code if exit_code else 0)
-    
+
     @staticmethod
     def print_error(
             message: str,
