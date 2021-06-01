@@ -18,7 +18,7 @@ import signal
 from typing import Optional
 
 from hspylib.modules.cli.menu.menu import Menu
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 
 class MenuUi:
@@ -27,7 +27,7 @@ class MenuUi:
         self.previous = None
         self.current = root
         self.next = None
-        signal.signal(signal.SIGINT, MenuUtils.exit_app)
+        signal.signal(signal.SIGINT, exit_app)
     
     def show(self) -> None:
         while not self.done:

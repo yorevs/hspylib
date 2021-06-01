@@ -18,7 +18,7 @@ from cli.menu.sub_menu_1 import SubMenu1
 from cli.menu.sub_menu_2 import SubMenu2
 from hspylib.modules.cli.menu.menu import Menu
 from hspylib.modules.cli.menu.menu_item import MenuItem
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 MENU = """%ED2%%HOM%
 {}
@@ -42,6 +42,6 @@ class MainMenu(MenuItem):
     def trigger_menu_item(self) -> Menu:  # pylint: disable=inconsistent-return-statements
         int_op = int(str(self.selected).strip())
         if int_op == 0:
-            MenuUtils.exit_app(0)
+            exit_app(0)
         else:
             return self.menu_items[str(int_op)]

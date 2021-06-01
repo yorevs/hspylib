@@ -22,7 +22,7 @@ from typing import Any, Optional
 import getkey
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import syserr
+from hspylib.core.exception.exceptions import KeyboardInputError
 from hspylib.modules.cli.vt100.vt_utils import require_terminal
 
 require_terminal()
@@ -155,11 +155,14 @@ class Keyboard(Enumeration):
         return sys.stdin.read(1)
 
     @classmethod
-    def read_keystroke(cls, blocking=True) -> Optional[Any]:
+    def read_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional[Any]:
         try:
             keystroke = getkey.getkey(blocking)
             if keystroke:
                 return cls.of_value(keystroke)
+        except (KeyboardInterrupt, AssertionError) as err:
+            if not ignore_error_keys:
+                raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
         finally:
             sys.stdin.flush()
 

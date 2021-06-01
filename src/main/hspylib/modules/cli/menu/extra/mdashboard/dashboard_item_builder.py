@@ -33,8 +33,8 @@ class DashboardItemBuilder:
         self.item.tooltip = tooltip
         return self
 
-    def action(self, action: Callable) -> Any:
-        self.item.action = action
+    def cb_action(self, cb_action: Callable) -> Any:
+        self.item.cb_action = cb_action
         return self
 
     def build(self) -> Any:

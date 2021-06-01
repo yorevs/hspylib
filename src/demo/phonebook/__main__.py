@@ -20,7 +20,7 @@ from hspylib.core.tools.commons import dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.menu.factory.menu_factory import MenuFactory
 from hspylib.modules.cli.menu.menu_ui import MenuUi
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
@@ -41,7 +41,7 @@ class Main(Application):
         search_view = SearchView()
         main_menu = MenuFactory \
             .create(menu_title='HSPYLIB Demo Phonebook') \
-            .with_option('Exit').on_trigger(lambda t: MenuUtils.exit_app(0)) \
+            .with_option('Exit').on_trigger(lambda t: exit_app(0)) \
             .with_option('Create').on_trigger(lambda x: create_menu) \
             .with_option('Edit').on_trigger(lambda x: edit_menu) \
             .with_option('Search').on_trigger(lambda x: search_menu) \
