@@ -25,26 +25,36 @@ class GitTools:
         return Terminal.shell_exec('git symbolic-ref --short HEAD')
 
     @staticmethod
-    def changelog(from_tag, to_tag) -> str:
+    def changelog(from_tag: str, to_tag: str) -> str:
         """TODO"""
-        return Terminal.shell_exec(f'git log --oneline --pretty=format:%h %ad %s --date=short {from_tag}^..{to_tag}^')
+        return Terminal.shell_exec(f"git log --oneline --pretty=format:%h %ad %s --date=short {from_tag}^..{to_tag}^")
 
     @staticmethod
     def unreleased() -> str:
         """TODO"""
         latest_tag = Terminal.shell_exec('git describe --tags --abbrev=0 HEAD^')
-        return Terminal.shell_exec(f'git log --oneline --pretty=format:%h %ad %s --date=short {latest_tag}..HEAD')
+        return Terminal.shell_exec(f"git log --oneline --pretty=format:%h %ad %s --date=short {latest_tag}..HEAD")
 
     @staticmethod
-    def release_date(tag_name) -> str:
+    def release_date(tag_name: str) -> str:
         """TODO"""
-        return Terminal.shell_exec(f'git log -1 --format=%ad --date=short {tag_name}')
+        return Terminal.shell_exec(f"git log -1 --format=%ad --date=short {tag_name}")
 
     @staticmethod
     def tag_list() -> str:
         """TODO"""
-        return Terminal.shell_exec('git tag')
+        return Terminal.shell_exec('git tag -l')
 
+    @staticmethod
+    def create_tag(version: str, commit_id: str = 'HEAD', description: str = None) -> str:
+        """TODO"""
+        return Terminal.shell_exec(f"git tag -a v{version} {commit_id} -m '{description or version}'")
 
-if __name__ == '__main__':
-    GitTools.unreleased()
+    @staticmethod
+    def search_logs(filter_by: str = '.*') -> str:
+        """TODO"""
+        return Terminal.shell_exec(f"git log --grep='{filter_by}' --pretty=format:'%h %ad %s' --date=short")
+
+    @staticmethod
+    def show_file(filename: str, commit_id: str = 'HEAD') -> str:
+        return Terminal.shell_exec(f"git show {commit_id}:{filename}")
