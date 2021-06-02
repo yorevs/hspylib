@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.widman.widgets
+   hspylib.main.hspylib.addons.widman.widgets
       @file: widget_time_calc.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,12 +17,13 @@
 import math
 import re
 
+from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
 
 
 class WidgetTimeCalc(Widget):

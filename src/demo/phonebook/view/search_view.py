@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.demo.phonebook.view
+   hspylib.demo.phonebook.view
       @file: search_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,12 +16,13 @@
 
 from typing import List
 
-from hspylib.core.exception.exceptions import InputAbortedError
-from hspylib.core.meta.singleton import Singleton
-from hspylib.core.model.entity import Entity
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
-from hspylib.modules.cli.tables.table_renderer import TableRenderer
+from hspylib.modules.cli.tui.tables.table_renderer import TableRenderer
+
+from hspylib.core.crud.crud_entity import CrudEntity
+from hspylib.core.exception.exceptions import InputAbortedError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
@@ -69,7 +70,7 @@ class SearchView(metaclass=Singleton):
             MenuUtils.wait_enter()
 
     @staticmethod
-    def display_table(headers: List[str], entities: List[Entity], title: str) -> None:
+    def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:
         MenuUtils.title('LISTING ALL {}'.format(title))
         tr = TableRenderer(headers, [c.to_values() for c in entities], title)
         tr.adjust_sizes_by_largest_cell()

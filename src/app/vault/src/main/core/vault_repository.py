@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.vault.src.main.core
+   hspylib.app.vault.src.main.core
       @file: vault_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -29,8 +29,8 @@ class VaultRepository(FileRepository):
         super().__init__(self.db_file)
 
     def find_all(self, filters: str = None) -> List[VaultEntry]:
-        """TODO
-        :param filters:
+        """Find all vault entries using the specified filter
+        :param filters: the filter to restrict the search for entries
         """
         self.storage.load()
         data = self.storage.data or []
@@ -46,8 +46,8 @@ class VaultRepository(FileRepository):
         return [self.dict_to_entity(entry) for entry in data]
 
     def find_by_key(self, key: str) -> Optional[VaultEntry]:
-        """TODO
-        :param key:
+        """Find a vault entry matching the specified by key
+        :param key: the entry key to find
         """
         self.storage.load()
         if key:
@@ -57,7 +57,7 @@ class VaultRepository(FileRepository):
         return None
 
     def dict_to_entity(self, row: dict) -> VaultEntry:
-        """TODO
+        """Convert a dict into a vault entry
         :param row:
         """
         return VaultEntry(

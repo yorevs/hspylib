@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.appman.templates
+   hspylib.main.hspylib.addons.appman.templates
       @file: tpl-main.py
    @created: Tue, 1 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

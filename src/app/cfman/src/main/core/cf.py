@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.cfman.src.main.core
+   hspylib.app.cfman.src.main.core
       @file: cf.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 
 from typing import List
 
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.vt100.terminal import Terminal
 
 

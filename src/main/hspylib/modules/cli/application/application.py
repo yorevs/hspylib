@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.application
+   hspylib.main.hspylib.modules.cli.application
       @file: application.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -23,7 +23,7 @@ from typing import Callable, List, Optional, Set, Tuple
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.application.argument import Argument
 from hspylib.modules.cli.application.argument_chain import ArgumentChain

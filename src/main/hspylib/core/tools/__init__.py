@@ -7,8 +7,8 @@
 
 __all__ = [
   'commons', 
-  'git_utils', 
+  'git_tools', 
   'regex_constants', 
-  'text_helper', 
+  'text_tools', 
   'validator'
 ]

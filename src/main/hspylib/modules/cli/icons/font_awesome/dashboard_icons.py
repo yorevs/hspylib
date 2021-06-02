@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.icons.font_awesome
+   hspylib.main.hspylib.modules.cli.icons.font_awesome
       @file: dashboard_icons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

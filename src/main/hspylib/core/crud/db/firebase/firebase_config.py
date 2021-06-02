@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.crud.db.firebase
+   hspylib.main.hspylib.core.crud.db.firebase
       @file: firebase_config.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -25,7 +25,7 @@ from requests.structures import CaseInsensitiveDict
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.fetch.fetch import get
 
 FB_CONFIG_FMT = """%YELLOW%

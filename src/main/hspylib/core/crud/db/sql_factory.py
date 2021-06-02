@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.crud.db
+   hspylib.main.hspylib.core.crud.db
       @file: sql_factory.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,8 +20,8 @@ from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict
 
-from hspylib.core.meta.singleton import Singleton
-from hspylib.core.model.entity import Entity
+from hspylib.core.crud.crud_entity import CrudEntity
+from hspylib.core.metaclass.singleton import Singleton
 
 DEFAULT_SQL_STUBS = '{}/sql/sql_stubs.sql'.format(os.path.dirname(__file__))
 
@@ -53,7 +53,7 @@ class SqlFactory(metaclass=Singleton):
         return filter_string
 
     @staticmethod
-    def join_fieldset(entity: Entity) -> str:
+    def join_fieldset(entity: CrudEntity) -> str:
         fields = entity.to_column_set()
         field_set = ''
         for key, value in fields.items():
@@ -66,7 +66,7 @@ class SqlFactory(metaclass=Singleton):
             self.__class__.__name__,
             len(self.sql_stubs)))
 
-    def insert(self, entity: Entity) -> Optional[str]:
+    def insert(self, entity: CrudEntity) -> Optional[str]:
         params = entity.to_values()
         sql = self.sql_stubs['insert'] \
             .replace(':columnSet', str(entity.to_columns()).replace("'", "")) \
@@ -79,7 +79,7 @@ class SqlFactory(metaclass=Singleton):
             .replace(':filters', SqlFactory.join_filters(filters))
         return sql
 
-    def update(self, entity: Entity, filters: CaseInsensitiveDict) -> Optional[str]:
+    def update(self, entity: CrudEntity, filters: CaseInsensitiveDict) -> Optional[str]:
         sql = self.sql_stubs['update'] \
             .replace(':fieldSet', SqlFactory.join_fieldset(entity)) \
             .replace(':filters', SqlFactory.join_filters(filters))

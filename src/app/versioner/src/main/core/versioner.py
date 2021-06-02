@@ -4,7 +4,7 @@
 """
    Provides an engine to manage app versions
    @project: HSPyLib
-   @package: hspylib.app.versioner.src.main
+   hspylib.app.versioner.src.main
       @file: versioner.py
    @created: Thu, 14 Nov 2019
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,7 +19,7 @@ import os
 import re
 from typing import List
 
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir, sysout
 from versioner.src.main.entity.version import Version
 from versioner.src.main.enums.extension import Extension

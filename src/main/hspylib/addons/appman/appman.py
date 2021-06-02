@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.appman
+   hspylib.main.hspylib.addons.appman
       @file: appman.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,9 +19,9 @@ from typing import Any, List
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
-from hspylib.core.tools.text_helper import camelcase
+from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
 
