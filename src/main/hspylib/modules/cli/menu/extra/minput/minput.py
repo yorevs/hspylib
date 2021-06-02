@@ -178,18 +178,19 @@ class MenuInput:
                 else:
                     self._handle_input(keypress)
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
-                for field in self.all_fields:
-                    if field.itype == InputType.SELECT:
+                for idx, field in enumerate(self.all_fields):
+                    self.cur_row = self.all_pos[idx][0]
+                    if not field.validate(field.value):
+                        keypress = None
+                        self._display_error(
+                            f"Field \"{camelcase(field.label)}\" is not valid => \"{field.validator}\" !")
+                        break
+                    if field.itype == InputType.MASKED:
+                        field.value = field.value.split('|')[0]
+                    elif field.itype == InputType.CHECKBOX:
+                        field.value = bool(field.value)
+                    elif field.itype == InputType.SELECT:
                         _, field.value = MInputUtils.get_selected(field.value)
-                    else:
-                        if not field.validate(field.value):
-                            keypress = None
-                            self._display_error(
-                                f"Field \"{camelcase(field.label)}\" is not valid => \"{field.validator}\" !"
-                            )
-                            break
-                        if field.itype == InputType.MASKED:
-                            field.value = field.value.split('|')[0]
 
         self.re_render = True
         return keypress
