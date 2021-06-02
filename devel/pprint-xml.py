@@ -33,7 +33,7 @@ Usage: {} <filename>/<dirname> ...
 
 INDENT = '  '
 NEWLINE = '\n'
-ENCODING = None
+ENCODING = 'utf-8'
 
 
 # @purpose: Display the usage message and exit with the specified code ( or zero as default )
