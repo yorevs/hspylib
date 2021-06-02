@@ -173,34 +173,30 @@ class WidgetSendMsg(Widget):
         return bool(self.args)
 
     def _parse_args(self, *args):
-
-        try:
-            parser = argparse.ArgumentParser(description='Sends TCP/UDP messages (multi-threaded)')
-            parser.add_argument(
-                '--net-type', action='store', type=str, required=False,
-                help='The network type to be used. Either UDP or TCP ( default is TCP )')
-            parser.add_argument(
-                '--address', action='store', type=str, required=False,
-                help='The address of the datagram receiver ( default is 127.0.0.1 )')
-            parser.add_argument(
-                '--port', action='store', type=int, required=False,
-                help='The port number [1-65535] ( default is 12345)')
-            parser.add_argument(
-                '--packets', action='store', type=int, required=False,
-                help='The number of max datagrams to be send. If zero is specified, then the app '
-                     'is going to send indefinitely ( default is 100 ).')
-            parser.add_argument(
-                '--interval', action='store', type=float, required=False,
-                help='The interval in seconds between each datagram ( default is 1 Second )')
-            parser.add_argument(
-                '--threads', action='store', type=int, required=False,
-                help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
-            parser.add_argument(
-                '--message', action='store', type=str, required=False,
-                help='The message to be sent. If the message matches a filename, then the file contents sent instead')
-            self.args = parser.parse_args(args)
-        finally:
-            pass
+        parser = argparse.ArgumentParser(description='Sends TCP/UDP messages (multi-threaded)')
+        parser.add_argument(
+            '--net-type', action='store', type=str, required=False,
+            help='The network type to be used. Either UDP or TCP ( default is TCP )')
+        parser.add_argument(
+            '--address', action='store', type=str, required=False,
+            help='The address of the datagram receiver ( default is 127.0.0.1 )')
+        parser.add_argument(
+            '--port', action='store', type=int, required=False,
+            help='The port number [1-65535] ( default is 12345)')
+        parser.add_argument(
+            '--packets', action='store', type=int, required=False,
+            help='The number of max datagrams to be send. If zero is specified, then the app '
+                 'is going to send indefinitely ( default is 100 ).')
+        parser.add_argument(
+            '--interval', action='store', type=float, required=False,
+            help='The interval in seconds between each datagram ( default is 1 Second )')
+        parser.add_argument(
+            '--threads', action='store', type=int, required=False,
+            help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
+        parser.add_argument(
+            '--message', action='store', type=str, required=False,
+            help='The message to be sent. If the message matches a filename, then the file contents sent instead')
+        self.args = parser.parse_args(args)
 
         return bool(self.args)
 
@@ -216,7 +212,6 @@ class WidgetSendMsg(Widget):
                 raise WidgetExecutionError('Unable to initialize sockets') from err
 
     def _start_send(self) -> None:
-
         self._init_sockets()
         sysout('\n%ORANGE%Start sending {} {} packet(s) every {} second(s) to {} using {} thread(s) %NC%'.format(
             self.packets, self.net_type.upper(), self.interval, self.host, self.threads))
