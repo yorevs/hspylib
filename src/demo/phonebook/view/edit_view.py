@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.demo.phonebook.view
+   hspylib.demo.phonebook.view
       @file: edit_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,9 +14,10 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.exception.exceptions import InputAbortedError
-from hspylib.core.meta.singleton import Singleton
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
+
+from hspylib.core.exception.exceptions import InputAbortedError
+from hspylib.core.metaclass.singleton import Singleton
 from phonebook.entity.validator.company_validator import CompanyValidator
 from phonebook.entity.validator.contact_validator import ContactValidator
 from phonebook.entity.validator.person_validator import PersonValidator

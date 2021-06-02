@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.crud.db.mysql
+   hspylib.main.hspylib.core.crud.db.mysql
       @file: mysql_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -23,10 +23,10 @@ import pymysql
 from pymysql.err import OperationalError, ProgrammingError
 from requests.structures import CaseInsensitiveDict as SqlFilter
 
+from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.db.db_repository import DBRepository
 from hspylib.core.crud.db.sql_factory import SqlFactory
 from hspylib.core.exception.exceptions import NotConnectedError
-from hspylib.core.model.entity import Entity
 
 
 class MySqlRepository(DBRepository):
@@ -76,7 +76,7 @@ class MySqlRepository(DBRepository):
         else:
             raise NotConnectedError('Not connected to database.')
 
-    def insert(self, entity: Entity) -> None:
+    def insert(self, entity: CrudEntity) -> None:
         if self.is_connected():
             entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
             stm = self._sql_factory \
@@ -87,7 +87,7 @@ class MySqlRepository(DBRepository):
         else:
             raise NotConnectedError('Not connected to database.')
 
-    def update(self, entity: Entity) -> None:
+    def update(self, entity: CrudEntity) -> None:
         if self.is_connected():
             stm = self._sql_factory \
                 .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
@@ -97,7 +97,7 @@ class MySqlRepository(DBRepository):
         else:
             raise NotConnectedError('Not connected to database.')
 
-    def delete(self, entity: Entity) -> None:
+    def delete(self, entity: CrudEntity) -> None:
         if self.is_connected():
             stm = self._sql_factory \
                 .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
@@ -126,7 +126,7 @@ class MySqlRepository(DBRepository):
     def find_by_id(  # pylint: disable=arguments-differ
             self,
             column_set: List[str] = None,
-            entity_id: str = None) -> Optional[Entity]:
+            entity_id: str = None) -> Optional[CrudEntity]:
 
         if self.is_connected():
             if entity_id:
@@ -161,7 +161,7 @@ class MySqlRepository(DBRepository):
         self._connector.rollback()
 
     @abstractmethod
-    def row_to_entity(self, row: Tuple) -> Entity:
+    def row_to_entity(self, row: Tuple) -> CrudEntity:
         pass
 
     @abstractmethod

@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
+  'crud_entity', 
   'crud_repository', 
   'crud_service', 
   'db', 

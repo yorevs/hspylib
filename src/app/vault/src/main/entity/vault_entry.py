@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.vault.src.main.entity
+   hspylib.app.vault.src.main.entity
       @file: vault_entry.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,7 +18,7 @@ import re
 from datetime import datetime
 from uuid import UUID
 
-from hspylib.core.model.entity import Entity
+from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.tools.validator import DEFAULT_DATE_FORMAT
 
 DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
@@ -31,7 +31,7 @@ DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
 ENTRY_FORMAT = """{}|{}|{}|{}\n"""
 
 
-class VaultEntry(Entity):
+class VaultEntry(CrudEntity):
     """Represents a vault entity"""
 
     def __init__(self, uuid: UUID, key: str, name: str, password: str, hint: str, modified: datetime = None):

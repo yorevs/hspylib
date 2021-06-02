@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.demo.phonebook.entity.validator
+   hspylib.demo.phonebook.entity.validator
       @file: person_validator.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -44,4 +44,4 @@ class PersonValidator(ContactValidator):
     @staticmethod
     def validate_email(email: str) -> (bool, str):
         return Validator \
-                   .matches(email, RegexConstants.EMAIL_W3C), "Invalid email"
+                   .matches(email, RegexConstants.RE_EMAIL_W3C), "Invalid email"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-  @package: -
+  -
    @script: pprint-xml.py
   @purpose: Pretty print (format) an xml file.
   @created: Jan 20, 2017

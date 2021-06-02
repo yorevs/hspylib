@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.demo.phonebook.service
+   hspylib.demo.phonebook.service
       @file: company_service.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,7 @@
 """
 
 from hspylib.core.crud.crud_service import CrudService
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from phonebook.repository.company_repository import CompanyRepository
 
 

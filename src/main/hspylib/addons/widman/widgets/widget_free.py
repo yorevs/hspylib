@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.widman.widgets
+   hspylib.main.hspylib.addons.widman.widgets
       @file: widget_free.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.demo.phonebook.entity
+   hspylib.demo.phonebook.entity
       @file: Contact.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,10 +16,10 @@
 
 from uuid import UUID
 
-from hspylib.core.model.entity import Entity
+from hspylib.core.crud.crud_entity import CrudEntity
 
 
-class Contact(Entity):
+class Contact(CrudEntity):
     def __init__(
             self,
             uuid: UUID = None,

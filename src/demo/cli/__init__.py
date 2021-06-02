@@ -7,7 +7,6 @@
 
 __all__ = [
   'application', 
-  'menu', 
-  'table', 
+  'tui', 
   'vt100'
 ]

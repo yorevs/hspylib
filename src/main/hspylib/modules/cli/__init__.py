@@ -9,7 +9,6 @@ __all__ = [
   'application', 
   'icons', 
   'keyboard', 
-  'menu', 
-  'tables', 
+  'tui', 
   'vt100'
 ]

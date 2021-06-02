@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.crud.file
+   hspylib.main.hspylib.core.crud.file
       @file: file_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,10 +20,10 @@ import uuid
 from abc import abstractmethod
 from typing import Any, List, Optional
 
+from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.file.file_storage import FileStorage
 from hspylib.core.exception.exceptions import ProgrammingError
-from hspylib.core.model.entity import Entity
 
 
 class FileRepository(CrudRepository):
@@ -55,7 +55,7 @@ class FileRepository(CrudRepository):
     def __str__(self):
         return str(self.storage.data)
 
-    def insert(self, entity: Entity) -> None:
+    def insert(self, entity: CrudEntity) -> None:
         """TODO
         :param entity:
         """
@@ -64,7 +64,7 @@ class FileRepository(CrudRepository):
         self.storage.commit()
         log.debug("{} has been inserted !".format(entity.__class__.__name__))
 
-    def update(self, entity: Entity) -> None:
+    def update(self, entity: CrudEntity) -> None:
         """TODO
         :param entity:
         """
@@ -74,7 +74,7 @@ class FileRepository(CrudRepository):
                 self.storage.commit()
                 log.debug("{} has been updated !".format(entity.__class__.__name__))
 
-    def delete(self, entity: Entity) -> None:
+    def delete(self, entity: CrudEntity) -> None:
         """TODO
         :param entity:
         """
@@ -84,7 +84,7 @@ class FileRepository(CrudRepository):
                 self.storage.commit()
                 log.debug("{} has been deleted !".format(entity.__class__.__name__))
 
-    def find_all(self, filters: str = None) -> List[Entity]:
+    def find_all(self, filters: str = None) -> List[CrudEntity]:
         """TODO
         :param filters:
         """
@@ -108,7 +108,7 @@ class FileRepository(CrudRepository):
 
         return [self.dict_to_entity(data) for data in self.storage.data]
 
-    def find_by_id(self, entity_id: uuid.UUID) -> Optional[Entity]:
+    def find_by_id(self, entity_id: uuid.UUID) -> Optional[CrudEntity]:
         """TODO
         :param entity_id:
         """
@@ -122,7 +122,7 @@ class FileRepository(CrudRepository):
         return None
 
     @abstractmethod
-    def dict_to_entity(self, row: dict) -> Entity:
+    def dict_to_entity(self, row: dict) -> CrudEntity:
         """TODO
         :param row:
         """

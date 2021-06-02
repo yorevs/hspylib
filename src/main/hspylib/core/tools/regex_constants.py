@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.tools
+   hspylib.main.hspylib.core.tools
       @file: regex_constants.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,13 +18,13 @@ from abc import ABC
 
 
 class RegexConstants(ABC):
-    """TODO"""
+    """Commonly used regex expressions"""
 
-    UUID = r'^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
-    PHONE_NUMBER = r'((\\d{2})?\\s)?(\\d{4,5}\\-\\d{4})'
-    COMMON_3_30_NAME = r'[a-zA-Z]\\w{2,30}'
-    EMAIL_W3C = r'^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$'
-    URL = r'^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&\'\\(\\)\\*\\+,;=.]+$'
-    VERSION_EXT = r'([0-9]+\.){2}[0-9]+((\-(SNAPSHOT|STABLE|RELEASE))?)$'
-    IP_V4 = r'((2((5[0-5])|[0-4][0-9])|(1([0-9]{2}))|(0|([1-9][0-9]))|([0-9]))\.)' \
-            r'{3}(2((5[0-5])|[0-4][0-9])|(1([0-9]{2}))|(0|([1-9][0-9]))|([0-9]))'
+    RE_UUID = r'^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
+    RE_PHONE_NUMBER = r'((\\d{2})?\\s)?(\\d{4,5}\\-\\d{4})'
+    RE_COMMON_2_30_NAME = r'[a-zA-Z]\\w{2,30}'
+    RE_EMAIL_W3C = r'^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$'
+    RE_SIMPLE_URL = r'^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&\'\\(\\)\\*\\+,;=.]+$'
+    RE_VERSION_STRING = r'([0-9]+\.){2}[0-9]+((\-(SNAPSHOT|STABLE|RELEASE))?)$'
+    RE_IP_V4 = r'((2((5[0-5])|[0-4][0-9])|(1([0-9]{2}))|(0|([1-9][0-9]))|([0-9]))\.){3}(2((5[0-5])|' \
+               r'[0-4][0-9])|(1([0-9]{2}))|(0|([1-9][0-9]))|([0-9]))'

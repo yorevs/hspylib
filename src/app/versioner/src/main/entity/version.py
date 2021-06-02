@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.versioner.src.main.entity
+   hspylib.app.versioner.src.main.entity
       @file: version.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,7 +17,6 @@
 import re
 from typing import Any
 
-from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.regex_constants import RegexConstants
 from versioner.src.main.enums.extension import Extension
 
@@ -26,8 +25,8 @@ class Version:
 
     @classmethod
     def parse(cls, version_str: str) -> Any:
-        assert re.match(RegexConstants.VERSION_EXT, version_str), \
-            f"Version string {version_str} does not match the expected syntax: {RegexConstants.VERSION_EXT}"
+        assert re.match(RegexConstants.RE_VERSION_STRING, version_str), \
+            f"Version string {version_str} does not match the expected syntax: {RegexConstants.RE_VERSION_STRING}"
         parts = list(map(str.strip, re.split(r'[.-]', version_str)))
         return Version(
             int(parts[0]),

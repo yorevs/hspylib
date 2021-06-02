@@ -18,7 +18,6 @@ def PY_FILE_HEADER = """#!/usr/bin/env python3
 \"\"\"
    TODO Purpose of the file
    @project: ${project.ext.app_name}
-   @package: %package%
       @file: %filename%
    @created: ${curDate}
     @author: ${project.ext.author}"
@@ -49,7 +48,7 @@ String getPackageName(File file) {
 String processPythonHeader(File file, String header_template) {
     def pkg = getPackageName(file)
     def header = header_template
-      .replaceAll("%package%", pkg).replaceAll("%filename%", file.getName())
+      .replaceAll("%filename%", file.getName())
 
     return header
 }
