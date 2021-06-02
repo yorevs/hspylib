@@ -18,9 +18,9 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class Part(Enumeration):
-    MAJOR = 1
+    PATCH = 1
     MINOR = 2
-    PATCH = 4
+    MAJOR = 4
 
     def __str__(self):
         return str(self.name).lower()
