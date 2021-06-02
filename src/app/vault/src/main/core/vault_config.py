@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.vault.src.main.core
+   hspylib.app.vault.src.main.core
       @file: vault_config.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,7 +17,7 @@
 import getpass
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 
 
 class VaultConfig(metaclass=Singleton):

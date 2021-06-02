@@ -5,7 +5,7 @@
    IP Message Sender. Sends TCP/UDP messages (multi-threaded).
 
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.widman.widgets
+   hspylib.main.hspylib.addons.widman.widgets
       @file: widget_send_msg.py
    @created: Thu, 26 Aug 2017
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -21,14 +21,15 @@ import socket
 import threading
 from time import sleep
 
+from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
 
 
 class WidgetSendMsg(Widget):
@@ -199,7 +200,6 @@ class WidgetSendMsg(Widget):
         self.args = parser.parse_args(args)
 
         return bool(self.args)
-
 
     def _init_sockets(self) -> None:
         if self.net_type == self.NET_TYPE_UDP:

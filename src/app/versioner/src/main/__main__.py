@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.versioner.src.main
+   hspylib.app.versioner.src.main
       @file: __main__.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -50,7 +50,7 @@ class Main(Application):
         # @formatter:off
         self._with_arguments(
             ArgumentChain.builder()
-                .when('version', RegexConstants.VERSION_EXT)
+                .when('version', RegexConstants.RE_VERSION_STRING)
                 .require('part', '|'.join(list(map(str.lower, Part.names()))))
                 .require('files', '.*')
                 .end()

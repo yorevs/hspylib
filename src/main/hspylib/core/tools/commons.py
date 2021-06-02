@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.tools
+   hspylib.main.hspylib.core.tools
       @file: commons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -251,8 +251,8 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
     return ret_val, ret_unit
 
 
-def human_readable_time(time_us: int):
-    delta = timedelta(microseconds=time_us)
+def human_readable_time(time_microseconds: int) -> str:
+    delta = timedelta(microseconds=time_microseconds)
     total_seconds = delta.seconds
     seconds = total_seconds % 60
     minutes = total_seconds / 60 % 60

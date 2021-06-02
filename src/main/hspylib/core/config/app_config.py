@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.config
+   hspylib.main.hspylib.core.config
       @file: app_config.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,7 +19,7 @@ import os
 from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, environ_name, log_init
 
 APP_CONFIG_FORMAT = """

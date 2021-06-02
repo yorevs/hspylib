@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.firebase.src.main.core
+   hspylib.app.firebase.src.main.core
       @file: agent_config.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -23,7 +23,7 @@ from requests.structures import CaseInsensitiveDict
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.core.enums.charset import Charset
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 
 
@@ -41,7 +41,7 @@ class AgentConfig(metaclass=Singleton):
 
     def setup(self, config_dict: CaseInsensitiveDict) -> None:
         """Setup firebase config from dictionary
-        :param config_dict: TODO
+        :param config_dict: Firebase configuration dictionary
         """
         self.fb_configs = FirebaseConfig.of(config_dict)
         self.save()

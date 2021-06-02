@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.vault.src.main.core
+   hspylib.app.vault.src.main.core
       @file: vault.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,8 +20,9 @@ import logging as log
 import os
 import uuid
 
-from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.menu.menu_utils import MenuUtils
+
+from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.security.security import decrypt, encrypt
 from vault.src.main.core.vault_config import VaultConfig
 from vault.src.main.core.vault_service import VaultService

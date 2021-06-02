@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.widman
+   hspylib.main.hspylib.addons.widman
       @file: widman.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,14 +18,15 @@ import os
 import sys
 from typing import Any, List
 
+from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.menu.extra.mdashboard.mdashboard import mdashboard
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
-from hspylib.core.meta.singleton import Singleton
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr
-from hspylib.core.tools.text_helper import camelcase
-from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.menu.extra.mdashboard.mdashboard import mdashboard
+from hspylib.core.tools.text_tools import camelcase
 
 HERE = get_path(__file__)
 
@@ -104,7 +105,7 @@ class WidgetManager(metaclass=Singleton):
                     lambda p: p.startswith(self.WIDGET_PREFIX) and p.endswith('py'), files)
                 )
                 widgets = list(
-                    map(lambda w: self.WidgetEntry(w, f"{root}/{w}"), filtered) # pylint: disable=W0640
+                    map(lambda w: self.WidgetEntry(w, f"{root}/{w}"), filtered)  # pylint: disable=W0640
                 )
                 self._widgets.extend(widgets)
 

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.vault.src.main.entity.validator
+   hspylib.app.vault.src.main.entity.validator
       @file: entry_validator.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -39,12 +39,12 @@ class EntryValidator(Validator):
     @staticmethod
     def validate_key(key: str) -> Tuple[bool, str]:
         return Validator \
-                   .matches(key, RegexConstants.COMMON_3_30_NAME), "Invalid key"
+                   .matches(key, RegexConstants.RE_COMMON_2_30_NAME), "Invalid key"
 
     @staticmethod
     def validate_name(name: str) -> Tuple[bool, str]:
         return Validator \
-                   .matches(name, RegexConstants.COMMON_3_30_NAME), "Invalid name"
+                   .matches(name, RegexConstants.RE_COMMON_2_30_NAME), "Invalid name"
 
     @staticmethod
     def validate_password(password: str) -> Tuple[bool, str]:

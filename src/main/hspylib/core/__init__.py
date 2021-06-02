@@ -10,7 +10,6 @@ __all__ = [
   'crud', 
   'enums', 
   'exception', 
-  'meta', 
-  'model', 
+  'metaclass', 
   'tools'
 ]

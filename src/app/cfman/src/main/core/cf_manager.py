@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.app.cfman.src.main.core
+   hspylib.app.cfman.src.main.core
       @file: cf_manager.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,6 +18,11 @@ import sys
 from time import sleep
 from typing import List, Optional
 
+from hspylib.modules.cli.menu.extra.mchoose import mchoose
+from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.menu.extra.mselect import mselect
+from hspylib.modules.cli.menu.menu_utils import MenuUtils
+
 from cfman.src.main.core.cf import CloudFoundry
 from cfman.src.main.core.cf_application import CFApplication
 from cfman.src.main.core.cf_endpoint import CFEndpoint
@@ -25,10 +30,6 @@ from cfman.src.main.exception.exceptions import CFConnectionError, CFExecutionEr
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import get_by_key_or_default, syserr, sysout
-from hspylib.modules.cli.menu.extra.mchoose import mchoose
-from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
-from hspylib.modules.cli.menu.extra.mselect import mselect
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
 from hspylib.modules.fetch.fetch import head
 
 

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.core.crud
+   hspylib.main.hspylib.core.crud
       @file: crud_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,26 +19,26 @@ from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict
 
-from hspylib.core.model.entity import Entity
+from hspylib.core.crud.crud_entity import CrudEntity
 
 
 class CrudRepository(ABC):
     @abstractmethod
-    def insert(self, entity: Entity) -> None:
+    def insert(self, entity: CrudEntity) -> None:
         pass
 
     @abstractmethod
-    def update(self, entity: Entity) -> None:
+    def update(self, entity: CrudEntity) -> None:
         pass
 
     @abstractmethod
-    def delete(self, entity: Entity) -> None:
+    def delete(self, entity: CrudEntity) -> None:
         pass
 
     @abstractmethod
-    def find_all(self, filters: CaseInsensitiveDict = None) -> List[Entity]:
+    def find_all(self, filters: CaseInsensitiveDict = None) -> List[CrudEntity]:
         pass
 
     @abstractmethod
-    def find_by_id(self, entity_id: str) -> Optional[Entity]:
+    def find_by_id(self, entity_id: str) -> Optional[CrudEntity]:
         pass
