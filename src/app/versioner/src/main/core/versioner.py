@@ -19,7 +19,7 @@ import os
 from typing import List
 
 from hspylib.core.meta.singleton import Singleton
-from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.commons import run_dir, sysout
 from versioner.src.main.entity.version import Version
 from versioner.src.main.enums.extension import Extension
 from versioner.src.main.exception.exceptions import MissingExtensionError
@@ -59,7 +59,7 @@ class Versioner(metaclass=Singleton):
         self._assert_extension()
         if self._version.state and self._version.state != Extension.RELEASE:
             self._version.state = Extension.STABLE if self._version.state == Extension.SNAPSHOT else Extension.RELEASE
-            print(f"Version has been promoted to {self._version}")
+            sysout(f"Version has been promoted to {self._version}")
         return self._version
 
     def demote(self) -> Version:
@@ -67,7 +67,7 @@ class Versioner(metaclass=Singleton):
         self._assert_extension()
         if self._version.state and self._version.state != Extension.SNAPSHOT:
             self._version.state = Extension.STABLE if self._version.state == Extension.RELEASE else Extension.SNAPSHOT
-            print(f"Version has been demoted to {self._version}")
+            sysout(f"Version has been demoted to {self._version}")
         return self._version
 
     def major(self) -> Version:
@@ -76,7 +76,7 @@ class Versioner(metaclass=Singleton):
         self._version.minor = 0
         self._version.patch = 0
         self._version.state = Extension.SNAPSHOT if self._version.state else None
-        print(f"Version has been updated to {self._version} (Major)")
+        sysout(f"Version has been updated to {self._version} (Major)")
         return self._version
 
     def minor(self) -> Version:
@@ -84,14 +84,14 @@ class Versioner(metaclass=Singleton):
         self._version.minor += 1
         self._version.patch = 0
         self._version.state = Extension.SNAPSHOT if self._version.state else None
-        print(f"Version has been updated to {self._version} (Minor)")
+        sysout(f"Version has been updated to {self._version} (Minor)")
         return self._version
 
     def patch(self) -> Version:
         """ Update current patch part of the version """
         self._version.patch += 1
         self._version.state = Extension.SNAPSHOT if self._version.state else None
-        print(f"Version has been updated to {self._version} (Patch)")
+        sysout(f"Version has been updated to {self._version} (Patch)")
         return self._version
 
     def save(self, backup: str = ''):
@@ -99,7 +99,7 @@ class Versioner(metaclass=Singleton):
         for filename in self._files:
             with fileinput.FileInput(filename, inplace=True, backup=backup) as file:
                 for line in file:
-                    print(line.replace(self._initial_version, str(self._version)), end='')
+                    sysout(line.replace(self._initial_version, str(self._version)), end='')
 
     def _assert_extension(self):
         """ Assert that an extension is part of the version """
