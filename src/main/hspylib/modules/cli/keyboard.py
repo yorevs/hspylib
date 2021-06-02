@@ -14,9 +14,9 @@
    Copyright 2021, HSPyLib team
 """
 
+import select
 import string
 import sys
-import select
 from typing import Any, Optional
 
 import getkey
