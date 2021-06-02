@@ -16,7 +16,7 @@
 
 import sys
 
-from hspylib.core.tools.commons import get_path, read_version
+from hspylib.core.tools.commons import get_path, read_version, sysout, syserr
 from hspylib.core.tools.regex_constants import RegexConstants
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
@@ -54,7 +54,7 @@ class Main(Application):
                 .require('part', '|'.join(list(map(str.lower, Part.names()))))
                 .require('files', '.*')
                 .end()
-                .build()
+              .build()
         )
         # @formatter:on
 
@@ -67,7 +67,10 @@ class Main(Application):
         """Execute the application"""
         caller = getattr(self.versioner, self.getarg('part'))
         caller()
-        self.versioner.save(self.getopt('backup'))
+        if self.versioner.save(self.getopt('backup')):
+            sysout(f"%GREEN%Successfully updated version to {self.versioner.version()} %NC%")
+        else:
+            syserr(f"%RED%Failed to update version. No matches found for version {self.getarg('version')} %NC%")
 
 
 if __name__ == "__main__":

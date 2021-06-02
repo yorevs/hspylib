@@ -18,3 +18,4 @@ api_endpoints.txt
 lib/
 dist/
 *.egg-info/
+*.bak

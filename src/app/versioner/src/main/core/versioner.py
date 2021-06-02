@@ -16,6 +16,7 @@
 
 import fileinput
 import os
+import re
 from typing import List
 
 from hspylib.core.meta.singleton import Singleton
@@ -41,15 +42,9 @@ class Versioner(metaclass=Singleton):
 
     def __init__(self, initial_version: str, search_dir: str, files: List[str]):
         self._initial_version = initial_version
-        self._version = Version.of(initial_version)
-        self._cb_handler = {
-            'major': self.major,
-            'minor': self.minor,
-            'patch': self.patch,
-            'release': self.promote,
-        }
+        self._version = Version.parse(initial_version)
         self._search_dir = search_dir if search_dir else run_dir()
-        self._files = self._assert_exist([f"{search_dir}/{f}" for f in files])
+        self._files = self._assert_exist([f"{self._search_dir}/{f}" for f in files])
 
     def __str__(self):
         return str(self._version)
@@ -94,12 +89,22 @@ class Versioner(metaclass=Singleton):
         sysout(f"Version has been updated to {self._version} (Patch)")
         return self._version
 
-    def save(self, backup: str = ''):
+    def version(self) -> str:
+        return str(self._version)
+
+    def save(self, backup: str = None) -> bool:
         """ Save the current version to the specified files and create a backup of the original files """
+        changed_lines = []
         for filename in self._files:
             with fileinput.FileInput(filename, inplace=True, backup=backup) as file:
                 for line in file:
-                    sysout(line.replace(self._initial_version, str(self._version)), end='')
+                    line_new = re.sub(self._initial_version, str(self._version), line, flags=re.M)
+                    if line_new != line:
+                        changed_lines.append(f"{filename}::{file.lineno()}")
+                        sysout(line_new, end='')
+                    else:
+                        sysout(line, end='')
+        return len(changed_lines) > 0
 
     def _assert_extension(self):
         """ Assert that an extension is part of the version """
