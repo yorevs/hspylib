@@ -43,7 +43,7 @@ class GitTools:
     @staticmethod
     def tag_list() -> str:
         """TODO"""
-        return Terminal.shell_exec('git tag -l')
+        return Terminal.shell_exec('git log --tags --simplify-by-decoration --pretty="format:%ci %d"')
 
     @staticmethod
     def create_tag(version: str, commit_id: str = 'HEAD', description: str = None) -> str:
