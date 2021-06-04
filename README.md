@@ -4,14 +4,14 @@
 
 [![Tests](check-badge.svg)](check-badge.svg)
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
-[![Release](https://badgen.net/badge/release/v0.11.0/gray)](doc/CHANGELOG.md#unreleased)
+[![Release](https://badgen.net/badge/release/v0.11.0/gray)](CHANGELOG.md#unreleased)
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/yorevs/hspylib)
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
 [![Donate](https://badgen.net/badge/paypal/donate/yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 
-HSPyLib is a Python library that will elevate your experience to another level. It relies on well known principles as 
-SOLID, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid) and YAGNI (You Ain’t Gonna Need It). It provides many 
+HSPyLib is a Python library that will elevate your experience to another level. It relies on well known principles as
+SOLID, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid) and YAGNI (You Ain’t Gonna Need It). It provides many
 frameworks and facilities to help you create mature python3 applications "PYCSNBASS" (Python Code Should Not Be A Simple
 Script).
 
@@ -150,7 +150,7 @@ print(result.__dict__)
 
 ![MenuInput](doc/images/minput.png "MenuInput")
 
-And many other cool features.
+And many other cool features like repositories, Qt and CRUD helpers, etc...
 
 ## Table of contents
 
@@ -175,14 +175,14 @@ And many other cool features.
 
 #### Operating Systems
 
-- Darwin 
+- Darwin
     + High Sierra and higher
-- Linux 
+- Linux
     + Ubuntu 16 and higher
     + CentOS 7 and higher
     + Fedora 31 and higher
 
-You may want to install HSPyLib on other OS's and it will probably work, but there are no guarantees that it 
+You may want to install HSPyLib on other OS's and it will probably work, but there are no guarantees that it
 **WILL ACTUALLY WORK**.
 
 #### Required software
@@ -217,14 +217,14 @@ TBD
 
 ## Contact
 
-You can contact us using our [Gitter](https://gitter.im/hspylib/community) community or using our 
+You can contact us using our [Gitter](https://gitter.im/hspylib/community) community or using our
 [Reddit](https://www.reddit.com/user/yorevs).
 
 ## Support HSPyLib
 
-You can support HSPyLib by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4) 
-or coding. Fell free to contact me for details. When contributing with code change please take a look at our 
-[guidelines](doc/CONTRIBUTING.md) and [code of conduct](doc/CODE_OF_CONDUCT.md).
+You can support HSPyLib by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
+or coding. Fell free to contact me for details. When contributing with code change please take a look at our
+[guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 

@@ -29,9 +29,128 @@ HSPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) projec
 - HSPyLib widgets framework.
 - Enable Properties and AppConfigs using various syntax's like .properties, .ini and .yaml.
 - Well tested code and often pylint clean.
+- Gradle build system with many extensions.
+
+A menu select example:
+```python
+from hspylib.modules.cli.tui.extra.mselect import mselect
+
+if __name__ == '__main__':
+    it = [f"Item-{n}" for n in range(1, 21)]
+    sel = mselect(it, max_rows=10)
+    print(str(sel))
+```
+
+![MenuSelect](doc/images/mselect.png "MenuSelect")
 
 
+A menu choose example:
+```python
+from hspylib.modules.cli.tui.extra.mchoose import mchoose
 
+if __name__ == '__main__':
+    it = [f"Item-{n}" for n in range(1, 21)]
+    sel = mchoose(it, max_rows=10)
+    print(str(sel))
+```
+
+![MenuChoose](doc/images/mchoose.png "MenuChoose")
+
+A Dashboard example:
+```python
+if __name__ == '__main__':
+# @formatter:off
+dashboard_items = MenuDashBoard.builder() \
+    .item() \
+        .icon(DashboardIcons.PLUS) \
+        .tooltip('Add something') \
+        .on_trigger(lambda: print('Add')) \
+        .build() \
+    .item() \
+        .icon(DashboardIcons.MINUS) \
+        .tooltip('Remove something') \
+        .on_trigger(lambda: print('Del')) \
+        .build() \
+    .item() \
+        .icon(DashboardIcons.EDIT) \
+        .tooltip('Edit something') \
+        .on_trigger(lambda: print('Edit')) \
+        .build() \
+    .item() \
+        .icon(DashboardIcons.LIST) \
+        .tooltip('List everything') \
+        .on_trigger(lambda: print('List')) \
+        .build() \
+    .item() \
+        .icon(DashboardIcons.DATABASE) \
+        .tooltip('Database console') \
+        .on_trigger(lambda: print('Database')) \
+        .build() \
+    .item() \
+        .icon(DashboardIcons.EXIT) \
+        .tooltip('Exit application') \
+        .on_trigger(lambda: print('Exit')) \
+        .build() \
+    .build()
+# @formatter:on
+result = mdashboard(dashboard_items, 4)
+```
+
+![MenuDashboard](doc/images/mdashboard.png "MenuDashboard")
+
+A form input example
+
+```python
+if __name__ == '__main__':
+# @formatter:off
+form_fields = MenuInput.builder() \
+    .field() \
+        .label('letters') \
+        .validator(InputValidator.letters()) \
+        .build() \
+    .field() \
+        .label('word') \
+        .validator(InputValidator.words()) \
+        .build() \
+    .field() \
+        .label('number') \
+        .validator(InputValidator.numbers()) \
+        .min_max_length(1, 2) \
+        .build() \
+    .field() \
+        .label('masked') \
+        .itype('masked') \
+        .value('|##::##::## @@') \
+        .build() \
+    .field() \
+        .label('selectable') \
+        .itype('select') \
+        .value('one|two|three') \
+        .build() \
+    .field() \
+        .label('checkbox') \
+        .itype('checkbox') \
+    .build() \
+    .field() \
+        .label('password') \
+        .itype('password') \
+        .validator(InputValidator.anything()) \
+        .min_max_length(4, 8) \
+        .build() \
+    .field() \
+        .label('read-only') \
+        .access_type('read-only') \
+        .value('READ-ONLY') \
+        .build() \
+    .build()
+# @formatter:on
+result = minput(form_fields)
+print(result.__dict__)
+```
+
+![MenuInput](doc/images/minput.png "MenuInput")
+
+And many other cool features.
 
 ## Table of contents
 

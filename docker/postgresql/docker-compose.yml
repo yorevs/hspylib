@@ -5,15 +5,15 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_DB: 'hspylib'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: hspylib
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 'postgres
     ports:
       - 5432:5432
     expose:
       - 5432
     volumes:
-      - postgres-data:/var/lib/postgresql/data :rw
+      - postgres-data:/var/lib/postgresql:rw
 
 volumes:
   postgres-data:

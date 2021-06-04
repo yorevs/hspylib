@@ -6,7 +6,7 @@ __pycache__/
 .gradle
 
 # Ignore Gradle build output directory
-build
+build/
 .idea/
 *.log
 *.dat
