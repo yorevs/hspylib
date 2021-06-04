@@ -19,7 +19,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Tuple, Type
 
-DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+from hspylib.core.tools.constants import DATE_TIME_FORMAT
 
 
 class Validator(ABC):
@@ -68,7 +68,7 @@ class Validator(ABC):
     @staticmethod
     def is_date(
             date_text: str,
-            fmt: str = DEFAULT_DATE_FORMAT) -> bool:
+            fmt: str = DATE_TIME_FORMAT) -> bool:
 
         try:
             datetime.strptime(date_text, fmt)

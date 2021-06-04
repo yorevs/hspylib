@@ -21,43 +21,53 @@ from hspylib.core.tools.commons import get_or_default
 
 
 def fit_text(text: str, width: int) -> str:
+    """TODO"""
     return text if len(text) <= width else text[0:width - 3] + '...'
 
 
 def rand_string(choices: str, length: int) -> str:
+    """TODO"""
     return ''.join(random.choices(choices, k=length))
 
 
 def justified_left(string: str, width: int, fill: str = ' ') -> str:
+    """TODO"""
     return string.ljust(width, fill)
 
 
 def justified_center(string: str, width: int, fill: str = ' ') -> str:
+    """TODO"""
     return string.center(width, fill)
 
 
 def justified_right(string: str, width: int, fill: str = ' ') -> str:
+    """TODO"""
     return string.rjust(width, fill)
 
 
 def uppercase(string: str) -> str:
+    """TODO"""
     return string.upper()
 
 
 def lowercase(string: str) -> str:
+    """TODO"""
     return string.lower()
 
 
 def camelcase(string: str, separator: str = '_|-') -> str:
+    """TODO"""
     parts = re.split(rf'{separator}+', string)
     return '_'.join([p.capitalize() for p in parts])
 
 
 def snakecase(string: str) -> str:
+    """TODO"""
     return string.strip().lower().replace(' ', '_').replace('-', '_')
 
 
 def cut(string: str, index: int, separator: str = ' ') -> str:
+    """TODO"""
     result = tuple(re.split(rf'{separator}+', string))
     return get_or_default(result, index)
 
