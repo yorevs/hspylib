@@ -16,7 +16,7 @@
 
 from typing import List, Tuple
 
-from hspylib.core.tools.regex_constants import RE_SIMPLE_URL
+from hspylib.core.tools.constants import RE_SIMPLE_URL
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Company import Company
 from phonebook.entity.validator.contact_validator import ContactValidator
