@@ -18,10 +18,10 @@ import sys
 from time import sleep
 from typing import List, Optional
 
-from hspylib.modules.cli.menu.extra.mchoose import mchoose
-from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
-from hspylib.modules.cli.menu.extra.mselect import mselect
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.extra.mchoose import mchoose
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.tui.extra.mselect import mselect
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 from cfman.src.main.core.cf import CloudFoundry
 from cfman.src.main.core.cf_application import CFApplication

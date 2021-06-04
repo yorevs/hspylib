@@ -16,7 +16,7 @@
 
 from typing import Any
 
-from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item_builder import DashboardItemBuilder
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item_builder import DashboardItemBuilder
 
 
 class DashboardBuilder:

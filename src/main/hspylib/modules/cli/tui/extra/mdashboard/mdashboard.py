@@ -16,11 +16,11 @@
 
 from typing import Any, List, Optional
 
-from hspylib.modules.cli.menu.extra.mdashboard.dashboard_builder import DashboardBuilder
-from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import restore_terminal, restore_cursor, set_enable_echo, prepare_render

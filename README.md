@@ -1,6 +1,6 @@
 # HomeSetup Python Library - HSPyLib
 
-## Your mature python application ! 
+## Your mature python application
 
 [![Tests](check-badge.svg)](check-badge.svg)
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
@@ -15,7 +15,7 @@ SOLID, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid) and YAGNI (You
 frameworks and facilities to help you create mature python3 applications "PYCSNBASS" (Python Code Should Not Be A Simple
 Script).
 
-`HSPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) project.`
+HSPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) project.
 
 ## Highlights
 
@@ -31,6 +31,8 @@ Script).
 - Well tested code and often pylint clean.
 
 
+
+
 ## Table of contents
 
 <!-- toc -->
@@ -41,9 +43,10 @@ Script).
     + [1.1.2. Required software](#required-software)
   * [1.2. PyPi](#pypi)
   * [1.3. GitHub](#github)
-- [2. Contact](#contact)
-- [3. Support HSPyLib](#support-hspylib)
-- [4. Links](#links)
+- [2. Documentation](#documentation)
+- [3. Contact](#contact)
+- [4. Support HSPyLib](#support-hspylib)
+- [5. Links](#links)
 
 <!-- tocstop -->
 

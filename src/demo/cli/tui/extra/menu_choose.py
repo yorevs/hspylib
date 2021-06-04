@@ -13,10 +13,9 @@
 
    Copyright 2021, HSPyLib team
 """
-
-from hspylib.modules.cli.menu.extra.mchoose import mchoose
+from hspylib.modules.cli.tui.extra.mchoose import mchoose
 
 if __name__ == '__main__':
     it = [f"Item-{n}" for n in range(1, 21)]
-    sel = mchoose(it)
+    sel = mchoose(it, max_rows=10)
     print(str(sel))

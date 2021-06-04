@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
