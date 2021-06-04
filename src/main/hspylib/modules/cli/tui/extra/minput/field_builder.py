@@ -16,11 +16,11 @@
 
 from typing import Any
 
-from hspylib.modules.cli.menu.extra.minput.access_type import AccessType
-from hspylib.modules.cli.menu.extra.minput.form_field import FormField
-from hspylib.modules.cli.menu.extra.minput.input_type import InputType
-from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
+from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
+from hspylib.modules.cli.tui.extra.minput.form_field import FormField
+from hspylib.modules.cli.tui.extra.minput.input_type import InputType
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 
 from hspylib.core.tools.text_tools import camelcase
 
@@ -67,7 +67,7 @@ class FieldBuilder:
             self.validator(InputValidator.custom(r'[01]'))
         elif self.field.itype == InputType.SELECT:
             self.field.min_length = self.field.max_length = 1
-            self.validator(InputValidator.custom(self.field.value.replace('<', '').replace('>', '')))
+            self.validator(InputValidator.anything())
         elif self.field.itype == InputType.MASKED:
             _, mask = MInputUtils.unpack_masked(self.field.value)
             self.field.min_length = self.field.max_length = len(mask)

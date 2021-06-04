@@ -17,9 +17,9 @@ import re
 import time
 from typing import Any, List
 
-from hspylib.modules.cli.menu.extra.minput.form_builder import FormBuilder
-from hspylib.modules.cli.menu.extra.minput.input_type import InputType
-from hspylib.modules.cli.menu.extra.minput.minput_utils import MInputUtils
+from hspylib.modules.cli.tui.extra.minput.form_builder import FormBuilder
+from hspylib.modules.cli.tui.extra.minput.input_type import InputType
+from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import syserr, sysout

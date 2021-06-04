@@ -17,7 +17,7 @@
 import math
 import re
 
-from hspylib.modules.cli.menu.extra.minput.minput import minput, MenuInput
+from hspylib.modules.cli.tui.extra.minput.minput import minput, MenuInput
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode

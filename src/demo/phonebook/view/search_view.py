@@ -16,7 +16,7 @@
 
 from typing import List
 
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.tui.tables.table_renderer import TableRenderer
 
 from hspylib.core.crud.crud_entity import CrudEntity
