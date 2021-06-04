@@ -90,6 +90,7 @@ def run_dir() -> str:
 
 
 def get_path(filepath: str) -> pathlib.Path:
+    """Retrieve the Path of the file"""
     return pathlib.Path(filepath).parent
 
 

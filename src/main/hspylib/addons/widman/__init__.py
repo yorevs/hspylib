@@ -7,6 +7,7 @@
 
 __all__ = [
   'widget', 
+  'widget_entry', 
   'widgets', 
   'widman'
 ]

@@ -13,6 +13,7 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class GitTools:
+    """TODO"""
 
     @staticmethod
     def top_level_dir() -> str:
@@ -58,6 +59,3 @@ class GitTools:
     @staticmethod
     def show_file(filename: str, commit_id: str = 'HEAD') -> str:
         return Terminal.shell_exec(f"git show {commit_id}:{filename}")
-
-if __name__ == '__main__':
-    print(GitTools.unreleased())
