@@ -16,7 +16,7 @@
 
 from typing import List, Tuple
 
-from hspylib.core.tools.regex_constants import RegexConstants
+from hspylib.core.tools.regex_constants import RE_SIMPLE_URL
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Company import Company
 from phonebook.entity.validator.contact_validator import ContactValidator
@@ -39,4 +39,4 @@ class CompanyValidator(ContactValidator):
     @staticmethod
     def validate_website(website: str) -> (bool, str):
         return Validator \
-                   .matches(website, RegexConstants.RE_SIMPLE_URL), "Invalid website"
+                   .matches(website, RE_SIMPLE_URL), "Invalid website"
