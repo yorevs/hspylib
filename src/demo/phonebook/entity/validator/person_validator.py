@@ -16,7 +16,7 @@
 
 from typing import List, Tuple
 
-from hspylib.core.tools.regex_constants import RegexConstants
+from hspylib.core.tools.regex_constants import RE_EMAIL_W3C
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Person import Person
 from phonebook.entity.validator.contact_validator import ContactValidator
@@ -44,4 +44,4 @@ class PersonValidator(ContactValidator):
     @staticmethod
     def validate_email(email: str) -> (bool, str):
         return Validator \
-                   .matches(email, RegexConstants.RE_EMAIL_W3C), "Invalid email"
+                   .matches(email, RE_EMAIL_W3C), "Invalid email"
