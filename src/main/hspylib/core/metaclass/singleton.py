@@ -19,9 +19,12 @@ from typing import Type
 
 
 class Singleton(type):
+    """TODO"""
+
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
+        """TODO"""
         if not cls.has_instance(cls):
             instance = super(Singleton, cls).__call__(*args, **kwargs)
             cls.INSTANCE = instance
@@ -30,7 +33,18 @@ class Singleton(type):
         return cls._instances[cls]
 
     @classmethod
+    def instances(mcs) -> dict:  # pylint: disable=bad-mcs-classmethod-argument
+        """TODO"""
+        return Singleton._instances
+
+    @classmethod
+    def has_instance(mcs, cls) -> bool:  # pylint: disable=bad-mcs-classmethod-argument
+        """TODO"""
+        return cls in Singleton._instances
+
+    @classmethod
     def del_instance(mcs, clazz: Type) -> bool:  # pylint: disable=bad-mcs-classmethod-argument
+        """TODO"""
         singleton_instances = Singleton.__getattribute__(mcs, '_instances')
         if clazz in singleton_instances:
             clazz_name = clazz.__name__
@@ -41,11 +55,3 @@ class Singleton(type):
             return True
 
         return False
-
-    @classmethod
-    def instances(mcs) -> dict:  # pylint: disable=bad-mcs-classmethod-argument
-        return Singleton._instances
-
-    @classmethod
-    def has_instance(mcs, cls) -> bool:  # pylint: disable=bad-mcs-classmethod-argument
-        return cls in Singleton._instances

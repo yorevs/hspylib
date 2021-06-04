@@ -18,6 +18,8 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class ContentType(Enumeration):
+    """TODO"""
+
     APPLICATION_ATOM_XML = 'application/atom+xml'
     APPLICATION_ECMASCRIPT = 'application/ecmascript'
     APPLICATION_JSON = 'application/json'
@@ -72,6 +74,3 @@ class ContentType(Enumeration):
     TEXT_PLAIN = 'text/plain'
     TEXT_VCARD = 'text/vcard'
     TEXT_XML = 'text/xml'
-
-    def __str__(self):
-        return str(self.value)

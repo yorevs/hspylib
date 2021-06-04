@@ -19,17 +19,21 @@ from typing import Any, List
 
 
 class Enumeration(Enum):
+    """TODO"""
 
     @classmethod
     def names(cls) -> List[str]:
+        """TODO"""
         return list(map(lambda e: e.name, cls))
 
     @classmethod
     def values(cls) -> List[Any]:
+        """TODO"""
         return list(map(lambda e: e.value, cls))
 
     @classmethod
     def value_of(cls, name: str, ignore_case: bool = True) -> Any:
+        """TODO"""
         if ignore_case:
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:
@@ -45,3 +49,9 @@ class Enumeration(Enum):
             found = next(filter(lambda en: en.value == value, list(cls)), None)
         assert found, f"\"{value}\" value does not correspond to a valid \"{cls.__name__}\""
         return found
+
+    def __str__(self):
+        return str(self.value)
+
+    def __repr__(self):
+        return str(self)

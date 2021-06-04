@@ -19,30 +19,35 @@ from uuid import UUID
 
 from hspylib.core.exception.exceptions import EntityNotFoundError
 
-ET = TypeVar('ET')
-RT = TypeVar('RT')
+E = TypeVar('E')
+R = TypeVar('R')
 
 
-class CrudService(Generic[ET, RT]):
+class CrudService(Generic[E, R]):
+    """TODO"""
 
-    def __init__(self, repository: RT):
+    def __init__(self, repository: R):
         self.repository = repository
 
-    def save(self, entity: ET) -> None:
+    def save(self, entity: E) -> None:
+        """TODO"""
         if not self.get(entity.uuid):
             self.repository.insert(entity)
         else:
             self.repository.update(entity)
 
-    def remove(self, entity: ET) -> None:
+    def remove(self, entity: E) -> None:
+        """TODO"""
         if not self.get(entity.uuid):
             raise EntityNotFoundError(
                 "{} was not found: {}".format(entity.__class__, entity))
         self.repository.delete(entity)
 
-    def list(self, filters: str = None) -> List[ET]:
+    def list(self, filters: str = None) -> List[E]:
+        """TODO"""
         ret_val = self.repository.find_all(filters)
         return ret_val if ret_val else []
 
-    def get(self, uuid: UUID) -> Optional[ET]:
+    def get(self, uuid: UUID) -> Optional[E]:
+        """TODO"""
         return self.repository.find_by_id(str(uuid))

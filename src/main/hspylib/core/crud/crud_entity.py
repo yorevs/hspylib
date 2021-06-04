@@ -21,6 +21,8 @@ from uuid import UUID
 
 
 class CrudEntity(ABC):
+    """TODO"""
+
     def __init__(self, entity_id: UUID = None):
         self.uuid = entity_id
 
@@ -34,6 +36,8 @@ class CrudEntity(ABC):
                and all(item in self.to_dict().items() for item in other.to_dict().items())
 
     def to_dict(self) -> dict:
+        """TODO"""
+
         ret_dict = {}
         for key, value in self.__dict__.items():
             if isinstance(value, bool):
@@ -49,11 +53,13 @@ class CrudEntity(ABC):
         return ret_dict
 
     def to_json(self) -> str:
+        """TODO"""
         dict_obj = self.to_dict()
         json_str = json.dumps(dict_obj)
         return json_str
 
     def to_columns(self) -> Tuple[str]:
+        """TODO"""
         cols = []
         for key in self.__dict__:
             if not key.startswith('_'):
@@ -61,6 +67,7 @@ class CrudEntity(ABC):
         return tuple(cols)
 
     def to_column_set(self) -> dict:
+        """TODO"""
         fields = {}
         for key, value in self.__dict__.items():
             if not key.startswith('_'):
@@ -68,6 +75,7 @@ class CrudEntity(ABC):
         return fields
 
     def to_values(self) -> Tuple[str]:
+        """TODO"""
         values = []
         for key, value in self.__dict__.items():
             if not key.startswith('_'):

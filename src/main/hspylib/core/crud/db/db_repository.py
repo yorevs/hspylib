@@ -23,6 +23,8 @@ from hspylib.core.crud.crud_repository import CrudRepository
 
 
 class DBRepository(CrudRepository):
+    """TODO"""
+
     def __init__(self):
         super().__init__()
         self.hostname = AppConfigs.INSTANCE['datasource.hostname']
@@ -36,32 +38,40 @@ class DBRepository(CrudRepository):
 
     @abstractmethod
     def connect(self):
+        """TODO"""
         pass
 
     @abstractmethod
     def disconnect(self):
+        """TODO"""
         pass
 
     @abstractmethod
     def is_connected(self):
+        """TODO"""
         pass
 
     @abstractmethod
     def execute(self, sql_statement: str, auto_commit: bool, *params):
+        """TODO"""
         pass
 
     @abstractmethod
     def commit(self):
+        """TODO"""
         pass
 
     @abstractmethod
     def rollback(self):
+        """TODO"""
         pass
 
     @abstractmethod
     def row_to_entity(self, row: Tuple) -> CrudEntity:
+        """TODO"""
         pass
 
     @abstractmethod
     def table_name(self) -> str:
+        """TODO"""
         pass

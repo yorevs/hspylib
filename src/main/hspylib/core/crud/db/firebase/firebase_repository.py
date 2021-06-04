@@ -31,6 +31,8 @@ from hspylib.modules.fetch.fetch import delete, get, put
 
 
 class FirebaseRepository(CrudRepository):
+    """TODO"""
+
     def __init__(self):
         self.payload = None
         self.config = FirebaseConfig()
@@ -39,13 +41,15 @@ class FirebaseRepository(CrudRepository):
         return str(self.payload)
 
     def to_list(self, json_string: str, filters: CaseInsensitiveDict = None) -> list:
-        the_list = []
+        """TODO"""
+        ret_list = []
         for value in json.loads(json_string).values():
             if not filters or all(k in value and value[k] == v for k, v in filters.items()):
-                the_list.append(self.row_to_entity(value))
-        return the_list
+                ret_list.append(self.row_to_entity(value))
+        return ret_list
 
     def insert(self, entity: CrudEntity) -> None:
+        """TODO"""
         entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
@@ -56,6 +60,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
     def update(self, entity: CrudEntity) -> None:
+        """TODO"""
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
         log.debug('Updating firebase entry: {} into: {}'.format(entity, url))
@@ -65,6 +70,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
     def delete(self, entity: CrudEntity) -> None:
+        """TODO"""
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         log.debug('Deleting firebase entry: {} into: {}'.format(entity, url))
         response = delete(url)
@@ -73,6 +79,7 @@ class FirebaseRepository(CrudRepository):
             raise HTTPError('{} - Unable to delete from={}'.format(response.status_code, url))
 
     def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
+        """TODO"""
         url = '{}.json?orderBy="$key"'.format(self.config.base_url())
         log.debug('Fetching firebase entries from {}'.format(url))
         response = get(url)
@@ -83,6 +90,7 @@ class FirebaseRepository(CrudRepository):
         return self.to_list(response.body, filters) if response.body else []
 
     def find_by_id(self, entity_id: str) -> Optional[CrudEntity]:
+        """TODO"""
         url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.base_url(), entity_id)
         log.debug('Fetching firebase entry entity_id={} from {}'.format(entity_id, url))
         response = get(url)

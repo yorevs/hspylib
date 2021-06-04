@@ -22,7 +22,11 @@ from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, environ_name, log_init
 
-APP_CONFIG_FORMAT = """
+
+class AppConfigs(metaclass=Singleton):
+    """TODO"""
+
+    DISPLAY_FORMAT = """
 AppConfigs
   |-SourceDir = {}
   |-ResourceDir = {}
@@ -31,16 +35,13 @@ AppConfigs
    \\-{}
 """
 
-
-class AppConfigs(metaclass=Singleton):
-    """TODO"""
-
     def __init__(
             self,
             source_root: str = None,
             resource_dir: str = None,
             log_dir: str = None,
             log_file: str = None):
+
         self._source_dir = source_root \
             if source_root else os.environ.get('SOURCE_ROOT', dirname(__file__))
         assert os.path.exists(self._source_dir), f"Unable to find the source dir: {self._source_dir}"
@@ -55,7 +56,6 @@ class AppConfigs(metaclass=Singleton):
 
         self._log_file = log_file \
             if log_file else f"{self._log_dir}/application.log"
-
         assert log_init(self._log_file), f"Unable to create logger: {self._log_file}"
 
         self._app_properties = Properties(load_dir=self._resource_dir)
@@ -64,12 +64,12 @@ class AppConfigs(metaclass=Singleton):
     def __str__(self):
         return '\n{}{}{}'.format(
             '-=' * 40,
-            APP_CONFIG_FORMAT.format(
+            self.DISPLAY_FORMAT.format(
                 str(self._source_dir),
                 str(self._resource_dir),
                 str(self._log_file),
                 str(self._app_properties).replace('\n', '\n   |-')
-                if self._app_properties.size() > 0 else ''
+                if len(self._app_properties) > 0 else ''
             ),
             '-=' * 40
         )
@@ -80,8 +80,8 @@ class AppConfigs(metaclass=Singleton):
     def __getitem__(self, item: str) -> Any:
         return self.get(item)
 
-    def size(self) -> int:
-        return self._app_properties.size()
+    def __len__(self) -> int:
+        return len(self._app_properties)
 
     def source_dir(self) -> Optional[str]:
         return self._source_dir

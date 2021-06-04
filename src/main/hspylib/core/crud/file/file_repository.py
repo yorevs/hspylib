@@ -27,6 +27,8 @@ from hspylib.core.exception.exceptions import ProgrammingError
 
 
 class FileRepository(CrudRepository):
+    """TODO"""
+
     _storages = {}
 
     @staticmethod
@@ -50,7 +52,7 @@ class FileRepository(CrudRepository):
     def __init__(self, filename: str):
         super().__init__()
         self.filename = filename
-        self.storage = self.__create_or_get()
+        self.storage = self.__get_storage()
 
     def __str__(self):
         return str(self.storage.data)
@@ -127,10 +129,10 @@ class FileRepository(CrudRepository):
         :param row:
         """
 
-    def __create_or_get(self) -> Any:
-        """TODO"""
-        if self.filename in FileRepository._storages:
-            return FileRepository._storages[self.filename]
+    def __get_storage(self) -> Any:
+        """Create or get a storage according to the filename"""
+        if self.filename in self._storages:
+            return self._storages[self.filename]
 
-        FileRepository._storages[self.filename] = FileStorage(self.filename)
-        return FileRepository._storages[self.filename]
+        self._storages[self.filename] = FileStorage(self.filename)
+        return self._storages[self.filename]

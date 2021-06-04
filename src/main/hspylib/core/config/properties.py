@@ -59,6 +59,10 @@ class Properties:
     def __iter__(self):
         return self.properties.__iter__()
 
+    def __len__(self) -> int:
+        """Retrieve the amount of properties"""
+        return len(self.properties) if self.properties else 0
+
     def get(self, key: str, default_value=None) -> Optional[str]:
         """Get a property value as string or default_value if the property was not found"""
         return self.properties[key.strip()] if key.strip() in self.properties else default_value
@@ -83,10 +87,6 @@ class Properties:
             return self.get(key).lower() in ['true', '1', 'on', 'yes']
         except TypeError:
             return default_value
-
-    def size(self) -> int:
-        """Retrieve the amount of properties"""
-        return len(self.properties) if self.properties else 0
 
     def values(self) -> list:
         """Retrieve all values for all properties"""
