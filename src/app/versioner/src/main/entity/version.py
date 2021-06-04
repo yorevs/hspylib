@@ -16,7 +16,7 @@
 
 import re
 
-from hspylib.core.tools.regex_constants import RE_VERSION_STRING
+from hspylib.core.tools.constants import RE_VERSION_STRING
 from versioner.src.main.enums.extension import Extension
 
 
