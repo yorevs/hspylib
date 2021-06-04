@@ -17,7 +17,7 @@ import re
 import sys
 
 from hspylib.core.tools.commons import get_path, read_version, sysout, syserr
-from hspylib.core.tools.regex_constants import RegexConstants
+from hspylib.core.tools.regex_constants import RE_VERSION_STRING
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 from versioner.src.main.core.versioner import Versioner
@@ -50,11 +50,11 @@ class Main(Application):
         # @formatter:off
         self._with_arguments(
             ArgumentChain.builder()
-                .when('version', RegexConstants.RE_VERSION_STRING)
+                .when('version', RE_VERSION_STRING)
                     .require('part', '|'.join(list(map(str.lower, Part.names()))))
                     .require('files', '.*')
                     .end()
-                .when('version', RegexConstants.RE_VERSION_STRING)
+                .when('version', RE_VERSION_STRING)
                     .require('state', 'promote|demote')
                     .require('files', '.*')
                     .end()

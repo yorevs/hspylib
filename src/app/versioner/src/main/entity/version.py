@@ -16,7 +16,7 @@
 
 import re
 
-from hspylib.core.tools.regex_constants import RegexConstants
+from hspylib.core.tools.regex_constants import RE_VERSION_STRING
 from versioner.src.main.enums.extension import Extension
 
 
@@ -24,8 +24,8 @@ class Version:
 
     @classmethod
     def parse(cls, version_str: str) -> 'Version':
-        assert re.match(RegexConstants.RE_VERSION_STRING, version_str), \
-            f"Version string {version_str} does not match the expected syntax: {RegexConstants.RE_VERSION_STRING}"
+        assert re.match(RE_VERSION_STRING, version_str), \
+            f"Version string {version_str} does not match the expected syntax: {RE_VERSION_STRING}"
         parts = list(map(str.strip, re.split(r'[.-]', version_str)))
         return Version(
             int(parts[0]),
