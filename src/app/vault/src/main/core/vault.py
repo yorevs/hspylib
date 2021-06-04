@@ -48,7 +48,7 @@ class Vault:
 
     def open(self) -> None:
         """Open and read the Vault file"""
-        self.passphrase = self._get_passphrase()
+        self.passphrase = self._read_passphrase()
         try:
             if not self.is_open:
                 self._unlock_vault()
@@ -152,8 +152,8 @@ class Vault:
             syserr("### No entry specified by '{}' was found in vault".format(key))
         log.debug("Vault remove issued. User={}".format(getpass.getuser()))
 
-    def _get_passphrase(self) -> str:
-        """Retrieve the vault passphrase"""
+    def _read_passphrase(self) -> str:
+        """Retrieve and read the vault passphrase"""
         if file_is_not_empty(self.configs.vault_file()):
             confirm_flag = False
         else:

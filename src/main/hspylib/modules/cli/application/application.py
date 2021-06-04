@@ -33,6 +33,9 @@ from hspylib.modules.cli.application.option import Option
 class Application(metaclass=Singleton):
     """HSPyLib application framework"""
 
+    VERSION = None
+    USAGE = None
+
     def __init__(
             self,
             app_name: str = None,

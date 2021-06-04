@@ -20,7 +20,7 @@ import re
 from typing import List
 
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import run_dir, sysout
+from hspylib.core.tools.commons import run_dir, sysout, syserr
 from versioner.src.main.entity.version import Version
 from versioner.src.main.enums.extension import Extension
 from versioner.src.main.exception.exceptions import MissingExtensionError
@@ -49,20 +49,27 @@ class Versioner(metaclass=Singleton):
     def __str__(self):
         return str(self._version)
 
+    def __repr__(self):
+        return str(self)
+
     def promote(self) -> Version:
-        """ Promote the current version in the order: SNAPSHOT->STABLE->RELEASE """
+        """ Promote the current version in the order: DEVELOPMENT->SNAPSHOT->STABLE->RELEASE """
         self._assert_extension()
         if self._version.state and self._version.state != Extension.RELEASE:
-            self._version.state = Extension.STABLE if self._version.state == Extension.SNAPSHOT else Extension.RELEASE
+            self._version.state = Extension.of_value(min(Extension.RELEASE.value, self._version.state.value << 1))
             sysout(f"Version has been promoted to {self._version}")
+        else:
+            syserr(f"Version  {self._version} can't be promoted")
         return self._version
 
     def demote(self) -> Version:
-        """ Demote the current version in the order: RELEASE->STABLE->SNAPSHOT """
+        """ Demote the current version in the order: RELEASE->STABLE->SNAPSHOT->DEVELOPMENT """
         self._assert_extension()
-        if self._version.state and self._version.state != Extension.SNAPSHOT:
-            self._version.state = Extension.STABLE if self._version.state == Extension.RELEASE else Extension.SNAPSHOT
+        if self._version.state and self._version.state != Extension.DEVELOPMENT:
+            self._version.state = Extension.of_value(max(Extension.DEVELOPMENT.value, self._version.state.value >> 1))
             sysout(f"Version has been demoted to {self._version}")
+        else:
+            syserr(f"Version  {self._version} can't be demoted")
         return self._version
 
     def major(self) -> Version:
@@ -101,9 +108,9 @@ class Versioner(metaclass=Singleton):
                     line_new = re.sub(self._initial_version, str(self._version), line, flags=re.M)
                     if line_new != line:
                         changed_lines.append(f"{filename}::{file.lineno()}")
-                        sysout(line_new, end='')
+                        print(line_new, end='')
                     else:
-                        sysout(line, end='')
+                        print(line, end='')
         return len(changed_lines) > 0
 
     def _assert_extension(self):

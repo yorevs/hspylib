@@ -21,18 +21,18 @@ import socket
 import threading
 from time import sleep
 
-from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class WidgetSendMsg(Widget):
+    """HSPyLib to send TCP/UDP messages (multi-threaded)"""
     WIDGET_ICON = WidgetIcons.NETWORK
     WIDGET_NAME = "SendMsg"
     TOOLTIP = "IP Message Sender. Sends TCP/UDP messages (multi-threaded)"
@@ -52,7 +52,7 @@ class WidgetSendMsg(Widget):
                                           is going to send indefinitely ( default is 100 ).
     -i, --interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
     -t, --threads    <threads_num>      : Number of threads [1-{}] to be opened to send simultaneously ( default is 1 ).
-    -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the file 
+    -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the file
                                           contents sent instead.
 
     E.g:. send-msg.py -m "Hello" -p 12345 -a 0.0.0.0 -k 100 -i 500 -t 2
@@ -77,7 +77,6 @@ class WidgetSendMsg(Widget):
         self.socket = None
 
     def execute(self, *args) -> ExitCode:
-
         ret_val = ExitCode.SUCCESS
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
@@ -124,7 +123,7 @@ class WidgetSendMsg(Widget):
             self.socket.close()
 
     def _read_args(self) -> bool:
-        """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
         # @formatter:off
         form_fields = MenuInput.builder() \
             .field() \
@@ -174,6 +173,7 @@ class WidgetSendMsg(Widget):
         return bool(self.args)
 
     def _parse_args(self, *args):
+        """When arguments are passed from the command line, parse them"""
         parser = argparse.ArgumentParser(description='Sends TCP/UDP messages (multi-threaded)')
         parser.add_argument(
             '--net-type', action='store', type=str, required=False,
@@ -202,37 +202,42 @@ class WidgetSendMsg(Widget):
         return bool(self.args)
 
     def _init_sockets(self) -> None:
+        """Initialize sockets"""
         if self.net_type == self.NET_TYPE_UDP:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         else:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 self.socket.connect(self.host)
+                sysout(f"Successfully connected to {self.host}")
             except socket.error as err:
                 raise WidgetExecutionError('Unable to initialize sockets') from err
 
     def _start_send(self) -> None:
+        """Start sending packets"""
+        thread_relief = 0.25
         self._init_sockets()
-        sysout('\n%ORANGE%Start sending {} {} packet(s) every {} second(s) to {} using {} thread(s) %NC%'.format(
-            self.packets, self.net_type.upper(), self.interval, self.host, self.threads))
+        sysout(f"\n%ORANGE%Start sending {self.packets} "
+               f"{self.net_type.upper()} packet(s) "
+               f"every {self.interval} second(s) to {self.host} using {self.threads} thread(s)")
         threads_num = threading.active_count()
 
-        for i in range(1, int(self.threads) + 1):
-            tr = threading.Thread(target=self._send_packet, args=(i,))
+        for thread_num in range(1, int(self.threads) + 1):
+            tr = threading.Thread(target=self._send_packet, args=(thread_num,))
             tr.setDaemon(True)
             tr.start()
-            sleep(0.011)
+            sleep(thread_relief)
 
         while self.is_alive and threading.active_count() > threads_num:
-            sleep(0.50)
+            sleep(2 * thread_relief)
 
-    def _send_packet(self, i) -> None:
-
+    def _send_packet(self, thread_num: int) -> None:
+        """Send a packet"""
         counter = 1
         length = len(self.message)
 
         while self.is_alive and self.packets <= 0 or counter <= self.packets:
-            sysout(f"%BLUE%[Thread-{i:d}] "
+            sysout(f"%BLUE%[Thread-{thread_num:d}] "
                    f"%GREEN%Sending \"{self.message:s}\" ({length:d}) bytes, "
                    f"Pkt = {counter:>d}/{self.packets:>d} %NC%...")
             if self.net_type == self.NET_TYPE_UDP:

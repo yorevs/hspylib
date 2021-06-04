@@ -17,6 +17,7 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 
+from hspylib.core.enums.exit_code import ExitCode
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
@@ -43,12 +44,12 @@ HSPyLib Widget: {} v{}
         self._version = version
 
     @abstractmethod
-    def execute(self, *args):
+    def execute(self, *args) -> ExitCode:
         """Execute the widget main flow"""
 
-    @abstractmethod
     def cleanup(self) -> None:
         """Execute the widget cleanup"""
+        pass
 
     def icon(self) -> Awesome:
         return self._icon

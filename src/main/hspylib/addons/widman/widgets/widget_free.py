@@ -26,6 +26,7 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class WidgetFree(Widget):
+    """HSPyLib to Report current system memory usage"""
     WIDGET_ICON = WidgetIcons.DATABASE
     WIDGET_NAME = "Free"
     TOOLTIP = "Report system memory usage."
@@ -43,7 +44,6 @@ class WidgetFree(Widget):
         self.report_interval = 1.5
 
     def execute(self, *args) -> ExitCode:
-
         while not Keyboard.kbhit():
             tr = threading.Thread(target=self._report_usage)
             tr.start()
@@ -51,11 +51,9 @@ class WidgetFree(Widget):
 
         return ExitCode.SUCCESS
 
-    def cleanup(self) -> None:
-        pass
-
     @staticmethod
     def _report_usage():
+        """TODO"""
         ps = Terminal.shell_exec('ps -caxm -orss,comm')  # Get process info
         vm = Terminal.shell_exec('vm_stat')
 
@@ -89,9 +87,9 @@ class WidgetFree(Widget):
 
         sysout('%HOM%%ED2%%MOD(0)%', end='')
         sysout(f"\n%ORANGE%Reporting system memory usage:%NC% \n{'-' * 30}")
-        sysout(f"    %GREEN%Wired Memory%NC%: {wired:6s} {wu:2s}")
-        sysout(f"   %GREEN%Active Memory%NC%: {active:6s} {au:2s}")
-        sysout(f" %GREEN%Inactive Memory%NC%: {inactive:6s} {iu:2s}")
-        sysout(f"     %GREEN%Free Memory%NC%: {free:6s} {fu:2s}")
-        sysout(f"     %GREEN%Real Memory%NC%: {real:6s} {ru:2s}")
-        sysout('\n%YELLOW%Press [Enter] to exit ...%NC%', end='')
+        sysout(f"    %GREEN%Wired Memory: {wired:6s} {wu:2s}")
+        sysout(f"   %GREEN%Active Memory: {active:6s} {au:2s}")
+        sysout(f" %GREEN%Inactive Memory: {inactive:6s} {iu:2s}")
+        sysout(f"     %GREEN%Free Memory: {free:6s} {fu:2s}")
+        sysout(f"     %GREEN%Real Memory: {real:6s} {ru:2s}")
+        sysout('\n%YELLOW%Press [Enter] to exit ...', end='')

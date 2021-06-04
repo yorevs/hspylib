@@ -49,9 +49,10 @@ class Firebase:
         return self.processor.upload_files(url, file_paths) > 0
 
     def download(self, db_alias: str, dest_dir: str) -> bool:
-        """Download file_paths from firebase"""
+        """Download files from firebase specified by it's aliases"""
         url = self.configs.url(db_alias)
         return self.processor.download_files(url, dest_dir or os.environ.get('HOME')) > 0
 
     def is_configured(self) -> bool:
+        """Checks whether firebase is properly configured or not"""
         return self.configs is not None and self.configs.fb_configs is not None

@@ -18,9 +18,10 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class Extension(Enumeration):
-    SNAPSHOT = 1
-    STABLE = 2
-    RELEASE = 4
+    DEVELOPMENT = 1
+    SNAPSHOT = 2
+    STABLE = 4
+    RELEASE = 8
 
     def __str__(self):
         return str(self.name)

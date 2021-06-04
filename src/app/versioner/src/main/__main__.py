@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import re
 import sys
 
 from hspylib.core.tools.commons import get_path, read_version, sysout, syserr
@@ -51,26 +51,36 @@ class Main(Application):
         self._with_arguments(
             ArgumentChain.builder()
                 .when('version', RegexConstants.RE_VERSION_STRING)
-                .require('part', '|'.join(list(map(str.lower, Part.names()))))
-                .require('files', '.*')
-                .end()
+                    .require('part', '|'.join(list(map(str.lower, Part.names()))))
+                    .require('files', '.*')
+                    .end()
+                .when('version', RegexConstants.RE_VERSION_STRING)
+                    .require('state', 'promote|demote')
+                    .require('files', '.*')
+                    .end()
               .build()
         )
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.versioner = Versioner(self.getarg('version'), self.getopt('search-dir'), self.getarg('files').split(','))
+        self.versioner = Versioner(
+            self.getarg('version'),
+            self.getopt('search-dir'),
+            re.split(r'[, ]', str(self.getarg('files'))))
         self._exec_application()
 
     def _exec_application(self) -> None:
         """Execute the application"""
-        caller = getattr(self.versioner, self.getarg('part'))
+        if self.getarg('part'):
+            caller = getattr(self.versioner, self.getarg('part'))
+        else:
+            caller = getattr(self.versioner, self.getarg('state'))
         caller()
         if self.versioner.save(self.getopt('backup')):
-            sysout(f"%GREEN%Successfully updated version to {self.versioner.version()} %NC%")
+            sysout(f"%GREEN%Successfully updated version to {self.versioner.version()}")
         else:
-            syserr(f"%RED%Failed to update version. No matches found for version {self.getarg('version')} %NC%")
+            syserr(f"Failed to update version. No matches found for version {self.getarg('version')}")
 
 
 if __name__ == "__main__":

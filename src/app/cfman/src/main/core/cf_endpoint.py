@@ -18,6 +18,7 @@ from typing import Tuple
 
 
 class CFEndpoint:
+    """TODO"""
 
     def __init__(self, attrs: Tuple[str]):
         self.alias = attrs[0]

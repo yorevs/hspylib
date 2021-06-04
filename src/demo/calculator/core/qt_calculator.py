@@ -24,6 +24,7 @@ class QtCalculator:
         self.app = QApplication([])
         self.ui = MainView()
 
-    def show(self):
+    def show(self) -> int:
+        """Show the main Qt application Widget"""
         self.ui.show()
-        self.app.exec_()
+        return self.app.exec_()

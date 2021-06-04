@@ -27,6 +27,7 @@ from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class WidgetTimeCalc(Widget):
+    """HSPyLib to calculate time based operations"""
     WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
     TOOLTIP = "Calculate time based operations."
@@ -47,7 +48,6 @@ class WidgetTimeCalc(Widget):
         self.args = None
 
     def execute(self, *args) -> ExitCode:
-
         ret_val = ExitCode.SUCCESS
 
         if (not args or len(args) < 3) and not any(a in args for a in ['-h', '--help']):
@@ -97,9 +97,6 @@ class WidgetTimeCalc(Widget):
             sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
 
         return ret_val
-
-    def cleanup(self):
-        pass
 
     def _decimal(self, time_raw: int = 0) -> int:
         """ Convert a raw time into decimal """
