@@ -20,25 +20,31 @@ import os
 
 
 class FileStorage:
+    """TODO"""
+
     def __init__(self, filename: str):
         self.filename = filename
         self.data = []
         self.load()
-        log.debug('File storage filename={} created and loaded entries={}'.format(filename, len(self.data)))
+        log.debug(f"File storage filename={self.filename} created and loaded entries={len(self.data)}")
 
     def load(self) -> None:
+        """TODO"""
         mode = 'r+' if os.path.exists(self.filename) else 'w+'
         with open(self.filename, mode) as f_local_db:
             lines = f_local_db.read()
             if lines:
                 saved_data = ast.literal_eval(lines)
                 self.data = saved_data
+        log.debug(f"File storage filename={self.filename} loaded {len(self.data)} entries")
 
     def commit(self) -> None:
+        """TODO"""
         with open(self.filename, 'w') as f_local_db:
             f_local_db.write(str(self.data))
-        log.debug('File storage filename={} committed entries={}'.format(self.filename, len(self.data)))
+        log.debug(f"File storage filename={self.filename} committed entries={len(self.data)}")
 
     def truncate(self) -> None:
+        """TODO"""
         open(self.filename, 'w').close()
-        log.warning('File storage filename={} was truncated'.format(self.filename))
+        log.warning(f"File storage filename={self.filename} was truncated")

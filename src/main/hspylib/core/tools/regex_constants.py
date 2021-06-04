@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
+   Commonly used regex expressions
+
    @project: HSPyLib
    hspylib.main.hspylib.core.tools
       @file: regex_constants.py
