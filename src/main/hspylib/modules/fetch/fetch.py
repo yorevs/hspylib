@@ -40,8 +40,9 @@ def fetch(
 
     url = url if url and url.startswith("http") else 'http://{}'.format(url)
     if not silent:
-        sysout('Fetching: method={} table_headers={} body={} url={} ...'.format(
-            method, headers if headers else '[]', body if body else '{}', url))
+        sysout(f"Fetching: "
+               f"method={method} table_headers={headers if headers else '[]'} "
+               f"body={body if body else '{}'} url={url} ...")
     response = requests.request(url=url, method=method.name, headers=headers, data=body, timeout=3)
     return HttpResponse.of(response)
 

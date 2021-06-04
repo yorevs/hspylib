@@ -49,6 +49,7 @@ def minput(
 
 
 class MenuInput:
+    """TODO"""
     SELECTED_BG = '%MOD(44)%'
 
     NAV_ICONS = '\u2191\u2193'
@@ -73,6 +74,7 @@ class MenuInput:
             title: str,
             title_color: VtColors,
             nav_color: VtColors) -> Any:
+        """TODO"""
 
         ret_val = None
 
@@ -98,6 +100,8 @@ class MenuInput:
         return form_fields
 
     def _render(self, nav_color: VtColors) -> None:
+        """TODO"""
+
         restore_cursor()
 
         for idx, field in enumerate(self.all_fields):
@@ -136,6 +140,8 @@ class MenuInput:
         self.re_render = False
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:
+        """TODO"""
+
         # Buffering the all positions to avoid calling get_cursor_pos over and over
         f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
         if f_pos:
@@ -145,6 +151,8 @@ class MenuInput:
                 self.cur_col = f_pos[1] + field_size
 
     def _render_details(self, field: Any, field_size: int) -> None:
+        """TODO"""
+
         # Print details about total/remaining field characters
         padding = 1 - len(str(self.max_detail_length / 2))
         fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
@@ -158,6 +166,8 @@ class MenuInput:
             sysout(fmt.format(field.icon, field_size, field.max_length))
 
     def _nav_input(self) -> chr:
+        """TODO"""
+
         length = len(self.all_fields)
         keypress = Keyboard.read_keystroke()
 
@@ -197,6 +207,8 @@ class MenuInput:
         return keypress
 
     def _handle_input(self, keypress: chr) -> None:
+        """TODO"""
+
         if self.cur_field.itype == InputType.CHECKBOX:
             if keypress == Keyboard.VK_SPACE:
                 self.cur_field.value = 1 if not self.cur_field.value else 0
@@ -220,6 +232,8 @@ class MenuInput:
                         f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !")
 
     def _handle_backspace(self) -> None:
+        """TODO"""
+
         if self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
             value = value[:-1]
@@ -233,6 +247,8 @@ class MenuInput:
                 self._display_error('This field is read only !')
 
     def _display_error(self, err_msg) -> None:
+        """TODO"""
+
         set_enable_echo(False)
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + 12
         vt_print(f"%CUP({self.cur_row};{err_pos})%")

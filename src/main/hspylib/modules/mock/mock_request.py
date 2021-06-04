@@ -25,6 +25,8 @@ from hspylib.modules.fetch.http_response import HttpResponse
 
 
 class MockResponse(HttpResponse):
+    """TODO"""
+
     def __init__(self,
                  parent,
                  method: HttpMethod,
@@ -39,12 +41,14 @@ class MockResponse(HttpResponse):
         self.parent = parent
         self.received_body = False
 
-    def then_return(self,
-                    code: HttpCode,
-                    body: str = None,
-                    headers=None,
-                    encoding: Charset = Charset.UTF_8,
-                    content_type=ContentType.APPLICATION_JSON) -> Any:
+    def then_return(
+        self,
+        code: HttpCode,
+        body: str = None,
+        headers = None,
+        encoding: Charset = Charset.UTF_8,
+        content_type=ContentType.APPLICATION_JSON) -> Any:
+        """TODO"""
 
         response = self.parent.mock(self.method, self.url)
         response.status_code = code
@@ -54,13 +58,17 @@ class MockResponse(HttpResponse):
         response.content_type = content_type
         if response.content_type:
             response.content_type.charset = encoding
+
         return self.parent
 
-    def then_return_with_received_body(self,
-                                       code: HttpCode,
-                                       headers: CaseInsensitiveDict = None,
-                                       encoding: Charset = Charset.UTF_8,
-                                       content_type=ContentType.APPLICATION_JSON) -> Any:
+    def then_return_with_received_body(
+        self,
+        code: HttpCode,
+        headers: CaseInsensitiveDict = None,
+        encoding: Charset = Charset.UTF_8,
+        content_type=ContentType.APPLICATION_JSON) -> Any:
+        """TODO"""
+
         response = self.parent.mock(self.method, self.url)
         response.received_body = True
         response.body = None
@@ -70,4 +78,5 @@ class MockResponse(HttpResponse):
         response.content_type = content_type
         if response.content_type:
             response.content_type.charset = encoding
+
         return self.parent

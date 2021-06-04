@@ -25,9 +25,11 @@ from hspylib.core.tools.commons import syserr
 
 
 class Terminal(ABC):
+    """TODO"""
 
     @staticmethod
     def shell_exec(cmd_line: str, **kwargs) -> Optional[str]:
+        """TODO"""
         try:
             log.info(f"Executing shell command: {cmd_line}")
             cmd_args = list(filter(None, shlex.split(cmd_line)))
@@ -41,6 +43,7 @@ class Terminal(ABC):
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
+        """TODO"""
         if 'stdout' in kwargs:
             del kwargs['stdout']  # Deleted since we use our own
         if 'stdout' in kwargs:

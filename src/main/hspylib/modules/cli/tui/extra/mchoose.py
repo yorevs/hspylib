@@ -48,6 +48,7 @@ def mchoose(
 
 
 class MenuChoose(ABC):
+    """TODO"""
     UNSELECTED = ' '
     SELECTED = FormIcons.SELECTOR
     MARKED = FormIcons.MARKED
@@ -78,6 +79,7 @@ class MenuChoose(ABC):
             title_color: VtColors,
             highlight_color: VtColors,
             nav_color: VtColors) -> Optional[List[Any]]:
+        """TODO"""
 
         ret_val = None
 
@@ -99,6 +101,7 @@ class MenuChoose(ABC):
             if ret_val == Keyboard.VK_ENTER else None
 
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
+        """TODO"""
 
         length = len(self.items)
         dummy, columns = screen_size()
@@ -132,6 +135,8 @@ class MenuChoose(ABC):
         self.re_render = False
 
     def _nav_input(self) -> chr:
+        """TODO"""
+
         length = len(self.items)
         keypress = Keyboard.read_keystroke()
 

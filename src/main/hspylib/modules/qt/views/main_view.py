@@ -22,17 +22,19 @@ from hspylib.modules.qt.views.qt_view import QtView
 
 
 class MainView(QtView):
+    """TODO"""
 
     def __init__(self, ui_file_path: str):
         form, window = uic.loadUiType(ui_file_path)
         super().__init__(window)
         self.form = form
         self.form.setupUi(window)
-        self.__setup_ui()
+        self._setup_ui()
 
     @abstractmethod
-    def __setup_ui(self) -> None:
-        pass
+    def _setup_ui(self) -> None:
+        """TODO"""
 
     def show(self) -> None:
+        """TODO"""
         self.window.show()
