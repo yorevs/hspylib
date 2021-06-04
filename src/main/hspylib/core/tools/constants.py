@@ -34,4 +34,10 @@ RE_VERSION_STRING = r'([0-9]+\.){2}[0-9]+((\-(DEVELOPMENT|SNAPSHOT|STABLE|RELEAS
 RE_IP_V4 = r'((2((5[0-5])|[0-4][0-9])|(1([0-9]{2}))|(0|([1-9][0-9]))|([0-9]))\.){3}(2((5[0-5])|' \
            r'[0-4][0-9])|(1([0-9]{2}))|(0|([1-9][0-9]))|([0-9]))'
 
-# Other constants
+# Date and time formats
+
+DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+DATE_FORMAT = "%Y-%m-%d"
+
+TIME_FORMAT = "%H:%M:%S"
