@@ -27,15 +27,19 @@ class VaultConfig(metaclass=Singleton):
         self.configs = AppConfigs.INSTANCE
 
     def vault_user(self) -> str:
+        """Return the vault user"""
         user = self.configs['hhs.vault.user']
         return user if user else getpass.getuser()
 
     def passphrase(self) -> str:
+        """Return the vault user passphrase"""
         return self.configs['hhs.vault.passphrase']
 
     def vault_file(self) -> str:
+        """Return the locked vault filename"""
         file = self.configs['hhs.vault.file']
         return file if file else f"{self.configs.resource_dir()}/.vault"
 
     def unlocked_vault_file(self) -> str:
+        """Return the unlocked vault filename"""
         return f"{self.vault_file()}.unlocked"

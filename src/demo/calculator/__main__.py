@@ -20,6 +20,7 @@ import sys
 from calculator.core.qt_calculator import QtCalculator
 from hspylib.core.tools.commons import dirname, read_version
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 
 class Main(Application):
@@ -40,9 +41,9 @@ class Main(Application):
         self.calc = QtCalculator()
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
-        self.calc.show()
+        exit_app(self.calc.show())
 
 
 if __name__ == "__main__":
     # Application entry point
-    Main('HSPyLib Cloud Foundry Manager').INSTANCE.run(sys.argv[1:])
+    Main('HSPyLib Qt Calculator Demo').INSTANCE.run(sys.argv[1:])

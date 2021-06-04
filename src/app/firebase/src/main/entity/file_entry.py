@@ -16,14 +16,16 @@
 
 import base64
 import os
-from typing import Any
 
 from hspylib.core.enums.charset import Charset
 
 
 class FileEntry:
+    """TODO"""
+
     @staticmethod
-    def of(file_path: str, file_data: bytes, expected_size: int) -> Any:
+    def of(file_path: str, file_data: bytes, expected_size: int) -> 'FileEntry':
+        """Create a new file entry with the specified contents and expected size"""
         file_entry = FileEntry(file_path)
         file_entry.data = file_data
         file_entry.decode()
@@ -45,15 +47,18 @@ class FileEntry:
     def __str__(self) -> str:
         return '{"path" : "' + self.path + '", "size" : ' + str(self.size) + ', "data" : "' + self.data + '"}'
 
-    def encode(self) -> Any:
+    def encode(self) -> 'FileEntry':
+        """B64 Encode this file's data"""
         self.data = base64.urlsafe_b64encode(self.data.encode(str(Charset.UTF_8))).decode(str(Charset.UTF_8))
         return self
 
-    def decode(self) -> Any:
+    def decode(self) -> 'FileEntry':
+        """B64 Decode this file's data"""
         self.data = str(base64.urlsafe_b64decode(self.data), str(Charset.UTF_8))
         return self
 
-    def save(self) -> Any:
+    def save(self) -> 'FileEntry':
+        """Write current file data into this file"""
         with open(self.path, 'w') as f_in:
             f_in.write(self.data)
         return self

@@ -74,11 +74,11 @@ class Main(Application):
         if op == 'create':
             manager = AppManager(self)
             app_type = AppManager.AppType.value_of(self.getarg('app-type'))
-            exts = self.getarg('app-ext').split(',') if self.getarg('app-ext') else []
+            extensions = self.getarg('app-ext').split(',') if self.getarg('app-ext') else []
             manager.create(
                 self.getarg('app-name'),
                 app_type,
-                list(map(AppManager.AppExt.value_of, exts)),
+                list(map(AppManager.AppExtensions.value_of, extensions)),
                 self.getopt('dest-dir') or run_dir())
         elif op == 'widgets':
             manager = WidgetManager(self)

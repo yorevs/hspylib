@@ -28,9 +28,11 @@ from hspylib.modules.fetch.fetch import get, put
 
 
 class FileProcessor(ABC):
+    """Utility class to upload and download B64 encoded files"""
 
     @staticmethod
     def upload_files(url: str, file_paths: List[str]) -> int:
+        """Upload files to URL"""
         file_data = []
         for f_path in file_paths:
             assert os.path.exists(f_path), 'Input file "{}" does not exist'.format(f_path)
@@ -49,6 +51,7 @@ class FileProcessor(ABC):
 
     @staticmethod
     def download_files(url: str, destination_dir: str) -> int:
+        """Download files from URL"""
         assert destination_dir and os.path.exists(destination_dir), "Unable find destination directory: {}" \
             .format(destination_dir)
         response = get(url)
@@ -63,21 +66,25 @@ class FileProcessor(ABC):
 
     @staticmethod
     def _read_and_encode(file_path: str) -> FileEntry:
+        """Read and B64 encode a file"""
         return FileEntry(file_path).encode()
 
     @staticmethod
     def _decode_and_write(destination_dir: str, file_entries: List[dict]) -> None:
+        """B64 decode and write entries to file"""
         for entry in file_entries:
             FileEntry.of('{}/{}'.format(
                 destination_dir, os.path.basename(entry['path'])),
                 entry['data'],
                 entry['size']).save()
-            sysout('%GREEN%"{}" successfully downloaded into "{}"%NC%'.format(entry['path'], destination_dir))
+            sysout(f"%GREEN%'{entry['path']}' successfully downloaded into '{destination_dir}'")
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:
+        """Convert the file data into json format"""
         return '[' + ', '.join([str(entry) for entry in file_data]) + ']'
 
     @staticmethod
     def _from_json(file_data: str) -> List[dict]:
+        """Convert json format into file data"""
         return json.loads(file_data)
