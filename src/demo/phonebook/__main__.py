@@ -16,7 +16,7 @@
 
 import sys
 
-from hspylib.modules.cli.tui.menu.factory.menu_factory import MenuFactory
+from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 
 from hspylib.core.tools.commons import dirname

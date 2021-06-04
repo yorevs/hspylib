@@ -36,8 +36,8 @@ class Main(Application):
         self._with_arguments(
             ArgumentChain.builder()
                 .when('number', 'one|two|three', False)
-                .require('anything', '.+')
-                .end()
+                    .require('anything', '.+')
+                    .end()
                 .build()
         )
         # @formatter:on
