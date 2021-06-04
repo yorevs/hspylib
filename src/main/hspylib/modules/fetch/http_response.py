@@ -23,8 +23,11 @@ from hspylib.core.enums.http_method import HttpMethod
 
 
 class HttpResponse:
+    """TODO"""
+
     @staticmethod
-    def of(response: Response):
+    def of(response: Response) -> 'HttpResponse':
+        """TODO"""
         return HttpResponse(
             HttpMethod[response.request.method],
             response.url,

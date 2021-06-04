@@ -24,16 +24,14 @@ class WidgetIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    WIDGET = '\uFC65'  # ﱥ
+    # @formatter:off
+    WIDGET = '\uFC65'    # ﱥ
     DATABASE = '\uFB19'  # ﬙
-    CLOCK = '\uF651'  # 
-    NETWORK = '\uF819'  # 
-    CHART_1 = '\uFC67'  # ﱨ
-    CHART_2 = '\uFC68'  # ﱩ
-    MUSIC = '\uFC6E'  # ﱯ
-    SIGN = '\uFC7E'  # ﱿ
-    SWORDS = '\uFC84'  # ﲅ
-
-
-if __name__ == '__main__':
-    WidgetIcons.demo_icons()
+    CLOCK = '\uF651'     # 
+    NETWORK = '\uF819'   # 
+    CHART_1 = '\uFC67'   # ﱨ
+    CHART_2 = '\uFC68'   # ﱩ
+    MUSIC = '\uFC6E'     # ﱯ
+    SIGN = '\uFC7E'      # ﱿ
+    SWORDS = '\uFC84'    # ﲅ
+    # @formatter:on

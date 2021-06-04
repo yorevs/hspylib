@@ -17,7 +17,7 @@
 import select
 import string
 import sys
-from typing import Any, Optional
+from typing import Optional
 
 import getkey
 
@@ -29,6 +29,8 @@ require_terminal()
 
 
 class Keyboard(Enumeration):
+    """TODO"""
+
     # Control keys
     VK_NONE = ''
     VK_ESC = getkey.keys.ESC
@@ -147,15 +149,18 @@ class Keyboard(Enumeration):
 
     @staticmethod
     def kbhit():
+        """TODO"""
         dr, _, _ = select.select([sys.stdin], [], [], 0)
         return dr != []
 
     @staticmethod
     def getch():
+        """TODO"""
         return sys.stdin.read(1)
 
     @classmethod
-    def read_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional[Any]:
+    def read_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional['Keyboard']:
+        """TODO"""
         try:
             keystroke = getkey.getkey(blocking)
             if keystroke:
@@ -169,13 +174,17 @@ class Keyboard(Enumeration):
         return None
 
     def isdigit(self) -> bool:
+        """TODO"""
         return str(self.value).isdigit()
 
     def isalpha(self) -> bool:
+        """TODO"""
         return str(self.value).isalpha()
 
     def isalnum(self) -> bool:
+        """TODO"""
         return str(self.value).isalnum()
 
     def ispunct(self) -> bool:
+        """TODO"""
         return all(ch in string.punctuation for ch in str(self.value))

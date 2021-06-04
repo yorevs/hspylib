@@ -23,7 +23,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Please do not modify this
-DEFAULT_SALT = 'HsPyLib'
+DEFAULT_HS_SALT = 'HsPyLib'
 
 
 def encode(in_file, out_file, encoding: str = 'utf-8') -> int:
@@ -54,7 +54,7 @@ def encrypt(
         in_file: str,
         out_file: str,
         pass_phrase: str,
-        salt: str = DEFAULT_SALT,
+        salt: str = DEFAULT_HS_SALT,
         digest_algo=hashes.SHA256(),
         length=32,
         iterations=100000,
@@ -89,7 +89,7 @@ def decrypt(
         in_file: str,
         out_file: str,
         pass_phrase: str,
-        salt: str = DEFAULT_SALT,
+        salt: str = DEFAULT_HS_SALT,
         digest_algo=hashes.SHA256(),
         length=32,
         iterations=100000,

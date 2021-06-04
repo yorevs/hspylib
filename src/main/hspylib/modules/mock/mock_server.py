@@ -25,40 +25,48 @@ from hspylib.modules.mock.mock_server_handler import MockServerHandler
 
 
 class MockServer(HTTPServer):
+    """TODO"""
+
     RANDOM_PORT = randint(49152, 65535)
 
-    def mock(self, method: HttpMethod, url: str) -> Optional[MockResponse]:
-        try:
-            return self.__mocks[method][url]
-        except KeyError:
-            return None
-
     def __init__(self, hostname: str, port: int):
-        self.__mocks = {}
+        self._mocks = {}
         self.hostname = hostname
         self.port = port
         self.version = '0.9.0'
         super().__init__(self.address(), MockServerHandler)
 
+    def mock(self, method: HttpMethod, url: str) -> Optional[MockResponse]:
+        """TODO"""
+        try:
+            return self._mocks[method][url]
+        except KeyError:
+            return None
+
     def address(self) -> Tuple[str, int]:
+        """TODO"""
         return self.hostname, self.port
 
     def is_allowed(self, method: HttpMethod) -> bool:
-        return method in self.__mocks
+        """TODO"""
+        return method in self._mocks
 
     def start(self) -> None:
+        """TODO"""
         runner = ServerThread(self)
         runner.start()
 
     def stop(self) -> None:
+        """TODO"""
         self.shutdown()
         self.server_close()
 
     def when_request(self, method: HttpMethod, url: str) -> Any:
+        """TODO"""
         request = self.mock(method=method, url=url) or MockResponse(self, method, url)
-        self.__mocks[method] = self.__mocks[method] \
-            if method in self.__mocks else {}
-        self.__mocks[method][url] = request
+        self._mocks[method] = self._mocks[method] \
+            if method in self._mocks else {}
+        self._mocks[method][url] = request
         return request
 
 

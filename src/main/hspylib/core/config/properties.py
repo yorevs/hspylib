@@ -31,6 +31,13 @@ class Properties:
     _profiled_format = '{}-{}{}'
     _simple_format = '{}{}'
 
+    @staticmethod
+    def environ_name(property_name: str) -> str:
+        """Retrieve the environment name of the specified property name
+        :param property_name: the name of the property using space, dot or dash notations
+        """
+        return re.sub('[ -.]', '_', property_name).upper()
+
     def __init__(
             self,
             filename: str = None,

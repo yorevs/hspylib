@@ -19,14 +19,20 @@ from typing import Any
 
 from idna.core import unicode
 
-RE_JSON_NAME = '[a-zA-Z0-9_\\- ]'
-RE_JSON_ARRAY_INDEX = '[0-9]{1,}'
-
 
 class JsonSearch:
+    """TODO"""
 
-    # Construction
-    def __init__(self, separator='.', json_name_re=RE_JSON_NAME, json_array_index_re=RE_JSON_ARRAY_INDEX):
+    RE_JSON_NAME = '[a-zA-Z0-9_\\- ]'
+    RE_JSON_ARRAY_INDEX = '[0-9]{1,}'
+
+    def __init__(
+        self,
+        separator='.',
+        json_name_re=RE_JSON_NAME,
+        json_array_index_re=RE_JSON_ARRAY_INDEX):
+        """Construction"""
+
         self.separator = separator
         self.jsonNameRe = json_name_re
         self.jsonArrayIndexRe = json_array_index_re
@@ -35,8 +41,14 @@ class JsonSearch:
         self.pat_sub_expr = None
         self.pat_sub_expr_val = None
 
-    # find the next element in the list matching the specified value.
-    def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False) -> Any:
+    def __find_next_element__(
+        self,
+        root_element,
+        match_name,
+        match_value=None,
+        fetch_parent=False) -> Any:
+        """Find the next element in the list matching the specified value."""
+
         selected_element = root_element
         if isinstance(selected_element, list):
             for nextInList in root_element:
@@ -65,8 +77,14 @@ class JsonSearch:
 
         return selected_element
 
-    # Find the element in the sub-expressions.
-    def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False) -> Any:
+    def __find_in_subex__(
+        self,
+        sub_expressions,
+        sub_selected_element,
+        pat_subst_expr_val,
+        fetch_parent=False) -> Any:
+        """Find the element in the sub-expressions."""
+
         for nextSubExpr in sub_expressions:
 
             if nextSubExpr:
@@ -78,26 +96,34 @@ class JsonSearch:
 
         return sub_selected_element
 
-    # Purpose: Get the json element through it's path. Returned object is either [dict, list or unicode].
-    #
-    #   Search patterns:
-    #     elem1.elem2
-    #     elem1.elem2[index]
-    #     elem1.elem2{property}
-    #     elem1.elem2{property}[index]
-    #     elem1.elem2{property<value>}
-    #     elem1.elem2[index].elem3
-    #     elem1.elem2{property}.elem3
-    #     elem1.elem2{property<value>}.elem3
-    #     elem1.elem2{property<value>}[index].elem3
-    #     elem1.elem2{property<value>}.{property2<value2>}.elem3
-    def json_select(self, root_element, search_path, fetch_parent=False) -> Any:
+    def json_select(
+        self,
+        root_element,
+        search_path,
+        fetch_parent=False) -> Any:
+        """
+        Get the json element through it's path. Returned object is either [dict, list or unicode].
+
+        Search patterns:
+          1. elem1.elem2
+          2. elem1.elem2[index]
+          3. elem1.elem2{property}
+          4. elem1.elem2{property}[index]
+          5. elem1.elem2{property<value>}
+          6. elem1.elem2[index].elem3
+          7. elem1.elem2{property}.elem3
+          8. elem1.elem2{property<value>}.elem3
+          9. elem1.elem2{property<value>}[index].elem3
+         10. elem1.elem2{property<value>}.{property2<value2>}.elem3
+        """
+
         self.pat_elem = '%s+' % self.jsonNameRe
         self.pat_sel_elem_val = '(%s)?((\\{(%s)(<(%s)>)?\\})+)(\\[(%s)\\])?' % (
             self.pat_elem, self.pat_elem, self.pat_elem, self.jsonArrayIndexRe)
         self.pat_sub_expr = '(\\{%s\\})' % self.pat_elem
         self.pat_sub_expr_val = '\\{(%s)(<(%s)>)?\\}' % (self.pat_elem, self.pat_elem)
         selected_element = root_element
+
         try:
             search_tokens = search_path.split(self.separator)
             for nextElement in search_tokens:
@@ -130,7 +156,7 @@ class JsonSearch:
                     parts = re.search(pat_sel_elem_idx, nextElement)
                     sub_elem_id = parts.group(1)
                     elem_array_index = parts.group(2)
-                    # TODO Implement subarrays like elem[0][1][2]
+                    # TODO Implement subarray like elem[0][1][2]
                     if sub_elem_id is not None and elem_array_index is not None:
                         el = selected_element.get(sub_elem_id)
                         if isinstance(el, list):

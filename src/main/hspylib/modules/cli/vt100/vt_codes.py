@@ -28,32 +28,36 @@ def vt_print(vt100_str: str, end: str = '') -> None:
 
 class VtCodes(Enumeration):
     """VT-100 escape codes"""
-    CSV = Vt100.save_cursor()  # ^[7 -> Save cursor position and attributes
-    CRE = Vt100.restore_cursor()  # ^[8 -> Restore cursor position and attributes
-    RIS = Vt100.reset()  # ^[c -> Reset terminal to initial state
 
-    SAW = Vt100.set_auto_wrap(True)  # ^[?7h  -> Set auto-wrap mode
-    UAW = Vt100.set_auto_wrap(False)  # ^[?7l  -> Unset auto-wrap mode
-    SSC = Vt100.set_show_cursor(True)  # ^[?25h -> Set show cursor
+    # @formatter:off
+    CSV = Vt100.save_cursor()           # ^[7 -> Save cursor position and attributes
+    CRE = Vt100.restore_cursor()        # ^[8 -> Restore cursor position and attributes
+    RIS = Vt100.reset()                 # ^[c -> Reset terminal to initial state
+
+    SAW = Vt100.set_auto_wrap(True)     # ^[?7h  -> Set auto-wrap mode
+    UAW = Vt100.set_auto_wrap(False)    # ^[?7l  -> Unset auto-wrap mode
+    SSC = Vt100.set_show_cursor(True)   # ^[?25h -> Set show cursor
     USC = Vt100.set_show_cursor(False)  # ^[?25l -> Unset show cursor
 
-    ED0 = Vt100.clear_screen()  # ^[[J  -> Clear screen from cursor down
-    ED1 = Vt100.clear_screen(1)  # ^[[1J -> Clear screen from cursor up
-    ED2 = Vt100.clear_screen(2)  # ^[[2J -> Clear entire screen
+    ED0 = Vt100.clear_screen()          # ^[[J  -> Clear screen from cursor down
+    ED1 = Vt100.clear_screen(1)         # ^[[1J -> Clear screen from cursor up
+    ED2 = Vt100.clear_screen(2)         # ^[[2J -> Clear entire screen
 
-    EL0 = Vt100.clear_line()  # ^[[K  -> Clear line from cursor right
-    EL1 = Vt100.clear_line(1)  # ^[[1K -> Clear line from cursor left
-    EL2 = Vt100.clear_line(2)  # ^[[2K -> Clear entire line
+    EL0 = Vt100.clear_line()            # ^[[K  -> Clear line from cursor right
+    EL1 = Vt100.clear_line(1)           # ^[[1K -> Clear line from cursor left
+    EL2 = Vt100.clear_line(2)           # ^[[2K -> Clear entire line
 
-    HOM = Vt100.cursor_pos()  # ^[[H  -> Move cursor to upper left corner
+    HOM = Vt100.cursor_pos()            # ^[[H  -> Move cursor to upper left corner
 
     # The following entries must defined as auto(), so they can be invoked as Callable
-    MOD = auto()  # ^[[<m1;m2;m3>m  -> Set terminal modes
-    CUP = auto()  # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
-    CUU = auto()  # ^[[<n>A         -> Move cursor up n lines
-    CUD = auto()  # ^[[<n>B         -> Move cursor down n lines
-    CUF = auto()  # ^[[<n>C         -> Move cursor right n lines
-    CUB = auto()  # ^[[<n>D         -> Move cursor left n lines
+
+    MOD = auto()                        # ^[[<m1;m2;m3>m  -> Set terminal modes
+    CUP = auto()                        # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
+    CUU = auto()                        # ^[[<n>A         -> Move cursor up n lines
+    CUD = auto()                        # ^[[<n>B         -> Move cursor down n lines
+    CUF = auto()                        # ^[[<n>C         -> Move cursor right n lines
+    CUB = auto()                        # ^[[<n>D         -> Move cursor left n lines
+    # @formatter:on
 
     # For all mnemonics that take arguments we need to include in this map, so we can call it
     __VT100_FNC_MAP__ = {
@@ -89,7 +93,9 @@ class VtCodes(Enumeration):
         return str(self.value)
 
     def code(self) -> str:
+        """Decode the string into a VT_CODE enum"""
         return str(self)
 
     def placeholder(self) -> str:
+        """Decode the string into a VT_CODE enum"""
         return f"%{self.name}%"

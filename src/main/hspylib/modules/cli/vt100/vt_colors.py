@@ -19,6 +19,8 @@ from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 class VtColors(Enumeration):
+    """TODO"""
+
     NC = Vt100.mode('0;0;0')
     BLACK = Vt100.mode('0;30')
     RED = Vt100.mode('0;31')
@@ -35,21 +37,18 @@ class VtColors(Enumeration):
     @staticmethod
     def colorize(input_string: str) -> str:
         return input_string \
-                   .replace("%NC%", VtColors.NC.code()) \
-                   .replace("%BLACK%", VtColors.BLACK.code()) \
-                   .replace("%RED%", VtColors.RED.code()) \
-                   .replace("%GREEN%", VtColors.GREEN.code()) \
-                   .replace("%YELLOW%", VtColors.YELLOW.code()) \
-                   .replace("%BLUE%", VtColors.BLUE.code()) \
-                   .replace("%PURPLE%", VtColors.PURPLE.code()) \
-                   .replace("%CYAN%", VtColors.CYAN.code()) \
-                   .replace("%GRAY%", VtColors.GRAY.code()) \
-                   .replace("%ORANGE%", VtColors.ORANGE.code()) \
-                   .replace("%VIOLET%", VtColors.VIOLET.code()) \
-                   .replace("%WHITE%", VtColors.WHITE.code()) + VtColors.NC.code()
-
-    def __str__(self) -> str:
-        return str(self.value)
+           .replace("%NC%", VtColors.NC.code()) \
+           .replace("%BLACK%", VtColors.BLACK.code()) \
+           .replace("%RED%", VtColors.RED.code()) \
+           .replace("%GREEN%", VtColors.GREEN.code()) \
+           .replace("%YELLOW%", VtColors.YELLOW.code()) \
+           .replace("%BLUE%", VtColors.BLUE.code()) \
+           .replace("%PURPLE%", VtColors.PURPLE.code()) \
+           .replace("%CYAN%", VtColors.CYAN.code()) \
+           .replace("%GRAY%", VtColors.GRAY.code()) \
+           .replace("%ORANGE%", VtColors.ORANGE.code()) \
+           .replace("%VIOLET%", VtColors.VIOLET.code()) \
+           .replace("%WHITE%", VtColors.WHITE.code())
 
     def code(self) -> str:
         return str(self)

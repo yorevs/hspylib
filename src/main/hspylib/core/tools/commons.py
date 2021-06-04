@@ -94,13 +94,6 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def environ_name(property_name: str) -> str:
-    """Retrieve the environment name of the specified property name
-    :param property_name: the name of the property using space, dot or dash notations
-    """
-    return re.sub('[ -.]', '_', property_name).upper()
-
-
 def sysout(string: str, end: str = '\n') -> None:
     """Print the unicode input_string decoding vt100 placeholders
     :param string: values to be printed to sys.stdout

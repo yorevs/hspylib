@@ -26,12 +26,16 @@ from hspylib.core.enums.http_method import HttpMethod
 
 
 class MockServerHandler(BaseHTTPRequestHandler):
+    """TODO"""
+
     def __init__(self, request: bytes, client_address: Tuple[str, int], parent):
         self.parent = parent
         super().__init__(request, client_address, parent)
 
     @staticmethod
     def remove_reserved_headers(headers: CaseInsensitiveDict) -> dict:
+        """TODO"""
+
         filtered = {}
         if headers:
             reserved = ['content-size', 'server', 'date']
@@ -40,10 +44,13 @@ class MockServerHandler(BaseHTTPRequestHandler):
                     filtered[header] = headers[header]
         return filtered
 
-    def process_headers(self,
-                        headers: CaseInsensitiveDict = None,
-                        content_type: ContentType = ContentType.APPLICATION_JSON,
-                        content_length: int = 0) -> None:
+    def process_headers(
+            self,
+            headers: CaseInsensitiveDict = None,
+            content_type: ContentType = ContentType.APPLICATION_JSON,
+            content_length: int = 0) -> None:
+        """TODO"""
+
         headers = MockServerHandler.remove_reserved_headers(headers)
         if headers and len(headers) > 0:
             for key, value in headers.items():
@@ -54,15 +61,20 @@ class MockServerHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(content_length))
         self.end_headers()
 
-    def process_default(self,
-                        code: HttpCode = HttpCode.OK,
-                        content_type: ContentType = ContentType.APPLICATION_JSON,
-                        headers: CaseInsensitiveDict = None) -> None:
+    def process_default(
+            self,
+            code: HttpCode = HttpCode.OK,
+            content_type: ContentType = ContentType.APPLICATION_JSON,
+            headers: CaseInsensitiveDict = None) -> None:
+        """TODO"""
+
         log.debug('Processing a default request status_code={} content-type={}'.format(code, content_type))
         self.send_response_only(code.value)
         self.process_headers(headers, content_type)
 
     def process_request(self, method: HttpMethod) -> None:
+        """TODO"""
+
         if self.parent.is_allowed(method):
             request = self.parent.mock(method, self.path)
             if request:
@@ -92,6 +104,8 @@ class MockServerHandler(BaseHTTPRequestHandler):
             self.process_default(HttpCode.METHOD_NOT_ALLOWED)
 
     def find_allowed_methods(self) -> List[str]:
+        """TODO"""
+
         allowed_methods = ['OPTIONS']
         if self.parent.is_allowed(HttpMethod.HEAD):
             allowed_methods.append('HEAD')
@@ -106,6 +120,8 @@ class MockServerHandler(BaseHTTPRequestHandler):
         if self.parent.is_allowed(HttpMethod.DELETE):
             allowed_methods.append('DELETE')
         return allowed_methods
+
+    # Do not rename the methods below because the serves uses this pattern do handle requests
 
     def do_OPTIONS(self) -> None:
         """ Handles: OPTIONS requests. Due to the base class, this name will not follow the naming conventions"""

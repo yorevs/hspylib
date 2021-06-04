@@ -76,7 +76,3 @@ class DashboardIcons(Awesome):
     IE = '\uF7FF'            # 
     GIT = '\uF813'           # 
     # @formatter:on
-
-
-if __name__ == '__main__':
-    DashboardIcons.demo_icons()

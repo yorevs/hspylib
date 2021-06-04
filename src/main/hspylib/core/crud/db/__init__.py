@@ -9,6 +9,5 @@ __all__ = [
   'db_repository', 
   'firebase', 
   'mysql', 
-  'postgres', 
   'sql_factory'
 ]

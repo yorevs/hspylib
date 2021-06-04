@@ -29,15 +29,15 @@ def soap_call(
         method: HttpMethod,
         data: str,
         headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
+    """TODO"""
+
     all_headers = {} if not headers else headers
     all_headers.update({
         "Content-Type": "text/xml",
         "Accept": "*/*"
     })
-    log.info('Processing SOAP {} {} -> {} \n{}'.format(all_headers, method, url, data if data else ''))
+    log.info(f"Processing SOAP {all_headers} {method} -> {url} \n{data if data else '<None>'}")
     response = fetch(url=url, method=method, headers=all_headers, body=data)
-    log.info(
-        'Response <=  Status: {}  Payload: {}'.format(
-            response.status_code, response.body if response.body else '<None>'))
+    log.info(f"Response <=  Status: {response.status_code}  Payload: {response.body if response.body else '<None>'}")
 
     return response

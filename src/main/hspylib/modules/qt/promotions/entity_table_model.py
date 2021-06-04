@@ -25,8 +25,16 @@ from hspylib.core.tools.commons import class_attribute_names, class_attribute_va
 
 
 class DefaultTableModel(QAbstractTableModel):
-    def __init__(self, clazz: Type, headers: list = None, cell_alignments: list = None, table_data: list = None,
-                 parent: QTableView = None):
+    """TODO"""
+
+    def __init__(
+        self,
+        clazz: Type,
+        headers: list = None,
+        cell_alignments: list = None,
+        table_data: list = None,
+        parent: QTableView = None):
+
         QAbstractTableModel.__init__(self, parent)
         self.clazz = clazz
         self.table_data = table_data or []
@@ -34,33 +42,40 @@ class DefaultTableModel(QAbstractTableModel):
         self.cell_alignments = cell_alignments or []
         log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
 
-    def data(self, index: QModelIndex, role: int = ...) -> Any:
+    def data(self, index: QModelIndex, role: int = ...) -> QVariant:
+        """TODO"""
+
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
         str_entity = str(entity) if entity else ''
         if role == Qt.DisplayRole:
-            return str_entity
+            return QVariant(str_entity)
         if role == Qt.TextAlignmentRole:
             return self.cell_alignments[index.column()] if self.cell_alignments else Qt.AlignLeft
         if role == Qt.BackgroundColorRole:
             return QVariant() if entity else QColor(230, 230, 230)
-
         return QVariant()
 
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> Any:
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> QVariant:
+        """TODO"""
+
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return self.headers[section].upper() if len(self.headers) >= section else '-'
         if orientation == Qt.Vertical and role == Qt.DisplayRole:
-            return section
+            return QVariant(str(section))
         return QVariant()
 
     def headers_by_entity(self) -> tuple:
+        """TODO"""
         return class_attribute_names(self.clazz)
 
     def rowCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
+        """TODO"""
         return len(self.table_data) if self.table_data and len(self.table_data) > 0 else 0
 
     def columnCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
+        """TODO"""
         return len(self.table_data[0].__dict__.keys()) if self.table_data and len(self.table_data) > 0 else 0
 
     def row(self, index: QModelIndex) -> Any:
+        """TODO"""
         return self.table_data[index.row()]

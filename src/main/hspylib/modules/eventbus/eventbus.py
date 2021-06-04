@@ -18,37 +18,41 @@ from typing import Any, Callable
 
 
 class EventBus:
+    """TODO"""
+
     _buses = {}
     _subscribers = {}
     _events = []
 
-    @staticmethod
-    def get(bus_name: str) -> Any:
-        if bus_name in EventBus._buses:
-            return EventBus._buses[bus_name]
-
+    @classmethod
+    def get(cls, bus_name: str) -> Any:
+        """TODO"""
+        if bus_name in cls._buses:
+            return cls._buses[bus_name]
         bus_instance = EventBus(bus_name)
-        EventBus._buses[bus_name] = bus_instance
+        cls._buses[bus_name] = bus_instance
         return bus_instance
 
-    @staticmethod
-    def __create_or_get(bus_name: str, event_name: str) -> Any:
+    @classmethod
+    def _get_subscriber(cls, bus_name: str, event_name: str) -> Any:
+        """TODO"""
         cache_key = '{}.{}'.format(bus_name, event_name)
-        if cache_key in EventBus._subscribers:
-            return EventBus._subscribers[cache_key]
-
+        if cache_key in cls._subscribers:
+            return cls._subscribers[cache_key]
         subscriber = {'callbacks': []}
-        EventBus._subscribers[cache_key] = subscriber
+        cls._subscribers[cache_key] = subscriber
         return subscriber
 
     def __init__(self, name: str):
         self.name = name
 
     def subscribe(self, event_name: str, cb_event_handler: Callable) -> None:
-        subscriber = EventBus.__create_or_get(self.name, event_name)
+        """TODO"""
+        subscriber = self._get_subscriber(self.name, event_name)
         subscriber['callbacks'].append(cb_event_handler)
 
     def emit(self, event_name: str, **kwargs) -> None:
+        """TODO"""
         self._events.append({'event': event_name, 'kwargs': kwargs})
         while len(self._events) > 0:
             event = self._events.pop()

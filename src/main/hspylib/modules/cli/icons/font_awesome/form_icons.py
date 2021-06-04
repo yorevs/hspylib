@@ -30,7 +30,7 @@ class FormIcons(Awesome):
     ARROW_UP = '\uF062'        # 
     ARROW_DOWN = '\uF063'      # 
     SELECTOR = '\uFC32'        # ﰲ
-    
+
     CHECK = '\uF00C'           # 
     ERROR = '\uf057'           # 
     CHECK_CIRCLE = '\uF058'    # 
@@ -41,7 +41,7 @@ class FormIcons(Awesome):
     OFF = '\uF204'             # 
     MARKED = '\uF634'          # 
     UNMARKED = '\uF630'        # 
-    
+
     HIDDEN = '\uF070'          # 
     VISIBLE = '\uF06E'         # 
     LOCKED = '\uF023'          # 
@@ -51,7 +51,3 @@ class FormIcons(Awesome):
     SELECTABLE = '\uF150'      # 
     DELETE = '\uF014'          # 
     # @formatter:on
-
-
-if __name__ == '__main__':
-    FormIcons.demo_icons()

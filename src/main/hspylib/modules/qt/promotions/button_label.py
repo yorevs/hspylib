@@ -19,6 +19,8 @@ from PyQt5.QtWidgets import QLabel
 
 
 class ButtonLabel(QLabel):
+    """TODO"""
+
     clicked = pyqtSignal(int)
 
     def __init__(self, parent):

@@ -38,7 +38,8 @@ class Option:
     def __repr__(self):
         return f"[{self.shortopt.replace('-', '').replace(':', '')}, {self.longopt.replace('--', '').replace('=', '')}]"
 
-    def is_eq(self, other: str) -> bool:
+    def __eq__(self, other: str) -> bool:
+        """TODO"""
         clean_opt = other.replace('-', '').replace(':', '').replace('=', '').strip()
         return \
             clean_opt == self.shortopt.replace('-', '').replace(':', '').strip() or \

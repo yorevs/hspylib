@@ -33,7 +33,7 @@ class Awesome(Enumeration):
     """
 
     @staticmethod
-    def demo_unicode() -> None:
+    def demo_unicodes() -> None:
         i = 0
         st_base = ['F{:03X}'.format(x) for x in range(0, 4095)]
         for n in st_base:
@@ -57,4 +57,4 @@ class Awesome(Enumeration):
 
 
 if __name__ == '__main__':
-    Awesome.demo_unicode()
+    Awesome.demo_unicodes()
