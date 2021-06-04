@@ -121,10 +121,6 @@ class Application(metaclass=Singleton):
         """Get the argument value named by the opt_name"""
         return next((val for arg, val in self._args.items() if arg == arg_name), None)
 
-    def _find_option(self, item: str) -> Optional[Option]:
-        """Getter for application option"""
-        return next((op for key, op in self._options.items() if op.is_eq(item)), None)
-
     def _setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
         """Initialize application parameters and options"""
         log.info('setup_parameters was not overridden')
@@ -177,6 +173,10 @@ class Application(metaclass=Singleton):
             return args
         except getopt.GetoptError as err:
             raise InvalidOptionError(f"### Invalid option: {str(err)}") from err
+
+    def _find_option(self, item: str) -> Optional[Option]:
+        """Getter for application option"""
+        return next((op for key, op in self._options.items() if op == item), None)
 
     def _parse_arguments(self, provided_args: List[str]) -> None:
         """Handle program arguments

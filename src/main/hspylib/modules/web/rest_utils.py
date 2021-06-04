@@ -29,14 +29,15 @@ def rest_call(
         method: HttpMethod,
         data: str,
         headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
+    """TODO"""
+
     all_headers = {} if not headers else headers
     all_headers.update({
         "Content-Type": "text/json",
         "Accept": "*/*"
     })
-    log.info('Processing REST {} {} -> {}'.format(all_headers, method, url))
+    log.info('Processing REST {all_headers} {method} -> {url}')
     response = fetch(url=url, method=method, headers=all_headers, body=data)
-    log.info('Response <=  Status: {}  Payload: {}'.format(
-        response.status_code, response))
+    log.info(f"Response <=  Status: {response.status_code}  Payload: {response}")
 
     return response

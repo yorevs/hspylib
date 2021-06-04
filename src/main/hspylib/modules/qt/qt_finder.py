@@ -23,8 +23,11 @@ from PyQt5.QtWidgets import QWidget, QStackedWidget, QToolBox, QLabel, QToolButt
 
 
 class QtFinder(ABC):
+    """TODO"""
+
     @staticmethod
     def find_widget(window: QWidget, widget: Type, name: str) -> Optional[QObject]:
+        """TODO"""
         return window.findChild(widget, name)
 
     def __init__(self, window: QWidget):

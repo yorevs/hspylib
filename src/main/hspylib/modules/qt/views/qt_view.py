@@ -22,6 +22,8 @@ from hspylib.modules.qt.qt_finder import QtFinder
 
 
 class QtView(ABC):
+    """TODO"""
+
     def __init__(self, window: QWidget, parent=None):
         super().__init__()
         self.window = window
@@ -30,4 +32,4 @@ class QtView(ABC):
 
     @abstractmethod
     def setup_ui(self) -> None:
-        pass
+        """TODO"""

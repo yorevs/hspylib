@@ -20,7 +20,7 @@ from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import dirname, environ_name, log_init
+from hspylib.core.tools.commons import dirname, log_init
 
 
 class AppConfigs(metaclass=Singleton):
@@ -93,17 +93,21 @@ AppConfigs
         return self._log_dir
 
     def get(self, property_name: str) -> Optional[str]:
-        env_value = os.environ.get(environ_name(property_name))
+        """TODO"""
+        env_value = os.environ.get(Properties.environ_name(property_name))
         return str(env_value) if env_value else self._app_properties.get(property_name)
 
     def get_int(self, property_name: str) -> Optional[int]:
-        env = os.environ.get(environ_name(property_name))
+        """TODO"""
+        env = os.environ.get(Properties.environ_name(property_name))
         return int(env) if env else self._app_properties.get_int(property_name)
 
     def get_float(self, property_name: str) -> Optional[float]:
-        env = os.environ.get(environ_name(property_name))
+        """TODO"""
+        env = os.environ.get(Properties.environ_name(property_name))
         return float(env) if env else self._app_properties.get_float(property_name)
 
     def get_bool(self, property_name: str) -> Optional[bool]:
-        env = os.environ.get(environ_name(property_name))
+        """TODO"""
+        env = os.environ.get(Properties.environ_name(property_name))
         return bool(env) if env else self._app_properties.get_bool(property_name)
