@@ -14,9 +14,9 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.tui.tables.table_renderer import TableRenderer
 
 from hspylib.core.tools.text_tools import TextAlignment
+from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 
 if __name__ == '__main__':
     h = [

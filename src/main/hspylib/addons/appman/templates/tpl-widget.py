@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode

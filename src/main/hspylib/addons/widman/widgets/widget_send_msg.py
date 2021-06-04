@@ -21,9 +21,9 @@ import socket
 import threading
 from time import sleep
 
-from hspylib.modules.cli.menu.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.menu.extra.minput.minput import MenuInput, minput
-from hspylib.modules.cli.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode

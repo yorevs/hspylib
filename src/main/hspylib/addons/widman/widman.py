@@ -18,8 +18,8 @@ import os
 import sys
 from typing import Any, List
 
-from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.menu.extra.mdashboard.mdashboard import mdashboard
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode

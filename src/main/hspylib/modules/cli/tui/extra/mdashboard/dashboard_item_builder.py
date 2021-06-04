@@ -16,9 +16,9 @@
 
 from typing import Any, Callable, Optional
 
-from hspylib.modules.cli.menu.extra.mdashboard.dashboard_item import DashboardItem
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 
 
 class DashboardItemBuilder:
