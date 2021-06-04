@@ -16,18 +16,13 @@
 
 import json
 from datetime import datetime
-from typing import Any, List
+from typing import List
 
 from firebase.src.main.entity.file_entry import FileEntry
 from hspylib.core.enums.charset import Charset
 
 
 class FirebaseEntry:
-
-    @staticmethod
-    def of() -> Any:
-        entry = FirebaseEntry()
-        return entry
 
     def __init__(self,
                  name: str = None,
@@ -43,7 +38,11 @@ class FirebaseEntry:
     def __str__(self):
         return json.dumps(self.__dict__)
 
+    def __repr__(self):
+        return str(self)
+
     def payload(self) -> str:
+        """Return a firebase request payload for this entry"""
         return str({
             'encoding': self.str_encoding,
             'file_paths': str(self.files),

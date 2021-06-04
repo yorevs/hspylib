@@ -21,7 +21,7 @@ from hspylib.core.tools.commons import sysout
 
 
 class CFApplication:
-    __max_name_length__ = 0
+    max_name_length = 0
 
     @classmethod
     def of(cls, app_line: str):
@@ -43,17 +43,17 @@ class CFApplication:
         self.memory = memory
         self.disk = disk
         self.urls = urls
-        CFApplication.__max_name_length__ = max(CFApplication.__max_name_length__, len(self.name))
+        self.max_name_length = max(self.max_name_length, len(self.name))
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
     def __repr__(self):
         return str(self)
 
-    def print(self):
+    def print_status(self):
         sysout("%CYAN%{}  %{}%{:5}  %WHITE%{:5}  {:4}  {:4}  {}".format(
-            self.name.ljust(CFApplication.__max_name_length__),
+            self.name.ljust(self.max_name_length),
             'GREEN' if self.state == 'started' else 'RED',
             self.state,
             self.instances,

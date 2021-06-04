@@ -32,7 +32,7 @@ class MenuUtils(ABC):
             argument: Any = None,
             wait_interval: int = 2) -> None:
 
-        syserr(f"### Error: {message} \"{argument or ''}\"%NC%")
+        syserr(f"### Error: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
 
@@ -43,7 +43,7 @@ class MenuUtils(ABC):
             wait_interval: int = 2,
             color: VtColors = VtColors.YELLOW) -> None:
 
-        sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"%NC%")
+        sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
 

@@ -106,7 +106,7 @@ def sysout(string: str, end: str = '\n') -> None:
     :param end: string appended after the last value, default a newline
     """
     if Validator.is_not_blank(string):
-        msg = VtColors.colorize(VtCodes.decode(f"{string}"))
+        msg = VtColors.colorize(VtCodes.decode(f"{string}%NC%"))
         print(msg, file=sys.stdout, flush=True, end=end)
 
 

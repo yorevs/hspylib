@@ -23,6 +23,7 @@ from vault.src.main.entity.vault_entry import VaultEntry
 
 
 class VaultService(CrudService, metaclass=Singleton):
+    """Provides a CRUD service for the Vault application"""
 
     def __init__(self):
         self.repository = VaultRepository()

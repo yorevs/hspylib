@@ -21,20 +21,31 @@ from uuid import UUID
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.tools.validator import DEFAULT_DATE_FORMAT
 
-DISPLAY_FORMAT = """[%BLUE%{}%NC%]:
+
+class VaultEntry(CrudEntity):
+    """Represents a vault entity"""
+
+    # Vault entry format to be displayed when listing
+    _DISPLAY_FORMAT = """
+[%BLUE%{}%NC%]:
         Name: %GREEN%{}%NC%
     Password: %GREEN%{}%NC%
         Hint: %GREEN%{}%NC%
     Modified: %GREEN%{}%NC%
 """
 
-ENTRY_FORMAT = """{}|{}|{}|{}\n"""
+    # Vault file entry format
+    _FILE_ENTRY_FORMAT = """{}|{}|{}|{}\n"""
 
+    def __init__(
+        self,
+        uuid: UUID,
+        key: str,
+        name: str,
+        password: str,
+        hint: str,
+        modified: datetime = None):
 
-class VaultEntry(CrudEntity):
-    """Represents a vault entity"""
-
-    def __init__(self, uuid: UUID, key: str, name: str, password: str, hint: str, modified: datetime = None):
         super().__init__(uuid)
         self.key = key
         self.name = name
@@ -43,7 +54,11 @@ class VaultEntry(CrudEntity):
         self.modified = modified if modified else datetime.now().strftime(DEFAULT_DATE_FORMAT)
 
     def __str__(self):
-        return ENTRY_FORMAT.format(self.key, self.name, self.password, self.hint, self.modified)
+        return self._FILE_ENTRY_FORMAT.format(
+            self.key, self.name, self.password, self.hint, self.modified)
+
+    def __repr__(self):
+        return str(self)
 
     def to_string(self, show_password: bool = False, show_hint: bool = False) -> str:
         """Return the string representation of this entry
@@ -52,4 +67,4 @@ class VaultEntry(CrudEntity):
         """
         password = self.password if show_password else re.sub('.*', '*' * min(len(self.password), 8), self.password)
         hint = self.hint if show_hint else re.sub('.*', '*' * min(len(self.hint), 8), self.hint)
-        return DISPLAY_FORMAT.format(self.key.upper(), self.name, password, hint, self.modified)
+        return self._DISPLAY_FORMAT.format(self.key.upper(), self.name, password, hint, self.modified)
