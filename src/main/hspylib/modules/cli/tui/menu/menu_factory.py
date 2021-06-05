@@ -22,7 +22,11 @@ from hspylib.modules.cli.tui.menu.menu_option import MenuOption
 
 
 class MenuFactory(metaclass=Singleton):
+    """TODO"""
+
     class MenuBuilder:
+        """TODO"""
+
         def __init__(self, parent_menu: Menu = None, menu_title: str = None):
             self.parent_menu = parent_menu
             self.menu_title = menu_title

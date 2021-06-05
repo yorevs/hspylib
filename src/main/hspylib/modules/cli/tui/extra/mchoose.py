@@ -15,7 +15,7 @@
 """
 import re
 from abc import ABC
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -26,13 +26,13 @@ from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_terminal,
 
 
 def mchoose(
-        items: List[Any],
+        items: List[str],
         checked: bool = True,
         title: str = 'Please select one',
         max_rows: int = 15,
         title_color: VtColors = VtColors.ORANGE,
         highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[Any]]:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[str]]:
     """
     TODO
     :param items:
@@ -59,7 +59,7 @@ class MenuChoose(ABC):
 
     def __init__(
             self,
-            items: List[Any],
+            items: List[str],
             max_rows: int = 15,
             checked: bool = True):
 
@@ -78,7 +78,7 @@ class MenuChoose(ABC):
             title: str,
             title_color: VtColors,
             highlight_color: VtColors,
-            nav_color: VtColors) -> Optional[List[Any]]:
+            nav_color: VtColors) -> Optional[List[str]]:
         """TODO"""
 
         ret_val = None
@@ -127,7 +127,7 @@ class MenuChoose(ABC):
 
                 # Check if the text fits the screen and print it, otherwise print '...'
                 if len(option_line) >= int(columns):
-                    sysout("%CUB(4)%%EL0%...%NC%", end='')
+                    sysout("%CUB(4)%%EL0%...", end='')
             else:
                 break
 

@@ -46,7 +46,7 @@ class Terminal(ABC):
         """TODO"""
         if 'stdout' in kwargs:
             del kwargs['stdout']  # Deleted since we use our own
-        if 'stdout' in kwargs:
+        if 'stderr' in kwargs:
             del kwargs['stderr']  # Deleted since we use our own
         try:
             log.info(f"Polling shell command: {cmd_line}")

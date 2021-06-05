@@ -15,17 +15,17 @@
 """
 import re
 import time
-from typing import Any, List
-
-from hspylib.modules.cli.tui.extra.minput.form_builder import FormBuilder
-from hspylib.modules.cli.tui.extra.minput.input_type import InputType
-from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
+from typing import List, NewType
 
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.text_tools import camelcase, snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.tui.extra.minput.form_builder import FormBuilder
+from hspylib.modules.cli.tui.extra.minput.form_field import FormField
+from hspylib.modules.cli.tui.extra.minput.input_type import InputType
+from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, get_cursor_position, \
@@ -33,10 +33,10 @@ from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, r
 
 
 def minput(
-        form_fields: List[Any],
+        form_fields: List[FormField],
         title: str = 'Please fill all fields of the form fields below',
         title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> Any:
+        nav_color: VtColors = VtColors.YELLOW) -> 'MenuInput.FormFields':
     """
     TODO
     :param form_fields:
@@ -55,11 +55,13 @@ class MenuInput:
     NAV_ICONS = '\u2191\u2193'
     NAV_FMT = "\n{}[Enter] Submit  [{}] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
+    FormFields = NewType('FormFields', object)  # New type definition to return filled fields
+
     @classmethod
-    def builder(cls) -> Any:
+    def builder(cls) -> FormBuilder:
         return FormBuilder()
 
-    def __init__(self, all_fields: List[Any]):
+    def __init__(self, all_fields: List[FormField]):
         self.all_fields = all_fields
         self.all_pos = [(0, 0) for _ in all_fields]
         self.cur_field = self.done = None
@@ -73,7 +75,7 @@ class MenuInput:
             self,
             title: str,
             title_color: VtColors,
-            nav_color: VtColors) -> Any:
+            nav_color: VtColors) -> 'MenuInput.FormFields':
         """TODO"""
 
         ret_val = None
@@ -91,8 +93,7 @@ class MenuInput:
                 ret_val = self._nav_input()
 
         restore_terminal()
-
-        form_fields = type('form_fields', (object,), {})()  # Create an empty generic object
+        form_fields =  self.FormFields
         if ret_val == Keyboard.VK_ENTER:
             for field in self.all_fields:
                 setattr(form_fields, snakecase(field.label), field.value)
@@ -150,7 +151,7 @@ class MenuInput:
                 self.cur_row = f_pos[0]
                 self.cur_col = f_pos[1] + field_size
 
-    def _render_details(self, field: Any, field_size: int) -> None:
+    def _render_details(self, field: FormField, field_size: int) -> None:
         """TODO"""
 
         # Print details about total/remaining field characters
