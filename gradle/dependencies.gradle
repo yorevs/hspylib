@@ -17,5 +17,6 @@ project.ext.deps = [
   'twine',
   'wheel',
   'bumpversion',
-  'pylint'
+  'pylint',
+  'confluent-kafka',
 ]
