@@ -31,6 +31,7 @@ class MenuUtils(ABC):
             message: str,
             argument: Any = None,
             wait_interval: int = 2) -> None:
+        """TODO"""
 
         syserr(f"### Error: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
@@ -42,6 +43,7 @@ class MenuUtils(ABC):
             argument: str = None,
             wait_interval: int = 2,
             color: VtColors = VtColors.YELLOW) -> None:
+        """TODO"""
 
         sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
@@ -56,6 +58,7 @@ class MenuUtils(ABC):
             on_blank_abort: bool = True,
             color: VtColors = VtColors.GREEN,
             end: str = ': ') -> Optional[Any]:
+        """TODO"""
 
         valid = False
         input_data = None
@@ -95,8 +98,10 @@ class MenuUtils(ABC):
     def wait_enter(
             wait_msg: str = 'Press [Enter] to continue ...',
             color: VtColors = VtColors.YELLOW) -> None:
+        """TODO"""
         MenuUtils.prompt(wait_msg, any_key=True, color=color, end='')
 
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
+        """TODO"""
         sysout(f"%ED2%%HOM%\n{color.placeholder()}{title_str}\n")

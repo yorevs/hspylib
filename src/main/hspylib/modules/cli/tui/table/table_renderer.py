@@ -21,12 +21,13 @@ from hspylib.core.tools.text_tools import TextAlignment, fit_text
 
 
 class TableRenderer:
+    """TODO"""
 
     def __init__(
-            self,
-            table_headers: List[str],
-            table_data: Optional[iter],
-            table_caption: str = None):
+        self,
+        table_headers: List[str],
+        table_data: Optional[iter],
+        table_caption: str = None):
         """
         :param table_headers: table headers to be displayed.
         :param table_data: table record set with the selected rows.
@@ -41,9 +42,7 @@ class TableRenderer:
         if self.rows:
             assert len(min(self.rows, key=len)) == len(self.headers), \
                 f'Headers and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(self.headers)}'
-        self.column_sizes = [
-            max(self.min_column_size, len(header)) for header in self.headers
-        ]
+        self.column_sizes = [max(self.min_column_size, len(header)) for header in self.headers]
         self.indexes = range(0, len(self.column_sizes))
 
     def set_header_alignment(self, alignment: TextAlignment) -> None:
@@ -105,38 +104,45 @@ class TableRenderer:
         :param file: a file-like object (stream); defaults to the current sys.stdout.
         :return: None
         """
-        header_cols = self.__join_header_columns()
-        data_cols = self.__join_data_columns()
+        header_cols = self._join_header_columns()
+        data_cols = self._join_data_columns()
         table_borders = '+' + ''.join((('-' * (self.column_sizes[idx] + 2) + '+') for idx in self.indexes))
-        self.__print_table(table_borders, header_cols, data_cols, file)
+        self._print_table(table_borders, header_cols, data_cols, file)
 
-    def __join_header_columns(self) -> list:
-        cols = [self.header_alignment(self.__header_text(idx), self.column_sizes[idx]) for idx in self.indexes]
+    def _join_header_columns(self) -> list:
+        """TODO"""
+        cols = [self.header_alignment(self._header_text(idx), self.column_sizes[idx]) for idx in self.indexes]
         return ['| ' + ' | '.join(cols) + ' |']
 
-    def __join_data_columns(self) -> list:
+    def _join_data_columns(self) -> list:
+        """TODO"""
         return [
             '| ' + ''.join(
-                '%s | ' % self.cell_alignment(self.__cell_text(row, idx), self.column_sizes[idx]) for idx
+                '%s | ' % self.cell_alignment(self._cell_text(row, idx), self.column_sizes[idx]) for idx
                 in self.indexes
             ) for row in self.rows
         ]
 
-    def __header_text(self, idx: int) -> str:
-        return fit_text(self.headers[idx], self.__cell_size(idx))
+    def _header_text(self, idx: int) -> str:
+        """TODO"""
+        return fit_text(self.headers[idx], self._cell_size(idx))
 
-    def __cell_text(self, row: tuple, idx: int) -> str:
-        return fit_text(str(row[idx]), self.__cell_size(idx))
+    def _cell_text(self, row: tuple, idx: int) -> str:
+        """TODO"""
+        return fit_text(str(row[idx]), self._cell_size(idx))
 
-    def __cell_size(self, idx: int) -> int:
+    def _cell_size(self, idx: int) -> int:
+        """TODO"""
         return self.column_sizes[idx]
 
-    def __print_table(
-            self,
-            table_line: str,
-            header_cols: List[str],
-            data_cols: List[str],
-            file=sys.stdout) -> None:
+    def _print_table(
+        self,
+        table_line: str,
+        header_cols: List[str],
+        data_cols: List[str],
+        file=sys.stdout) -> None:
+        """TODO"""
+
         if self.caption:
             print(table_line, file=file)
             print('| ' + fit_text(self.caption, len(table_line) - 4)

@@ -15,19 +15,18 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import Any
 
 
 class Menu(ABC):
     @abstractmethod
-    def execute(self) -> Any:
+    def execute(self) -> 'Menu':
         """
         Execute the current tui actions.
         :return: The next tui action to proceed after processing.
         """
 
     @abstractmethod
-    def trigger_menu_item(self) -> Any:
+    def trigger_menu_item(self) -> 'Menu':
         """
         Trigger the option action selected by the user.
         :return: The next tui action to trigger.
