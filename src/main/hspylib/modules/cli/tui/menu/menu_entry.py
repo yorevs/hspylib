@@ -27,6 +27,8 @@ MENU_TPL = """%ED2%%HOM%
 
 
 class MenuEntry(MenuItem):
+    """TODO"""
+
     def __init__(self, parent: Menu, items: dict, title: str = None, color: VtColors = VtColors.ORANGE):
         super().__init__(parent, title)
         title_len = round(len(title) / 2) + 2
@@ -42,6 +44,8 @@ class MenuEntry(MenuItem):
         self.items = items
 
     def trigger_menu_item(self) -> Menu:
+        """TODO"""
+
         int_op = int(str(self.selected).strip())
         ret_val = self.items[str(int_op)].action_trigger(self)
 

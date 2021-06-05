@@ -15,7 +15,7 @@
 """
 import re
 from abc import ABC
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -26,12 +26,12 @@ from hspylib.modules.cli.vt100.vt_utils import restore_cursor, screen_size, rest
 
 
 def mselect(
-        items: List[Any],
+        items: List[str],
         title: str = 'Please select one',
         max_rows: int = 15,
         title_color: VtColors = VtColors.ORANGE,
         highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[Any]:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[str]:
     """
     TODO
     :param items:
@@ -55,7 +55,7 @@ class MenuSelect(ABC):
 
     def __init__(
             self,
-            items: List[Any],
+            items: List[str],
             max_rows: int = 15):
 
         self.items = items
@@ -71,7 +71,7 @@ class MenuSelect(ABC):
             title: str,
             title_color: VtColors,
             highlight_color: VtColors,
-            nav_color: VtColors) -> Optional[Any]:
+            nav_color: VtColors) -> Optional[str]:
         """TODO"""
 
         ret_val = None

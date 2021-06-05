@@ -25,6 +25,8 @@ class MenuOption:
         self.action_trigger = lambda s: print(f"Option: {self.option_index}-{self.option_text} selected!")
 
     def on_trigger(self, action_trigger) -> Any:
+        """TODO"""
+
         self.action_trigger = action_trigger
         return self.parent
 

@@ -14,8 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Any, List, Optional
-
+from typing import List, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
@@ -27,7 +26,7 @@ from hspylib.modules.cli.vt100.vt_utils import restore_terminal, restore_cursor,
 
 
 def mdashboard(
-        items: List[Any],
+        items: List[DashboardItem],
         items_per_line: int = 5,
         title: str = 'Please select one item',
         title_color: VtColors = VtColors.ORANGE,
@@ -60,7 +59,7 @@ class MenuDashBoard:
 
     def __init__(
             self,
-            items: List[Any],
+            items: List[DashboardItem],
             items_per_line: int = 5):
 
         self.items = items

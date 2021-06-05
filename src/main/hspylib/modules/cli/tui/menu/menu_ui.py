@@ -23,6 +23,8 @@ from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 
 class MenuUi:
+    """TODO"""
+
     def __init__(self, root: Optional[Menu]):
         self.done = False
         self.previous = None
@@ -31,6 +33,8 @@ class MenuUi:
         signal.signal(signal.SIGINT, exit_app)
 
     def show(self) -> None:
+        """TODO"""
+
         while not self.done:
             if self.current:
                 self.next = self.current.execute()
@@ -42,5 +46,7 @@ class MenuUi:
                 self.done = True
 
     def change_menu(self, menu: Menu) -> None:
+        """TODO"""
+
         self.previous = self.current
         self.current = menu

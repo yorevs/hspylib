@@ -25,6 +25,8 @@ from hspylib.core.tools.commons import sysout
 
 
 class MenuItem(Menu, ABC):
+    """TODO"""
+
     def __init__(self, parent: Menu = None, title: str = None):
         self.title = title
         self.parent = parent
@@ -38,7 +40,9 @@ class MenuItem(Menu, ABC):
         return self.menu_data if self.menu_data else ''
 
     def execute(self) -> Optional[Menu]:
-        while not self.selected == 0 and not self.done:
+        """TODO"""
+
+        while self.selected != 0 and not self.done:
             sysout(str(self))
             try:
                 self.selected = MenuUtils.prompt(end='$ ')
@@ -53,12 +57,13 @@ class MenuItem(Menu, ABC):
 
     @abstractmethod
     def trigger_menu_item(self) -> Optional[Menu]:
+        """TODO"""
         pass
 
     def is_valid_option(self) -> bool:
+        """TODO"""
         if not self.options or not self.selected:
             return False
-        if self.selected.isdigit():
+        elif self.selected.isdigit():
             return int(self.selected) in self.options
-
         return str(self.selected) in self.options

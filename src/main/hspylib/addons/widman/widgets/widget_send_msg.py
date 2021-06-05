@@ -89,7 +89,7 @@ class WidgetSendMsg(Widget):
             return ExitCode.SUCCESS
 
         if not args:
-            if not self._read_args():
+            if not args and not self._read_args():
                 return ExitCode.ERROR
         else:
             if not self._parse_args(*args):
@@ -170,7 +170,7 @@ class WidgetSendMsg(Widget):
         # @formatter:on
         self.args = minput(form_fields)
 
-        return bool(self.args)
+        return len(self.args.__dict__) > 1
 
     def _parse_args(self, *args):
         """When arguments are passed from the command line, parse them"""
