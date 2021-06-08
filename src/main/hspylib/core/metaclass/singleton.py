@@ -14,7 +14,6 @@
    Copyright 2021, HSPyLib team
 """
 
-import logging as log
 from typing import Type
 
 
@@ -47,11 +46,9 @@ class Singleton(type):
         """TODO"""
         singleton_instances = Singleton.__getattribute__(mcs, '_instances')
         if clazz in singleton_instances:
-            clazz_name = clazz.__name__
             del mcs._instances[clazz]
             delattr(clazz, 'INSTANCE')
             del clazz
-            log.warning(f'Singleton instance was deleted: {clazz_name}')
             return True
 
         return False

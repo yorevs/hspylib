@@ -20,7 +20,7 @@ task startContainers(type: Task) {
       println "Starting container: ${container}"
       exec {
         workingDir = "${rootDir}/docker/${container}"
-        commandLine 'docker-compose', 'up', '-d'
+        commandLine 'docker-compose', 'up', '--force-recreate', '--build', '--remove-orphans', '--detach'
       }
     }
   }

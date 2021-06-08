@@ -6,5 +6,7 @@
 """Package initialization."""
 
 __all__ = [
+  'app_extension', 
+  'app_type', 
   'appman'
 ]

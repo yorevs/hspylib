@@ -16,8 +16,12 @@
 
 import sys
 
-from hspylib.core.tools.commons import dirname, get_path, read_version, sysout
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import dirname, get_path, read_version
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.qt.qt_application import QtApplication
+from hspylib.modules.qt.views.qt_view import QtView
 
 HERE = get_path(__file__)
 
@@ -25,22 +29,32 @@ HERE = get_path(__file__)
 class Main(Application):
     """TODO"""
 
+    class MainQtView(QtView):
+
+        def __init__(self):
+            form, window = QtView.load_ui_form('main_qt_view.ui')
+            # Must come after the initialization above
+            super().__init__(form, window)
+            self.configs = AppConfigs.INSTANCE
+
+        def setup_ui(self):
+            """Connect signals and startup components"""
+            pass
+
     # The application version
     VERSION = read_version(f"{HERE}/.version")
-
-    # Usage message
-    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
 
     def __init__(self, app_name: str):
         # Invoke the super constructor without source_dir parameter to skip creation of log and properties
         super().__init__(app_name, self.VERSION, self.USAGE, source_dir=dirname(__file__))
+        self.main_view = QtApplication(self.MainQtView)
 
     def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        sysout(f'Hello {self._app_name}')
+        exit_app(self.main_view.run())
 
     def _cleanup(self) -> None:
         """Execute code cleanup before exiting"""
