@@ -13,8 +13,9 @@ Usage: hspylib [options] <operation> <arguments>
 
   Arguments:
     app_name     : The application name.
-    app_type     : One of app|widget. "app" is going to scaffold a basic app based on HSPyLib application
+    app_type     : One of [app|qt-app|widget]. "app" is going to scaffold a basic app based on HSPyLib application
                    structure. "widget" is going to create an HSPyLib widget.
-     app_ext     : One or more [gradle, git]. "gradle" is going to initialize you project with gradle (requires gradle
+     app_ext     : One or more [gradle,git]. "gradle" is going to initialize you project with gradle (requires gradle
                    installed). "git" is going to initialize a git repository (requires git installed).
-    widget_name  : The name of the widget to be executed. If omitted, all available widgets will be listed.
+    widget_name  : The name of the widget to be executed. If omitted, all available widgets will be presented in a
+                   dashboard.

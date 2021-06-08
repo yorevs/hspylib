@@ -2,11 +2,13 @@ from confluent_kafka import Consumer, KafkaError
 
 settings = {
     'bootstrap.servers': 'localhost:9092',
-    'group.id': 'mygroup',
+    'group.id': 'kafka_test_group',
     'client.id': 'client-1',
-    'enable.auto.commit': True,
+    'enable.auto.commit': False,
     'session.timeout.ms': 6000,
-    'default.topic.config': {'auto.offset.reset': 'smallest'}
+    'default.topic.config': {
+        'auto.offset.reset': 'smallest'
+    }
 }
 
 c = Consumer(settings)

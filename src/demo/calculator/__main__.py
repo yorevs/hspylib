@@ -17,10 +17,11 @@
 import os
 import sys
 
-from calculator.core.qt_calculator import QtCalculator
+from calculator.ui.qt.views.main_qt_view import MainQtView
 from hspylib.core.tools.commons import dirname, read_version
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.qt.qt_application import QtApplication
 
 
 class Main(Application):
@@ -32,16 +33,16 @@ class Main(Application):
     # Version tuple: (major,minor,build)
     VERSION = (0, 9, 0)
 
-    # CloudFoundry manager usage message
+    # Application usage message
     USAGE = f"""
     Usage: {APP_NAME} <option> [arguments]"""
 
     def __init__(self, app_name: str):
         super().__init__(app_name, read_version(), self.USAGE, dirname(__file__))
-        self.calc = QtCalculator()
+        self.main_view = QtApplication(MainQtView)
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
-        exit_app(self.calc.show())
+        exit_app(self.main_view.run())
 
 
 if __name__ == "__main__":

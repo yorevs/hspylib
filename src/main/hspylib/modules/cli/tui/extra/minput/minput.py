@@ -15,10 +15,10 @@
 """
 import re
 import time
-from typing import List, NewType
+from typing import List
 
 from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.commons import syserr, sysout
+from hspylib.core.tools.commons import syserr, sysout, new_dynamic_type
 from hspylib.core.tools.text_tools import camelcase, snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -55,7 +55,7 @@ class MenuInput:
     NAV_ICONS = '\u2191\u2193'
     NAV_FMT = "\n{}[Enter] Submit  [{}] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
-    FormFields = NewType('FormFields', object)  # New type definition to return filled fields
+    FormFields = new_dynamic_type('FormFields')  # New type definition to return filled fields
 
     @classmethod
     def builder(cls) -> FormBuilder:
@@ -96,7 +96,8 @@ class MenuInput:
         form_fields =  self.FormFields
         if ret_val == Keyboard.VK_ENTER:
             for field in self.all_fields:
-                setattr(form_fields, snakecase(field.label), field.value)
+                att_name = snakecase(field.label)
+                setattr(form_fields, att_name, field.value)
 
         return form_fields
 

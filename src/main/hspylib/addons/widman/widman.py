@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import atexit
 import os
 import sys
 from typing import List
@@ -58,10 +58,9 @@ class WidgetManager(metaclass=Singleton):
         """Execute the specified widget"""
         widget = self._find_widget(camelcase(widget_name))
         try:
+            atexit.register(widget.cleanup)
             exit_code = widget.execute(*widget_args)
-            if exit_code == ExitCode.SUCCESS:
-                widget.cleanup()
-            else:
+            if exit_code != ExitCode.SUCCESS:
                 raise WidgetExecutionError(f"Widget '{widget_name}' failed to execute. exit_code={exit_code}")
         except Exception as err:
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err
@@ -80,7 +79,7 @@ class WidgetManager(metaclass=Singleton):
             assert len(items) > 0, f"No widgets found from: {str(self._lookup_paths)}"
             mdashboard(items, 6, 'Please select a widget to execute')
         except Exception as err:
-            raise WidgetExecutionError(f"Failed to execute widget :: {err}") from err
+            raise WidgetExecutionError(f"Failed to execute widget :: {str(err)}") from err
 
     def _load_widgets(self) -> int:
         """Search and load all widgets from the widget lookup paths"""

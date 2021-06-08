@@ -6,5 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'main_view'
+  'blink_lcd_thread', 
+  'main_qt_view'
 ]

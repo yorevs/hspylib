@@ -15,9 +15,10 @@
 """
 
 import os
-from typing import Any, List
+from typing import List
 
-from hspylib.core.enums.enumeration import Enumeration
+from hspylib.addons.appman.app_extension import AppExtension
+from hspylib.addons.appman.app_type import AppType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
@@ -45,15 +46,6 @@ project.ext.set("mailTo", "YourEmail")
 project.ext.set("siteUrl", "YourSiteUrl")
 """
 
-    class AppType(Enumeration):
-        """Possible application creation type"""
-        APP = 'application'
-        WIDGET = 'widget'
-
-    class AppExtensions(Enumeration):
-        GRADLE = 'gradle'
-        GIT = 'git'
-
     def __init__(self, parent_app: Application):
         self._parent_app = parent_app
         self._app_name = None
@@ -61,52 +53,75 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._init_gradle_flag = False
         self._init_git_flag = False
 
-    def create(self, app_name: str, app_type: AppType, app_ext: List[AppExtensions], dest_dir: str) -> None:
+    def create(self, app_name: str, app_type: AppType, app_ext: List[AppExtension], dest_dir: str) -> None:
         """Create the application based on the parameters"""
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')
         try:
             assert os.path.exists(dest_dir), f'Destination not found: {dest_dir}'
             self._app_name = app_name
-            if app_type == self.AppType.APP:
+            if app_type == AppType.APP:
                 self._app_dir = f'{dest_dir}/{app_name}'
                 self._create_app(app_name, app_ext)
-            elif app_type == self.AppType.WIDGET:
+            elif app_type == AppType.WIDGET:
                 self._app_dir = f'{dest_dir}'
                 self._create_widget(app_name)
+            elif app_type == AppType.QT_APP:
+                self._app_dir = f'{dest_dir}/{app_name}'
+                self._create_qt_app(app_name, app_ext)
         except OSError as err:
             syserr(f"Creation of the application {dest_dir}/{app_name} failed")
             syserr(str(err))
         else:
             sysout(f"Successfully created the {app_type.value} {app_name}")
 
-    def _create_app(self, app_name: str, app_ext: List[AppExtensions]) -> None:
-        sysout(f'App: {app_name}')
-        self._mkdir('')
+    def _create_app(self, app_name: str, extensions: List[AppExtension]) -> None:
+        """Create a Simple HSPyLib application"""
+        sysout(f'Application: {app_name}')
+        self._create_base_app_struct(app_name)
+        self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
+        self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
+        self._apply_extensions(extensions, app_name)
+
+    def _create_qt_app(self, app_name: str, extensions: List[AppExtension]) -> None:
+        """Create an HSPyLib QT application"""
+        sysout(f'QT Application: {app_name}')
+        self._create_base_app_struct(app_name)
+        self._mkdir('src/main/resources/forms')
+        self._mkfile('src/main/resources/forms/main_qt_view.ui', (self.TEMPLATES / "tpl-main_qt_view.ui").read_text())
+        self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main-qt.py").read_text())
+        self._apply_extensions(extensions, app_name)
+
+    def _create_base_app_struct(self, app_name):
+        """Create HSPyLib application structure"""
+        self._mkdir()
+        self._mkfile('README.md', f'# {app_name}')
+        self._mkfile('MANIFEST.in')
         self._mkdir('src')
         self._mkdir('src/test')
         self._mkfile('src/test/test_main.py', (self.TEMPLATES / "tpl-test_main.py").read_text())
-        self._mkdir('src/main')
-        self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
-        self._mkfile('src/main/.version', '0.1.0')
-        self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
-        self._mkdir('src/main/resources')
         self._mkdir('src/test/resources')
-        self._mkfile('src/main/resources/application.properties', '# Main application property file')
-        self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
-        self._mkdir('src/main/resources/log')
         self._mkdir('src/test/resources/log')
-        self._mkfile('README.md', f'# {app_name}')
-        self._mkfile('MANIFEST.in')
+        self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
+        self._mkdir('src/main')
+        self._mkfile('src/main/.version', '0.1.0')
+        self._mkdir('src/main/resources')
+        self._mkfile('src/main/resources/application.properties', '# Main application property file')
+        self._mkdir('src/main/resources/log')
         self._mkfile('.env', '# Type in here the environment variables your app requires')
         self._mkfile('run-it.sh', (self.TEMPLATES / "tpl-run-it.sh").read_text())
         os.chmod(f'{self._app_dir}/run-it.sh', 0o755)
 
-        if self.AppExtensions.GRADLE in app_ext:
+    def _apply_extensions(self, extensions: List[AppExtension], app_name: str):
+        """TODO"""
+        if AppExtension.GRADLE in extensions:
+            sysout('Applying gradle extensions')
             self._init_gradle(app_name)
-        if self.AppExtensions.GIT in app_ext:
+        if AppExtension.GIT in extensions:
+            sysout('Initializing git repository')
             self._init_git()
 
     def _create_widget(self, app_name: str) -> None:
+        """Create an HSPyLib Widget application"""
         widget_name = camelcase(app_name).replace('_', '').replace(' ', '')
         sysout(f'Widget: {widget_name}')
         self._mkfile(
@@ -114,8 +129,8 @@ project.ext.set("siteUrl", "YourSiteUrl")
             (self.TEMPLATES / "tpl-widget.py").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
         )
 
-    def _mkdir(self, dirname: str) -> None:
-        """Create a directory from the destination path"""
+    def _mkdir(self, dirname: str = '') -> None:
+        """Create a directory from the destination path, or the destination path itself"""
         dir_path = f"{self._app_dir}/{dirname}"
         sysout(f'  |- {dir_path}')
         os.mkdir(dir_path)
