@@ -39,10 +39,10 @@ class Properties:
         return re.sub('[ -.]', '_', property_name).upper()
 
     def __init__(
-            self,
-            filename: str = None,
-            profile: str = None,
-            load_dir: str = None):
+        self,
+        filename: str = None,
+        profile: str = None,
+        load_dir: str = None):
 
         filename, extension = os.path.splitext(
             filename if filename else f'{self._default_name}{self._default_extension}')
@@ -140,4 +140,4 @@ class Properties:
                 self.properties.update(flatten_dict(yaml.load(fh_props, Loader=yaml.FullLoader)))
             else:
                 raise NotImplementedError(f'Extension {self.extension} is not supported')
-        log.info(f'Successfully loaded {len(self.properties)} properties from the file {self.filepath}')
+        log.info(f'Successfully loaded {len(self.properties)} properties from:\n\t=>{self.filepath}')

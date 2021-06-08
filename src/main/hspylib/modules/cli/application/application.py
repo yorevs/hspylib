@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import atexit
 import getopt
 import logging as log
 import signal
@@ -68,6 +68,7 @@ class Application(metaclass=Singleton):
         """Main entry point handler"""
         log.info('Run started {}'.format(datetime.now()))
         try:
+            atexit.register(self._cleanup)
             self._setup_parameters(*params, **kwargs)
             self._parse_parameters(*params, **kwargs)
             self._main(*params, **kwargs)
@@ -90,7 +91,6 @@ class Application(metaclass=Singleton):
         else:
             log.info('Exit handler called')
             exit_code = signum
-        self._cleanup()
         if clear_screen:
             sysout('%ED2%%HOM%')
         sys.exit(exit_code)
@@ -196,9 +196,10 @@ class Application(metaclass=Singleton):
                     break
                 except getopt.GetoptError as err:
                     log.debug(str(err))
-                    continue  # Just try the next chain
-                except LookupError:
-                    continue  # Just try the next chain
+                    continue  # Log and try next argument in chain
+                except LookupError as err:
+                    log.debug(str(err))
+                    continue  # Log and try next argument in chain
             if not valid:
                 raise InvalidArgumentError(f"Invalid arguments  \"{', '.join(provided_args)}\"")
 

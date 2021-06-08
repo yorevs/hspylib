@@ -16,9 +16,11 @@
 
 import sys
 
+from hspylib.addons.appman.app_extension import AppExtension
+from hspylib.addons.appman.app_type import AppType
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.widman.widman import WidgetManager
-from hspylib.core.tools.commons import get_path, read_version, run_dir, syserr, sysout
+from hspylib.core.tools.commons import get_path, read_version, run_dir, syserr, sysout, dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 
@@ -38,7 +40,7 @@ class Main(Application):
     WELCOME = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE)
+        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
 
     def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
@@ -53,8 +55,8 @@ class Main(Application):
                 ArgumentChain.builder()
                     .when('operation', 'create')
                         .require('app-name', '.+')
-                        .require('app-type', 'app|widget')
-                        .accept('app-ext', '.*')
+                        .require('app-type', '|'.join(AppType.values()))
+                        .accept('app-ext', '.+')
                         .end()
                     .when('operation', 'widgets')
                         .accept('widget-name', '.+')
@@ -73,12 +75,12 @@ class Main(Application):
         op = self.getarg('operation')
         if op == 'create':
             manager = AppManager(self)
-            app_type = AppManager.AppType.value_of(self.getarg('app-type'))
+            app_type = AppType.of_value(self.getarg('app-type'))
             extensions = self.getarg('app-ext').split(',') if self.getarg('app-ext') else []
             manager.create(
                 self.getarg('app-name'),
                 app_type,
-                list(map(AppManager.AppExtensions.value_of, extensions)),
+                list(map(AppExtension.value_of, extensions)),
                 self.getopt('dest-dir') or run_dir())
         elif op == 'widgets':
             manager = WidgetManager(self)

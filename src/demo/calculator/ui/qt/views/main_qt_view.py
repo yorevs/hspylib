@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    hspylib.demo.calculator.ui.qt.views
-      @file: main_view.py
+      @file: main_qt_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -15,44 +15,26 @@
 """
 
 import logging as log
-from threading import Thread
-from time import sleep
 
-from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLCDNumber, QWidget
 
 from calculator.core.enums.calc_operations import CalcOperations
+from calculator.ui.qt.views.blink_lcd_thread import BlinkLcdThread
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.qt.views.qt_view import QtView
 
 
-class MainView(QtView):
-    class BlinkLcdThread(Thread):
-        def __init__(self, lcd: QLCDNumber):
-            Thread.__init__(self)
-            self.lcd = lcd
-
-        def run(self):
-            palette = self.lcd.palette()
-            fg_color = palette.color(palette.WindowText)
-            bg_color = palette.color(palette.Background)
-            palette.setColor(palette.WindowText, bg_color)
-            self.lcd.setPalette(palette)
-            sleep(float(AppConfigs.INSTANCE['lcd.blink.delay']))
-            palette.setColor(palette.WindowText, fg_color)
-            self.lcd.setPalette(palette)
+class MainQtView(QtView):
 
     def __init__(self):
-        form, window = uic \
-            .loadUiType("{}/forms/qt_calculator.ui".format(AppConfigs.INSTANCE.resource_dir()))
-        super().__init__(window())
-        self.form = form()
+        form, window = QtView.load_ui_form('qt_calculator.ui')
+        # Must come after the initialization above
+        super().__init__(form, window)
         self.configs = AppConfigs.INSTANCE
         self.dec_sep = AppConfigs.INSTANCE['decimal.separator']
         self.min_digits = int(AppConfigs.INSTANCE['min.digits'])
         self.max_digits = int(AppConfigs.INSTANCE['max.digits'])
-        self.form.setupUi(self.window)
         self.wait_operand = True
         self.wait_operand2 = True
         self.operand = None
@@ -87,6 +69,7 @@ class MainView(QtView):
         self.setup_ui()
 
     def setup_ui(self):
+        """Connect signals and startup components"""
         self.btnAC.clicked.connect(self._btn_ac_clicked)
         self.btnSignal.clicked.connect(self._btn_signal_clicked)
         self.btnPercent.clicked.connect(self._btn_percent_clicked)
@@ -108,9 +91,6 @@ class MainView(QtView):
         self.btnDecimal.setText(self.dec_sep)
         self.btnEqual.clicked.connect(self._btn_equal_clicked)
         self.frameMain.keyPressed.connect(self._key_pressed)
-
-    def show(self):
-        self.window.show()
 
     def _key_pressed(self, key_pressed):
         if Qt.Key_1 == key_pressed:
@@ -160,7 +140,7 @@ class MainView(QtView):
         self.lcdDisplay.display(value)
 
     def _blink_lcd(self):
-        blink = MainView.BlinkLcdThread(self.lcdDisplay)
+        blink = BlinkLcdThread(self.lcdDisplay)
         blink.start()
         self.display_text = ''
 

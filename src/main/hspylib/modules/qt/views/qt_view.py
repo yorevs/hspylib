@@ -13,23 +13,44 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import os
 from abc import ABC, abstractmethod
+from typing import Tuple, Any, Callable
 
+from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 
+from hspylib.core.tools.commons import run_dir
 from hspylib.modules.qt.qt_finder import QtFinder
 
 
 class QtView(ABC):
     """TODO"""
 
-    def __init__(self, window: QWidget, parent=None):
-        super().__init__()
-        self.window = window
+    @staticmethod
+    def load_ui_form(
+        form_file: str,
+        load_dir: str = f"{run_dir()}/resources/forms/") -> Tuple[Any, Any]:
+
+        assert os.path.exists(load_dir) and os.path.isdir(load_dir), \
+            f"Load dir {load_dir} does not exist or is not a folder"
+        filepath = f"{load_dir}/{form_file}"
+        assert os.path.exists(load_dir) and os.path.isfile(filepath) and filepath.endswith('.ui'), \
+            f"Form file {form_file} does not exist or it not a valid UI form file"
+
+        return uic.loadUiType(filepath)
+
+    def __init__(self, form: Callable, window: Callable, parent: QWidget = None):
+        self.window = window()
+        self.form = form()
+        self.form.setupUi(self.window)
         self.parent = parent
         self.qt = QtFinder(self.window)
 
     @abstractmethod
     def setup_ui(self) -> None:
         """TODO"""
+
+    def show(self):
+        """TODO"""
+        self.window.show()

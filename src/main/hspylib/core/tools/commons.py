@@ -36,29 +36,42 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 )
 
 
+def _reset_logger():
+    # goes to the console and will ignore further basicConfig calls. Remove the handler if there is one.
+    root = log.getLogger()
+    if root.handlers:
+        for handler in root.handlers:
+            print(f"Default log handler removed: {handler}")
+            root.removeHandler(handler)
+
+
 def log_init(
         log_file: str,
         create_new: bool = True,
-        f_mode: str = 'a',
+        mode: str = 'a',
         level: int = log.DEBUG,
-        log_fmt: str = LOG_FMT) -> log:
+        filename: str = LOG_FMT) -> log:
     """Initialize the system logger
     :param log_file: TODO
     :param create_new:  TODO
-    :param f_mode:  TODO
+    :param mode:  TODO
     :param level:  TODO
-    :param log_fmt:  TODO
+    :param filename:  TODO
     """
-    with open(log_file, 'w' if create_new else 'a'):
+    # if someone tried to log something before log_init is called, Python creates a default handler that
+    _reset_logger()
+
+    create = bool(create_new or not os.path.exists(log_file))
+    with open(log_file, 'w' if create else 'a'):
         os.utime(log_file, None)
+        log.basicConfig(
+            filename=log_file,
+            format=filename,
+            level=level,
+            filemode=mode)
+        log.info(f"Logging started. filename={os.path.basename(log_file)} level={level} mode={mode} append={not create}")
 
-    log.basicConfig(
-        filename=log_file,
-        format=log_fmt,
-        level=level,
-        filemode=f_mode)
-
-    return log
+    return os.path.exists(log_file)
 
 
 def is_debugging():
@@ -126,6 +139,15 @@ def class_attribute_values(instance: dict) -> Optional[Tuple]:
     :param instance: TODO
     """
     return tuple(instance.values()) if instance else None
+
+
+def new_dynamic_type(type_name: str, inherited_type: Any = object):
+    """TODO
+    :param: type_name: TODO
+    :param: inherited_type: TODO
+    """
+
+    return type(type_name, (inherited_type,), {})()
 
 
 def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
