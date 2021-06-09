@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 import os
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Tuple, Type
 
 from PyQt5 import uic
@@ -29,7 +29,7 @@ class QtView(ABC):
     @staticmethod
     def load_ui_form(
         form_file: str,
-        load_dir: str = f"{run_dir()}/resources/forms/") -> Tuple[Type, Type, str]:
+        load_dir: str = f"{run_dir()}/resources/forms/") -> Tuple[Type, Type]:
         """TODO"""
 
         assert os.path.exists(load_dir) and os.path.isdir(load_dir), \
@@ -38,12 +38,10 @@ class QtView(ABC):
         assert os.path.exists(filepath) and os.path.isfile(filepath) and filepath.lower().endswith('.ui'), \
             f"Form file {form_file} does not exist or it not a valid UI form file"
 
-        form, window = uic.loadUiType(filepath)
-
-        return form, window, filepath
+        return uic.loadUiType(filepath)
 
     def __init__(self, ui_file: str, parent: QWidget = None):
-        form, window, _ = self.load_ui_form(ui_file)
+        form, window = self.load_ui_form(ui_file)
         # Must come after the initialization above {
         self.window = window()
         self.form = form()
@@ -52,10 +50,6 @@ class QtView(ABC):
         self.parent = parent
         self.ui = new_dynamic_object('ViewWidgets')
         self._find_widgets()
-
-    @abstractmethod
-    def setup_ui(self) -> None:
-        """TODO"""
 
     def show(self) -> None:
         """TODO"""
