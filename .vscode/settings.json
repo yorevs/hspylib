@@ -4,5 +4,6 @@
     ".vscode": true,
     "**/__pycache__": true,
     "**/__pycache__.*": true
-  }
+  },
+  "python.linting.pylintEnabled": true
 }
