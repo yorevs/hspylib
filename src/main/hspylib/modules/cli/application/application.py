@@ -36,6 +36,24 @@ class Application(metaclass=Singleton):
     VERSION = None
     USAGE = None
 
+    @staticmethod
+    def exit_handler(signum=0, frame=None, clear_screen: bool = False) -> None:
+        """
+        Handle interruptions to shutdown gracefully
+        :param signum: The signal number or the exit code
+        :param frame: The frame raised by the signal
+        :param clear_screen: Whether to clean the screen before execution or not
+        """
+        if frame is not None:
+            log.warning('Signal handler hooked signum={} frame={}'.format(signum, frame))
+            exit_code = 3
+        else:
+            log.info('Exit handler called')
+            exit_code = signum
+        if clear_screen:
+            sysout('%ED2%%HOM%')
+        sys.exit(exit_code)
+
     def __init__(
             self,
             app_name: str = None,
@@ -46,6 +64,9 @@ class Application(metaclass=Singleton):
             log_dir: str = None):
 
         signal.signal(signal.SIGINT, self.exit_handler)
+        signal.signal(signal.SIGTERM, self.exit_handler)
+
+
         self._app_name = app_name
         self._app_version = app_version
         self._app_usage = app_usage
@@ -53,6 +74,7 @@ class Application(metaclass=Singleton):
         self._arguments = []
         self._args = {}
         self._opts = {}
+
         if source_dir:
             self.configs = AppConfigs(
                 source_root=source_dir,
@@ -77,23 +99,6 @@ class Application(metaclass=Singleton):
             raise err  # Re-Raise the exception so upper level layers can catch
         finally:
             log.info('Run finished {}'.format(datetime.now()))
-
-    def exit_handler(self, signum=0, frame=None, clear_screen: bool = False) -> None:
-        """
-        Handle interruptions to shutdown gracefully
-        :param signum: The signal number or the exit code
-        :param frame: The frame raised by the signal
-        :param clear_screen: Whether to clean the screen before execution or not
-        """
-        if frame is not None:
-            log.warning('Signal handler hooked signum={} frame={}'.format(signum, frame))
-            exit_code = 3
-        else:
-            log.info('Exit handler called')
-            exit_code = signum
-        if clear_screen:
-            sysout('%ED2%%HOM%')
-        sys.exit(exit_code)
 
     def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
         """Display the usage message and exit with the specified code ( or zero as default )
