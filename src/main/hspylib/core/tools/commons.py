@@ -37,11 +37,10 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 
 
 def _reset_logger():
-    # goes to the console and will ignore further basicConfig calls. Remove the handler if there is one.
+    # Remove handlers if there is any.
     root = log.getLogger()
     if root.handlers:
         for handler in root.handlers:
-            print(f"Default log handler removed: {handler}")
             root.removeHandler(handler)
 
 
@@ -141,7 +140,7 @@ def class_attribute_values(instance: dict) -> Optional[Tuple]:
     return tuple(instance.values()) if instance else None
 
 
-def new_dynamic_type(type_name: str, inherited_type: Any = object):
+def new_dynamic_object(type_name: str, inherited_type: Any = object):
     """TODO
     :param: type_name: TODO
     :param: inherited_type: TODO
