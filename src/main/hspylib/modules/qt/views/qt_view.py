@@ -15,7 +15,7 @@
 """
 import os
 from abc import ABC, abstractmethod
-from typing import Tuple, Any, Callable
+from typing import Tuple, Any, Type
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
@@ -40,12 +40,12 @@ class QtView(ABC):
 
         return uic.loadUiType(filepath)
 
-    def __init__(self, form: Callable, window: Callable, parent: QWidget = None):
+    def __init__(self, form: Type, window: Type, parent: QWidget = None):
         self.window = window()
         self.form = form()
         self.form.setupUi(self.window)
         self.parent = parent
-        self.qt = QtFinder(self.window)
+        self.qt_finder = QtFinder(self.window)
 
     @abstractmethod
     def setup_ui(self) -> None:

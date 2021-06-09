@@ -16,6 +16,8 @@
 
 import sys
 
+from PyQt5.QtWidgets import QDialogButtonBox, QLabel
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import dirname, get_path, read_version
 from hspylib.modules.cli.application.application import Application
@@ -36,10 +38,11 @@ class Main(Application):
             # Must come after the initialization above
             super().__init__(form, window)
             self.configs = AppConfigs.INSTANCE
+            self.lblHello = self.qt_finder.find_widget(QLabel, 'lblHello')
+            self.bboxOkCancel = self.qt_finder.find_widget(QDialogButtonBox, 'bboxOkCancel')
 
         def setup_ui(self):
             """Connect signals and startup components"""
-            pass
 
     # The application version
     VERSION = read_version(f"{HERE}/.version")
