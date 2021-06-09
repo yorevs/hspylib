@@ -17,7 +17,6 @@
 import logging as log
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLCDNumber, QWidget, QToolButton
 
 from calculator.core.enums.calc_operations import CalcOperations
 from calculator.ui.qt.views.blink_lcd_thread import BlinkLcdThread
@@ -27,10 +26,10 @@ from hspylib.modules.qt.views.qt_view import QtView
 
 class MainQtView(QtView):
 
+    UI_FILE = 'qt_calculator.ui'
+
     def __init__(self):
-        form, window = QtView.load_ui_form('qt_calculator.ui')
-        # Must come after the initialization above
-        super().__init__(form, window)
+        super().__init__(self.UI_FILE)
         self.configs = AppConfigs.INSTANCE
         self.dec_sep = AppConfigs.INSTANCE['decimal.separator']
         self.min_digits = int(AppConfigs.INSTANCE['min.digits'])
@@ -43,56 +42,34 @@ class MainQtView(QtView):
         self.memory_rec = None
         self.display_text = ''
         self.op = CalcOperations.NO_OP
-        # Find Qt components {
-        self.frameMain = self.qt_finder.find_widget(QWidget, 'frameMain')
-        self.lcdDisplay = self.qt_finder.find_widget(QLCDNumber, 'lcdDisplay')
-        self.btnAC = self.qt_finder.find_widget(QToolButton, 'btnAC')
-        self.btnSignal = self.qt_finder.find_widget(QToolButton, 'btnSignal')
-        self.btnPercent = self.qt_finder.find_widget(QToolButton, 'btnPercent')
-        self.btnDivision = self.qt_finder.find_widget(QToolButton, 'btnDivision')
-        self.btn7 = self.qt_finder.find_widget(QToolButton, 'btn7')
-        self.btn8 = self.qt_finder.find_widget(QToolButton, 'btn8')
-        self.btn9 = self.qt_finder.find_widget(QToolButton, 'btn9')
-        self.btnMultiplication = self.qt_finder.find_widget(QToolButton, 'btnMultiplication')
-        self.btn4 = self.qt_finder.find_widget(QToolButton, 'btn4')
-        self.btn5 = self.qt_finder.find_widget(QToolButton, 'btn5')
-        self.btn6 = self.qt_finder.find_widget(QToolButton, 'btn6')
-        self.btnMinus = self.qt_finder.find_widget(QToolButton, 'btnMinus')
-        self.btn1 = self.qt_finder.find_widget(QToolButton, 'btn1')
-        self.btn2 = self.qt_finder.find_widget(QToolButton, 'btn2')
-        self.btn3 = self.qt_finder.find_widget(QToolButton, 'btn3')
-        self.btnPlus = self.qt_finder.find_widget(QToolButton, 'btnPlus')
-        self.btn0 = self.qt_finder.find_widget(QToolButton, 'btn0')
-        self.btnDecimal = self.qt_finder.find_widget(QToolButton, 'btnDecimal')
-        self.btnEqual = self.qt_finder.find_widget(QToolButton, 'btnEqual')
-        # }
         self.setup_ui()
 
     def setup_ui(self):
         """Connect signals and startup components"""
-        self.btnAC.clicked.connect(self._btn_ac_clicked)
-        self.btnSignal.clicked.connect(self._btn_signal_clicked)
-        self.btnPercent.clicked.connect(self._btn_percent_clicked)
-        self.btnDivision.clicked.connect(self._btn_division_clicked)
-        self.btn7.clicked.connect(self._btn7_clicked)
-        self.btn8.clicked.connect(self._btn8_clicked)
-        self.btn9.clicked.connect(self._btn9_clicked)
-        self.btnMultiplication.clicked.connect(self._btn_times_clicked)
-        self.btn4.clicked.connect(self._btn4_clicked)
-        self.btn5.clicked.connect(self._btn5_clicked)
-        self.btn6.clicked.connect(self._btn6_clicked)
-        self.btnMinus.clicked.connect(self._btn_minus_clicked)
-        self.btn1.clicked.connect(self._btn1_clicked)
-        self.btn2.clicked.connect(self._btn2_clicked)
-        self.btn3.clicked.connect(self._btn3_clicked)
-        self.btnPlus.clicked.connect(self._btn_plus_clicked)
-        self.btn0.clicked.connect(self._btn0_clicked)
-        self.btnDecimal.clicked.connect(self._btn_comma_clicked)
-        self.btnDecimal.setText(self.dec_sep)
-        self.btnEqual.clicked.connect(self._btn_equal_clicked)
-        self.frameMain.keyPressed.connect(self._key_pressed)
+        self.ui.btnAC.clicked.connect(self._btn_ac_clicked)
+        self.ui.btnSignal.clicked.connect(self._btn_signal_clicked)
+        self.ui.btnPercent.clicked.connect(self._btn_percent_clicked)
+        self.ui.btnDivision.clicked.connect(self._btn_division_clicked)
+        self.ui.btn7.clicked.connect(self._btn7_clicked)
+        self.ui.btn8.clicked.connect(self._btn8_clicked)
+        self.ui.btn9.clicked.connect(self._btn9_clicked)
+        self.ui.btnMultiplication.clicked.connect(self._btn_times_clicked)
+        self.ui.btn4.clicked.connect(self._btn4_clicked)
+        self.ui.btn5.clicked.connect(self._btn5_clicked)
+        self.ui.btn6.clicked.connect(self._btn6_clicked)
+        self.ui.btnMinus.clicked.connect(self._btn_minus_clicked)
+        self.ui.btn1.clicked.connect(self._btn1_clicked)
+        self.ui.btn2.clicked.connect(self._btn2_clicked)
+        self.ui.btn3.clicked.connect(self._btn3_clicked)
+        self.ui.btnPlus.clicked.connect(self._btn_plus_clicked)
+        self.ui.btn0.clicked.connect(self._btn0_clicked)
+        self.ui.btnDecimal.clicked.connect(self._btn_comma_clicked)
+        self.ui.btnDecimal.setText(self.dec_sep)
+        self.ui.btnEqual.clicked.connect(self._btn_equal_clicked)
+        self.ui.frameMain.keyPressed.connect(self._key_pressed)
 
-    def _key_pressed(self, key_pressed):
+    def _key_pressed(self, key_pressed: Qt.Key):
+        """TODO"""
         if Qt.Key_1 == key_pressed:
             self._btn1_clicked()
         elif Qt.Key_2 == key_pressed:
@@ -132,15 +109,15 @@ class MainQtView(QtView):
 
     def _display(self, value):
         future_digits = len(str(value)) if value else 0
-        digits = self.lcdDisplay.digitCount()
+        digits = self.ui.lcdDisplay.digitCount()
         if future_digits > digits:
-            self.lcdDisplay.setDigitCount(min(future_digits, self.max_digits))
+            self.ui.lcdDisplay.setDigitCount(min(future_digits, self.max_digits))
         elif future_digits <= digits:
-            self.lcdDisplay.setDigitCount(max(future_digits, self.min_digits))
-        self.lcdDisplay.display(value)
+            self.ui.lcdDisplay.setDigitCount(max(future_digits, self.min_digits))
+        self.ui.lcdDisplay.display(value)
 
     def _blink_lcd(self):
-        blink = BlinkLcdThread(self.lcdDisplay)
+        blink = BlinkLcdThread(self.ui.lcdDisplay)
         blink.start()
         self.display_text = ''
 
@@ -154,7 +131,7 @@ class MainQtView(QtView):
         self.display_text = ''
 
     def _append_digit(self, digit: int):
-        self.btnAC.setText('C')
+        self.ui.btnAC.setText('C')
         if not self.display_text or self.display_text == '0':
             self.display_text = str(digit)
         else:
@@ -192,25 +169,25 @@ class MainQtView(QtView):
     def _change_op(self, op: CalcOperations):
         self.op = op
         if self.wait_operand:
-            self.operand = self.lcdDisplay.value()
+            self.operand = self.ui.lcdDisplay.value()
             self.memory_rec = self.operand
             self.wait_operand = False
         elif self.wait_operand2:
-            self.operand2 = self.lcdDisplay.value()
+            self.operand2 = self.ui.lcdDisplay.value()
             self.wait_operand2 = False
         if not self.wait_operand and not self.wait_operand2:
             self._calculate()
-            self.operand = self.lcdDisplay.value()
+            self.operand = self.ui.lcdDisplay.value()
             self.wait_operand2 = True
         self._blink_lcd()
 
     def _btn_equal_clicked(self):
         log.info("Clicked: =")
         if self.wait_operand:
-            self.operand = self.lcdDisplay.value()
+            self.operand = self.ui.lcdDisplay.value()
             self.operand2 = self.last_operand if self.last_operand else None
         elif self.wait_operand2:
-            self.operand2 = self.lcdDisplay.value()
+            self.operand2 = self.ui.lcdDisplay.value()
         if self.operand and self.operand2:
             self._calculate()
         self._soft_reset()
@@ -221,29 +198,29 @@ class MainQtView(QtView):
         if self.memory_rec:
             self.memory_rec = 0
         else:
-            self.lcdDisplay.setDigitCount(self.min_digits)
+            self.ui.lcdDisplay.setDigitCount(self.min_digits)
             self._display(0)
             self._soft_reset()
-            self.btnAC.setText('AC')
+            self.ui.btnAC.setText('AC')
         self.display_text = ''
         self._blink_lcd()
 
     def _btn_signal_clicked(self):
         log.info("Clicked: +-")
-        self._display(self.lcdDisplay.value() * -1)
-        self.display_text = str(self.lcdDisplay.value())
+        self._display(self.ui.lcdDisplay.value() * -1)
+        self.display_text = str(self.ui.lcdDisplay.value())
 
     def _btn_percent_clicked(self):
         log.info("Clicked: %")
         if not self.memory_rec:
-            self._display(self.lcdDisplay.value() / 100)
+            self._display(self.ui.lcdDisplay.value() / 100)
             self.display_text = ''
         else:
             operand1 = self.memory_rec
-            operand2 = self.lcdDisplay.value()
+            operand2 = self.ui.lcdDisplay.value()
             self._display(operand1 * (operand2 / 100))
-            self.display_text = str(self.lcdDisplay.value())
-            self.memory_rec = self.lcdDisplay.value()
+            self.display_text = str(self.ui.lcdDisplay.value())
+            self.memory_rec = self.ui.lcdDisplay.value()
 
     def _btn_division_clicked(self):
         log.info("Clicked: /")

@@ -8,6 +8,5 @@
 __all__ = [
   'promotions', 
   'qt_application', 
-  'qt_finder', 
   'views'
 ]
