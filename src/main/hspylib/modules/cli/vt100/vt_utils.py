@@ -32,9 +32,6 @@ def require_terminal():
     assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
 
 
-require_terminal()
-
-
 def screen_size() -> Optional[List[str]]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
