@@ -300,10 +300,38 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QListWidget" name="lst_prod_settings">
+                 <item row="0" column="2">
+                  <widget class="QToolButton" name="tbtn_prod_settings_del">
+                   <property name="minimumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="3">
+                  <widget class="HListWidget" name="lst_prod_settings">
                    <property name="editTriggers">
-                    <set>QAbstractItemView::CurrentChanged|QAbstractItemView::DoubleClicked</set>
+                    <set>QAbstractItemView::DoubleClicked</set>
+                   </property>
+                   <property name="showDropIndicator" stdset="0">
+                    <bool>false</bool>
                    </property>
                    <property name="modelColumn">
                     <number>0</number>
@@ -394,8 +422,39 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QListWidget" name="lst_cons_settings">
+                 <item row="0" column="2">
+                  <widget class="QToolButton" name="tbtn_cons_settings_del">
+                   <property name="minimumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="3">
+                  <widget class="HListWidget" name="lst_cons_settings">
+                   <property name="editTriggers">
+                    <set>QAbstractItemView::DoubleClicked</set>
+                   </property>
+                   <property name="showDropIndicator" stdset="0">
+                    <bool>false</bool>
+                   </property>
                    <item>
                     <property name="text">
                      <string>bootstrap.servers</string>
@@ -432,6 +491,14 @@
           </layout>
          </widget>
          <widget class="QWidget" name="page_strategy">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>446</width>
+            <height>462</height>
+           </rect>
+          </property>
           <attribute name="label">
            <string>Strategy</string>
           </attribute>
@@ -765,6 +832,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HListWidget</class>
+   <extends>QListWidget</extends>
+   <header>hspylib.modules.qt.promotions.hlistwidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
