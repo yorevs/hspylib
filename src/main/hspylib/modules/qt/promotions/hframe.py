@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.modules.qt.promotions
-      @file: button_label.py
+      @file: hframe.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -15,16 +15,17 @@
 """
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QFrame
 
 
-class ButtonLabel(QLabel):
+class HFrame(QFrame):
     """TODO"""
 
-    clicked = pyqtSignal(int)
+    keyPressed = pyqtSignal(int)
 
     def __init__(self, parent):
         super().__init__(parent=parent)
 
-    def mousePressEvent(self, ev) -> None:  # pylint: disable=unused-argument
-        self.clicked.emit()
+    def keyPressEvent(self, event) -> None:
+        """TODO"""
+        self.keyPressed.emit(event.key())
