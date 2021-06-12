@@ -152,12 +152,14 @@ class MainQtView(QtView):
             if self._is_producer():
                 if self._message():
                     self._producer.start(settings)
+                    self._producer.produce(topics, self._message().split('\n'))
                     self._display_text(f"Started producing to topics {topics}", '#00FF00')
                 else:
                     self._display_error('No message defined')
                     return
             else:
                 self._consumer.start(settings)
+                self._consumer.consume(topics)
                 self._display_text(f"Started consuming from topics {topics}", '#00FF00')
             self.ui.btn_stop.setEnabled(True)
             self.ui.btn_start.setEnabled(False)
