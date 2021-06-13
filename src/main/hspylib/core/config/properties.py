@@ -60,7 +60,7 @@ class Properties:
             str_val += '{}{}={}'.format('\n' if str_val else '', key, value)
         return str_val
 
-    def __getitem__(self, item: str) -> Any:
+    def __getitem__(self, item: str):
         return self.get(item)
 
     def __iter__(self):

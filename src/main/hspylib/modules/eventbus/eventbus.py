@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Any, Callable
+from typing import Any, Callable, List
 
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.eventbus.event import Event
@@ -25,10 +25,7 @@ class EventBus:
 
     _buses = {}
     _subscribers = {}
-    _events = []
-
-
-
+    _events: List[Event] = list()
 
     @classmethod
     def get(cls, bus_name: str) -> Any:
@@ -69,4 +66,4 @@ class EventBus:
                     try:
                         callback(event)
                     except TypeError as err:
-                        syserr(f"EventBud::emit failed => {str(err)}")
+                        syserr(f"{self.__class__.__name__}::emit failed => {str(err)}")

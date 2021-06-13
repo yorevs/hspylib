@@ -1,3 +1,5 @@
+PARTITION_EOF = -191  # KafkaError._PARTITION_EOF
+
 PRODUCER_BUS = 'provider-bus'
 MSG_PROD_EVT = 'message-produced-event'
 

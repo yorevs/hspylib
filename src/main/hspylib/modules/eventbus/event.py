@@ -13,3 +13,6 @@ class Event:
 
     def __eq__(self, other: 'Event'):
         return self.name == other.name and self.kwargs == other.kwargs
+
+    def __getitem__(self, item: str):
+        return self.kwargs[item]
