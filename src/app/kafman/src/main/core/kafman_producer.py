@@ -1,3 +1,5 @@
+import threading
+from time import sleep
 from typing import List
 
 from confluent_kafka.cimpl import Producer
@@ -50,12 +52,23 @@ class KafmanProducer(metaclass=Singleton):
     def produce(self, topics: List[str], messages: List[str]) -> None:
         """TODO"""
         if self.producer is not None:
-            try:
-                for topic in topics:
-                    for msg in messages:
+            print(f"Started producing to: {topics}")
+            tr = threading.Thread(target=self._produce, args=(topics,messages,))
+            tr.setDaemon(True)
+            tr.start()
+
+    def _produce(self, topics: List[str], messages: List[str]):
+        """TODO"""
+        interval = 0.5
+        try:
+            for topic in topics:
+                for msg in messages:
+                    if msg:
+                        print(f"Sending '{msg}' to topic: {topics}")
                         self.producer.produce(topic, msg, callback=self.message_produced)
-                        self.producer.poll(0.5)
-            except KeyboardInterrupt:
-                pass
-            finally:
-                self.producer.flush(30)
+                        sleep(interval)
+                self.producer.poll(interval)
+        except KeyboardInterrupt:
+            print("Keyboard interrupted")
+        finally:
+            self.producer.flush(30)
