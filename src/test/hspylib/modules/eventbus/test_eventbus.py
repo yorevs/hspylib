@@ -18,6 +18,7 @@ import sys
 import unittest
 from unittest.mock import MagicMock
 
+from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import EventBus
 
 
@@ -38,6 +39,8 @@ class TestEventBus(unittest.TestCase):
         self.assertIsNot(bus1, bus2)
 
     def test_should_invoke_all_callbacks_from_subscribed_events(self):
+        expected_ev1 = Event('test-event', age=41, name='hugo')
+        expected_ev2 = Event('test-event', age=25, name='jose')
         bus1 = EventBus.get('test-bus1')
         self.assertIsNotNone(bus1)
         method1 = MagicMock()
@@ -45,11 +48,11 @@ class TestEventBus(unittest.TestCase):
         bus1.subscribe('test-event', method1)
         bus1.subscribe('test-event', method2)
         bus1.emit('test-event', age=41, name='hugo')
-        method1.assert_called_with({'age': 41, 'name': 'hugo'})
-        method2.assert_called_with({'age': 41, 'name': 'hugo'})
+        method1.assert_called_with(expected_ev1)
+        method2.assert_called_with(expected_ev1)
         bus1.emit('test-event', age=25, name='jose')
-        method1.assert_called_with({'age': 25, 'name': 'jose'})
-        method2.assert_called_with({'age': 25, 'name': 'jose'})
+        method1.assert_called_with(expected_ev2)
+        method2.assert_called_with(expected_ev2)
 
     def test_should_not_invoke_callbacks_from_unsubscribed_events(self):
         bus1 = EventBus.get('test-bus1')
