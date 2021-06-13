@@ -1,11 +1,19 @@
-from typing import List
+import ast
+import atexit
+import os
+from datetime import datetime
+from typing import List, Any
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QDialog
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.constants import DATE_TIME_FORMAT
 from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import EventBus
+from hspylib.modules.qt.promotions.hconsole import HConsole
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import PRODUCER_BUS, MSG_PROD_EVT, CONSUMER_BUS, MSG_CONS_EVT
 from kafman.src.main.core.kafman_consumer import KafmanConsumer
@@ -17,8 +25,13 @@ class MainQtView(QtView):
     For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
     """
     UI_FILE = 'main_qt_view.ui'
+    HISTORY_FILE = f"{run_dir()}/resources/kafman-history.txt"
 
     REQUIRED_SETTINGS = ['bootstrap.servers']
+
+    @staticmethod
+    def now():
+        return datetime.now().strftime(DATE_TIME_FORMAT)
 
     def __init__(self):
         # Must come after the initialization above
@@ -30,28 +43,18 @@ class MainQtView(QtView):
         self.provider_bus.subscribe(MSG_PROD_EVT, self._message_produced_event)
         self.consumer_bus = EventBus.get(CONSUMER_BUS)
         self.consumer_bus.subscribe(MSG_CONS_EVT, self._message_consumed_event)
-        self._all_settings = {
-            'producer': {
-                'bootstrap.servers': 'localhost:9092',
-            },
-            'consumer': {
-                'bootstrap.servers': 'localhost:9092',
-                'group.id': 'kafka_test_group',
-                'client.id': 'client-1',
-                'enable.auto.commit': True,
-                'session.timeout.ms': 6000,
-                'default.topic.config': {
-                    'auto.offset.reset': 'smallest'
-                }
-            }
-        }
+        self.console_bus = EventBus.get(HConsole.CONSOLE_BUS)
+        self.console_bus.subscribe(HConsole.TEXT_DISPATCHED_EVT, self._console_print)
+        self._all_settings = None
+        self._display_text(f"Application started at {self.now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
+        self._load_history()
+        atexit.register(self._save_history)
 
     def setup_ui(self) -> None:
         """Connect signals and startup components"""
+        default_font = QFont("Courier New", 13)
         self.ui.main_dialog = self.window.findChild(QDialog, 'main_dialog')
-        self.ui.cmb_topic.addItem('foobar')
-        self._set_current_tab(0)
         self.ui.tool_box.setCurrentIndex(0)
         self.ui.splitter_pane.setSizes([300, 824])
         self.ui.tab_widget.currentChanged.connect(self._set_current_tab)
@@ -59,20 +62,25 @@ class MainQtView(QtView):
         self.ui.btn_start.clicked.connect(self._start)
         self.ui.btn_stop.clicked.connect(self._stop)
         self.ui.cmb_topic.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
+        self.ui.lbl_status_text.setFont(default_font)
         # Producer controls
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_item)
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
+        self.ui.lst_prod_settings.setFont(default_font)
         self.ui.le_prod_settings.editingFinished.connect(self._edit_setting)
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
+        self.ui.txt_producer.setFont(default_font)
         # Consumer controls
         self.ui.tbtn_cons_settings_add.clicked.connect(lambda: self.ui.lst_cons_settings.set_item('new.setting'))
         self.ui.tbtn_cons_settings_del.clicked.connect(self._del_item)
         self.ui.lst_cons_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_cons_settings.set_editable()
+        self.ui.lst_cons_settings.setFont(default_font)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
+        self.ui.txt_consumer.setFont(default_font)
 
     def _topics(self) -> List[str]:
         """TODO"""
@@ -91,9 +99,9 @@ class MainQtView(QtView):
         """TODO"""
         return self.ui.btn_start.text() == 'Produce'
 
-    def _set_current_tab(self, index: int) -> None:
+    def _set_current_tab(self, index: int = 0) -> None:
         """TODO"""
-        index = index or self.ui.tab_widget.currentIndex()
+        index = index if index is not None else self.ui.tab_widget.currentIndex()
         self.ui.btn_start.setText('Produce' if index == 0 else 'Consume')
         self.ui.tab_widget.setCurrentIndex(index)
         self.ui.stk_settings.setCurrentIndex(index)
@@ -128,7 +136,7 @@ class MainQtView(QtView):
                     del self._all_settings[ktype][old_setting]
                 if edt.text():
                     self._all_settings[ktype][setting] = edt.text()
-                    self._display_text(f"{ktype.capitalize()} setting {setting} saved")
+                    self._display_text(f"{ktype.capitalize()} setting '{setting}' saved")
                 else:
                     edt.setText(self._all_settings[ktype][setting])
             else:
@@ -159,19 +167,20 @@ class MainQtView(QtView):
             self.ui.cmb_topic.addItem(','.join(topics))
             if self._is_producer():
                 if self._message():
+                    self._set_current_tab(2)
                     self._producer.start(settings)
                     self._producer.produce(topics, self._message().split('\n'))
-                    self._display_text(f"Started producing to topics {topics}", '#00FF00')
+                    self._display_text(f"Started producing to topics {topics}", QColor('#00FF00'))
                 else:
                     self._display_error('No message defined')
                     return
             else:
+                self._set_current_tab(1)
                 self._consumer.start(settings)
                 self._consumer.consume(topics)
-                self._display_text(f"Started consuming from topics {topics}", '#00FF00')
+                self._display_text(f"Started consuming from topics {topics}", QColor('#00FF00'))
             self.ui.btn_stop.setEnabled(True)
             self.ui.btn_start.setEnabled(False)
-            self.ui.tab_widget.setEnabled(False)
             self.ui.cmb_topic.setEnabled(False)
         else:
             self._display_error('No topic selected')
@@ -180,29 +189,82 @@ class MainQtView(QtView):
         """TODO"""
         if self._is_producer():
             self._producer.stop()
-            self._display_text(f"Production to topic {self._topics()} stopped", '#FFFF00')
+            self._display_text(f"Production to topic {self._topics()} stopped", QColor('#FFFF00'))
         else:
             self._consumer.stop()
-            self._display_text(f"Consumption from topic {self._topics()} stopped", '#FFFF00')
+            self._display_text(f"Production from topic {self._topics()} stopped", QColor('#FFFF00'))
         self.ui.btn_stop.setEnabled(False)
         self.ui.btn_start.setEnabled(True)
-        self.ui.tab_widget.setEnabled(True)
         self.ui.cmb_topic.setEnabled(True)
 
     def _display_error(self, message: str) -> None:
         """TODO"""
-        self.ui.lbl_status_text.setText(f"<font color='#FF0000'>{message}</font>")
+        self._display_text(message, QColor('#FF0000'))
 
-    def _display_text(self, message: str, rgb: str = None) -> None:
+    def _display_text(self, message: str, color: QColor = None) -> None:
         """TODO"""
-        if rgb:
-            self.ui.lbl_status_text.setText(f"<font color='{rgb}'>{message}</font>")
-        else:
-            self.ui.lbl_status_text.setText(message)
+        message = f"<font color='{color.name() if color else '#FFFFFF'}'>{message}</font>"
+        self.ui.lbl_status_text.setText(message)
+        self._console_print(f"-> {message}")
 
     def _message_produced_event(self, event: Event) -> None:
-        pass
+        """TODO"""
+        text = f"{self.now()} [Produced] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'"
+        self._console_print(text, QColor('#2380FA'))
 
     def _message_consumed_event(self, event: Event) -> None:
-        self.ui.txt_consumer.append(
-            f"[Message] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'")
+        """TODO"""
+        text = f"{self.now()} [Consumed] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'"
+        self.ui.txt_consumer.append(text)
+        self._console_print(text, QColor('#FF8C36'))
+
+    def _console_print(self, text_or_event: Any, color: QColor = None) -> None:
+        """TODO"""
+        if isinstance(text_or_event, str):
+            msg = text_or_event
+        elif isinstance(text_or_event, Event):
+            msg = text_or_event['text']
+        else:
+            raise TypeError('Expecting string or Event objects')
+        self.ui.txt_console.put_text(msg, color)
+
+    def _save_history(self):
+        """TODO"""
+        with open(self.HISTORY_FILE, 'w') as fd_history:
+            cmb = self.ui.cmb_topic
+            fd_history.write(f"topics = {[cmb.itemText(i) for i in range(cmb.count())]}\n")
+            fd_history.write(f"settings = {str(self._all_settings)}\n")
+            fd_history.write(f"tab = {self.ui.tab_widget.currentIndex()}\n")
+
+    def _load_history(self):
+        """TODO"""
+        if os.path.exists(self.HISTORY_FILE) and os.stat(self.HISTORY_FILE).st_size > 250:
+            self._display_text('History recovered')
+            with open(self.HISTORY_FILE, 'r') as fd_history:
+                lines = fd_history.readlines()
+                for line in lines:
+                    if line.startswith('topics = '):
+                        list(map(self.ui.cmb_topic.addItem, ast.literal_eval(line.split('=')[1].strip())))
+                    elif line.startswith('settings = '):
+                        self._all_settings = ast.literal_eval(line.split('=')[1].strip())
+                    elif line.startswith('tab = '):
+                        self._set_current_tab(int(line.split('=')[1].strip()))
+        else:
+            self._display_text('History discarded')
+            self.ui.cmb_topic.addItem('foobar')
+            self._all_settings = {
+                'producer': {
+                    'bootstrap.servers': 'localhost:9092',
+                },
+                'consumer': {
+                    'bootstrap.servers': 'localhost:9092',
+                    'group.id': 'kafka_test_group',
+                    'client.id': 'client-1',
+                    'enable.auto.commit': True,
+                    'session.timeout.ms': 6000,
+                    'default.topic.config': {
+                        'auto.offset.reset': 'smallest'
+                    }
+                }
+            }
+            self._set_current_tab()

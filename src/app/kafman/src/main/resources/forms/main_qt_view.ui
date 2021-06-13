@@ -62,6 +62,40 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item row="1" column="7">
+       <widget class="QComboBox" name="cmb_topic">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAtTop</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>0</number>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="4">
        <widget class="QPushButton" name="btn_start">
         <property name="minimumSize">
@@ -122,25 +156,22 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="7">
-       <widget class="QComboBox" name="cmb_topic">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="1" column="8">
+       <widget class="QToolButton" name="tbtn_clear_topics">
         <property name="minimumSize">
          <size>
-          <width>300</width>
-          <height>40</height>
+          <width>30</width>
+          <height>30</height>
          </size>
         </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
-        <property name="editable">
-         <bool>true</bool>
+        <property name="text">
+         <string>x</string>
         </property>
         <property name="iconSize">
          <size>
@@ -206,7 +237,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>446</width>
+            <width>471</width>
             <height>462</height>
            </rect>
           </property>
@@ -229,7 +260,7 @@
            <item row="1" column="0">
             <widget class="QStackedWidget" name="stk_settings">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="stk_settings_producer">
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -290,7 +321,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>+</string>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -315,7 +346,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>-</string>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -384,7 +415,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>+</string>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -437,7 +468,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>-</string>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -495,7 +526,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>446</width>
+            <width>471</width>
             <height>462</height>
            </rect>
           </property>
@@ -567,7 +598,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>446</width>
+            <width>471</width>
             <height>462</height>
            </rect>
           </property>
@@ -760,13 +791,25 @@
           <bool>true</bool>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tab_producer">
           <attribute name="title">
            <string>Producer</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
            <item>
             <widget class="QTextBrowser" name="txt_producer">
              <property name="readOnly">
@@ -784,12 +827,46 @@
            <string>Consumer</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_12">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
            <item>
             <widget class="QTextBrowser" name="txt_consumer">
              <property name="placeholderText">
-              <string>No messages arrived yet</string>
+              <string>No messages consumed yet</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_console">
+          <attribute name="title">
+           <string>Console</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_14">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <item>
+            <widget class="HConsole" name="txt_console"/>
            </item>
           </layout>
          </widget>
@@ -838,7 +915,29 @@
    <extends>QListWidget</extends>
    <header>hspylib.modules.qt.promotions.hlistwidget</header>
   </customwidget>
+  <customwidget>
+   <class>HConsole</class>
+   <extends>QTextBrowser</extends>
+   <header>hspylib.modules.qt.promotions.hconsole</header>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>tbtn_clear_topics</sender>
+   <signal>clicked()</signal>
+   <receiver>cmb_topic</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>995</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>36</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

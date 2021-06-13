@@ -6,6 +6,7 @@ from confluent_kafka.cimpl import Producer, Message, KafkaError
 from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.eventbus.eventbus import EventBus
+from hspylib.modules.qt.promotions.hconsole import HConsole
 from kafman.src.main.core.constants import PRODUCER_BUS, MSG_PROD_EVT, POLLING_INTERVAL
 
 
@@ -18,6 +19,7 @@ class KafmanProducer(metaclass=Singleton):
         self.producer = None
         self.started = False
         self.bus = EventBus.get(PRODUCER_BUS)
+        self.console_bus = EventBus.get(HConsole.CONSOLE_BUS)
 
     def flush(self, timeout: int = 0) -> None:
         """TODO"""
@@ -47,7 +49,6 @@ class KafmanProducer(metaclass=Singleton):
     def produce(self, topics: List[str], messages: List[str]) -> None:
         """TODO"""
         if self.producer is not None:
-            print(f"Started producing to: {topics}")
             tr = threading.Thread(target=self._produce, args=(topics,messages,))
             tr.setDaemon(True)
             tr.start()
@@ -58,19 +59,22 @@ class KafmanProducer(metaclass=Singleton):
             for topic in topics:
                 for msg in messages:
                     if msg:
-                        self.producer.produce(topic, msg, callback=self.message_produced)
+                        self.producer.produce(topic, msg, callback=self._message_produced)
                 self.producer.poll(POLLING_INTERVAL)
         except KeyboardInterrupt:
-            print("Keyboard interrupted")
+            self._console_print("Keyboard interrupted")
         finally:
             self.producer.flush(30)
 
-    def message_produced(self, error: KafkaError, message: Message) -> None:
+    def _message_produced(self, error: KafkaError, message: Message) -> None:
         """TODO"""
         topic = message.topic()
         msg = message.value().decode(Charset.UTF_8.value)
         if error is not None:
-            print(f"Failed to deliver message: {msg}: {error.str()}")
+            self._console_print(f"Failed to deliver message: {msg}: {error.str()}")
         else:
             self.bus.emit(MSG_PROD_EVT, message=msg, topic=topic)
-            print(f"Message produced: message='{msg}' topic={topic}")
+
+    def _console_print(self, text: str) -> None:
+        """TODO"""
+        self.console_bus.emit(HConsole.TEXT_DISPATCHED_EVT, text=text)
