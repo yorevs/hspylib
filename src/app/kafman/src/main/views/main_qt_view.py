@@ -43,6 +43,7 @@ class MainQtView(QtView):
     def setup_ui(self) -> None:
         """Connect signals and startup components"""
         self.ui.main_dialog = self.window.findChild(QDialog, 'main_dialog')
+        self.ui.cmb_topic.addItem('foobar')
         self._set_current_tab(0)
         self.ui.tool_box.setCurrentIndex(0)
         self.ui.splitter_pane.setSizes([300, 824])
