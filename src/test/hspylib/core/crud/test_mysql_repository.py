@@ -21,12 +21,14 @@ import unittest
 
 from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
-from test.hspylib.shared.decorators import integration_test
-from test.hspylib.shared.entity_test import EntityTest
-from test.hspylib.shared.mysql_repository_test import MysqlRepositoryTest
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import syserr
+from test.hspylib.shared.decorators import integration_test
+
+from test.hspylib.shared.mysql_repository_test import MysqlRepositoryTest
+
+from test.hspylib.shared.entity_test import EntityTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -50,10 +52,10 @@ class TestMySqlRepository(unittest.TestCase):
             self.assertTrue(self.repository.is_connected())
             self.repository.execute(
                 f"""CREATE TABLE {self.table} (
-                    UUID varchar(36) NOT NULL, 
-                    COMMENT varchar(128), 
-                    LUCKY_NUMBER int, 
-                    IS_WORKING varchar(5), 
+                    UUID varchar(36) NOT NULL,
+                    COMMENT varchar(128),
+                    LUCKY_NUMBER int,
+                    IS_WORKING varchar(5),
                     PRIMARY KEY (UUID))""", True)
         except (InternalError, OperationalError) as err:
             if f"Table '{self.table}' already exists" in str(err):

@@ -16,6 +16,9 @@
 
 from typing import Any, Callable
 
+from hspylib.core.tools.commons import syserr
+from hspylib.modules.eventbus.event import Event
+
 
 class EventBus:
     """TODO"""
@@ -23,6 +26,9 @@ class EventBus:
     _buses = {}
     _subscribers = {}
     _events = []
+
+
+
 
     @classmethod
     def get(cls, bus_name: str) -> Any:
@@ -53,11 +59,14 @@ class EventBus:
 
     def emit(self, event_name: str, **kwargs) -> None:
         """TODO"""
-        self._events.append({'event': event_name, 'kwargs': kwargs})
+        self._events.append(Event(event_name, **kwargs))
         while len(self._events) > 0:
             event = self._events.pop()
-            cache_key = '{}.{}'.format(self.name, event['event'])
+            cache_key = f"{self.name}.{event.name}"
             subscribers = self._subscribers[cache_key] if cache_key in self._subscribers else None
             if subscribers and len(subscribers['callbacks']) > 0:
                 for callback in subscribers['callbacks']:
-                    callback(event['kwargs'])
+                    try:
+                        callback(event)
+                    except TypeError as err:
+                        syserr(f"EventBud::emit failed => {str(err)}")

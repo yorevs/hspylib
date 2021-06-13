@@ -4,7 +4,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.modules.eventbus.event import Event
+from hspylib.modules.eventbus.eventbus import EventBus
 from hspylib.modules.qt.views.qt_view import QtView
+from kafman.src.main.core.constants import PRODUCER_BUS, MSG_PROD_EVT, CONSUMER_BUS, MSG_CONS_EVT
 from kafman.src.main.core.kafman_consumer import KafmanConsumer
 from kafman.src.main.core.kafman_producer import KafmanProducer
 
@@ -23,6 +26,10 @@ class MainQtView(QtView):
         self.configs = AppConfigs.INSTANCE
         self._consumer = KafmanConsumer()
         self._producer = KafmanProducer()
+        self.provider_bus = EventBus.get(PRODUCER_BUS)
+        self.provider_bus.subscribe(MSG_PROD_EVT, self._message_produced_event)
+        self.consumer_bus = EventBus.get(CONSUMER_BUS)
+        self.consumer_bus.subscribe(MSG_CONS_EVT, self._message_consumed_event)
         self._all_settings = {
             'producer': {
                 'bootstrap.servers': 'localhost:9092',
@@ -31,8 +38,8 @@ class MainQtView(QtView):
                 'bootstrap.servers': 'localhost:9092',
                 'group.id': 'kafka_test_group',
                 'client.id': 'client-1',
-                'enable.auto.commit': 'False',
-                'session.timeout.ms': '6000',
+                'enable.auto.commit': True,
+                'session.timeout.ms': 6000,
                 'default.topic.config': {
                     'auto.offset.reset': 'smallest'
                 }
@@ -102,7 +109,7 @@ class MainQtView(QtView):
         if item and item.text():
             setting = item.text()
             if setting in self._all_settings[ktype]:
-                edt.setText(self._all_settings[ktype][setting])
+                edt.setText(str(self._all_settings[ktype][setting]))
             else:
                 edt.setText('')
                 self._all_settings[ktype][setting] = ''
@@ -192,3 +199,10 @@ class MainQtView(QtView):
             self.ui.lbl_status_text.setText(f"<font color='{rgb}'>{message}</font>")
         else:
             self.ui.lbl_status_text.setText(message)
+
+    def _message_produced_event(self, event: Event) -> None:
+        pass
+
+    def _message_consumed_event(self, event: Event) -> None:
+        self.ui.txt_consumer.append(
+            f"[Message] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'")
