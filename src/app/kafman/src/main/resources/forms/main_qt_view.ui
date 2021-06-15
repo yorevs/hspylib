@@ -63,7 +63,7 @@
        <number>0</number>
       </property>
       <item row="1" column="7">
-       <widget class="QComboBox" name="cmb_topic">
+       <widget class="HComboBox" name="cmb_topic">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -919,6 +919,11 @@
    <class>HConsole</class>
    <extends>QTextBrowser</extends>
    <header>hspylib.modules.qt.promotions.hconsole</header>
+  </customwidget>
+  <customwidget>
+   <class>HComboBox</class>
+   <extends>QComboBox</extends>
+   <header>hspylib.modules.qt.promotions.hcombobox</header>
   </customwidget>
  </customwidgets>
  <resources/>
