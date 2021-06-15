@@ -6,7 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'button_label', 
   'entity_table_model', 
-  'panel'
+  'hconsole', 
+  'hframe', 
+  'hlabel', 
+  'hlistwidget'
 ]

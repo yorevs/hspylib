@@ -1,6 +1,7 @@
 import ast
 import atexit
 import os
+import re
 from datetime import datetime
 from typing import List, Any
 
@@ -61,8 +62,9 @@ class MainQtView(QtView):
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.btn_start.clicked.connect(self._start)
         self.ui.btn_stop.clicked.connect(self._stop)
-        self.ui.cmb_topic.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.lbl_status_text.setFont(default_font)
+        self.ui.cmb_topic.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
+        self.ui.cmb_topic.setDuplicatesEnabled(False)
         # Producer controls
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_item)
@@ -159,12 +161,16 @@ class MainQtView(QtView):
             else:
                 self._display_error(f"Setting {setting} is required")
 
+    def _add_topic(self, topic: str):
+        """TODO"""
+        self.ui.cmb_topic.set_item(topic)
+
     def _start(self) -> None:
         """TODO"""
         settings = self._settings()
         topics = self._topics()
         if topics and all(s in settings for s in self.REQUIRED_SETTINGS):
-            self.ui.cmb_topic.addItem(','.join(topics))
+            self._add_topic(self.ui.cmb_topic.currentText())
             if self._is_producer():
                 if self._message():
                     self._set_current_tab(2)
@@ -243,12 +249,20 @@ class MainQtView(QtView):
             with open(self.HISTORY_FILE, 'r') as fd_history:
                 lines = fd_history.readlines()
                 for line in lines:
-                    if line.startswith('topics = '):
-                        list(map(self.ui.cmb_topic.addItem, ast.literal_eval(line.split('=')[1].strip())))
-                    elif line.startswith('settings = '):
-                        self._all_settings = ast.literal_eval(line.split('=')[1].strip())
-                    elif line.startswith('tab = '):
-                        self._set_current_tab(int(line.split('=')[1].strip()))
+                    mat = re.search(r'(.*) ?= ?(.*)', line)
+                    if mat:
+                        prop_name = mat.group(1).strip()
+                        prop_value = mat.group(2).strip()
+                        if prop_name == 'topics':
+                            list(map(self._add_topic, ast.literal_eval(prop_value)))
+                        elif prop_name == 'settings':
+                            self._all_settings = ast.literal_eval(prop_value)
+                        elif prop_name == 'tab':
+                            try:
+                                self._set_current_tab(int(prop_value))
+                            except ValueError:
+                                self._set_current_tab()
+
         else:
             self._display_text('History discarded')
             self.ui.cmb_topic.addItem('foobar')

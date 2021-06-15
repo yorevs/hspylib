@@ -6,5 +6,6 @@
 """Package initialization."""
 
 __all__ = [
+  'event', 
   'eventbus'
 ]
