@@ -15,7 +15,7 @@
 """
 
 import logging as log
-from typing import Any, Type
+from typing import Any, Type, List
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
 from PyQt5.QtGui import QColor
@@ -44,7 +44,6 @@ class DefaultTableModel(QAbstractTableModel):
 
     def data(self, index: QModelIndex, role: int = ...) -> QVariant:
         """TODO"""
-
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
         str_entity = str(entity) if entity else ''
         if role == Qt.DisplayRole:
@@ -57,7 +56,6 @@ class DefaultTableModel(QAbstractTableModel):
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> QVariant:
         """TODO"""
-
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return self.headers[section].upper() if len(self.headers) >= section else '-'
         if orientation == Qt.Vertical and role == Qt.DisplayRole:
@@ -79,3 +77,8 @@ class DefaultTableModel(QAbstractTableModel):
     def row(self, index: QModelIndex) -> Any:
         """TODO"""
         return self.table_data[index.row()]
+
+    def append_data(self, data: List[Any]):
+        self.insertRow(self.rowCount(QModelIndex()))
+        for item in data:
+            self.setData(self.createIndex(self.count(), 0), item, Qt.EditRole)

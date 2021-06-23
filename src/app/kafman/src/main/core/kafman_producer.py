@@ -33,13 +33,13 @@ class KafmanProducer(metaclass=Singleton):
 
     def start(self, settings: dict) -> None:
         """TODO"""
-        if not self.producer:
+        if self.producer is None:
             self.producer = Producer(settings)
             self.started = True
 
     def stop(self) -> None:
         """TODO"""
-        if self.producer:
+        if self.producer is not None:
             self.purge()
             self.flush()
             del self.producer
@@ -48,7 +48,7 @@ class KafmanProducer(metaclass=Singleton):
 
     def produce(self, topics: List[str], messages: List[str]) -> None:
         """TODO"""
-        if self.producer is not None:
+        if self.started:
             tr = threading.Thread(target=self._produce, args=(topics,messages,))
             tr.setDaemon(True)
             tr.start()
@@ -62,7 +62,7 @@ class KafmanProducer(metaclass=Singleton):
                         self.producer.produce(topic, msg, callback=self._message_produced)
                 self.producer.poll(POLLING_INTERVAL)
         except KeyboardInterrupt:
-            self._console_print("Keyboard interrupted")
+            print("Keyboard interrupted")
         finally:
             self.producer.flush(30)
 
@@ -71,10 +71,6 @@ class KafmanProducer(metaclass=Singleton):
         topic = message.topic()
         msg = message.value().decode(Charset.UTF_8.value)
         if error is not None:
-            self._console_print(f"Failed to deliver message: {msg}: {error.str()}")
+            print(f"Failed to deliver message: {msg}: {error.str()}")
         else:
             self.bus.emit(MSG_PROD_EVT, message=msg, topic=topic)
-
-    def _console_print(self, text: str) -> None:
-        """TODO"""
-        self.console_bus.emit(HConsole.TEXT_DISPATCHED_EVT, text=text)
