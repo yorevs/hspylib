@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from confluent_kafka import Consumer, KafkaError
 
 settings = {

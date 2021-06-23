@@ -2,6 +2,7 @@ import ast
 import atexit
 import os
 import re
+import threading
 from datetime import datetime
 from typing import List, Any
 
@@ -14,7 +15,6 @@ from hspylib.core.tools.commons import run_dir
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
 from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import EventBus
-from hspylib.modules.qt.promotions.hconsole import HConsole
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import PRODUCER_BUS, MSG_PROD_EVT, CONSUMER_BUS, MSG_CONS_EVT
 from kafman.src.main.core.kafman_consumer import KafmanConsumer
@@ -44,8 +44,6 @@ class MainQtView(QtView):
         self.provider_bus.subscribe(MSG_PROD_EVT, self._message_produced_event)
         self.consumer_bus = EventBus.get(CONSUMER_BUS)
         self.consumer_bus.subscribe(MSG_CONS_EVT, self._message_consumed_event)
-        self.console_bus = EventBus.get(HConsole.CONSOLE_BUS)
-        self.console_bus.subscribe(HConsole.TEXT_DISPATCHED_EVT, self._console_print)
         self._all_settings = None
         self._display_text(f"Application started at {self.now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
@@ -82,7 +80,7 @@ class MainQtView(QtView):
         self.ui.lst_cons_settings.setFont(default_font)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
-        self.ui.txt_consumer.setFont(default_font)
+        self.ui.tbl_consumer.setFont(default_font)
 
     def _topics(self) -> List[str]:
         """TODO"""
@@ -198,20 +196,22 @@ class MainQtView(QtView):
             self._display_text(f"Production to topic {self._topics()} stopped", QColor('#FFFF00'))
         else:
             self._consumer.stop()
-            self._display_text(f"Production from topic {self._topics()} stopped", QColor('#FFFF00'))
+            self._display_text(f"Consumption from topic {self._topics()} stopped", QColor('#FFFF00'))
         self.ui.btn_stop.setEnabled(False)
         self.ui.btn_start.setEnabled(True)
         self.ui.cmb_topic.setEnabled(True)
 
     def _display_error(self, message: str) -> None:
         """TODO"""
-        self._display_text(message, QColor('#FF0000'))
+        red = QColor('#FF0000')
+        self._display_text(message, red)
+        self._console_print(f"-> {message}", red)
 
     def _display_text(self, message: str, color: QColor = None) -> None:
         """TODO"""
-        message = f"<font color='{color.name() if color else '#FFFFFF'}'>{message}</font>"
+        message = f"<font color='{color.name() if color else 'white'}'>{message}</font>"
         self.ui.lbl_status_text.setText(message)
-        self._console_print(f"-> {message}")
+        self._console_print(f"-> {message}", color)
 
     def _message_produced_event(self, event: Event) -> None:
         """TODO"""
@@ -221,7 +221,7 @@ class MainQtView(QtView):
     def _message_consumed_event(self, event: Event) -> None:
         """TODO"""
         text = f"{self.now()} [Consumed] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'"
-        self.ui.txt_consumer.append(text)
+        # self.ui.tbl_consumer.append(text)
         self._console_print(text, QColor('#FF8C36'))
 
     def _console_print(self, text_or_event: Any, color: QColor = None) -> None:
