@@ -811,7 +811,7 @@
             <number>5</number>
            </property>
            <item>
-            <widget class="QTextBrowser" name="txt_producer">
+            <widget class="HConsole" name="txt_producer">
              <property name="readOnly">
               <bool>false</bool>
              </property>
@@ -840,9 +840,9 @@
             <number>5</number>
            </property>
            <item>
-            <widget class="QTextBrowser" name="txt_consumer">
-             <property name="placeholderText">
-              <string>No messages consumed yet</string>
+            <widget class="QTableView" name="tbl_consumer">
+             <property name="sortingEnabled">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
