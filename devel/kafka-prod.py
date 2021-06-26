@@ -22,7 +22,7 @@ if __name__ == '__main__':
         for val in xrange(1, 1000):
             p.produce('foobar', 'myvalue #{0}'.format(val), callback=acked)
             p.poll(0.5)
-            sleep(0.3)
+            sleep(0.011)
 
     except KeyboardInterrupt:
         pass
