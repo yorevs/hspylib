@@ -19,9 +19,10 @@ import os
 import pathlib
 import re
 import sys
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import Any, List, Optional, Tuple, Type
 
+from hspylib.core.tools.constants import DATE_TIME_FORMAT
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
@@ -37,6 +38,7 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 
 
 def _reset_logger():
+    """TODO"""
     # Remove handlers if there is any.
     root = log.getLogger()
     if root.handlers:
@@ -78,6 +80,14 @@ def is_debugging():
         if frame[1].endswith("pydevd.py"):
             return True
     return False
+
+
+def now() -> str:
+    """TODO"""
+    return datetime.now().strftime(DATE_TIME_FORMAT)
+
+def now_ms() -> int:
+    return int(datetime.now().timestamp())
 
 
 def read_version(version_filepath: str = ".version") -> Tuple:
@@ -130,7 +140,8 @@ def class_attribute_names(clazz: Type) -> Optional[Tuple]:
     """TODO
     :param clazz: TODO
     """
-    return tuple(vars(clazz()).keys()) if clazz else None
+    instance = clazz()
+    return tuple(vars(instance).keys()) if clazz else None
 
 
 def class_attribute_values(instance: dict) -> Optional[Tuple]:
