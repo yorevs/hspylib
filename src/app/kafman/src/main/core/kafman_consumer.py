@@ -1,23 +1,24 @@
 import threading
 from typing import List
 
+from PyQt5.QtCore import pyqtSignal, QObject
 from confluent_kafka.cimpl import Consumer
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.modules.eventbus.eventbus import EventBus
-from kafman.src.main.core.constants import CONSUMER_BUS, MSG_CONS_EVT, POLLING_INTERVAL, PARTITION_EOF
+from kafman.src.main.core.constants import POLLING_INTERVAL, PARTITION_EOF
 
 
-class KafmanConsumer(metaclass=Singleton):
+class KafmanConsumer(QObject):
     """TODO"""
+
+    messageConsumed = pyqtSignal(str)
+
 
     def __init__(self):
         super().__init__()
         self.topic = None
         self.consumer = None
         self.started = False
-        self.bus = EventBus.get(CONSUMER_BUS)
 
     def start(self, settings: dict) -> None:
         """TODO"""
@@ -49,7 +50,7 @@ class KafmanConsumer(metaclass=Singleton):
                     continue
                 elif not message.error():
                     msg = message.value().decode(Charset.UTF_8.value)
-                    self.bus.emit(MSG_CONS_EVT, message=msg, topic=message.topic())
+                    self.messageConsumed.emit(f"topic={message.topic()} message={msg}")
                 elif message.error().code() == PARTITION_EOF:
                     print(f"End of partition reached {message.topic()}/{message.partition()}")
                 else:

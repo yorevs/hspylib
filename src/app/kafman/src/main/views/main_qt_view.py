@@ -2,9 +2,8 @@ import ast
 import atexit
 import os
 import re
-import threading
 from datetime import datetime
-from typing import List, Any
+from typing import List
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
@@ -13,10 +12,7 @@ from PyQt5.QtWidgets import QDialog
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import run_dir
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
-from hspylib.modules.eventbus.event import Event
-from hspylib.modules.eventbus.eventbus import EventBus
 from hspylib.modules.qt.views.qt_view import QtView
-from kafman.src.main.core.constants import PRODUCER_BUS, MSG_PROD_EVT, CONSUMER_BUS, MSG_CONS_EVT
 from kafman.src.main.core.kafman_consumer import KafmanConsumer
 from kafman.src.main.core.kafman_producer import KafmanProducer
 
@@ -39,11 +35,9 @@ class MainQtView(QtView):
         super().__init__(self.UI_FILE)
         self.configs = AppConfigs.INSTANCE
         self._consumer = KafmanConsumer()
+        self._consumer.messageConsumed.connect(self._message_consumed_event)
         self._producer = KafmanProducer()
-        self.provider_bus = EventBus.get(PRODUCER_BUS)
-        self.provider_bus.subscribe(MSG_PROD_EVT, self._message_produced_event)
-        self.consumer_bus = EventBus.get(CONSUMER_BUS)
-        self.consumer_bus.subscribe(MSG_CONS_EVT, self._message_consumed_event)
+        self._producer.messageProduced.connect(self._message_produced_event)
         self._all_settings = None
         self._display_text(f"Application started at {self.now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
@@ -213,26 +207,24 @@ class MainQtView(QtView):
         self.ui.lbl_status_text.setText(message)
         self._console_print(f"-> {message}", color)
 
-    def _message_produced_event(self, event: Event) -> None:
+    def _message_produced_event(self, event: str) -> None:
         """TODO"""
-        text = f"{self.now()} [Produced] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'"
+        text = f"{self.now()} [Produced] {event}"
         self._console_print(text, QColor('#2380FA'))
 
-    def _message_consumed_event(self, event: Event) -> None:
+    def _message_consumed_event(self, event: str) -> None:
         """TODO"""
-        text = f"{self.now()} [Consumed] topic='{event.kwargs['topic']}'  message='{event.kwargs['message']}'"
+        text = f"{self.now()} [Consumed] {event}"
         # self.ui.tbl_consumer.append(text)
         self._console_print(text, QColor('#FF8C36'))
 
-    def _console_print(self, text_or_event: Any, color: QColor = None) -> None:
+    def _console_print(self, text: str, color: QColor = None) -> None:
         """TODO"""
-        if isinstance(text_or_event, str):
-            msg = text_or_event
-        elif isinstance(text_or_event, Event):
-            msg = text_or_event['text']
+        if isinstance(text, str):
+            msg = text
         else:
             raise TypeError('Expecting string or Event objects')
-        self.ui.txt_console.put_text(msg, color)
+        self.ui.txt_console.add_text(msg, color)
 
     def _save_history(self):
         """TODO"""

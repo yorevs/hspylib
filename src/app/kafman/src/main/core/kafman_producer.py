@@ -1,25 +1,23 @@
 import threading
 from typing import List
 
+from PyQt5.QtCore import pyqtSignal, QObject
 from confluent_kafka.cimpl import Producer, Message, KafkaError
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.modules.eventbus.eventbus import EventBus
-from hspylib.modules.qt.promotions.hconsole import HConsole
-from kafman.src.main.core.constants import PRODUCER_BUS, MSG_PROD_EVT, POLLING_INTERVAL
+from kafman.src.main.core.constants import POLLING_INTERVAL
 
 
-class KafmanProducer(metaclass=Singleton):
+class KafmanProducer(QObject):
     """TODO"""
+
+    messageProduced = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
         self.topic = None
         self.producer = None
         self.started = False
-        self.bus = EventBus.get(PRODUCER_BUS)
-        self.console_bus = EventBus.get(HConsole.CONSOLE_BUS)
 
     def flush(self, timeout: int = 0) -> None:
         """TODO"""
@@ -68,9 +66,8 @@ class KafmanProducer(metaclass=Singleton):
 
     def _message_produced(self, error: KafkaError, message: Message) -> None:
         """TODO"""
-        topic = message.topic()
         msg = message.value().decode(Charset.UTF_8.value)
         if error is not None:
             print(f"Failed to deliver message: {msg}: {error.str()}")
         else:
-            self.bus.emit(MSG_PROD_EVT, message=msg, topic=topic)
+            self.messageProduced.emit(f"topic={message.topic()} message={msg}")
