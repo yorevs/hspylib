@@ -2,19 +2,19 @@ import ast
 import atexit
 import os
 import re
-from datetime import datetime
 from typing import List
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QHeaderView
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import run_dir
-from hspylib.core.tools.constants import DATE_TIME_FORMAT
+from hspylib.core.tools.commons import run_dir, now, now_ms
+from hspylib.modules.qt.promotions.entity_table_model import EntityTableModel
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.kafman_consumer import KafmanConsumer
 from kafman.src.main.core.kafman_producer import KafmanProducer
+from kafman.src.main.entity.message_row import MessageRow
 
 
 class MainQtView(QtView):
@@ -26,10 +26,6 @@ class MainQtView(QtView):
 
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
-    @staticmethod
-    def now():
-        return datetime.now().strftime(DATE_TIME_FORMAT)
-
     def __init__(self):
         # Must come after the initialization above
         super().__init__(self.UI_FILE)
@@ -39,7 +35,7 @@ class MainQtView(QtView):
         self._producer = KafmanProducer()
         self._producer.messageProduced.connect(self._message_produced_event)
         self._all_settings = None
-        self._display_text(f"Application started at {self.now()}<br/>{'-' * 45}<br/>")
+        self._display_text(f"Application started at {now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
         self._load_history()
         atexit.register(self._save_history)
@@ -75,6 +71,10 @@ class MainQtView(QtView):
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
         self.ui.tbl_consumer.setFont(default_font)
+        self.ui.tbl_consumer.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.ui.tbl_consumer.setModel(EntityTableModel(
+            self.ui.tbl_consumer, MessageRow, ['Timestamp', 'Topic', 'Message']
+        ))
 
     def _topics(self) -> List[str]:
         """TODO"""
@@ -195,11 +195,12 @@ class MainQtView(QtView):
         self.ui.btn_start.setEnabled(True)
         self.ui.cmb_topic.setEnabled(True)
 
-    def _display_error(self, message: str) -> None:
+    def _display_error(self, message: str, add_console: bool = False) -> None:
         """TODO"""
         red = QColor('#FF0000')
         self._display_text(message, red)
-        self._console_print(f"-> {message}", red)
+        if add_console:
+            self._console_print(f"-> {message}", red)
 
     def _display_text(self, message: str, color: QColor = None) -> None:
         """TODO"""
@@ -207,15 +208,15 @@ class MainQtView(QtView):
         self.ui.lbl_status_text.setText(message)
         self._console_print(f"-> {message}", color)
 
-    def _message_produced_event(self, event: str) -> None:
+    def _message_produced_event(self, topic: str, event: str) -> None:
         """TODO"""
-        text = f"{self.now()} [Produced] {event}"
+        text = f"{now()} [Produced] {event}"
         self._console_print(text, QColor('#2380FA'))
 
-    def _message_consumed_event(self, event: str) -> None:
+    def _message_consumed_event(self, topic: str, event: str) -> None:
         """TODO"""
-        text = f"{self.now()} [Consumed] {event}"
-        # self.ui.tbl_consumer.append(text)
+        text = f"{now()} [Consumed] {event}"
+        self.ui.tbl_consumer.model().append_data([MessageRow(now_ms(), topic, event)])
         self._console_print(text, QColor('#FF8C36'))
 
     def _console_print(self, text: str, color: QColor = None) -> None:
@@ -224,7 +225,7 @@ class MainQtView(QtView):
             msg = text
         else:
             raise TypeError('Expecting string or Event objects')
-        self.ui.txt_console.add_text(msg, color)
+        self.ui.txt_console.push_text(msg, color)
 
     def _save_history(self):
         """TODO"""

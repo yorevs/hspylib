@@ -11,7 +11,7 @@ from kafman.src.main.core.constants import POLLING_INTERVAL, PARTITION_EOF
 class KafmanConsumer(QObject):
     """TODO"""
 
-    messageConsumed = pyqtSignal(str)
+    messageConsumed = pyqtSignal(str, str)
 
 
     def __init__(self):
@@ -50,7 +50,7 @@ class KafmanConsumer(QObject):
                     continue
                 elif not message.error():
                     msg = message.value().decode(Charset.UTF_8.value)
-                    self.messageConsumed.emit(f"topic={message.topic()} message={msg}")
+                    self.messageConsumed.emit(message.topic(), msg)
                 elif message.error().code() == PARTITION_EOF:
                     print(f"End of partition reached {message.topic()}/{message.partition()}")
                 else:

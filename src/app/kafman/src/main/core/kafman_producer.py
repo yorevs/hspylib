@@ -11,7 +11,7 @@ from kafman.src.main.core.constants import POLLING_INTERVAL
 class KafmanProducer(QObject):
     """TODO"""
 
-    messageProduced = pyqtSignal(str)
+    messageProduced = pyqtSignal(str, str)
 
     def __init__(self):
         super().__init__()
@@ -70,4 +70,4 @@ class KafmanProducer(QObject):
         if error is not None:
             print(f"Failed to deliver message: {msg}: {error.str()}")
         else:
-            self.messageProduced.emit(f"topic={message.topic()} message={msg}")
+            self.messageProduced.emit(message.topic(), msg)
