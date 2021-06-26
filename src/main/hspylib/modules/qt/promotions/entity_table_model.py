@@ -24,16 +24,16 @@ from PyQt5.QtWidgets import QTableView
 from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
 
 
-class DefaultTableModel(QAbstractTableModel):
+class EntityTableModel(QAbstractTableModel):
     """TODO"""
 
     def __init__(
         self,
+        parent: QTableView,
         clazz: Type,
         headers: list = None,
-        cell_alignments: list = None,
         table_data: list = None,
-        parent: QTableView = None):
+        cell_alignments: list = None):
 
         QAbstractTableModel.__init__(self, parent)
         self.clazz = clazz
@@ -64,7 +64,10 @@ class DefaultTableModel(QAbstractTableModel):
 
     def headers_by_entity(self) -> tuple:
         """TODO"""
-        return class_attribute_names(self.clazz)
+        try:
+            return class_attribute_names(self.clazz)
+        except TypeError:
+            raise TypeError('Default values required for entity header names')
 
     def rowCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""
@@ -79,6 +82,7 @@ class DefaultTableModel(QAbstractTableModel):
         return self.table_data[index.row()]
 
     def append_data(self, data: List[Any]):
-        self.insertRow(self.rowCount(QModelIndex()))
+        """TODO"""
         for item in data:
-            self.setData(self.createIndex(self.count(), 0), item, Qt.EditRole)
+            self.table_data.append(item)
+        self.layoutChanged.emit()
