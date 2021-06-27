@@ -18,19 +18,20 @@ from abc import ABC
 from typing import Tuple, Type
 
 from PyQt5 import uic
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
 
-from hspylib.core.tools.commons import run_dir, new_dynamic_object
+from hspylib.core.tools.commons import run_dir
 
 
 class QtView(ABC):
     """TODO"""
 
     @staticmethod
-    def load_ui_form(
+    def load_form(
         form_file: str,
         load_dir: str = f"{run_dir()}/resources/forms/") -> Tuple[Type, Type]:
-        """TODO"""
+        """Load the ui form from the .ui file"""
 
         assert os.path.exists(load_dir) and os.path.isdir(load_dir), \
             f"Load dir {load_dir} does not exist or is not a folder"
@@ -41,21 +42,18 @@ class QtView(ABC):
         return uic.loadUiType(filepath)
 
     def __init__(self, ui_file: str, parent: QWidget = None):
-        form, window = self.load_ui_form(ui_file)
+        ui_clazz, window_clazz = self.load_form(ui_file)
         # Must come after the initialization above {
-        self.window = window()
-        self.form = form()
+        self.window, self.ui = window_clazz(), ui_clazz()
         # }
-        self.form.setupUi(self.window)
+        self.ui.setupUi(self.window)
         self.parent = parent
-        self.ui = new_dynamic_object('ViewWidgets')
-        self._find_widgets()
 
     def show(self) -> None:
-        """TODO"""
+        """Show the main widget"""
         self.window.show()
 
-    def _find_widgets(self):
-        """TODO"""
-        for widget in self.window.findChildren(QWidget):
-            setattr(self.ui, widget.objectName(), widget)
+    def set_default_font(self, default_font: QFont = QFont('Courier New', 14)):
+        """Set font for all UI components at once"""
+        widgets = list(filter(lambda o: hasattr(getattr(self.ui, o), 'setFont'), vars(self.ui)))
+        list(map(lambda w: getattr(self.ui, w).setFont(default_font), widgets))

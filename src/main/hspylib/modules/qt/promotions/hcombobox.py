@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import QComboBox
+from typing import Optional
+
+from PyQt5.QtWidgets import QComboBox, QWidget
 
 
 class HComboBox(QComboBox):
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
+    def __init__(self, parent: Optional[QWidget]):
+        super().__init__(parent)
 
     def set_item(self, item: str) -> None:
         """TODO"""

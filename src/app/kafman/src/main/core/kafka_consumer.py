@@ -5,14 +5,14 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from confluent_kafka.cimpl import Consumer
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import syserr
 from kafman.src.main.core.constants import POLLING_INTERVAL, PARTITION_EOF
 
 
-class KafmanConsumer(QObject):
+class KafkaConsumer(QObject):
     """TODO"""
 
     messageConsumed = pyqtSignal(str, str)
-
 
     def __init__(self):
         super().__init__()
@@ -52,11 +52,11 @@ class KafmanConsumer(QObject):
                     msg = message.value().decode(Charset.UTF_8.value)
                     self.messageConsumed.emit(message.topic(), msg)
                 elif message.error().code() == PARTITION_EOF:
-                    print(f"End of partition reached {message.topic()}/{message.partition()}")
+                    syserr(f"End of partition reached {message.topic()}/{message.partition()}")
                 else:
-                    print(f"Error occurred: {message.error().str()}")
+                    syserr(f"Error occurred: {message.error().str()}")
         except KeyboardInterrupt:
-            print("Keyboard interrupted")
+            syserr("Keyboard interrupted")
         finally:
             if self.consumer:
                 self.consumer.close()

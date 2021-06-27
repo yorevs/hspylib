@@ -13,9 +13,10 @@
 
    Copyright 2021, HSPyLib team
 """
+from typing import Optional
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QWidget
 
 
 class HLabel(QLabel):
@@ -23,8 +24,8 @@ class HLabel(QLabel):
 
     clicked = pyqtSignal(int)
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
+    def __init__(self, parent: Optional[QWidget]):
+        super().__init__(parent)
 
     def mousePressEvent(self, ev) -> None:  # pylint: disable=unused-argument
         self.clicked.emit()

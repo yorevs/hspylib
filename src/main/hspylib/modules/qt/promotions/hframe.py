@@ -13,9 +13,11 @@
 
    Copyright 2021, HSPyLib team
 """
+from typing import Optional
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QFrame
+from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtWidgets import QFrame, QWidget
 
 
 class HFrame(QFrame):
@@ -23,9 +25,9 @@ class HFrame(QFrame):
 
     keyPressed = pyqtSignal(int)
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
+    def __init__(self, parent: Optional[QWidget]):
+        super().__init__(parent)
 
-    def keyPressEvent(self, event) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         """TODO"""
         self.keyPressed.emit(event.key())

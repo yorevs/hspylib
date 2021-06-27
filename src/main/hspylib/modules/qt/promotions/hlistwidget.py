@@ -13,10 +13,10 @@
 
    Copyright 2021, HSPyLib team
 """
-from typing import List
+from typing import List, Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem
+from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget
 
 
 class HListWidget(QListWidget):
@@ -29,8 +29,8 @@ class HListWidget(QListWidget):
         """TODO"""
         return flags ^ flag if flags & flag == flag else flags
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
+    def __init__(self, parent: Optional[QWidget]):
+        super().__init__(parent)
         self.editable = False
         self.selectable = True
         self._items = []
