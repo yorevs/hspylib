@@ -11,9 +11,9 @@ class QtApplication(ABC):
     def __init__(self, main_view: V):
         super().__init__()
         self.app = QApplication([])
-        self.ui = main_view()
+        self.main_view = main_view()
 
     def run(self) -> int:
         """Show the main Qt application Widget"""
-        self.ui.show()
+        self.main_view.show()
         return self.app.exec_()

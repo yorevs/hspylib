@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.modules.qt.promotions
-      @file: entity_table_model.py
+      @file: htablemodel.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -15,7 +15,8 @@
 """
 
 import logging as log
-from typing import Any, Type, List
+import collections
+from typing import Any, Type, List, Optional
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
 from PyQt5.QtGui import QColor
@@ -24,40 +25,50 @@ from PyQt5.QtWidgets import QTableView
 from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
 
 
-class EntityTableModel(QAbstractTableModel):
+class HTableModel(QAbstractTableModel):
     """TODO"""
 
     def __init__(
         self,
-        parent: QTableView,
+        parent: Optional[QTableView],
         clazz: Type,
-        headers: list = None,
-        table_data: list = None,
-        cell_alignments: list = None):
+        headers: List[str] = None,
+        table_data: List[Any] = None,
+        cell_alignments: List[Qt.AlignmentFlag] = None,
+        max_rows: int = 1000):
 
         QAbstractTableModel.__init__(self, parent)
         self.clazz = clazz
-        self.table_data = table_data or []
+        self.table_data = collections.deque(maxlen=max_rows)
+        list(map(self.table_data.append, table_data or []))
         self.headers = headers or self.headers_by_entity()
         self.cell_alignments = cell_alignments or []
         log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
+        parent.setModel(self)
 
-    def data(self, index: QModelIndex, role: int = ...) -> QVariant:
+    def data(
+        self,
+        index: QModelIndex,
+        role: int = ...) -> QVariant:
         """TODO"""
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
         str_entity = str(entity) if entity else ''
         if role == Qt.DisplayRole:
             return QVariant(str_entity)
         if role == Qt.TextAlignmentRole:
-            return self.cell_alignments[index.column()] if self.cell_alignments else Qt.AlignLeft
+            return QVariant(self.cell_alignments[index.column()]) if self.cell_alignments else Qt.AlignLeft
         if role == Qt.BackgroundColorRole:
             return QVariant() if entity else QColor(230, 230, 230)
         return QVariant()
 
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> QVariant:
+    def headerData(
+        self,
+        section: int,
+        orientation: Qt.Orientation,
+        role: int = ...) -> QVariant:
         """TODO"""
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return self.headers[section].upper() if len(self.headers) >= section else '-'
+            return QVariant(self.headers[section].upper()) if len(self.headers) >= section else QVariant('-')
         if orientation == Qt.Vertical and role == Qt.DisplayRole:
             return QVariant(str(section))
         return QVariant()
@@ -81,8 +92,13 @@ class EntityTableModel(QAbstractTableModel):
         """TODO"""
         return self.table_data[index.row()]
 
-    def append_data(self, data: List[Any]):
+    def push_data(self, data: List[Any]):
         """TODO"""
         for item in data:
             self.table_data.append(item)
+        self.layoutChanged.emit()
+
+    def clear(self):
+        """TODO"""
+        self.table_data.clear()
         self.layoutChanged.emit()

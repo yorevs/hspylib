@@ -66,7 +66,7 @@ class MainQtView(QtView):
         self.ui.btnDecimal.clicked.connect(self._btn_comma_clicked)
         self.ui.btnDecimal.setText(self.dec_sep)
         self.ui.btnEqual.clicked.connect(self._btn_equal_clicked)
-        self.ui.frameMain.keyPressed.connect(self._key_pressed)
+        self.ui.frameMain.lineAdded.connect(self._key_pressed)
 
     def _key_pressed(self, key_pressed: Qt.Key) -> None:
         """TODO"""
