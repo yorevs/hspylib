@@ -119,7 +119,6 @@ class MainQtView(QtView):
             self.ui.btn_action.setText('Produce' if self._is_producer() else 'Consume')
         self.ui.tab_widget.setCurrentIndex(index)
         self.ui.stk_settings.setCurrentIndex(index)
-        self.ui.stk_schema.setCurrentIndex(index)
         self.ui.stk_statistics.setCurrentIndex(index)
 
     def _get_setting(self) -> None:
@@ -182,9 +181,11 @@ class MainQtView(QtView):
         if self._started:
             self._stop()
             self.ui.btn_action.setText('Produce' if self._is_producer() else 'Consume')
+            self.ui.tool_box.setCurrentIndex(0)
         else:
             if self._start():
                 self.ui.btn_action.setText('Stop')
+                self.ui.tool_box.setCurrentIndex(2)
 
     def _start(self) -> bool:
         """Start consuming or producing (whatever is selected)."""
@@ -242,7 +243,7 @@ class MainQtView(QtView):
             self._console_print(f"-> {message}", color)
 
     def _update_stats(self, event: Event):
-        """TODO"""
+        """Update the consumer and producer statistics"""
         self.ui.lbl_stats_produced.setText(str(event['stats'][0]))
         self.ui.lbl_stats_produced_ps.setText(str(event['stats'][2]))
         self.ui.lbl_stats_consumed.setText(str(event['stats'][1]))
