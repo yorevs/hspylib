@@ -1,4 +1,4 @@
-import typing
+from typing import Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor, QTextCursor, QCursor
@@ -8,12 +8,12 @@ from PyQt5.QtWidgets import QWidget, QTextBrowser
 class HConsole(QTextBrowser):
     """TODO"""
 
-    def __init__(self, parent: typing.Optional[QWidget], buffer_size: int = 1000):
+    def __init__(self, parent: Optional[QWidget], max_lines: int = 1000):
         super().__init__(parent)
         self.setPlaceholderText('No messages received yet')
         self.setReadOnly(True)
         self.setFont(QFont("Courier New", 14))
-        self._buffer_size = buffer_size
+        self._max_lines = max_lines
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._context_menu)
 
@@ -21,12 +21,16 @@ class HConsole(QTextBrowser):
         """Return the number of lines the console contains"""
         return self.document().blockCount()
 
+    def is_empty(self) -> bool:
+        """Return true if console has no lines"""
+        return self.line_count() == 0
+
     def push_text(self, text: str, color: QColor = None) -> None:
         """Push text to the console. If the maximum buffer size reached,
            the first lines are erased
         """
         fmt_text = f"<font color={color.name() if color else '#FFFFFF'}>{text}</font>"
-        if self.line_count() + 1 > self._buffer_size:
+        if self.line_count() + 1 > self._max_lines:
             self.pop_text()
         self.append(fmt_text)
 
@@ -43,7 +47,7 @@ class HConsole(QTextBrowser):
 
         return selected_text
 
-    def _context_menu(self):
+    def _context_menu(self) -> None:
         """Display the custom context menu"""
         self._menu = self.createStandardContextMenu()
         self._menu.addSeparator()

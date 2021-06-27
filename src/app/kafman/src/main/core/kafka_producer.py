@@ -1,14 +1,15 @@
 import threading
-from typing import List
+from typing import List, Any
 
 from PyQt5.QtCore import pyqtSignal, QObject
-from confluent_kafka.cimpl import Producer, Message, KafkaError
+from confluent_kafka.cimpl import Producer, KafkaError
 
 from hspylib.core.enums.charset import Charset
-from kafman.src.main.core.constants import POLLING_INTERVAL
+from hspylib.core.tools.commons import syserr
+from kafman.src.main.core.constants import POLLING_INTERVAL, FLUSH_WAIT_TIME
 
 
-class KafmanProducer(QObject):
+class KafkaProducer(QObject):
     """TODO"""
 
     messageProduced = pyqtSignal(str, str)
@@ -50,6 +51,7 @@ class KafmanProducer(QObject):
             tr = threading.Thread(target=self._produce, args=(topics,messages,))
             tr.setDaemon(True)
             tr.start()
+            tr.join()
 
     def _produce(self, topics: List[str], messages: List[str]):
         """TODO"""
@@ -57,17 +59,17 @@ class KafmanProducer(QObject):
             for topic in topics:
                 for msg in messages:
                     if msg:
-                        self.producer.produce(topic, msg, callback=self._message_produced)
+                        self.producer.produce(topic, msg, callback=self._cb_message_produced)
                 self.producer.poll(POLLING_INTERVAL)
         except KeyboardInterrupt:
-            print("Keyboard interrupted")
+            syserr("Keyboard interrupted")
         finally:
-            self.producer.flush(30)
+            self.producer.flush(FLUSH_WAIT_TIME)
 
-    def _message_produced(self, error: KafkaError, message: Message) -> None:
+    def _cb_message_produced(self, error: KafkaError, message: Any) -> None:
         """TODO"""
         msg = message.value().decode(Charset.UTF_8.value)
         if error is not None:
-            print(f"Failed to deliver message: {msg}: {error.str()}")
+            syserr(f"Failed to deliver message: {msg}: {error.str()}")
         else:
             self.messageProduced.emit(message.topic(), msg)
