@@ -20,9 +20,9 @@ if __name__ == '__main__':
     p = Producer(settings)
     try:
         for val in xrange(1, 1000):
-            p.produce('foobar', 'myvalue #{0}'.format(val), callback=acked)
+            p.produce('foobar', 'My-Value #{0}'.format(val), callback=acked)
             p.poll(0.5)
-            sleep(0.011)
+            sleep(0.5)
 
     except KeyboardInterrupt:
         pass

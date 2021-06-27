@@ -66,4 +66,4 @@ class EventBus:
                     try:
                         callback(event)
                     except TypeError as err:
-                        syserr(f"{self.__class__.__name__}::emit failed => {str(err)}")
+                        syserr(f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}")
