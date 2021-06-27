@@ -11,12 +11,15 @@ from PyQt5.QtWidgets import QHeaderView
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version
+from hspylib.modules.eventbus.event import Event
+from hspylib.modules.eventbus.eventbus import EventBus
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor
 from kafman.src.main.core.kafka_consumer import KafkaConsumer
 from kafman.src.main.core.kafka_producer import KafkaProducer
 from kafman.src.main.core.message_row import MessageRow
+from kafman.src.main.core.statistics import Statistics
 
 
 class MainQtView(QtView):
@@ -50,6 +53,8 @@ class MainQtView(QtView):
         self._producer = KafkaProducer()
         self._producer.messageProduced.connect(self._message_produced)
         self._all_settings = None
+        self._stats = Statistics()
+        self._stats_bus = EventBus.get('kafka-statistics')
         self._display_text(f"Application started at {now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
         self._load_history()
@@ -58,6 +63,7 @@ class MainQtView(QtView):
     def setup_ui(self) -> None:
         """Connect signals and startup components"""
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
+        self._stats_bus.subscribe('stats-report', self._update_stats)
         self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
         self.window.resize(1024, 768)
         self.ui.splitter_pane.setSizes([350, 824])
@@ -113,7 +119,7 @@ class MainQtView(QtView):
             self.ui.btn_action.setText('Produce' if self._is_producer() else 'Consume')
         self.ui.tab_widget.setCurrentIndex(index)
         self.ui.stk_settings.setCurrentIndex(index)
-        self.ui.stk_strategy.setCurrentIndex(index)
+        self.ui.stk_schema.setCurrentIndex(index)
         self.ui.stk_statistics.setCurrentIndex(index)
 
     def _get_setting(self) -> None:
@@ -235,16 +241,27 @@ class MainQtView(QtView):
         if add_console:
             self._console_print(f"-> {message}", color)
 
+    def _update_stats(self, event: Event):
+        """TODO"""
+        self.ui.lbl_stats_produced.setText(str(event['stats'][0]))
+        self.ui.lbl_stats_produced_ps.setText(str(event['stats'][2]))
+        self.ui.lbl_stats_consumed.setText(str(event['stats'][1]))
+        self.ui.lbl_stats_consumed_ps.setText(str(event['stats'][3]))
+        self.ui.lbl_stats_produced_avg.setText(str(event['stats'][4]))
+        self.ui.lbl_stats_consumed_avg.setText(str(event['stats'][5]))
+
     def _message_produced(self, topic: str, message: str) -> None:
         """Callback when a kafka message has been produced."""
         text = f"-> Produced timestamp={now_ms()} topic={topic} message={message}"
         self._console_print(text, StatusColor.blue)
+        self._stats.produced()
 
     def _message_consumed(self, topic: str, message: str) -> None:
         """Callback when a kafka message has been consumed."""
         text = f"-> Consumed timestamp={now_ms()} topic={topic} message={message}"
         self.ui.tbl_consumer.model().push_data([MessageRow(now_ms(), topic, message)])
         self._console_print(text, StatusColor.orange)
+        self._stats.consumed()
 
     def _console_print(self, text: str, color: QColor = None) -> None:
         """Append a message to the console."""
