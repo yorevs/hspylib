@@ -41,6 +41,7 @@ class StreamCapturer(QThread):
 
     def __init__(self):
         super().__init__()
+        self.setObjectName("stream-capturer")
         self._stderr_capturer = self.StderrWorker()
         self._stdout_capturer = self.StdoutWorker()
         self._stderr_capturer.streamCaptured.connect(lambda msg: self.stderrCaptured.emit(msg))
