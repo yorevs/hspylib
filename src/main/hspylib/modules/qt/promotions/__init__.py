@@ -6,9 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'entity_table_model', 
+  'hcombobox', 
   'hconsole', 
   'hframe', 
   'hlabel', 
-  'hlistwidget'
+  'hlistwidget', 
+  'htablemodel', 
+  'htableview'
 ]

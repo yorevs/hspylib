@@ -278,6 +278,9 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
 
 
 def human_readable_time(time_microseconds: int) -> str:
+    """TODO
+    :param time_microseconds:
+    """
     delta = timedelta(microseconds=time_microseconds)
     total_seconds = delta.seconds
     seconds = total_seconds % 60

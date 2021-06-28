@@ -3,9 +3,10 @@ from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QObject
 from confluent_kafka.cimpl import Consumer
+from confluent_kafka.error import ConsumeError
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import syserr
+from hspylib.core.tools.commons import syserr, sysout
 from kafman.src.main.core.constants import POLLING_INTERVAL, PARTITION_EOF
 
 
@@ -19,6 +20,7 @@ class KafkaConsumer(QObject):
         self.topic = None
         self.consumer = None
         self.started = False
+        self.tr = None
 
     def start(self, settings: dict) -> None:
         """TODO"""
@@ -29,22 +31,21 @@ class KafkaConsumer(QObject):
     def stop(self) -> None:
         """TODO"""
         if self.consumer is not None:
-            del self.consumer
-            self.consumer = None
             self.started = False
 
     def consume(self, topics: List[str]) -> None:
         """TODO"""
         if self.started:
-            tr = threading.Thread(target=self._consume, args=(topics,))
-            tr.setDaemon(True)
-            tr.start()
+            self.tr = threading.Thread(target=self._consume, args=(topics,))
+            self.tr.name = 'kafka-consumer'
+            self.tr.setDaemon(True)
+            self.tr.start()
 
     def _consume(self, topics: List[str]) -> None:
         """TODO"""
-        self.consumer.subscribe(topics)
         try:
-            while self.started:
+            self.consumer.subscribe(topics)
+            while self.started and self.consumer is not None:
                 message = self.consumer.poll(POLLING_INTERVAL)
                 if message is None:
                     continue
@@ -57,6 +58,11 @@ class KafkaConsumer(QObject):
                     syserr(f"Error occurred: {message.error().str()}")
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")
+        except ConsumeError as err:
+            syserr(f"An error occurred: {str(err)}")
         finally:
             if self.consumer:
                 self.consumer.close()
+                del self.consumer
+                self.consumer = None
+                self.tr = None

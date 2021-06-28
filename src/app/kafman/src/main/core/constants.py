@@ -7,6 +7,7 @@ POLLING_INTERVAL = 0.5
 FLUSH_WAIT_TIME = 30
 
 class StatusColor(ABC):
+    white = QColor('#FFFFFF')
     red = QColor('#FF0000')
     green = QColor('#00FF00')
     yellow = QColor('#FFFF00')

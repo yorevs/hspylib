@@ -8,5 +8,6 @@
 __all__ = [
   'promotions', 
   'qt_application', 
+  'stream_capturer', 
   'views'
 ]

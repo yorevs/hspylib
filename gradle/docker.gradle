@@ -20,7 +20,7 @@ task startContainers(type: Task) {
       println "Starting container: ${container}"
       exec {
         workingDir = "${rootDir}/docker/${container}"
-        commandLine 'docker-compose', 'up', '--force-recreate', '--build', '--remove-orphans', '--detach'
+        commandLine 'docker compose', 'up', '--force-recreate', '--build', '--remove-orphans', '--detach'
       }
     }
   }
@@ -35,7 +35,7 @@ task stopContainers(type: Task) {
       println "Stopping container: ${container}"
       exec {
         workingDir = "${rootDir}/docker/${container}"
-        commandLine 'docker-compose', 'down'
+        commandLine 'docker compose', 'down'
       }
     }
   }

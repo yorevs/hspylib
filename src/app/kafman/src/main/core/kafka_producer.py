@@ -19,6 +19,7 @@ class KafkaProducer(QObject):
         self.topic = None
         self.producer = None
         self.started = False
+        self.tr = None
 
     def flush(self, timeout: int = 0) -> None:
         """TODO"""
@@ -41,17 +42,19 @@ class KafkaProducer(QObject):
         if self.producer is not None:
             self.purge()
             self.flush()
+            self.started = False
             del self.producer
             self.producer = None
-            self.started = False
+            self.tr = None
 
     def produce(self, topics: List[str], messages: List[str]) -> None:
         """TODO"""
-        if self.started:
-            tr = threading.Thread(target=self._produce, args=(topics,messages,))
-            tr.setDaemon(True)
-            tr.start()
-            tr.join()
+        if self.started and self.producer is not None:
+            self.tr = threading.Thread(target=self._produce, args=(topics,messages,))
+            self.tr.name = 'kafka-producer'
+            self.tr.setDaemon(True)
+            self.tr.start()
+            self.tr.join()
 
     def _produce(self, topics: List[str], messages: List[str]):
         """TODO"""
