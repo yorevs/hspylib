@@ -4,7 +4,7 @@ from PyQt5.QtGui import QColor
 
 PARTITION_EOF = -191  # KafkaError._PARTITION_EOF
 POLLING_INTERVAL = 0.5
-FLUSH_WAIT_TIME = 30
+FLUSH_TIMEOUT = 30
 
 class StatusColor(ABC):
     white = QColor('#FFFFFF')

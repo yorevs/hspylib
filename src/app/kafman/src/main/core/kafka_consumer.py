@@ -6,8 +6,8 @@ from confluent_kafka.cimpl import Consumer
 from confluent_kafka.error import ConsumeError
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import syserr, sysout
-from kafman.src.main.core.constants import POLLING_INTERVAL, PARTITION_EOF
+from hspylib.core.tools.commons import syserr
+from kafman.src.main.core.constants import PARTITION_EOF
 
 
 class KafkaConsumer(QObject):
@@ -15,11 +15,12 @@ class KafkaConsumer(QObject):
 
     messageConsumed = pyqtSignal(str, str)
 
-    def __init__(self):
+    def __init__(self, poll_interval: float = 0.5):
         super().__init__()
+        self.started = False
+        self.poll_interval = poll_interval
         self.topic = None
         self.consumer = None
-        self.started = False
         self.tr = None
 
     def start(self, settings: dict) -> None:
@@ -46,7 +47,7 @@ class KafkaConsumer(QObject):
         try:
             self.consumer.subscribe(topics)
             while self.started and self.consumer is not None:
-                message = self.consumer.poll(POLLING_INTERVAL)
+                message = self.consumer.poll(self.poll_interval)
                 if message is None:
                     continue
                 elif not message.error():
