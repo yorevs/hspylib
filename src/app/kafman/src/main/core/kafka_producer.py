@@ -6,7 +6,6 @@ from confluent_kafka.cimpl import Producer, KafkaError
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
-from kafman.src.main.core.constants import POLLING_INTERVAL, FLUSH_WAIT_TIME
 
 
 class KafkaProducer(QObject):
@@ -14,11 +13,13 @@ class KafkaProducer(QObject):
 
     messageProduced = pyqtSignal(str, str)
 
-    def __init__(self):
+    def __init__(self, poll_interval: float = 0.5, flush_timeout: int = 30):
         super().__init__()
+        self.started = False
+        self.poll_interval = poll_interval
+        self.flush_timeout = flush_timeout
         self.topic = None
         self.producer = None
-        self.started = False
         self.tr = None
 
     def flush(self, timeout: int = 0) -> None:
@@ -63,11 +64,11 @@ class KafkaProducer(QObject):
                 for msg in messages:
                     if msg:
                         self.producer.produce(topic, msg, callback=self._cb_message_produced)
-                self.producer.poll(POLLING_INTERVAL)
+                self.producer.poll(self.poll_interval)
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")
         finally:
-            self.producer.flush(FLUSH_WAIT_TIME)
+            self.producer.flush(self.flush_timeout)
 
     def _cb_message_produced(self, error: KafkaError, message: Any) -> None:
         """TODO"""
