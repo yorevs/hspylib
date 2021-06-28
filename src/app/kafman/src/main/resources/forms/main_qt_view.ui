@@ -96,31 +96,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="btn_action">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>40</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Action</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="5">
        <widget class="QLabel" name="lbl_topic">
         <property name="text">
@@ -150,6 +125,37 @@
           <width>24</width>
           <height>24</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="btn_action">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Action</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+        <property name="default">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -209,7 +215,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
+            <width>284</width>
             <height>462</height>
            </rect>
           </property>
@@ -498,7 +504,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
+            <width>284</width>
             <height>462</height>
            </rect>
           </property>
@@ -583,7 +589,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
+            <width>284</width>
             <height>462</height>
            </rect>
           </property>

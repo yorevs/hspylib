@@ -7,6 +7,8 @@
 
 __all__ = [
   'constants', 
-  'kafman_consumer', 
-  'kafman_producer'
+  'kafka_consumer', 
+  'kafka_producer', 
+  'message_row', 
+  'statistics'
 ]

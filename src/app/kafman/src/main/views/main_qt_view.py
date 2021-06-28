@@ -11,10 +11,12 @@ from PyQt5.QtWidgets import QHeaderView
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version
+from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import EventBus
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.views.qt_view import QtView
+from hspylib.modules.qt.stream_capturer import StreamCapturer
 from kafman.src.main.core.constants import StatusColor
 from kafman.src.main.core.kafka_consumer import KafkaConsumer
 from kafman.src.main.core.kafka_producer import KafkaProducer
@@ -54,7 +56,12 @@ class MainQtView(QtView):
         self._producer.messageProduced.connect(self._message_produced)
         self._all_settings = None
         self._stats = Statistics()
+        self._capturer = StreamCapturer()
+        self._capturer.start()
         self._stats_bus = EventBus.get('kafka-statistics')
+        self._stats_bus.subscribe('stats-report', self._update_stats)
+        self._capturer.stderrCaptured.connect(self._console_print_err)
+        self._capturer.stdoutCaptured.connect(self._console_print)
         self._display_text(f"Application started at {now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
         self._load_history()
@@ -63,13 +70,13 @@ class MainQtView(QtView):
     def setup_ui(self) -> None:
         """Connect signals and startup components"""
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
-        self._stats_bus.subscribe('stats-report', self._update_stats)
         self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
         self.window.resize(1024, 768)
         self.ui.splitter_pane.setSizes([350, 824])
         self.ui.tool_box.setCurrentIndex(self.Tools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
+        self.ui.btn_action.setAutoRepeat(False)
         self.ui.btn_action.clicked.connect(self._toggle_start)
         self.ui.cmb_topic.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.cmb_topic.setDuplicatesEnabled(False)
@@ -270,7 +277,11 @@ class MainQtView(QtView):
             msg = text
         else:
             raise TypeError('Expecting string or Event objects')
-        self.ui.txt_console.push_text(msg, color)
+        self.ui.txt_console.push_text(strip_escapes(msg), color)
+
+    def _console_print_err(self, text: str) -> None:
+        """Append an error message to the console."""
+        self._console_print(f"-> {text}", StatusColor.red)
 
     def _save_history(self):
         """Save current app history."""
