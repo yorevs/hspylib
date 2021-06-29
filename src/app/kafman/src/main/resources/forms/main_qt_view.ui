@@ -196,6 +196,18 @@
        <enum>QFrame::Plain</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>7</number>
+       </property>
+       <property name="topMargin">
+        <number>7</number>
+       </property>
+       <property name="rightMargin">
+        <number>7</number>
+       </property>
+       <property name="bottomMargin">
+        <number>7</number>
+       </property>
        <item>
         <widget class="QToolBox" name="tool_box">
          <property name="enabled">
@@ -215,8 +227,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>284</width>
-            <height>462</height>
+            <width>294</width>
+            <height>472</height>
            </rect>
           </property>
           <attribute name="label">
@@ -504,8 +516,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>284</width>
-            <height>462</height>
+            <width>294</width>
+            <height>472</height>
            </rect>
           </property>
           <attribute name="label">
@@ -526,27 +538,7 @@
            </property>
            <item>
             <layout class="QGridLayout" name="gridLayout_7">
-             <item row="2" column="0">
-              <spacer name="verticalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Active Schema:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
+             <item row="0" column="1">
               <widget class="HComboBox" name="cmb_schema">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -580,6 +572,26 @@
                </property>
               </widget>
              </item>
+             <item row="1" column="0">
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Avro Schema:</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -589,8 +601,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>284</width>
-            <height>462</height>
+            <width>294</width>
+            <height>472</height>
            </rect>
           </property>
           <attribute name="label">
@@ -799,16 +811,16 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
-        <number>8</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>8</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>8</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>8</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QTabWidget" name="tab_widget">
@@ -962,10 +974,10 @@
       </size>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
+      <enum>QFrame::Plain</enum>
      </property>
      <property name="text">
       <string>Done</string>
