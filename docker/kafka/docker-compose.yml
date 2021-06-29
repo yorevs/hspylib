@@ -1,54 +1,45 @@
-version: '3.1'
+version: '3.3'
 
 services:
   zookeeper:
     container_name: zookeeper
     image: zookeeper:latest
     restart: on-failure
-    healthcheck:
-      test: echo stat | nc localhost 2181
-      interval: 10s
-      timeout: 10s
-      retries: 3
     ports:
-      - "2181:2181"
+      - 2181:2181
     environment:
-    - ZOOKEEPER_SERVER_ID=1
-    - ZOOKEEPER_CLIENT_PORT=2181
-    - ZOOKEEPER_TICK_TIME=2000
-    - ZOOKEEPER_INIT_LIMIT=5
-    - ZOOKEEPER_SYNC_LIMIT=2
-    - ZOOKEEPER_SERVERS=zookeeper:2888:3888
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper:2888:3888
     volumes:
-      - "./data:/data"
-      - "./logs:/logs"
+      - zookeeper-data:/var/lib/zookeeper:rw
 
   kafka:
     container_name: kafka
     image: wurstmeister/kafka:latest
     restart: on-failure
-    healthcheck:
-      test: ps augwwx | egrep [S]upportedKafka
     depends_on:
       - zookeeper
     environment:
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_HOST_NAME=localhost
-      - JMX_PORT=9093
-      - KAFKA_ADVERTISED_PORT=9092
-      - KAFKA_DELETE_TOPIC_ENABLE=true
-      - KAFKA_LOG_RETENTION_HOURS=1
-      - KAFKA_MESSAGE_MAX_BYTES=10000000
-      - KAFKA_REPLICA_FETCH_MAX_BYTES=10000000
-      - KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS=60000
-      - KAFKA_NUM_PARTITIONS=2
-      - KAFKA_DELETE_RETENTION_MS=1000
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      JMX_PORT: 9093
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_LOG_RETENTION_HOURS: 1
+      KAFKA_MESSAGE_MAX_BYTES: 10000000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 10000000
+      KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
+      KAFKA_NUM_PARTITIONS: 1
+      KAFKA_DELETE_RETENTION_MS: 1000
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - "9092:9092"
-      - "9093:9093"
+      - 9092:9092
+      - 9093:9093
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - kafka-data:/var/lib/kafka:rw
 
   kafka-manager:
     container_name: kafka-manager
@@ -59,7 +50,16 @@ services:
       - zookeeper
     command: -Dconfig.file=conf/application.conf -Dapplication.home=bin/kafkamanager
     environment:
-      - ZK_HOSTS=zookeeper
-      - APPLICATION_SECRET=letmein
+      ZK_HOSTS: zookeeper
+      APPLICATION_SECRET: letmein
     ports:
-      - "9000:9000"
+      - 9000:9000
+
+volumes:
+  kafka-data:
+    driver: local
+  zookeeper-data:
+    driver: local
+
+networks:
+  esnet:
