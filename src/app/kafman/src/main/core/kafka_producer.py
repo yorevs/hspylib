@@ -1,61 +1,60 @@
 import threading
-from typing import List, Any
+from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QObject
-from confluent_kafka.cimpl import Producer, KafkaError
+from confluent_kafka.cimpl import Producer, KafkaError, Message
 
-from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 
 
+# Example at: # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
 class KafkaProducer(QObject):
     """TODO"""
 
-    messageProduced = pyqtSignal(str, str)
+    messageProduced = pyqtSignal(str, int, int, bytes)
 
     def __init__(self, poll_interval: float = 0.5, flush_timeout: int = 30):
         super().__init__()
-        self.started = False
-        self.poll_interval = poll_interval
-        self.flush_timeout = flush_timeout
-        self.topic = None
-        self.producer = None
-        self.tr = None
+        self._started = False
+        self._poll_interval = poll_interval
+        self._flush_timeout = flush_timeout
+        self._producer = None
+        self._worker_thread = None
 
     def flush(self, timeout: int = 0) -> None:
         """TODO"""
-        if self.producer:
-            self.producer.flush(timeout=timeout)
+        if self._producer:
+            self._producer.flush(timeout=timeout)
 
     def purge(self) -> None:
         """TODO"""
-        if self.producer:
-            self.producer.purge()
+        if self._producer:
+            self._producer.purge()
 
     def start(self, settings: dict) -> None:
         """TODO"""
-        if self.producer is None:
-            self.producer = Producer(settings)
-            self.started = True
+        if self._producer is None:
+            self._producer = Producer(settings)
+            self._started = True
 
     def stop(self) -> None:
         """TODO"""
-        if self.producer is not None:
+        if self._producer is not None:
             self.purge()
             self.flush()
-            self.started = False
-            del self.producer
-            self.producer = None
-            self.tr = None
+            self._started = False
+            del self._producer
+            self._producer = None
+            self._worker_thread = None
 
     def produce(self, topics: List[str], messages: List[str]) -> None:
         """TODO"""
-        if self.started and self.producer is not None:
-            self.tr = threading.Thread(target=self._produce, args=(topics,messages,))
-            self.tr.name = 'kafka-producer'
-            self.tr.setDaemon(True)
-            self.tr.start()
-            self.tr.join()
+        if self._started and self._producer is not None:
+            self._worker_thread = threading.Thread(target=self._produce, args=(topics, messages,))
+            self._worker_thread.name = 'kafka-producer'
+            self._worker_thread.setDaemon(True)
+            self._worker_thread.start()
+            self._worker_thread.join()
 
     def _produce(self, topics: List[str], messages: List[str]):
         """TODO"""
@@ -63,17 +62,19 @@ class KafkaProducer(QObject):
             for topic in topics:
                 for msg in messages:
                     if msg:
-                        self.producer.produce(topic, msg, callback=self._cb_message_produced)
-                self.producer.poll(self.poll_interval)
+                        self._producer.produce(topic, msg, callback=self._cb_message_produced)
+                self._producer.poll(self._poll_interval)
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")
         finally:
-            self.producer.flush(self.flush_timeout)
+            self._producer.flush(self._flush_timeout)
 
-    def _cb_message_produced(self, error: KafkaError, message: Any) -> None:
-        """TODO"""
-        msg = message.value().decode(Charset.UTF_8.value)
-        if error is not None:
-            syserr(f"Failed to deliver message: {msg}: {error.str()}")
+    def _cb_message_produced(self, err: KafkaError, message: Message) -> None:
+        """Delivery report handler called on successful or failed delivery of message
+        """
+        if err is not None:
+            syserr(f"Failed to deliver message: {err}")
         else:
-            self.messageProduced.emit(message.topic(), msg)
+            self.messageProduced.emit(
+                message.topic(), message.partition(), message.offset(), message.value()
+            )
