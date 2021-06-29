@@ -6,17 +6,17 @@ from typing import List
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtWidgets import QHeaderView
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import EventBus
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
-from hspylib.modules.qt.views.qt_view import QtView
 from hspylib.modules.qt.stream_capturer import StreamCapturer
+from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor
 from kafman.src.main.core.kafka_consumer import KafkaConsumer
 from kafman.src.main.core.kafka_producer import KafkaProducer
@@ -76,10 +76,8 @@ class MainQtView(QtView):
         self.ui.tool_box.setCurrentIndex(self.Tools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
-        self.ui.btn_action.setAutoRepeat(False)
         self.ui.btn_action.clicked.connect(self._toggle_start)
         self.ui.cmb_topic.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
-        self.ui.cmb_topic.setDuplicatesEnabled(False)
         # Producer controls
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_setting)
@@ -95,7 +93,6 @@ class MainQtView(QtView):
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
-        self.ui.tbl_consumer.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         HTableModel(self.ui.tbl_consumer, MessageRow, MessageRow.headers())
 
     def _is_producer(self) -> bool:
@@ -258,16 +255,18 @@ class MainQtView(QtView):
         self.ui.lbl_stats_produced_avg.setText(str(event['stats'][4]))
         self.ui.lbl_stats_consumed_avg.setText(str(event['stats'][5]))
 
-    def _message_produced(self, topic: str, message: str) -> None:
+    def _message_produced(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been produced."""
-        text = f"-> Produced timestamp={now_ms()} topic={topic} message={message}"
+        row = MessageRow(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
+        text = f"-> Produced {row}"
         self._console_print(text, StatusColor.blue)
         self._stats.produced()
 
-    def _message_consumed(self, topic: str, message: str) -> None:
+    def _message_consumed(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been consumed."""
-        text = f"-> Consumed timestamp={now_ms()} topic={topic} message={message}"
-        self.ui.tbl_consumer.model().push_data([MessageRow(now_ms(), topic, message)])
+        row = MessageRow(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
+        text = f"-> Consumed {row}"
+        self.ui.tbl_consumer.model().push_data([row])
         self._console_print(text, StatusColor.orange)
         self._stats.consumed()
 
