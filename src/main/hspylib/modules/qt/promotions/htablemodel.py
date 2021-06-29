@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-import logging as log
 import collections
+import logging as log
 from typing import Any, Type, List, Optional
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
@@ -42,30 +42,29 @@ class HTableModel(QAbstractTableModel):
         self.table_data = collections.deque(maxlen=max_rows)
         list(map(self.table_data.append, table_data or []))
         self.headers = headers or self.headers_by_entity()
-        self.cell_alignments = cell_alignments or []
+        self.cell_alignments = cell_alignments
         log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
         parent.setModel(self)
 
-    def data(
-        self,
-        index: QModelIndex,
-        role: int = ...) -> QVariant:
+    def data(self, index: QModelIndex, role: int = ...) -> QVariant:
         """TODO"""
+        ret_val = QVariant()
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
-        str_entity = str(entity) if entity else ''
+        str_entity = str(entity) if entity is not None else ''
         if role == Qt.DisplayRole:
-            return QVariant(str_entity)
+            ret_val = \
+                QVariant(str_entity)
         if role == Qt.TextAlignmentRole:
-            return QVariant(self.cell_alignments[index.column()]) if self.cell_alignments else Qt.AlignLeft
+            ret_val = \
+                QVariant(self.cell_alignments[index.column()]) \
+                    if self.cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
         if role == Qt.BackgroundColorRole:
-            return QVariant() if entity else QColor(230, 230, 230)
-        return QVariant()
+            ret_val = \
+                QVariant(QColor(57, 57, 57) if index.row() % 2 == 0 else '')
 
-    def headerData(
-        self,
-        section: int,
-        orientation: Qt.Orientation,
-        role: int = ...) -> QVariant:
+        return ret_val
+
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> QVariant:
         """TODO"""
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return QVariant(self.headers[section].upper()) if len(self.headers) >= section else QVariant('-')

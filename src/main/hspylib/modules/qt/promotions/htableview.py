@@ -2,7 +2,7 @@ from typing import Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPaintEvent, QCursor
-from PyQt5.QtWidgets import QTableView, QWidget, QMenu
+from PyQt5.QtWidgets import QTableView, QWidget, QMenu, QHeaderView, QAbstractScrollArea
 
 
 class HTableView(QTableView):
@@ -12,8 +12,13 @@ class HTableView(QTableView):
         super().__init__(parent)
         self.placeholder = placeholder or 'No data to display'
         self.customContextMenuRequested.connect(self._context_menu)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.horizontalHeader().setStretchLastSection(True)
+        self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
 
     def clear(self):
+        """TODO"""
         self.model().clear()
 
     def paintEvent(self, event: QPaintEvent) -> None:
