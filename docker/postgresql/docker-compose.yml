@@ -2,12 +2,12 @@ version: '3.3'
 
 services:
   postgres:
-    image: postgres
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: hspylib
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 'postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
     expose:
