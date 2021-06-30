@@ -14,12 +14,11 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class Widget_WIDGET_NAME_(Widget):

@@ -18,7 +18,7 @@ import logging as log
 import os
 import re
 from configparser import ConfigParser
-from typing import Any, Optional
+from typing import Optional
 
 import yaml
 

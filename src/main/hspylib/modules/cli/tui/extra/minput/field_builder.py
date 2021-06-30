@@ -16,13 +16,12 @@
 
 from typing import Any
 
+from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
 from hspylib.modules.cli.tui.extra.minput.form_field import FormField
 from hspylib.modules.cli.tui.extra.minput.input_type import InputType
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
-
-from hspylib.core.tools.text_tools import camelcase
 
 
 class FieldBuilder:

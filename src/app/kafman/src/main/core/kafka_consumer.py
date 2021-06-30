@@ -1,3 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+      @file: kafka_consumer.py
+   @created: Wed, 30 Jun 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import threading
 from typing import List
 
@@ -5,6 +20,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from confluent_kafka.cimpl import Consumer
 
 from hspylib.core.tools.commons import syserr
+
 
 # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
 class KafkaConsumer(QObject):
