@@ -15,7 +15,7 @@
 """
 import re
 from abc import ABC
-from typing import List, Optional
+from typing import List, Optional, TypeVar, Generic
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -24,15 +24,17 @@ from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_terminal, screen_size, restore_cursor
 
+T = TypeVar('T')
+
 
 def mchoose(
-        items: List[str],
+        items: List[Generic[T]],
         checked: bool = True,
         title: str = 'Please select one',
         max_rows: int = 15,
         title_color: VtColors = VtColors.ORANGE,
         highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[str]]:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[Generic[T]]]:
     """
     TODO
     :param items:
@@ -78,7 +80,7 @@ class MenuChoose(ABC):
             title: str,
             title_color: VtColors,
             highlight_color: VtColors,
-            nav_color: VtColors) -> Optional[List[str]]:
+            nav_color: VtColors) -> Optional[List[Generic[T]]]:
         """TODO"""
 
         ret_val = None
