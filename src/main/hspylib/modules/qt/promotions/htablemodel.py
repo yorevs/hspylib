@@ -16,7 +16,7 @@
 
 import collections
 import logging as log
-from typing import Any, Type, List, Optional
+from typing import Type, List, Optional, TypeVar
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
 from PyQt5.QtGui import QColor
@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import QTableView
 
 from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
 
+T = TypeVar('T')
 
 class HTableModel(QAbstractTableModel):
     """TODO"""
@@ -33,7 +34,7 @@ class HTableModel(QAbstractTableModel):
         parent: Optional[QTableView],
         clazz: Type,
         headers: List[str] = None,
-        table_data: List[Any] = None,
+        table_data: List[T] = None,
         cell_alignments: List[Qt.AlignmentFlag] = None,
         max_rows: int = 1000):
 
@@ -72,12 +73,10 @@ class HTableModel(QAbstractTableModel):
             return QVariant(str(section))
         return QVariant()
 
-    def headers_by_entity(self) -> tuple:
+    def headers_by_entity(self) -> List[str]:
         """TODO"""
-        try:
-            return class_attribute_names(self.clazz)
-        except TypeError:
-            raise TypeError('Default values required for entity header names')
+        attributes = class_attribute_names(self.clazz)
+        return [str(x).capitalize() for x in attributes]
 
     def rowCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""
@@ -87,17 +86,17 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         return len(self.table_data[0].__dict__.keys()) if self.table_data and len(self.table_data) > 0 else 0
 
-    def row(self, index: QModelIndex) -> Any:
+    def row(self, index: QModelIndex) -> T:
         """TODO"""
         return self.table_data[index.row()]
 
-    def column(self, index: QModelIndex) -> Any:
+    def column(self, index: QModelIndex) -> T:
+        """TODO"""
         return class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
 
-    def push_data(self, data: List[Any]):
+    def push_data(self, data: List[T]):
         """TODO"""
-        for item in data:
-            self.table_data.append(item)
+        list(map(self.table_data.append, data))
         self.layoutChanged.emit()
 
     def clear(self):

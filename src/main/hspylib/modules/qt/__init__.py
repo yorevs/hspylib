@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
+  'kafka', 
   'promotions', 
   'qt_application', 
   'stream_capturer', 
