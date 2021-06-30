@@ -29,16 +29,14 @@ from hspylib.core.tools.commons import run_dir, now, now_ms, read_version
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.eventbus.event import Event
-from hspylib.modules.eventbus.eventbus import EventBus
+from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
+from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
+from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor
-from kafman.src.main.core.kafka_consumer import KafkaConsumer
-from kafman.src.main.core.kafka_producer import KafkaProducer
-from kafman.src.main.core.message_row import MessageRow
-from kafman.src.main.core.statistics import Statistics
+from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
 
 
 class MainQtView(QtView):
@@ -72,10 +70,10 @@ class MainQtView(QtView):
         self._producer = KafkaProducer()
         self._producer.messageProduced.connect(self._message_produced)
         self._all_settings = None
-        self._stats = Statistics()
+        self._stats = KafkaStatistics()
+        self._stats.statisticsReported.connect(self._update_stats)
+        self._stats.start()
         self._capturer = StreamCapturer()
-        self._stats_bus = EventBus.get('kafka-statistics')
-        self._stats_bus.subscribe('stats-report', self._update_stats)
         self._capturer.stderrCaptured.connect(self._console_print_err)
         self._capturer.stdoutCaptured.connect(self._console_print)
         self._display_text(f"Application started at {now()}<br/>{'-' * 45}<br/>")
@@ -124,7 +122,7 @@ class MainQtView(QtView):
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
-        HTableModel(self.ui.tbl_consumer, MessageRow, MessageRow.headers())
+        HTableModel(self.ui.tbl_consumer, KafkaMessage)
 
     def _is_producer(self) -> bool:
         """Whether started as producer or consumer"""
@@ -230,12 +228,12 @@ class MainQtView(QtView):
 
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(0)
-            self._producer.stop()
+            self._producer.stop_producer()
             self._display_text(f"Production to topic {topics} stopped", StatusColor.yellow)
         else: # Start
             self.ui.tool_box.setCurrentIndex(2)
             self._add_topic()
-            self._producer.start(settings)
+            self._producer.start_producer(settings)
             self._display_text(f"Started producing to topics {topics}", StatusColor.green)
 
     def _toggle_start_consumer(self):
@@ -250,23 +248,21 @@ class MainQtView(QtView):
 
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(0)
-            self._consumer.stop()
+            self._consumer.stop_consumer()
             self._display_text(f"Consumption from topic {topics} stopped", StatusColor.yellow)
         else: # Start
             self.ui.tool_box.setCurrentIndex(2)
             self._add_topic(is_producer=False)
-            self._consumer.start(settings)
+            self._consumer.start_consumer(settings)
             self._consumer.consume(topics)
             self._display_text(f"Started consuming from topics {topics}", StatusColor.green)
 
     def _produce(self) -> None:
         """TODO"""
         messages = self._messages()
-        size = len(messages)
-        if self._producer.is_started() and size > 0:
+        if self._producer.is_started() and len(messages) > 0:
             topics = self._topics(True)
             self._producer.produce(topics, messages)
-            self._display_text(f"Produced {size} messages to Kafka topics", StatusColor.blue, False)
             self.ui.txt_producer.clear()
 
     def _display_error(self, message: str, add_console: bool = False) -> None:
@@ -280,29 +276,38 @@ class MainQtView(QtView):
         if add_console:
             self._console_print(f"-> {message}", color)
 
-    def _update_stats(self, event: Event):
+    def _update_stats(
+            self,
+            produced_total:int,
+            consumed_total: int,
+            produced_in_a_tick: int,
+            consumed_in_a_tick: int,
+            average_produced: int,
+            average_consumed: int) -> None:
         """Update the consumer and producer statistics"""
-        self.ui.lbl_stats_produced.setText(str(event['stats'][0]))
-        self.ui.lbl_stats_produced_ps.setText(str(event['stats'][2]))
-        self.ui.lbl_stats_consumed.setText(str(event['stats'][1]))
-        self.ui.lbl_stats_consumed_ps.setText(str(event['stats'][3]))
-        self.ui.lbl_stats_produced_avg.setText(str(event['stats'][4]))
-        self.ui.lbl_stats_consumed_avg.setText(str(event['stats'][5]))
+
+        self.ui.lbl_stats_produced.setText(str(produced_total))
+        self.ui.lbl_stats_produced_ps.setText(str(produced_in_a_tick))
+        self.ui.lbl_stats_produced_avg.setText(str(average_produced))
+        self.ui.lbl_stats_consumed.setText(str(consumed_total))
+        self.ui.lbl_stats_consumed_ps.setText(str(consumed_in_a_tick))
+        self.ui.lbl_stats_consumed_avg.setText(str(average_consumed))
 
     def _message_produced(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been produced."""
-        row = MessageRow(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
         text = f"-> Produced {row}"
         self._console_print(text, StatusColor.blue)
-        self._stats.produced()
+        self._stats.report_produced()
+        self._display_text(f"Produced {self._stats.get_in_a_tick()[0]} messages to Kafka", StatusColor.blue, False)
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been consumed."""
-        row = MessageRow(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
         text = f"-> Consumed {row}"
         self.ui.tbl_consumer.model().push_data([row])
         self._console_print(text, StatusColor.orange)
-        self._stats.consumed()
+        self._stats.report_consumed()
 
     def _console_print(self, text: str, color: QColor = None) -> None:
         """Append a message to the console."""

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: message_row.py
+      @file: kafka_message.py
    @created: Wed, 30 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -13,15 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import List
 
-
-class MessageRow:
-    """TODO"""
-
-    @staticmethod
-    def headers() -> List[str]:
-        return ['Timestamp', 'Topic', 'Partition', 'Offset', 'Value']
+class KafkaMessage:
+    """Represent a produced or consumed Kafka message"""
 
     def __init__(
         self,
