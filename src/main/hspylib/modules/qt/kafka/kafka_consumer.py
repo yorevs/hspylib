@@ -14,34 +14,37 @@
 """
 
 import threading
+from time import sleep
 from typing import List
 
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QThread
 from confluent_kafka.cimpl import Consumer
 
 from hspylib.core.tools.commons import syserr
 
 
 # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
-class KafkaConsumer(QObject):
+class KafkaConsumer(QThread):
     """TODO"""
 
     messageConsumed = pyqtSignal(str, int, int, bytes)
 
     def __init__(self, poll_interval: float = 0.5):
         super().__init__()
+        self.setObjectName('kafka-consumer')
         self._started = False
         self._poll_interval = poll_interval
         self._consumer = None
         self._worker_thread = None
+        self.start()
 
-    def start(self, settings: dict) -> None:
+    def start_consumer(self, settings: dict) -> None:
         """TODO"""
         if self._consumer is None:
             self._consumer = Consumer(settings)
             self._started = True
 
-    def stop(self) -> None:
+    def stop_consumer(self) -> None:
         """TODO"""
         if self._consumer is not None:
             self._started = False
@@ -50,13 +53,17 @@ class KafkaConsumer(QObject):
         """TODO"""
         if self._started:
             self._worker_thread = threading.Thread(target=self._consume, args=(topics,))
-            self._worker_thread.name = 'kafka-consumer'
+            self._worker_thread.name = f"kafka-consumer-worker-{hash(self)}"
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
 
     def is_started(self):
         """TODO"""
         return self._started
+
+    def run(self) -> None:
+        while not self.isFinished():
+            sleep(self._poll_interval)
 
     def _consume(self, topics: List[str]) -> None:
         """TODO"""
