@@ -1,5 +1,6 @@
 from typing import Optional
 
+import pyperclip as pyperclip
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPaintEvent, QCursor
 from PyQt5.QtWidgets import QTableView, QWidget, QMenu, QHeaderView, QAbstractScrollArea
@@ -35,9 +36,27 @@ class HTableView(QTableView):
         painter.drawText(self.viewport().rect(), Qt.AlignCenter, elided_text)
         painter.restore()
 
+    def copy(self) -> None:
+        """TODO"""
+        text = ''
+
+        index_list = self.selectionModel().selectedIndexes()
+        last_row = 0
+        for index in index_list:
+            if len(text) > 0:
+                if last_row == index.row():
+                    text += ' '
+                else:
+                    text += '\n'
+            text += str(self.model().column(index))
+            last_row = index.row()
+
+        pyperclip.copy(text)
+
     def _context_menu(self):
         """Display the custom context menu"""
         self._menu = QMenu(self)
+        self._menu.addAction(u'Copy', self.copy)
         self._menu.addSeparator()
         self._menu.addAction(u'Clear', self.clear)
         self._menu.exec_(QCursor.pos())

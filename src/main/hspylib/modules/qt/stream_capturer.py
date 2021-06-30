@@ -4,6 +4,8 @@ from time import sleep
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
+from hspylib.core.tools.commons import is_debugging
+
 
 class StreamCapturer(QThread):
     """QThread to captures stdout and/or stderr messages and send them via PyQt Signal"""
@@ -56,9 +58,12 @@ class StreamCapturer(QThread):
         self._stdout_capturer.streamCaptured.connect(lambda msg: self.stdoutCaptured.emit(msg))
         self._poll_interval = stdout_poll_interval + stderr_poll_interval
 
-    def run(self):
+    def run(self) -> None:
         self._stderr_capturer.start()
         self._stdout_capturer.start()
         while not self.isFinished():
             sleep(self._poll_interval)
 
+    def start(self, priority: QThread.Priority = QThread.NormalPriority) -> None:
+        if not is_debugging():
+            super().start(priority)

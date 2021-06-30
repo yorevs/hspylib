@@ -22,19 +22,19 @@ if __name__ == '__main__':
     # @formatter:off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
-            .icon(DashboardIcons.PLUS) \
-            .tooltip('Add something') \
-            .on_trigger(lambda: print('Add')) \
+            .icon(DashboardIcons.POWER) \
+            .tooltip('Do something') \
+            .on_trigger(lambda: print('Something')) \
             .build() \
         .item() \
-            .icon(DashboardIcons.MINUS) \
-            .tooltip('Remove something') \
-            .on_trigger(lambda: print('Del')) \
+            .icon(DashboardIcons.MOVIE) \
+            .tooltip('Another something') \
+            .on_trigger(lambda: print('Another')) \
             .build() \
         .item() \
-            .icon(DashboardIcons.EDIT) \
-            .tooltip('Edit something') \
-            .on_trigger(lambda: print('Edit')) \
+            .icon(DashboardIcons.NOTIFICATION) \
+            .tooltip('Notify something') \
+            .on_trigger(lambda: print('Notification')) \
             .build() \
         .item() \
             .icon(DashboardIcons.LIST) \

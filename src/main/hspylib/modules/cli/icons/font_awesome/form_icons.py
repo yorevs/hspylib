@@ -25,29 +25,32 @@ class FormIcons(Awesome):
     """
 
     # @formatter:off
-    ARROW_LEFT = '\uF060'      # 
-    ARROW_RIGHT = '\uF061'     # 
-    ARROW_UP = '\uF062'        # 
-    ARROW_DOWN = '\uF063'      # 
-    SELECTOR = '\uFC32'        # ﰲ
+    ARROW_LEFT = u'\uF060'     # 
+    ARROW_RIGHT = u'\uF061'    # 
+    ARROW_UP = u'\uF062'       # 
+    ARROW_DOWN = u'\uF063'     # 
+    SELECTOR = u'\uFC32'        #ﰲ
 
-    CHECK = '\uF00C'           # 
-    ERROR = '\uf057'           # 
-    CHECK_CIRCLE = '\uF058'    # 
-    UNCHECK_CIRCLE = '\uF111'  # 
-    CHECK_SQUARE = '\uF14A'    # 
-    UNCHECK_SQUARE = '\uF0C8'  # 
-    ON = '\uF205'              # 
-    OFF = '\uF204'             # 
-    MARKED = '\uF634'          # 
-    UNMARKED = '\uF630'        # 
+    CHECK = u'\uF00C'          # 
+    ERROR = u'\uf057'          # 
+    CHECK_CIRCLE = u'\uF058'   # 
+    UNCHECK_CIRCLE = u'\uF111' # 
+    CHECK_SQUARE = u'\uF14A'   # 
+    UNCHECK_SQUARE = u'\uF0C8' # 
+    ON = u'\uF205'             # 
+    OFF = u'\uF204'            # 
+    MARKED = u'\uF634'         # 
+    UNMARKED = u'\uF630'       # 
 
-    HIDDEN = '\uF070'          # 
-    VISIBLE = '\uF06E'         # 
-    LOCKED = '\uF023'          # 
-    UNLOCKED = '\uF09C'        # 
-    EDITABLE = '\uF044'        # 
-    MASKED = '\uF0CE'          # 
-    SELECTABLE = '\uF150'      # 
-    DELETE = '\uF014'          # 
+    HIDDEN = u'\uF070'         # 
+    VISIBLE = u'\uF06E'        # 
+    LOCKED = u'\uF023'         # 
+    UNLOCKED = u'\uF09C'       # 
+    EDITABLE = u'\uF044'       # 
+    MASKED = u'\uF0CE'         # 
+    SELECTABLE = u'\uF150'     # 
+    DELETE = u'\uF014'         # 
+    EDIT = u'\uF040'           # 
+    PLUS = u'\uF067'           # 
+    MINUS = u'\uF068'          # 
     # @formatter:on

@@ -38,6 +38,10 @@ class KafkaConsumer(QObject):
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
 
+    def is_started(self):
+        """TODO"""
+        return self._started
+
     def _consume(self, topics: List[str]) -> None:
         """TODO"""
         try:

@@ -8,7 +8,7 @@ FLUSH_TIMEOUT = 30
 
 class StatusColor(ABC):
     white = QColor('#FFFFFF')
-    red = QColor('#FF0000')
+    red = QColor('#941100')
     green = QColor('#00FF00')
     yellow = QColor('#FFFF00')
     blue = QColor('#2380FA')

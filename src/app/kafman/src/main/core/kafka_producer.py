@@ -56,6 +56,10 @@ class KafkaProducer(QObject):
             self._worker_thread.start()
             self._worker_thread.join()
 
+    def is_started(self):
+        """TODO"""
+        return self._started
+
     def _produce(self, topics: List[str], messages: List[str]):
         """TODO"""
         try:
