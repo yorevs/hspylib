@@ -25,13 +25,13 @@ class WidgetIcons(Awesome):
     """
 
     # @formatter:off
-    WIDGET = '\uFC65'    # ﱥ
-    DATABASE = '\uFB19'  # ﬙
-    CLOCK = '\uF651'     # 
-    NETWORK = '\uF819'   # 
-    CHART_1 = '\uFC67'   # ﱨ
-    CHART_2 = '\uFC68'   # ﱩ
-    MUSIC = '\uFC6E'     # ﱯ
-    SIGN = '\uFC7E'      # ﱿ
-    SWORDS = '\uFC84'    # ﲅ
+    WIDGET = u'\uFC65'    # ﱥ
+    DATABASE = u'\uFB19'  # ﬙
+    CLOCK = u'\uF651'     # 
+    NETWORK = u'\uF819'   # 
+    CHART_1 = u'\uFC67'   # ﱨ
+    CHART_2 = u'\uFC68'   # ﱩ
+    MUSIC = u'\uFC6E'     # ﱯ
+    SIGN = u'\uFC7E'      # ﱿ
+    SWORDS = u'\uFC84'    # ﲅ
     # @formatter:on

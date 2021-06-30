@@ -91,6 +91,9 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         return self.table_data[index.row()]
 
+    def column(self, index: QModelIndex) -> Any:
+        return class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
+
     def push_data(self, data: List[Any]):
         """TODO"""
         for item in data:

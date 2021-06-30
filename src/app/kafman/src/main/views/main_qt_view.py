@@ -2,7 +2,7 @@ import ast
 import atexit
 import os
 import re
-from typing import List
+from typing import List, Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
@@ -12,6 +12,8 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version
 from hspylib.core.tools.text_tools import strip_escapes
+from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import EventBus
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
@@ -76,19 +78,32 @@ class MainQtView(QtView):
         self.ui.tool_box.setCurrentIndex(self.Tools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
-        self.ui.btn_action.clicked.connect(self._toggle_start)
-        self.ui.cmb_topic.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         # Producer controls
+        self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
+        self.ui.tbtn_prod_settings_add.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_setting)
+        self.ui.tbtn_prod_settings_del.setText(FormIcons.MINUS.value)
+        self.ui.tbtn_prod_connect.clicked.connect(self._toggle_start_producer)
+        self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value)
+        self.ui.tbtn_prod_connect.setStyleSheet('QToolButton {color: #2380FA;}')
+        self.ui.tbtn_produce.clicked.connect(self._produce)
+        self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
+        self.ui.tbtn_prod_clear_topics.setText(FormIcons.DELETE.value)
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_prod_settings.editingFinished.connect(self._edit_setting)
-        self.ui.tbtn_produce.clicked.connect(self._produce)
         # Consumer controls
+        self.ui.cmb_cons_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_cons_settings_add.clicked.connect(lambda: self.ui.lst_cons_settings.set_item('new.setting'))
+        self.ui.tbtn_cons_settings_add.setText(FormIcons.PLUS.value)
         self.ui.tbtn_cons_settings_del.clicked.connect(self._del_setting)
+        self.ui.tbtn_cons_settings_del.setText(FormIcons.MINUS.value)
+        self.ui.tbtn_cons_connect.clicked.connect(self._toggle_start_consumer)
+        self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value)
+        self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: #2380FA;}')
+        self.ui.tbtn_cons_clear_topics.setText(FormIcons.DELETE.value)
         self.ui.lst_cons_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
@@ -102,25 +117,28 @@ class MainQtView(QtView):
     def _kafka_type(self) -> str:
         return 'producer' if self._is_producer() else 'consumer'
 
-    def _topics(self) -> List[str]:
+    def _topics(self, is_producer: bool) -> Optional[List[str]]:
         """Return the selected topics"""
-        current_text = self.ui.cmb_topic.currentText()
-        return current_text.split(',') if current_text else []
+        if is_producer:
+            current_text = self.ui.cmb_prod_topics.currentText()
+        else:
+            current_text = self.ui.cmb_cons_topics.currentText()
+
+        return current_text.split(',') if current_text else None
+
+    def _settings(self) -> Optional[dict]:
+        """Return the configured settings"""
+        settings = self._all_settings[self._kafka_type()]
+        return settings if all(s in settings for s in self.REQUIRED_SETTINGS) else None
 
     def _messages(self) -> List[str]:
         """Return the selected messages"""
         msgs = self.ui.txt_producer.toPlainText().split('\n')
         return list(filter(lambda m: m != '', msgs))
 
-    def _settings(self) -> dict:
-        """Return the configured settings"""
-        return self._all_settings[self._kafka_type()]
-
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
         index = index if index is not None else self.ui.tab_widget.currentIndex()
-        if not self._started:
-            self.ui.btn_action.setText('Produce' if self._is_producer() else 'Consume')
         self.ui.tab_widget.setCurrentIndex(index)
         self.ui.stk_settings.setCurrentIndex(index)
         self.ui.stk_statistics.setCurrentIndex(index)
@@ -176,64 +194,64 @@ class MainQtView(QtView):
             else:
                 self._display_error(f"Setting {setting} is required")
 
-    def _add_topic(self, topic: str):
+    def _add_topic(self, topic: str = None, is_producer: bool = True):
         """Add a topic to the combo box."""
-        self.ui.cmb_topic.set_item(topic)
-
-    def _toggle_start(self):
-        """Start/Stop the consumer or producer (whatever is selected)."""
-        if self._started:
-            self._stop()
-            self.ui.btn_action.setText('Produce' if self._is_producer() else 'Consume')
-            self.ui.tool_box.setCurrentIndex(0)
+        if is_producer:
+            self.ui.cmb_prod_topics.set_item(topic or self.ui.cmb_prod_topics.currentText())
         else:
-            if self._start():
-                self.ui.btn_action.setText('Stop')
-                self.ui.tool_box.setCurrentIndex(2)
+            self.ui.cmb_cons_topics.set_item(topic or self.ui.cmb_cons_topics.currentText())
 
-    def _start(self) -> bool:
-        """Start consuming or producing (whatever is selected)."""
+    def _toggle_start_producer(self):
+        """Start/Stop the producer."""
+        started = self._producer.is_started()
+        topics = self._topics(True)
         settings = self._settings()
-        topics = self._topics()
-        if topics and all(s in settings for s in self.REQUIRED_SETTINGS):
-            self._add_topic(self.ui.cmb_topic.currentText())
-            if self._is_producer():
-                self._producer.start(settings)
-                self._display_text(f"Started producing to topics {topics}", StatusColor.green)
-                self.ui.tbtn_produce.setEnabled(True)
-            else:
-                self._consumer.start(settings)
-                self._consumer.consume(topics)
-                self._display_text(f"Started consuming from topics {topics}", StatusColor.green)
-            self.ui.cmb_topic.setEnabled(False)
-        else:
-            self._display_error('No topic selected')
-            return False
-        self._started = True
+        self.ui.tbtn_produce.setEnabled(not started)
+        self.ui.txt_producer.setEnabled(not started)
+        self.ui.cmb_prod_topics.setEnabled(started)
+        self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
+        self.ui.tbtn_prod_connect.setStyleSheet('QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
 
-        return True
-
-    def _stop(self) -> None:
-        """Stop consuming or producing (what is selected)."""
-        if self._is_producer():
+        if started:  # Stop
+            self.ui.tool_box.setCurrentIndex(0)
             self._producer.stop()
-            self._display_text(f"Production to topic {self._topics()} stopped", StatusColor.yellow)
-        else:
+            self._display_text(f"Production to topic {topics} stopped", StatusColor.yellow)
+        else: # Start
+            self.ui.tool_box.setCurrentIndex(2)
+            self._add_topic()
+            self._producer.start(settings)
+            self._display_text(f"Started producing to topics {topics}", StatusColor.green)
+
+    def _toggle_start_consumer(self):
+        """Start/Stop the consumer."""
+        started = self._consumer.is_started()
+        topics = self._topics(False)
+        settings = self._settings()
+        self.ui.cmb_cons_topics.setEnabled(started)
+        self.ui.tbtn_cons_connect.setText('O' if started else '-')
+        self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
+        self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
+
+        if started:  # Stop
+            self.ui.tool_box.setCurrentIndex(0)
             self._consumer.stop()
-            self._display_text(f"Consumption from topic {self._topics()} stopped", StatusColor.yellow)
-        self.ui.cmb_topic.setEnabled(True)
-        self.ui.tbtn_produce.setEnabled(False)
-        self._started = False
+            self._display_text(f"Consumption from topic {topics} stopped", StatusColor.yellow)
+        else: # Start
+            self.ui.tool_box.setCurrentIndex(2)
+            self._add_topic(is_producer=False)
+            self._consumer.start(settings)
+            self._consumer.consume(topics)
+            self._display_text(f"Started consuming from topics {topics}", StatusColor.green)
 
     def _produce(self) -> None:
         """TODO"""
         messages = self._messages()
         size = len(messages)
-        if self._started and self._is_producer() and size > 0:
-            topics = self._topics()
+        if self._producer.is_started() and size > 0:
+            topics = self._topics(True)
             self._producer.produce(topics, messages)
             self._display_text(f"Produced {size} messages to Kafka topics", StatusColor.blue, False)
-        self.ui.txt_producer.clear()
+            self.ui.txt_producer.clear()
 
     def _display_error(self, message: str, add_console: bool = False) -> None:
         """Display an error at the status bar (and console if required)"""
@@ -285,8 +303,10 @@ class MainQtView(QtView):
     def _save_history(self):
         """Save current app history."""
         with open(self.HISTORY_FILE, 'w') as fd_history:
-            cmb = self.ui.cmb_topic
-            fd_history.write(f"topics = {[cmb.itemText(i) for i in range(cmb.count())]}\n")
+            prod_topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
+            cons_topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
+            fd_history.write(f"prod_topics = {prod_topics}\n")
+            fd_history.write(f"cons_topics = {cons_topics}\n")
             fd_history.write(f"settings = {str(self._all_settings)}\n")
             fd_history.write(f"tab = {self.ui.tab_widget.currentIndex()}\n")
 
@@ -301,8 +321,10 @@ class MainQtView(QtView):
                     if mat:
                         prop_name = mat.group(1).strip()
                         prop_value = mat.group(2).strip()
-                        if prop_name == 'topics':
-                            list(map(self._add_topic, ast.literal_eval(prop_value)))
+                        if prop_name == 'prod_topics':
+                            list(map(lambda p: self._add_topic(p), ast.literal_eval(prop_value)))
+                        elif prop_name == 'cons_topics':
+                            list(map(lambda p: self._add_topic(p, False), ast.literal_eval(prop_value)))
                         elif prop_name == 'settings':
                             self._all_settings = ast.literal_eval(prop_value)
                         elif prop_name == 'tab':
@@ -314,7 +336,8 @@ class MainQtView(QtView):
         else:
             # Defaults
             self._display_text('History discarded')
-            self.ui.cmb_topic.addItem('foobar')
+            self._add_topic('foobar')
+            self._add_topic('foobar', False)
             self._all_settings = {
                 'producer': {
                     'bootstrap.servers': 'localhost:9092',

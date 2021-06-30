@@ -102,50 +102,41 @@ A form input example
 
 ```python
 if __name__ == '__main__':
-# @formatter:off
-form_fields = MenuInput.builder() \
-    .field() \
-        .label('letters') \
-        .validator(InputValidator.letters()) \
-        .build() \
-    .field() \
-        .label('word') \
-        .validator(InputValidator.words()) \
-        .build() \
-    .field() \
-        .label('number') \
-        .validator(InputValidator.numbers()) \
-        .min_max_length(1, 2) \
-        .build() \
-    .field() \
-        .label('masked') \
-        .itype('masked') \
-        .value('|##::##::## @@') \
-        .build() \
-    .field() \
-        .label('selectable') \
-        .itype('select') \
-        .value('one|two|three') \
-        .build() \
-    .field() \
-        .label('checkbox') \
-        .itype('checkbox') \
-    .build() \
-    .field() \
-        .label('password') \
-        .itype('password') \
-        .validator(InputValidator.anything()) \
-        .min_max_length(4, 8) \
-        .build() \
-    .field() \
-        .label('read-only') \
-        .access_type('read-only') \
-        .value('READ-ONLY') \
-        .build() \
-    .build()
-# @formatter:on
-result = minput(form_fields)
-print(result.__dict__)
+    # @formatter:off
+    dashboard_items = MenuDashBoard.builder() \
+        .item() \
+            .icon(DashboardIcons.POWER) \
+            .tooltip('Do something') \
+            .on_trigger(lambda: print('Add')) \
+            .build() \
+        .item() \
+            .icon(DashboardIcons.MOVE) \
+            .tooltip('Another something') \
+            .on_trigger(lambda: print('Del')) \
+            .build() \
+        .item() \
+            .icon(DashboardIcons.NOTIFICATION) \
+            .tooltip('Notify something') \
+            .on_trigger(lambda: print('Edit')) \
+            .build() \
+        .item() \
+            .icon(DashboardIcons.LIST) \
+            .tooltip('List everything') \
+            .on_trigger(lambda: print('List')) \
+            .build() \
+        .item() \
+            .icon(DashboardIcons.DATABASE) \
+            .tooltip('Database console') \
+            .on_trigger(lambda: print('Database')) \
+            .build() \
+        .item() \
+            .icon(DashboardIcons.EXIT) \
+            .tooltip('Exit application') \
+            .on_trigger(lambda: print('Exit')) \
+            .build() \
+        .build()
+    # @formatter:on
+    result = mdashboard(dashboard_items, 4)
 ```
 
 ![MenuInput](doc/images/minput.png "MenuInput")
