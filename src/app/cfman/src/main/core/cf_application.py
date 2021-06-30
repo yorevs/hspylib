@@ -25,6 +25,7 @@ class CFApplication:
 
     @classmethod
     def of(cls, app_line: str):
+        """TODO"""
         parts = re.split(r' {2,}', app_line)
         assert len(parts) >= 6, f"Invalid application line: {app_line}"
         return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
@@ -52,6 +53,7 @@ class CFApplication:
         return str(self)
 
     def print_status(self):
+        """TODO"""
         sysout("%CYAN%{}  %{}%{:5}  %WHITE%{:5}  {:4}  {:4}  {}".format(
             self.name.ljust(self.max_name_length),
             'GREEN' if self.state == 'started' else 'RED',

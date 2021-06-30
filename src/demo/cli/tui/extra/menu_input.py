@@ -60,4 +60,4 @@ if __name__ == '__main__':
         .build()
     # @formatter:on
     result = minput(form_fields)
-    print(result.__dict__)
+    print(result.__dict__ if result else 'None')

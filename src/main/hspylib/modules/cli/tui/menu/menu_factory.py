@@ -14,9 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.tui.menu.menu import Menu
-
 from hspylib.core.metaclass.singleton import Singleton
+from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_entry import MenuEntry
 from hspylib.modules.cli.tui.menu.menu_option import MenuOption
 

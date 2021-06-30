@@ -20,7 +20,6 @@ import sys
 import unittest
 
 from requests.structures import CaseInsensitiveDict
-
 from test.hspylib.shared.decorators import integration_test
 from test.hspylib.shared.entity_test import EntityTest
 from test.hspylib.shared.firebase_repository_test import FirebaseRepositoryTest

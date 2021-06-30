@@ -15,7 +15,7 @@
 """
 import re
 from abc import ABC
-from typing import List, Optional, TypeVar, Generic
+from typing import List, Optional, TypeVar
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -28,13 +28,13 @@ T = TypeVar('T')
 
 
 def mchoose(
-        items: List[Generic[T]],
+        items: List[T],
         checked: bool = True,
         title: str = 'Please select one',
         max_rows: int = 15,
         title_color: VtColors = VtColors.ORANGE,
         highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[Generic[T]]]:
+        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[T]]:
     """
     TODO
     :param items:
@@ -61,7 +61,7 @@ class MenuChoose(ABC):
 
     def __init__(
             self,
-            items: List[str],
+            items: List[T],
             max_rows: int = 15,
             checked: bool = True):
 
@@ -80,7 +80,7 @@ class MenuChoose(ABC):
             title: str,
             title_color: VtColors,
             highlight_color: VtColors,
-            nav_color: VtColors) -> Optional[List[Generic[T]]]:
+            nav_color: VtColors) -> Optional[List[T]]:
         """TODO"""
 
         ret_val = None
