@@ -74,8 +74,7 @@ class KafkaProducer(QObject):
             self._producer.flush(self._flush_timeout)
 
     def _cb_message_produced(self, err: KafkaError, message: Message) -> None:
-        """Delivery report handler called on successful or failed delivery of message
-        """
+        """Delivery report handler called on successful or failed delivery of message"""
         if err is not None:
             syserr(f"Failed to deliver message: {err}")
         else:

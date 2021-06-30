@@ -179,7 +179,7 @@ class CFManager:
             self.apps = self._get_apps()
         return mchoose(self.apps, checked=False, title='Please choose the applications you want to manage')
 
-    def _select_app(self) -> CFApplication:
+    def _select_app(self) -> Optional[CFApplication]:
         """Select a single PCF app from the available list"""
         if not self.apps:
             self.apps = self._get_apps()
@@ -223,11 +223,8 @@ class CFManager:
                         if len(apps) > 0:
                             sysout("{}  {}  {}  {}  {}  {}".format(
                                 'Name'.ljust(CFApplication.max_name_length),
-                                'State'.ljust(7),
-                                'Inst'.ljust(5),
-                                'Mem'.ljust(4),
-                                'Disk'.ljust(4),
-                                'URLs',
+                                'State'.ljust(7), 'Inst'.ljust(5),'Mem'.ljust(4),
+                                'Disk'.ljust(4),'URLs',
                             ))
                             for app in apps:
                                 app.print_status()

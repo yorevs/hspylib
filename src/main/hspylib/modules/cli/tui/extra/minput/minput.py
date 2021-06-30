@@ -15,7 +15,7 @@
 """
 import re
 import time
-from typing import List
+from typing import List, Optional
 
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import syserr, sysout, new_dynamic_object
@@ -36,7 +36,7 @@ def minput(
         form_fields: List[FormField],
         title: str = 'Please fill all fields of the form fields below',
         title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> 'MenuInput.FormFields':
+        nav_color: VtColors = VtColors.YELLOW) -> Optional['MenuInput.FormFields']:
     """
     TODO
     :param form_fields:
@@ -75,7 +75,7 @@ class MenuInput:
             self,
             title: str,
             title_color: VtColors,
-            nav_color: VtColors) -> 'MenuInput.FormFields':
+            nav_color: VtColors) -> Optional['MenuInput.FormFields']:
         """TODO"""
 
         ret_val = None
@@ -93,13 +93,15 @@ class MenuInput:
                 ret_val = self._nav_input()
 
         restore_terminal()
-        form_fields =  self.FormFields
+
         if ret_val == Keyboard.VK_ENTER:
+            form_fields =  self.FormFields
             for field in self.all_fields:
                 att_name = snakecase(field.label)
                 setattr(form_fields, att_name, field.value)
+            return form_fields
 
-        return form_fields
+        return None
 
     def _render(self, nav_color: VtColors) -> None:
         """TODO"""

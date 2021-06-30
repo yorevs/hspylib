@@ -59,7 +59,6 @@ class MainQtView(QtView):
         self._all_settings = None
         self._stats = Statistics()
         self._capturer = StreamCapturer()
-        self._capturer.start()
         self._stats_bus = EventBus.get('kafka-statistics')
         self._stats_bus.subscribe('stats-report', self._update_stats)
         self._capturer.stderrCaptured.connect(self._console_print_err)
@@ -68,6 +67,8 @@ class MainQtView(QtView):
         self.setup_ui()
         self._load_history()
         atexit.register(self._save_history)
+        atexit.register(self._capturer.quit)
+        self._capturer.start()
 
     def setup_ui(self) -> None:
         """Connect signals and startup components"""
