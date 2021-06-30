@@ -19,6 +19,7 @@ import unittest
 from unittest.mock import MagicMock
 
 from hspylib.modules.eventbus.event import Event
+
 from hspylib.modules.eventbus.eventbus import EventBus
 
 

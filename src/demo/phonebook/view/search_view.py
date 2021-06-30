@@ -16,12 +16,11 @@
 
 from typing import List
 
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService

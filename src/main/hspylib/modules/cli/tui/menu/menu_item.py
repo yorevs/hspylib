@@ -17,11 +17,10 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from hspylib.modules.cli.tui.menu.menu import Menu
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.tui.menu.menu import Menu
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class MenuItem(Menu, ABC):
