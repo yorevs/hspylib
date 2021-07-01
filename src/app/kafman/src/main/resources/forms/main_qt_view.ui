@@ -94,7 +94,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>423</width>
+            <width>346</width>
             <height>528</height>
            </rect>
           </property>
@@ -383,7 +383,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>423</width>
+            <width>346</width>
             <height>528</height>
            </rect>
           </property>
@@ -468,7 +468,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>423</width>
+            <width>346</width>
             <height>528</height>
            </rect>
           </property>
@@ -698,7 +698,7 @@
           <enum>QTabWidget::Triangular</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab_producer">
           <attribute name="title">
@@ -744,7 +744,7 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="4">
+             <item row="0" column="5">
               <widget class="QToolButton" name="tbtn_prod_clear_topics">
                <property name="minimumSize">
                 <size>
@@ -838,6 +838,31 @@
                </property>
               </widget>
              </item>
+             <item row="0" column="4">
+              <widget class="QToolButton" name="tbtn_prod_add_topics">
+               <property name="minimumSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>x</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
            <item>
@@ -886,7 +911,7 @@
            </property>
            <item>
             <layout class="QGridLayout" name="gridLayout_9">
-             <item row="0" column="3">
+             <item row="0" column="4">
               <widget class="QToolButton" name="tbtn_cons_clear_topics">
                <property name="minimumSize">
                 <size>
@@ -968,6 +993,31 @@
                </property>
                <property name="text">
                 <string>O</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QToolButton" name="tbtn_cons_add_topics">
+               <property name="minimumSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>x</string>
                </property>
                <property name="iconSize">
                 <size>
@@ -1083,12 +1133,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1006</x>
-     <y>72</y>
+     <x>492</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
-     <x>969</x>
-     <y>75</y>
+     <x>739</x>
+     <y>78</y>
     </hint>
    </hints>
   </connection>
