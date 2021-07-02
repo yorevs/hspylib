@@ -30,7 +30,7 @@ from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, get_cursor_position, \
  \
-set_enable_echo
+    set_enable_echo
 
 
 def minput(
