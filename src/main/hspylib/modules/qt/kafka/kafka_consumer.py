@@ -39,18 +39,18 @@ class KafkaConsumer(QThread):
         self.start()
 
     def start_consumer(self, settings: dict) -> None:
-        """TODO"""
+        """Start the Kafka consumer agent"""
         if self._consumer is None:
             self._consumer = Consumer(settings)
             self._started = True
 
     def stop_consumer(self) -> None:
-        """TODO"""
+        """Stop the Kafka consumer agent"""
         if self._consumer is not None:
             self._started = False
 
     def consume(self, topics: List[str]) -> None:
-        """TODO"""
+        """Start the consumer thread"""
         if self._started:
             self._worker_thread = threading.Thread(target=self._consume, args=(topics,))
             self._worker_thread.name = f"kafka-consumer-worker-{hash(self)}"
@@ -58,7 +58,7 @@ class KafkaConsumer(QThread):
             self._worker_thread.start()
 
     def is_started(self):
-        """TODO"""
+        """Whether the consumer is started or not"""
         return self._started
 
     def run(self) -> None:
@@ -66,7 +66,7 @@ class KafkaConsumer(QThread):
             sleep(self._poll_interval)
 
     def _consume(self, topics: List[str]) -> None:
-        """TODO"""
+        """Consume messages from the selected Kafka topics"""
         try:
             self._consumer.subscribe(topics)
             while self._started and self._consumer is not None:
