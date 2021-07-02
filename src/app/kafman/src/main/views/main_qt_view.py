@@ -19,7 +19,7 @@ import os
 import re
 from typing import List, Optional
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QFont, QColor
 
 from hspylib.core.config.app_config import AppConfigs
