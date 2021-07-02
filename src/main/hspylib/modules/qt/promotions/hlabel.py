@@ -24,7 +24,7 @@ class HLabel(QLabel):
     """TODO"""
 
     clicked = pyqtSignal()
-    elisionChanged = pyqtSignal(bool)
+    elisionChanged = pyqtSignal()
 
     def __init__(self, parent: Optional[QWidget]):
         super().__init__(parent)
@@ -49,8 +49,7 @@ class HLabel(QLabel):
         if self._clickable:
             self.clicked.emit()
 
-    def set_elided_text(self, text: str):
-        """TODO"""
+    def setText(self, text: str):
         if self._elidable:
             metrics = QFontMetrics(self.font())
             max_length = int(self.width() / metrics.maxWidth())
@@ -59,13 +58,14 @@ class HLabel(QLabel):
             plain_text = doc.toPlainText()
             self._content = text
             if len(plain_text) > max_length:
+                self.elisionChanged.emit()
                 elided_last_line = metrics.elidedText(text, Qt.ElideRight, self.width())
-                self.setText(elided_last_line)
+                super().setText(elided_last_line)
                 return
 
-        self.setText(text)
+        super().setText(text)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
-        self.set_elided_text(self._content)
+        self.setText(self._content)
         super().resizeEvent(event)
 

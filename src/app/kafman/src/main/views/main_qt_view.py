@@ -20,7 +20,7 @@ import re
 from typing import List, Optional
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QColor, QFontMetricsF
+from PyQt5.QtGui import QFont, QColor
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
@@ -105,12 +105,16 @@ class MainQtView(QtView):
         self.ui.tbtn_produce.clicked.connect(self._produce)
         self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
         self.ui.tbtn_prod_clear_topics.setText(FormIcons.DELETE.value)
+        self.ui.tbtn_prod_add_topics.setText(FormIcons.PLUS.value)
+        self.ui.tbtn_prod_add_topics.clicked.connect(lambda: self._add_topic())
+        self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
+        self.ui.tbtn_prod_del_topics.clicked.connect(lambda: self._del_topic())
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_prod_settings.editingFinished.connect(self._edit_setting)
         # Consumer controls
-        self.ui.cmb_cons_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
+        self.ui.cmb_cons_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_cons_settings_add.clicked.connect(lambda: self.ui.lst_cons_settings.set_item('new.setting'))
         self.ui.tbtn_cons_settings_add.setText(FormIcons.PLUS.value)
         self.ui.tbtn_cons_settings_del.clicked.connect(self._del_setting)
@@ -119,6 +123,10 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value)
         self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: #2380FA;}')
         self.ui.tbtn_cons_clear_topics.setText(FormIcons.DELETE.value)
+        self.ui.tbtn_cons_add_topics.setText(FormIcons.PLUS.value)
+        self.ui.tbtn_cons_add_topics.clicked.connect(lambda: self._add_topic(is_producer=False))
+        self.ui.tbtn_cons_del_topics.setText(FormIcons.MINUS.value)
+        self.ui.tbtn_cons_del_topics.clicked.connect(lambda: self._del_topic(is_producer=False))
         self.ui.lst_cons_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
@@ -135,11 +143,11 @@ class MainQtView(QtView):
     def _topics(self, is_producer: bool) -> Optional[List[str]]:
         """Return the selected topics"""
         if is_producer:
-            current_text = self.ui.cmb_prod_topics.currentText()
+            topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
         else:
-            current_text = self.ui.cmb_cons_topics.currentText()
+            topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
 
-        return current_text.split(',') if current_text else None
+        return topics if len(topics) > 0 else None
 
     def _settings(self) -> Optional[dict]:
         """Return the configured settings"""
@@ -209,56 +217,79 @@ class MainQtView(QtView):
             else:
                 self._display_error(f"Setting {setting} is required")
 
-    def _add_topic(self, topic: str = None, is_producer: bool = True):
+    def _add_topic(self, topic: str = None, is_producer: bool = True) -> None:
         """Add a topic to the combo box."""
         if is_producer:
-            self.ui.cmb_prod_topics.set_item(topic or self.ui.cmb_prod_topics.currentText())
+            new_topic = self.ui.cmb_prod_topics.currentText()
+            if topic or new_topic:
+                self.ui.cmb_prod_topics.set_item(topic or new_topic)
         else:
-            self.ui.cmb_cons_topics.set_item(topic or self.ui.cmb_cons_topics.currentText())
+            new_topic = self.ui.cmb_cons_topics.currentText()
+            if topic or new_topic:
+                self.ui.cmb_cons_topics.set_item(topic or new_topic)
+
+    def _del_topic(self, is_producer: bool = True):
+        """Delete a topic to the combo box."""
+        if is_producer:
+            self.ui.cmb_prod_topics.removeItem(self.ui.cmb_prod_topics.currentIndex())
+        else:
+            self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
 
     def _toggle_start_producer(self):
         """Start/Stop the producer."""
         started = self._producer.is_started()
-        topics = self._topics(True)
         settings = self._settings()
+        if started:  # Stop
+            self.ui.tool_box.setCurrentIndex(0)
+            self._producer.stop_producer()
+            self._display_text(f"Production to kafka topics stopped", StatusColor.yellow)
+        else:  # Start
+            self._add_topic()
+            topics = self._topics(True)
+            if topics:
+                self.ui.tool_box.setCurrentIndex(2)
+                self._producer.start_producer(settings)
+                self._display_text(f"Started producing to topics {topics}", StatusColor.green)
+            else:
+                self._display_error('Must subscribe to at least one topic')
+                return
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)
         self.ui.cmb_prod_topics.setEnabled(started)
+        self.ui.tbtn_prod_add_topics.setEnabled(started)
+        self.ui.tbtn_prod_del_topics.setEnabled(started)
+        self.ui.tbtn_prod_clear_topics.setEnabled(started)
         self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
         self.ui.tbtn_prod_connect.setStyleSheet(
             'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
 
-        if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(0)
-            self._producer.stop_producer()
-            self._display_text(f"Production to topic {topics} stopped", StatusColor.yellow)
-        else:  # Start
-            self.ui.tool_box.setCurrentIndex(2)
-            self._add_topic()
-            self._producer.start_producer(settings)
-            self._display_text(f"Started producing to topics {topics}", StatusColor.green)
-
     def _toggle_start_consumer(self):
         """Start/Stop the consumer."""
         started = self._consumer.is_started()
-        topics = self._topics(False)
         settings = self._settings()
+        if started:  # Stop
+            self.ui.tool_box.setCurrentIndex(0)
+            self._consumer.stop_consumer()
+            self._display_text(f"Consumption from kafka topics stopped", StatusColor.yellow)
+        else:  # Start
+            self._add_topic(is_producer=False)
+            topics = self._topics(False)
+            if topics:
+                self.ui.tool_box.setCurrentIndex(2)
+                self._consumer.start_consumer(settings)
+                self._consumer.consume(topics)
+                self._display_text(f"Started consuming from topics {topics}", StatusColor.green)
+            else:
+                self._display_error('Must subscribe to at least one topic')
+                return
         self.ui.cmb_cons_topics.setEnabled(started)
+        self.ui.tbtn_cons_add_topics.setEnabled(started)
+        self.ui.tbtn_cons_del_topics.setEnabled(started)
+        self.ui.tbtn_cons_clear_topics.setEnabled(started)
         self.ui.tbtn_cons_connect.setText('O' if started else '-')
         self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
         self.ui.tbtn_cons_connect.setStyleSheet(
             'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
-
-        if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(0)
-            self._consumer.stop_consumer()
-            self._display_text(f"Consumption from topic {topics} stopped", StatusColor.yellow)
-        else:  # Start
-            self.ui.tool_box.setCurrentIndex(2)
-            self._add_topic(is_producer=False)
-            self._consumer.start_consumer(settings)
-            self._consumer.consume(topics)
-            self._display_text(f"Started consuming from topics {topics}", StatusColor.green)
 
     def _produce(self) -> None:
         """TODO"""
@@ -275,7 +306,7 @@ class MainQtView(QtView):
     def _display_text(self, message: str, color: QColor = None, add_console: bool = True) -> None:
         """Display a text at the status bar (and console if required)"""
         message = f"<font color='{color.name() if color else 'white'}'>{message}</font>"
-        self.ui.lbl_status_text.set_elided_text(message)
+        self.ui.lbl_status_text.setText(message)
         if add_console:
             self._console_print(f"-> {message}", color)
 
