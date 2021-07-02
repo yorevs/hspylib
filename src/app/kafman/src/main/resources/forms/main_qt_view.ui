@@ -908,7 +908,7 @@
               <bool>false</bool>
              </property>
              <property name="placeholderText">
-              <string>Type in the message to be produced</string>
+              <string>Type in the messages to be produced</string>
              </property>
              <property name="openLinks">
               <bool>false</bool>

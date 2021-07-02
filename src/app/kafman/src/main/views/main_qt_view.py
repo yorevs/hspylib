@@ -223,17 +223,25 @@ class MainQtView(QtView):
             new_topic = self.ui.cmb_prod_topics.currentText()
             if topic or new_topic:
                 self.ui.cmb_prod_topics.set_item(topic or new_topic)
+                self.ui.cmb_prod_topics.setEditText('')
         else:
             new_topic = self.ui.cmb_cons_topics.currentText()
             if topic or new_topic:
                 self.ui.cmb_cons_topics.set_item(topic or new_topic)
+                self.ui.cmb_cons_topics.setEditText('')
 
     def _del_topic(self, is_producer: bool = True):
         """Delete a topic to the combo box."""
         if is_producer:
-            self.ui.cmb_prod_topics.removeItem(self.ui.cmb_prod_topics.currentIndex())
+            current_text = self.ui.cmb_prod_topics.currentText()
+            if current_text:
+                self._display_text(f"Topic {current_text} removed from producer")
+                self.ui.cmb_prod_topics.removeItem(self.ui.cmb_prod_topics.currentIndex())
         else:
-            self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
+            current_text = self.ui.cmb_cons_topics.currentText()
+            if current_text:
+                self._display_text(f"Topic {current_text} removed from consumer")
+                self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
 
     def _toggle_start_producer(self):
         """Start/Stop the producer."""
@@ -367,7 +375,7 @@ class MainQtView(QtView):
             fd_history.write(f"prod_topics = {prod_topics}\n")
             fd_history.write(f"cons_topics = {cons_topics}\n")
             fd_history.write(f"settings = {str(self._all_settings)}\n")
-            fd_history.write(f"tab = {self.ui.tab_widget.currentIndex()}\n")
+            fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
 
     def _load_history(self):
         """Load a previously saved app history."""
@@ -392,7 +400,7 @@ class MainQtView(QtView):
                         elif prop_name == 'splitter_sizes':
                             size = ast.literal_eval(prop_value)
                             self.ui.splitter_pane.setSizes([int(size[0]), int(size[1])])
-                        elif prop_name == 'tab':
+                        elif prop_name == 'selected_tab':
                             try:
                                 self._activate_tab(int(prop_value))
                             except ValueError:
