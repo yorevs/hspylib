@@ -292,7 +292,7 @@ class MainQtView(QtView):
             'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
 
     def _produce(self) -> None:
-        """TODO"""
+        """Produce messages to selected kafka topics"""
         messages = self._messages()
         if self._producer.is_started() and len(messages) > 0:
             topics = self._topics(True)
