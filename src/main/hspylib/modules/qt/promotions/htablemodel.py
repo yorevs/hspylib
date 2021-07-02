@@ -18,7 +18,7 @@ import collections
 import logging as log
 from typing import Type, List, TypeVar
 
-from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, QSortFilterProxyModel
+from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTableView
 
