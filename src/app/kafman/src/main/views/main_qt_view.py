@@ -20,7 +20,7 @@ import re
 from typing import List, Optional
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QColor
+from PyQt5.QtGui import QFont, QColor, QFontMetricsF
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
@@ -32,11 +32,11 @@ from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
 from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
+from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
-from kafman.src.main.core.constants import StatusColor
-from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
+from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
 
 class MainQtView(QtView):
@@ -92,6 +92,7 @@ class MainQtView(QtView):
         self.ui.tool_box.setCurrentIndex(self.Tools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
+        self.ui.lbl_status_text.set_elidable(True)
         # Producer controls
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
@@ -224,13 +225,14 @@ class MainQtView(QtView):
         self.ui.txt_producer.setEnabled(not started)
         self.ui.cmb_prod_topics.setEnabled(started)
         self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
-        self.ui.tbtn_prod_connect.setStyleSheet('QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
+        self.ui.tbtn_prod_connect.setStyleSheet(
+            'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
 
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(0)
             self._producer.stop_producer()
             self._display_text(f"Production to topic {topics} stopped", StatusColor.yellow)
-        else: # Start
+        else:  # Start
             self.ui.tool_box.setCurrentIndex(2)
             self._add_topic()
             self._producer.start_producer(settings)
@@ -244,13 +246,14 @@ class MainQtView(QtView):
         self.ui.cmb_cons_topics.setEnabled(started)
         self.ui.tbtn_cons_connect.setText('O' if started else '-')
         self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
-        self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
+        self.ui.tbtn_cons_connect.setStyleSheet(
+            'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
 
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(0)
             self._consumer.stop_consumer()
             self._display_text(f"Consumption from topic {topics} stopped", StatusColor.yellow)
-        else: # Start
+        else:  # Start
             self.ui.tool_box.setCurrentIndex(2)
             self._add_topic(is_producer=False)
             self._consumer.start_consumer(settings)
@@ -272,18 +275,18 @@ class MainQtView(QtView):
     def _display_text(self, message: str, color: QColor = None, add_console: bool = True) -> None:
         """Display a text at the status bar (and console if required)"""
         message = f"<font color='{color.name() if color else 'white'}'>{message}</font>"
-        self.ui.lbl_status_text.setText(message)
+        self.ui.lbl_status_text.set_elided_text(message)
         if add_console:
             self._console_print(f"-> {message}", color)
 
     def _update_stats(
-            self,
-            produced_total:int,
-            consumed_total: int,
-            produced_in_a_tick: int,
-            consumed_in_a_tick: int,
-            average_produced: int,
-            average_consumed: int) -> None:
+        self,
+        produced_total: int,
+        consumed_total: int,
+        produced_in_a_tick: int,
+        consumed_in_a_tick: int,
+        average_produced: int,
+        average_consumed: int) -> None:
         """Update the consumer and producer statistics"""
 
         self.ui.lbl_stats_produced.setText(str(produced_total))
@@ -326,6 +329,10 @@ class MainQtView(QtView):
         with open(self.HISTORY_FILE, 'w') as fd_history:
             prod_topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
             cons_topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
+            wsize = self.window.width(), self.window.height()
+            ssize = self.ui.splitter_pane.sizes()[0], self.ui.splitter_pane.sizes()[1]
+            fd_history.write(f"splitter_sizes = {str(ssize)}\n")
+            fd_history.write(f"window_size = {str(wsize)}\n")
             fd_history.write(f"prod_topics = {prod_topics}\n")
             fd_history.write(f"cons_topics = {cons_topics}\n")
             fd_history.write(f"settings = {str(self._all_settings)}\n")
@@ -333,7 +340,7 @@ class MainQtView(QtView):
 
     def _load_history(self):
         """Load a previously saved app history."""
-        if os.path.exists(self.HISTORY_FILE) and os.stat(self.HISTORY_FILE).st_size > 250:
+        if os.path.exists(self.HISTORY_FILE) and os.stat(self.HISTORY_FILE).st_size > MAX_HISTORY_SIZE_BYTES:
             self._display_text('History recovered')
             with open(self.HISTORY_FILE, 'r') as fd_history:
                 lines = fd_history.readlines()
@@ -348,6 +355,12 @@ class MainQtView(QtView):
                             list(map(lambda p: self._add_topic(p, False), ast.literal_eval(prop_value)))
                         elif prop_name == 'settings':
                             self._all_settings = ast.literal_eval(prop_value)
+                        elif prop_name == 'window_size':
+                            size = ast.literal_eval(prop_value)
+                            self.window.resize(int(size[0]), int(size[1]))
+                        elif prop_name == 'splitter_sizes':
+                            size = ast.literal_eval(prop_value)
+                            self.ui.splitter_pane.setSizes([int(size[0]), int(size[1])])
                         elif prop_name == 'tab':
                             try:
                                 self._activate_tab(int(prop_value))

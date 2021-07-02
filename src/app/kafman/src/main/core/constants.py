@@ -17,6 +17,8 @@ from abc import ABC
 
 from PyQt5.QtGui import QColor
 
+MAX_HISTORY_SIZE_BYTES = 250
+
 class StatusColor(ABC):
     white = QColor('#FFFFFF')
     red = QColor('#941100')

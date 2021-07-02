@@ -15,17 +15,57 @@
 """
 from typing import Optional
 
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QFontMetrics, QResizeEvent, QTextDocument
+from PyQt5.QtWidgets import QLabel, QWidget, QSizePolicy
 
 
 class HLabel(QLabel):
     """TODO"""
 
-    clicked = pyqtSignal(int)
+    clicked = pyqtSignal()
+    elisionChanged = pyqtSignal(bool)
 
     def __init__(self, parent: Optional[QWidget]):
         super().__init__(parent)
+        self._clickable = False
+        self._elidable = False
+        self._content = self.text()
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+    def elidable(self):
+        return self._elidable
+
+    def set_elidable(self, elidable: bool):
+        self._elidable = elidable
+
+    def clickable(self):
+        return self._clickable
+
+    def set_clickable(self, clickable: bool):
+        self._clickable = clickable
 
     def mousePressEvent(self, ev) -> None:  # pylint: disable=unused-argument
-        self.clicked.emit()
+        if self._clickable:
+            self.clicked.emit()
+
+    def set_elided_text(self, text: str):
+        """TODO"""
+        if self._elidable:
+            metrics = QFontMetrics(self.font())
+            max_length = int(self.width() / metrics.maxWidth())
+            doc = QTextDocument()
+            doc.setHtml(text)
+            plain_text = doc.toPlainText()
+            self._content = text
+            if len(plain_text) > max_length:
+                elided_last_line = metrics.elidedText(text, Qt.ElideRight, self.width())
+                self.setText(elided_last_line)
+                return
+
+        self.setText(text)
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        self.set_elided_text(self._content)
+        super().resizeEvent(event)
+
