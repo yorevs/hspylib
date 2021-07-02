@@ -16,9 +16,9 @@
 
 import collections
 import logging as log
-from typing import Type, List, Optional, TypeVar
+from typing import Type, List, TypeVar
 
-from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
+from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTableView
 
@@ -31,7 +31,7 @@ class HTableModel(QAbstractTableModel):
 
     def __init__(
         self,
-        parent: Optional[QTableView],
+        parent: QTableView,
         clazz: Type,
         headers: List[str] = None,
         table_data: List[T] = None,
@@ -42,10 +42,34 @@ class HTableModel(QAbstractTableModel):
         self.clazz = clazz
         self.table_data = collections.deque(maxlen=max_rows)
         list(map(self.table_data.append, table_data or []))
-        self.headers = headers or self.headers_by_entity()
+        self.headers = headers or self._headers_by_entity()
         self.cell_alignments = cell_alignments
-        log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
         parent.setModel(self)
+        log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
+
+    def row(self, index: QModelIndex) -> T:
+        """TODO"""
+        return self.table_data[index.row()]
+
+    def column(self, index: QModelIndex) -> T:
+        """TODO"""
+        return class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
+
+    def push_data(self, data: List[T]):
+        """TODO"""
+        list(map(self.table_data.append, data))
+        self.layoutChanged.emit()
+
+    def clear(self):
+        """TODO"""
+        self.table_data.clear()
+        self.layoutChanged.emit()
+
+    def sort(self, column: int, order: Qt.SortOrder = ...) -> None:
+        """TODO"""
+        keys = class_attribute_names(self.clazz)
+        self.table_data = sorted(self.table_data, key=lambda x: getattr(x, keys[column]), reverse=bool(order))
+        self.layoutChanged.emit()
 
     def data(self, index: QModelIndex, role: int = ...) -> QVariant:
         """TODO"""
@@ -73,11 +97,6 @@ class HTableModel(QAbstractTableModel):
             return QVariant(str(section))
         return QVariant()
 
-    def headers_by_entity(self) -> List[str]:
-        """TODO"""
-        attributes = class_attribute_names(self.clazz)
-        return [str(x).capitalize() for x in attributes]
-
     def rowCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""
         return len(self.table_data) if self.table_data and len(self.table_data) > 0 else 0
@@ -86,20 +105,7 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         return len(self.table_data[0].__dict__.keys()) if self.table_data and len(self.table_data) > 0 else 0
 
-    def row(self, index: QModelIndex) -> T:
+    def _headers_by_entity(self) -> List[str]:
         """TODO"""
-        return self.table_data[index.row()]
-
-    def column(self, index: QModelIndex) -> T:
-        """TODO"""
-        return class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
-
-    def push_data(self, data: List[T]):
-        """TODO"""
-        list(map(self.table_data.append, data))
-        self.layoutChanged.emit()
-
-    def clear(self):
-        """TODO"""
-        self.table_data.clear()
-        self.layoutChanged.emit()
+        attributes = class_attribute_names(self.clazz)
+        return [str(x).capitalize() for x in attributes]
