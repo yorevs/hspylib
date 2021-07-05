@@ -24,6 +24,7 @@ from hspylib.core.tools.commons import syserr
 
 
 # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
+# For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
 class KafkaConsumer(QThread):
     """TODO"""
 

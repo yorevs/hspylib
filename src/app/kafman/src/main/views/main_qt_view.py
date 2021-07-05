@@ -40,11 +40,8 @@ from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
 
 class MainQtView(QtView):
-    """
-    For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-    """
+    """TODO"""
     VERSION = read_version(f"{run_dir()}/.version")
-    UI_FILE = 'main_qt_view.ui'
     HISTORY_FILE = f"{run_dir()}/resources/kafman-history.txt"
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
@@ -62,7 +59,7 @@ class MainQtView(QtView):
 
     def __init__(self):
         # Must come after the initialization above
-        super().__init__(self.UI_FILE)
+        super().__init__()
         self.configs = AppConfigs.INSTANCE
         self._started = False
         self._consumer = KafkaConsumer()
