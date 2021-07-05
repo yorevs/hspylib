@@ -15,7 +15,7 @@
 """
 import os
 from abc import ABC
-from typing import Tuple, Type
+from typing import Tuple, Type, Optional
 
 from PyQt5 import uic
 from PyQt5.QtGui import QFont
@@ -41,11 +41,10 @@ class QtView(ABC):
 
         return uic.loadUiType(filepath)
 
-    def __init__(self, ui_file: str, parent: QWidget = None):
+    def __init__(self, ui_file: str = 'main_qt_view.ui', parent: Optional[QWidget] = None):
         ui_clazz, window_clazz = self.load_form(ui_file)
-        # Must come after the initialization above {
+        # Must come after the initialization above
         self.window, self.ui = window_clazz(), ui_clazz()
-        # }
         self.ui.setupUi(self.window)
         self.parent = parent
 
