@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   mysql:
+    container_name: Mysql
     image: mysql/mysql-server:latest
     restart: always
     environment:
@@ -15,6 +16,8 @@ services:
       - 3306
     volumes:
       - mysql-data:/var/lib/mysql:rw
+    networks:
+      - esnet
 
 volumes:
   mysql-data:

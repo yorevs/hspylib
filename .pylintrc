@@ -9,7 +9,7 @@ ignored-classes=struct,termios,select,socket,math
 max-line-length=120
 
 [MISCELLANEOUS]
-notes=FIXME,XXX
+notes=FIXME,XXX,TODO
 
 [MESSAGES CONTROL]
 enable=useless-suppression

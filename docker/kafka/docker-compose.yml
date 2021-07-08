@@ -16,6 +16,8 @@ services:
       ZOOKEEPER_SERVERS: zookeeper:2888:3888
     volumes:
       - zookeeper-data:/var/lib/zookeeper:rw
+    networks:
+      - esnet
 
   kafka:
     container_name: kafka
@@ -40,6 +42,8 @@ services:
       - 9093:9093
     volumes:
       - kafka-data:/var/lib/kafka:rw
+    networks:
+      - esnet
 
   kafka-manager:
     container_name: kafka-manager
@@ -54,6 +58,8 @@ services:
       APPLICATION_SECRET: letmein
     ports:
       - 9000:9000
+    networks:
+      - esnet
 
 volumes:
   kafka-data:
