@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   postgres:
+    container_name: PostrgresSql
     image: postgres:latest
     restart: always
     environment:
