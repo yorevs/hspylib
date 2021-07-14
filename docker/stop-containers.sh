@@ -23,9 +23,12 @@ stopContainers() {
     if [ "${status}" = "\"running\"" ]; then
       echo -e "\033[0;34m⠿ Stopping container ${container} \033[0;0;0m"
       pushd "${container}" &>/dev/null || exit 1
-      docker compose rm --stop --force
-      assertStatus "${container}" "exited"
-      echo ''
+      if docker compose rm --stop --force; then
+        assertStatus "${container}" "exited"
+        echo ''
+      else
+        echo -e "\033[0;31m⠿ Docker (docker compose rm) command failed! \033[0;0;0m\n"
+      fi
       popd &>/dev/null || exit 1
     else
       echo -e "\033[0;34m⠿ Container \"${container}\" is not up\033[0;0;0m"

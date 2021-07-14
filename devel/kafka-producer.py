@@ -17,12 +17,14 @@ def acked(err, msg):
         print("Message produced: {0}".format(msg.value()))
 
 if __name__ == '__main__':
+    topics = ['foobar']
     p = Producer(settings)
     try:
         for val in xrange(1, 1000):
-            p.produce('foobar', 'My-Value #{0}'.format(val), callback=acked)
-            p.poll(0.5)
-            sleep(0.5)
+            for tp in topics:
+                p.produce(tp, '[{}] My-Value #{}'.format(tp, val), callback=acked)
+                p.poll(0.5)
+                sleep(0.5)
 
     except KeyboardInterrupt:
         pass
