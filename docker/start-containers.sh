@@ -25,8 +25,12 @@ startContainers() {
     else
       echo -e "\033[0;34m⠿ Starting container ${container} \033[0;0;0m"
       pushd "${container}" &>/dev/null || exit 1
-      docker compose up --force-recreate --build --remove-orphans --detach
-      waitHealthy "${container}"
+      if docker compose up --force-recreate --build --remove-orphans --detach; then
+        waitHealthy "${container}"
+        echo ''
+      else
+        echo -e "\033[0;31m⠿ Docker (docker compose up) command failed! \033[0;0;0m\n"
+      fi
       popd &>/dev/null || exit 1
     fi
   done
