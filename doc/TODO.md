@@ -7,5 +7,6 @@ IP: In-progress
 2. [ ] NS **New-Feature**: Add a repository for SQLite db + tests.
 3. [ ] NS **New-Feature**: Add a repository for Postgres db + tests.
 4. [ ] NS **Improvement**: Include a form validator for minput.
-5. [ ] NS **Improvement**: Add Create Qt App to appman.
-6. [ ] NS **Improvement**: Improve tui -> extra with settings and remove parameters.
+5. [ ] NS **Improvement**: Improve tui -> extra with settings and remove parameters.
+6. [ ] NS **Improvement**: Fix README.md images and finish the documentation.
+7. [ ] NS **Improvement**: Add the AVRO schema for Kafman.
