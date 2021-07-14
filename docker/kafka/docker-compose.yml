@@ -1,10 +1,15 @@
-version: '3.7'
+version: '3.9'
 
 services:
   zookeeper:
     container_name: zookeeper
     image: zookeeper:latest
     restart: on-failure
+    healthcheck:
+      test: echo stat | nc localhost 2181
+      interval: 10s
+      timeout: 60s
+      retries: 3
     ports:
       - 2181:2181
     environment:
@@ -23,8 +28,11 @@ services:
     container_name: kafka
     image: wurstmeister/kafka:latest
     restart: on-failure
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "localhost:9092"]
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     environment:
       JMX_PORT: 9093
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -50,8 +58,10 @@ services:
     image: hlebalbau/kafka-manager:latest
     restart: on-failure
     depends_on:
-      - kafka
-      - zookeeper
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
     command: -Dconfig.file=conf/application.conf -Dapplication.home=bin/kafkamanager
     environment:
       ZK_HOSTS: zookeeper
