@@ -4,22 +4,19 @@ source "docker-tools.sh"
 
 ALL_CONTAINERS=${ALL_CONTAINERS:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
 
-# @purpose: TODO
+# @purpose: Stop and remove all docker containers
+# -param $1: if the execution is on an interactive console or not
 stopContainers() {
   all=()
 
-  if [[ $- == *i* ]]; then
-    for container in ${ALL_CONTAINERS}; do
-      read -r -n 1 -p "Stop container ${container} (y/[n]): " ANS
-      test -n "${ANS}" && echo ''
-      if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
-        all+=("${container}")
-      fi
-    done
-    echo ''
-  else
-    all=("${ALL_CONTAINERS[*]}")
-  fi
+  for container in ${ALL_CONTAINERS}; do
+    read -r -n 1 -p "Stop container ${container} (y/[n]): " ANS
+    test -n "${ANS}" && echo ''
+    if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
+      all+=("${container}")
+    fi
+  done
+  echo ''
 
   for container in ${all[*]}; do
     status=$(getStatus "${container}")
@@ -36,6 +33,5 @@ stopContainers() {
   done
 }
 
-echo "Stopping docker containers ${ALL_CONTAINERS}"
-stopContainers
 echo ''
+stopContainers

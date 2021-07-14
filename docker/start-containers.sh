@@ -4,22 +4,19 @@ source "docker-tools.sh"
 
 ALL_CONTAINERS=${ALL_CONTAINERS:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
 
-# @purpose: TODO
+# @purpose: Start all docker containers
+# -param $1: if the execution is on an interactive console or not
 startContainers() {
   all=()
 
-  if [[ $- == *i* ]]; then
-    for container in ${ALL_CONTAINERS}; do
-      read -r -n 1 -p "Start container ${container} (y/[n]): " ANS
-      test -n "${ANS}" && echo ''
-      if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
-        all+=("${container}")
-      fi
-    done
-    echo ''
-  else
-    all=("${ALL_CONTAINERS[*]}")
-  fi
+  for container in ${ALL_CONTAINERS}; do
+    read -r -n 1 -p "Start container ${container} (y/[n]): " ANS
+    test -n "${ANS}" && echo ''
+    if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
+      all+=("${container}")
+    fi
+  done
+  echo ''
 
   for container in ${all[*]}; do
     status=$(getStatus "${container}")
@@ -35,6 +32,5 @@ startContainers() {
   done
 }
 
-echo 'Starting docker containers'
-startContainers
 echo ''
+startContainers
