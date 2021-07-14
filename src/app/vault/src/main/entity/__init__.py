@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.0
+# HSPyLib v0.11.1
 #
 # Package: app.vault.src.main.entity
 """Package initialization."""
