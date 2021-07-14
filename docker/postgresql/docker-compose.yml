@@ -1,10 +1,15 @@
-version: '3.7'
+version: '3.9'
 
 services:
   postgres:
-    container_name: PostrgresSql
+    container_name: postgresql
     image: postgres:latest
-    restart: always
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
     environment:
       POSTGRES_DB: hspylib
       POSTGRES_USER: postgres

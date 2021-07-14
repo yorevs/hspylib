@@ -1,10 +1,14 @@
-version: '3.7'
+version: '3.9'
 
 services:
   mysql:
-    container_name: Mysql
+    container_name: mysql
     image: mysql/mysql-server:latest
-    restart: always
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 60s
+      retries: 3
     environment:
       MYSQL_DATABASE: hspylib
       MYSQL_USER: mysql

@@ -55,7 +55,6 @@ task findContainers(type: Task) {
     def dockerFiles = filesByPattern("${dockerDir}", /.*docker-compose\.ya?ml$/)
     dockerFiles.each { File file ->
       project.ext.containers << file.getParentFile().getName()
-      println "Found docker file => ${file.getPath()}"
     }
   }
 }
@@ -63,42 +62,44 @@ task findContainers(type: Task) {
 /* List all available docker containers. */
 task listContainers(type: Task) {
   group = 'Docker'
-  description = 'Test docker to show containers'
+  description = 'Show all available docker containers'
   dependsOn findContainers
   doLast {
-    println containers
+    containers.each { c ->
+      println "Container available: ${c}"
+    }
   }
 }
 
 /* Start all containers as daemons */
-task startContainers(type: Task) {
+task startAllContainers(type: Task) {
   group = 'Docker'
-  description = 'Start all containers as daemons'
+  description = 'Start all containers as daemons (detached mode)'
   dependsOn isDockerUp
-  dependsOn findContainers
+  dependsOn listContainers
   doLast {
     containers.each { String container ->
-      println "Starting container: ${container}"
+      println "=> Starting container: ${container}"
       exec {
-        workingDir = "${rootDir}/docker/${container}"
-        commandLine 'docker', 'compose', 'up', '--force-recreate', '--build', '--remove-orphans', '--detach'
+       workingDir = "${rootDir}/docker/${container}"
+       commandLine 'docker', 'compose', 'up', '--force-recreate', '--build', '--remove-orphans', '--detach'
       }
     }
   }
 }
 
 /* Stop and  remove all containers */
-task stopContainers(type: Task) {
+task stopAllContainers(type: Task) {
   group = 'Docker'
-  description = 'Stop and  remove all containers'
+  description = 'Stop and remove all containers'
   dependsOn isDockerUp
-  dependsOn findContainers
+  dependsOn listContainers
   doLast {
     containers.each { String container ->
-      println "Stopping container: ${container}"
+      println "Stopping and removing container: ${container}"
       exec {
         workingDir = "${rootDir}/docker/${container}"
-        commandLine 'docker', 'compose', 'down'
+        commandLine 'docker', 'compose', 'rm', '--stop', '--force'
       }
     }
   }
