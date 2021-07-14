@@ -48,7 +48,7 @@ class StreamCapturer(QThread):
                     if output and output != '':
                         log.debug(output)
                         self.streamCaptured.emit(output)
-                        print(output, file=self.orig_stdout)
+                        print(output, file=sys.__stdout__)
                         buf.truncate(0)
                     sleep(self._poll_interval)
 
@@ -70,7 +70,7 @@ class StreamCapturer(QThread):
                     if output and output != '':
                         log.error(output)
                         self.streamCaptured.emit(output)
-                        print(output, file=self.orig_stderr)
+                        print(output, file=sys.__stderr__)
                         buf.truncate(0)
                     sleep(self._poll_interval)
 
@@ -84,8 +84,6 @@ class StreamCapturer(QThread):
         assert capture_stderr or capture_stdout, 'At least one capturer must be started'
         super().__init__()
         self.setObjectName('stream-capturer')
-        self.orig_stdout = sys.stdout
-        self.orig_stderr = sys.stderr
         self._capture_stdout = capture_stdout
         self._capture_stderr = capture_stderr
         self._poll_interval = stdout_poll_interval + stderr_poll_interval

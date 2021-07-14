@@ -1,7 +1,7 @@
 include hspylib/welcome.txt
 include hspylib/usage.txt
 include hspylib/.version
-include hspylib/resources/**
-include hspylib/resources/log/**
-include hspylib/addons/appman/templates/**
-include hspylib/core/crud/db/sql/sql_stubs.sql
+recursive-include hspylib/resources *
+recursive-include hspylib/resources/log *
+recursive-include hspylib/addons/appman/templates *
+recursive-include hspylib/core/crud/db/sql *
