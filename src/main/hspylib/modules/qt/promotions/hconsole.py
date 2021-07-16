@@ -25,10 +25,13 @@ class HConsole(QTextBrowser):
 
     def __init__(self, parent: Optional[QWidget], max_lines: int = 1000):
         super().__init__(parent)
+        self._menu = self.createStandardContextMenu()
+        self._menu.addSeparator()
+        self._menu.addAction(u'Clear', self.clear)
+        self._max_lines = max_lines
         self.setPlaceholderText('No messages received yet')
         self.setReadOnly(True)
         self.setFont(QFont("Courier New", 14))
-        self._max_lines = max_lines
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._context_menu)
 
@@ -64,7 +67,4 @@ class HConsole(QTextBrowser):
 
     def _context_menu(self) -> None:
         """Display the custom context menu"""
-        self._menu = self.createStandardContextMenu()
-        self._menu.addSeparator()
-        self._menu.addAction(u'Clear', self.clear)
         self._menu.exec_(QCursor.pos())

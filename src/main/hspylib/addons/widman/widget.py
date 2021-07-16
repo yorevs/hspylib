@@ -49,7 +49,6 @@ HSPyLib Widget: {} v{}
 
     def cleanup(self) -> None:
         """Execute the widget cleanup"""
-        pass
 
     def icon(self) -> Awesome:
         return self._icon

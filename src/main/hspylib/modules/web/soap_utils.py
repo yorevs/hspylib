@@ -36,8 +36,8 @@ def soap_call(
         "Content-Type": "text/xml",
         "Accept": "*/*"
     })
-    log.info(f"Processing SOAP {all_headers} {method} -> {url} \n{data if data else '<None>'}")
+    log.info("Processing SOAP %s {method} -> %s \n%s", all_headers, url, data if data else '<None>')
     response = fetch(url=url, method=method, headers=all_headers, body=data)
-    log.info(f"Response <=  Status: {response.status_code}  Payload: {response.body if response.body else '<None>'}")
+    log.info("Response <=  Status: %s  Payload: %s", response.status_code, response.body if response.body else '<None>')
 
     return response

@@ -38,7 +38,6 @@ from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
-
 class MainQtView(QtView):
     """TODO"""
     VERSION = read_version(f"{run_dir()}/.version")
@@ -103,9 +102,9 @@ class MainQtView(QtView):
         self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
         self.ui.tbtn_prod_clear_topics.setText(FormIcons.DELETE.value)
         self.ui.tbtn_prod_add_topics.setText(FormIcons.PLUS.value)
-        self.ui.tbtn_prod_add_topics.clicked.connect(lambda: self._add_topic())
+        self.ui.tbtn_prod_add_topics.clicked.connect(self._add_topic)
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
-        self.ui.tbtn_prod_del_topics.clicked.connect(lambda: self._del_topic())
+        self.ui.tbtn_prod_del_topics.clicked.connect(self._del_topic)
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
@@ -247,7 +246,7 @@ class MainQtView(QtView):
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(0)
             self._producer.stop_producer()
-            self._display_text(f"Production to kafka topics stopped", StatusColor.yellow)
+            self._display_text("Production to kafka topics stopped", StatusColor.yellow)
         else:  # Start
             self._add_topic()
             topics = self._topics(True)
@@ -275,7 +274,7 @@ class MainQtView(QtView):
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(0)
             self._consumer.stop_consumer()
-            self._display_text(f"Consumption from kafka topics stopped", StatusColor.yellow)
+            self._display_text("Consumption from kafka topics stopped", StatusColor.yellow)
         else:  # Start
             self._add_topic(is_producer=False)
             topics = self._topics(False)
@@ -386,7 +385,7 @@ class MainQtView(QtView):
                         prop_name = mat.group(1).strip()
                         prop_value = mat.group(2).strip()
                         if prop_name == 'prod_topics':
-                            list(map(lambda p: self._add_topic(p), ast.literal_eval(prop_value)))
+                            list(map(self._add_topic, ast.literal_eval(prop_value)))
                         elif prop_name == 'cons_topics':
                             list(map(lambda p: self._add_topic(p, False), ast.literal_eval(prop_value)))
                         elif prop_name == 'settings':

@@ -31,11 +31,14 @@ def mdashboard(
         title: str = 'Please select one item',
         title_color: VtColors = VtColors.ORANGE,
         nav_color: VtColors = VtColors.YELLOW) -> Optional[DashboardItem]:
+    """TODO"""
+
     return MenuDashBoard(items, items_per_line).dashboard(title, title_color, nav_color)
 
 
 class MenuDashBoard:
     """TODO"""
+
     ICN = 'X'
 
     CELL_TPL = [
@@ -55,6 +58,8 @@ class MenuDashBoard:
 
     @classmethod
     def builder(cls):
+        """TODO"""
+
         return DashboardBuilder()
 
     def __init__(

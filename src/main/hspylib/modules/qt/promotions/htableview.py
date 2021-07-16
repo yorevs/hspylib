@@ -15,7 +15,7 @@
 
 from typing import Optional
 
-import pyperclip as pyperclip
+import pyperclip as clipboard
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPaintEvent, QCursor
 from PyQt5.QtWidgets import QTableView, QWidget, QMenu, QHeaderView, QAbstractScrollArea
@@ -26,6 +26,10 @@ class HTableView(QTableView):
 
     def __init__(self, parent: Optional[QWidget], placeholder: Optional[str] = None):
         super().__init__(parent)
+        self._menu = QMenu(self)
+        self._menu.addAction(u'Copy', self.copy)
+        self._menu.addSeparator()
+        self._menu.addAction(u'Clear', self.clear)
         self.placeholder = placeholder or 'No data to display'
         self.customContextMenuRequested.connect(self._context_menu)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -66,12 +70,8 @@ class HTableView(QTableView):
             text += str(self.model().column(index))
             last_row = index.row()
 
-        pyperclip.copy(text)
+        clipboard.copy(text)
 
     def _context_menu(self):
         """Display the custom context menu"""
-        self._menu = QMenu(self)
-        self._menu.addAction(u'Copy', self.copy)
-        self._menu.addSeparator()
-        self._menu.addAction(u'Clear', self.clear)
         self._menu.exec_(QCursor.pos())

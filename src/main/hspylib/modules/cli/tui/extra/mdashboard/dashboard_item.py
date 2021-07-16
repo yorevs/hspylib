@@ -18,7 +18,9 @@ from typing import Callable
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
+# pylint: disable=too-few-public-methods
 class DashboardItem:
+    """TODO"""
     def __init__(
             self,
             icon: Awesome = None,

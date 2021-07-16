@@ -74,7 +74,7 @@ class KafkaConsumer(QThread):
                 message = self._consumer.poll(self._poll_interval)
                 if message is None:
                     continue
-                elif message.error():
+                if message.error():
                     syserr(f"An error occurred consuming from Kafka: {message.error().str()}")
                 else:
                     self.messageConsumed.emit(

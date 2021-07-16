@@ -136,6 +136,7 @@ class MenuChoose(ABC):
         sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS, str(length)), end='')
         self.re_render = False
 
+    # pylint: disable=too-many-branches
     def _nav_input(self) -> chr:
         """TODO"""
 

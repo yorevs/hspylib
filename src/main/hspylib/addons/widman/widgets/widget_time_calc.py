@@ -16,6 +16,7 @@
 
 import math
 import re
+from typing import Optional
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
@@ -46,8 +47,8 @@ class WidgetTimeCalc(Widget):
         self.decimal = False
         self.args = None
 
-    def execute(self, *args) -> ExitCode:
-        ret_val = ExitCode.SUCCESS
+    def parse_args(self, *args) -> Optional[ExitCode]:
+        """TODO"""
 
         if (not args or len(args) < 3) and not any(a in args for a in ['-h', '--help']):
             if not self._read_args():
@@ -64,6 +65,16 @@ class WidgetTimeCalc(Widget):
 
         if not self.args:
             self.args = args
+
+        return None
+
+    def execute(self, *args) -> ExitCode:
+        """TODO"""
+
+        ret_val = self.parse_args(*args)
+
+        if ret_val is not None:
+            return ret_val
 
         for tm in self.args:
             if re.match(r"[+-]", tm):

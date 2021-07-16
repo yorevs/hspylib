@@ -68,4 +68,3 @@ class HLabel(QLabel):
     def resizeEvent(self, event: QResizeEvent) -> None:
         self.setText(self._content)
         super().resizeEvent(event)
-

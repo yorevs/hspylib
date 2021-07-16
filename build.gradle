@@ -9,6 +9,14 @@ buildscript {
   apply from: gradleProperties
 }
 
+allprojects {
+  tasks.withType(Exec) {
+    doFirst {
+      println commandLine
+    }
+  }
+}
+
 apply from: "properties.gradle"
 
 ext {

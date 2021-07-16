@@ -54,6 +54,7 @@ class MySqlRepository(DBRepository):
                 if not self.is_connected():
                     raise ConnectionError("Not connected to the database")
             else:
+                db_url = f"{self.user}@{self.hostname}:{self.port}/{self.database}"
                 try:
                     self._connector = pymysql.connect(
                         host=self.hostname,
@@ -62,10 +63,9 @@ class MySqlRepository(DBRepository):
                         password=self.password,
                         database=self.database)
                     if not self.is_connected():
-                        raise ConnectionError("Unable to connect to the mysql database")
+                        raise ConnectionError(f"Unable to connect to {db_url}")
                     self._cursor = self._connector.cursor()
-                    db_url = f"{self.user}@{self.hostname}:{self.port}/{self.database}"
-                    log.debug(f"Connection to {db_url} established")
+                    log.debug("Connection to %s established", db_url)
                     self._connection_cache[cache_key] = self._connector
                 except (OperationalError, ConnectionRefusedError) as err:
                     raise ConnectionError(f"Unable to connect to {db_url}") from err
@@ -77,7 +77,7 @@ class MySqlRepository(DBRepository):
             self._connector.close()
             del self._connector
             del self._connection_cache[cache_key]
-            log.debug('Disconnected from {}.'.format(str(self)))
+            log.debug('Disconnected from %s', str(self))
         else:
             raise NotConnectedError('Not connected to database.')
 
@@ -88,7 +88,7 @@ class MySqlRepository(DBRepository):
             stm = self._sql_factory \
                 .insert(entity) \
                 .replace(':tableName', self.table_name())
-            log.debug(f"Executing SQL statement: {stm}")
+            log.debug("Executing SQL statement: %s", stm)
             self.execute(stm, True)
         else:
             raise NotConnectedError('Not connected to database.')
@@ -99,7 +99,7 @@ class MySqlRepository(DBRepository):
             stm = self._sql_factory \
                 .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
                 .replace(':tableName', self.table_name())
-            log.debug('Executing SQL statement: {}'.format(stm))
+            log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
         else:
             raise NotConnectedError('Not connected to database.')
@@ -110,7 +110,7 @@ class MySqlRepository(DBRepository):
             stm = self._sql_factory \
                 .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
                 .replace(':tableName', self.table_name())
-            log.debug('Executing SQL statement: {}'.format(stm))
+            log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
         else:
             raise NotConnectedError('Not connected to database.')
@@ -125,7 +125,7 @@ class MySqlRepository(DBRepository):
             stm = self._sql_factory \
                 .select(column_set=column_set, filters=sql_filters) \
                 .replace(':tableName', self.table_name())
-            log.debug('Executing SQL statement: {}'.format(stm))
+            log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
             result = self._cursor.fetchall()
             return list(map(self.row_to_entity, result)) if result else None
@@ -143,7 +143,7 @@ class MySqlRepository(DBRepository):
                 stm = self._sql_factory \
                     .select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)})) \
                     .replace(':tableName', self.table_name())
-                log.debug('Executing SQL statement: {}'.format(stm))
+                log.debug('Executing SQL statement: %s', stm)
                 self.execute(stm, True)
                 result = self._cursor.fetchall()
                 if len(result) > 1:
@@ -156,7 +156,7 @@ class MySqlRepository(DBRepository):
     def execute(self, sql_statement: str, auto_commit: bool, *params) -> None:
         """TODO"""
         if self.is_connected():
-            log.debug(f"Executing SQL statement: {sql_statement} with params: [{', '.join(params)}]")
+            log.debug("Executing SQL statement: %s with params: [%s]", sql_statement, ', '.join(params))
             self._cursor.execute(sql_statement, *params)
             if auto_commit:
                 self.commit()

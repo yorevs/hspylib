@@ -16,6 +16,7 @@
 
 import random
 import re
+from abc import ABC
 
 from hspylib.core.tools.commons import get_or_default
 
@@ -71,12 +72,13 @@ def cut(string: str, index: int, separator: str = ' ') -> str:
     result = tuple(re.split(rf'{separator}+', string))
     return get_or_default(result, index)
 
-def strip_escapes(string: str):
+def strip_escapes(string: str) -> str:
     """TODO"""
     return re.compile(r'\x1b[^m]*m').sub('', string)
 
 
-class TextAlignment:
+# pylint: disable=too-few-public-methods
+class TextAlignment(ABC):
     """
     Table cell text justification helper.
     """
@@ -85,7 +87,8 @@ class TextAlignment:
     RIGHT = justified_right
 
 
-class TextCase:
+# pylint: disable=too-few-public-methods
+class TextCase(ABC):
     """
     Table cell text justification helper.
     """
