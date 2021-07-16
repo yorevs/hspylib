@@ -22,6 +22,7 @@ from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.preconditions import check_argument, check_state
 
 
 class SqlFactory(metaclass=Singleton):
@@ -33,13 +34,14 @@ class SqlFactory(metaclass=Singleton):
     def _read_stubs(sql_filename: str) -> dict:
         """TODO"""
         sql_stubs = {}
-        assert os.path.exists(sql_filename), "Sql file was not found: {}".format(sql_filename)
+        check_argument(os.path.exists(sql_filename), "Sql file was not found: {}", sql_filename)
         with open(sql_filename) as f_stubs:
             lines = f_stubs.readlines()
-            assert lines, "SQL Stub file is empty"
+            check_state(len(lines) > 0, "SQL Stub file is empty")
             lines = list(map(str.strip, lines))
             stubs = ' '.join(lines).split(';')
-            assert len(stubs) >= 4, "Stub file does not have the minimum stubs for [insert, select, update, delete]"
+            check_state(
+                len(stubs) >= 4, "Stub file does not have the minimum stubs for [insert, select, update, delete]")
             for stub in stubs:
                 if stub:
                     key = stub.strip().partition(' ')[0].lower()

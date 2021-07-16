@@ -56,7 +56,7 @@ class TestClass(unittest.TestCase):
             .when_request(HttpMethod.GET, endpoint) \
             .then_return(HttpCode.OK, expected_body, expected_etag_header)
         resp = requests.get(url)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
@@ -71,7 +71,7 @@ class TestClass(unittest.TestCase):
             .when_request(HttpMethod.POST, endpoint) \
             .then_return_with_received_body(HttpCode.OK, expected_etag_header)
         resp = requests.post(url, data=expected_body)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
@@ -86,7 +86,7 @@ class TestClass(unittest.TestCase):
             .when_request(HttpMethod.PUT, endpoint) \
             .then_return(HttpCode.CREATED, expected_body, expected_etag_header)
         resp = requests.put(url, data=expected_body)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.CREATED.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
@@ -101,7 +101,7 @@ class TestClass(unittest.TestCase):
             .when_request(HttpMethod.PATCH, endpoint) \
             .then_return(HttpCode.ACCEPTED, expected_body, expected_etag_header)
         resp = requests.patch(url, data=expected_body)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.ACCEPTED.value, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
@@ -114,7 +114,7 @@ class TestClass(unittest.TestCase):
             .when_request(HttpMethod.DELETE, endpoint) \
             .then_return(HttpCode.OK)
         resp = requests.delete(url)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.OK.value, resp.status_code)
         self.assertEqual('', resp.text)
 
@@ -124,21 +124,21 @@ class TestClass(unittest.TestCase):
         endpoint = '/test-menu_options'
         url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         resp = requests.options(url)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.NO_CONTENT.value, resp.status_code)
         self.assertEqual(resp.headers['Allow'], 'OPTIONS')
         self.server \
             .when_request(HttpMethod.GET, endpoint) \
             .then_return_with_received_body(HttpCode.OK)
         resp = requests.options(url)
-        assert resp, "Response is empty"
+        self.assertIsNotNone(resp, "Response is empty")
         self.assertEqual(HttpCode.NO_CONTENT.value, resp.status_code)
         self.assertEqual(resp.headers['Allow'], 'OPTIONS, GET')
         resp = requests.get("{}/notfound".format(url))
-        assert not resp, "Response is not empty"
+        self.assertTrue(not resp, "Response is not empty")
         self.assertEqual(HttpCode.NOT_FOUND.value, resp.status_code)
         resp = requests.patch(url)
-        assert not resp, "Response is not empty"
+        self.assertTrue(not resp, "Response is not empty")
         self.assertEqual(HttpCode.METHOD_NOT_ALLOWED.value, resp.status_code)
 
 

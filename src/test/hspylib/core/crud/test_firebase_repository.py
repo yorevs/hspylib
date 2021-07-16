@@ -56,7 +56,7 @@ class TestClass(unittest.TestCase):
         result_set = self.repository.find_all(filters=CaseInsensitiveDict({
             "uuid": '{}'.format(test_entity.uuid)
         }))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
         self.assertEqual(test_entity.comment, result_set[0].comment)
@@ -72,7 +72,7 @@ class TestClass(unittest.TestCase):
         result_set = self.repository.find_all(filters=CaseInsensitiveDict({
             "uuid": '{}'.format(test_entity.uuid)
         }))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
         self.assertEqual(test_entity.comment, result_set[0].comment)
@@ -86,7 +86,7 @@ class TestClass(unittest.TestCase):
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_all()
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
 
@@ -97,7 +97,7 @@ class TestClass(unittest.TestCase):
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
         self.assertEqual(test_entity_1.comment, result_set.comment)
@@ -109,12 +109,12 @@ class TestClass(unittest.TestCase):
         test_entity = EntityTest(comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.insert(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
-        assert not result_set, "Result set is not empty"
+        self.assertIsNone(result_set, "Result set is not empty")
 
 
 # Program entry point.

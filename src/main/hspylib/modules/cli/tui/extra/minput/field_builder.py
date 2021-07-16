@@ -13,9 +13,9 @@
 
    Copyright 2021, HSPyLib team
 """
+from typing import TypeVar, Any
 
-from typing import Any
-
+from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
 from hspylib.modules.cli.tui.extra.minput.form_field import FormField
@@ -23,6 +23,7 @@ from hspylib.modules.cli.tui.extra.minput.input_type import InputType
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 
+T = TypeVar('T')
 
 class FieldBuilder:
 
@@ -30,32 +31,32 @@ class FieldBuilder:
         self.parent = parent
         self.field = FormField()
 
-    def label(self, label: str) -> Any:
+    def label(self, label: str) -> 'FieldBuilder':
         self.field.label = label
         return self
 
-    def itype(self, itype: str) -> Any:
+    def itype(self, itype: str) -> 'FieldBuilder':
         self.field.itype = InputType.of_value(itype)
         return self
 
-    def validator(self, validator: InputValidator) -> Any:
+    def validator(self, validator: InputValidator) -> 'FieldBuilder':
         self.field.validator = validator
         return self
 
-    def min_max_length(self, min_length: int, max_length: int) -> Any:
-        assert max_length >= min_length, f"Not a valid field length: ({min_length}-{max_length})"
-        assert max_length > 0 and min_length > 0, f"Not a valid field length: ({min_length}-{max_length})"
+    def min_max_length(self, min_length: int, max_length: int) -> 'FieldBuilder':
+        check_argument(max_length >= min_length, "Not a valid field length: ({}-{})", min_length, max_length)
+        check_argument(max_length > 0 and min_length > 0, "Not a valid field length: ({}-{})", min_length, max_length)
         self.field.min_length = min_length
         self.field.max_length = max_length
         return self
 
-    def access_type(self, access_type: str) -> Any:
+    def access_type(self, access_type: str) -> 'FieldBuilder':
         self.field.access_type = AccessType.of_value(access_type)
         return self
 
-    def value(self, value: Any) -> Any:
-        assert self.field.assign(value), \
-            f"Not a valid value: \"{value}\". Validation pattern=\"{self.field.validator}\""
+    def value(self, value: T) -> 'FieldBuilder':
+        check_argument(self.field.assign(value),
+            "Not a valid value: \"{}\". Validation pattern=\"{}\"", value, self.field.validator)
         return self
 
     def build(self) -> Any:

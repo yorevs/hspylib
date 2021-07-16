@@ -21,6 +21,7 @@ from typing import List
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.file_processor import FileProcessor
 from hspylib.core.tools.commons import file_is_not_empty
+from hspylib.core.tools.preconditions import check_argument
 
 
 class Firebase:
@@ -45,7 +46,7 @@ class Firebase:
     def upload(self, db_alias: str, file_paths: List[str]) -> bool:
         """Upload file_paths to firebase"""
         url = self.configs.url(db_alias)
-        assert len(file_paths) > 0, "Unable to upload file_paths (zero size)."
+        check_argument(len(file_paths) > 0, "Unable to upload file_paths (zero size).")
         return self.processor.upload_files(url, file_paths) > 0
 
     def download(self, db_alias: str, dest_dir: str) -> bool:

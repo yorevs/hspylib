@@ -62,8 +62,8 @@ class TestEventBus(unittest.TestCase):
         bus1.subscribe('test-event-Z', method1)
         bus1.subscribe('test-event-Z', method2)
         bus1.emit('test-event', age=41, name='hugo')
-        assert not method1.called
-        assert not method2.called
+        self.assertFalse(method1.called, "Callback was invoked and should not")
+        self.assertFalse(method2.called, "Callback was invoked and should not")
 
 
 if __name__ == '__main__':

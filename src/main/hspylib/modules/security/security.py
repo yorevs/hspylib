@@ -23,6 +23,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # Please do not modify this
+from hspylib.core.tools.preconditions import check_argument, check_state
+
 DEFAULT_HS_SALT = 'HsPyLib'
 
 
@@ -78,11 +80,11 @@ def encrypt(
     )
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
-    assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
+    check_argument(os.path.exists(in_file), "Input file \"{}\" does not exist", in_file)
     with open(in_file) as f_in_file:
         with open(out_file, 'w') as f_out_file:
             f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
-    assert os.path.exists(out_file), "Unable to encrypt file \"{}\"".format(in_file)
+    check_state(os.path.exists(out_file), "Unable to encrypt file \"{}\"", in_file)
 
 
 def decrypt(
@@ -113,8 +115,8 @@ def decrypt(
     )
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
-    assert os.path.exists(in_file), "Input file \"{}\" does not exist".format(in_file)
+    check_argument(os.path.exists(in_file), "Input file \"{}\" does not exist", in_file)
     with open(in_file) as f_in_file:
         with open(out_file, 'w') as f_out_file:
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
-    assert os.path.exists(out_file), "Unable to decrypt file \"{}\"".format(in_file)
+    check_state(os.path.exists(out_file), "Unable to decrypt file \"{}\"", in_file)

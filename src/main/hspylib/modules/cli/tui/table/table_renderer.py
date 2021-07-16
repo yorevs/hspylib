@@ -17,6 +17,7 @@
 import sys
 from typing import List, Optional
 
+from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import TextAlignment, fit_text
 
 
@@ -40,8 +41,10 @@ class TableRenderer:
         self.cell_alignment = TextAlignment.LEFT
         self.min_column_size = 6
         if self.rows:
-            assert len(min(self.rows, key=len)) == len(self.headers), \
-                f'Headers and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(self.headers)}'
+            check_argument(
+                len(min(self.rows, key=len)) == len(self.headers),
+                'Headers and Columns must have the same size: {} vs {}',
+                    len(min(self.rows, key=len)), len(self.headers))
         self.column_sizes = [max(self.min_column_size, len(header)) for header in self.headers]
         self.indexes = range(0, len(self.column_sizes))
 
@@ -92,8 +95,8 @@ class TableRenderer:
         Render table based on a list of fixed sizes.
         :return: None
         """
-        assert len(min(self.rows, key=len)) == len(cell_sizes), \
-            f'Sizes and Columns must have the same size: {len(min(self.rows, key=len))} vs {len(cell_sizes)}'
+        check_argument(len(min(self.rows, key=len)) == len(cell_sizes),
+            'Sizes and Columns must have the same size: {} vs {}', len(min(self.rows, key=len)), len(cell_sizes))
         for row in self.rows:
             for idx in range(0, len(row)):
                 self.column_sizes[idx] = max(cell_sizes[idx], self.min_column_size)

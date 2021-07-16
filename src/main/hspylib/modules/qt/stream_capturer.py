@@ -22,6 +22,7 @@ from time import sleep
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from hspylib.core.tools.commons import is_debugging, syserr
+from hspylib.core.tools.preconditions import check_argument
 
 
 class StreamCapturer(QThread):
@@ -81,7 +82,7 @@ class StreamCapturer(QThread):
             stdout_poll_interval: float = 0.5,
             stderr_poll_interval: float = 0.5):
 
-        assert capture_stderr or capture_stdout, 'At least one capturer must be started'
+        check_argument(capture_stderr or capture_stdout, 'At least one capturer must be started')
         super().__init__()
         self.setObjectName('stream-capturer')
         self._capture_stdout = capture_stdout

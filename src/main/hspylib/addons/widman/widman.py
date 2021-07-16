@@ -24,6 +24,7 @@ from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path
+from hspylib.core.tools.preconditions import check_state
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
@@ -52,7 +53,7 @@ class WidgetManager(metaclass=Singleton):
         self._lookup_paths = os.environ.get('HHS_WIDGETS_PATH', '').split(':')
         self._lookup_paths.insert(0, str(WidgetManager.WIDGETS_PATH))
         list(map(sys.path.append, self._lookup_paths))
-        assert self._load_widgets() > 0, f"Unable to find any widgets from: {self._lookup_paths}"
+        check_state(self._load_widgets() > 0, "Unable to find any widgets from: {}", self._lookup_paths)
 
     def execute(self, widget_name: str, widget_args: List[str]) -> None:
         """Execute the specified widget"""
@@ -76,7 +77,7 @@ class WidgetManager(metaclass=Singleton):
                     f"{widget.name()} v{widget.version()}: {widget.tooltip()}",
                     widget.execute)
                 items.append(item)
-            assert len(items) > 0, f"No widgets found from: {str(self._lookup_paths)}"
+            check_state(len(items) > 0, "No widgets found from: {}", str(self._lookup_paths))
             mdashboard(items, 6, 'Please select a widget to execute')
         except Exception as err:
             raise WidgetExecutionError(f"Failed to execute widget :: {str(err)}") from err
@@ -109,6 +110,6 @@ class WidgetManager(metaclass=Singleton):
                 f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}") from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
-        assert isinstance(widget, Widget), \
-            'All widgets must inherit from "hspylib.addons.widman.widget.Widget"'
+        check_state(isinstance(widget, Widget),
+            'All widgets must inherit from "hspylib.addons.widman.widget.Widget"')
         return widget

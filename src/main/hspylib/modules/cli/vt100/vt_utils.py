@@ -29,7 +29,8 @@ from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 def require_terminal():
-    assert sys.stdin.isatty(), 'This module requires a terminal (TTY)'
+    if not sys.stdin.isatty():
+        raise Exception('This module requires a terminal (TTY)')
 
 
 def screen_size() -> Optional[List[str]]:

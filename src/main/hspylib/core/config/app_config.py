@@ -21,6 +21,7 @@ from typing import Any, Optional
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, log_init
+from hspylib.core.tools.preconditions import check_argument, check_state
 
 
 class AppConfigs(metaclass=Singleton):
@@ -44,19 +45,19 @@ AppConfigs
 
         self._source_dir = source_root \
             if source_root else os.environ.get('SOURCE_ROOT', dirname(__file__))
-        assert os.path.exists(self._source_dir), f"Unable to find the source dir: {self._source_dir}"
+        check_argument(os.path.exists(self._source_dir), "Unable to find the source dir: {}", self._source_dir)
 
         self._resource_dir = resource_dir \
             if resource_dir else os.environ.get('RESOURCE_DIR', f"{self._source_dir}/resources")
-        assert os.path.exists(self._resource_dir), f"Unable to find the resources dir: {self._resource_dir}"
+        check_argument(os.path.exists(self._resource_dir), "Unable to find the resources dir: {}", self._resource_dir)
 
         self._log_dir = log_dir \
             if log_dir else os.environ.get('LOG_DIR', f"{self._resource_dir}/log")
-        assert os.path.exists(self._log_dir), f"Unable to find the log dir: {self._log_dir}"
+        check_argument(os.path.exists(self._log_dir), "Unable to find the log dir: {}", self._log_dir)
 
         self._log_file = log_file \
             if log_file else f"{self._log_dir}/application.log"
-        assert log_init(self._log_file), f"Unable to create logger: {self._log_file}"
+        check_state(log_init(self._log_file), "Unable to create logger: {}", self._log_file)
 
         self._app_properties = Properties(load_dir=self._resource_dir)
         log.info(self)

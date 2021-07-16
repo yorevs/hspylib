@@ -49,10 +49,10 @@ class TestClass(unittest.TestCase):
 
     # TC3 - Test value of from strings not ignoring case.
     def test_should_not_convert_string_to_enum_when_not_ignoring_case(self):
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'enum_1', ignore_case=False)
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'EnuM_2', ignore_case=False)
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'ENum_3', ignore_case=False)
-        self.assertRaises(AssertionError, self.MyIntEnum.value_of, 'enUM_4', ignore_case=False)
+        self.assertRaises(TypeError, self.MyIntEnum.value_of, 'enum_1', ignore_case=False)
+        self.assertRaises(TypeError, self.MyIntEnum.value_of, 'EnuM_2', ignore_case=False)
+        self.assertRaises(TypeError, self.MyIntEnum.value_of, 'ENum_3', ignore_case=False)
+        self.assertRaises(TypeError, self.MyIntEnum.value_of, 'enUM_4', ignore_case=False)
 
     # TC4 - Test of value from Any
     def test_should_convert_value_to_enum(self):
@@ -63,10 +63,10 @@ class TestClass(unittest.TestCase):
 
     # TC5 - Test of value from Any
     def test_should_not_convert_value_to_enum_when_not_matching(self):
-        self.assertRaises(AssertionError, self.MyIntEnum.of_value, 0)
-        self.assertRaises(AssertionError, self.MyIntEnum.of_value, 3)
-        self.assertRaises(AssertionError, self.MyIntEnum.of_value, 5)
-        self.assertRaises(AssertionError, self.MyIntEnum.of_value, 7)
+        self.assertRaises(TypeError, self.MyIntEnum.of_value, 0)
+        self.assertRaises(TypeError, self.MyIntEnum.of_value, 3)
+        self.assertRaises(TypeError, self.MyIntEnum.of_value, 5)
+        self.assertRaises(TypeError, self.MyIntEnum.of_value, 7)
 
     # TC6 - Test of value from Any
     def test_should_convert_value_to_enum_when_ignoring_Case(self):
@@ -77,10 +77,10 @@ class TestClass(unittest.TestCase):
 
     # TC7 - Test of value from Any
     def test_should_not_convert_value_to_enum_when_not_ignoring_Case(self):
-        self.assertRaises(AssertionError, self.MyStrEnum.of_value, 'A')
-        self.assertRaises(AssertionError, self.MyStrEnum.of_value, 'B')
-        self.assertRaises(AssertionError, self.MyStrEnum.of_value, 'C')
-        self.assertRaises(AssertionError, self.MyStrEnum.of_value, 'D')
+        self.assertRaises(TypeError, self.MyStrEnum.of_value, 'A')
+        self.assertRaises(TypeError, self.MyStrEnum.of_value, 'B')
+        self.assertRaises(TypeError, self.MyStrEnum.of_value, 'C')
+        self.assertRaises(TypeError, self.MyStrEnum.of_value, 'D')
 
 
 # Program entry point.

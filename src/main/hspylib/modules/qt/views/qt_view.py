@@ -22,6 +22,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
 
 from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.preconditions import check_argument, check_state
 
 
 class QtView(ABC):
@@ -33,11 +34,11 @@ class QtView(ABC):
         load_dir: str = f"{run_dir()}/resources/forms/") -> Tuple[Type, Type]:
         """Load the ui form from the .ui file"""
 
-        assert os.path.exists(load_dir) and os.path.isdir(load_dir), \
-            f"Load dir {load_dir} does not exist or is not a folder"
+        check_argument(os.path.exists(load_dir) and os.path.isdir(load_dir),
+            "Load dir {} does not exist or is not a folder", load_dir)
         filepath = f"{load_dir}/{form_file}"
-        assert os.path.exists(filepath) and os.path.isfile(filepath) and filepath.lower().endswith('.ui'), \
-            f"Form file {form_file} does not exist or it not a valid UI form file"
+        check_state(os.path.exists(filepath) and os.path.isfile(filepath) and filepath.lower().endswith('.ui'),
+            "Form file {} does not exist or it not a valid UI form file", form_file)
 
         return uic.loadUiType(filepath)
 
