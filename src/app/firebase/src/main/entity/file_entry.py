@@ -32,7 +32,7 @@ class FileEntry:
         file_entry.decode()
         file_entry.size = len(file_entry.data)
         check_state(file_entry.size == expected_size,
-            "Retrieved data and expected data length mismatch: {} vs {}", expected_size, len(file_entry.data))
+                    "Retrieved data and expected data length mismatch: {} vs {}", expected_size, len(file_entry.data))
         return file_entry
 
     def __init__(self, file_path: str):

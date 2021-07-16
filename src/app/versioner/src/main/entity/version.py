@@ -26,7 +26,7 @@ class Version:
     @classmethod
     def parse(cls, version_str: str) -> 'Version':
         check_argument(bool(re.match(RE_VERSION_STRING, version_str)),
-            "Version string {} does not match the expected syntax: {}", version_str, RE_VERSION_STRING)
+                       "Version string {} does not match the expected syntax: {}", version_str, RE_VERSION_STRING)
         parts = list(map(str.strip, re.split(r'[.-]', version_str)))
         return Version(
             int(parts[0]),
@@ -49,7 +49,6 @@ class Version:
         minor: int,
         patch: int,
         state: Extension):
-
         self.major = major
         self.minor = minor
         self.patch = patch

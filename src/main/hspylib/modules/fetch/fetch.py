@@ -24,11 +24,11 @@ from hspylib.modules.fetch.http_response import HttpResponse
 
 
 def fetch(
-        url: str,
-        method: HttpMethod = HttpMethod.GET,
-        headers: list = None,
-        body: Optional[Any] = None,
-        silent=True) -> Optional[HttpResponse]:
+    url: str,
+    method: HttpMethod = HttpMethod.GET,
+    headers: list = None,
+    body: Optional[Any] = None,
+    silent=True) -> Optional[HttpResponse]:
     """ Do a request specified by method and according to parameters.
     :param url: The url to make the request.
     :param method: The http method to be used [ GET, HEAD, POST, PUT, PATCH, DELETE ].

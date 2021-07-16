@@ -35,10 +35,10 @@ class QtView(ABC):
         """Load the ui form from the .ui file"""
 
         check_argument(os.path.exists(load_dir) and os.path.isdir(load_dir),
-            "Load dir {} does not exist or is not a folder", load_dir)
+                       "Load dir {} does not exist or is not a folder", load_dir)
         filepath = f"{load_dir}/{form_file}"
         check_state(os.path.exists(filepath) and os.path.isfile(filepath) and filepath.lower().endswith('.ui'),
-            "Form file {} does not exist or it not a valid UI form file", form_file)
+                    "Form file {} does not exist or it not a valid UI form file", form_file)
 
         return uic.loadUiType(filepath)
 

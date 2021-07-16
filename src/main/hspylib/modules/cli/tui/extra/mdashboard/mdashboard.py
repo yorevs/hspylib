@@ -27,11 +27,11 @@ from hspylib.modules.cli.vt100.vt_utils import restore_terminal, restore_cursor,
 
 
 def mdashboard(
-        items: List[DashboardItem],
-        items_per_line: int = 5,
-        title: str = 'Please select one item',
-        title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[DashboardItem]:
+    items: List[DashboardItem],
+    items_per_line: int = 5,
+    title: str = 'Please select one item',
+    title_color: VtColors = VtColors.ORANGE,
+    nav_color: VtColors = VtColors.YELLOW) -> Optional[DashboardItem]:
     """TODO"""
 
     return MenuDashBoard(items, items_per_line).dashboard(title, title_color, nav_color)
@@ -64,9 +64,9 @@ class MenuDashBoard:
         return DashboardBuilder()
 
     def __init__(
-            self,
-            items: List[DashboardItem],
-            items_per_line: int = 5):
+        self,
+        items: List[DashboardItem],
+        items_per_line: int = 5):
 
         self.items = items
         self.done = None
@@ -78,10 +78,10 @@ class MenuDashBoard:
             'Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.')
 
     def dashboard(
-            self,
-            title: str,
-            title_color: VtColors,
-            nav_color: VtColors) -> Optional[DashboardItem]:
+        self,
+        title: str,
+        title_color: VtColors,
+        nav_color: VtColors) -> Optional[DashboardItem]:
         """TODO"""
 
         ret_val = None

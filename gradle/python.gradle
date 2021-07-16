@@ -38,6 +38,7 @@ project.ext.pylint_disabled_checks =
         'E1101', // no-member
         'R0801', // duplicate-code
         'W0511', // fixme
+        'W1113', // keyword-arg-before-vararg
       ]
 
 /***** Install Group */

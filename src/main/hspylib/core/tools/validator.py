@@ -37,38 +37,38 @@ class Validator(ABC):
 
     @staticmethod
     def matches(
-            input_string: str,
-            regex_pattern: str) -> bool:
+        input_string: str,
+        regex_pattern: str) -> bool:
 
         return bool(re.match(regex_pattern, input_string))
 
     @staticmethod
     def is_integer(
-            number: str,
-            min_value: int = 0,
-            max_value: int = 65535) -> bool:
+        number: str,
+        min_value: int = 0,
+        max_value: int = 65535) -> bool:
 
         return number.isdigit() and min_value <= int(number) <= max_value
 
     @staticmethod
     def is_float(
-            number: str,
-            min_value: float = 0,
-            max_value: float = 65535) -> bool:
+        number: str,
+        min_value: float = 0,
+        max_value: float = 65535) -> bool:
 
         return number.isdecimal() and min_value <= float(number) <= max_value
 
     @staticmethod
     def is_enum(
-            name: str,
-            enum_type: Type) -> bool:
+        name: str,
+        enum_type: Type) -> bool:
 
         return name.upper() in enum_type.__dict__
 
     @staticmethod
     def is_date(
-            date_text: str,
-            fmt: str = DATE_TIME_FORMAT) -> bool:
+        date_text: str,
+        fmt: str = DATE_TIME_FORMAT) -> bool:
 
         try:
             datetime.strptime(date_text, fmt)

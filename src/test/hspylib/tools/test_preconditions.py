@@ -24,14 +24,14 @@ from hspylib.core.tools.preconditions import check_not_none, check_state, check_
 class TestFetch(unittest.TestCase):
 
     def test_should_allow_argument_that_matches(self):
-        check_argument(True)
+        self.assertTrue(check_argument(True))
 
     def test_should_not_allow_argument_that_does_not_match(self):
         self.assertRaisesRegex(
             InvalidArgumentError, 'Precondition failed: Invalid argument', lambda: check_argument(False))
 
     def test_should_allow_state_that_matches(self):
-        check_state(True)
+        self.assertTrue(check_state(True))
 
     def test_should_not_allow_state_that_does_not_match(self):
         self.assertRaisesRegex(
@@ -46,7 +46,7 @@ class TestFetch(unittest.TestCase):
 
     def test_should_allow_index_in_bounds(self):
         arr = [0, 1, 2]
-        check_element_index(1, len(arr))
+        self.assertEqual(check_element_index(1, len(arr)), 1)
 
     def test_should_not_allow_negative_index(self):
         arr = [0, 1, 2]
@@ -64,7 +64,7 @@ class TestFetch(unittest.TestCase):
 
     def test_should_allow_index_in_range(self):
         arr = [0, 1, 2, 3, 4, 5]
-        check_index_in_range(0, 5, len(arr))
+        self.assertEqual(check_index_in_range(0, 5, len(arr)), (0, 5))
 
     def test_should_not_allow_negative_start(self):
         arr = [0, 1, 2]
@@ -93,6 +93,7 @@ class TestFetch(unittest.TestCase):
             IndexError,
             'Precondition failed: End is less than start',
             lambda: check_index_in_range(2, 1, len(arr)))
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFetch)

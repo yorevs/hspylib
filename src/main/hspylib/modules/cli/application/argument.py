@@ -31,11 +31,11 @@ class Argument:
         return missing == 0
 
     def __init__(
-            self,
-            name: str,
-            validation_regex: str = '.*',
-            required: bool = True,
-            next_in_chain: Any = None):
+        self,
+        name: str,
+        validation_regex: str = '.*',
+        required: bool = True,
+        next_in_chain: Any = None):
         self.name = name
         self.validation_regex = validation_regex
         self.required = required

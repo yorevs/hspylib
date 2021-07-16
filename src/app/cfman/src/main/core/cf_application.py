@@ -32,13 +32,13 @@ class CFApplication:
         return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
 
     def __init__(
-            self,
-            name: str,
-            state: str,
-            instances: str,
-            memory: str,
-            disk: str,
-            urls: List[str]):
+        self,
+        name: str,
+        state: str,
+        instances: str,
+        memory: str,
+        disk: str,
+        urls: List[str]):
         self.name = name
         self.state = state
         self.instances = instances

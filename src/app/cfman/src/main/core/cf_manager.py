@@ -214,7 +214,7 @@ class CFManager:
                     if action.lower() == 'status':
                         self._display_app_status()
                     elif action.lower() == 'target':
-                        self.space = self.org  = self.apps = None
+                        self.space = self.org = self.apps = None
                         self.cf.targeted = {'org': None, 'space': None, 'targeted': False}
                         continue
 

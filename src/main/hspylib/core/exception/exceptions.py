@@ -70,4 +70,3 @@ class InvalidArgumentError(Exception):
 
 class InvalidStateError(Exception):
     """Raised when an invalid state is detected by the application"""
-

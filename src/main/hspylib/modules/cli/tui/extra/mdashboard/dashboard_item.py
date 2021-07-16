@@ -21,11 +21,12 @@ from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 # pylint: disable=too-few-public-methods
 class DashboardItem:
     """TODO"""
+
     def __init__(
-            self,
-            icon: Awesome = None,
-            tooltip: str = None,
-            on_trigger: Callable = None):
+        self,
+        icon: Awesome = None,
+        tooltip: str = None,
+        on_trigger: Callable = None):
         self.icon = icon
         self.tooltip = tooltip
         self.on_trigger = on_trigger

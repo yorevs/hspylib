@@ -14,7 +14,6 @@
    Copyright 2021, HSPyLib team
 """
 
-
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import MenuDashBoard, mdashboard
 

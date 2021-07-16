@@ -18,6 +18,7 @@ from PyQt5.QtGui import QColor
 
 MAX_HISTORY_SIZE_BYTES = 250
 
+
 # pylint: disable=too-few-public-methods
 class StatusColor(ABC):
     """TODO"""

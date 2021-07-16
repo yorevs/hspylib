@@ -76,11 +76,11 @@ class StreamCapturer(QThread):
                     sleep(self._poll_interval)
 
     def __init__(
-            self,
-            capture_stderr: bool = True,
-            capture_stdout: bool = True,
-            stdout_poll_interval: float = 0.5,
-            stderr_poll_interval: float = 0.5):
+        self,
+        capture_stderr: bool = True,
+        capture_stdout: bool = True,
+        stdout_poll_interval: float = 0.5,
+        stderr_poll_interval: float = 0.5):
 
         check_argument(capture_stderr or capture_stdout, 'At least one capturer must be started')
         super().__init__()

@@ -50,7 +50,7 @@ class HTableView(QTableView):
         painter = QPainter(self.viewport())
         painter.save()
         painter.setPen(color)
-        elided_text = self.fontMetrics()\
+        elided_text = self.fontMetrics() \
             .elidedText(self.placeholder, Qt.ElideRight, self.viewport().width())
         painter.drawText(self.viewport().rect(), Qt.AlignCenter, elided_text)
         painter.restore()

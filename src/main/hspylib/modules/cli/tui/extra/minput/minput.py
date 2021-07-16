@@ -34,10 +34,10 @@ from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, r
 
 
 def minput(
-        form_fields: List[FormField],
-        title: str = 'Please fill all fields of the form fields below',
-        title_color: VtColors = VtColors.ORANGE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional['MenuInput.FormFields']:
+    form_fields: List[FormField],
+    title: str = 'Please fill all fields of the form fields below',
+    title_color: VtColors = VtColors.ORANGE,
+    nav_color: VtColors = VtColors.YELLOW) -> Optional['MenuInput.FormFields']:
     """
     TODO
     :param form_fields:
@@ -73,10 +73,10 @@ class MenuInput:
         self.re_render = True
 
     def input(
-            self,
-            title: str,
-            title_color: VtColors,
-            nav_color: VtColors) -> Optional['MenuInput.FormFields']:
+        self,
+        title: str,
+        title_color: VtColors,
+        nav_color: VtColors) -> Optional['MenuInput.FormFields']:
         """TODO"""
 
         ret_val = None
@@ -96,7 +96,7 @@ class MenuInput:
         restore_terminal()
 
         if ret_val == Keyboard.VK_ENTER:
-            form_fields =  self.FormFields
+            form_fields = self.FormFields
             for field in self.all_fields:
                 att_name = snakecase(field.label)
                 setattr(form_fields, att_name, field.value)

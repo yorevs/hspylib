@@ -21,12 +21,12 @@ from hspylib.core.crud.crud_entity import CrudEntity
 
 class Contact(CrudEntity):
     def __init__(
-            self,
-            uuid: UUID = None,
-            name: str = None,
-            phone: str = None,
-            address: str = None,
-            complement: str = None):
+        self,
+        uuid: UUID = None,
+        name: str = None,
+        phone: str = None,
+        address: str = None,
+        complement: str = None):
         super().__init__(uuid)
         self.name = name
         self.phone = phone

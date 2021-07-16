@@ -28,9 +28,9 @@ class MenuUtils(ABC):
 
     @staticmethod
     def print_error(
-            message: str,
-            argument: Any = None,
-            wait_interval: int = 2) -> None:
+        message: str,
+        argument: Any = None,
+        wait_interval: int = 2) -> None:
         """TODO"""
 
         syserr(f"### Error: {message} \"{argument or ''}\"")
@@ -39,10 +39,10 @@ class MenuUtils(ABC):
 
     @staticmethod
     def print_warning(
-            message: str,
-            argument: str = None,
-            wait_interval: int = 2,
-            color: VtColors = VtColors.YELLOW) -> None:
+        message: str,
+        argument: str = None,
+        wait_interval: int = 2,
+        color: VtColors = VtColors.YELLOW) -> None:
         """TODO"""
 
         sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"")
@@ -51,13 +51,13 @@ class MenuUtils(ABC):
 
     @staticmethod
     def prompt(
-            prompt_msg: str = '',
-            validator: Callable = None,
-            default_value: Any = None,
-            any_key: bool = False,
-            on_blank_abort: bool = True,
-            color: VtColors = VtColors.GREEN,
-            end: str = ': ') -> Optional[Any]:
+        prompt_msg: str = '',
+        validator: Callable = None,
+        default_value: Any = None,
+        any_key: bool = False,
+        on_blank_abort: bool = True,
+        color: VtColors = VtColors.GREEN,
+        end: str = ': ') -> Optional[Any]:
         """TODO"""
 
         valid = False
@@ -96,8 +96,8 @@ class MenuUtils(ABC):
 
     @staticmethod
     def wait_enter(
-            wait_msg: str = 'Press [Enter] to continue ...',
-            color: VtColors = VtColors.YELLOW) -> None:
+        wait_msg: str = 'Press [Enter] to continue ...',
+        color: VtColors = VtColors.YELLOW) -> None:
         """TODO"""
         MenuUtils.prompt(wait_msg, any_key=True, color=color, end='')
 

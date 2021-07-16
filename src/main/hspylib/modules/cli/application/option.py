@@ -20,11 +20,11 @@ from typing import Callable
 class Option:
 
     def __init__(
-            self,
-            shortopt: chr,
-            longopt: str,
-            has_argument: bool = False,
-            cb_handler: Callable = None):
+        self,
+        shortopt: chr,
+        longopt: str,
+        has_argument: bool = False,
+        cb_handler: Callable = None):
         self.name = longopt.replace('--', '')
         self.shortopt = f"-{shortopt.replace('-', '')}{':' if has_argument > 0 else ''}"
         self.longopt = f"--{longopt.replace('--', '')}{'=' if has_argument > 0 else ''}"

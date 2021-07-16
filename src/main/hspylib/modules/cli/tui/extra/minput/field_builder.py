@@ -25,6 +25,7 @@ from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 
 T = TypeVar('T')
 
+
 class FieldBuilder:
 
     def __init__(self, parent: Any):
@@ -56,7 +57,7 @@ class FieldBuilder:
 
     def value(self, value: T) -> 'FieldBuilder':
         check_argument(self.field.assign(value),
-            "Not a valid value: \"{}\". Validation pattern=\"{}\"", value, self.field.validator)
+                       "Not a valid value: \"{}\". Validation pattern=\"{}\"", value, self.field.validator)
         return self
 
     def build(self) -> Any:
