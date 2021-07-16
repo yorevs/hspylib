@@ -17,6 +17,8 @@
 from enum import Enum
 from typing import Any, List
 
+from hspylib.core.tools.preconditions import check_not_none
+
 
 class Enumeration(Enum):
     """TODO"""
@@ -38,8 +40,7 @@ class Enumeration(Enum):
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.name == name, list(cls)), None)
-        assert found, f"{name} name is not a valid \"{cls.__name__}\""
-        return found
+        return check_not_none(found, "{} name is not a valid \"{}\"", name, cls.__name__)
 
     @classmethod
     def of_value(cls, value: Any, ignore_case: bool = False) -> Any:
@@ -47,8 +48,7 @@ class Enumeration(Enum):
             found = next(filter(lambda en: str(en.value).upper() == str(value).upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.value == value, list(cls)), None)
-        assert found, f"\"{value}\" value does not correspond to a valid \"{cls.__name__}\""
-        return found
+        return check_not_none(found, "\"{}\" value does not correspond to a valid \"{}\"", value, cls.__name__)
 
     def __str__(self):
         return str(self.value)

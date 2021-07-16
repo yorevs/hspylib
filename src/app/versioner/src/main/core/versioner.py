@@ -21,6 +21,7 @@ from typing import List
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir, sysout, syserr
+from hspylib.core.tools.preconditions import check_argument
 from versioner.src.main.entity.version import Version
 from versioner.src.main.enums.extension import Extension
 from versioner.src.main.exception.exceptions import MissingExtensionError
@@ -121,6 +122,6 @@ class Versioner(metaclass=Singleton):
 
     def _assert_exist(self, files: List[str]) -> List[str]:
         """ Assert all file paths exist """
-        assert files and all(os.path.exists(path) for path in files), \
-            "All files must exist in \"{}\" and be writable: {}".format(self._search_dir, files)
+        check_argument(files and all(os.path.exists(path) for path in files),
+            "All files must exist in \"{}\" and be writable: {}", self._search_dir, files)
         return files

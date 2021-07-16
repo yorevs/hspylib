@@ -17,6 +17,7 @@
 from typing import List, Tuple
 
 from hspylib.core.tools.constants import RE_COMMON_2_30_NAME, RE_PHONE_NUMBER
+from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Contact import Contact
 from phonebook.entity.Person import Person
@@ -26,8 +27,8 @@ class ContactValidator(Validator):
 
     def __call__(self, *contacts: Contact, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
-        assert len(contacts) == 1, "Exactly one contact can be validated at a time. Given: {}".format(len(contacts))
-        assert isinstance(contacts[0], Person), "Only contacts can be validated"
+        check_argument(len(contacts) == 1, f"Exactly one contact can be validated at a time. Given: {len(contacts)}")
+        check_state(isinstance(contacts[0], Contact), "Only Contact can be validated")
         self.assert_valid(errors, self.validate_name(contacts[0].name))
         self.assert_valid(errors, self.validate_phone(contacts[0].phone))
         self.assert_valid(errors, self.validate_address(contacts[0].address))

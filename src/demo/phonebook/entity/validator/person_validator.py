@@ -17,6 +17,7 @@
 from typing import List, Tuple
 
 from hspylib.core.tools.constants import RE_EMAIL_W3C
+from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Person import Person
 from phonebook.entity.validator.contact_validator import ContactValidator
@@ -26,8 +27,8 @@ class PersonValidator(ContactValidator):
 
     def __call__(self, *persons: Person, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
-        assert len(persons) == 1, "Exactly one person can be validated at a time. Given: {}".format(len(persons))
-        assert isinstance(persons[0], Person), "Only persons can be validated"
+        check_argument(len(persons) == 1, f"Exactly one person can be validated at a time. Given: {len(persons)}")
+        check_state(isinstance(persons[0], Person), "Only Person can be validated")
         self.assert_valid(errors, self.validate_name(persons[0].name))
         self.assert_valid(errors, self.validate_age(str(persons[0].age)))
         self.assert_valid(errors, self.validate_phone(persons[0].phone))

@@ -22,6 +22,7 @@ from hspylib.addons.appman.app_type import AppType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -57,7 +58,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         """Create the application based on the parameters"""
         sysout(f'Creating app: {app_name} -> {dest_dir} ...')
         try:
-            assert os.path.exists(dest_dir), f'Destination not found: {dest_dir}'
+            check_argument(os.path.exists(dest_dir), 'Destination not found: {}', dest_dir)
             self._app_name = app_name
             if app_type == AppType.APP:
                 self._app_dir = f'{dest_dir}/{app_name}'
@@ -168,7 +169,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
     def _download_ext(self, extension: str) -> None:
         """Download a gradle extension from the HSPyLib repository"""
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')
-        assert resp.status_code == HttpCode.OK, f'Unable to download {extension}'
+        check_argument(resp.status_code == HttpCode.OK, 'Unable to download {}', extension)
         self._mkfile(f'gradle/{extension}', resp.body)
 
     def _init_git(self) -> None:

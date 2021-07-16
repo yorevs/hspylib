@@ -28,7 +28,7 @@ class TestJsonSearch(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        assert path.exists(SAMPLE_FILE), "Sample file was not found on {}".format(SAMPLE_FILE)
+        self.assertTrue(path.exists(SAMPLE_FILE), "Sample file was not found on {}".format(SAMPLE_FILE))
         with open(SAMPLE_FILE) as f_sample_file:
             self.json_object = json.load(f_sample_file)
             self.j_utils = JsonSearch()

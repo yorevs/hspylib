@@ -18,6 +18,7 @@ import base64
 import os
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.preconditions import check_state
 
 
 class FileEntry:
@@ -30,8 +31,8 @@ class FileEntry:
         file_entry.data = file_data
         file_entry.decode()
         file_entry.size = len(file_entry.data)
-        assert file_entry.size == expected_size, \
-            "Retrieved data and expected data length mismatch: {} vs {}".format(expected_size, len(file_entry.data))
+        check_state(file_entry.size == expected_size,
+            "Retrieved data and expected data length mismatch: {} vs {}", expected_size, len(file_entry.data))
         return file_entry
 
     def __init__(self, file_path: str):
@@ -42,7 +43,7 @@ class FileEntry:
             self.size = os.path.getsize(file_path)
             with open(file_path, 'r') as f_in:
                 self.data = f_in.read()
-                assert len(self.data) > 0, "File \"{}\" is empty".format(file_path)
+                check_state(len(self.data) > 0, "File \"{}\" is empty", file_path)
 
     def __str__(self) -> str:
         return '{"path" : "' + self.path + '", "size" : ' + str(self.size) + ', "data" : "' + self.data + '"}'

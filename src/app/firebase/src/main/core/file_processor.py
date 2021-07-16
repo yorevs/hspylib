@@ -24,6 +24,7 @@ from requests.exceptions import HTTPError
 from firebase.src.main.entity.file_entry import FileEntry
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.preconditions import check_state, check_not_none, check_argument
 from hspylib.modules.fetch.fetch import get, put
 
 
@@ -35,12 +36,12 @@ class FileProcessor(ABC):
         """Upload files to URL"""
         file_data = []
         for f_path in file_paths:
-            assert os.path.exists(f_path), 'Input file "{}" does not exist'.format(f_path)
+            check_state(os.path.exists(f_path), 'Input file "{}" does not exist'.format(f_path))
             file = FileProcessor._read_and_encode(f_path)
             file_data.append(file)
         payload = FileProcessor._to_json(file_data)
         response = put(url, payload)
-        assert response, "Response is empty"
+        check_not_none(response)
         if response.status_code != HttpCode.OK:
             raise HTTPError(
                 '{} - Unable to upload into={} with json_string={}'.format(response.status_code, url, payload))
@@ -52,10 +53,12 @@ class FileProcessor(ABC):
     @staticmethod
     def download_files(url: str, destination_dir: str) -> int:
         """Download files from URL"""
-        assert destination_dir and os.path.exists(destination_dir), "Unable find destination directory: {}" \
-            .format(destination_dir)
+        check_argument(
+            destination_dir and os.path.exists(destination_dir),
+            "Unable find destination directory: {}", destination_dir)
         response = get(url)
-        assert response and response.body, "Response or response body is empty"
+        check_not_none(response)
+        check_not_none(response.body)
         if response.status_code != HttpCode.OK:
             raise HTTPError(
                 '{} - Unable to download from={} with response={}'.format(response.status_code, url, response))

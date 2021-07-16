@@ -44,7 +44,7 @@ class TestMySqlRepository(unittest.TestCase):
         log.info(self.configs)
         self.repository = MysqlRepositoryTest()
         self.table = self.repository.table_name()
-        assert self.repository, "Unable to instantiate TestRepository"
+        self.assertIsNotNone(self.repository, "Unable to instantiate TestRepository")
         try:
             self.repository.connect()
             self.assertTrue(self.repository.is_connected())
@@ -77,7 +77,7 @@ class TestMySqlRepository(unittest.TestCase):
         result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
         }))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
 
@@ -90,7 +90,7 @@ class TestMySqlRepository(unittest.TestCase):
         result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
         }))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.comment, result_set[0].comment)
 
@@ -101,7 +101,7 @@ class TestMySqlRepository(unittest.TestCase):
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_all()
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
         self.assertEqual(2, len(result_set))
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
@@ -113,7 +113,7 @@ class TestMySqlRepository(unittest.TestCase):
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
         result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
 
@@ -122,7 +122,7 @@ class TestMySqlRepository(unittest.TestCase):
         test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
         result_set = self.repository.find_all(column_set=["UUID"])
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
         self.assertEqual(1, len(result_set))
         self.assertEqual(test_entity.uuid, result_set[0].uuid)
@@ -133,12 +133,12 @@ class TestMySqlRepository(unittest.TestCase):
         test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
         result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
-        assert result_set, "Result set is empty"
+        self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
-        assert not self.repository.find_by_id(entity_id=str(test_entity.uuid)), \
-            "Result set is not empty"
+        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        self.assertIsNone(result_set, "Result set is not empty")
 
 
 # Program entry point.

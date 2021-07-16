@@ -17,6 +17,7 @@
 from typing import List, Optional
 
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
@@ -72,10 +73,9 @@ class MenuDashBoard:
         self.re_render = True
         self.tab_index = 0
         self.items_per_line = items_per_line
-        assert \
-            len(self.CELL_TPL) == len(self.SEL_CELL_TPL) \
-            and len(self.CELL_TPL[0]) == len(self.SEL_CELL_TPL[0]), \
-            'Invalid CELL definitions. Selected and unselected matrices should have the same dimensions.'
+        check_state(
+            len(self.CELL_TPL) == len(self.SEL_CELL_TPL) and len(self.CELL_TPL[0]) == len(self.SEL_CELL_TPL[0]),
+            'Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.')
 
     def dashboard(
             self,

@@ -17,6 +17,7 @@
 import re
 
 from hspylib.core.tools.constants import RE_VERSION_STRING
+from hspylib.core.tools.preconditions import check_argument
 from versioner.src.main.enums.extension import Extension
 
 
@@ -24,8 +25,8 @@ class Version:
 
     @classmethod
     def parse(cls, version_str: str) -> 'Version':
-        assert re.match(RE_VERSION_STRING, version_str), \
-            f"Version string {version_str} does not match the expected syntax: {RE_VERSION_STRING}"
+        check_argument(bool(re.match(RE_VERSION_STRING, version_str)),
+            "Version string {} does not match the expected syntax: {}", version_str, RE_VERSION_STRING)
         parts = list(map(str.strip, re.split(r'[.-]', version_str)))
         return Version(
             int(parts[0]),
@@ -35,8 +36,7 @@ class Version:
 
     @classmethod
     def of(cls, version: tuple) -> 'Version':
-        assert len(version) >= 3, \
-            'Version must contains at least 3 parts: (major, minor, build)'
+        check_argument(len(version) >= 3, 'Version must contains at least 3 parts: (major, minor, build)')
         return Version(
             int(version[0]),
             int(version[1]),

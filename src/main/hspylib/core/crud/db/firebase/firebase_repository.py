@@ -27,6 +27,7 @@ from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.modules.fetch.fetch import delete, get, put
 
 
@@ -55,7 +56,7 @@ class FirebaseRepository(CrudRepository):
         payload = entity.to_json()
         log.debug("Inserting firebase entry: %s into: %s", entity, url)
         response = put(url, payload)
-        assert response, "Response is empty"
+        check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
@@ -65,7 +66,7 @@ class FirebaseRepository(CrudRepository):
         payload = entity.to_json()
         log.debug('Updating firebase entry: %s into: %s', entity, url)
         response = put(url, payload)
-        assert response, "Response is empty"
+        check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
 
@@ -74,7 +75,7 @@ class FirebaseRepository(CrudRepository):
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         log.debug('Deleting firebase entry: %s into: %s', entity, url)
         response = delete(url)
-        assert response, "Response is empty"
+        check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to delete from={}'.format(response.status_code, url))
 
@@ -83,7 +84,7 @@ class FirebaseRepository(CrudRepository):
         url = '{}.json?orderBy="$key"'.format(self.config.base_url())
         log.debug('Fetching firebase entries from %s', url)
         response = get(url)
-        assert response, "Response is empty"
+        check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to get from={}'.format(response.status_code, url))
 
@@ -94,11 +95,11 @@ class FirebaseRepository(CrudRepository):
         url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.base_url(), entity_id)
         log.debug('Fetching firebase entry entity_id=%s from %s', entity_id, url)
         response = get(url)
-        assert response, "Response is empty"
+        check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
             raise HTTPError('{} - Unable to get from={}'.format(response.status_code, url))
         result = self.to_list(response.body) if response.body else []
-        assert len(result) <= 1, "Multiple results found with entity_id={}".format(entity_id)
+        check_state(len(result) <= 1, "Multiple results found with entity_id={}", entity_id)
 
         return result[0] if len(result) > 0 else None
 

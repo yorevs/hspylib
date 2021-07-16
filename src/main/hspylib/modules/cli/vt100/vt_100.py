@@ -17,6 +17,8 @@
 import re
 from abc import ABC
 
+from hspylib.core.tools.preconditions import check_argument
+
 
 class Vt100(ABC):
     """
@@ -71,7 +73,7 @@ class Vt100(ABC):
     @classmethod
     def mode(cls, mod_seq: str) -> str:
         """TODO"""
-        assert re.match(r"[0-9]+(;[0-9]+){0,2}", mod_seq)
+        check_argument(bool(re.match(r"[0-9]+(;[0-9]+){0,2}", mod_seq)), 'Invalid mode sequence')
         return cls.sequence(f"{mod_seq}m")
 
     # Esc[<n>J
@@ -81,7 +83,7 @@ class Vt100(ABC):
         if mod_cls is None:
             return cls.sequence('J')
 
-        assert mod_cls in [0, 1, 2]
+        check_argument(mod_cls in [0, 1, 2], 'Invalid mode sequence')
         return cls.sequence(f'{mod_cls}J')
 
     # Esc[<n>K
@@ -91,7 +93,7 @@ class Vt100(ABC):
         if mod_cls is None:
             return cls.sequence('K')
 
-        assert mod_cls in [0, 1, 2]
+        check_argument(mod_cls in [0, 1, 2], 'Invalid mode sequence')
         return cls.sequence(f'{mod_cls}K')
 
     # Esc[<v>;<h>H
@@ -101,14 +103,14 @@ class Vt100(ABC):
         if cup_seq is None:
             return cls.sequence('H')
 
-        assert re.match(r"[0-9]*;[0-9]*", cup_seq)
+        check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), 'Invalid position sequence')
         return cls.sequence(f"{cup_seq}H")
 
     # Esc[<n><A/B/C/D>
     @classmethod
     def cursor_move(cls, amount: int, direction: str) -> str:
         """TODO"""
-        assert int(amount) >= 0 and direction in ['A', 'B', 'C', 'D']
+        check_argument(int(amount) >= 0 and direction in ['A', 'B', 'C', 'D'], 'Invalid direction or move amount')
         return cls.sequence(f"{amount}{direction}")
 
     # Esc[<n>A

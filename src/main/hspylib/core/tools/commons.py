@@ -51,7 +51,7 @@ def log_init(
         create_new: bool = True,
         mode: str = 'a',
         level: int = log.DEBUG,
-        filename: str = LOG_FMT) -> log:
+        filename: str = LOG_FMT) -> bool:
     """Initialize the system logger
     :param log_file: TODO
     :param create_new:  TODO

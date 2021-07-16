@@ -18,6 +18,7 @@ from datetime import datetime
 from typing import List, Tuple
 
 from hspylib.core.tools.constants import RE_COMMON_2_30_NAME
+from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
 from vault.src.main.entity.vault_entry import VaultEntry
 
@@ -26,8 +27,8 @@ class EntryValidator(Validator):
 
     def __call__(self, *entries: VaultEntry, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
-        assert len(entries) == 1, "Exactly one entry can be validated at a time. Given: {}".format(len(entries))
-        assert isinstance(entries[0], VaultEntry), "Only vault entries can be validated"
+        check_argument(len(entries) == 1, "Exactly one entry can be validated at a time. Given: {}", len(entries))
+        check_state(isinstance(entries[0], VaultEntry), "Only vault VaultEntry can be validated")
         self.assert_valid(errors, self.validate_key(entries[0].key))
         self.assert_valid(errors, self.validate_name(entries[0].name))
         self.assert_valid(errors, self.validate_password(entries[0].password))

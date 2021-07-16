@@ -18,6 +18,7 @@ import re
 from typing import List
 
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.preconditions import check_argument
 
 
 class CFApplication:
@@ -27,7 +28,7 @@ class CFApplication:
     def of(cls, app_line: str):
         """TODO"""
         parts = re.split(r' {2,}', app_line)
-        assert len(parts) >= 6, f"Invalid application line: {app_line}"
+        check_argument(len(parts) >= 6, f"Invalid application line: {app_line}")
         return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
 
     def __init__(
