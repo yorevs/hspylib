@@ -100,7 +100,6 @@ class MainQtView(QtView):
         if callback:
             callback()
 
-
     def _display(self, value) -> None:
         future_digits = len(str(value)) if value else 0
         digits = self.ui.lcdDisplay.digitCount()

@@ -45,7 +45,7 @@ class MockResponse(HttpResponse):
         self,
         code: HttpCode,
         body: str = None,
-        headers = None,
+        headers=None,
         encoding: Charset = Charset.UTF_8,
         content_type=ContentType.APPLICATION_JSON) -> Any:
         """TODO"""

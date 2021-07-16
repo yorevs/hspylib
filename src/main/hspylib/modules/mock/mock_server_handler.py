@@ -45,10 +45,10 @@ class MockServerHandler(BaseHTTPRequestHandler):
         return filtered
 
     def process_headers(
-            self,
-            headers: CaseInsensitiveDict = None,
-            content_type: ContentType = ContentType.APPLICATION_JSON,
-            content_length: int = 0) -> None:
+        self,
+        headers: CaseInsensitiveDict = None,
+        content_type: ContentType = ContentType.APPLICATION_JSON,
+        content_length: int = 0) -> None:
         """TODO"""
 
         headers = MockServerHandler.remove_reserved_headers(headers)
@@ -62,10 +62,10 @@ class MockServerHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def process_default(
-            self,
-            code: HttpCode = HttpCode.OK,
-            content_type: ContentType = ContentType.APPLICATION_JSON,
-            headers: CaseInsensitiveDict = None) -> None:
+        self,
+        code: HttpCode = HttpCode.OK,
+        content_type: ContentType = ContentType.APPLICATION_JSON,
+        headers: CaseInsensitiveDict = None) -> None:
         """TODO"""
 
         log.debug('Processing a default request status_code=%s content-type=%s', code, content_type)

@@ -45,7 +45,6 @@ class VaultEntry(CrudEntity):
         password: str,
         hint: str,
         modified: datetime = None):
-
         super().__init__(uuid)
         self.key = key
         self.name = name

@@ -72,6 +72,7 @@ def cut(string: str, index: int, separator: str = ' ') -> str:
     result = tuple(re.split(rf'{separator}+', string))
     return get_or_default(result, index)
 
+
 def strip_escapes(string: str) -> str:
     """TODO"""
     return re.compile(r'\x1b[^m]*m').sub('', string)

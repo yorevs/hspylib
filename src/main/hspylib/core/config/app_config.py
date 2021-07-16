@@ -37,12 +37,11 @@ AppConfigs
 """
 
     def __init__(
-            self,
-            source_root: str = None,
-            resource_dir: str = None,
-            log_dir: str = None,
-            log_file: str = None):
-
+        self,
+        source_root: str = None,
+        resource_dir: str = None,
+        log_dir: str = None,
+        log_file: str = None):
         self._source_dir = source_root \
             if source_root else os.environ.get('SOURCE_ROOT', dirname(__file__))
         check_argument(os.path.exists(self._source_dir), "Unable to find the source dir: {}", self._source_dir)

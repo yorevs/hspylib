@@ -38,6 +38,7 @@ from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
+
 class MainQtView(QtView):
     """TODO"""
     VERSION = read_version(f"{run_dir()}/.version")

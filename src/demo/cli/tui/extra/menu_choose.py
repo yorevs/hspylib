@@ -15,6 +15,7 @@
 """
 from hspylib.modules.cli.tui.extra.mchoose import mchoose
 
+
 class ChooseableItem:
     def __init__(self, name: str, value: str):
         self.name = name
@@ -25,6 +26,7 @@ class ChooseableItem:
 
     def __repr__(self):
         return str(self)
+
 
 if __name__ == '__main__':
     quantity = 21

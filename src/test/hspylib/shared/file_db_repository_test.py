@@ -14,9 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from test.hspylib.shared.entity_test import EntityTest
-
 from hspylib.core.crud.file.file_repository import FileRepository
+from test.hspylib.shared.entity_test import EntityTest
 
 
 class FileDbRepositoryTest(FileRepository):

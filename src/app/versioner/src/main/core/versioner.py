@@ -123,5 +123,5 @@ class Versioner(metaclass=Singleton):
     def _assert_exist(self, files: List[str]) -> List[str]:
         """ Assert all file paths exist """
         check_argument(files and all(os.path.exists(path) for path in files),
-            "All files must exist in \"{}\" and be writable: {}", self._search_dir, files)
+                       "All files must exist in \"{}\" and be writable: {}", self._search_dir, files)
         return files

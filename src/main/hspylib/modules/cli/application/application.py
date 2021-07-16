@@ -55,17 +55,16 @@ class Application(metaclass=Singleton):
         sys.exit(exit_code)
 
     def __init__(
-            self,
-            app_name: str = None,
-            app_version: Tuple[int, int, int] = None,
-            app_usage: str = None,
-            source_dir: str = None,
-            resource_dir: str = None,
-            log_dir: str = None):
+        self,
+        app_name: str = None,
+        app_version: Tuple[int, int, int] = None,
+        app_usage: str = None,
+        source_dir: str = None,
+        resource_dir: str = None,
+        log_dir: str = None):
 
         signal.signal(signal.SIGINT, self.exit_handler)
         signal.signal(signal.SIGTERM, self.exit_handler)
-
 
         self._app_name = app_name
         self._app_version = app_version
@@ -139,17 +138,17 @@ class Application(metaclass=Singleton):
         log.info('cleanup was not overridden')
 
     def _with_option(
-            self,
-            shortopt: chr,
-            longopt: str,
-            has_argument: bool = False,
-            handler: Callable = None) -> None:
+        self,
+        shortopt: chr,
+        longopt: str,
+        has_argument: bool = False,
+        handler: Callable = None) -> None:
         """Specify an option for the command line"""
         self._options[longopt] = Option(shortopt, longopt, has_argument, handler)
 
     def _with_arguments(
-            self,
-            chained_args: Set[ArgumentChain.ChainedArgument]) -> None:
+        self,
+        chained_args: Set[ArgumentChain.ChainedArgument]) -> None:
         """Specify an argument for the command line"""
         self._arguments = chained_args
 

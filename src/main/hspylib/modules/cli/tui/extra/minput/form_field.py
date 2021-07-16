@@ -24,14 +24,14 @@ from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 
 class FormField:
     def __init__(
-            self,
-            label: str = None,
-            itype: InputType = InputType.TEXT,
-            min_length: int = 0,
-            max_length: int = 30,
-            access_type: AccessType = AccessType.READ_WRITE,
-            value: Any = '',
-            validator: InputValidator = None):
+        self,
+        label: str = None,
+        itype: InputType = InputType.TEXT,
+        min_length: int = 0,
+        max_length: int = 30,
+        access_type: AccessType = AccessType.READ_WRITE,
+        value: Any = '',
+        validator: InputValidator = None):
 
         self.value = value
         self.label = label

@@ -28,12 +28,12 @@ T = TypeVar('T')
 
 
 def mselect(
-        items: List[T],
-        title: str = 'Please select one',
-        max_rows: int = 15,
-        title_color: VtColors = VtColors.ORANGE,
-        highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[T]:
+    items: List[T],
+    title: str = 'Please select one',
+    max_rows: int = 15,
+    title_color: VtColors = VtColors.ORANGE,
+    highlight_color: VtColors = VtColors.BLUE,
+    nav_color: VtColors = VtColors.YELLOW) -> Optional[T]:
     """
     TODO
     :param items:
@@ -56,9 +56,9 @@ class MenuSelect(ABC):
     NAV_FMT = "\n{}[Enter] Select  [{}] Navigate  [Q] Quit  [1..{}] Goto: %EL0%"
 
     def __init__(
-            self,
-            items: List[T],
-            max_rows: int = 15):
+        self,
+        items: List[T],
+        max_rows: int = 15):
 
         self.items = items
         self.show_from = 0
@@ -69,11 +69,11 @@ class MenuSelect(ABC):
         self.done = None
 
     def select(
-            self,
-            title: str,
-            title_color: VtColors,
-            highlight_color: VtColors,
-            nav_color: VtColors) -> Optional[T]:
+        self,
+        title: str,
+        title_color: VtColors,
+        highlight_color: VtColors,
+        nav_color: VtColors) -> Optional[T]:
         """TODO"""
 
         ret_val = None

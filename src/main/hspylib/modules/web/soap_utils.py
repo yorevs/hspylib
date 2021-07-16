@@ -25,10 +25,10 @@ from hspylib.modules.fetch.http_response import HttpResponse
 
 
 def soap_call(
-        url: str,
-        method: HttpMethod,
-        data: str,
-        headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
+    url: str,
+    method: HttpMethod,
+    data: str,
+    headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
     """TODO"""
 
     all_headers = {} if not headers else headers

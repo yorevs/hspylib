@@ -14,6 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
+
 class Event:
     """TODO"""
 

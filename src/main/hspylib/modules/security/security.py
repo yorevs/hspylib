@@ -22,8 +22,9 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-# Please do not modify this
 from hspylib.core.tools.preconditions import check_argument, check_state
+
+# Please do not modify this
 
 DEFAULT_HS_SALT = 'HsPyLib'
 
@@ -53,14 +54,14 @@ def decode(in_file, out_file, encoding: str = 'utf-8') -> int:
 
 
 def encrypt(
-        in_file: str,
-        out_file: str,
-        pass_phrase: str,
-        salt: str = DEFAULT_HS_SALT,
-        digest_algo=hashes.SHA256(),
-        length=32,
-        iterations=100000,
-        encoding: str = 'utf-8') -> None:
+    in_file: str,
+    out_file: str,
+    pass_phrase: str,
+    salt: str = DEFAULT_HS_SALT,
+    digest_algo=hashes.SHA256(),
+    length=32,
+    iterations=100000,
+    encoding: str = 'utf-8') -> None:
     """Encrypt file using Fernet cryptography
     :param in_file: The file to be encrypted
     :param out_file: The resulting encrypted file
@@ -88,14 +89,14 @@ def encrypt(
 
 
 def decrypt(
-        in_file: str,
-        out_file: str,
-        pass_phrase: str,
-        salt: str = DEFAULT_HS_SALT,
-        digest_algo=hashes.SHA256(),
-        length=32,
-        iterations=100000,
-        encoding: str = 'utf-8') -> None:
+    in_file: str,
+    out_file: str,
+    pass_phrase: str,
+    salt: str = DEFAULT_HS_SALT,
+    digest_algo=hashes.SHA256(),
+    length=32,
+    iterations=100000,
+    encoding: str = 'utf-8') -> None:
     """Decrypt file using Fernet cryptography
     :param in_file: The file to be decrypted
     :param out_file: The resulting decrypted file

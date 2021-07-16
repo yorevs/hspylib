@@ -111,5 +111,5 @@ class WidgetManager(metaclass=Singleton):
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
         check_state(isinstance(widget, Widget),
-            'All widgets must inherit from "hspylib.addons.widman.widget.Widget"')
+                    'All widgets must inherit from "hspylib.addons.widman.widget.Widget"')
         return widget

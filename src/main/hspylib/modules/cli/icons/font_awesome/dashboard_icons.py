@@ -86,5 +86,6 @@ class DashboardIcons(Awesome):
 
     # @formatter:on
 
+
 if __name__ == '__main__':
     DashboardIcons.demo_icons()

@@ -47,11 +47,11 @@ def _reset_logger():
 
 
 def log_init(
-        log_file: str,
-        create_new: bool = True,
-        mode: str = 'a',
-        level: int = log.DEBUG,
-        filename: str = LOG_FMT) -> bool:
+    log_file: str,
+    create_new: bool = True,
+    mode: str = 'a',
+    level: int = log.DEBUG,
+    filename: str = LOG_FMT) -> bool:
     """Initialize the system logger
     :param log_file: TODO
     :param create_new:  TODO
@@ -86,6 +86,7 @@ def is_debugging():
 def now() -> str:
     """TODO"""
     return datetime.now().strftime(DATE_TIME_FORMAT)
+
 
 def now_ms() -> int:
     return int(datetime.now().timestamp())

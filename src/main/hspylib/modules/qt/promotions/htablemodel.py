@@ -26,6 +26,7 @@ from hspylib.core.tools.commons import class_attribute_names, class_attribute_va
 
 T = TypeVar('T')
 
+
 class HTableModel(QAbstractTableModel):
     """TODO"""
 

@@ -44,7 +44,7 @@ class TableRenderer:
             check_argument(
                 len(min(self.rows, key=len)) == len(self.headers),
                 'Headers and Columns must have the same size: {} vs {}',
-                    len(min(self.rows, key=len)), len(self.headers))
+                len(min(self.rows, key=len)), len(self.headers))
         self.column_sizes = [max(self.min_column_size, len(header)) for header in self.headers]
         self.indexes = range(0, len(self.column_sizes))
 
@@ -96,7 +96,8 @@ class TableRenderer:
         :return: None
         """
         check_argument(len(min(self.rows, key=len)) == len(cell_sizes),
-            'Sizes and Columns must have the same size: {} vs {}', len(min(self.rows, key=len)), len(cell_sizes))
+                       'Sizes and Columns must have the same size: {} vs {}', len(min(self.rows, key=len)),
+                       len(cell_sizes))
         for row in self.rows:
             for idx in range(0, len(row)):
                 self.column_sizes[idx] = max(cell_sizes[idx], self.min_column_size)

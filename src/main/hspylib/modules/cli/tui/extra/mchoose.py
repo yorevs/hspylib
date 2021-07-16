@@ -28,13 +28,13 @@ T = TypeVar('T')
 
 
 def mchoose(
-        items: List[T],
-        checked: bool = True,
-        title: str = 'Please select one',
-        max_rows: int = 15,
-        title_color: VtColors = VtColors.ORANGE,
-        highlight_color: VtColors = VtColors.BLUE,
-        nav_color: VtColors = VtColors.YELLOW) -> Optional[List[T]]:
+    items: List[T],
+    checked: bool = True,
+    title: str = 'Please select one',
+    max_rows: int = 15,
+    title_color: VtColors = VtColors.ORANGE,
+    highlight_color: VtColors = VtColors.BLUE,
+    nav_color: VtColors = VtColors.YELLOW) -> Optional[List[T]]:
     """
     TODO
     :param items:
@@ -60,10 +60,10 @@ class MenuChoose(ABC):
     NAV_FMT = "\n{}[Enter] Accept  [{}] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"
 
     def __init__(
-            self,
-            items: List[T],
-            max_rows: int = 15,
-            checked: bool = True):
+        self,
+        items: List[T],
+        max_rows: int = 15,
+        checked: bool = True):
 
         self.items = items
         self.checked = checked
@@ -76,11 +76,11 @@ class MenuChoose(ABC):
         self.done = None
 
     def choose(
-            self,
-            title: str,
-            title_color: VtColors,
-            highlight_color: VtColors,
-            nav_color: VtColors) -> Optional[List[T]]:
+        self,
+        title: str,
+        title_color: VtColors,
+        highlight_color: VtColors,
+        nav_color: VtColors) -> Optional[List[T]]:
         """TODO"""
 
         ret_val = None
