@@ -68,7 +68,7 @@ class MockServerHandler(BaseHTTPRequestHandler):
             headers: CaseInsensitiveDict = None) -> None:
         """TODO"""
 
-        log.debug('Processing a default request status_code={} content-type={}'.format(code, content_type))
+        log.debug('Processing a default request status_code=%s content-type=%s', code, content_type)
         self.send_response_only(code.value)
         self.process_headers(headers, content_type)
 
@@ -78,8 +78,8 @@ class MockServerHandler(BaseHTTPRequestHandler):
         if self.parent.is_allowed(method):
             request = self.parent.mock(method, self.path)
             if request:
-                log.debug('Processing a request status_code={} content-type={}'.format(
-                    request.status_code, request.content_type))
+                log.debug('Processing a request status_code=%s content-type=%s',
+                          request.status_code, request.content_type)
                 if not request.status_code:
                     code = HttpCode.INTERNAL_SERVER_ERROR.value
                     request.body = 'Mocked response status_code must be provided'

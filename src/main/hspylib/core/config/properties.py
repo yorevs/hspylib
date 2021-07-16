@@ -137,7 +137,7 @@ class Properties:
                     ]
                 })
             elif self.extension in ['.yml', '.yaml']:
-                self.properties.update(flatten_dict(yaml.load(fh_props, Loader=yaml.FullLoader)))
+                self.properties.update(flatten_dict(yaml.safe_load(fh_props)))
             else:
                 raise NotImplementedError(f'Extension {self.extension} is not supported')
-        log.info(f'Successfully loaded {len(self.properties)} properties from:\n\t=>{self.filepath}')
+        log.info('Successfully loaded %d properties from:\n\t=>%s', len(self.properties), self.filepath)

@@ -64,7 +64,7 @@ class FileRepository(CrudRepository):
         entity.uuid = entity.uuid if entity.uuid else str(uuid.uuid4())
         self.storage.data.append(entity.to_dict())
         self.storage.commit()
-        log.debug("{} has been inserted !".format(entity.__class__.__name__))
+        log.debug("%s has been inserted !", entity.__class__.__name__)
 
     def update(self, entity: CrudEntity) -> None:
         """TODO
@@ -74,7 +74,7 @@ class FileRepository(CrudRepository):
             if next_entry['uuid'] == entity.uuid:
                 self.storage.data[index] = entity.to_dict()
                 self.storage.commit()
-                log.debug("{} has been updated !".format(entity.__class__.__name__))
+                log.debug("%s has been updated !", entity.__class__.__name__)
 
     def delete(self, entity: CrudEntity) -> None:
         """TODO
@@ -84,7 +84,7 @@ class FileRepository(CrudRepository):
             if next_entry['uuid'] == entity.uuid:
                 self.storage.data.remove(self.storage.data[index])
                 self.storage.commit()
-                log.debug("{} has been deleted !".format(entity.__class__.__name__))
+                log.debug("%s has been deleted !", entity.__class__.__name__)
 
     def find_all(self, filters: str = None) -> List[CrudEntity]:
         """TODO

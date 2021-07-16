@@ -96,6 +96,7 @@ class JsonSearch:
 
         return sub_selected_element
 
+    # pylint: disable=too-many-branches,too-many-locals
     def json_select(
         self,
         root_element,
@@ -124,6 +125,7 @@ class JsonSearch:
         self.pat_sub_expr_val = '\\{(%s)(<(%s)>)?\\}' % (self.pat_elem, self.pat_elem)
         selected_element = root_element
 
+        # pylint: disable=too-many-nested-blocks
         try:
             search_tokens = search_path.split(self.separator)
             for nextElement in search_tokens:

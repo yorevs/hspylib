@@ -66,9 +66,7 @@ class SqlFactory(metaclass=Singleton):
 
     def __init__(self):
         self.sql_stubs = SqlFactory._read_stubs(self._DEFAULT_SQL_STUBS)
-        log.debug('{} created with {} Stubs'.format(
-            self.__class__.__name__,
-            len(self.sql_stubs)))
+        log.debug('%s created with %s Stubs', self.__class__.__name__, len(self.sql_stubs))
 
     def insert(self, entity: CrudEntity) -> Optional[str]:
         """TODO"""

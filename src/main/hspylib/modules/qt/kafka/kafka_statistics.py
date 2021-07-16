@@ -17,7 +17,7 @@ from typing import Tuple
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from hspylib.core.tools.commons import now_ms
+from hspylib.core.tools.commons import now_ms, new_dynamic_object
 
 
 class KafkaStatistics(QThread):
@@ -25,26 +25,16 @@ class KafkaStatistics(QThread):
 
     statisticsReported = pyqtSignal(int, int, int, int, int, int)
 
-    class ConsumerStats:
-        """Gather consumer statistics"""
-
-        def __init__(self):
-            self.total = 0
-            self.in_a_tick = 0
-
-    class ProducerStats:
-        """Gather producer statistics"""
-
-        def __init__(self):
-            self.total = 0
-            self.in_a_tick = 0
-
     def __init__(self, report_interval: int = 1):
         super().__init__()
         self.setObjectName('kafka-statistics')
         self._started_ts = now_ms()
-        self._consumed = self.ConsumerStats()
-        self._produced = self.ProducerStats()
+        self._consumed = new_dynamic_object('ConsumerStats')
+        self._consumed.total = 0
+        self._consumed.in_a_tick = 0
+        self._produced = new_dynamic_object('ProducerStats')
+        self._produced.total = 0
+        self._produced.in_a_tick = 0
         self._report_interval = report_interval
 
     def report_consumed(self, amount: int = 1) -> None:

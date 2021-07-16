@@ -209,32 +209,39 @@ class CFManager:
                 self.done = True
             else:
                 if self._is_callable(action):
-                    if self._allow_multiple(action.lower()):
-                        apps = self._choose_apps()
-                    else:
-                        app = self._select_app()
-                        apps = [app] if app else None
-                    if apps:
-                        for app in apps:
-                            self._perform(action, app=app.name, org=self.org, space=self.space)
+                    self._perform_callable(action)
                 else:
                     if action.lower() == 'status':
-                        apps = self._get_apps(refresh=True)
-                        if len(apps) > 0:
-                            sysout("{}  {}  {}  {}  {}  {}".format(
-                                'Name'.ljust(CFApplication.max_name_length),
-                                'State'.ljust(7), 'Inst'.ljust(5),'Mem'.ljust(4),
-                                'Disk'.ljust(4),'URLs',
-                            ))
-                            for app in apps:
-                                app.print_status()
+                        self._display_app_status()
                     elif action.lower() == 'target':
-                        self.space = None
-                        self.org = None
+                        self.space = self.org  = self.apps = None
                         self.cf.targeted = {'org': None, 'space': None, 'targeted': False}
                         continue
 
                     MenuUtils.wait_enter()
+
+    def _display_app_status(self):
+        """Display select apps status"""
+        apps = self._get_apps(refresh=True)
+        if len(apps) > 0:
+            sysout("{}  {}  {}  {}  {}  {}".format(
+                'Name'.ljust(CFApplication.max_name_length),
+                'State'.ljust(7), 'Inst'.ljust(5), 'Mem'.ljust(4),
+                'Disk'.ljust(4), 'URLs',
+            ))
+            for app in apps:
+                app.print_status()
+
+    def _perform_callable(self, action):
+        """Perform the selected callable action"""
+        if self._allow_multiple(action.lower()):
+            apps = self._choose_apps()
+        else:
+            app = self._select_app()
+            apps = [app] if app else None
+        if apps:
+            for app in apps:
+                self._perform(action, app=app.name, org=self.org, space=self.space)
 
     def _perform(self, action: str, **kwargs):
         """Perform the selected PCF action"""

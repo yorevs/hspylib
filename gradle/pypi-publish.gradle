@@ -98,5 +98,3 @@ task publish(type: Task) {
     }
   }
 }
-
-clean.dependsOn cleanDist

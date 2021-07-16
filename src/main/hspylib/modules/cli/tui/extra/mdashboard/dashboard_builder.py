@@ -20,6 +20,7 @@ from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item_builder import Dash
 
 
 class DashboardBuilder:
+    """TODO"""
     def __init__(self):
         self.items = []
 

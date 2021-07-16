@@ -31,13 +31,13 @@ class Terminal(ABC):
     def shell_exec(cmd_line: str, **kwargs) -> Optional[str]:
         """TODO"""
         try:
-            log.info(f"Executing shell command: {cmd_line}")
+            log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             result = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
-            log.info(f"Execution result: {result}")
+            log.info("Execution result: %s", result)
             return result.strip() if result else None
         except subprocess.CalledProcessError as err:
-            log.error(f'Failed => {str(err)}')
+            log.error("Failed => %s", err)
             syserr(str(err))
             return None
 
@@ -49,7 +49,7 @@ class Terminal(ABC):
         if 'stderr' in kwargs:
             del kwargs['stderr']  # Deleted since we use our own
         try:
-            log.info(f"Polling shell command: {cmd_line}")
+            log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             with(subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)) as file:
                 process = select.poll()
@@ -58,7 +58,7 @@ class Terminal(ABC):
                     line = bytes(file.stdout.readline()).decode('utf-8').strip()
                     print('.' + line)
         except (InterruptedError, KeyboardInterrupt):
-            log.warning(f"Polling process has been interrupted command='{cmd_line}'")
+            log.warning("Polling process has been interrupted command='%s'", cmd_line)
         except subprocess.CalledProcessError as err:
-            log.debug(f'Failed => {str(err)}')
+            log.debug("Failed => %s", err)
             syserr(str(err))

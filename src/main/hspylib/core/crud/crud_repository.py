@@ -30,32 +30,27 @@ class CrudRepository(ABC):
         """TODO
         param: entity
         """
-        pass
 
     @abstractmethod
     def update(self, entity: CrudEntity) -> None:
         """TODO
         param: entity
         """
-        pass
 
     @abstractmethod
     def delete(self, entity: CrudEntity) -> None:
         """TODO
         param: entity
         """
-        pass
 
     @abstractmethod
     def find_all(self, filters: CaseInsensitiveDict = None) -> List[CrudEntity]:
         """TODO
         param: entity
         """
-        pass
 
     @abstractmethod
     def find_by_id(self, entity_id: str) -> Optional[CrudEntity]:
         """TODO
         param: entity
         """
-        pass

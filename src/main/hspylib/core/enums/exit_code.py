@@ -20,13 +20,13 @@ from hspylib.core.enums.enumeration import Enumeration
 class ExitCode(Enumeration):
     """TODO"""
 
-    """ Returned when something went wrong due to any Human interaction """
+    # Returned when something went wrong due to any Human interaction
     ERROR = -1
 
-    """ Returned when something ran successfully without errors """
+    # Returned when something ran successfully without errors
     SUCCESS = 0
 
-    """ Returned when something that was supposed to work and failed due to unexpected software behaviour """
+    # Returned when something that was supposed to work and failed due to unexpected software behaviour
     FAILED = 1
 
     # Additional exit codes can be defined here {

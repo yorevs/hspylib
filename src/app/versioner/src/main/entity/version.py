@@ -36,7 +36,7 @@ class Version:
     @classmethod
     def of(cls, version: tuple) -> 'Version':
         assert len(version) >= 3, \
-            f"Version must contains at least 3 parts: (major, minor, build)"
+            'Version must contains at least 3 parts: (major, minor, build)'
         return Version(
             int(version[0]),
             int(version[1]),

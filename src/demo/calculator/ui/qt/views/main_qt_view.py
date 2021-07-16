@@ -25,6 +25,7 @@ from hspylib.modules.qt.views.qt_view import QtView
 
 
 class MainQtView(QtView):
+    """TODO"""
 
     UI_FILE = 'qt_calculator.ui'
 
@@ -34,26 +35,25 @@ class MainQtView(QtView):
         self.dec_sep = AppConfigs.INSTANCE['decimal.separator']
         self.min_digits = int(AppConfigs.INSTANCE['min.digits'])
         self.max_digits = int(AppConfigs.INSTANCE['max.digits'])
-        self.wait_operand = True
-        self.wait_operand2 = True
-        self.operand = None
-        self.operand2 = None
-        self.last_operand = None
+        self.wait_operand = self.wait_operand2 = True
+        self.operand = self.operand2 = self.last_operand = None
         self.memory_rec = None
+        self.keymap = None
         self.display_text = ''
         self.op = CalcOperations.NO_OP
-        self.setup_ui()
+        self._setup_keymap()
+        self._setup_ui()
 
-    def setup_ui(self) -> None:
+    def _setup_ui(self) -> None:
         """Connect signals and startup components"""
-        self.ui.btnAC.clicked.connect(self._btn_ac_clicked)
-        self.ui.btnSignal.clicked.connect(self._btn_signal_clicked)
+        self.ui.btnAC.clicked.connect(self._btn_escape_clicked)
+        self.ui.btnSignal.clicked.connect(self._btn_period_clicked)
         self.ui.btnPercent.clicked.connect(self._btn_percent_clicked)
-        self.ui.btnDivision.clicked.connect(self._btn_division_clicked)
+        self.ui.btnDivision.clicked.connect(self._btn_slash_clicked)
         self.ui.btn7.clicked.connect(self._btn7_clicked)
         self.ui.btn8.clicked.connect(self._btn8_clicked)
         self.ui.btn9.clicked.connect(self._btn9_clicked)
-        self.ui.btnMultiplication.clicked.connect(self._btn_times_clicked)
+        self.ui.btnMultiplication.clicked.connect(self._btn_asterisk_clicked)
         self.ui.btn4.clicked.connect(self._btn4_clicked)
         self.ui.btn5.clicked.connect(self._btn5_clicked)
         self.ui.btn6.clicked.connect(self._btn6_clicked)
@@ -66,46 +66,40 @@ class MainQtView(QtView):
         self.ui.btnDecimal.clicked.connect(self._btn_comma_clicked)
         self.ui.btnDecimal.setText(self.dec_sep)
         self.ui.btnEqual.clicked.connect(self._btn_equal_clicked)
-        self.ui.frameMain.lineAdded.connect(self._key_pressed)
+        self.ui.frameMain.keyPressed.connect(self._key_pressed)
 
-    def _key_pressed(self, key_pressed: Qt.Key) -> None:
-        """TODO"""
-        if Qt.Key_1 == key_pressed:
-            self._btn1_clicked()
-        elif Qt.Key_2 == key_pressed:
-            self._btn2_clicked()
-        elif Qt.Key_3 == key_pressed:
-            self._btn3_clicked()
-        elif Qt.Key_4 == key_pressed:
-            self._btn4_clicked()
-        elif Qt.Key_5 == key_pressed:
-            self._btn5_clicked()
-        elif Qt.Key_6 == key_pressed:
-            self._btn6_clicked()
-        elif Qt.Key_7 == key_pressed:
-            self._btn7_clicked()
-        elif Qt.Key_8 == key_pressed:
-            self._btn8_clicked()
-        elif Qt.Key_9 == key_pressed:
-            self._btn9_clicked()
-        elif Qt.Key_0 == key_pressed:
-            self._btn0_clicked()
-        elif Qt.Key_Plus == key_pressed:
-            self._btn_plus_clicked()
-        elif Qt.Key_Minus == key_pressed:
-            self._btn_minus_clicked()
-        elif Qt.Key_Slash == key_pressed:
-            self._btn_division_clicked()
-        elif Qt.Key_Percent == key_pressed:
-            self._btn_percent_clicked()
-        elif key_pressed in [Qt.Key_Equal, Qt.Key_Return]:
-            self._btn_equal_clicked()
-        elif Qt.Key_Backspace == key_pressed:
-            self._remove_digit()
-        elif key_pressed in [Qt.Key_Period, Qt.Key_Comma]:
-            self._btn_signal_clicked()
-        elif Qt.Key_Escape == key_pressed:
-            self._btn_ac_clicked()
+    def _setup_keymap(self) -> None:
+        """Setup the main frame key map callbacks."""
+        self.keymap = {
+            Qt.Key_0: self._btn0_clicked,
+            Qt.Key_1: self._btn1_clicked,
+            Qt.Key_2: self._btn2_clicked,
+            Qt.Key_3: self._btn3_clicked,
+            Qt.Key_4: self._btn4_clicked,
+            Qt.Key_5: self._btn5_clicked,
+            Qt.Key_6: self._btn6_clicked,
+            Qt.Key_7: self._btn7_clicked,
+            Qt.Key_8: self._btn8_clicked,
+            Qt.Key_9: self._btn9_clicked,
+            Qt.Key_Plus: self._btn_plus_clicked,
+            Qt.Key_Minus: self._btn_minus_clicked,
+            Qt.Key_Slash: self._btn_slash_clicked,
+            Qt.Key_Asterisk: self._btn_asterisk_clicked,
+            Qt.Key_Percent: self._btn_percent_clicked,
+            Qt.Key_Equal: self._btn_equal_clicked,
+            Qt.Key_Return: self._btn_equal_clicked,
+            Qt.Key_Backspace: self._btn_backspace_clicked,
+            Qt.Key_Period: self._btn_period_clicked,
+            Qt.Key_Comma: self._btn_period_clicked,
+            Qt.Key_Escape: self._btn_escape_clicked,
+        }
+
+    def _key_pressed(self, key: Qt.Key) -> None:
+        """Invoked when a key is pressed under the main frame."""
+        callback = self.keymap.get(key, None)
+        if callback:
+            callback()
+
 
     def _display(self, value) -> None:
         future_digits = len(str(value)) if value else 0
@@ -138,10 +132,10 @@ class MainQtView(QtView):
             self.display_text += str(digit)
         self._display(self.display_text)
 
-    def _remove_digit(self) -> None:
+    def _btn_backspace_clicked(self) -> None:
         if self.display_text:
             if len(self.display_text) <= 1:
-                self._btn_ac_clicked()
+                self._btn_escape_clicked()
             else:
                 self.display_text = self.display_text[:-1]
                 self._display(self.display_text)
@@ -192,7 +186,7 @@ class MainQtView(QtView):
         self._soft_reset()
         self._blink_lcd()
 
-    def _btn_ac_clicked(self) -> None:
+    def _btn_escape_clicked(self) -> None:
         log.info("Clicked: AC")
         if self.memory_rec:
             self.memory_rec = 0
@@ -204,7 +198,7 @@ class MainQtView(QtView):
         self.display_text = ''
         self._blink_lcd()
 
-    def _btn_signal_clicked(self) -> None:
+    def _btn_period_clicked(self) -> None:
         log.info("Clicked: +-")
         self._display(self.ui.lcdDisplay.value() * -1)
         self.display_text = str(self.ui.lcdDisplay.value())
@@ -221,7 +215,7 @@ class MainQtView(QtView):
             self.display_text = str(self.ui.lcdDisplay.value())
             self.memory_rec = self.ui.lcdDisplay.value()
 
-    def _btn_division_clicked(self) -> None:
+    def _btn_slash_clicked(self) -> None:
         log.info("Clicked: /")
         self._change_op(CalcOperations.DIVISION)
 
@@ -237,7 +231,7 @@ class MainQtView(QtView):
         log.info("Clicked: 9")
         self._append_digit(9)
 
-    def _btn_times_clicked(self) -> None:
+    def _btn_asterisk_clicked(self) -> None:
         log.info("Clicked: x")
         self._change_op(CalcOperations.MULTIPLICATION)
 

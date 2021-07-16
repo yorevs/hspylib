@@ -57,12 +57,12 @@ class MenuItem(Menu, ABC):
     @abstractmethod
     def trigger_menu_item(self) -> Optional[Menu]:
         """TODO"""
-        pass
 
     def is_valid_option(self) -> bool:
         """TODO"""
         if not self.options or not self.selected:
             return False
-        elif self.selected.isdigit():
+        if self.selected.isdigit():
             return int(self.selected) in self.options
+
         return str(self.selected) in self.options

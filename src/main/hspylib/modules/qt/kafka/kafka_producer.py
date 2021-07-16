@@ -18,7 +18,7 @@ from time import sleep
 from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread
-from confluent_kafka.cimpl import Producer, KafkaError, Message
+from confluent_kafka.cimpl import Producer, KafkaError, Message  # pylint: disable=
 
 from hspylib.core.tools.commons import syserr
 

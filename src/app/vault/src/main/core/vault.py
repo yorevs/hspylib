@@ -20,6 +20,8 @@ import logging as log
 import os
 import uuid
 
+from cryptography.fernet import InvalidToken
+
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt
@@ -45,30 +47,36 @@ class Vault:
             vault_str += entry.key
         return vault_str
 
-    def open(self) -> None:
+    def open(self) -> bool:
         """Open and read the Vault file"""
         self.passphrase = self._read_passphrase()
         try:
             if not self.is_open:
                 self._unlock_vault()
                 log.debug("Vault open and unlocked")
-        except UnicodeDecodeError as err:
-            log.error("Authentication failure => {}".format(str(err)))
+        except (UnicodeDecodeError, InvalidToken) as err:
+            log.error("Authentication failure => %s", err)
             MenuUtils.print_error('Authentication failure')
+            return False
         except Exception as err:
             raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}", err) from err
 
-    def close(self) -> None:
+        return True
+
+    def close(self) -> bool:
         """Close the Vault file and cleanup temporary file_paths"""
         try:
             if self.is_open:
                 self._lock_vault()
                 log.debug("Vault closed and locked")
-        except UnicodeDecodeError as err:
-            log.error("Authentication failure => {}".format(str(err)))
+        except (UnicodeDecodeError, InvalidToken) as err:
+            log.error("Authentication failure => %s", err)
             MenuUtils.print_error('Authentication failure')
+            return False
         except Exception as err:
             raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file()}", err) from err
+
+        return True
 
     def list(self, filter_expr: str = None) -> None:
         """List all vault entries filtered by filter_expr
@@ -86,7 +94,7 @@ class Vault:
                 sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
             else:
                 sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
-        log.debug("Vault list issued. User={}".format(getpass.getuser()))
+        log.debug("Vault list issued. User=%s", getpass.getuser())
 
     def add(self, key: str, hint: str, password: str) -> None:
         """Add a vault entry
@@ -102,9 +110,9 @@ class Vault:
             self.service.save(entry)
             sysout("%GREEN%\n=== Entry added ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            log.error("Attempt to add to Vault failed for name={}".format(key))
+            log.error("Attempt to add to Vault failed for name=%s", key)
             syserr("### Entry specified by '{}' already exists in vault".format(key))
-        log.debug("Vault add issued. User={}".format(getpass.getuser()))
+        log.debug("Vault add issued. User=%s", getpass.getuser())
 
     def get(self, key) -> None:
         """Display the vault entry specified by name
@@ -114,9 +122,9 @@ class Vault:
         if entry:
             sysout("\n{}".format(entry.to_string(True, True)))
         else:
-            log.error("Attempt to get from Vault failed for name={}".format(key))
+            log.error("Attempt to get from Vault failed for name=%s", key)
             syserr("### No entry specified by '{}' was found in vault".format(key))
-        log.debug("Vault get issued. User={}".format(getpass.getuser()))
+        log.debug("Vault get issued. User=%s", getpass.getuser())
 
     def update(self, key, hint, password) -> None:
         """Update a vault entry
@@ -134,9 +142,9 @@ class Vault:
             self.service.save(upd_entry)
             sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            log.error("Attempt to update Vault failed for name={}".format(key))
+            log.error("Attempt to update Vault failed for name=%s", key)
             syserr("### No entry specified by '{}' was found in vault".format(key))
-        log.debug("Vault update issued. User={}".format(getpass.getuser()))
+        log.debug("Vault update issued. User=%s", getpass.getuser())
 
     def remove(self, key: str) -> None:
         """Remove a vault entry
@@ -147,9 +155,9 @@ class Vault:
             self.service.remove(entry)
             sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
         else:
-            log.error("Attempt to remove to Vault failed for name={}".format(key))
+            log.error("Attempt to remove to Vault failed for name=%s", key)
             syserr("### No entry specified by '{}' was found in vault".format(key))
-        log.debug("Vault remove issued. User={}".format(getpass.getuser()))
+        log.debug("Vault remove issued. User=%s", getpass.getuser())
 
     def _read_passphrase(self) -> str:
         """Retrieve and read the vault passphrase"""
@@ -175,7 +183,7 @@ class Vault:
                     safe_del_file(self.configs.vault_file())
                 else:
                     sysout("%GREEN%Passphrase successfully stored")
-                    log.debug("Vault passphrase created for user={}".format(self.configs.vault_user()))
+                    log.debug("Vault passphrase created for user=%s", self.configs.vault_user())
                     touch_file(self.configs.vault_file())
                     self.is_open = True
         return "{}:{}".format(self.configs.vault_user(), passphrase)

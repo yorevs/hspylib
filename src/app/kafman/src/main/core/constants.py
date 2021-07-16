@@ -12,14 +12,15 @@
 
    Copyright 2021, HSPyLib team
 """
-
 from abc import ABC
 
 from PyQt5.QtGui import QColor
 
 MAX_HISTORY_SIZE_BYTES = 250
 
+# pylint: disable=too-few-public-methods
 class StatusColor(ABC):
+    """TODO"""
     white = QColor('#FFFFFF')
     red = QColor('#FF0000')
     green = QColor('#00FF00')

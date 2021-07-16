@@ -1,5 +1,5 @@
 [MASTER]
-extension-pkg-whitelist=PyQt5
+extension-pkg-whitelist=PyQt5,confluent_kafka
 init-hook='import sys; sys.path.append("src/main"); sys.path.append("src/demo"); sys.path.append("src/app"); sys.path.append("src/test");'
 
 [TYPECHECK]
@@ -13,3 +13,10 @@ notes=FIXME,XXX,TODO
 
 [MESSAGES CONTROL]
 enable=useless-suppression
+disable=locally-disabled
+
+[DESIGN]
+max-attributes=15
+max-args=10
+max-statements=55
+min-public-methods=1

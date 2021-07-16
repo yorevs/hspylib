@@ -21,6 +21,7 @@ from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardIte
 
 
 class DashboardItemBuilder:
+    """TODO"""
     def __init__(self, parent: Any):
         self.parent = parent
         self.item = DashboardItem()

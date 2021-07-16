@@ -38,6 +38,6 @@ def rest_call(
     })
     log.info('Processing REST {all_headers} {method} -> {url}')
     response = fetch(url=url, method=method, headers=all_headers, body=data)
-    log.info(f"Response <=  Status: {response.status_code}  Payload: {response}")
+    log.info("Response <=  Status: %s  Payload: %s", response.status_code, response)
 
     return response

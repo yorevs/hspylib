@@ -90,10 +90,10 @@ class StreamCapturer(QThread):
 
         if self._capture_stderr:
             self._stderr_capturer = self.StderrWorker(self, stderr_poll_interval)
-            self._stderr_capturer.streamCaptured.connect(lambda msg: self.stderrCaptured.emit(msg))
+            self._stderr_capturer.streamCaptured.connect(self.stderrCaptured.emit)
         if self._capture_stdout:
             self._stdout_capturer = self.StdoutWorker(self, stdout_poll_interval)
-            self._stdout_capturer.streamCaptured.connect(lambda msg: self.stdoutCaptured.emit(msg))
+            self._stdout_capturer.streamCaptured.connect(self.stdoutCaptured.emit)
 
     def run(self) -> None:
 

@@ -51,6 +51,7 @@ class WidgetFree(Widget):
 
         return ExitCode.SUCCESS
 
+    # pylint: disable=too-many-locals
     @staticmethod
     def _report_usage():
         """TODO"""

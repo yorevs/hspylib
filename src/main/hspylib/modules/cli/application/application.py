@@ -45,7 +45,7 @@ class Application(metaclass=Singleton):
         :param clear_screen: Whether to clean the screen before execution or not
         """
         if frame is not None:
-            log.warning('Signal handler hooked signum={} frame={}'.format(signum, frame))
+            log.warning('Signal handler hooked signum=%d frame=%s', signum, frame)
             exit_code = 3
         else:
             log.info('Exit handler called')
@@ -88,7 +88,7 @@ class Application(metaclass=Singleton):
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
-        log.info('Run started {}'.format(datetime.now()))
+        log.info('Run started %s', datetime.now())
         try:
             atexit.register(self._cleanup)
             self._setup_parameters(*params, **kwargs)
@@ -98,7 +98,7 @@ class Application(metaclass=Singleton):
             self.usage(exit_code=1, no_exit=True)
             raise err  # Re-Raise the exception so upper level layers can catch
         finally:
-            log.info('Run finished {}'.format(datetime.now()))
+            log.info('Run finished %s', datetime.now())
 
     def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
         """Display the usage message and exit with the specified code ( or zero as default )

@@ -56,7 +56,7 @@ class WidgetSendMsg(Widget):
                                           contents sent instead.
 
     E.g:. send-msg.py -m "Hello" -p 12345 -a 0.0.0.0 -k 100 -i 500 -t 2
-""".format(str(VERSION), MAX_THREADS)
+""".format(MAX_THREADS)
 
     def __init__(self):
         super().__init__(
@@ -84,7 +84,7 @@ class WidgetSendMsg(Widget):
         if args and args[0] in ['-h', '--help']:
             sysout(self.usage())
             return ExitCode.SUCCESS
-        elif args and args[0] in ['-v', '--version']:
+        if args and args[0] in ['-v', '--version']:
             sysout(self.version())
             return ExitCode.SUCCESS
 
@@ -164,7 +164,7 @@ class WidgetSendMsg(Widget):
                 .label('Message') \
                 .validator(InputValidator.words()) \
                 .min_max_length(1, 40) \
-                .value(f"This is a test") \
+                .value('This is a test') \
                 .build() \
             .build()
         # @formatter:on

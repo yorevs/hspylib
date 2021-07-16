@@ -45,7 +45,7 @@ class HTableModel(QAbstractTableModel):
         self.headers = headers or self._headers_by_entity()
         self.cell_alignments = cell_alignments
         parent.setModel(self)
-        log.info('{} table_headers={}'.format(clazz.__class__.__name__, '|'.join(self.headers)))
+        log.info('%s table_headers=%s', clazz.__class__.__name__, '|'.join(self.headers))
 
     def row(self, index: QModelIndex) -> T:
         """TODO"""

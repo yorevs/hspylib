@@ -85,7 +85,9 @@ class WidgetManager(metaclass=Singleton):
         """Search and load all widgets from the widget lookup paths"""
         for path in self._lookup_paths:
             for root, _, files in os.walk(path):
-                filtered = list(filter(lambda p: p.startswith(WidgetEntry.WIDGET_MODULE_PREFIX) and p.endswith('py'), files))
+                filtered = list(filter(
+                    lambda p: p.startswith(WidgetEntry.WIDGET_MODULE_PREFIX) and p.endswith('py'), files
+                ))
                 widgets = list(map(lambda w: WidgetEntry(w, f"{root}/{w}"), filtered))  # pylint: disable=W0640
                 self._widgets.extend(widgets)
 

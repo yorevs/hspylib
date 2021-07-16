@@ -160,7 +160,7 @@ class MenuInput:
 
         # Print details about total/remaining field characters
         padding = 1 - len(str(self.max_detail_length / 2))
-        fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
+        fmt = '{:<3}{:>' + str(padding) + '}/{:<' + str(padding) + '} %MOD(0)%'
         if field.itype == InputType.SELECT:
             idx, _ = MInputUtils.get_selected(field.value)
             sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
@@ -170,6 +170,7 @@ class MenuInput:
         else:
             sysout(fmt.format(field.icon, field_size, field.max_length))
 
+    # pylint: disable=too-many-branches
     def _nav_input(self) -> chr:
         """TODO"""
 

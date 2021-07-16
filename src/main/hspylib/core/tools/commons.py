@@ -70,7 +70,8 @@ def log_init(
             format=filename,
             level=level,
             filemode=mode)
-        log.info(f"Logging started. filename={os.path.basename(log_file)} level={level} mode={mode} append={not create}")
+        log.info(
+            "Logger init. filename=%s level=%s mode=%s append=%s", os.path.basename(log_file), level, mode, not create)
 
     return os.path.exists(log_file)
 
@@ -93,7 +94,7 @@ def now_ms() -> int:
 def read_version(version_filepath: str = ".version") -> Tuple:
     """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
     try:
-        log.info(f"Reading version from {version_filepath}")
+        log.info("Reading version from %s", version_filepath)
         with open(version_filepath) as fh_version:
             ver = tuple(map(str.strip, fh_version.read().split('.')))
             return ver if ver else (0, 0, 0)

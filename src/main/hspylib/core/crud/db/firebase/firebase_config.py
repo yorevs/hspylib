@@ -90,7 +90,7 @@ UUID={}
         self.set_passphrase()
         self.project_uuid = str(self.project_uuid) if self.project_uuid else str(uuid.uuid4())
         assert self.validate_config(), "Your Firebase configuration is not valid"
-        log.debug(f'Successfully connected to Firebase: {self.base_url()}')
+        log.debug("Successfully connected to Firebase: %s", self.base_url())
 
     def __str__(self):
         return self.CONFIG_FORMAT.format(

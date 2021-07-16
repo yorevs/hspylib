@@ -53,7 +53,7 @@ class FirebaseRepository(CrudRepository):
         entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
-        log.debug('Inserting firebase entry: {} into: {}'.format(entity, url))
+        log.debug("Inserting firebase entry: %s into: %s", entity, url)
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -63,7 +63,7 @@ class FirebaseRepository(CrudRepository):
         """TODO"""
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
         payload = entity.to_json()
-        log.debug('Updating firebase entry: {} into: {}'.format(entity, url))
+        log.debug('Updating firebase entry: %s into: %s', entity, url)
         response = put(url, payload)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -72,7 +72,7 @@ class FirebaseRepository(CrudRepository):
     def delete(self, entity: CrudEntity) -> None:
         """TODO"""
         url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
-        log.debug('Deleting firebase entry: {} into: {}'.format(entity, url))
+        log.debug('Deleting firebase entry: %s into: %s', entity, url)
         response = delete(url)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -81,7 +81,7 @@ class FirebaseRepository(CrudRepository):
     def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
         """TODO"""
         url = '{}.json?orderBy="$key"'.format(self.config.base_url())
-        log.debug('Fetching firebase entries from {}'.format(url))
+        log.debug('Fetching firebase entries from %s', url)
         response = get(url)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
@@ -92,7 +92,7 @@ class FirebaseRepository(CrudRepository):
     def find_by_id(self, entity_id: str) -> Optional[CrudEntity]:
         """TODO"""
         url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.base_url(), entity_id)
-        log.debug('Fetching firebase entry entity_id={} from {}'.format(entity_id, url))
+        log.debug('Fetching firebase entry entity_id=%s from %s', entity_id, url)
         response = get(url)
         assert response, "Response is empty"
         if response.status_code != HttpCode.OK:
