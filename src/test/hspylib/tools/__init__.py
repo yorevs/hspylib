@@ -2,9 +2,9 @@
 #
 # HSPyLib v0.11.1
 #
-# Package: demo.calculator.ui.qt
+# Package: test.hspylib.tools
 """Package initialization."""
 
 __all__ = [
-  'views'
+  'test_preconditions'
 ]

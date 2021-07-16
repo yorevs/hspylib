@@ -40,10 +40,6 @@ class ProgrammingError(HSBaseException):
     of parameters specified, etc."""
 
 
-class InvalidArgumentError(HSBaseException):
-    """Raised when an invalid argument is received by the application"""
-
-
 class InvalidOptionError(HSBaseException):
     """Raised when an invalid option is received by the application"""
 
@@ -60,9 +56,18 @@ class WidgetExecutionError(HSBaseException):
     """Raised when widget failed to execute"""
 
 
+class KeyboardInputError(HSBaseException):
+    """Raised when an invalid keystroke input is provided """
+
+
 class InvalidInputError(Exception):
     """Raised when an invalid input is provided """
 
 
-class KeyboardInputError(HSBaseException):
-    """Raised when an invalid keystroke input is provided """
+class InvalidArgumentError(Exception):
+    """Raised when an invalid argument is received by the application"""
+
+
+class InvalidStateError(Exception):
+    """Raised when an invalid state is detected by the application"""
+
