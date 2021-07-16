@@ -8,5 +8,6 @@
 __all__ = [
   'core', 
   'modules', 
-  'shared'
+  'shared', 
+  'tools'
 ]
