@@ -36,6 +36,7 @@ class Argument:
         validation_regex: str = '.*',
         required: bool = True,
         next_in_chain: Any = None):
+
         self.name = name
         self.validation_regex = validation_regex
         self.required = required
@@ -43,7 +44,7 @@ class Argument:
         self.value = ''
 
     def __str__(self):
-        return "arg_nam: {}, validation_regex: {}, required: {}, value: {}, next: {}" \
+        return "arg_name: {}, val_regex: {}, required: {}, value: {}, next_in_chain => [{}]" \
             .format(self.name, self.validation_regex, self.required, self.value, self.next_in_chain)
 
     def __repr__(self):

@@ -8,6 +8,5 @@
 __all__ = [
   'dashboard_builder', 
   'dashboard_item', 
-  'dashboard_item_builder', 
   'mdashboard'
 ]

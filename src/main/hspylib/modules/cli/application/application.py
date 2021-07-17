@@ -205,7 +205,7 @@ class Application(metaclass=Singleton):
                     log.debug(str(err))
                     continue  # Log and try next argument in chain
             if not valid:
-                raise InvalidArgumentError(f"Invalid arguments  \"{', '.join(provided_args)}\"")
+                raise InvalidArgumentError(f"Invalid arguments [\"{', '.join(provided_args)}\"]")
 
     def _recursive_set(self, idx: int, argument: Argument, provided_args: List[str]) -> None:
         """ Try to set a value for each provided argument. If any failure setting occur, raise an exception to be caught

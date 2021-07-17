@@ -13,7 +13,6 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import sys
 from time import sleep
 from typing import List, Optional
@@ -44,6 +43,10 @@ class CFManager:
         'Stop',
         'Target',
     ]
+
+    @staticmethod
+    def _abort():
+        sys.exit(1)
 
     @staticmethod
     def _allow_multiple(action: str) -> bool:
@@ -107,21 +110,27 @@ class CFManager:
 
     def _select_endpoint(self) -> None:
         """Select the PCF endpoint to connect to"""
-        with open(f'{self.configs.resource_dir()}/api_endpoints.txt', 'r+') as f_hosts:
+        filename = f'{self.configs.resource_dir()}/api_endpoints.txt'
+        with open(filename, 'w+') as f_hosts:
             endpoints = list(map(lambda x: CFEndpoint(x.split(',')), f_hosts.readlines()))
-            selected = mselect(endpoints, title='Please select an endpoint')
-            if not selected:
-                sys.exit(0)
-            sysout(f'%GREEN%Connecting to endpoint: {selected}...')
-            try:
-                response = head(selected.host)
-                if response.status_code and HttpCode.OK:
-                    self.api = selected.host
-                else:
-                    syserr(f'Failed to connect to API ({response.status_code}): {selected}')
-                    sys.exit(0)
-            except Exception as err:
-                raise CFConnectionError(f'Failed to connect to API => {selected.host}') from err
+            if len(endpoints) > 0:
+                selected = mselect(endpoints, title='Please select an endpoint')
+                if not selected:
+                    self._abort()
+                sysout(f"%GREEN%Connecting to endpoint: {selected}...")
+                try:
+                    response = head(selected.host)
+                    if response.status_code and HttpCode.OK:
+                        self.api = selected.host
+                    else:
+                        syserr(f'Failed to connect to API ({response.status_code}): {selected}')
+                        self._abort()
+                except Exception as err:
+                    raise CFConnectionError(f'Failed to connect to API => {selected.host}') from err
+            else:
+                syserr(f"No endpoint yet configured. Please create the file {filename} "
+                       f"with at least one endpoint configured and try again.")
+                self._abort()
 
     def _require_credentials(self) -> None:
         """Promp the user for PCF credentials"""
@@ -136,7 +145,7 @@ class CFManager:
             self.username = result.username
             self.password = result.password
         else:
-            sys.exit(0)
+            self._abort()
 
     def _authorize(self) -> bool:
         """Send an authorization request to PCF"""
@@ -156,7 +165,7 @@ class CFManager:
                 raise CFExecutionError(f'Unable to retrieve organizations: => {self.cf.last_result}')
             self.org = mselect(orgs, title='Please select the organization')
             if not self.org:
-                sys.exit(1)
+                self._abort()
             else:
                 self._target()
 
@@ -169,7 +178,7 @@ class CFManager:
                 raise CFExecutionError(f'Unable to retrieve spaces: => {self.cf.last_result}')
             self.space = mselect(spaces, title='Please select a space')
             if not self.space:
-                sys.exit(1)
+                self._abort()
             else:
                 self._target()
 

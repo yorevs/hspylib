@@ -17,6 +17,7 @@
 import base64
 import getpass
 import uuid
+import logging as log
 
 from requests.structures import CaseInsensitiveDict
 
@@ -109,4 +110,4 @@ class AgentConfig(metaclass=Singleton):
         """Save current firebase configuration"""
         with open(self.config_file(), 'w') as f_config:
             f_config.write(str(self))
-            AppConfigs.INSTANCE.logger().tooltip("Firebase configuration saved !")
+            log.debug("Firebase configuration saved !")

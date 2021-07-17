@@ -85,4 +85,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('HSPyLib Cloud Foundry Manager').INSTANCE.run(sys.argv[1:])
+    Main('HSPyLib Versioner').INSTANCE.run(sys.argv[1:])

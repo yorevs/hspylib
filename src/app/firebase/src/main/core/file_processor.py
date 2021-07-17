@@ -76,11 +76,12 @@ class FileProcessor(ABC):
     def _decode_and_write(destination_dir: str, file_entries: List[dict]) -> None:
         """B64 decode and write entries to file"""
         for entry in file_entries:
-            FileEntry.of('{}/{}'.format(
-                destination_dir, os.path.basename(entry['path'])),
+            FileEntry.of(
+                '{}/{}'.format(destination_dir, os.path.basename(entry['path'])),
                 entry['data'],
                 entry['size']).save()
-            sysout(f"%GREEN%'{entry['path']}' successfully downloaded into '{destination_dir}'")
+        sysout('%GREEN%File(s) [\n\t{}\n] successfully downloaded into {}%NC%'
+            .format(', \n\t'.join(list(map(lambda e: e['path'], file_entries))), destination_dir))
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:
