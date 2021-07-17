@@ -80,7 +80,10 @@ class MenuSelect(ABC):
         length = len(self.items)
 
         # When only one option is provided, select the element at index 0 and return
-        if length <= 1:
+        if length == 0:
+            return None
+
+        if length == 1:
             return self.items[0]
 
         prepare_render(title, title_color)

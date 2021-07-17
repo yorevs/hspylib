@@ -53,10 +53,10 @@ class Main(Application):
             self._with_option('d', 'dest-dir', True)
             self._with_arguments(
                 ArgumentChain.builder()
-                    .when('operation', 'create')
+                    .when('operation', 'appman')
                         .require('app-name', '.+')
                         .require('app-type', '|'.join(AppType.values()))
-                        .accept('app-ext', '.+')
+                        .accept('app_ext', '.+')
                         .end()
                     .when('operation', 'widgets')
                         .accept('widget-name', '.+')
@@ -73,14 +73,14 @@ class Main(Application):
     def _exec_application(self) -> None:
         """Execute the application"""
         op = self.getarg('operation')
-        if op == 'create':
+        if op == 'appman':
             manager = AppManager(self)
             app_type = AppType.of_value(self.getarg('app-type'))
-            extensions = self.getarg('app-ext').split(',') if self.getarg('app-ext') else []
+            app_ext = self.getarg('app_ext').split(',') if self.getarg('app_ext') else []
             manager.create(
                 self.getarg('app-name'),
                 app_type,
-                list(map(AppExtension.value_of, extensions)),
+                list(map(AppExtension.value_of, app_ext)),
                 self.getopt('dest-dir') or run_dir())
         elif op == 'widgets':
             manager = WidgetManager(self)

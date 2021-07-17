@@ -66,7 +66,7 @@ class MainQtView(QtView):
         self._consumer.messageConsumed.connect(self._message_consumed)
         self._producer = KafkaProducer()
         self._producer.messageProduced.connect(self._message_produced)
-        self._all_settings = None
+        self._all_settings = {}
         self._stats = KafkaStatistics()
         self._stats.statisticsReported.connect(self._update_stats)
         self._stats.start()
@@ -76,6 +76,8 @@ class MainQtView(QtView):
         self._display_text(f"Application started at {now()}<br/>{'-' * 45}<br/>")
         self.setup_ui()
         self._load_history()
+        list(map(self.ui.lst_cons_settings.set_item, self._all_settings['consumer']))
+        list(map(self.ui.lst_prod_settings.set_item, self._all_settings['producer']))
         atexit.register(self._save_history)
         atexit.register(self._capturer.quit)
         self._capturer.start()
@@ -193,7 +195,7 @@ class MainQtView(QtView):
                     self._all_settings[ktype][setting] = edt.text()
                     self._display_text(f"{ktype.capitalize()} setting '{setting}' saved")
                 else:
-                    edt.setText(self._all_settings[ktype][setting])
+                    self._all_settings[ktype][setting] = ''
             else:
                 setting = old_setting
                 edt.setText(self._all_settings[ktype][setting])
@@ -227,7 +229,7 @@ class MainQtView(QtView):
                 self.ui.cmb_cons_topics.set_item(topic or new_topic)
                 self.ui.cmb_cons_topics.setEditText('')
 
-    def _del_topic(self, is_producer: bool = True):
+    def _del_topic(self, is_producer: bool = True) -> None:
         """Delete a topic to the combo box."""
         if is_producer:
             current_text = self.ui.cmb_prod_topics.currentText()
@@ -240,7 +242,7 @@ class MainQtView(QtView):
                 self._display_text(f"Topic {current_text} removed from consumer")
                 self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
 
-    def _toggle_start_producer(self):
+    def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
         started = self._producer.is_started()
         settings = self._settings()
@@ -268,7 +270,7 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_connect.setStyleSheet(
             'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
 
-    def _toggle_start_consumer(self):
+    def _toggle_start_consumer(self) -> None:
         """Start/Stop the consumer."""
         started = self._consumer.is_started()
         settings = self._settings()

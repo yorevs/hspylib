@@ -15,6 +15,7 @@
 """
 
 import base64
+import binascii
 import getpass
 import logging as log
 import os
@@ -49,12 +50,12 @@ class Vault:
 
     def open(self) -> bool:
         """Open and read the Vault file"""
-        self.passphrase = self._read_passphrase()
         try:
+            self.passphrase = self._read_passphrase()
             if not self.is_open:
                 self._unlock_vault()
                 log.debug("Vault open and unlocked")
-        except (UnicodeDecodeError, InvalidToken) as err:
+        except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
             log.error("Authentication failure => %s", err)
             MenuUtils.print_error('Authentication failure')
             return False
@@ -84,9 +85,9 @@ class Vault:
         """
         data = self.service.list(filter_expr)
         if len(data) > 0:
-            sysout("%YELLOW%{} {}%NC%"
-                   .format("\n=== Listing all vault entries",
-                           "matching \'{}\' ===\n".format(filter_expr) if filter_expr else "===\n"))
+            sysout("%YELLOW%{} {}%NC%".format(
+                "\n=== Listing all vault entries",
+                "matching \'{}\' ===\n".format(filter_expr) if filter_expr else "===\n"))
             for entry in data:
                 sysout(entry.to_string())
         else:
@@ -172,7 +173,7 @@ class Vault:
         if passphrase:
             return "{}:{}".format(self.configs.vault_user(), base64.b64decode(passphrase).decode("utf-8"))
 
-        while not passphrase and not confirm_flag:
+        while not passphrase:
             passphrase = getpass.getpass("Enter passphrase:").strip()
             confirm = None
             if passphrase and confirm_flag:

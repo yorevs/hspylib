@@ -27,6 +27,13 @@ class DashboardItem:
         icon: Awesome = None,
         tooltip: str = None,
         on_trigger: Callable = None):
+
         self.icon = icon
         self.tooltip = tooltip
         self.on_trigger = on_trigger
+
+    def __str__(self):
+        return f"{self.icon} \"{self.tooltip}\" -> {self.on_trigger}"
+
+    def __repr__(self):
+        return str(self)

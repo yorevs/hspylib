@@ -13,7 +13,8 @@
 
    Copyright 2021, HSPyLib team
 """
-from typing import List, Optional
+import typing
+from typing import List, Optional, Union
 
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget
@@ -48,14 +49,12 @@ class HListWidget(QListWidget):
         super().addItem(item)
         self._items.append(item)
 
-    def set_item(self, item: str) -> None:
+    def set_item(self, item: str, flags: Union[Qt.ItemFlags, Qt.ItemFlag] = None) -> None:
         """TODO"""
         if not self.findItems(item, Qt.MatchFixedString):
-            item = QListWidgetItem(item)
-            prev = self.item(self.count() - 1)
-            if prev:
-                item.setFlags(prev.flags())
-            self.addItem(item)
+            w_item = QListWidgetItem(item)
+            w_item.setFlags(flags or Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
+            self.addItem(w_item)
 
     def del_item(self, index: int) -> None:
         """TODO"""
