@@ -73,9 +73,7 @@ class WidgetManager(metaclass=Singleton):
             for widget_entry in self._widgets:
                 widget = self._find_widget(widget_entry.name)
                 item = DashboardItem(
-                    widget.icon(),
-                    f"{widget.name()} v{widget.version()}: {widget.tooltip()}",
-                    widget.execute)
+                    widget.icon(), f"{widget.name()} v{widget.version()}: {widget.tooltip()}", widget.execute)
                 items.append(item)
             check_state(len(items) > 0, "No widgets found from: {}", str(self._lookup_paths))
             mdashboard(items, 6, 'Please select a widget to execute')
