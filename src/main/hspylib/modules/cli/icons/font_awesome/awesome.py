@@ -16,7 +16,7 @@
 
 import struct
 
-from idna.core import unicode
+from pyparsing import unicode
 
 from hspylib.core.enums.enumeration import Enumeration
 

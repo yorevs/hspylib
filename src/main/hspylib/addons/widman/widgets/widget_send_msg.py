@@ -101,13 +101,13 @@ class WidgetSendMsg(Widget):
         self.interval = self.args.interval or 1
         self.threads = self.args.threads or 1
 
-        if self.args.value and os.path.isfile(self.args.value):
-            file_size = os.stat(self.args.value).st_size
-            sysout(f"Reading contents from file: {self.args.value} ({file_size}) [Bs] instead")
-            with open(self.args.value, 'r') as f_msg:
+        if self.args.message and os.path.isfile(self.args.message):
+            file_size = os.stat(self.args.message).st_size
+            sysout(f"Reading contents from file: {self.args.message} ({file_size}) [Bs] instead")
+            with open(self.args.message, 'r') as f_msg:
                 self.message = f_msg.read()
         else:
-            self.message = self.args.value or f"This is a {self.args.net_type} test"
+            self.message = self.args.message or f"This is a {self.args.net_type} test"
 
         self._start_send()
 
@@ -162,7 +162,7 @@ class WidgetSendMsg(Widget):
                 .build() \
             .field() \
                 .label('Message') \
-                .validator(InputValidator.words()) \
+                .validator(InputValidator.anything()) \
                 .min_max_length(1, 40) \
                 .value('This is a test') \
                 .build() \
