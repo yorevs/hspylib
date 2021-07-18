@@ -24,6 +24,7 @@ class KafkaMessage:
         partition: int = None,
         offset: int = None,
         value: str = None):
+
         self.timestamp = timestamp
         self.topic = topic
         self.partition = partition

@@ -15,7 +15,6 @@
 
 import io
 import logging as log
-import sys
 from contextlib import redirect_stdout, redirect_stderr
 from time import sleep
 
@@ -49,7 +48,6 @@ class StreamCapturer(QThread):
                     if output and output != '':
                         log.debug(output)
                         self.streamCaptured.emit(output)
-                        print(output, file=sys.__stdout__)
                         buf.truncate(0)
                     sleep(self._poll_interval)
 
@@ -71,7 +69,6 @@ class StreamCapturer(QThread):
                     if output and output != '':
                         log.error(output)
                         self.streamCaptured.emit(output)
-                        print(output, file=sys.__stderr__)
                         buf.truncate(0)
                     sleep(self._poll_interval)
 
@@ -97,7 +94,6 @@ class StreamCapturer(QThread):
             self._stdout_capturer.streamCaptured.connect(self.stdoutCaptured.emit)
 
     def run(self) -> None:
-
         if self._capture_stderr:
             self._stderr_capturer.start()
         if self._capture_stdout:

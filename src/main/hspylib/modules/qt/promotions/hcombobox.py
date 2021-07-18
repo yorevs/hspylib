@@ -22,3 +22,11 @@ class HComboBox(QComboBox):
         """TODO"""
         if self.findText(item) < 0:
             self.addItem(item)
+
+    def del_item(self, index: int = -1) -> None:
+        """TODO"""
+        if index < 0 or index >= self.count():
+            if self.currentIndex() >= 0:
+                super().removeItem(self.currentIndex())
+        else:
+            super().removeItem(index)

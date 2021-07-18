@@ -19,6 +19,7 @@ from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from confluent_kafka.cimpl import Consumer
+from hspylib.modules.qt.kafka.avro_schema import AvroSchema
 
 from hspylib.core.tools.commons import syserr
 
@@ -28,13 +29,15 @@ from hspylib.core.tools.commons import syserr
 class KafkaConsumer(QThread):
     """TODO"""
 
-    messageConsumed = pyqtSignal(str, int, int, bytes)
+    plainMessageConsumed = pyqtSignal(str, int, int, bytes)
+    avroMessageConsumed = pyqtSignal(str, int, int, bytes)
 
     def __init__(self, poll_interval: float = 0.5):
         super().__init__()
         self.setObjectName('kafka-consumer')
         self._started = False
         self._poll_interval = poll_interval
+        self._schema = None
         self._consumer = None
         self._worker_thread = None
         self.start()
@@ -49,6 +52,10 @@ class KafkaConsumer(QThread):
         """Stop the Kafka consumer agent"""
         if self._consumer is not None:
             self._started = False
+            del self._consumer
+            self._consumer = None
+            self._worker_thread = None
+            self._schema = None
 
     def consume(self, topics: List[str]) -> None:
         """Start the consumer thread"""
@@ -58,7 +65,10 @@ class KafkaConsumer(QThread):
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
 
-    def is_started(self):
+    def set_schema(self, schema: AvroSchema) -> None:
+        self._schema = schema
+
+    def is_started(self) -> bool:
         """Whether the consumer is started or not"""
         return self._started
 
@@ -77,9 +87,13 @@ class KafkaConsumer(QThread):
                 if message.error():
                     syserr(f"An error occurred consuming from Kafka: {message.error().str()}")
                 else:
-                    self.messageConsumed.emit(
-                        message.topic(), message.partition(), message.offset(), message.value()
-                    )
+                    if not self._schema:
+                        self.plainMessageConsumed.emit(
+                            message.topic(), message.partition(), message.offset(), message.value())
+                    else:
+                        self.avroMessageConsumed.emit(
+                            message.topic(), message.partition(), message.offset(),
+                            self._schema.decode(message.value()))
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")
         finally:

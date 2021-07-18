@@ -1,0 +1,19 @@
+{
+  "namespace": "example.avro",
+  "type": "record",
+  "name": "FullName",
+  "fields": [
+    {
+      "name": "first",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "last",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ]
+}
