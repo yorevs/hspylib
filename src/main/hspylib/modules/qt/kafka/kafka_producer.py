@@ -15,24 +15,29 @@
 
 import threading
 from time import sleep
-from typing import List
+from typing import List, Any
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from avro.io import AvroTypeException
-from confluent_kafka.cimpl import Producer, KafkaError, Message  # pylint: disable=
+from confluent_kafka import SerializingProducer
+from confluent_kafka.cimpl import KafkaError, Message
 
-from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
-from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 
 
 # Example at: # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
 # For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-class KafkaProducer(QThread):
-    """TODO"""
+from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
+from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 
-    plainMessageProduced = pyqtSignal(str, int, int, bytes)
-    avroMessageProduced = pyqtSignal(str, int, int, bytes)
+
+class KafkaProducer(QThread):
+    """Confluent Kafka Producer with Qt.
+       Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_producer.py
+    """
+
+    messageProduced = pyqtSignal(str, int, int, str)
+    messageFailed = pyqtSignal(str, int, int, str)
 
     def __init__(self, poll_interval: float = 0.5, flush_timeout: int = 30):
         super().__init__()
@@ -40,15 +45,19 @@ class KafkaProducer(QThread):
         self._started = False
         self._poll_interval = poll_interval
         self._flush_timeout = flush_timeout
-        self._schema = None
         self._producer = None
         self._worker_thread = None
+        self._schema = None
         self.start()
 
-    def start_producer(self, settings: dict) -> None:
+    def start_producer(self, settings: dict, schema: KafkaSchema = KafkaPlainSchema()) -> None:
         """Start the producer"""
         if self._producer is None:
-            self._producer = Producer(settings)
+            self._schema = schema
+            producer_conf = {}
+            producer_conf.update(settings)
+            producer_conf.update(schema.serializer_settings())
+            self._producer = SerializingProducer(settings)
             self._started = True
 
     def stop_producer(self) -> None:
@@ -70,9 +79,6 @@ class KafkaProducer(QThread):
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
 
-    def set_schema(self, schema: KafkaAvroSchema) -> None:
-        self._schema = schema
-
     def is_started(self) -> bool:
         """Whether the producer is started or not."""
         return self._started
@@ -91,18 +97,14 @@ class KafkaProducer(QThread):
         if self._producer:
             self._producer.purge()
 
-    def _produce(self, topics: List[str], messages: List[str]) -> None:
+    def _produce(self, topics: List[str], messages: List[Any]) -> None:
         """Produce message to topic."""
         for topic in topics:
             for msg in messages:
                 try:
                     if msg:
-                        if not self._schema:
-                            encoded_msg = msg.encode(Charset.ISO8859_1.value)
-                            self._producer.produce(topic, encoded_msg, callback=self._cb_plain_message_produced)
-                        else:
-                            encoded_msg = self._schema.encode(msg)
-                            self._producer.produce(topic, encoded_msg, callback=self._cb_avro_message_produced)
+                        self._producer.produce(
+                            topic=topic, key=self._schema.key(), value=msg, on_delivery=self._cb_message_produced)
                     self._producer.poll(self._poll_interval)
                 except KeyboardInterrupt:
                     syserr("Keyboard interrupted")
@@ -112,18 +114,11 @@ class KafkaProducer(QThread):
                 finally:
                     self._producer.flush(self._flush_timeout)
 
-    def _cb_plain_message_produced(self, err: KafkaError, message: Message) -> None:
+    def _cb_message_produced(self, err: KafkaError, message: Message) -> None:
         """Delivery report handler called on successful or failed delivery of message"""
         if err is not None:
-            syserr(f"Failed to deliver PLAIN message: {err}")
+            self.messageFailed.emit(
+                message.topic(), message.partition(), message.offset(), str(message.value()))
         else:
-            self.plainMessageProduced.emit(
-                message.topic(), message.partition(), message.offset(), message.value())
-
-    def _cb_avro_message_produced(self, err: KafkaError, message: Message) -> None:
-        """Delivery report handler called on successful or failed delivery of an avro schema message"""
-        if err is not None:
-            syserr(f"Failed to deliver AVRO message: {err}")
-        else:
-            self.avroMessageProduced.emit(
-                message.topic(), message.partition(), message.offset(), self._schema.decode(message.value()))
+            self.messageProduced.emit(
+                message.topic(), message.partition(), message.offset(), str(message.value()))

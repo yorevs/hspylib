@@ -26,7 +26,6 @@ from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QFileDialog
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
@@ -36,11 +35,13 @@ from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
 from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
 from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
+from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 from hspylib.modules.qt.kafka.schemas.kafka_json_schema import KafkaJsonSchema
+from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
+from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
-from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
 
@@ -76,11 +77,9 @@ class MainQtView(QtView):
         self.configs = AppConfigs.INSTANCE
         self._started = False
         self._consumer = KafkaConsumer()
-        self._consumer.plainMessageConsumed.connect(self._message_consumed)
-        self._consumer.avroMessageConsumed.connect(self._message_consumed)
+        self._consumer.messageConsumed.connect(self._message_consumed)
         self._producer = KafkaProducer()
-        self._producer.plainMessageProduced.connect(self._message_produced)
-        self._producer.avroMessageProduced.connect(self._message_produced)
+        self._producer.messageProduced.connect(self._message_produced)
         self._all_settings = {}
         self._last_dir = './src/main/resources/schemas'
         self._all_schemas = defaultdict(None, {})
@@ -183,10 +182,10 @@ class MainQtView(QtView):
         msgs = self.ui.txt_producer.toPlainText().split('\n')
         return list(filter(lambda m: m != '', msgs))
 
-    def _schema(self) -> Optional[KafkaAvroSchema]:
+    def _schema(self) -> KafkaSchema:
         """Return the selected AVRO schema"""
         sel_schema = self.ui.cmb_avro_schema.currentText()
-        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else None
+        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
 
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
@@ -321,10 +320,9 @@ class MainQtView(QtView):
             self._add_topic()
             topics = self._topics(True)
             if topics:
-                schema_name = f" using AVRO schema \"{self._schema().get_name()}\"" if self._schema() else ''
+                schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
                 self.ui.tool_box.setCurrentIndex(2)
-                self._producer.set_schema(self._schema())
-                self._producer.start_producer(settings)
+                self._producer.start_producer(settings, self._schema())
                 self._display_text(f"Started producing to topics {topics}{schema_name}", StatusColor.green)
             else:
                 self._display_error('Must subscribe to at least one topic')
@@ -351,10 +349,9 @@ class MainQtView(QtView):
             self._add_topic(is_producer=False)
             topics = self._topics(False)
             if topics:
-                schema_name = f" using AVRO schema \"{self._schema().get_name()}\"" if self._schema() else ''
+                schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
                 self.ui.tool_box.setCurrentIndex(2)
-                self._consumer.set_schema(self._schema())
-                self._consumer.start_consumer(settings)
+                self._consumer.start_consumer(settings, self._schema())
                 self._consumer.consume(topics)
                 self._display_text(f"Started consuming from topics {topics}{schema_name}", StatusColor.green)
             else:
@@ -405,17 +402,17 @@ class MainQtView(QtView):
         self.ui.lbl_stats_consumed_ps.setText(str(consumed_in_a_tick))
         self.ui.lbl_stats_consumed_avg.setText(str(average_consumed))
 
-    def _message_produced(self, topic: str, partition: int, offset: int, value: bytes) -> None:
+    def _message_produced(self, topic: str, partition: int, offset: int, value: str) -> None:
         """Callback when a kafka message has been produced."""
-        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_1.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value)
         text = f"-> Produced {row}"
         self._console_print(text, StatusColor.blue)
         self._stats.report_produced()
         self._display_text(f"Produced {self._stats.get_in_a_tick()[0]} messages to Kafka", StatusColor.blue, False)
 
-    def _message_consumed(self, topic: str, partition: int, offset: int, value: bytes) -> None:
+    def _message_consumed(self, topic: str, partition: int, offset: int, value: str) -> None:
         """Callback when a kafka message has been consumed."""
-        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_1.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value)
         text = f"-> Consumed {row}"
         self.ui.tbl_consumer.model().push_data([row])
         self._console_print(text, StatusColor.orange)

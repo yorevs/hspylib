@@ -1,15 +1,3 @@
-import json
-from collections import defaultdict
-from io import BytesIO
-from typing import Any, List
-
-import avro.schema
-from avro.io import DatumReader, BinaryDecoder, DatumWriter, BinaryEncoder
-
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import file_is_not_empty
-from hspylib.core.tools.preconditions import check_state
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -24,35 +12,43 @@ from hspylib.core.tools.preconditions import check_state
 
    Copyright 2021, HSPyLib team
 """
+import json
+from collections import defaultdict
+from typing import Any, List
 
-class KafkaAvroSchema:
+from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
+from confluent_kafka.serialization import StringSerializer, StringDeserializer
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import file_is_not_empty
+from hspylib.core.tools.preconditions import check_state
+from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
+
+
+class KafkaAvroSchema(KafkaSchema):
     """Apache AVRO schema serializer/deserializer
        documentation: https://avro.apache.org/docs/current/gettingstartedpython.html
     """
 
-    @staticmethod
-    def extensions() -> List[str]:
+    @classmethod
+    def extensions(cls) -> List[str]:
         return ['*.avsc']
 
-    @staticmethod
-    def supports(file_extension: str) -> bool:
+    @classmethod
+    def supports(cls, file_extension: str) -> bool:
         """TODO"""
         return f"*{file_extension}" in KafkaAvroSchema.extensions()
 
     def __init__(self, filepath: str, charset: Charset = Charset.ISO8859_1):
-        self._filepath = filepath
+        super().__init__(filepath, charset)
         check_state(file_is_not_empty(filepath))
         with open(filepath, 'r') as f_schema:
-            schema_content = f_schema.read()
-            self._content = defaultdict(None, json.loads(schema_content))
+            self._schema_str = f_schema.read()
+            self._content = defaultdict(None, json.loads(self._schema_str))
             self._type = self._content['type']
             self._namespace = self._content['namespace']
             self._name = self._content['name']
             self._fields = self._content['fields']
-            self._schema = avro.schema.parse(schema_content)
-            self._reader = DatumReader(self._schema)
-            self._writer = DatumWriter(self._schema)
-            self._charset = charset
 
     def __str__(self):
         return f"type={self._type},  namespace={self._namespace},  name={self._name},  fields={len(self._fields)}"
@@ -60,24 +56,19 @@ class KafkaAvroSchema:
     def __repr__(self):
         return str(self)
 
-    def decode(self, raw_bytes: bytes) -> bytes:
+    def serializer_settings(self) -> dict:
         """TODO"""
-        bytes_writer = BytesIO(raw_bytes)
-        decoder = BinaryDecoder(bytes_writer)
-        datum = self._reader.read(decoder)
-        return str(datum).encode(self._charset.value)
+        return {
+            'key.serializer': StringSerializer(self._charset.value),
+            'value.serializer': AvroSerializer(self._schema_str, self._schema_str, self.to_dict)
+        }
 
-    def encode(self, msg_value: str) -> bytes:
+    def deserializer_settings(self) -> dict:
         """TODO"""
-        datum = json.loads(msg_value)
-        bytes_writer = BytesIO()
-        encoder = BinaryEncoder(bytes_writer)
-        self._writer.write(datum, encoder)
-        bytes_writer.flush()
-        return bytes_writer.getvalue()
-
-    def get_charset(self) -> str:
-        return self._charset.value
+        return {
+            'key.deserializer': StringDeserializer(self._charset.value),
+            'value.deserializer': AvroDeserializer(self._schema_str, self._schema_str, self.from_dict)
+        }
 
     def get_field_names(self) -> List[str]:
         return [f['name'] for f in self._fields]
@@ -85,11 +76,8 @@ class KafkaAvroSchema:
     def get_field_types(self) -> List[str]:
         return [f['type'] for f in self._fields]
 
-    def get_content(self) -> str:
+    def get_content(self) -> defaultdict:
         return self._content
-
-    def get_filepath(self) -> str:
-        return self._filepath
 
     def get_type(self) -> str:
         return self._type

@@ -1,7 +1,8 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Product",
   "type": "object",
+  "description": "A Confluent Kafka Product",
   "properties": {
     "brand": {
       "type": "string"
