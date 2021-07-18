@@ -36,10 +36,11 @@ from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
 from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
 from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
+from hspylib.modules.qt.kafka.schemas.kafka_json_schema import KafkaJsonSchema
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
-from hspylib.modules.qt.kafka.avro_schema import AvroSchema
+from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
 
@@ -60,6 +61,14 @@ class MainQtView(QtView):
         SETTINGS = 0
         STRATEGY = 1
         STATISTICS = 2
+
+    @staticmethod
+    def supported_schemas() -> str:
+        """TODO"""
+        schemas = []
+        schemas.extend(KafkaAvroSchema.extensions())
+        schemas.extend(KafkaJsonSchema.extensions())
+        return ' '.join(schemas)
 
     def __init__(self):
         # Must come after the initialization above
@@ -174,7 +183,7 @@ class MainQtView(QtView):
         msgs = self.ui.txt_producer.toPlainText().split('\n')
         return list(filter(lambda m: m != '', msgs))
 
-    def _schema(self) -> Optional[AvroSchema]:
+    def _schema(self) -> Optional[KafkaAvroSchema]:
         """Return the selected AVRO schema"""
         sel_schema = self.ui.cmb_avro_schema.currentText()
         return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else None
@@ -190,13 +199,24 @@ class MainQtView(QtView):
         """Select an AVRO schema from the file picker dialog or from specified file"""
         if not file_tuple:
             file_tuple = QFileDialog.getOpenFileName(
-                self.ui.splitter_pane, 'Open AVRO schema', self._last_dir or '.', "AVRO schema files (*.avsc)")
+                self.ui.splitter_pane,
+                'Open schema', self._last_dir or '.', f"Schema files ({self.supported_schemas()})")
         if file_tuple and file_tuple[0]:
-            avro_schema = AvroSchema(file_tuple[0])
-            self._all_schemas[avro_schema.get_name()] = avro_schema
-            self.ui.cmb_avro_schema.set_item(avro_schema.get_name())
-            self.ui.cmb_avro_schema.setCurrentText(avro_schema.get_name())
-            self._display_text(f"AVRO schema added \"{str(avro_schema)}\"")
+            f_name, f_ext = os.path.splitext(file_tuple[0])
+            if KafkaAvroSchema.supports(f_ext):
+                avro_schema = KafkaAvroSchema(file_tuple[0])
+                self._all_schemas[avro_schema.get_name()] = avro_schema
+                self.ui.cmb_avro_schema.set_item(avro_schema.get_name())
+                self.ui.cmb_avro_schema.setCurrentText(avro_schema.get_name())
+                self._display_text(f"AVRO schema added \"{str(avro_schema)}\"")
+            elif KafkaJsonSchema.supports(f_ext):
+                json_schema = KafkaJsonSchema(file_tuple[0])
+                self._all_schemas[json_schema.get_title()] = json_schema
+                self.ui.cmb_avro_schema.set_item(json_schema.get_title())
+                self.ui.cmb_avro_schema.setCurrentText(json_schema.get_title())
+                self._display_text(f"JSON schema added \"{str(json_schema)}\"")
+            else:
+                self._display_error(f"Unsupported schema extension \"{f_ext}\"")
             self._last_dir = dirname(file_tuple[0])
 
     def _deselect_schema(self):
@@ -387,7 +407,7 @@ class MainQtView(QtView):
 
     def _message_produced(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been produced."""
-        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_2.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_1.value))
         text = f"-> Produced {row}"
         self._console_print(text, StatusColor.blue)
         self._stats.report_produced()
@@ -395,7 +415,7 @@ class MainQtView(QtView):
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been consumed."""
-        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_2.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_1.value))
         text = f"-> Consumed {row}"
         self.ui.tbl_consumer.model().push_data([row])
         self._console_print(text, StatusColor.orange)

@@ -75,6 +75,7 @@ class Charset(Enumeration):
     ISO2022_JP_EXT = 'ISO2022-JP_EXT'
     ISO2022_KR = 'ISO2022-KR'
     LATIN_1 = 'LATIN-1'
+    ISO8859_1 = 'ISO8859_1'
     ISO8859_2 = 'ISO8859_2'
     ISO8859_3 = 'ISO8859-3'
     ISO8859_4 = 'ISO8859-4'
