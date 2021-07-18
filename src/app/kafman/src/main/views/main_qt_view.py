@@ -31,6 +31,8 @@ from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirna
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.qt.kafka.ConsumerConfig import ConsumerConfig
+from hspylib.modules.qt.kafka.ProducerConfig import ProducerConfig
 from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
 from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
@@ -78,8 +80,10 @@ class MainQtView(QtView):
         self._started = False
         self._consumer = KafkaConsumer()
         self._consumer.messageConsumed.connect(self._message_consumed)
+        self._consumer.messageFailed.connect(self._display_error)
         self._producer = KafkaProducer()
         self._producer.messageProduced.connect(self._message_produced)
+        self._producer.messageFailed.connect(self._display_error)
         self._all_settings = {}
         self._last_dir = './src/main/resources/schemas'
         self._all_schemas = defaultdict(None, {})
@@ -374,7 +378,7 @@ class MainQtView(QtView):
             self._producer.produce(topics, messages)
             self.ui.txt_producer.clear()
 
-    def _display_error(self, message: str, add_console: bool = False) -> None:
+    def _display_error(self, message: str, add_console: bool = True) -> None:
         """Display an error at the status bar (and console if required)"""
         self._display_text(message, StatusColor.red, add_console)
 
@@ -494,17 +498,15 @@ class MainQtView(QtView):
             self._add_topic('foobar', False)
             self._all_settings = {
                 'producer': {
-                    'bootstrap.servers': 'localhost:9092',
+                    ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
                 },
                 'consumer': {
-                    'bootstrap.servers': 'localhost:9092',
-                    'group.id': 'kafka_test_group',
-                    'client.id': 'client-1',
-                    'enable.auto.commit': True,
-                    'session.timeout.ms': 6000,
-                    'default.topic.config': {
-                        'auto.offset.reset': 'smallest'
-                    }
+                    ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
+                    ConsumerConfig.GROUP_ID: 'kafka_test_group',
+                    ConsumerConfig.CLIENT_ID: 'client-1',
+                    ConsumerConfig.ENABLE_AUTO_COMMIT: True,
+                    ConsumerConfig.SESSION_TIMEOUT_MS: 6000,
+                    ConsumerConfig.AUTO_OFFSET_RESET: 'earliest'
                 }
             }
             self._activate_tab()

@@ -37,7 +37,7 @@ class KafkaProducer(QThread):
     """
 
     messageProduced = pyqtSignal(str, int, int, str)
-    messageFailed = pyqtSignal(str, int, int, str)
+    messageFailed = pyqtSignal(str)
 
     def __init__(self, poll_interval: float = 0.5, flush_timeout: int = 30):
         super().__init__()
@@ -57,7 +57,7 @@ class KafkaProducer(QThread):
             producer_conf = {}
             producer_conf.update(settings)
             producer_conf.update(schema.serializer_settings())
-            self._producer = SerializingProducer(settings)
+            self._producer = SerializingProducer(producer_conf)
             self._started = True
 
     def stop_producer(self) -> None:
@@ -71,7 +71,7 @@ class KafkaProducer(QThread):
             self._worker_thread = None
             self._schema = None
 
-    def produce(self, topics: List[str], messages: List[str]) -> None:
+    def produce(self, topics: List[Any], messages: List[str]) -> None:
         """Create a worker thread to produce the messages to the specified topics."""
         if self._started and self._producer is not None:
             self._worker_thread = threading.Thread(target=self._produce, args=(topics, messages,))
@@ -114,11 +114,10 @@ class KafkaProducer(QThread):
                 finally:
                     self._producer.flush(self._flush_timeout)
 
-    def _cb_message_produced(self, err: KafkaError, message: Message) -> None:
+    def _cb_message_produced(self, error: KafkaError, message: Message) -> None:
         """Delivery report handler called on successful or failed delivery of message"""
-        if err is not None:
-            self.messageFailed.emit(
-                message.topic(), message.partition(), message.offset(), str(message.value()))
+        if error is not None:
+            self.messageFailed.emit(str(error))
         else:
             self.messageProduced.emit(
                 message.topic(), message.partition(), message.offset(), str(message.value()))

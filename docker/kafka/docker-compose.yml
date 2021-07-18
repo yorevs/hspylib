@@ -3,7 +3,7 @@ version: '3.9'
 services:
   zookeeper:
     container_name: zookeeper
-    image: zookeeper:latest
+    image: confluentinc/cp-zookeeper:latest
     restart: on-failure
     healthcheck:
       test: echo stat | nc localhost 2181
@@ -26,28 +26,28 @@ services:
 
   kafka:
     container_name: kafka
-    image: wurstmeister/kafka:latest
+    image: confluentinc/cp-kafka:latest
     restart: on-failure
     healthcheck:
-      test: ["CMD", "nc", "-vz", "localhost:9092"]
+      test: ["CMD", "nc", "-vz", "localhost", "9092"]
+      interval: 10s
+      timeout: 60s
+      retries: 3
     depends_on:
       zookeeper:
         condition: service_healthy
-    environment:
-      JMX_PORT: 9093
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_HOST_NAME: localhost
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_LOG_RETENTION_HOURS: 1
-      KAFKA_MESSAGE_MAX_BYTES: 10000000
-      KAFKA_REPLICA_FETCH_MAX_BYTES: 10000000
-      KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
-      KAFKA_NUM_PARTITIONS: 1
-      KAFKA_DELETE_RETENTION_MS: 1000
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - 9092:9092
       - 9093:9093
+    environment:
+      KAFKA_BROKER_ID: 1
+      JMX_PORT: 9093
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_NUM_PARTITIONS: 1
     volumes:
       - kafka-data:/var/lib/kafka:rw
     networks:
@@ -55,12 +55,17 @@ services:
 
   kafka-manager:
     container_name: kafka-manager
-    image: hlebalbau/kafka-manager:latest
+    image: radarbase/kafka-manager:latest
     restart: on-failure
+    healthcheck:
+      test: ["CMD", "wget", "-O", '-', 'localhost:9000/kafkamanager/api/health']
+      interval: 10s
+      timeout: 60s
+      retries: 3
     depends_on:
-      kafka:
-        condition: service_healthy
       zookeeper:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     command: -Dconfig.file=conf/application.conf -Dapplication.home=bin/kafkamanager
     environment:
@@ -71,10 +76,29 @@ services:
     networks:
       - esnet
 
+  kafka-schema-registry:
+    container_name: kafka-schema-registry
+    image: confluentinc/cp-schema-registry:latest
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "localhost:8081/subjects" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    networks:
+      - esnet
+
 volumes:
-  kafka-data:
-    driver: local
   zookeeper-data:
+    driver: local
+  kafka-data:
     driver: local
 
 networks:

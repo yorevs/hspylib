@@ -22,7 +22,7 @@ getStatus() {
 waitHealthy() {
   local status
   status=$(getHealth "$1")
-  echo -en '\033[0;34m ⠿ Waiting container to become healthy '
+  echo -en "\033[0;34m ⠿ Waiting container(s) \"$1\" to become healthy "
   while [ "${status}" != "\"healthy\"" ]; do
     if [[ "${status}" == "\"unhealthy\"" ]]; then
       echo -e '\033[0;31m⠿ [Failed]\033[0;0;0m\n'

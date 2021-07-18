@@ -2,6 +2,7 @@
   "namespace": "example.avro",
   "type": "record",
   "name": "Employee",
+  "doc" : "Represents an Employee at a company",
   "fields": [
     {
       "name": "name",
