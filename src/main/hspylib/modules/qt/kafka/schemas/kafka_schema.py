@@ -19,6 +19,7 @@ from typing import List, Any
 from uuid import uuid4
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import new_dynamic_object
 
 
 class KafkaSchema(ABC):
@@ -37,12 +38,12 @@ class KafkaSchema(ABC):
     @classmethod
     def to_dict(cls, obj: Any, ctx) -> dict:
         """TODO"""
-        pass
+        return {}
 
     @classmethod
     def from_dict(cls, obj: dict, ctx) -> Any:
         """TODO"""
-        pass
+        return new_dynamic_object('KafkaSchemaObject')
 
     @classmethod
     def key(cls) -> str:

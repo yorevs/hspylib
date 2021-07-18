@@ -2,10 +2,15 @@
   "namespace": "example.avro",
   "type": "record",
   "name": "FullName",
+  "doc" : "Represents a full User name",
   "fields": [
     {
+      "default": null,
       "name": "first",
-      "type": "string"
+      "type": [
+        "null",
+        "string"
+      ]
     },
     {
       "default": null,

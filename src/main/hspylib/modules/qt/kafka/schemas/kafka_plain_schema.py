@@ -28,10 +28,7 @@ class KafkaPlainSchema(KafkaSchema):
         super().__init__(charset=charset)
 
     def __str__(self):
-        return f"name=StringSerializer,  type=plaintext"
-
-    def __repr__(self):
-        return str(self)
+        return f"[PLAIN] type=plaintext"
 
     def serializer_settings(self) -> dict:
         """TODO"""

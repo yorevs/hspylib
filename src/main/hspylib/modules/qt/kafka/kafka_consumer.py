@@ -19,6 +19,7 @@ from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from confluent_kafka import DeserializingConsumer
+from confluent_kafka.error import ValueDeserializationError
 
 from hspylib.core.tools.commons import syserr
 
@@ -35,7 +36,7 @@ class KafkaConsumer(QThread):
     """
 
     messageConsumed = pyqtSignal(str, int, int, str)
-    messageFailed = pyqtSignal(str, int, int, str)
+    messageFailed = pyqtSignal(str)
 
     def __init__(self, poll_interval: float = 0.5):
         super().__init__()
@@ -84,15 +85,17 @@ class KafkaConsumer(QThread):
         try:
             self._consumer.subscribe(topics)
             while self._started and self._consumer is not None:
-                message = self._consumer.poll(self._poll_interval)
-                if message is None:
-                    continue
-                if message.error():
-                    self.messageFailed.emit(
-                        message.topic(), message.partition(), message.offset(), str(message.value()))
-                else:
-                    self.messageConsumed.emit(
-                        message.topic(), message.partition(), message.offset(), str(message.value()))
+                try:
+                    message = self._consumer.poll(self._poll_interval)
+                    if message is None:
+                        continue
+                    if message.error():
+                        self.messageFailed.emit(str(message.error()))
+                    else:
+                        self.messageConsumed.emit(
+                            message.topic(), message.partition(), message.offset(), str(message.value()))
+                except ValueDeserializationError as err:
+                    self.messageFailed.emit(str(err))
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")
         finally:
