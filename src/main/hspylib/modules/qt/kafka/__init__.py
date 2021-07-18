@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
+  'avro_schema', 
   'kafka_consumer', 
   'kafka_message', 
   'kafka_producer', 

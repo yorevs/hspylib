@@ -29,7 +29,7 @@ class FormIcons(Awesome):
     ARROW_RIGHT = u'\uF061'    # 
     ARROW_UP = u'\uF062'       # 
     ARROW_DOWN = u'\uF063'     # 
-    SELECTOR = u'\uFC32'        #ﰲ
+    SELECTOR = u'\uFC32'       # ﰲ
 
     CHECK = u'\uF00C'          # 
     ERROR = u'\uf057'          # 

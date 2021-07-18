@@ -15,17 +15,20 @@
 
 import ast
 import atexit
+import json
 import os
 import re
-from typing import List, Optional
+from collections import defaultdict
+from typing import List, Optional, Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
+from PyQt5.QtWidgets import QFileDialog
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import run_dir, now, now_ms, read_version
+from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -36,6 +39,7 @@ from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
+from hspylib.modules.qt.kafka.avro_schema import AvroSchema
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
 
@@ -63,10 +67,14 @@ class MainQtView(QtView):
         self.configs = AppConfigs.INSTANCE
         self._started = False
         self._consumer = KafkaConsumer()
-        self._consumer.messageConsumed.connect(self._message_consumed)
+        self._consumer.plainMessageConsumed.connect(self._message_consumed)
+        self._consumer.avroMessageConsumed.connect(self._message_consumed)
         self._producer = KafkaProducer()
-        self._producer.messageProduced.connect(self._message_produced)
+        self._producer.plainMessageProduced.connect(self._message_produced)
+        self._producer.avroMessageProduced.connect(self._message_produced)
         self._all_settings = {}
+        self._last_dir = './src/main/resources/schemas'
+        self._all_schemas = defaultdict(None, {})
         self._stats = KafkaStatistics()
         self._stats.statisticsReported.connect(self._update_stats)
         self._stats.start()
@@ -87,11 +95,19 @@ class MainQtView(QtView):
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
         self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
         self.window.resize(1024, 768)
+        # General controls
         self.ui.splitter_pane.setSizes([350, 824])
         self.ui.tool_box.setCurrentIndex(self.Tools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.lbl_status_text.set_elidable(True)
+        self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
+        self.ui.tbtn_sel_schema.clicked.connect(self._add_schema)
+        self.ui.tbtn_desel_schema.setText(FormIcons.ERROR.value)
+        self.ui.tbtn_desel_schema.clicked.connect(self._deselect_schema)
+        self.ui.tbtn_del_schema.setText(FormIcons.MINUS.value)
+        self.ui.tbtn_del_schema.released.connect(self.ui.cmb_avro_schema.del_item)
+        self.ui.cmb_avro_schema.currentTextChanged.connect(self._change_schema)
         # Producer controls
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
@@ -158,12 +174,43 @@ class MainQtView(QtView):
         msgs = self.ui.txt_producer.toPlainText().split('\n')
         return list(filter(lambda m: m != '', msgs))
 
+    def _schema(self) -> Optional[AvroSchema]:
+        """Return the selected AVRO schema"""
+        sel_schema = self.ui.cmb_avro_schema.currentText()
+        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else None
+
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
         index = index if index is not None else self.ui.tab_widget.currentIndex()
         self.ui.tab_widget.setCurrentIndex(index)
         self.ui.stk_settings.setCurrentIndex(index)
         self.ui.stk_statistics.setCurrentIndex(index)
+
+    def _add_schema(self, file_tuple: Tuple[str, str] = None) -> None:
+        """Select an AVRO schema from the file picker dialog or from specified file"""
+        if not file_tuple:
+            file_tuple = QFileDialog.getOpenFileName(
+                self.ui.splitter_pane, 'Open AVRO schema', self._last_dir or '.', "AVRO schema files (*.avsc)")
+        if file_tuple and file_tuple[0]:
+            avro_schema = AvroSchema(file_tuple[0])
+            self._all_schemas[avro_schema.get_name()] = avro_schema
+            self.ui.cmb_avro_schema.set_item(avro_schema.get_name())
+            self.ui.cmb_avro_schema.setCurrentText(avro_schema.get_name())
+            self._display_text(f"AVRO schema added \"{str(avro_schema)}\"")
+            self._last_dir = dirname(file_tuple[0])
+
+    def _deselect_schema(self):
+        """Deselect current selected AVRO schema"""
+        self.ui.cmb_avro_schema.setCurrentIndex(-1)
+
+    def _change_schema(self, schema_name: str):
+        """Change the current AVRO schema text content"""
+        if schema_name:
+            content = self._all_schemas[schema_name].get_content()
+            self.ui.txt_avro_schema.setText(json.dumps(content, indent=2, sort_keys=False))
+        else:
+            self.ui.txt_avro_schema.setText('')
+            self.ui.cmb_avro_schema.setCurrentIndex(-1)
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""
@@ -254,9 +301,11 @@ class MainQtView(QtView):
             self._add_topic()
             topics = self._topics(True)
             if topics:
+                schema_name = f" using AVRO schema \"{self._schema().get_name()}\"" if self._schema() else ''
                 self.ui.tool_box.setCurrentIndex(2)
+                self._producer.set_schema(self._schema())
                 self._producer.start_producer(settings)
-                self._display_text(f"Started producing to topics {topics}", StatusColor.green)
+                self._display_text(f"Started producing to topics {topics}{schema_name}", StatusColor.green)
             else:
                 self._display_error('Must subscribe to at least one topic')
                 return
@@ -282,10 +331,12 @@ class MainQtView(QtView):
             self._add_topic(is_producer=False)
             topics = self._topics(False)
             if topics:
+                schema_name = f" using AVRO schema \"{self._schema().get_name()}\"" if self._schema() else ''
                 self.ui.tool_box.setCurrentIndex(2)
+                self._consumer.set_schema(self._schema())
                 self._consumer.start_consumer(settings)
                 self._consumer.consume(topics)
-                self._display_text(f"Started consuming from topics {topics}", StatusColor.green)
+                self._display_text(f"Started consuming from topics {topics}{schema_name}", StatusColor.green)
             else:
                 self._display_error('Must subscribe to at least one topic')
                 return
@@ -336,7 +387,7 @@ class MainQtView(QtView):
 
     def _message_produced(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been produced."""
-        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_2.value))
         text = f"-> Produced {row}"
         self._console_print(text, StatusColor.blue)
         self._stats.report_produced()
@@ -344,7 +395,7 @@ class MainQtView(QtView):
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: bytes) -> None:
         """Callback when a kafka message has been consumed."""
-        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.UTF_8.value))
+        row = KafkaMessage(now_ms(), topic, partition, offset, value.decode(Charset.ISO8859_2.value))
         text = f"-> Consumed {row}"
         self.ui.tbl_consumer.model().push_data([row])
         self._console_print(text, StatusColor.orange)
@@ -367,14 +418,21 @@ class MainQtView(QtView):
         with open(self.HISTORY_FILE, 'w') as fd_history:
             prod_topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
             cons_topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
-            wsize = self.window.width(), self.window.height()
-            ssize = self.ui.splitter_pane.sizes()[0], self.ui.splitter_pane.sizes()[1]
-            fd_history.write(f"splitter_sizes = {str(ssize)}\n")
-            fd_history.write(f"window_size = {str(wsize)}\n")
+            schemas = [
+                self._all_schemas[self.ui.cmb_avro_schema.itemText(i)].get_filepath()
+                for i in range(self.ui.cmb_avro_schema.count())
+            ]
+            w_size = self.window.width(), self.window.height()
+            s_size = self.ui.splitter_pane.sizes()[0], self.ui.splitter_pane.sizes()[1]
+            fd_history.write(f"splitter_sizes = {str(s_size)}\n")
+            fd_history.write(f"window_size = {str(w_size)}\n")
             fd_history.write(f"prod_topics = {prod_topics}\n")
             fd_history.write(f"cons_topics = {cons_topics}\n")
             fd_history.write(f"settings = {str(self._all_settings)}\n")
             fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
+            fd_history.write(f"last_dir = {self._last_dir}\n")
+            fd_history.write(f"schemas = {schemas}\n")
+            fd_history.write(f"last_schema = {self.ui.cmb_avro_schema.currentText()}\n")
 
     def _load_history(self):
         """Load a previously saved app history."""
@@ -404,6 +462,13 @@ class MainQtView(QtView):
                                 self._activate_tab(int(prop_value))
                             except ValueError:
                                 self._activate_tab(self.Tabs.PRODUCER.value)
+                        elif prop_name == 'last_dir':
+                            self._last_dir = prop_value
+                        elif prop_name == 'schemas':
+                            list(map(lambda s: self._add_schema((s, '')) , ast.literal_eval(prop_value)))
+                            self._deselect_schema()
+                        elif prop_name == 'last_schema':
+                            self.ui.cmb_avro_schema.setCurrentText(prop_value)
 
         else:
             # Defaults
