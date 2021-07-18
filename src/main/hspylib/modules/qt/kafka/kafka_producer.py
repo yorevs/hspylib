@@ -22,9 +22,8 @@ from avro.io import AvroTypeException
 from confluent_kafka.cimpl import Producer, KafkaError, Message  # pylint: disable=
 
 from hspylib.core.enums.charset import Charset
-from hspylib.modules.qt.kafka.avro_schema import AvroSchema
-
 from hspylib.core.tools.commons import syserr
+from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 
 
 # Example at: # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
@@ -71,7 +70,7 @@ class KafkaProducer(QThread):
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
 
-    def set_schema(self, schema: AvroSchema) -> None:
+    def set_schema(self, schema: KafkaAvroSchema) -> None:
         self._schema = schema
 
     def is_started(self) -> bool:
@@ -94,23 +93,24 @@ class KafkaProducer(QThread):
 
     def _produce(self, topics: List[str], messages: List[str]) -> None:
         """Produce message to topic."""
-        try:
-            for topic in topics:
-                for msg in messages:
+        for topic in topics:
+            for msg in messages:
+                try:
                     if msg:
                         if not self._schema:
-                            encoded_msg = msg.encode(Charset.CP1250.value)
+                            encoded_msg = msg.encode(Charset.ISO8859_1.value)
                             self._producer.produce(topic, encoded_msg, callback=self._cb_plain_message_produced)
                         else:
                             encoded_msg = self._schema.encode(msg)
                             self._producer.produce(topic, encoded_msg, callback=self._cb_avro_message_produced)
-                self._producer.poll(self._poll_interval)
-        except KeyboardInterrupt:
-            syserr("Keyboard interrupted")
-        except AvroTypeException as err:
-            syserr(str(err))
-        finally:
-            self._producer.flush(self._flush_timeout)
+                    self._producer.poll(self._poll_interval)
+                except KeyboardInterrupt:
+                    syserr("Keyboard interrupted")
+                except (AvroTypeException, ValueError) as err:
+                    syserr(f"Invalid input, discarding record => {str(err)}")
+                    continue
+                finally:
+                    self._producer.flush(self._flush_timeout)
 
     def _cb_plain_message_produced(self, err: KafkaError, message: Message) -> None:
         """Delivery report handler called on successful or failed delivery of message"""

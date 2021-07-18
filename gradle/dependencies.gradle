@@ -20,5 +20,6 @@ project.ext.deps = [
   'pylint',
   'confluent-kafka',
   'avro-python3',
+  'jsonschema',
   'pyperclip',
 ]

@@ -19,7 +19,7 @@ from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from confluent_kafka.cimpl import Consumer
-from hspylib.modules.qt.kafka.avro_schema import AvroSchema
+from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 
 from hspylib.core.tools.commons import syserr
 
@@ -65,7 +65,7 @@ class KafkaConsumer(QThread):
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
 
-    def set_schema(self, schema: AvroSchema) -> None:
+    def set_schema(self, schema: KafkaAvroSchema) -> None:
         self._schema = schema
 
     def is_started(self) -> bool:
