@@ -18,34 +18,41 @@ from time import sleep
 from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread
-from confluent_kafka.cimpl import Consumer
-from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
+from confluent_kafka import DeserializingConsumer
 
 from hspylib.core.tools.commons import syserr
 
 
 # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
 # For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-class KafkaConsumer(QThread):
-    """TODO"""
+from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
+from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 
-    plainMessageConsumed = pyqtSignal(str, int, int, bytes)
-    avroMessageConsumed = pyqtSignal(str, int, int, bytes)
+
+class KafkaConsumer(QThread):
+    """Confluent Kafka Consumer with Qt.
+       Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_consumer.py
+    """
+
+    messageConsumed = pyqtSignal(str, int, int, str)
+    messageFailed = pyqtSignal(str, int, int, str)
 
     def __init__(self, poll_interval: float = 0.5):
         super().__init__()
         self.setObjectName('kafka-consumer')
         self._started = False
         self._poll_interval = poll_interval
-        self._schema = None
         self._consumer = None
         self._worker_thread = None
         self.start()
 
-    def start_consumer(self, settings: dict) -> None:
+    def start_consumer(self, settings: dict, schema: KafkaSchema = KafkaPlainSchema()) -> None:
         """Start the Kafka consumer agent"""
         if self._consumer is None:
-            self._consumer = Consumer(settings)
+            consumer_conf = {}
+            consumer_conf.update(settings)
+            consumer_conf.update(schema.deserializer_settings())
+            self._consumer = DeserializingConsumer(consumer_conf)
             self._started = True
 
     def stop_consumer(self) -> None:
@@ -55,7 +62,6 @@ class KafkaConsumer(QThread):
             del self._consumer
             self._consumer = None
             self._worker_thread = None
-            self._schema = None
 
     def consume(self, topics: List[str]) -> None:
         """Start the consumer thread"""
@@ -64,9 +70,6 @@ class KafkaConsumer(QThread):
             self._worker_thread.name = f"kafka-consumer-worker-{hash(self)}"
             self._worker_thread.setDaemon(True)
             self._worker_thread.start()
-
-    def set_schema(self, schema: KafkaAvroSchema) -> None:
-        self._schema = schema
 
     def is_started(self) -> bool:
         """Whether the consumer is started or not"""
@@ -85,15 +88,11 @@ class KafkaConsumer(QThread):
                 if message is None:
                     continue
                 if message.error():
-                    syserr(f"An error occurred consuming from Kafka: {message.error().str()}")
+                    self.messageFailed.emit(
+                        message.topic(), message.partition(), message.offset(), str(message.value()))
                 else:
-                    if not self._schema:
-                        self.plainMessageConsumed.emit(
-                            message.topic(), message.partition(), message.offset(), message.value())
-                    else:
-                        self.avroMessageConsumed.emit(
-                            message.topic(), message.partition(), message.offset(),
-                            self._schema.decode(message.value()))
+                    self.messageConsumed.emit(
+                        message.topic(), message.partition(), message.offset(), str(message.value()))
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")
         finally:

@@ -19,6 +19,7 @@ project.ext.deps = [
   'bumpversion',
   'pylint',
   'confluent-kafka',
+  'fastavro',
   'avro-python3',
   'jsonschema',
   'pyperclip',
