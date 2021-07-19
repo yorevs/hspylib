@@ -1,0 +1,3 @@
+Fullname: {"first":"Hugo","last":"Junior"}
+Employee: {"name":"Hugo","age":42,"salary":5000}
+ Product: {"brand":"Gap","product":"Jacket"}

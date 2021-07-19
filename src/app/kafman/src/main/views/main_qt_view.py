@@ -498,10 +498,10 @@ class MainQtView(QtView):
             self._add_topic('foobar', False)
             self._all_settings = {
                 'producer': {
-                    ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
+                    ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:29092',
                 },
                 'consumer': {
-                    ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
+                    ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:29092',
                     ConsumerConfig.GROUP_ID: 'kafka_test_group',
                     ConsumerConfig.CLIENT_ID: 'client-1',
                     ConsumerConfig.ENABLE_AUTO_COMMIT: True,

@@ -21,6 +21,7 @@ from PyQt5.QtCore import pyqtSignal, QThread
 from avro.io import AvroTypeException
 from confluent_kafka import SerializingProducer
 from confluent_kafka.cimpl import KafkaError, Message
+from confluent_kafka.error import ValueSerializationError
 
 from hspylib.core.tools.commons import syserr
 
@@ -108,7 +109,7 @@ class KafkaProducer(QThread):
                     self._producer.poll(self._poll_interval)
                 except KeyboardInterrupt:
                     syserr("Keyboard interrupted")
-                except (AvroTypeException, ValueError) as err:
+                except (AvroTypeException, ValueError, ValueSerializationError) as err:
                     syserr(f"Invalid input, discarding record => {str(err)}")
                     continue
                 finally:

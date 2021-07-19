@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-source "docker-tools.sh"
+source "docker-tools-inc.sh"
 
+pushd 'composes/' &> /dev/null || exit 1
 ALL_CONTAINERS=${ALL_CONTAINERS:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
+popd &> /dev/null || exit 1
 
-# @purpose: Start all docker containers
+# @purpose: Start all docker-compose.yml
 # -param $1: if the execution is on an interactive console or not
 startContainers() {
   all=()
@@ -18,13 +20,16 @@ startContainers() {
   done
   echo ''
 
+  [[ "${#all[@]}" -gt 0 ]] && timeout $$ 300
+
   for container in ${all[*]}; do
-    status=$(getStatus "${container}")
-    if [ "${status}" = "\"running\"" ]; then
-      echo -e "\033[0;34m⠿ Container \"${container}\" is already up\033[0;0;0m"
+    status=$(getHealth "${container}")
+    if [[ "${status}" == "\"healthy\"" ]]; then
+      echo -e "\033[0;93m⠿ Container \"${container}\" is already up\033[0;0;0m"
     else
-      echo -e "\033[0;34m⠿ Starting container ${container} \033[0;0;0m"
-      pushd "${container}" &>/dev/null || exit 1
+      echo -e "\033[0;34m⠿ Container ${container} is ${status}"
+      echo -e "⠿ Starting container ${container} \033[0;0;0m"
+      pushd "composes/${container}" &>/dev/null || exit 1
       if docker compose up --force-recreate --build --remove-orphans --detach; then
         waitHealthy "${container}"
         echo ''

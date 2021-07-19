@@ -51,7 +51,7 @@ task findContainers(type: Task) {
   group = 'Docker'
   description = 'Test'
   doLast {
-    def dockerDir = "${rootProject.projectDir}/docker"
+    def dockerDir = "${rootProject.projectDir}/docker/composes"
     def dockerFiles = filesByPattern("${dockerDir}", /.*docker-compose\.ya?ml$/)
     dockerFiles.each { File file ->
       project.ext.containers << file.getParentFile().getName()
