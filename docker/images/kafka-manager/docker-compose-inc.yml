@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  kafka-manager:
+    container_name: kafka-manager
+    image: yorevs/hhs-kafka-manager:latest
+    hostname: kafka_manager
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://localhost:9000" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka-broker:
+        condition: service_healthy
+    command: -Dconfig.file=conf/application.conf -Dapplication.home=bin/kafkamanager
+    ports:
+      - "9000:9000"
+    environment:
+      ZK_HOSTS: zookeeper
+      APPLICATION_SECRET: letmein
+    networks:
+      - esnet

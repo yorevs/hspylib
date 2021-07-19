@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  kafka-schema-registry:
+    container_name: kafka-schema-registry
+    image: yorevs/hhs-schema-registry:5.4.0
+    hostname: schema_registry
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://127.0.0.1:8081/subjects" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka-broker:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka_broker:9092"
+      SCHEMA_REGISTRY_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      SCHEMA_REGISTRY_HOST_NAME: schema_registry
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+    networks:
+      - esnet

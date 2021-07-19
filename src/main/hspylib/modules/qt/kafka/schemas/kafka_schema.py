@@ -18,6 +18,8 @@ from collections import defaultdict
 from typing import List, Any
 from uuid import uuid4
 
+from confluent_kafka.serialization import SerializationContext
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
 
@@ -36,14 +38,14 @@ class KafkaSchema(ABC):
         return f"*{file_extension}" in cls.extensions()
 
     @classmethod
-    def to_dict(cls, obj: Any, ctx) -> dict:
+    def to_dict(cls, obj: str, ctx: SerializationContext) -> dict:
         """TODO"""
         return {}
 
     @classmethod
-    def from_dict(cls, obj: dict, ctx) -> Any:
+    def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:
         """TODO"""
-        return new_dynamic_object('KafkaSchemaObject')
+        return str(new_dynamic_object('KafkaSchemaObject'))
 
     @classmethod
     def key(cls) -> str:

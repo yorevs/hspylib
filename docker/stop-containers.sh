@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-source "docker-tools.sh"
+source "docker-tools-inc.sh"
 
-ALL_CONTAINERS=${ALL_CONTAINERS:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
+ALL_CONTAINERS=${ALL_CONTAINERS:-$(find composes -maxdepth 1 ! -path . -type d | cut -c3-)}
 
-# @purpose: Stop and remove all docker containers
+# @purpose: Stop all docker-compose.yml
 # -param $1: if the execution is on an interactive console or not
 stopContainers() {
   all=()

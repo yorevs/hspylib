@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  kafka-control-center:
+    image: yorevs/hhs-cp-enterprise-control-center:5.4.0
+    container_name: kafka-control-center
+    hostname: control_center
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://localhost:9021" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka-broker:
+        condition: service_healthy
+      kafka-schema-registry:
+        condition: service_healthy
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka_broker:9092"
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "schema_registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+    networks:
+      - esnet
