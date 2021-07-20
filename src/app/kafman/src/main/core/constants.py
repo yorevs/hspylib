@@ -23,8 +23,8 @@ MAX_HISTORY_SIZE_BYTES = 250
 class StatusColor(ABC):
     """TODO"""
     white = QColor('#FFFFFF')
-    red = QColor('#FF0000')
-    green = QColor('#00FF00')
-    yellow = QColor('#FFFF00')
+    red = QColor('#FF554D')
+    green = QColor('#28C941')
+    yellow = QColor('#FEBE2F')
     blue = QColor('#2380FA')
     orange = QColor('#FF8C36')
