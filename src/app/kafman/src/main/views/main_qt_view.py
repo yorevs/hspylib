@@ -18,6 +18,7 @@ import atexit
 import json
 import os
 import re
+import logging as log
 from collections import defaultdict
 from typing import List, Optional, Tuple
 
@@ -49,31 +50,32 @@ from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 
 
 class MainQtView(QtView):
-    """TODO"""
+    """Main application view"""
     VERSION = read_version(f"{run_dir()}/.version")
-    HISTORY_FILE = f"{run_dir()}/resources/kafman-history.txt"
+    HISTORY_FILE = f"{run_dir()}/resources/.kafman-history.properties"
+    INITIAL_SCHEMA_DIR = f"{run_dir()}/resources/schemas"
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
     class Tabs(Enumeration):
-        """TODO"""
+        """TabWidget indexes"""
         PRODUCER = 0
         CONSUMER = 1
         CONSOLE = 2
 
     class StkTools(Enumeration):
-        """TODO"""
+        """StackedPane Widget 'Tools' indexes"""
         SETTINGS = 0
         SCHEMAS = 1
         STATISTICS = 2
 
     class StkProducerEdit(Enumeration):
-        """TODO"""
+        """StackedPane Widget 'ProducerEdit' indexes"""
         TEXT = 0
         FORM = 1
 
     @staticmethod
     def supported_schemas() -> str:
-        """TODO"""
+        """Return a list of the supported serialization schemas"""
         schemas = []
         schemas.extend(KafkaAvroSchema.extensions())
         schemas.extend(KafkaJsonSchema.extensions())
@@ -91,7 +93,7 @@ class MainQtView(QtView):
         self._producer.messageProduced.connect(self._message_produced)
         self._producer.messageFailed.connect(self._display_error)
         self._all_settings = {}
-        self._last_dir = './src/main/resources/schemas'
+        self._last_schema_dir = self.INITIAL_SCHEMA_DIR
         self._all_schemas = defaultdict(None, {})
         self._stats = KafkaStatistics()
         self._stats.statisticsReported.connect(self._update_stats)
@@ -100,7 +102,7 @@ class MainQtView(QtView):
         self._capturer.stderrCaptured.connect(self._console_print_err)
         self._capturer.stdoutCaptured.connect(self._console_print)
         self._display_text(f"Application started at {now()}<br/>{'-' * 45}<br/>")
-        self.setup_ui()
+        self._setup_ui()
         self._load_history()
         list(map(self.ui.lst_cons_settings.set_item, self._all_settings['consumer']))
         list(map(self.ui.lst_prod_settings.set_item, self._all_settings['producer']))
@@ -108,7 +110,7 @@ class MainQtView(QtView):
         atexit.register(self._capturer.quit)
         self._capturer.start()
 
-    def setup_ui(self) -> None:
+    def _setup_ui(self) -> None:
         """Connect signals and startup components"""
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
         self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
@@ -215,7 +217,7 @@ class MainQtView(QtView):
         if not file_tuple:
             file_tuple = QFileDialog.getOpenFileName(
                 self.ui.splitter_pane,
-                'Open schema', self._last_dir or '.', f"Schema files ({self.supported_schemas()})")
+                'Open schema', self._last_schema_dir or '.', f"Schema files ({self.supported_schemas()})")
         if file_tuple and file_tuple[0]:
             f_name, f_ext = os.path.splitext(file_tuple[0])
             if KafkaAvroSchema.supports(f_ext):
@@ -232,7 +234,7 @@ class MainQtView(QtView):
                 self._display_text(f"JSON schema added \"{str(json_schema)}\"")
             else:
                 self._display_error(f"Unsupported schema extension \"{f_ext}\"")
-            self._last_dir = dirname(file_tuple[0])
+            self._last_schema_dir = dirname(file_tuple[0])
 
     def _deselect_schema(self):
         """Deselect current selected AVRO schema"""
@@ -484,9 +486,10 @@ class MainQtView(QtView):
             fd_history.write(f"cons_topics = {cons_topics}\n")
             fd_history.write(f"settings = {str(self._all_settings)}\n")
             fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
-            fd_history.write(f"last_dir = {self._last_dir}\n")
+            fd_history.write(f"last_dir = {self._last_schema_dir}\n")
             fd_history.write(f"schemas = {schemas}\n")
             fd_history.write(f"last_schema = {self.ui.cmb_sel_schema.currentText()}\n")
+            fd_history.write(f"registry_url = {self.ui.cmb_registry_url.currentText()}\n")
 
     def _load_history(self):
         """Load a previously saved app history."""
@@ -494,41 +497,45 @@ class MainQtView(QtView):
             self._display_text('History recovered')
             with open(self.HISTORY_FILE, 'r') as fd_history:
                 lines = fd_history.readlines()
-                for line in lines:
-                    mat = re.search(r'(.*) ?= ?(.*)', line)
-                    if mat:
-                        prop_name = mat.group(1).strip()
-                        prop_value = mat.group(2).strip()
-                        if prop_name == 'prod_topics':
-                            list(map(self._add_topic, ast.literal_eval(prop_value)))
-                        elif prop_name == 'cons_topics':
-                            list(map(lambda p: self._add_topic(p, False), ast.literal_eval(prop_value)))
-                        elif prop_name == 'settings':
-                            self._all_settings = ast.literal_eval(prop_value)
-                        elif prop_name == 'window_size':
-                            size = ast.literal_eval(prop_value)
-                            self.window.resize(int(size[0]), int(size[1]))
-                        elif prop_name == 'splitter_sizes':
-                            size = ast.literal_eval(prop_value)
-                            self.ui.splitter_pane.setSizes([int(size[0]), int(size[1])])
-                        elif prop_name == 'selected_tab':
-                            try:
+                try:
+                    for line in lines:
+                        mat = re.search(r'(.*) ?= ?(.*)', line)
+                        if mat:
+                            prop_name = mat.group(1).strip()
+                            prop_value = mat.group(2).strip()
+                            if prop_name == 'prod_topics':
+                                list(map(self._add_topic, ast.literal_eval(prop_value)))
+                            elif prop_name == 'cons_topics':
+                                list(map(lambda p: self._add_topic(p, False), ast.literal_eval(prop_value)))
+                            elif prop_name == 'settings':
+                                self._all_settings = ast.literal_eval(prop_value)
+                            elif prop_name == 'window_size':
+                                size = ast.literal_eval(prop_value)
+                                self.window.resize(int(size[0]), int(size[1]))
+                            elif prop_name == 'splitter_sizes':
+                                size = ast.literal_eval(prop_value)
+                                self.ui.splitter_pane.setSizes([int(size[0]), int(size[1])])
+                            elif prop_name == 'selected_tab':
                                 self._activate_tab(int(prop_value))
-                            except ValueError:
-                                self._activate_tab(self.Tabs.PRODUCER.value)
-                        elif prop_name == 'last_dir':
-                            self._last_dir = prop_value
-                        elif prop_name == 'schemas':
-                            list(map(lambda s: self._add_schema((s, '')) , ast.literal_eval(prop_value)))
-                            self._deselect_schema()
-                        elif prop_name == 'last_schema':
-                            self.ui.cmb_sel_schema.setCurrentText(prop_value)
-
+                            elif prop_name == 'last_dir':
+                                self._last_schema_dir = prop_value
+                            elif prop_name == 'schemas':
+                                list(map(
+                                    lambda s:
+                                        self._add_schema((s, '')) or
+                                        self._deselect_schema()
+                                    , ast.literal_eval(prop_value)
+                                ))
+                            elif prop_name == 'last_schema':
+                                self.ui.cmb_sel_schema.setCurrentText(prop_value)
+                            elif prop_name == 'registry_url':
+                                self.ui.cmb_registry_url.setCurrentText(prop_value)
+                except ValueError:
+                    log.warn(f"Invalid history value \"{prop_value}\" for setting \"{prop_name}\"")
+                    pass
         else:
             # Defaults
             self._display_text('History discarded')
-            self._add_topic('foobar')
-            self._add_topic('foobar', False)
             self._all_settings = {
                 'producer': {
                     ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:29092',
@@ -536,7 +543,7 @@ class MainQtView(QtView):
                 'consumer': {
                     ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:29092',
                     ConsumerConfig.GROUP_ID: 'kafka_test_group',
-                    ConsumerConfig.CLIENT_ID: 'client-1',
+                    ConsumerConfig.CLIENT_ID: 'client_1',
                     ConsumerConfig.ENABLE_AUTO_COMMIT: True,
                     ConsumerConfig.SESSION_TIMEOUT_MS: 6000,
                     ConsumerConfig.AUTO_OFFSET_RESET: 'earliest'
