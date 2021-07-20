@@ -3,7 +3,7 @@ version: '3.9'
 services:
   kafka-broker:
     container_name: kafka-broker
-    image: yorevs/hhs-kafka:5.4.0
+    image: yorevs/hhs-kafka:latest
     hostname: kafka_broker
     restart: on-failure
     healthcheck:

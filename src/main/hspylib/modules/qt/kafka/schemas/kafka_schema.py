@@ -15,7 +15,7 @@
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import List, Any
+from typing import List
 from uuid import uuid4
 
 from confluent_kafka.serialization import SerializationContext

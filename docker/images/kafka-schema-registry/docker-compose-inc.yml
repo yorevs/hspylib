@@ -3,7 +3,7 @@ version: '3.9'
 services:
   kafka-schema-registry:
     container_name: kafka-schema-registry
-    image: yorevs/hhs-schema-registry:5.4.0
+    image: yorevs/hhs-schema-registry:latest
     hostname: schema_registry
     restart: on-failure
     healthcheck:

@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   kafka-control-center:
-    image: yorevs/hhs-cp-enterprise-control-center:5.4.0
+    image: yorevs/hhs-cp-enterprise-control-center:latest
     container_name: kafka-control-center
     hostname: control_center
     restart: on-failure
