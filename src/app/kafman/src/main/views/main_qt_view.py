@@ -31,12 +31,13 @@ from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirna
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.qt.kafka.ConsumerConfig import ConsumerConfig
-from hspylib.modules.qt.kafka.ProducerConfig import ProducerConfig
+from hspylib.modules.fetch.fetch import is_reachable
+from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
 from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
 from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
 from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
+from hspylib.modules.qt.kafka.producer_config import ProducerConfig
 from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 from hspylib.modules.qt.kafka.schemas.kafka_json_schema import KafkaJsonSchema
 from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
@@ -59,11 +60,16 @@ class MainQtView(QtView):
         CONSUMER = 1
         CONSOLE = 2
 
-    class Tools(Enumeration):
+    class StkTools(Enumeration):
         """TODO"""
         SETTINGS = 0
-        STRATEGY = 1
+        SCHEMAS = 1
         STATISTICS = 2
+
+    class StkProducerEdit(Enumeration):
+        """TODO"""
+        TEXT = 0
+        FORM = 1
 
     @staticmethod
     def supported_schemas() -> str:
@@ -109,17 +115,23 @@ class MainQtView(QtView):
         self.window.resize(1024, 768)
         # General controls
         self.ui.splitter_pane.setSizes([350, 824])
-        self.ui.tool_box.setCurrentIndex(self.Tools.SETTINGS.value)
+        self.ui.tool_box.setCurrentIndex(self.StkTools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.lbl_status_text.set_elidable(True)
+        self.ui.tbtn_test_registry_url.setText(FormIcons.UNCHECK_CIRCLE.value)
+        self.ui.tbtn_test_registry_url.clicked.connect(self._test_registry_url)
+        self.ui.cmb_registry_url.lineEdit().editingFinished.connect(
+            lambda: self.ui.tbtn_test_registry_url.setStyleSheet(''))
         self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_sel_schema.clicked.connect(self._add_schema)
         self.ui.tbtn_desel_schema.setText(FormIcons.ERROR.value)
         self.ui.tbtn_desel_schema.clicked.connect(self._deselect_schema)
         self.ui.tbtn_del_schema.setText(FormIcons.MINUS.value)
-        self.ui.tbtn_del_schema.released.connect(self.ui.cmb_avro_schema.del_item)
-        self.ui.cmb_avro_schema.currentTextChanged.connect(self._change_schema)
+        self.ui.tbtn_del_schema.released.connect(self.ui.cmb_selected_schema.del_item)
+        self.ui.cmb_selected_schema.currentTextChanged.connect(self._change_schema)
+        self.ui.cmb_registry_url.lineEdit().setPlaceholderText("Type the registry url")
+        self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
         # Producer controls
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
@@ -188,7 +200,7 @@ class MainQtView(QtView):
 
     def _schema(self) -> KafkaSchema:
         """Return the selected AVRO schema"""
-        sel_schema = self.ui.cmb_avro_schema.currentText()
+        sel_schema = self.ui.cmb_selected_schema.currentText()
         return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
 
     def _activate_tab(self, index: int = None) -> None:
@@ -209,14 +221,14 @@ class MainQtView(QtView):
             if KafkaAvroSchema.supports(f_ext):
                 avro_schema = KafkaAvroSchema(file_tuple[0])
                 self._all_schemas[avro_schema.get_name()] = avro_schema
-                self.ui.cmb_avro_schema.set_item(avro_schema.get_name())
-                self.ui.cmb_avro_schema.setCurrentText(avro_schema.get_name())
+                self.ui.cmb_selected_schema.set_item(avro_schema.get_name())
+                self.ui.cmb_selected_schema.setCurrentText(avro_schema.get_name())
                 self._display_text(f"AVRO schema added \"{str(avro_schema)}\"")
             elif KafkaJsonSchema.supports(f_ext):
                 json_schema = KafkaJsonSchema(file_tuple[0])
                 self._all_schemas[json_schema.get_title()] = json_schema
-                self.ui.cmb_avro_schema.set_item(json_schema.get_title())
-                self.ui.cmb_avro_schema.setCurrentText(json_schema.get_title())
+                self.ui.cmb_selected_schema.set_item(json_schema.get_title())
+                self.ui.cmb_selected_schema.setCurrentText(json_schema.get_title())
                 self._display_text(f"JSON schema added \"{str(json_schema)}\"")
             else:
                 self._display_error(f"Unsupported schema extension \"{f_ext}\"")
@@ -224,16 +236,20 @@ class MainQtView(QtView):
 
     def _deselect_schema(self):
         """Deselect current selected AVRO schema"""
-        self.ui.cmb_avro_schema.setCurrentIndex(-1)
+        self.ui.cmb_selected_schema.setCurrentIndex(-1)
+        self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
 
     def _change_schema(self, schema_name: str):
         """Change the current AVRO schema text content"""
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
             self.ui.txt_avro_schema.setText(json.dumps(content, indent=2, sort_keys=False))
+            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
+            self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
         else:
             self.ui.txt_avro_schema.setText('')
-            self.ui.cmb_avro_schema.setCurrentIndex(-1)
+            self.ui.cmb_selected_schema.setCurrentIndex(-1)
+            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""
@@ -312,12 +328,27 @@ class MainQtView(QtView):
                 self._display_text(f"Topic {current_text} removed from consumer")
                 self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
 
+    def _test_registry_url(self) -> None:
+        url = self.ui.cmb_registry_url.currentText()
+        if url:
+            if is_reachable(url):
+                self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
+                self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #28C941;}")
+                self._display_text(f"Host {url} succeeded", StatusColor.green)
+            else:
+                self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR.value)
+                self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
+                self._display_error(f"Host {url} is unreachable")
+        else:
+            self.ui.tbtn_test_registry_url.setText(FormIcons.UNCHECK_CIRCLE.value)
+            self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
+
     def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
         started = self._producer.is_started()
         settings = self._settings()
         if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(0)
+            self.ui.tool_box.setCurrentIndex(self.StkTools.SETTINGS.value)
             self._producer.stop_producer()
             self._display_text("Production to kafka topics stopped", StatusColor.yellow)
         else:  # Start
@@ -325,7 +356,7 @@ class MainQtView(QtView):
             topics = self._topics(True)
             if topics:
                 schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(2)
+                self.ui.tool_box.setCurrentIndex(self.StkTools.STATISTICS.value)
                 self._producer.start_producer(settings, self._schema())
                 self._display_text(f"Started producing to topics {topics}{schema_name}", StatusColor.green)
             else:
@@ -339,14 +370,14 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_clear_topics.setEnabled(started)
         self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
         self.ui.tbtn_prod_connect.setStyleSheet(
-            'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
+            'QToolButton {color: ' + ('#FF554D' if not started else '#2380FA') + ';}')
 
     def _toggle_start_consumer(self) -> None:
         """Start/Stop the consumer."""
         started = self._consumer.is_started()
         settings = self._settings()
         if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(0)
+            self.ui.tool_box.setCurrentIndex(self.StkTools.STATISTICS.value)
             self._consumer.stop_consumer()
             self._display_text("Consumption from kafka topics stopped", StatusColor.yellow)
         else:  # Start
@@ -354,7 +385,7 @@ class MainQtView(QtView):
             topics = self._topics(False)
             if topics:
                 schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(2)
+                self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
                 self._consumer.start_consumer(settings, self._schema())
                 self._consumer.consume(topics)
                 self._display_text(f"Started consuming from topics {topics}{schema_name}", StatusColor.green)
@@ -368,7 +399,7 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_connect.setText('O' if started else '-')
         self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
         self.ui.tbtn_cons_connect.setStyleSheet(
-            'QToolButton {color: ' + ('#941100' if not started else '#2380FA') + ';}')
+            'QToolButton {color: ' + ('#FF554D' if not started else '#2380FA') + ';}')
 
     def _produce(self) -> None:
         """Produce messages to selected kafka topics"""
@@ -440,8 +471,8 @@ class MainQtView(QtView):
             prod_topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
             cons_topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
             schemas = [
-                self._all_schemas[self.ui.cmb_avro_schema.itemText(i)].get_filepath()
-                for i in range(self.ui.cmb_avro_schema.count())
+                self._all_schemas[self.ui.cmb_selected_schema.itemText(i)].get_filepath()
+                for i in range(self.ui.cmb_selected_schema.count())
             ]
             w_size = self.window.width(), self.window.height()
             s_size = self.ui.splitter_pane.sizes()[0], self.ui.splitter_pane.sizes()[1]
@@ -453,7 +484,7 @@ class MainQtView(QtView):
             fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
             fd_history.write(f"last_dir = {self._last_dir}\n")
             fd_history.write(f"schemas = {schemas}\n")
-            fd_history.write(f"last_schema = {self.ui.cmb_avro_schema.currentText()}\n")
+            fd_history.write(f"last_schema = {self.ui.cmb_selected_schema.currentText()}\n")
 
     def _load_history(self):
         """Load a previously saved app history."""
@@ -489,7 +520,7 @@ class MainQtView(QtView):
                             list(map(lambda s: self._add_schema((s, '')) , ast.literal_eval(prop_value)))
                             self._deselect_schema()
                         elif prop_name == 'last_schema':
-                            self.ui.cmb_avro_schema.setCurrentText(prop_value)
+                            self.ui.cmb_selected_schema.setCurrentText(prop_value)
 
         else:
             # Defaults

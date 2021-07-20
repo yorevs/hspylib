@@ -19,7 +19,7 @@ from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from confluent_kafka import DeserializingConsumer
-from confluent_kafka.error import ValueDeserializationError
+from confluent_kafka.error import ValueDeserializationError, ConsumeError
 
 from hspylib.core.tools.commons import syserr
 
@@ -94,7 +94,7 @@ class KafkaConsumer(QThread):
                     else:
                         self.messageConsumed.emit(
                             message.topic(), message.partition(), message.offset(), str(message.value()))
-                except ValueDeserializationError as err:
+                except (ValueDeserializationError, ConsumeError) as err:
                     self.messageFailed.emit(str(err))
         except KeyboardInterrupt:
             syserr("Keyboard interrupted")

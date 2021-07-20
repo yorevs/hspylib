@@ -17,10 +17,16 @@
 from http.server import HTTPServer
 from random import randint
 from threading import Thread
-from typing import Any, Optional, Tuple
+from time import sleep
+from typing import Optional, Tuple
 
+from requests.structures import CaseInsensitiveDict
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.enums.content_type import ContentType
+from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
-from hspylib.modules.mock.mock_request import MockResponse
+from hspylib.modules.fetch.http_response import HttpResponse
 from hspylib.modules.mock.mock_server_handler import MockServerHandler
 
 
@@ -28,6 +34,76 @@ class MockServer(HTTPServer):
     """TODO"""
 
     RANDOM_PORT = randint(49152, 65535)
+
+    class ServerThread(Thread):
+        def __init__(self, parent: 'MockServer'):
+            super().__init__()
+            self.parent = parent
+
+        def run(self) -> None:
+            self.parent.serve_forever()
+
+    class MockResponse(HttpResponse):
+        """TODO"""
+
+        def __init__(
+            self,
+            parent: 'MockServer',
+            method: HttpMethod,
+            url: str,
+            status_code: HttpCode = None,
+            body: str = None,
+            headers=None,
+            encoding: Charset = Charset.UTF_8,
+            content_type=ContentType.APPLICATION_JSON):
+
+            super().__init__(method, url, status_code, body, headers, encoding, content_type)
+            self.parent = parent
+            self.received_body = False
+
+        def then_wait(self, delay: int) -> 'MockServer.MockResponse':
+            sleep(delay)
+            return self
+
+        def then_return(
+            self,
+            code: HttpCode,
+            body: str = None,
+            headers=None,
+            encoding: Charset = Charset.UTF_8,
+            content_type=ContentType.APPLICATION_JSON) -> 'MockServer':
+            """TODO"""
+
+            response = self.parent.mock(self.method, self.url)
+            response.status_code = code
+            response.body = body
+            response.headers = headers if headers else []
+            response.encoding = encoding
+            response.content_type = content_type
+            if response.content_type:
+                response.content_type.charset = encoding
+
+            return self.parent
+
+        def then_return_with_received_body(
+            self,
+            code: HttpCode,
+            headers: CaseInsensitiveDict = None,
+            encoding: Charset = Charset.UTF_8,
+            content_type=ContentType.APPLICATION_JSON) -> 'MockServer':
+            """TODO"""
+
+            response = self.parent.mock(self.method, self.url)
+            response.received_body = True
+            response.body = None
+            response.status_code = code
+            response.headers = headers if headers else []
+            response.encoding = encoding
+            response.content_type = content_type
+            if response.content_type:
+                response.content_type.charset = encoding
+
+            return self.parent
 
     def __init__(self, hostname: str, port: int):
         self._mocks = {}
@@ -53,7 +129,7 @@ class MockServer(HTTPServer):
 
     def start(self) -> None:
         """TODO"""
-        runner = ServerThread(self)
+        runner = self.ServerThread(self)
         runner.start()
 
     def stop(self) -> None:
@@ -61,19 +137,9 @@ class MockServer(HTTPServer):
         self.shutdown()
         self.server_close()
 
-    def when_request(self, method: HttpMethod, url: str) -> Any:
+    def when_request(self, method: HttpMethod, url: str) -> Optional[MockResponse]:
         """TODO"""
-        request = self.mock(method=method, url=url) or MockResponse(self, method, url)
-        self._mocks[method] = self._mocks[method] \
-            if method in self._mocks else {}
+        request = self.mock(method=method, url=url) or self.MockResponse(self, method, url)
+        self._mocks[method] = self._mocks[method] if method in self._mocks else {}
         self._mocks[method][url] = request
         return request
-
-
-class ServerThread(Thread):
-    def __init__(self, parent: MockServer):
-        super().__init__()
-        self.parent = parent
-
-    def run(self) -> None:
-        self.parent.serve_forever()

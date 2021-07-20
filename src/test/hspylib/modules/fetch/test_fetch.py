@@ -18,10 +18,12 @@ import os
 import sys
 import unittest
 
+from requests.exceptions import ConnectTimeout, ConnectionError
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
-from hspylib.modules.fetch.fetch import delete, get, head, patch, post, put
+from hspylib.modules.fetch.fetch import delete, get, head, patch, post, put, is_reachable
 from hspylib.modules.mock.mock_server import MockServer
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -104,6 +106,21 @@ class TestFetch(unittest.TestCase):
         self.assertIsNotNone(resp, "Response is none")
         self.assertTrue(resp.body == '', "Response is not empty")
 
+    def test_should_except_when_read_timeout_expires(self):
+        self.assertRaisesRegex(
+            ConnectTimeout, '.*\(connect timeout=1\).*',
+            lambda: get('240.0.0.0', timeout=1))
+
+    def test_should_except_when_connect_timeout_expires(self):
+        self.assertRaisesRegex(
+            ConnectionError, '.*\(connect timeout=1\).*',
+            lambda: get('example.com:9999', timeout=1))
+
+    def test_should_be_reachable(self):
+        self.assertTrue(is_reachable('example.com'))
+
+    def test_should_not_be_reachable(self):
+        self.assertFalse(is_reachable('example.com:9999'))
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFetch)

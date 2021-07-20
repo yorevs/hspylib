@@ -23,8 +23,8 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer, 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.preconditions import check_state
-from hspylib.modules.qt.kafka.ConsumerConfig import ConsumerConfig
-from hspylib.modules.qt.kafka.ProducerConfig import ProducerConfig
+from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
+from hspylib.modules.qt.kafka.producer_config import ProducerConfig
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 
 

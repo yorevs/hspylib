@@ -9,5 +9,8 @@ IP: In-progress
 4. [ ] NS **Improvement**: Include a form validator for minput.
 5. [ ] NS **Improvement**: Improve tui -> extra with settings and remove parameters.
 6. [ ] NS **Improvement**: Fix README.md images and finish the documentation.
-7. [ ] NS **Improvement**: Add the AVRO schema for Kafman.
-8. [ ] NS **Fixup**: Replace all the assert statements by Preconditions.
+7. [ ] IP **Improvement**:
+  7.1 [ ] Add the schema dynamic form.
+  7.2 [ ] Disallow schema console clear (according to clearable).
+  7.3 [ ] Create a KafkaSchemaFactory
+
