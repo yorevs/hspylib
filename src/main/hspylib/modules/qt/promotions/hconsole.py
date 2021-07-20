@@ -25,9 +25,8 @@ class HConsole(QTextBrowser):
 
     def __init__(self, parent: Optional[QWidget], max_lines: int = 1000):
         super().__init__(parent)
-        self._menu = self.createStandardContextMenu()
-        self._menu.addSeparator()
-        self._menu.addAction(u'Clear', self.clear)
+        self._context_menu_enable = True
+        self._clearable = True
         self._max_lines = max_lines
         self.setPlaceholderText('No messages received yet')
         self.setReadOnly(True)
@@ -67,4 +66,17 @@ class HConsole(QTextBrowser):
 
     def _context_menu(self) -> None:
         """Display the custom context menu"""
-        self._menu.exec_(QCursor.pos())
+        if self._context_menu_enable:
+            ctx_menu = self.createStandardContextMenu()
+            if self._clearable:
+                ctx_menu.addSeparator()
+                ctx_menu.addAction(u'Clear', self.clear)
+            ctx_menu.exec_(QCursor.pos())
+
+    def set_context_menu_enable(self, enabled: bool = True):
+        """Whether context menu is enabled or not"""
+        self._context_menu_enable = enabled
+
+    def set_clearable(self, clearable: bool = True):
+        """Whether the widget is clearable or not"""
+        self._clearable = clearable

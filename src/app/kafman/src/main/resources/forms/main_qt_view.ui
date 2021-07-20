@@ -87,15 +87,15 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_settings">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>317</width>
-            <height>528</height>
+            <width>104</width>
+            <height>120</height>
            </rect>
           </property>
           <attribute name="label">
@@ -359,8 +359,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>317</width>
-            <height>528</height>
+            <width>243</width>
+            <height>513</height>
            </rect>
           </property>
           <attribute name="label">
@@ -385,7 +385,7 @@
               <number>10</number>
              </property>
              <item row="2" column="0" colspan="4">
-              <widget class="HComboBox" name="cmb_selected_schema">
+              <widget class="HComboBox" name="cmb_sel_schema">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -419,7 +419,7 @@
               </widget>
              </item>
              <item row="3" column="0" colspan="4">
-              <widget class="HConsole" name="txt_avro_schema">
+              <widget class="HConsole" name="txt_sel_schema">
                <property name="acceptRichText">
                 <bool>false</bool>
                </property>
@@ -615,7 +615,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>317</width>
+            <width>229</width>
             <height>528</height>
            </rect>
           </property>
@@ -1138,8 +1138,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>651</width>
-                    <height>515</height>
+                    <width>739</width>
+                    <height>513</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_15">

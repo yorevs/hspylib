@@ -41,6 +41,7 @@ class FormIcons(Awesome):
     OFF = u'\uF204'            # 
     MARKED = u'\uF634'         # 
     UNMARKED = u'\uF630'       # 
+    CLEAR = u'\uF5E1'          # 
 
     HIDDEN = u'\uF070'         # 
     VISIBLE = u'\uF06E'        # 
@@ -49,6 +50,7 @@ class FormIcons(Awesome):
     EDITABLE = u'\uF044'       # 
     MASKED = u'\uF0CE'         # 
     SELECTABLE = u'\uF150'     # 
+    DESELECT = u'\uF657'       # 
     DELETE = u'\uF014'         # 
     EDIT = u'\uF040'           # 
     PLUS = u'\uF067'           # 

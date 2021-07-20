@@ -26,11 +26,9 @@ class HTableView(QTableView):
 
     def __init__(self, parent: Optional[QWidget], placeholder: Optional[str] = None):
         super().__init__(parent)
-        self._menu = QMenu(self)
-        self._menu.addAction(u'Copy', self.copy)
-        self._menu.addSeparator()
-        self._menu.addAction(u'Clear', self.clear)
-        self.placeholder = placeholder or 'No data to display'
+        self._context_menu_enable = True
+        self._clearable = True
+        self._placeholder = placeholder or 'No data to display'
         self.customContextMenuRequested.connect(self._context_menu)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.horizontalHeader().setStretchLastSection(True)
@@ -39,7 +37,9 @@ class HTableView(QTableView):
 
     def clear(self):
         """TODO"""
-        self.model().clear()
+        model = self.model()
+        if model:
+            model.clear()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """TODO"""
@@ -51,27 +51,42 @@ class HTableView(QTableView):
         painter.save()
         painter.setPen(color)
         elided_text = self.fontMetrics() \
-            .elidedText(self.placeholder, Qt.ElideRight, self.viewport().width())
+            .elidedText(self._placeholder, Qt.ElideRight, self.viewport().width())
         painter.drawText(self.viewport().rect(), Qt.AlignCenter, elided_text)
         painter.restore()
 
     def copy(self) -> None:
         """TODO"""
-        text = ''
 
-        index_list = self.selectionModel().selectedIndexes()
-        last_row = 0
-        for index in index_list:
-            if len(text) > 0:
-                if last_row == index.row():
-                    text += ' '
-                else:
-                    text += '\n'
-            text += str(self.model().column(index))
-            last_row = index.row()
-
-        clipboard.copy(text)
+        sel_model = self.selectionModel()
+        if sel_model:
+            index_list = sel_model.selectedIndexes()
+            text = ''
+            last_row = 0
+            for index in index_list:
+                if len(text) > 0:
+                    if last_row == index.row():
+                        text += ' '
+                    else:
+                        text += '\n'
+                text += str(self.model().column(index))
+                last_row = index.row()
+            clipboard.copy(text)
 
     def _context_menu(self):
         """Display the custom context menu"""
-        self._menu.exec_(QCursor.pos())
+        if self._context_menu_enable:
+            ctx_menu = QMenu(self)
+            ctx_menu.addAction(u'Copy', self.copy)
+            if self._clearable:
+                ctx_menu.addSeparator()
+                ctx_menu.addAction(u'Clear', self.clear)
+            ctx_menu.exec_(QCursor.pos())
+
+    def set_context_menu_enable(self, enabled: bool = True):
+        """Whether context menu is enabled or not"""
+        self._context_menu_enable = enabled
+
+    def set_clearable(self, clearable: bool = True):
+        """Whether the widget is clearable or not"""
+        self._clearable = clearable
