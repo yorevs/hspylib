@@ -293,3 +293,12 @@ def human_readable_time(time_microseconds: int) -> str:
     str_line = f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
 
     return str_line
+
+def build_url(url_or_part: str) -> str:
+    """TODO
+    :param url_or_part:
+    """
+    if re.match(r'https?://.*', url_or_part):
+        return url_or_part
+    else:
+        return f"http://{url_or_part}"

@@ -60,6 +60,10 @@ class KeyboardInputError(HSBaseException):
     """Raised when an invalid keystroke input is provided """
 
 
+class UnsupportedSchemaError(HSBaseException):
+    """Raised when an invalid schema is provided """
+
+
 class InvalidInputError(Exception):
     """Raised when an invalid input is provided """
 

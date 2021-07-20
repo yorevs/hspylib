@@ -25,14 +25,17 @@ from typing import List, Optional, Tuple
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QFileDialog
+from requests.exceptions import ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.exception.exceptions import UnsupportedSchemaError
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.fetch.fetch import is_reachable
+from hspylib.modules.fetch.fetch import is_reachable, get
 from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
 from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
@@ -43,6 +46,7 @@ from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
 from hspylib.modules.qt.kafka.schemas.kafka_json_schema import KafkaJsonSchema
 from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
+from hspylib.modules.qt.kafka.schemas.kafka_schema_factory import KafkaSchemaFactory
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
@@ -86,6 +90,7 @@ class MainQtView(QtView):
         super().__init__()
         self.configs = AppConfigs.INSTANCE
         self._started = False
+        self._registry_url_valid = False
         self._consumer = KafkaConsumer()
         self._consumer.messageConsumed.connect(self._message_consumed)
         self._consumer.messageFailed.connect(self._display_error)
@@ -111,11 +116,16 @@ class MainQtView(QtView):
         self._capturer.start()
 
     def _setup_ui(self) -> None:
-        """Connect signals and startup components"""
+        """Setup UI: Connect signals and Setup components"""
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
         self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
         self.window.resize(1024, 768)
-        # General controls
+        self.setup_general_controls()
+        self.setup_producer_controls()
+        self.setup_consumer_controls()
+
+    def setup_general_controls(self):
+        """Setup general components"""
         self.ui.splitter_pane.setSizes([350, 824])
         self.ui.tool_box.setCurrentIndex(self.StkTools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
@@ -123,19 +133,20 @@ class MainQtView(QtView):
         self.ui.lbl_status_text.set_elidable(True)
         self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
         self.ui.tbtn_test_registry_url.clicked.connect(self._test_registry_url)
-        self.ui.cmb_registry_url.lineEdit().editingFinished \
-            .connect(lambda: self.ui.tbtn_test_registry_url.setStyleSheet(''))
         self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_sel_schema.clicked.connect(self._add_schema)
         self.ui.tbtn_desel_schema.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_desel_schema.clicked.connect(self._deselect_schema)
         self.ui.tbtn_del_schema.setText(FormIcons.MINUS.value)
         self.ui.tbtn_del_schema.released.connect(self.ui.cmb_sel_schema.del_item)
+        self.ui.cmb_registry_url.lineEdit().editingFinished.connect(self._invalidate_registry_url)
         self.ui.cmb_sel_schema.currentTextChanged.connect(self._change_schema)
         self.ui.cmb_registry_url.lineEdit().setPlaceholderText("Type the registry url")
         self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
         self.ui.txt_sel_schema.set_clearable(False)
-        # Producer controls
+
+    def setup_producer_controls(self):
+        """Setup producer components"""
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_add.setText(FormIcons.PLUS.value)
@@ -155,7 +166,9 @@ class MainQtView(QtView):
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_prod_settings.editingFinished.connect(self._edit_setting)
-        # Consumer controls
+
+    def setup_consumer_controls(self):
+        """Setup consumer components"""
         self.ui.cmb_cons_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_cons_settings_add.clicked.connect(lambda: self.ui.lst_cons_settings.set_item('new.setting'))
         self.ui.tbtn_cons_settings_add.setText(FormIcons.PLUS.value)
@@ -201,7 +214,7 @@ class MainQtView(QtView):
         return list(filter(lambda m: m != '', msgs))
 
     def _schema(self) -> KafkaSchema:
-        """Return the selected AVRO schema"""
+        """Return the selected serialization schema"""
         sel_schema = self.ui.cmb_sel_schema.currentText()
         return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
 
@@ -213,36 +226,31 @@ class MainQtView(QtView):
         self.ui.stk_statistics.setCurrentIndex(index)
 
     def _add_schema(self, file_tuple: Tuple[str, str] = None) -> None:
-        """Select an AVRO schema from the file picker dialog or from specified file"""
+        """Select an serialization schema from the file picker dialog or from specified file"""
         if not file_tuple:
             file_tuple = QFileDialog.getOpenFileName(
                 self.ui.splitter_pane,
                 'Open schema', self._last_schema_dir or '.', f"Schema files ({self.supported_schemas()})")
         if file_tuple and file_tuple[0]:
-            f_name, f_ext = os.path.splitext(file_tuple[0])
-            if KafkaAvroSchema.supports(f_ext):
-                avro_schema = KafkaAvroSchema(file_tuple[0])
-                self._all_schemas[avro_schema.get_name()] = avro_schema
-                self.ui.cmb_sel_schema.set_item(avro_schema.get_name())
-                self.ui.cmb_sel_schema.setCurrentText(avro_schema.get_name())
-                self._display_text(f"AVRO schema added \"{str(avro_schema)}\"")
-            elif KafkaJsonSchema.supports(f_ext):
-                json_schema = KafkaJsonSchema(file_tuple[0])
-                self._all_schemas[json_schema.get_title()] = json_schema
-                self.ui.cmb_sel_schema.set_item(json_schema.get_title())
-                self.ui.cmb_sel_schema.setCurrentText(json_schema.get_title())
-                self._display_text(f"JSON schema added \"{str(json_schema)}\"")
-            else:
-                self._display_error(f"Unsupported schema extension \"{f_ext}\"")
             self._last_schema_dir = dirname(file_tuple[0])
+            registry_url = self._test_registry_url()
+            if registry_url:
+                try:
+                    schema = KafkaSchemaFactory.create_schema(file_tuple[0], registry_url)
+                    self._all_schemas[schema.get_name()] = schema
+                    self.ui.cmb_sel_schema.set_item(schema.get_name())
+                    self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
+                    self._display_text(f"AVRO schema added \"{str(schema)}\"")
+                except UnsupportedSchemaError:
+                    self._display_error(f"Unsupported schema: \"{file_tuple[0]}\"")
 
     def _deselect_schema(self):
-        """Deselect current selected AVRO schema"""
+        """Deselect current selected serialization schema"""
         self.ui.cmb_sel_schema.setCurrentIndex(-1)
         self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
 
     def _change_schema(self, schema_name: str):
-        """Change the current AVRO schema text content"""
+        """Change the current serialization schema text content"""
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
             self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
@@ -330,20 +338,52 @@ class MainQtView(QtView):
                 self._display_text(f"Topic {current_text} removed from consumer")
                 self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
 
-    def _test_registry_url(self) -> None:
+    def _invalidate_registry_url(self) -> None:
+        """Mark current schema registry url as not valid"""
+        self.ui.tbtn_test_registry_url.setStyleSheet('')
+        self._registry_url_valid = False
+
+    def _test_registry_url(self) -> Optional[str]:
+        """Check is the provided schema registry url is valid or not"""
         url = self.ui.cmb_registry_url.currentText()
-        if url:
+        if self._registry_url_valid:
+            return url
+        elif url:
             if is_reachable(url):
                 self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #28C941;}")
                 self._display_text(f"Host {url} succeeded", StatusColor.green)
+                self._registry_url_valid = True
+                self._fetch_registry_info(url)
             else:
                 self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
                 self._display_error(f"Host {url} is unreachable")
+                self._registry_url_valid = False
         else:
             self.ui.tbtn_test_registry_url.setText(FormIcons.UNCHECK_CIRCLE.value)
             self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
+
+        return url
+
+    def _fetch_registry_info(self, url: str) -> None:
+        """Fetch information about the selected schema registry server"""
+        try:
+            registry_info = get(url=f"{url}/schemas/types")
+            if registry_info.status_code == HttpCode.OK:
+                self._display_text(f"[Registry] Supported schema types: {registry_info.body}", StatusColor.purple)
+            elif registry_info.status_code == HttpCode.NOT_FOUND:
+                self._display_text(
+                    '[Registry] AVRO is the only supported schema type in the server.', StatusColor.purple)
+            else:
+                self._display_error('[Registry] Unable to fetch registry schema types.')
+            registry_info = get(url=f"{url}/subjects")
+            if registry_info.status_code == HttpCode.OK:
+                self._display_text(f"[Registry] Existing subjects: {registry_info.body}", StatusColor.purple)
+            else:
+                self._display_error('[Registry] Unable to fetch registry subjects.')
+        except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL) as err:
+            self._display_error(f"[Registry] Unable to fetch registry information from {url}\n => {str(err)}")
 
     def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
@@ -538,10 +578,10 @@ class MainQtView(QtView):
             self._display_text('History discarded')
             self._all_settings = {
                 'producer': {
-                    ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:29092',
+                    ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
                 },
                 'consumer': {
-                    ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:29092',
+                    ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
                     ConsumerConfig.GROUP_ID: 'kafka_test_group',
                     ConsumerConfig.CLIENT_ID: 'client_1',
                     ConsumerConfig.ENABLE_AUTO_COMMIT: True,
