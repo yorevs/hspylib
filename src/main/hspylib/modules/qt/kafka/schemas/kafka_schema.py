@@ -101,6 +101,10 @@ class KafkaSchema(ABC):
         """TODO"""
         pass
 
+    def get_schema_type(self) -> str:
+        """TODO"""
+        return self._schema_type
+
     def get_filepath(self) -> str:
         """TODO"""
         return self._filepath
