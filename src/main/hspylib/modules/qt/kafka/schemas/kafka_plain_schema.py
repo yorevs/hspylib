@@ -12,23 +12,33 @@
 
    Copyright 2021, HSPyLib team
 """
-from collections import defaultdict
-from typing import List
 
-from confluent_kafka.serialization import StringSerializer, StringDeserializer
+from confluent_kafka.serialization import StringSerializer, StringDeserializer, SerializationContext
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import new_dynamic_object
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 
 
 class KafkaPlainSchema(KafkaSchema):
     """String schema serializer/deserializer"""
 
+    @classmethod
+    def to_dict(cls, obj: str, ctx: SerializationContext) -> dict:
+        return {}
+
+    @classmethod
+    def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:
+        return str(new_dynamic_object('PlainSchemaObject'))
+
     def __init__(self, charset: Charset = Charset.ISO8859_1):
-        super().__init__(charset=charset)
+        super().__init__(schema_type='PLAIN', charset=charset)
 
     def __str__(self):
-        return f"[PLAIN] type=plaintext"
+        return f"[{self._schema_type}] type=plaintext"
+
+    def _init_schema(self) -> None:
+        pass
 
     def serializer_settings(self) -> dict:
         """TODO"""
@@ -43,15 +53,3 @@ class KafkaPlainSchema(KafkaSchema):
             'key.deserializer': StringDeserializer(self._charset.value),
             'value.deserializer': StringDeserializer(self._charset.value)
         }
-
-    def get_field_types(self) -> List[str]:
-        pass
-
-    def get_content(self) -> defaultdict:
-        pass
-
-    def get_type(self) -> str:
-        pass
-
-    def get_field_names(self) -> List[str]:
-        pass

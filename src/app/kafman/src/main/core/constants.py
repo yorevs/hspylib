@@ -28,3 +28,4 @@ class StatusColor(ABC):
     yellow = QColor('#FEBE2F')
     blue = QColor('#2380FA')
     orange = QColor('#FF8C36')
+    purple = QColor('#D9A2FF')
