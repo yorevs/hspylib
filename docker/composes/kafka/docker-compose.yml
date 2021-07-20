@@ -3,7 +3,7 @@ version: '3.9'
 services:
   zookeeper:
     container_name: zookeeper
-    image: confluentinc/cp-zookeeper:5.4.0
+    image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
     restart: on-failure
     healthcheck:
@@ -28,7 +28,7 @@ services:
 
   kafka-broker:
     container_name: kafka-broker
-    image: confluentinc/cp-kafka:5.4.0
+    image: confluentinc/cp-kafka:latest
     hostname: kafka_broker
     restart: on-failure
     healthcheck:
@@ -40,76 +40,25 @@ services:
       zookeeper:
         condition: service_healthy
     ports:
-      - "29092:29092"
+      - "9092:9092"
       - "9093:9093"
     environment:
       KAFKA_BROKER_ID: 1
-      JMX_PORT: 9093
+      KAFKA_JMX_PORT: 9093
+      KAFKA_JMX_HOSTNAME: localhost
       KAFKA_NUM_PARTITIONS: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_broker:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema_registry:8081
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka_broker:29092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
     volumes:
       - kafka-data:/var/lib/kafka:rw
-    networks:
-      - esnet
-
-
-  kafka-schema-registry:
-    container_name: kafka-schema-registry
-    image: confluentinc/cp-schema-registry:5.4.0
-    hostname: schema_registry
-    restart: on-failure
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://127.0.0.1:8081/subjects" ]
-      interval: 10s
-      timeout: 60s
-      retries: 3
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-      kafka-broker:
-        condition: service_healthy
-    ports:
-      - "8081:8081"
-    environment:
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka_broker:9092"
-      SCHEMA_REGISTRY_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      SCHEMA_REGISTRY_HOST_NAME: schema_registry
-      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
-    networks:
-      - esnet
-
-  kafka-control-center:
-    image: confluentinc/cp-enterprise-control-center:5.4.0
-    container_name: kafka-control-center
-    hostname: control_center
-    restart: on-failure
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://localhost:9021" ]
-      interval: 10s
-      timeout: 60s
-      retries: 3
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-      kafka-broker:
-        condition: service_healthy
-      kafka-schema-registry:
-        condition: service_healthy
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka_broker:9092"
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "schema_registry:8081"
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-      PORT: 9021
     networks:
       - esnet
 
@@ -135,6 +84,32 @@ services:
     environment:
       ZK_HOSTS: zookeeper
       APPLICATION_SECRET: letmein
+    networks:
+      - esnet
+
+
+  kafka-schema-registry:
+    container_name: kafka-schema-registry
+    image: confluentinc/cp-schema-registry:latest
+    hostname: schema_registry
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://127.0.0.1:8081/schemas/types" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka-broker:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka_broker:29092"
+      SCHEMA_REGISTRY_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      SCHEMA_REGISTRY_HOST_NAME: schema_registry
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
     networks:
       - esnet
 

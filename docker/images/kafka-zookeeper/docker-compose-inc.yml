@@ -3,7 +3,7 @@ version: '3.9'
 services:
   zookeeper:
     container_name: zookeeper
-    image: yorevs/hhs-zookeeper:5.4.0
+    image: yorevs/hhs-zookeeper:latest
     hostname: zookeeper
     restart: on-failure
     healthcheck:
