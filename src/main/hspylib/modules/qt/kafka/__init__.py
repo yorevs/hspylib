@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'ConsumerConfig', 
-  'ProducerConfig', 
+  'consumer_config', 
   'kafka_consumer', 
   'kafka_message', 
   'kafka_producer', 
   'kafka_statistics', 
+  'producer_config', 
   'schemas'
 ]

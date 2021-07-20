@@ -119,19 +119,20 @@ class MainQtView(QtView):
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.lbl_status_text.set_elidable(True)
-        self.ui.tbtn_test_registry_url.setText(FormIcons.UNCHECK_CIRCLE.value)
+        self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
         self.ui.tbtn_test_registry_url.clicked.connect(self._test_registry_url)
-        self.ui.cmb_registry_url.lineEdit().editingFinished.connect(
-            lambda: self.ui.tbtn_test_registry_url.setStyleSheet(''))
+        self.ui.cmb_registry_url.lineEdit().editingFinished \
+            .connect(lambda: self.ui.tbtn_test_registry_url.setStyleSheet(''))
         self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_sel_schema.clicked.connect(self._add_schema)
-        self.ui.tbtn_desel_schema.setText(FormIcons.ERROR.value)
+        self.ui.tbtn_desel_schema.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_desel_schema.clicked.connect(self._deselect_schema)
         self.ui.tbtn_del_schema.setText(FormIcons.MINUS.value)
-        self.ui.tbtn_del_schema.released.connect(self.ui.cmb_selected_schema.del_item)
-        self.ui.cmb_selected_schema.currentTextChanged.connect(self._change_schema)
+        self.ui.tbtn_del_schema.released.connect(self.ui.cmb_sel_schema.del_item)
+        self.ui.cmb_sel_schema.currentTextChanged.connect(self._change_schema)
         self.ui.cmb_registry_url.lineEdit().setPlaceholderText("Type the registry url")
         self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
+        self.ui.txt_sel_schema.set_clearable(False)
         # Producer controls
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
@@ -139,7 +140,7 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_setting)
         self.ui.tbtn_prod_settings_del.setText(FormIcons.MINUS.value)
         self.ui.tbtn_prod_connect.clicked.connect(self._toggle_start_producer)
-        self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value)
+        self.ui.tbtn_prod_connect.setText(DashboardIcons.PLUG_IN.value)
         self.ui.tbtn_prod_connect.setStyleSheet('QToolButton {color: #2380FA;}')
         self.ui.tbtn_produce.clicked.connect(self._produce)
         self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
@@ -159,7 +160,7 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_settings_del.clicked.connect(self._del_setting)
         self.ui.tbtn_cons_settings_del.setText(FormIcons.MINUS.value)
         self.ui.tbtn_cons_connect.clicked.connect(self._toggle_start_consumer)
-        self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value)
+        self.ui.tbtn_cons_connect.setText(DashboardIcons.PLUG_IN.value)
         self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: #2380FA;}')
         self.ui.tbtn_cons_clear_topics.setText(FormIcons.DELETE.value)
         self.ui.tbtn_cons_add_topics.setText(FormIcons.PLUS.value)
@@ -170,7 +171,6 @@ class MainQtView(QtView):
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
-        HTableModel(self.ui.tbl_consumer, KafkaMessage)
 
     def _is_producer(self) -> bool:
         """Whether started as producer or consumer"""
@@ -200,7 +200,7 @@ class MainQtView(QtView):
 
     def _schema(self) -> KafkaSchema:
         """Return the selected AVRO schema"""
-        sel_schema = self.ui.cmb_selected_schema.currentText()
+        sel_schema = self.ui.cmb_sel_schema.currentText()
         return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
 
     def _activate_tab(self, index: int = None) -> None:
@@ -221,14 +221,14 @@ class MainQtView(QtView):
             if KafkaAvroSchema.supports(f_ext):
                 avro_schema = KafkaAvroSchema(file_tuple[0])
                 self._all_schemas[avro_schema.get_name()] = avro_schema
-                self.ui.cmb_selected_schema.set_item(avro_schema.get_name())
-                self.ui.cmb_selected_schema.setCurrentText(avro_schema.get_name())
+                self.ui.cmb_sel_schema.set_item(avro_schema.get_name())
+                self.ui.cmb_sel_schema.setCurrentText(avro_schema.get_name())
                 self._display_text(f"AVRO schema added \"{str(avro_schema)}\"")
             elif KafkaJsonSchema.supports(f_ext):
                 json_schema = KafkaJsonSchema(file_tuple[0])
                 self._all_schemas[json_schema.get_title()] = json_schema
-                self.ui.cmb_selected_schema.set_item(json_schema.get_title())
-                self.ui.cmb_selected_schema.setCurrentText(json_schema.get_title())
+                self.ui.cmb_sel_schema.set_item(json_schema.get_title())
+                self.ui.cmb_sel_schema.setCurrentText(json_schema.get_title())
                 self._display_text(f"JSON schema added \"{str(json_schema)}\"")
             else:
                 self._display_error(f"Unsupported schema extension \"{f_ext}\"")
@@ -236,19 +236,19 @@ class MainQtView(QtView):
 
     def _deselect_schema(self):
         """Deselect current selected AVRO schema"""
-        self.ui.cmb_selected_schema.setCurrentIndex(-1)
+        self.ui.cmb_sel_schema.setCurrentIndex(-1)
         self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
 
     def _change_schema(self, schema_name: str):
         """Change the current AVRO schema text content"""
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
-            self.ui.txt_avro_schema.setText(json.dumps(content, indent=2, sort_keys=False))
+            self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
             self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
             self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
         else:
-            self.ui.txt_avro_schema.setText('')
-            self.ui.cmb_selected_schema.setCurrentIndex(-1)
+            self.ui.txt_sel_schema.setText('')
+            self.ui.cmb_sel_schema.setCurrentIndex(-1)
             self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
 
     def _get_setting(self) -> None:
@@ -368,7 +368,7 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_add_topics.setEnabled(started)
         self.ui.tbtn_prod_del_topics.setEnabled(started)
         self.ui.tbtn_prod_clear_topics.setEnabled(started)
-        self.ui.tbtn_prod_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
+        self.ui.tbtn_prod_connect.setText(DashboardIcons.PLUG_IN.value if started else DashboardIcons.PLUG_OUT.value)
         self.ui.tbtn_prod_connect.setStyleSheet(
             'QToolButton {color: ' + ('#FF554D' if not started else '#2380FA') + ';}')
 
@@ -397,7 +397,7 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_del_topics.setEnabled(started)
         self.ui.tbtn_cons_clear_topics.setEnabled(started)
         self.ui.tbtn_cons_connect.setText('O' if started else '-')
-        self.ui.tbtn_cons_connect.setText(DashboardIcons.CONNECT.value if started else DashboardIcons.DISCONNECT.value)
+        self.ui.tbtn_cons_connect.setText(DashboardIcons.PLUG_IN.value if started else DashboardIcons.PLUG_OUT.value)
         self.ui.tbtn_cons_connect.setStyleSheet(
             'QToolButton {color: ' + ('#FF554D' if not started else '#2380FA') + ';}')
 
@@ -447,6 +447,8 @@ class MainQtView(QtView):
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: str) -> None:
         """Callback when a kafka message has been consumed."""
+        if not self.ui.tbl_consumer.model():
+            HTableModel(self.ui.tbl_consumer, KafkaMessage)
         row = KafkaMessage(now_ms(), topic, partition, offset, value)
         text = f"-> Consumed {row}"
         self.ui.tbl_consumer.model().push_data([row])
@@ -471,8 +473,8 @@ class MainQtView(QtView):
             prod_topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
             cons_topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
             schemas = [
-                self._all_schemas[self.ui.cmb_selected_schema.itemText(i)].get_filepath()
-                for i in range(self.ui.cmb_selected_schema.count())
+                self._all_schemas[self.ui.cmb_sel_schema.itemText(i)].get_filepath()
+                for i in range(self.ui.cmb_sel_schema.count())
             ]
             w_size = self.window.width(), self.window.height()
             s_size = self.ui.splitter_pane.sizes()[0], self.ui.splitter_pane.sizes()[1]
@@ -484,7 +486,7 @@ class MainQtView(QtView):
             fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
             fd_history.write(f"last_dir = {self._last_dir}\n")
             fd_history.write(f"schemas = {schemas}\n")
-            fd_history.write(f"last_schema = {self.ui.cmb_selected_schema.currentText()}\n")
+            fd_history.write(f"last_schema = {self.ui.cmb_sel_schema.currentText()}\n")
 
     def _load_history(self):
         """Load a previously saved app history."""
@@ -520,7 +522,7 @@ class MainQtView(QtView):
                             list(map(lambda s: self._add_schema((s, '')) , ast.literal_eval(prop_value)))
                             self._deselect_schema()
                         elif prop_name == 'last_schema':
-                            self.ui.cmb_selected_schema.setCurrentText(prop_value)
+                            self.ui.cmb_sel_schema.setCurrentText(prop_value)
 
         else:
             # Defaults
