@@ -240,7 +240,7 @@ class MainQtView(QtView):
                     self._all_schemas[schema.get_name()] = schema
                     self.ui.cmb_sel_schema.set_item(schema.get_name())
                     self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
-                    self._display_text(f"AVRO schema added \"{str(schema)}\"")
+                    self._display_text(f"Schema added: \"{str(schema)}\"")
                 except UnsupportedSchemaError:
                     self._display_error(f"Unsupported schema: \"{file_tuple[0]}\"")
 
@@ -254,7 +254,7 @@ class MainQtView(QtView):
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
             self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
-            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
+            # fixme: self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
             self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
         else:
             self.ui.txt_sel_schema.setText('')
@@ -341,6 +341,7 @@ class MainQtView(QtView):
     def _invalidate_registry_url(self) -> None:
         """Mark current schema registry url as not valid"""
         self.ui.tbtn_test_registry_url.setStyleSheet('')
+        self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
         self._registry_url_valid = False
 
     def _test_registry_url(self) -> Optional[str]:
