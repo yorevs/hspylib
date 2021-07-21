@@ -13,6 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 import json
+import logging as log
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import List, Any
@@ -20,6 +21,7 @@ from uuid import uuid4
 
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from confluent_kafka.serialization import SerializationContext
+from requests.exceptions import ConnectTimeout, ConnectionError, InvalidURL, ReadTimeout
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty, build_url
@@ -60,8 +62,10 @@ class KafkaSchema(ABC):
         charset: Charset = Charset.ISO8859_1):
 
         self._filepath = filepath
+        self._registry_url = registry_url
         self._schema_type = schema_type
         self._charset = charset
+        self._schema_id = None
         self._namespace = ''
         self._name = ''
         self._type = ''
@@ -74,11 +78,19 @@ class KafkaSchema(ABC):
                 self._schema_str = f_schema.read()
                 self._content = defaultdict(None, json.loads(self._schema_str))
                 check_not_none(self._content)
-            schema_conf = {'url': build_url(registry_url) or 'http://localhost:8081'}
-            self._schema_client = SchemaRegistryClient(schema_conf)
-            schema = Schema(self._schema_str, self._schema_type)
+            self._schema_conf = {'url': build_url(self._registry_url) or 'http://localhost:8081'}
+            self._schema_client = SchemaRegistryClient(self._schema_conf)
+            self._schema = Schema(self._schema_str, self._schema_type)
             self._init_schema()
-            self._schema_id = self._schema_client.register_schema(self._name.lower(), schema)
+
+    def register_schema(self) -> bool:
+        try:
+            self._schema_id = self._schema_client.register_schema(self._name.lower(), self._schema)
+        except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL) as err:
+            log.error(f"Unable to register schema at {self._registry_url} => {str(err)}")
+            return False
+        log.info(f"Schema successfully registered at {self._registry_url}")
+        return True
 
     def __str__(self):
         return f"[{self._schema_type}] name={self._name}, type={self._type}, namespace={self._namespace}"

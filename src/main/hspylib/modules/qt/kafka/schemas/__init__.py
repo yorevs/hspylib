@@ -9,5 +9,6 @@ __all__ = [
   'kafka_avro_schema', 
   'kafka_json_schema', 
   'kafka_plain_schema', 
-  'kafka_schema'
+  'kafka_schema', 
+  'kafka_schema_factory'
 ]

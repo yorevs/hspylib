@@ -237,10 +237,13 @@ class MainQtView(QtView):
             if registry_url:
                 try:
                     schema = KafkaSchemaFactory.create_schema(file_tuple[0], registry_url)
-                    self._all_schemas[schema.get_name()] = schema
-                    self.ui.cmb_sel_schema.set_item(schema.get_name())
-                    self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
-                    self._display_text(f"Schema added: \"{str(schema)}\"")
+                    if schema.register_schema():
+                        self._all_schemas[schema.get_name()] = schema
+                        self.ui.cmb_sel_schema.set_item(schema.get_name())
+                        self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
+                        self._display_text(f"Schema added: \"{str(schema)}\"")
+                    else:
+                        self._display_error(f"Unable to register schema: \"{str(schema)}\"")
                 except UnsupportedSchemaError:
                     self._display_error(f"Unsupported schema: \"{file_tuple[0]}\"")
 
