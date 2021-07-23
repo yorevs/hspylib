@@ -15,7 +15,7 @@
 
 import threading
 from time import sleep
-from typing import List, Any
+from typing import List, Any, Union
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from avro.io import AvroTypeException
@@ -72,7 +72,7 @@ class KafkaProducer(QThread):
             self._worker_thread = None
             self._schema = None
 
-    def produce(self, topics: List[Any], messages: List[str]) -> None:
+    def produce(self, topics: List[Any], messages: Union[str, List[str]]) -> None:
         """Create a worker thread to produce the messages to the specified topics."""
         if self._started and self._producer is not None:
             self._worker_thread = threading.Thread(target=self._produce, args=(topics, messages,))
@@ -98,9 +98,10 @@ class KafkaProducer(QThread):
         if self._producer:
             self._producer.purge()
 
-    def _produce(self, topics: List[str], messages: List[Any]) -> None:
+    def _produce(self, topics: List[str], messages: Union[str, List[str]]) -> None:
         """Produce message to topic."""
         for topic in topics:
+            messages = messages if isinstance(messages, list) else [messages]
             for msg in messages:
                 try:
                     if msg:

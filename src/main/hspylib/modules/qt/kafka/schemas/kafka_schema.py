@@ -17,7 +17,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from json.decoder import JSONDecodeError
-from typing import List, Any
+from typing import List, Optional
 from uuid import uuid4
 
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema, SchemaRegistryError
@@ -26,11 +26,14 @@ from requests.exceptions import ConnectTimeout, ConnectionError, InvalidURL, Rea
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty, build_url, syserr
-from hspylib.core.tools.preconditions import check_state, check_not_none
+from hspylib.core.tools.preconditions import check_state, check_not_none, check_argument
+from hspylib.modules.qt.kafka.schemas.schema_field import SchemaField
 
 
 class KafkaSchema(ABC):
     """String schema serializer/deserializer"""
+
+    SUPPORTED_SCHEMA_TYPES = ["PLAIN", "AVRO", "JSON", "PROTOBUF"]
 
     @classmethod
     def extensions(cls) -> List[str]:
@@ -62,16 +65,17 @@ class KafkaSchema(ABC):
         registry_url: str = None,
         charset: Charset = Charset.ISO8859_1):
 
+        check_argument(schema_type in self.SUPPORTED_SCHEMA_TYPES)
         self._filepath = filepath
         self._registry_url = registry_url
         self._schema_type = schema_type
         self._charset = charset
         self._schema_id = None
-        self._namespace = ''
-        self._name = ''
-        self._type = ''
-        self._doc = ''
-        self._fields = []
+        self._namespace = None
+        self._doc = None
+        self._name = None
+        self._type = None
+        self._fields = None
 
         try:
             if filepath:
@@ -84,22 +88,22 @@ class KafkaSchema(ABC):
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
                 self._schema = Schema(self._schema_str, self._schema_type)
                 self._init_schema()
-        except JSONDecodeError as err:
-            syserr(f"Unable to load schema {str(err)}")
-            log.error(f"Unable to load schema {str(err)}")
+        except (KeyError, TypeError, JSONDecodeError) as err:
+            syserr(f"Unable to load schema => {str(err)}")
+            log.error(f"Unable to load schema => {str(err)}")
+
+    def __getitem__(self, index: int):
+        return self._fields[index]
 
     def register_schema(self) -> bool:
+        """TODO"""
         try:
             self._schema_id = self._schema_client.register_schema(self._name.lower(), self._schema)
-        except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL, SchemaRegistryError) as err:
-            syserr(f"Unable to register schema at {self._registry_url} => {str(err)}")
-            log.error(f"Unable to register schema at {self._registry_url} => {str(err)}")
+        except (AttributeError, ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL, SchemaRegistryError) as err:
+            syserr(f"Unable to register schema at: {self._registry_url} => {str(err)}")
+            log.error(f"Unable to register schema at: {self._registry_url} => {str(err)}")
             return False
-        except AttributeError:
-            syserr(f"Unable to register schema => Schema load failed")
-            log.error(f"Unable to register schema => Schema load failed")
-            return False
-        log.info(f"Schema successfully registered at {self._registry_url}")
+        log.info(f"Schema successfully registered id={self._schema_id} at {self._registry_url}")
         return True
 
     def __str__(self):
@@ -141,24 +145,28 @@ class KafkaSchema(ABC):
 
     def get_field_names(self) -> List[str]:
         """TODO"""
-        return [f['name'] for f in self._fields]
+        return [f.get_name() for f in self._fields]
 
     def get_field_types(self) -> List[str]:
         """TODO"""
-        return [f['type'] for f in self._fields]
+        return [f.get_type() for f in self._fields]
 
     def get_type(self) -> str:
         """TODO"""
         return self._type
 
-    def get_namespace(self) -> str:
-        """TODO"""
-        return self._namespace
-
     def get_name(self) -> str:
         """TODO"""
         return self._name
 
-    def get_fields(self) -> List[Any]:
+    def get_fields(self) -> List[SchemaField]:
         """TODO"""
         return self._fields
+
+    def get_namespace(self) -> Optional[str]:
+        """TODO"""
+        return self._namespace
+
+    def get_doc(self) -> Optional[str]:
+        """TODO"""
+        return self._doc

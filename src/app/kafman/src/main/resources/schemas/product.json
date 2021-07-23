@@ -7,13 +7,17 @@
     "brand": {
       "type": "string"
     },
+    "market": {
+      "type": "string"
+    },
     "product": {
       "type": "string"
     }
   },
   "required": [
-    "product",
-    "brand"
+    "brand",
+    "market",
+    "product"
   ],
   "additionalProperties": false
 }

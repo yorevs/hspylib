@@ -19,9 +19,11 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_by_key_or_default
+from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
 from hspylib.modules.qt.kafka.producer_config import ProducerConfig
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
+from hspylib.modules.qt.kafka.schemas.schema_field import SchemaField
 
 
 class KafkaAvroSchema(KafkaSchema):
@@ -42,11 +44,18 @@ class KafkaAvroSchema(KafkaSchema):
         super().__init__('AVRO', filepath, registry_url, charset)
 
     def _init_schema(self) -> None:
-        self._type = self._content['type']
-        self._name = self._content['name']
-        self._fields = self._content['fields']
-        self._namespace = get_by_key_or_default(self._content, 'namespace', 'not-set')
-        self._doc = get_by_key_or_default(self._content, 'doc', 'not-set')
+        self._type = check_not_none(self._content['type'])
+        self._name = check_not_none(self._content['name'])
+        fields = check_not_none(self._content['fields'])
+        self._fields = [
+            SchemaField.of_dict(
+                f, bool(
+                    next((t for t in f['type'] if isinstance(f['type'], list) and 'null' in f['type']), None) is None
+                )
+            ) for f in fields
+        ]
+        self._namespace = get_by_key_or_default(self._content, 'namespace', '')
+        self._doc = get_by_key_or_default(self._content, 'doc', '')
 
     def serializer_settings(self) -> dict:
         return {
