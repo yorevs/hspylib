@@ -18,6 +18,7 @@ from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDese
 from confluent_kafka.serialization import StringSerializer, StringDeserializer
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
 from hspylib.modules.qt.kafka.producer_config import ProducerConfig
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
@@ -42,10 +43,10 @@ class KafkaJsonSchema(KafkaSchema):
 
     def _init_schema(self) -> None:
         self._type = self._content['type']
-        self._namespace = self._content['$schema']
         self._name = self._content['title']
-        self._doc = self._content['description']
         self._fields = self._content['properties']
+        self._namespace = get_by_key_or_default(self._content, '$schema', 'not-set')
+        self._doc = get_by_key_or_default(self._content, 'description', 'not-set')
 
     def serializer_settings(self) -> dict:
         return {
