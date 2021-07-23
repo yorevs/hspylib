@@ -30,7 +30,7 @@ from requests.exceptions import ConnectTimeout, ConnectionError, ReadTimeout, In
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.exception.exceptions import UnsupportedSchemaError
+from hspylib.core.exception.exceptions import UnsupportedSchemaError, InvalidStateError
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
@@ -244,8 +244,11 @@ class MainQtView(QtView):
                         self._display_text(f"Schema added: \"{str(schema)}\"")
                     else:
                         self._display_error(f"Unable to register schema: \"{str(schema)}\"")
-                except UnsupportedSchemaError:
-                    self._display_error(f"Unsupported schema: \"{file_tuple[0]}\"")
+                except UnsupportedSchemaError as err:
+                    self._display_error(f"Unsupported schema: => {str(err)}")
+                except InvalidStateError as err:
+                    self._display_error(f"Add schema failed: => {str(err)}")
+
 
     def _deselect_schema(self):
         """Deselect current selected serialization schema"""
@@ -347,10 +350,10 @@ class MainQtView(QtView):
         self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
         self._registry_url_valid = False
 
-    def _test_registry_url(self) -> Optional[str]:
+    def _test_registry_url(self, skip_if_tested: bool = True) -> Optional[str]:
         """Check is the provided schema registry url is valid or not"""
         url = self.ui.cmb_registry_url.currentText()
-        if self._registry_url_valid:
+        if self._registry_url_valid and skip_if_tested:
             return url
         elif url:
             if is_reachable(url):

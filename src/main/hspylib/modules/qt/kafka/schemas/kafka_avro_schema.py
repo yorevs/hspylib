@@ -18,6 +18,7 @@ from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserialize
 from confluent_kafka.serialization import StringSerializer, StringDeserializer
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
 from hspylib.modules.qt.kafka.producer_config import ProducerConfig
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
@@ -42,10 +43,10 @@ class KafkaAvroSchema(KafkaSchema):
 
     def _init_schema(self) -> None:
         self._type = self._content['type']
-        self._namespace = self._content['namespace']
         self._name = self._content['name']
-        self._doc = self._content['doc']
         self._fields = self._content['fields']
+        self._namespace = get_by_key_or_default(self._content, 'namespace', 'not-set')
+        self._doc = get_by_key_or_default(self._content, 'doc', 'not-set')
 
     def serializer_settings(self) -> dict:
         return {
