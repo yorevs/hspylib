@@ -16,15 +16,15 @@
 import ast
 import atexit
 import json
+import logging as log
 import os
 import re
-import logging as log
 from collections import defaultdict
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QSpacerItem, QSizePolicy
 from requests.exceptions import ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL
 
 from hspylib.core.config.app_config import AppConfigs
@@ -144,10 +144,11 @@ class MainQtView(QtView):
         self.ui.cmb_registry_url.lineEdit().setPlaceholderText("Type the registry url")
         self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
         self.ui.txt_sel_schema.set_clearable(False)
+        self.ui.fr_schema_fields.setLayout(QGridLayout())
 
     def setup_producer_controls(self):
         """Setup producer components"""
-        self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type comma (,) separated topics")
+        self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_add.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_setting)
@@ -208,15 +209,29 @@ class MainQtView(QtView):
         settings = self._all_settings[self._kafka_type()]
         return settings if all(s in settings for s in self.REQUIRED_SETTINGS) else None
 
-    def _messages(self) -> List[str]:
-        """Return the selected messages"""
-        msgs = self.ui.txt_producer.toPlainText().split('\n')
-        return list(filter(lambda m: m != '', msgs))
-
     def _schema(self) -> KafkaSchema:
         """Return the selected serialization schema"""
         sel_schema = self.ui.cmb_sel_schema.currentText()
         return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
+
+    def _messages(self) -> Union[str, List[str]]:
+        """Return the selected messages"""
+        schema = self._schema()
+        if isinstance(schema, KafkaPlainSchema):
+            msgs = self.ui.txt_producer.toPlainText().split('\n')
+            return list(filter(lambda m: m != '', msgs))
+        else:
+            widget_index = 1
+            field_index = 0
+            message = defaultdict()
+            layout = self.ui.fr_schema_fields.layout()
+            while field_index < len(schema.get_fields()):
+                field = schema[field_index]
+                widget = layout.itemAt(widget_index).widget()
+                message.update(field.value_from(widget))
+                field_index += 1
+                widget_index += 2
+            return json.dumps(message, indent = 0).replace('\n', '')
 
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
@@ -259,13 +274,41 @@ class MainQtView(QtView):
         """Change the current serialization schema text content"""
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
-            self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
-            # fixme: self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
             self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
+            self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
+            self._update_schema_fields()
+            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
         else:
+            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.setText('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
-            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
+
+    def _update_schema_fields(self):
+        """TODO:"""
+        sel_schema = self.ui.cmb_sel_schema.currentText()
+        if sel_schema:
+            schema = self._all_schemas[sel_schema]
+            if schema:
+                fields = schema.get_fields()
+                layout = self._cleanup_layout()
+                row = 0
+                for field in fields:
+                    layout.addWidget(QLabel(f"{field.get_name().capitalize()}: "), row, 0)
+                    layout.addWidget(field.widget(), row, 1)
+                    row += 1
+                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed), row + 1, 0, 2)
+                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed), row + 1, 2)
+
+    def _cleanup_layout(self) -> QGridLayout:
+        """TODO"""
+        layout = self.ui.fr_schema_fields.layout()
+        while layout.count() > 0:
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        return layout
+
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""

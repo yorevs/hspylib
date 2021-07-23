@@ -7,10 +7,7 @@
     {
       "default": null,
       "name": "first",
-      "type": [
-        "null",
-        "string"
-      ]
+      "type": "string"
     },
     {
       "default": null,
