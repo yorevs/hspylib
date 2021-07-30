@@ -28,7 +28,8 @@ from hspylib.modules.qt.kafka.schemas.schema_field import SchemaField
 
 class KafkaAvroSchema(KafkaSchema):
     """Apache AVRO schema serializer/deserializer
-       documentation: https://avro.apache.org/docs/current/gettingstartedpython.html
+       Documentation: https://avro.apache.org/docs/current/gettingstartedpython.html
+       Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
     """
 
     @classmethod

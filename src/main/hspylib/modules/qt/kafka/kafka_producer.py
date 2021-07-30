@@ -19,6 +19,7 @@ from typing import List, Any, Union
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from avro.io import AvroTypeException
+from avro.schema import Schema
 from confluent_kafka import SerializingProducer
 from confluent_kafka.cimpl import KafkaError, Message
 from confluent_kafka.error import ValueSerializationError
