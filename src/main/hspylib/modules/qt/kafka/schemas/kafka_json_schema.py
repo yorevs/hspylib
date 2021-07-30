@@ -28,7 +28,8 @@ from hspylib.modules.qt.kafka.schemas.schema_field import SchemaField
 
 class KafkaJsonSchema(KafkaSchema):
     """Json schema serializer/deserializer
-       documentation: https://json-schema.org/
+       Documentation: https://json-schema.org/
+       Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
     """
 
     @classmethod

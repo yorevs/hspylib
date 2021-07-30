@@ -98,7 +98,7 @@ class KafkaSchema(ABC):
     def register_schema(self) -> bool:
         """TODO"""
         try:
-            self._schema_id = self._schema_client.register_schema(self._name.lower(), self._schema)
+            self._schema_id = self._schema_client.register_schema(self._name, self._schema)
         except (AttributeError, ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL, SchemaRegistryError) as err:
             syserr(f"Unable to register schema at: {self._registry_url} => {str(err)}")
             log.error(f"Unable to register schema at: {self._registry_url} => {str(err)}")
