@@ -42,7 +42,6 @@ class DashboardIcons(Awesome):
     DOWNLOAD = u'\uF019'     # 
     ARCHIVE = u'\uF01C'      # 
     PLAY = u'\uF01D'         # 
-    REFRESH = u'\uF01E'      # 
     FLAG = u'\uF024'         # 
     FAVORITE = u'\uF02E'     # 
     PRINTER = u'\uF02F'      # 

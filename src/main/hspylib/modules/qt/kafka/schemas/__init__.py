@@ -10,5 +10,8 @@ __all__ = [
   'kafka_json_schema', 
   'kafka_plain_schema', 
   'kafka_schema', 
-  'kafka_schema_factory'
+  'kafka_schema_factory', 
+  'schema_field', 
+  'schema_registry', 
+  'schema_subject'
 ]

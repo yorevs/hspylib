@@ -57,11 +57,15 @@ class WidgetExecutionError(HSBaseException):
 
 
 class KeyboardInputError(HSBaseException):
-    """Raised when an invalid keystroke input is provided """
+    """Raised when an invalid keystroke input is provided"""
 
 
 class UnsupportedSchemaError(HSBaseException):
     """Raised when an invalid schema is provided """
+
+
+class SchemaRegistryError(HSBaseException):
+    """Raised when schema registration or API access fails"""
 
 
 class InvalidInputError(Exception):

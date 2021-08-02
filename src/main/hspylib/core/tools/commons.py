@@ -20,7 +20,7 @@ import pathlib
 import re
 import sys
 from datetime import timedelta, datetime
-from typing import Any, List, Optional, Tuple, Type
+from typing import Any, List, Optional, Tuple, Type, Union
 
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
 from hspylib.core.tools.validator import Validator
@@ -192,7 +192,7 @@ def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
     return flat_dict
 
 
-def get_or_default(options: tuple, index: int, default_value=None) -> Optional[Any]:
+def get_or_default(options: Union[tuple,list], index: int, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or default_value if index is out of range
     :param options: The available list of options
     :param index: The index of the item
