@@ -16,7 +16,7 @@
 
 import collections
 import logging as log
-from typing import Type, List, TypeVar
+from typing import Type, List, TypeVar, Union, Tuple
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt
 from PyQt5.QtGui import QColor
@@ -40,23 +40,20 @@ class HTableModel(QAbstractTableModel):
         max_rows: int = 1000):
 
         QAbstractTableModel.__init__(self, parent)
+        self.parent = parent
         self.clazz = clazz
         self.table_data = collections.deque(maxlen=max_rows)
         list(map(self.table_data.append, table_data or []))
         self.headers = headers or self._headers_by_entity()
         self.cell_alignments = cell_alignments
-        parent.setModel(self)
+        self.parent.setModel(self)
         log.info('%s table_headers=%s', clazz.__class__.__name__, '|'.join(self.headers))
 
-    def row(self, index: QModelIndex) -> T:
+    def row(self, index: Union[int, QModelIndex]) -> T:
         """TODO"""
-        return self.table_data[index.row()]
+        return self.table_data[index.row() if isinstance(index, QModelIndex) else index]
 
-    def column(self, index: QModelIndex) -> T:
-        """TODO"""
-        return class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
-
-    def push_data(self, data: List[T]):
+    def push_data(self, data: List[T]) -> None:
         """TODO"""
         list(map(self.table_data.append, data))
         self.layoutChanged.emit()
@@ -66,6 +63,29 @@ class HTableModel(QAbstractTableModel):
         self.table_data.clear()
         self.layoutChanged.emit()
 
+    def selected_rows(self) -> Tuple[List[QModelIndex], List[T]]:
+        """TODO"""
+        model = self.parent.selectionModel()
+        rows = model.selectedRows() if model else []
+        return rows, [self.table_data[r.row()] for r in rows] if model else []
+
+    def remove_rows(self, rows: List[Union[int, QModelIndex]]):
+        """TODO"""
+        rows.sort(reverse=True)
+        for r in rows:
+            idx = r.row() if isinstance(r, QModelIndex) else r
+            self.removeRow(idx)
+
+    def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:
+        """TODO"""
+        if 0 <= row < len(self.table_data):
+            self.beginRemoveRows(QModelIndex(), row, row)
+            del self.table_data[row]
+            self.endRemoveRows()
+            self.layoutChanged.emit()
+            return True
+        return False
+
     def sort(self, column: int, order: Qt.SortOrder = ...) -> None:
         """TODO"""
         keys = class_attribute_names(self.clazz)
@@ -74,29 +94,30 @@ class HTableModel(QAbstractTableModel):
 
     def data(self, index: QModelIndex, role: int = ...) -> QVariant:
         """TODO"""
-        ret_val = QVariant()
+        ret_val = None
         entity = class_attribute_values(self.table_data[index.row()].__dict__)[index.column()]
         str_entity = str(entity) if entity is not None else ''
         if role == Qt.DisplayRole:
-            ret_val = \
-                QVariant(str_entity)
-        if role == Qt.TextAlignmentRole:
-            ret_val = \
-                QVariant(self.cell_alignments[index.column()]) \
-                    if self.cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
-        if role == Qt.BackgroundColorRole:
-            ret_val = \
-                QVariant(QColor(57, 57, 57) if index.row() % 2 == 0 else '')
+            ret_val = QVariant(str_entity)
+        elif role == Qt.TextAlignmentRole:
+            ret_val = QVariant(self.cell_alignments[index.column()]) \
+                if self.cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
+        elif role == Qt.BackgroundColorRole:
+            light_gray = QColor(57, 57, 57)
+            ret_val = QVariant(light_gray if index.row() % 2 == 0 else '')
 
-        return ret_val
+        return ret_val if ret_val else QVariant()
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> QVariant:
         """TODO"""
+        ret_val = None
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant(self.headers[section].upper()) if len(self.headers) >= section else QVariant('-')
-        if orientation == Qt.Vertical and role == Qt.DisplayRole:
-            return QVariant(str(section))
-        return QVariant()
+            ret_val = QVariant(self.headers[section].upper()) \
+                if len(self.headers) >= section else QVariant('-')
+        elif orientation == Qt.Vertical and role == Qt.DisplayRole:
+            ret_val = QVariant(str(section))
+
+        return ret_val if ret_val else QVariant()
 
     def rowCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""

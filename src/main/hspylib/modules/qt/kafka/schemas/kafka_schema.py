@@ -20,9 +20,8 @@ from json.decoder import JSONDecodeError
 from typing import List, Optional
 from uuid import uuid4
 
-from confluent_kafka.schema_registry import SchemaRegistryClient, Schema, SchemaRegistryError
+from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from confluent_kafka.serialization import SerializationContext
-from requests.exceptions import ConnectTimeout, ConnectionError, InvalidURL, ReadTimeout
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty, build_url, syserr
@@ -94,17 +93,6 @@ class KafkaSchema(ABC):
 
     def __getitem__(self, index: int):
         return self._fields[index]
-
-    def register_schema(self) -> bool:
-        """TODO"""
-        try:
-            self._schema_id = self._schema_client.register_schema(self._name, self._schema)
-        except (AttributeError, ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL, SchemaRegistryError) as err:
-            syserr(f"Unable to register schema at: {self._registry_url} => {str(err)}")
-            log.error(f"Unable to register schema at: {self._registry_url} => {str(err)}")
-            return False
-        log.info(f"Schema successfully registered id={self._schema_id} at {self._registry_url}")
-        return True
 
     def __str__(self):
         return f"[{self._schema_type}] name={self._name}, type={self._type}, namespace={self._namespace}"

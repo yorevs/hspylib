@@ -80,6 +80,13 @@ class Validator(ABC):
     def has_no_nulls(*args) -> bool:
         return all(opt is not None for opt in args)
 
+    @staticmethod
+    def in_range(array: list, start: int, end: int) -> bool:
+        return \
+            list is not None \
+            and 0 <= start < len(array) \
+            and 0 <= start <= end < len(array)
+
     @abstractmethod
     def __call__(self, *args, **kwargs) -> bool:
         pass

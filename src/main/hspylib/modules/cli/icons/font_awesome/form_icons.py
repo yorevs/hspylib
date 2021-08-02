@@ -42,6 +42,7 @@ class FormIcons(Awesome):
     MARKED = u'\uF634'         # 
     UNMARKED = u'\uF630'       # 
     CLEAR = u'\uF5E1'          # 
+    REFRESH = u'\uF01E'        # 
 
     HIDDEN = u'\uF070'         # 
     VISIBLE = u'\uF06E'        # 

@@ -24,18 +24,15 @@ from typing import List, Optional, Tuple, Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QSpacerItem, QSizePolicy
-from requests.exceptions import ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL
+from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QComboBox
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.exception.exceptions import UnsupportedSchemaError, InvalidStateError
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.fetch.fetch import is_reachable, get
 from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
 from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
 from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
@@ -47,6 +44,8 @@ from hspylib.modules.qt.kafka.schemas.kafka_json_schema import KafkaJsonSchema
 from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
 from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 from hspylib.modules.qt.kafka.schemas.kafka_schema_factory import KafkaSchemaFactory
+from hspylib.modules.qt.kafka.schemas.schema_registry import SchemaRegistry
+from hspylib.modules.qt.kafka.schemas.schema_subject import Subject
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
@@ -64,7 +63,8 @@ class MainQtView(QtView):
         """TabWidget indexes"""
         PRODUCER = 0
         CONSUMER = 1
-        CONSOLE = 2
+        REGISTRY = 2
+        CONSOLE = 3
 
     class StkTools(Enumeration):
         """StackedPane Widget 'Tools' indexes"""
@@ -90,7 +90,7 @@ class MainQtView(QtView):
         super().__init__()
         self.configs = AppConfigs.INSTANCE
         self._started = False
-        self._registry_url_valid = False
+        self._registry = SchemaRegistry()
         self._consumer = KafkaConsumer()
         self._consumer.messageConsumed.connect(self._message_consumed)
         self._consumer.messageFailed.connect(self._display_error)
@@ -142,6 +142,10 @@ class MainQtView(QtView):
         self.ui.cmb_registry_url.lineEdit().editingFinished.connect(self._invalidate_registry_url)
         self.ui.cmb_sel_schema.currentTextChanged.connect(self._change_schema)
         self.ui.cmb_registry_url.lineEdit().setPlaceholderText("Type the registry url")
+        self.ui.tbtn_registry_delete.setText(FormIcons.DESELECT.value)
+        self.ui.tbtn_registry_delete.clicked.connect(self._deregister_subject)
+        self.ui.tbtn_registry_refresh.setText(FormIcons.REFRESH.value)
+        self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
         self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
         self.ui.txt_sel_schema.set_clearable(False)
         self.ui.fr_schema_fields.setLayout(QGridLayout())
@@ -158,7 +162,7 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_connect.setStyleSheet('QToolButton {color: #2380FA;}')
         self.ui.tbtn_produce.clicked.connect(self._produce)
         self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
-        self.ui.tbtn_prod_clear_topics.setText(FormIcons.DELETE.value)
+        self.ui.tbtn_prod_clear_topics.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_prod_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_add_topics.clicked.connect(self._add_topic)
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
@@ -178,7 +182,7 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_connect.clicked.connect(self._toggle_start_consumer)
         self.ui.tbtn_cons_connect.setText(DashboardIcons.PLUG_IN.value)
         self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: #2380FA;}')
-        self.ui.tbtn_cons_clear_topics.setText(FormIcons.DELETE.value)
+        self.ui.tbtn_cons_clear_topics.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_cons_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_cons_add_topics.clicked.connect(lambda: self._add_topic(is_producer=False))
         self.ui.tbtn_cons_del_topics.setText(FormIcons.MINUS.value)
@@ -193,6 +197,7 @@ class MainQtView(QtView):
         return self.ui.tab_widget.currentIndex() == self.Tabs.PRODUCER.value
 
     def _kafka_type(self) -> str:
+        """Whether started as producer or consumer"""
         return 'producer' if self._is_producer() else 'consumer'
 
     def _topics(self, is_producer: bool) -> Optional[List[str]]:
@@ -215,22 +220,20 @@ class MainQtView(QtView):
         return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
 
     def _messages(self) -> Union[str, List[str]]:
-        """Return the selected messages"""
+        """Return the selected messages or build a json message from form"""
         schema = self._schema()
         if isinstance(schema, KafkaPlainSchema):
             msgs = self.ui.txt_producer.toPlainText().split('\n')
             return list(filter(lambda m: m != '', msgs))
         else:
-            widget_index = 1
-            field_index = 0
             message = defaultdict()
             layout = self.ui.fr_schema_fields.layout()
-            while field_index < len(schema.get_fields()):
-                field = schema[field_index]
-                widget = layout.itemAt(widget_index).widget()
+            columns = layout.columnCount()
+            for index, field in enumerate(schema.get_fields()):
+                widget_idx = ((index+1) * columns) - 1
+                widget = layout.itemAt(widget_idx).widget()
                 message.update(field.value_from(widget))
-                field_index += 1
-                widget_index += 2
+                if hasattr(widget, 'clear') and not isinstance(widget, QComboBox): widget.clear()
             return json.dumps(message, indent = 0).replace('\n', '')
 
     def _activate_tab(self, index: int = None) -> None:
@@ -252,13 +255,11 @@ class MainQtView(QtView):
             if registry_url:
                 try:
                     schema = KafkaSchemaFactory.create_schema(file_tuple[0], registry_url)
-                    if schema.register_schema():
-                        self._all_schemas[schema.get_name()] = schema
-                        self.ui.cmb_sel_schema.set_item(schema.get_name())
-                        self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
-                        self._display_text(f"Schema added: \"{str(schema)}\"")
-                    else:
-                        self._display_error(f"Unable to register schema: \"{str(schema)}\"")
+                    self._all_schemas[schema.get_name()] = schema
+                    self.ui.cmb_sel_schema.set_item(schema.get_name())
+                    self.ui.cmb_registry_schema.set_item(schema.get_name())
+                    self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
+                    self._display_text(f"Schema added: \"{str(schema)}\"")
                 except UnsupportedSchemaError as err:
                     self._display_error(f"Unsupported schema: => {str(err)}")
                 except InvalidStateError as err:
@@ -293,11 +294,19 @@ class MainQtView(QtView):
                 layout = self._cleanup_layout()
                 row = 0
                 for field in fields:
-                    layout.addWidget(QLabel(f"{field.get_name().capitalize()}: "), row, 0)
-                    layout.addWidget(field.widget(), row, 1)
+                    label = QLabel(f"{field.get_name().capitalize()}: ")
+                    layout.addWidget(label, row, 0)
+                    if field.is_required():
+                        req_star = QLabel('*')
+                        req_star.setStyleSheet('QLabel {color: #FF554D;}')
+                    else:
+                        req_star = QLabel(' ')
+                    layout.addWidget(req_star, row, 1)
+                    widget = field.widget()
+                    widget.setStyleSheet('QWidget {padding: 5px;}')
+                    layout.addWidget(widget, row, 2)
                     row += 1
-                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed), row + 1, 0, 2)
-                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed), row + 1, 2)
+                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Fixed, QSizePolicy.Expanding), row + 1, 0, 3)  # V
 
     def _cleanup_layout(self) -> QGridLayout:
         """TODO"""
@@ -391,49 +400,32 @@ class MainQtView(QtView):
         """Mark current schema registry url as not valid"""
         self.ui.tbtn_test_registry_url.setStyleSheet('')
         self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
-        self._registry_url_valid = False
+        self._registry.invalidate()
 
     def _test_registry_url(self, skip_if_tested: bool = True) -> Optional[str]:
         """Check is the provided schema registry url is valid or not"""
         url = self.ui.cmb_registry_url.currentText()
-        if self._registry_url_valid and skip_if_tested:
+        if self._registry.is_valid() and skip_if_tested:
             return url
         elif url:
-            if is_reachable(url):
+            if self._registry.set_url(url):
                 self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #28C941;}")
                 self._display_text(f"Host {url} succeeded", StatusColor.green)
-                self._registry_url_valid = True
-                self._fetch_registry_info(url)
+                self._registry.fetch_server_info()
+                self._display_text(
+                    f"[Registry] Supported schema types: {self._registry.get_schema_types()}", StatusColor.purple)
+                self._display_text(
+                    f"[Registry] Existing subjects: {self._registry.get_subjects()}", StatusColor.purple)
             else:
                 self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
                 self._display_error(f"Host {url} is unreachable")
-                self._registry_url_valid = False
         else:
             self.ui.tbtn_test_registry_url.setText(FormIcons.UNCHECK_CIRCLE.value)
             self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
 
         return url
-
-    def _fetch_registry_info(self, url: str) -> None:
-        """Fetch information about the selected schema registry server"""
-        try:
-            registry_info = get(url=f"{url}/schemas/types")
-            if registry_info.status_code == HttpCode.OK:
-                self._display_text(f"[Registry] Supported schema types: {registry_info.body}", StatusColor.purple)
-            elif registry_info.status_code == HttpCode.NOT_FOUND:
-                self._display_text(
-                    '[Registry] AVRO is the only supported schema type in the server.', StatusColor.purple)
-            else:
-                self._display_error('[Registry] Unable to fetch registry schema types.')
-            registry_info = get(url=f"{url}/subjects")
-            if registry_info.status_code == HttpCode.OK:
-                self._display_text(f"[Registry] Existing subjects: {registry_info.body}", StatusColor.purple)
-            else:
-                self._display_error('[Registry] Unable to fetch registry subjects.')
-        except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL) as err:
-            self._display_error(f"[Registry] Unable to fetch registry information from {url}\n => {str(err)}")
 
     def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
@@ -546,6 +538,27 @@ class MainQtView(QtView):
         self.ui.tbl_consumer.model().push_data([row])
         self._console_print(text, StatusColor.orange)
         self._stats.report_consumed()
+
+    def _refresh_registry_subjects(self):
+        """Refresh all schema registry server subjects"""
+        if self._registry.is_valid():
+            if not self.ui.tbl_registry.model():
+                HTableModel(self.ui.tbl_registry, Subject)
+            else:
+                self.ui.tbl_registry.model().clear()
+            subjects = self._registry.fetch_subjects_info()
+            self.ui.tbl_registry.model().push_data(subjects)
+
+    def _deregister_subject(self):
+        """TODO"""
+        model = self.ui.tbl_registry.model()
+        if model:
+            indexes, subjects = self.ui.tbl_registry.model().selected_rows()
+            if indexes:
+                self._registry.deregister(subjects)
+                model.remove_rows(indexes)
+                self._display_text(
+                    f"Schema subjects [{', '.join([s.subject for s in subjects])}] successfully deregistered")
 
     def _console_print(self, text: str, color: QColor = None) -> None:
         """Append a message to the console."""

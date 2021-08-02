@@ -115,7 +115,7 @@ class KafkaProducer(QThread):
                     syserr(f"Invalid input, discarding record => {str(err)}")
                     continue
                 finally:
-                    self._producer.flush(self._flush_timeout)
+                    self._flush(self._flush_timeout)
 
     def _cb_message_produced(self, error: KafkaError, message: Message) -> None:
         """Delivery report handler called on successful or failed delivery of message"""
