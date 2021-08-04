@@ -122,7 +122,7 @@ class SchemaField:
             min_val, max_val = self._min_max_values()
             widget_instance.setMinimum(min_val)
             widget_instance.setMaximum(max_val)
-            widget_instance.setValue(int(default_value or 0))
+            widget_instance.setValue(default_value or 0)
         else:
             widget_instance.setPlaceholderText(placeholder_text)
             widget_instance.setText(default_value)

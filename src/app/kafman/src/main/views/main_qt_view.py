@@ -27,7 +27,6 @@ from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QComboBox
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.exception.exceptions import UnsupportedSchemaError, InvalidStateError, InvalidInputError
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
@@ -50,6 +49,7 @@ from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
+from kafman.src.main.views.indexes import StkTools, StkProducerEdit, Tabs
 
 
 class MainQtView(QtView):
@@ -58,24 +58,6 @@ class MainQtView(QtView):
     HISTORY_FILE = f"{run_dir()}/resources/.kafman-history.properties"
     INITIAL_SCHEMA_DIR = f"{run_dir()}/resources/schemas"
     REQUIRED_SETTINGS = ['bootstrap.servers']
-
-    class Tabs(Enumeration):
-        """TabWidget indexes"""
-        PRODUCER = 0
-        CONSUMER = 1
-        REGISTRY = 2
-        CONSOLE = 3
-
-    class StkTools(Enumeration):
-        """StackedPane Widget 'Tools' indexes"""
-        SETTINGS = 0
-        SCHEMAS = 1
-        STATISTICS = 2
-
-    class StkProducerEdit(Enumeration):
-        """StackedPane Widget 'ProducerEdit' indexes"""
-        TEXT = 0
-        FORM = 1
 
     @staticmethod
     def supported_schemas() -> str:
@@ -127,7 +109,7 @@ class MainQtView(QtView):
     def setup_general_controls(self):
         """Setup general components"""
         self.ui.splitter_pane.setSizes([350, 824])
-        self.ui.tool_box.setCurrentIndex(self.StkTools.SETTINGS.value)
+        self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.lbl_status_text.set_elidable(True)
@@ -146,7 +128,7 @@ class MainQtView(QtView):
         self.ui.tbtn_registry_delete.clicked.connect(self._deregister_subject)
         self.ui.tbtn_registry_refresh.setText(FormIcons.REFRESH.value)
         self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
-        self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
+        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
         self.ui.txt_sel_schema.set_clearable(False)
         self.ui.fr_schema_fields.setLayout(QGridLayout())
 
@@ -193,20 +175,19 @@ class MainQtView(QtView):
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
 
     def _is_producer(self) -> bool:
-        """Whether started as producer or consumer"""
-        return self.ui.tab_widget.currentIndex() == self.Tabs.PRODUCER.value
+        """Whether producer or consumer tab is selected"""
+        return self.ui.tab_widget.currentIndex() == Tabs.PRODUCER.value
 
     def _kafka_type(self) -> str:
-        """Whether started as producer or consumer"""
+        """Whether kafka type is producer or consumer"""
         return 'producer' if self._is_producer() else 'consumer'
 
     def _topics(self, is_producer: bool) -> Optional[List[str]]:
-        """Return the selected topics"""
-        if is_producer:
-            topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
-        else:
-            topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
-
+        """Return the selected topic or a list containing all of them"""
+        cmb_topics = self.ui.cmb_prod_topics if is_producer else self.ui.cmb_cons_topics
+        topics = [cmb_topics.itemText(i) for i in range(cmb_topics.count())] \
+            if not cmb_topics.currentText() \
+            else [cmb_topics.currentText()]
         return topics if len(topics) > 0 else None
 
     def _settings(self) -> Optional[dict]:
@@ -252,41 +233,41 @@ class MainQtView(QtView):
     def _add_schema(self, file_tuple: Tuple[str, str] = None) -> None:
         """Select an serialization schema from the file picker dialog or from specified file"""
         if not file_tuple:
-            file_tuple = QFileDialog.getOpenFileName(
+            file_tuple = QFileDialog.getOpenFileNames(
                 self.ui.splitter_pane,
                 'Open schema', self._last_schema_dir or '.', f"Schema files ({self.supported_schemas()})")
         if file_tuple and file_tuple[0]:
-            self._last_schema_dir = dirname(file_tuple[0])
-            registry_url = self._test_registry_url()
-            if registry_url:
-                try:
-                    schema = KafkaSchemaFactory.create_schema(file_tuple[0], registry_url)
-                    self._all_schemas[schema.get_name()] = schema
-                    self.ui.cmb_sel_schema.set_item(schema.get_name())
-                    self.ui.cmb_registry_schema.set_item(schema.get_name())
-                    self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
-                    self._display_text(f"Schema added: \"{str(schema)}\"")
-                except UnsupportedSchemaError as err:
-                    self._display_error(f"Unsupported schema: => {str(err)}")
-                except InvalidStateError as err:
-                    self._display_error(f"Add schema failed: => {str(err)}")
-
+            for schema_file in file_tuple[0]:
+                self._last_schema_dir = dirname(schema_file)
+                registry_url = self._test_registry_url()
+                if registry_url:
+                    try:
+                        schema = KafkaSchemaFactory.create_schema(schema_file, registry_url)
+                        self._all_schemas[schema.get_name()] = schema
+                        self.ui.cmb_sel_schema.set_item(schema.get_name())
+                        self.ui.cmb_registry_schema.set_item(schema.get_name())
+                        self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
+                        self._display_text(f"Schema added: \"{str(schema)}\"")
+                    except UnsupportedSchemaError as err:
+                        self._display_error(f"Unsupported schema: => {str(err)}")
+                    except InvalidStateError as err:
+                        self._display_error(f"Add schema failed: => {str(err)}")
 
     def _deselect_schema(self):
         """Deselect current selected serialization schema"""
         self.ui.cmb_sel_schema.setCurrentIndex(-1)
-        self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
+        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
 
     def _change_schema(self, schema_name: str):
         """Change the current serialization schema text content"""
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
-            self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
+            self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
             self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
             self._build_schema_layout()
-            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
+            self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
         else:
-            self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
+            self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.setText('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
 
@@ -439,15 +420,14 @@ class MainQtView(QtView):
         started = self._producer.is_started()
         settings = self._settings()
         if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(self.StkTools.SETTINGS.value)
+            self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
             self._producer.stop_producer()
             self._display_text("Production to kafka topics stopped", StatusColor.yellow)
         else:  # Start
-            self._add_topic()
             topics = self._topics(True)
             if topics:
                 schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(self.StkTools.STATISTICS.value)
+                self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
                 self._producer.start_producer(settings, self._schema())
                 self._display_text(f"Started producing to topics {topics}{schema_name}", StatusColor.green)
             else:
@@ -468,15 +448,14 @@ class MainQtView(QtView):
         started = self._consumer.is_started()
         settings = self._settings()
         if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(self.StkTools.STATISTICS.value)
+            self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._consumer.stop_consumer()
             self._display_text("Consumption from kafka topics stopped", StatusColor.yellow)
         else:  # Start
-            self._add_topic(is_producer=False)
             topics = self._topics(False)
             if topics:
                 schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
+                self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
                 self._consumer.start_consumer(settings, self._schema())
                 self._consumer.consume(topics)
                 self._display_text(f"Started consuming from topics {topics}{schema_name}", StatusColor.green)
