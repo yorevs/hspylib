@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QSpacerItem, QSize
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import UnsupportedSchemaError, InvalidStateError
+from hspylib.core.exception.exceptions import UnsupportedSchemaError, InvalidStateError, InvalidInputError
 from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirname
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
@@ -232,7 +232,11 @@ class MainQtView(QtView):
             for index, field in enumerate(schema.get_fields()):
                 widget_idx = ((index+1) * columns) - 1
                 widget = layout.itemAt(widget_idx).widget()
-                message.update(field.value_from(widget))
+                if not field.is_valid(widget):
+                    raise InvalidInputError('Form contains unfilled required fields')
+                field_value = field.get_field_value(widget)
+                if field_value:
+                    message.update(field_value)
                 if hasattr(widget, 'clear') and not isinstance(widget, QComboBox): widget.clear()
             return json.dumps(message, indent = 0).replace('\n', '')
 
@@ -301,6 +305,7 @@ class MainQtView(QtView):
                         req_star.setStyleSheet('QLabel {color: #FF554D;}')
                     else:
                         req_star = QLabel(' ')
+                    req_star.setToolTip(f"This field is {'required' if field.is_required() else 'optional'}")
                     layout.addWidget(req_star, row, 1)
                     widget = field.widget()
                     widget.setStyleSheet('QWidget {padding: 5px;}')
@@ -487,11 +492,14 @@ class MainQtView(QtView):
 
     def _produce(self) -> None:
         """Produce messages to selected kafka topics"""
-        messages = self._messages()
-        if self._producer.is_started() and len(messages) > 0:
-            topics = self._topics(True)
-            self._producer.produce(topics, messages)
-            self.ui.txt_producer.clear()
+        try:
+            messages = self._messages()
+            if self._producer.is_started() and messages:
+                topics = self._topics(True)
+                self._producer.produce(topics, messages)
+                self.ui.txt_producer.clear()
+        except InvalidInputError as err:
+            self._display_error(str(err))
 
     def _display_error(self, message: str, add_console: bool = True) -> None:
         """Display an error at the status bar (and console if required)"""

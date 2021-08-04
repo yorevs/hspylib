@@ -147,9 +147,11 @@ class KafkaSchema(ABC):
         """TODO"""
         return self._name
 
-    def get_fields(self) -> List[SchemaField]:
+    def get_fields(self, sort_by_required: bool = True) -> List[SchemaField]:
         """TODO"""
-        return self._fields
+        return self._fields \
+            if not sort_by_required \
+            else sorted(self._fields, key=lambda f: f.is_required(), reverse=True)
 
     def get_namespace(self) -> Optional[str]:
         """TODO"""
