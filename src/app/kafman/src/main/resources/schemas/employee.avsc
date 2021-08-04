@@ -13,12 +13,19 @@
       "type": "int"
     },
     {
+      "name": "role",
+      "type": "enum",
+      "symbols": ["Manager","Developer","RH","PM","CEO"],
+      "default": "Developer"
+    },
+    {
       "name": "salary",
       "type": "float"
     },
     {
       "name": "active",
-      "type": "boolean"
+      "type": "boolean",
+      "default": true
     }
   ]
 }

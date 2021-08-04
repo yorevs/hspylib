@@ -12,6 +12,9 @@
     },
     "product": {
       "type": "string"
+    },
+    "quantity": {
+      "type": "integer"
     }
   },
   "required": [
