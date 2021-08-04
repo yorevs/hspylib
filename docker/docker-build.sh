@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source "docker-tools-inc.sh"
+
 USAGE="
     Usage: build.bash <container-name>
 
@@ -21,23 +23,22 @@ else
         exit 1
       fi
       echo ''
-      echo -e "${YELLOW}Building ${BLUE}[${next_container}] ... ${NC}"
+      echo -e "Building docker image: ${GREEN}[${next_container}] ${NC} ... "
       echo ''
       if [[ -d "${next_container}/" ]]; then
         if docker build -t "yorevs/hhs-${next_container}:latest" "${next_container}/"; then
           if docker image push "yorevs/hhs-${next_container}:latest"; then
-            echo "${GREEN}Successfully built and pushed docker image: \"yorevs/hhs-${next_container}:latest\" ! ${NC}"
+            echo -e "${GREEN}Successfully built and pushed docker image: \"yorevs/hhs-${next_container}:latest\" ! ${NC}"
           else
-            echo "${RED}Failed to push docker image: \"yorevs/hhs-${next_container}:latest\" ! ${NC}"
+            echo -e "${RED}Failed to push docker image: \"yorevs/hhs-${next_container}:latest\" ! ${NC}"
           fi
         else
-          echo "${RED}Failed to build docker image: \"yorevs/hhs-${next_container}\" ! ${NC}"
+          echo -e "${RED}Failed to build docker image: \"yorevs/hhs-${next_container}\" ! ${NC}"
         fi
       fi
     else
-      echo "${RED}Invalid container type: \"${next_container}\". Please use one of [${container_dirs}] ! ${NC}"
+      echo -e "${RED}Invalid container type: \"${next_container}\". Please use one of [${container_dirs}] ! ${NC}"
     fi
   done
-  echo -n 'Changing directory => '
   popd && echo '' || exit 1
 fi

@@ -25,17 +25,17 @@ stopContainers() {
   for container in ${all[*]}; do
     status=$(getStatus "${container}")
     if [ "${status}" = "\"running\"" ]; then
-      echo -e "\033[0;34m⠿ Stopping container ${container} \033[0;0;0m"
+      echo -e "${BLUE}⠿ Stopping container ${container} \${NC}"
       pushd "composes/${container}" &>/dev/null || exit 1
       if docker compose rm --stop --force; then
         assertStatus "${container}" "exited"
         echo ''
       else
-        echo -e "\033[0;31m⠿ Docker (docker compose rm) command failed! \033[0;0;0m\n"
+        echo -e "${RED}⠿ Docker (docker compose rm) command failed! \${NC}\n"
       fi
       popd &>/dev/null || exit 1
     else
-      echo -e "\033[0;34m⠿ Container \"${container}\" is not up\033[0;0;0m"
+      echo -e "${BLUE}⠿ Container \"${container}\" is not up\${NC}"
     fi
   done
 }
