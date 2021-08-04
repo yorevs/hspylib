@@ -1,8 +1,10 @@
-from typing import Union, List, Type, Optional
+from typing import Union, Type, Optional, Tuple
 
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget
+from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget, QSizePolicy
 
 from hspylib.core.tools.commons import get_by_key_or_default
+from hspylib.core.tools.preconditions import check_not_none
+from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 
 
@@ -26,9 +28,10 @@ class SchemaField:
     }
 
     @staticmethod
-    def of_dict(field_attrs: dict, required: bool = True) -> 'SchemaField':
+    def of_dict(schema: KafkaSchema, field_attrs: dict, required: bool = True) -> 'SchemaField':
         """TODO"""
         return SchemaField(
+            schema,
             field_attrs['name'],
             field_attrs['type'],
             required,
@@ -36,9 +39,10 @@ class SchemaField:
         )
 
     @staticmethod
-    def of_map(field_name: str, field_attrs: dict, required: bool = True) -> 'SchemaField':
+    def of_map(schema: KafkaSchema, field_name: str, field_attrs: dict, required: bool = True) -> 'SchemaField':
         """TODO"""
         return SchemaField(
+            schema,
             field_name,
             field_attrs['type'],
             required,
@@ -47,11 +51,13 @@ class SchemaField:
 
     def __init__(
         self,
+        schema: KafkaSchema,
         name: str,
         field_type: Union[str, list],
         required: bool,
         field_attrs: dict):
 
+        self._schema = schema
         self._name = name
         self._type = next((typ for typ in field_type if typ != 'null'), None)\
             if isinstance(field_type, list) \
@@ -65,6 +71,7 @@ class SchemaField:
 
     def get_field_value(self, widget_instance: QWidget) -> Optional[dict]:
         """TODO"""
+        check_not_none(widget_instance)
         if isinstance(widget_instance, (QSpinBox, QDoubleSpinBox)):
             value = str(widget_instance.value())
         elif isinstance(widget_instance, QCheckBox):
@@ -96,23 +103,32 @@ class SchemaField:
         """TODO"""
         widget_instance = self._widget_type()
         default_value = get_by_key_or_default(self._field_attrs, 'default', '')
+        placeholder_text = self._placeholder_text()
         tooltip = get_by_key_or_default(self._field_attrs, 'examples')
         tooltip = ('Examples: \n' + '\n'.join([f'  - {str(t)}' for t in tooltip])) \
             if tooltip \
-            else self._placeholder_text()
-        widget_instance.setToolTip(tooltip)
-        if self._widget_type == QLineEdit:
-            widget_instance.setPlaceholderText(self._placeholder_text())
-            widget_instance.setText(default_value)
-        elif self._widget_type == HComboBox:
-            widget_instance.addItems(self._field_items())
+            else placeholder_text
+        if self._widget_type == HComboBox:
+            widget_instance.addItems(self._schema.array_items(self._field_attrs))
             widget_instance.setEditable(True)
-            widget_instance.lineEdit().setPlaceholderText(self._placeholder_text())
-            widget_instance.setCurrentText(default_value)
-        elif self._widget_type == HComboBox:
-            widget_instance.setValue(default_value)
+            widget_instance.lineEdit().setPlaceholderText(placeholder_text)
+            if default_value:
+                widget_instance.setCurrentText(default_value)
+            else:
+                widget_instance.setCurrentIndex(0)
         elif self._widget_type == QCheckBox:
             widget_instance.setChecked(bool(default_value))
+        elif self._widget_type in [QSpinBox, QDoubleSpinBox]:
+            min_val, max_val = self._min_max_values()
+            widget_instance.setMinimum(min_val)
+            widget_instance.setMaximum(max_val)
+            widget_instance.setValue(int(default_value or 0))
+        else:
+            widget_instance.setPlaceholderText(placeholder_text)
+            widget_instance.setText(default_value)
+
+        widget_instance.setToolTip(tooltip)
+        widget_instance.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         return widget_instance
 
@@ -122,19 +138,18 @@ class SchemaField:
             if self._type in self.QWIDGET_TYPE_MAP \
             else QLineEdit
 
-    def _field_items(self) -> List[str]:
-        """TODO"""
-        enums = None
-        if self._field_attrs['type'] == 'array':
-            items = get_by_key_or_default(self._field_attrs, 'items')
-            enums = get_by_key_or_default(items, 'enum')
-        elif self._field_attrs['type'] == 'enum':
-            enums = get_by_key_or_default(self._field_attrs, 'symbols')
-        return enums or []
-
     def _placeholder_text(self) -> str:
         """TODO"""
         text = get_by_key_or_default(self._field_attrs, 'description')
         text = get_by_key_or_default(self._field_attrs, 'doc') if not text else text
         text = f"This field is {'required' if self._required else 'optional'}" if not text else text
         return text
+
+    def _min_max_values(self) -> Tuple[Union[int,float], Union[int,float]]:
+        """TODO"""
+        min_val = get_by_key_or_default(self._field_attrs, 'minimum', 0)
+        max_val = get_by_key_or_default(
+            self._field_attrs, 'maximum', 99.99
+                if self._widget_type() == QDoubleSpinBox
+                else 99)
+        return min_val, max_val

@@ -229,8 +229,10 @@ class MainQtView(QtView):
             message = defaultdict()
             layout = self.ui.fr_schema_fields.layout()
             columns = layout.columnCount()
+            w_offset = 1  # offset
+            w_before = 2  # widgets before
             for index, field in enumerate(schema.get_fields()):
-                widget_idx = ((index+1) * columns) - 1
+                widget_idx = ((index + w_offset) * columns) - w_before
                 widget = layout.itemAt(widget_idx).widget()
                 if not field.is_valid(widget):
                     raise InvalidInputError('Form contains unfilled required fields')
@@ -281,24 +283,23 @@ class MainQtView(QtView):
             content = self._all_schemas[schema_name].get_content()
             self.ui.tool_box.setCurrentIndex(self.StkTools.SCHEMAS.value)
             self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
-            self._update_schema_fields()
+            self._build_schema_layout()
             self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.FORM.value)
         else:
             self.ui.stk_producer_edit.setCurrentIndex(self.StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.setText('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
 
-    def _update_schema_fields(self):
-        """TODO:"""
+    def _build_schema_layout(self):
+        """Build a form based on the selected schema using a grid layout"""
         sel_schema = self.ui.cmb_sel_schema.currentText()
         if sel_schema:
             schema = self._all_schemas[sel_schema]
             if schema:
                 fields = schema.get_fields()
-                layout = self._cleanup_layout()
-                row = 0
-                for field in fields:
-                    label = QLabel(f"{field.get_name().capitalize()}: ")
+                layout = self._cleanup_schema_layout()
+                for row, field in enumerate(fields):
+                    label = QLabel(f"{field.get_name()}: ")
                     layout.addWidget(label, row, 0)
                     if field.is_required():
                         req_star = QLabel('*')
@@ -310,11 +311,12 @@ class MainQtView(QtView):
                     widget = field.widget()
                     widget.setStyleSheet('QWidget {padding: 5px;}')
                     layout.addWidget(widget, row, 2)
-                    row += 1
-                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Fixed, QSizePolicy.Expanding), row + 1, 0, 3)  # V
+                    layout.addItem(QSpacerItem(10, 10, QSizePolicy.MinimumExpanding, QSizePolicy.Fixed), row, 3, 1)
+                # Add a vertical spacer to fill the bottom of the form
+                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Fixed, QSizePolicy.Expanding), len(fields) + 1, 0, 3)
 
-    def _cleanup_layout(self) -> QGridLayout:
-        """TODO"""
+    def _cleanup_schema_layout(self) -> QGridLayout:
+        """Remove all widgets from the current grid layout"""
         layout = self.ui.fr_schema_fields.layout()
         while layout.count() > 0:
             item = layout.takeAt(0)
@@ -558,7 +560,7 @@ class MainQtView(QtView):
             self.ui.tbl_registry.model().push_data(subjects)
 
     def _deregister_subject(self):
-        """TODO"""
+        """Deregister the schema from the registry server"""
         model = self.ui.tbl_registry.model()
         if model:
             indexes, subjects = self.ui.tbl_registry.model().selected_rows()

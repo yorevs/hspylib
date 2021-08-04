@@ -36,6 +36,17 @@ class KafkaJsonSchema(KafkaSchema):
     def extensions(cls) -> List[str]:
         return ['*.json']
 
+    @classmethod
+    def array_items(cls, field_attrs: dict) -> List[str]:
+        """TODO"""
+        items = get_by_key_or_default(field_attrs, 'items')
+        if isinstance(items, list):
+            return items
+        elif isinstance(items, dict):
+            return get_by_key_or_default(items, 'enum', [])
+
+        return []
+
     def __init__(
         self,
         filepath: str = None,
@@ -44,12 +55,17 @@ class KafkaJsonSchema(KafkaSchema):
 
         super().__init__('JSON', filepath, registry_url, charset)
 
+    def is_required(self, key: str) -> bool:
+        """TODO"""
+        required_list = get_by_key_or_default(self._content, 'required', [])
+        return key in required_list
+
     def _init_schema(self) -> None:
         self._type = check_not_none(self._content['type'])
         self._name = check_not_none(self._content['title'])
-        required_list = get_by_key_or_default(self._content, 'required', [])
         fields = check_not_none(self._content['properties'])
-        self._fields = [SchemaField.of_map(k, f, k in required_list) for k, f in fields.items()]
+        check_not_none(fields)
+        self._fields = [SchemaField.of_map(self, key, f, self.is_required(key)) for key, f in fields.items()]
         self._doc = get_by_key_or_default(self._content, 'description', '')
         self._namespace = get_by_key_or_default(self._content, '$schema', '')
 
