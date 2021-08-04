@@ -26,8 +26,8 @@ services:
       - esnet
 
 
-  kafka-broker:
-    container_name: kafka-broker
+  kafka:
+    container_name: kafka
     image: confluentinc/cp-kafka:latest
     hostname: kafka_broker
     restart: on-failure
@@ -76,7 +76,7 @@ services:
     depends_on:
       zookeeper:
         condition: service_healthy
-      kafka-broker:
+      kafka:
         condition: service_healthy
     command: -Dconfig.file=conf/application.conf -Dapplication.home=bin/kafkamanager
     ports:
@@ -101,7 +101,7 @@ services:
     depends_on:
       zookeeper:
         condition: service_healthy
-      kafka-broker:
+      kafka:
         condition: service_healthy
     ports:
       - "8081:8081"

@@ -20,7 +20,7 @@ startContainers() {
   done
   echo ''
 
-  [[ "${#all[@]}" -gt 0 ]] && timeout $$ 300
+  [[ "${#all[@]}" -gt 0 ]] && timeout $$ 180
 
   for container in ${all[*]}; do
     status=$(getHealth "${container}")
