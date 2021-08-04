@@ -17,7 +17,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from json.decoder import JSONDecodeError
-from typing import List, Optional
+from typing import List, Optional, Any
 from uuid import uuid4
 
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
@@ -26,7 +26,6 @@ from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty, build_url, syserr
 from hspylib.core.tools.preconditions import check_state, check_not_none, check_argument
-from hspylib.modules.qt.kafka.schemas.schema_field import SchemaField
 
 
 class KafkaSchema(ABC):
@@ -57,6 +56,10 @@ class KafkaSchema(ABC):
         """TODO"""
         return str(uuid4())
 
+    @classmethod
+    def array_items(cls, field_attrs: dict) -> List[str]:
+        return []
+
     def __init__(
         self,
         schema_type: str,
@@ -69,12 +72,12 @@ class KafkaSchema(ABC):
         self._registry_url = registry_url
         self._schema_type = schema_type
         self._charset = charset
+        self._fields = None
         self._schema_id = None
         self._namespace = None
         self._doc = None
         self._name = None
         self._type = None
-        self._fields = None
 
         try:
             if filepath:
@@ -147,7 +150,7 @@ class KafkaSchema(ABC):
         """TODO"""
         return self._name
 
-    def get_fields(self, sort_by_required: bool = True) -> List[SchemaField]:
+    def get_fields(self, sort_by_required: bool = True) -> List[Any]:
         """TODO"""
         return self._fields \
             if not sort_by_required \

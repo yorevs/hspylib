@@ -36,25 +36,35 @@ class KafkaAvroSchema(KafkaSchema):
     def extensions(cls) -> List[str]:
         return ['*.avsc']
 
+    @classmethod
+    def array_items(cls, field_attrs: dict) -> List[str]:
+        """TODO"""
+        symbols = get_by_key_or_default(field_attrs, 'symbols')
+        if isinstance(symbols, list):
+            return symbols
+
+        return []
+
+    @classmethod
+    def is_required(cls, field) -> bool:
+        return bool(
+            next(
+                (t for t in field['type'] if isinstance(field['type'], list) and 'null' in field['type']
+            ), None) is None
+        )
+
     def __init__(
         self,
         filepath: str = None,
         registry_url: str = None,
         charset: Charset = Charset.ISO8859_1):
-
         super().__init__('AVRO', filepath, registry_url, charset)
 
     def _init_schema(self) -> None:
         self._type = check_not_none(self._content['type'])
         self._name = check_not_none(self._content['name'])
         fields = check_not_none(self._content['fields'])
-        self._fields = [
-            SchemaField.of_dict(
-                f, bool(
-                    next((t for t in f['type'] if isinstance(f['type'], list) and 'null' in f['type']), None) is None
-                )
-            ) for f in fields
-        ]
+        self._fields = [SchemaField.of_dict(self, f, self.is_required(f)) for f in fields]
         self._namespace = get_by_key_or_default(self._content, 'namespace', '')
         self._doc = get_by_key_or_default(self._content, 'doc', '')
 

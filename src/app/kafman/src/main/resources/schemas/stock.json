@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "StockMessage",
+  "type": "object",
+  "title": "Stock Schema",
+  "description": "The schema for stock message",
+  "default": {},
+  "additionalProperties": true,
+  "required": [
+    "source",
+    "nodeId",
+    "skuId",
+    "messageId",
+    "market",
+    "quantity",
+    "state"
+  ],
+  "properties": {
+    "source": {
+      "$id": "#/properties/source",
+      "type": "string",
+      "title": "The Source of the message",
+      "description": "The system that has generated this message",
+      "default": "",
+      "examples": [
+        "Oracle"
+      ]
+    },
+    "messageId": {
+      "$id": "#/properties/messageId",
+      "type": "string",
+      "title": "The message ID",
+      "description": "The unique ID that is used to track the message",
+      "default": "",
+      "examples": [
+        "12dsds-2ewwewew-wewqe"
+      ]
+    },
+    "nodeId": {
+      "$id": "#/properties/nodeId",
+      "type": "string",
+      "title": "The store ID",
+      "description": "The node ID to which this stock belongs",
+      "default": "",
+      "examples": [
+        "MyStore"
+      ]
+    },
+    "skuId": {
+      "$id": "#/properties/skuId",
+      "type": "string",
+      "title": "The sku ID",
+      "description": "The Sku ID of this stock item",
+      "default": "",
+      "examples": [
+        "7118610024003"
+      ]
+    },
+    "brand": {
+      "$id": "#/properties/brand",
+      "type": "array",
+      "title": "The brand of this stock",
+      "description": "The brand to which this stock belongs",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Coolgirl",
+          "Cowboy",
+          "Magazine",
+          "Hop"
+        ]
+      }
+    },
+    "market": {
+      "$id": "#/properties/market",
+      "type": "array",
+      "title": "The market of this stock",
+      "description": "The market to which this stock belongs to",
+      "items": {
+        "type": "string",
+        "enum": [
+          "US",
+          "CA",
+          "EU",
+          "JP"
+        ]
+      }
+    },
+    "quantity": {
+      "$id": "#/properties/quantity",
+      "type": "integer",
+      "title": "The stock amount",
+      "description": "The quantity of the stock.",
+      "default": 0,
+      "examples": [
+        3
+      ]
+    },
+    "state": {
+      "$id": "#/properties/state",
+      "type": "array",
+      "title": "The State Schema",
+      "description": "The state of the stock message.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "AVAILABLE",
+          "ALLOCATED",
+          "RESERVED"
+        ]
+      }
+    },
+    "lastUpdatedTimestamp": {
+      "$id": "#/properties/lastUpdatedTimestamp",
+      "type": "object",
+      "title": "The timestamp the stock was last updated",
+      "description": "The last updated timestamp of the stock",
+      "properties": {
+        "type": "string",
+        "format": "datetime"
+      }
+    },
+    "purchaseDate": {
+      "$id": "#/properties/purchaseDate",
+      "type": "object",
+      "title": "The purchase date",
+      "description": "When the stock was purchased",
+      "properties": {
+        "type": "string",
+        "format": "datetime"
+      }
+    }
+  }
+}
