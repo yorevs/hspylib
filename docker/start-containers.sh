@@ -25,16 +25,16 @@ startContainers() {
   for container in ${all[*]}; do
     status=$(getHealth "${container}")
     if [[ "${status}" == "\"healthy\"" ]]; then
-      echo -e "\033[0;93m⠿ Container \"${container}\" is already up\033[0;0;0m"
+      echo -e "${YELLOW}⠿ Container \"${container}\" is already up${NC}"
     else
-      echo -e "\033[0;34m⠿ Container ${container} is ${status}"
-      echo -e "⠿ Starting container ${container} \033[0;0;0m"
+      echo -e "${BLUE}⠿ Container ${container} is ${status}"
+      echo -e "⠿ Starting container ${container} ${NC}"
       pushd "composes/${container}" &>/dev/null || exit 1
       if docker compose up --force-recreate --build --remove-orphans --detach; then
         waitHealthy "${container}"
         echo ''
       else
-        echo -e "\033[0;31m⠿ Docker (docker compose up) command failed! \033[0;0;0m\n"
+        echo -e "${RED}⠿ Docker (docker compose up) command failed! ${NC}\n"
       fi
       popd &>/dev/null || exit 1
     fi

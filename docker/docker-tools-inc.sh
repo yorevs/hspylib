@@ -1,10 +1,18 @@
+
+# VT-100 Terminal colors
+NC=${NC:-'\033[0;0;0m'}
+RED=${RED:-'\033[0;31m'}
+GREEN=${GREEN:-'\033[0;32m'}
+BLUE=${BLUE:-'\033[0;34m'}
+YELLOW=${YELLOW:-'\033[0;93m'}
+
 # @purpose: Start a timer. After the specified timeout, the process specified is killed.
 # -param $1: the PID of the process
 # -param $2: the timeout in seconds
 timeout() {
   pid="${1}"
   timeout="${2}"
-  echo -e "\033[0;34m⠿ Timeout activated -> pid=${pid}, timeout=${timeout}s $(date)\n \033[0;0;0m"
+  echo -e "${BLUE}⠿ Timeout activated -> pid=${pid}, timeout=${timeout}s $(date)\n ${NC}"
   (
     ((t = timeout))
     while ((t > 0)); do
@@ -12,7 +20,7 @@ timeout() {
       kill -0 "${pid}" || exit 0
       ((t -= 1))
     done
-    echo -e "\n\033[0;31m⠿ Timed out! Killing pid=${pid} \033[0;0;0m $(date)\n"
+    echo -e "\n${RED}⠿ Timed out! Killing pid=${pid} ${NC} $(date)\n"
     kill -s SIGTERM "${pid}" && kill -0 "${pid}" || exit 0
     sleep 1
     kill -s SIGKILL "${pid}"
@@ -46,13 +54,13 @@ getStatus() {
 waitHealthy() {
   local status
   status=$(getHealth "$1")
-  echo -en "\033[0;34m ⠿ Waiting \"${1}\" to become healthy ..."
+  echo -en "${BLUE} ⠿ Waiting \"${1}\" to become healthy ..."
   while [ "${status}" != "\"healthy\"" ]; do
     status=$(getHealth "$1")
     echo -n "."
     sleep 1
   done
-  echo -e '[  OK  ]\033[0;0;0m\n'
+  echo -e "${GREEN}[  OK  ]${NC}\n"
   return 0
 }
 
@@ -62,7 +70,7 @@ waitHealthy() {
 assertStatus() {
   status=$(getStatus "$1")
   if [[ "${status}" != "\"$2\"" ]]; then
-    echo -e "\033[0;31m⠿ Status assertion failed. Expecting ${2} but got ${status}\033[0;0;0m\n"
+    echo -e "${RED}⠿ Status assertion failed. Expecting ${2} but got ${status}${NC}\n"
     exit 1
   fi
 }
