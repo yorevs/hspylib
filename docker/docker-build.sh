@@ -21,9 +21,19 @@ else
         exit 1
       fi
       echo ''
-      echo -e "${PURPLE}Building ${BLUE}[${next_container}] ... ${NC}"
+      echo -e "${YELLOW}Building ${BLUE}[${next_container}] ... ${NC}"
       echo ''
-      [[ -d "${next_container}/" ]] && docker build -t "yorevs/hhs-${next_container}" "${next_container}/"
+      if [[ -d "${next_container}/" ]]; then
+        if docker build -t "yorevs/hhs-${next_container}:latest" "${next_container}/"; then
+          if docker image push "yorevs/hhs-${next_container}:latest"; then
+            echo "${GREEN}Successfully built and pushed docker image: \"yorevs/hhs-${next_container}:latest\" ! ${NC}"
+          else
+            echo "${RED}Failed to push docker image: \"yorevs/hhs-${next_container}:latest\" ! ${NC}"
+          fi
+        else
+          echo "${RED}Failed to build docker image: \"yorevs/hhs-${next_container}\" ! ${NC}"
+        fi
+      fi
     else
       echo "${RED}Invalid container type: \"${next_container}\". Please use one of [${container_dirs}] ! ${NC}"
     fi

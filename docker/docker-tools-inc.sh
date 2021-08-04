@@ -4,7 +4,7 @@
 timeout() {
   pid="${1}"
   timeout="${2}"
-  echo -e "\033[0;34m⠿ Timeout activated -> pid=${pid}, timeout=${timeout}s \033[0;0;0m $(date)\n"
+  echo -e "\033[0;34m⠿ Timeout activated -> pid=${pid}, timeout=${timeout}s $(date)\n \033[0;0;0m"
   (
     ((t = timeout))
     while ((t > 0)); do
@@ -49,7 +49,7 @@ waitHealthy() {
   echo -en "\033[0;34m ⠿ Waiting \"${1}\" to become healthy ..."
   while [ "${status}" != "\"healthy\"" ]; do
     status=$(getHealth "$1")
-    echo -n "${status} "
+    echo -n "."
     sleep 1
   done
   echo -e '[  OK  ]\033[0;0;0m\n'
