@@ -17,8 +17,8 @@
 import random
 import re
 from abc import ABC
-
 from hspylib.core.tools.commons import get_or_default
+
 
 
 def fit_text(text: str, width: int) -> str:

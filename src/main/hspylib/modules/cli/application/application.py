@@ -20,7 +20,6 @@ import signal
 import sys
 from datetime import datetime
 from typing import Callable, List, Optional, Set, Tuple
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from hspylib.core.metaclass.singleton import Singleton
@@ -28,6 +27,7 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.application.argument import Argument
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 from hspylib.modules.cli.application.option import Option
+
 
 
 class Application(metaclass=Singleton):

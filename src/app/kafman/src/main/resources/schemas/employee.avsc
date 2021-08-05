@@ -14,13 +14,19 @@
     },
     {
       "name": "role",
-      "type": "enum",
-      "symbols": [
-        "Manager",
-        "Developer",
-        "RH",
-        "PM",
-        "CEO"
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "Suit",
+          "symbols": [
+            "Manager",
+            "Developer",
+            "RH",
+            "PM",
+            "CEO"
+          ]
+        }
       ],
       "default": "Developer"
     },

@@ -15,7 +15,6 @@
 """
 
 from typing import List, Optional
-
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.cli.keyboard import Keyboard
@@ -24,6 +23,7 @@ from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardIte
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import restore_terminal, restore_cursor, set_enable_echo, prepare_render
+
 
 
 def mdashboard(

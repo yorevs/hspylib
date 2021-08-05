@@ -25,13 +25,11 @@ from confluent_kafka.serialization import SerializationContext
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty, build_url, syserr
-from hspylib.core.tools.preconditions import check_state, check_not_none, check_argument
+from hspylib.core.tools.preconditions import check_state, check_not_none
 
 
 class KafkaSchema(ABC):
     """String schema serializer/deserializer"""
-
-    SUPPORTED_SCHEMA_TYPES = ["PLAIN", "AVRO", "JSON", "PROTOBUF"]
 
     @classmethod
     def extensions(cls) -> List[str]:
@@ -67,7 +65,6 @@ class KafkaSchema(ABC):
         registry_url: str = None,
         charset: Charset = Charset.ISO8859_1):
 
-        check_argument(schema_type in self.SUPPORTED_SCHEMA_TYPES)
         self._filepath = filepath
         self._registry_url = registry_url
         self._schema_type = schema_type
@@ -89,10 +86,10 @@ class KafkaSchema(ABC):
                 self._schema_conf = {'url': build_url(self._registry_url) or 'http://localhost:8081'}
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
                 self._schema = Schema(self._schema_str, self._schema_type)
-                self._init_schema()
+                self._parse()
         except (KeyError, TypeError, JSONDecodeError) as err:
-            syserr(f"Unable to load schema => {str(err)}")
-            log.error(f"Unable to load schema => {str(err)}")
+            syserr(f"Unable to initialize schema => {str(err)}")
+            log.error(f"Unable to initialize schema => {str(err)}")
 
     def __getitem__(self, index: int):
         return self._fields[index]
@@ -104,19 +101,16 @@ class KafkaSchema(ABC):
         return self._schema_type
 
     @abstractmethod
-    def _init_schema(self) -> None:
+    def _parse(self) -> None:
         """TODO"""
-        pass
 
     @abstractmethod
     def serializer_settings(self) -> dict:
         """TODO"""
-        pass
 
     @abstractmethod
     def deserializer_settings(self) -> dict:
         """TODO"""
-        pass
 
     def get_schema_type(self) -> str:
         """TODO"""
@@ -134,14 +128,6 @@ class KafkaSchema(ABC):
         """TODO"""
         return self._content
 
-    def get_field_names(self) -> List[str]:
-        """TODO"""
-        return [f.get_name() for f in self._fields]
-
-    def get_field_types(self) -> List[str]:
-        """TODO"""
-        return [f.get_type() for f in self._fields]
-
     def get_type(self) -> str:
         """TODO"""
         return self._type
@@ -150,12 +136,6 @@ class KafkaSchema(ABC):
         """TODO"""
         return self._name
 
-    def get_fields(self, sort_by_required: bool = True) -> List[Any]:
-        """TODO"""
-        return self._fields \
-            if not sort_by_required \
-            else sorted(self._fields, key=lambda f: f.is_required(), reverse=True)
-
     def get_namespace(self) -> Optional[str]:
         """TODO"""
         return self._namespace
@@ -163,3 +143,12 @@ class KafkaSchema(ABC):
     def get_doc(self) -> Optional[str]:
         """TODO"""
         return self._doc
+
+    def get_fields(self, sort_by_required: bool = True) -> List[Any]:
+        """TODO"""
+        if not self._fields:
+            return []
+
+        return self._fields \
+            if not sort_by_required \
+            else sorted(self._fields, key=lambda f: f.is_required(), reverse=True)

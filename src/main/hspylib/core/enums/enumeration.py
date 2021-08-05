@@ -16,8 +16,8 @@
 
 from enum import Enum
 from typing import Any, List
-
 from hspylib.core.tools.preconditions import check_not_none
+
 
 
 class Enumeration(Enum):

@@ -15,9 +15,9 @@
 """
 
 from typing import List
-
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.vt100.terminal import Terminal
+
 
 
 class CloudFoundry(metaclass=Singleton):

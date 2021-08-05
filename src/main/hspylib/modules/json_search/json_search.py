@@ -17,7 +17,7 @@
 import re
 from typing import Any
 
-from idna.core import unicode
+from pyparsing import unicode
 
 
 class JsonSearch:
@@ -97,7 +97,7 @@ class JsonSearch:
         return sub_selected_element
 
     # pylint: disable=too-many-branches,too-many-locals
-    def json_select(
+    def select(
         self,
         root_element,
         search_path,

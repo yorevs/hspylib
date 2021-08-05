@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: kafka_json_schema.py
+      @file: json_schema.py
    @created: Sun, 18 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -12,6 +12,7 @@
 
    Copyright 2021, HSPyLib team
 """
+import os.path as path
 from typing import List
 
 from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDeserializer
@@ -20,13 +21,13 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
-from kafman.src.main.core.kafka.consumer_config import ConsumerConfig
-from kafman.src.main.core.kafka.producer_config import ProducerConfig
-from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
-from kafman.src.main.core.kafka.schemas.schema_field import SchemaField
+from kafman.src.main.core.consumer_config import ConsumerConfig
+from kafman.src.main.core.producer_config import ProducerConfig
+from kafman.src.main.core.schema.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.registry_field import RegistryField
 
 
-class KafkaJsonSchema(KafkaSchema):
+class JsonSchema(KafkaSchema):
     """Json schema serializer/deserializer
        Documentation: https://json-schema.org/
        Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
@@ -60,12 +61,15 @@ class KafkaJsonSchema(KafkaSchema):
         required_list = get_by_key_or_default(self._content, 'required', [])
         return key in required_list
 
-    def _init_schema(self) -> None:
-        self._type = check_not_none(self._content['type'])
-        self._name = check_not_none(self._content['title'])
-        fields = check_not_none(self._content['properties'])
+    def _parse(self) -> None:
+        self._name = self._name = get_by_key_or_default(
+            self._content, 'title', path.basename(path.splitext(self._filepath)[0]))
+        self._type = self._type = get_by_key_or_default(self._content, 'type', 'object')
+        fields = get_by_key_or_default(self._content, 'properties', [])
         check_not_none(fields)
-        self._fields = [SchemaField.of_map(self, key, f, self.is_required(key)) for key, f in fields.items()]
+        self._fields = [
+            RegistryField.of(self, key, f['type'], f, self.is_required(key)) for key, f in fields.items()
+        ]
         self._doc = get_by_key_or_default(self._content, 'description', '')
         self._namespace = get_by_key_or_default(self._content, '$schema', '')
 

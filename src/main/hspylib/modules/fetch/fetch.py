@@ -15,13 +15,13 @@
 """
 
 from typing import Any, Optional, List, Union, Tuple
-
 import requests
 from requests.exceptions import ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL
-
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
+
+
 
 
 def fetch(

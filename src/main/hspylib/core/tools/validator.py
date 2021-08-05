@@ -18,8 +18,8 @@ import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Tuple, Type
-
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
+
 
 
 class Validator(ABC):

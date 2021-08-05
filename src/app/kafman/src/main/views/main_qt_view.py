@@ -36,19 +36,19 @@ from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
-from kafman.src.main.core.kafka.consumer_config import ConsumerConfig
-from kafman.src.main.core.kafka.kafka_consumer import KafkaConsumer
-from kafman.src.main.core.kafka.kafka_message import KafkaMessage
-from kafman.src.main.core.kafka.kafka_producer import KafkaProducer
-from kafman.src.main.core.kafka.kafka_statistics import KafkaStatistics
-from kafman.src.main.core.kafka.producer_config import ProducerConfig
-from kafman.src.main.core.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
-from kafman.src.main.core.kafka.schemas.kafka_json_schema import KafkaJsonSchema
-from kafman.src.main.core.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
-from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
-from kafman.src.main.core.kafka.schemas.kafka_schema_factory import KafkaSchemaFactory
-from kafman.src.main.core.kafka.schemas.schema_registry import SchemaRegistry
-from kafman.src.main.core.kafka.schemas.schema_subject import Subject
+from kafman.src.main.core.consumer_config import ConsumerConfig
+from kafman.src.main.core.consumer_worker import ConsumerWorker
+from kafman.src.main.core.kafka_message import KafkaMessage
+from kafman.src.main.core.producer_config import ProducerConfig
+from kafman.src.main.core.producer_worker import ProducerWorker
+from kafman.src.main.core.schema.avro_schema import AvroSchema
+from kafman.src.main.core.schema.json_schema import JsonSchema
+from kafman.src.main.core.schema.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.plain_schema import PlainSchema
+from kafman.src.main.core.schema.registry_subject import RegistrySubject
+from kafman.src.main.core.schema.schema_factory import SchemaFactory
+from kafman.src.main.core.schema.schema_registry import SchemaRegistry
+from kafman.src.main.core.statistics_worker import StatisticsWorker
 from kafman.src.main.views.indexes import StkTools, StkProducerEdit, Tabs
 
 
@@ -56,15 +56,15 @@ class MainQtView(QtView):
     """Main application view"""
     VERSION = read_version(f"{run_dir()}/.version")
     HISTORY_FILE = f"{run_dir()}/resources/.kafman-history.properties"
-    INITIAL_SCHEMA_DIR = f"{run_dir()}/resources/schemas"
+    INITIAL_SCHEMA_DIR = f"{run_dir()}/resources/schema"
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
     @staticmethod
     def supported_schemas() -> str:
-        """Return a list of the supported serialization schemas"""
+        """Return a list of the supported serialization schema"""
         schemas = []
-        schemas.extend(KafkaAvroSchema.extensions())
-        schemas.extend(KafkaJsonSchema.extensions())
+        schemas.extend(AvroSchema.extensions())
+        schemas.extend(JsonSchema.extensions())
         return ' '.join(schemas)
 
     def __init__(self):
@@ -73,16 +73,16 @@ class MainQtView(QtView):
         self.configs = AppConfigs.INSTANCE
         self._started = False
         self._registry = SchemaRegistry()
-        self._consumer = KafkaConsumer()
+        self._consumer = ConsumerWorker()
         self._consumer.messageConsumed.connect(self._message_consumed)
         self._consumer.messageFailed.connect(self._display_error)
-        self._producer = KafkaProducer()
+        self._producer = ProducerWorker()
         self._producer.messageProduced.connect(self._message_produced)
         self._producer.messageFailed.connect(self._display_error)
         self._all_settings = {}
         self._last_schema_dir = self.INITIAL_SCHEMA_DIR
         self._all_schemas = defaultdict(None, {})
-        self._stats = KafkaStatistics()
+        self._stats = StatisticsWorker()
         self._stats.statisticsReported.connect(self._update_stats)
         self._stats.start()
         self._capturer = StreamCapturer()
@@ -198,12 +198,12 @@ class MainQtView(QtView):
     def _schema(self) -> KafkaSchema:
         """Return the selected serialization schema"""
         sel_schema = self.ui.cmb_sel_schema.currentText()
-        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else KafkaPlainSchema()
+        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else PlainSchema()
 
     def _messages(self) -> Union[str, List[str]]:
         """Return the selected messages or build a json message from form"""
         schema = self._schema()
-        if isinstance(schema, KafkaPlainSchema):
+        if isinstance(schema, PlainSchema):
             msgs = self.ui.txt_producer.toPlainText().split('\n')
             return list(filter(lambda m: m != '', msgs))
         else:
@@ -217,7 +217,7 @@ class MainQtView(QtView):
                 widget = layout.itemAt(widget_idx).widget()
                 if not field.is_valid(widget):
                     raise InvalidInputError('Form contains unfilled required fields')
-                field_value = field.get_field_value(widget)
+                field_value = field.get_value(widget)
                 if field_value:
                     message.update(field_value)
                 if hasattr(widget, 'clear') and not isinstance(widget, QComboBox): widget.clear()
@@ -242,7 +242,7 @@ class MainQtView(QtView):
                 registry_url = self._test_registry_url()
                 if registry_url:
                     try:
-                        schema = KafkaSchemaFactory.create_schema(schema_file, registry_url)
+                        schema = SchemaFactory.create_schema(schema_file, registry_url)
                         self._all_schemas[schema.get_name()] = schema
                         self.ui.cmb_sel_schema.set_item(schema.get_name())
                         self.ui.cmb_registry_schema.set_item(schema.get_name())
@@ -432,6 +432,7 @@ class MainQtView(QtView):
             else:
                 self._display_error('Must subscribe to at least one topic')
                 return
+        self.ui.fr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)
         self.ui.cmb_prod_topics.setEnabled(started)
@@ -477,7 +478,6 @@ class MainQtView(QtView):
             if self._producer.is_started() and messages:
                 topics = self._topics(True)
                 self._producer.produce(topics, messages)
-                self.ui.txt_producer.clear()
         except InvalidInputError as err:
             self._display_error(str(err))
 
@@ -516,6 +516,7 @@ class MainQtView(QtView):
         self._console_print(text, StatusColor.blue)
         self._stats.report_produced()
         self._display_text(f"Produced {self._stats.get_in_a_tick()[0]} messages to Kafka", StatusColor.blue, False)
+        self.ui.txt_producer.clear()
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: str) -> None:
         """Callback when a kafka message has been consumed."""
@@ -531,7 +532,7 @@ class MainQtView(QtView):
         """Refresh all schema registry server subjects"""
         if self._registry.is_valid():
             if not self.ui.tbl_registry.model():
-                HTableModel(self.ui.tbl_registry, Subject)
+                HTableModel(self.ui.tbl_registry, RegistrySubject)
             else:
                 self.ui.tbl_registry.model().clear()
             subjects = self._registry.fetch_subjects_info()
@@ -578,7 +579,7 @@ class MainQtView(QtView):
             fd_history.write(f"settings = {str(self._all_settings)}\n")
             fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
             fd_history.write(f"last_dir = {self._last_schema_dir}\n")
-            fd_history.write(f"schemas = {schemas}\n")
+            fd_history.write(f"schema = {schemas}\n")
             fd_history.write(f"last_schema = {self.ui.cmb_sel_schema.currentText()}\n")
             fd_history.write(f"registry_url = {self.ui.cmb_registry_url.currentText()}\n")
 
@@ -610,13 +611,11 @@ class MainQtView(QtView):
                                 self._activate_tab(int(prop_value))
                             elif prop_name == 'last_dir':
                                 self._last_schema_dir = prop_value
-                            elif prop_name == 'schemas':
-                                list(map(
-                                    lambda s:
-                                    self._add_schema((s, '')) or
-                                    self._deselect_schema()
-                                    , ast.literal_eval(prop_value)
-                                ))
+                            elif prop_name == 'schema':
+                                schema_tuple = ast.literal_eval(prop_value), \
+                                               f"Schema files ({self.supported_schemas()})"
+                                self._add_schema(schema_tuple)
+                                self._deselect_schema()
                             elif prop_name == 'last_schema':
                                 self.ui.cmb_sel_schema.setCurrentText(prop_value)
                             elif prop_name == 'registry_url':

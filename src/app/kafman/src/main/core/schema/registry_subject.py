@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: schema_subject.py
+      @file: registry_subject.py
    @created: Thu, 5 Aug 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -13,7 +13,8 @@
    Copyright 2021, HSPyLib team
 """
 
-class Subject:
+
+class RegistrySubject:
     """TODO"""
 
     def __init__(
@@ -23,7 +24,6 @@ class Subject:
         registry_id: int = 0,
         version: int = 0,
         schema: dict = None):
-
         self.schema_type = schema_type
         self.subject = subject
         self.registry_id = registry_id

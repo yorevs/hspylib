@@ -17,11 +17,11 @@
 import logging as log
 import os
 from typing import Any, Optional
-
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, log_init
 from hspylib.core.tools.preconditions import check_argument, check_state
+
 
 
 class AppConfigs(metaclass=Singleton):

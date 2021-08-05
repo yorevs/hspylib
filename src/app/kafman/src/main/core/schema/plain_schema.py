@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: kafka_json_schema.py
+      @file: json_schema.py
    @created: Sun, 18 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -17,10 +17,10 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer, 
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
-from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.kafka_schema import KafkaSchema
 
 
-class KafkaPlainSchema(KafkaSchema):
+class PlainSchema(KafkaSchema):
     """String schema serializer/deserializer"""
 
     @classmethod
@@ -37,7 +37,7 @@ class KafkaPlainSchema(KafkaSchema):
     def __str__(self):
         return f"[{self._schema_type}] type=plaintext"
 
-    def _init_schema(self) -> None:
+    def _parse(self) -> None:
         pass
 
     def serializer_settings(self) -> dict:

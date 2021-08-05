@@ -22,7 +22,7 @@ from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.fetch.fetch import is_reachable, get, delete
-from kafman.src.main.core.kafka.schemas.schema_subject import Subject
+from kafman.src.main.core.schema.registry_subject import RegistrySubject
 
 
 class SchemaRegistry:
@@ -63,7 +63,7 @@ class SchemaRegistry:
         """TODO"""
         return self._subjects
 
-    def deregister(self, subjects: List[Subject]) -> None:
+    def deregister(self, subjects: List[RegistrySubject]) -> None:
         """TODO"""
         try:
             for subject in subjects:
@@ -101,7 +101,7 @@ class SchemaRegistry:
             raise SchemaRegistryError(
                 f"Unable to fetch registry server information from {self._url}\n => {str(err)}") from err
 
-    def fetch_subjects_info(self) -> List[Subject]:
+    def fetch_subjects_info(self) -> List[RegistrySubject]:
         """Fetch information about the schema registry existing subjects"""
         subjects = []
         if self._subjects:
@@ -118,7 +118,7 @@ class SchemaRegistry:
                             subject_response = get(url=f"{self._url}/subjects/{subject}/versions/{v}")
                             if subject_response.status_code == HttpCode.OK:
                                 subject = json.loads(subject_response.body)
-                                subjects.append(Subject(
+                                subjects.append(RegistrySubject(
                                     subject['schemaType'] if hasattr(subject, 'schemaType') else 'AVRO',
                                     subject['subject'],
                                     subject['id'],

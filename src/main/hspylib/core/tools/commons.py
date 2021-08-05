@@ -21,11 +21,11 @@ import re
 import sys
 from datetime import timedelta, datetime
 from typing import Any, List, Optional, Tuple, Type, Union
-
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
+
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
@@ -191,6 +191,33 @@ def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
 
     return flat_dict
 
+
+def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') -> Optional[Any]:
+    """
+    TODO
+    :param root_element:
+    :param search_path:
+    :param parent_key:
+    :param sep:
+    :return:
+    """
+    found = search_path == parent_key
+    el = None
+    if not found and isinstance(root_element, dict):
+        for key, value in root_element.items():
+            if found: break
+            el_path = parent_key + sep + key if parent_key else key
+            if search_path == el_path:
+                found, el = True, value
+                break
+            if isinstance(value, dict):
+                found, el = search_dict(value, search_path, el_path, sep=sep)
+            elif isinstance(value, list):
+                for next_val in value:
+                    found, el = search_dict(next_val, search_path, el_path, sep=sep)
+            # Skip if the element is a leaf
+
+    return found, el
 
 def get_or_default(options: Union[tuple, list], index: int, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or default_value if index is out of range
