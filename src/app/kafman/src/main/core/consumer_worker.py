@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: kafka_consumer.py
+      @file: consumer_worker.py
    @created: Wed, 30 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -22,16 +22,14 @@ from confluent_kafka import DeserializingConsumer
 from confluent_kafka.error import ValueDeserializationError, ConsumeError
 
 from hspylib.core.tools.commons import syserr
-from kafman.src.main.core.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
-from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.plain_schema import PlainSchema
 
 
-# Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
-# For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-
-
-class KafkaConsumer(QThread):
+class ConsumerWorker(QThread):
     """Confluent Kafka Consumer with Qt.
+       Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
+       For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
        Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_consumer.py
     """
 
@@ -47,7 +45,7 @@ class KafkaConsumer(QThread):
         self._worker_thread = None
         self.start()
 
-    def start_consumer(self, settings: dict, schema: KafkaSchema = KafkaPlainSchema()) -> None:
+    def start_consumer(self, settings: dict, schema: KafkaSchema = PlainSchema()) -> None:
         """Start the Kafka consumer agent"""
         if self._consumer is None:
             consumer_conf = {}

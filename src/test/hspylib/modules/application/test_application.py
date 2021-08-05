@@ -15,7 +15,6 @@
 """
 import sys
 import unittest
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidOptionError, InvalidArgumentError
 from hspylib.core.metaclass.singleton import Singleton
@@ -23,6 +22,7 @@ from hspylib.core.tools.commons import dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.option import Option
 from test.hspylib.shared.application_test import ApplicationTest
+
 
 
 class TestApplication(unittest.TestCase):

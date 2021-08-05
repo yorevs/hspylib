@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: kafka_schema_factory.py
+      @file: schema_factory.py
    @created: Thu, 5 Aug 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -17,17 +17,17 @@ import os
 from abc import ABC
 
 from hspylib.core.tools.preconditions import check_state
-from kafman.src.main.core.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
-from kafman.src.main.core.kafka.schemas.kafka_json_schema import KafkaJsonSchema
-from kafman.src.main.core.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
-from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.avro_schema import AvroSchema
+from kafman.src.main.core.schema.json_schema import JsonSchema
+from kafman.src.main.core.schema.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.plain_schema import PlainSchema
 
 
-class KafkaSchemaFactory(ABC):
+class SchemaFactory(ABC):
     _all_schemas = [
-        KafkaAvroSchema,
-        KafkaJsonSchema,
-        KafkaPlainSchema
+        AvroSchema,
+        JsonSchema,
+        PlainSchema
     ]
 
     @classmethod

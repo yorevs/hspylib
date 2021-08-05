@@ -109,26 +109,6 @@
           "RESERVED"
         ]
       }
-    },
-    "lastUpdatedTimestamp": {
-      "$id": "#/properties/lastUpdatedTimestamp",
-      "type": "object",
-      "title": "The timestamp the stock was last updated",
-      "description": "The last updated timestamp of the stock",
-      "properties": {
-        "type": "string",
-        "format": "datetime"
-      }
-    },
-    "purchaseDate": {
-      "$id": "#/properties/purchaseDate",
-      "type": "object",
-      "title": "The purchase date",
-      "description": "When the stock was purchased",
-      "properties": {
-        "type": "string",
-        "format": "datetime"
-      }
     }
   }
 }

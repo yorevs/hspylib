@@ -1,7 +1,7 @@
 {
   "namespace": "example.avro",
   "type": "record",
-  "name": "FullName",
+  "name": "Person",
   "doc": "Represents a full User name",
   "fields": [
     {

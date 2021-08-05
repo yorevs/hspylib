@@ -16,10 +16,10 @@
 
 from abc import ABC, abstractmethod
 from typing import List, Optional
-
 from requests.structures import CaseInsensitiveDict
-
 from hspylib.core.crud.crud_entity import CrudEntity
+
+
 
 
 class CrudRepository(ABC):

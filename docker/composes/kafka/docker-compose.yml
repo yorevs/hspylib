@@ -94,7 +94,7 @@ services:
     hostname: schema_registry
     restart: on-failure
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://127.0.0.1:8081/schemas/types" ]
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://127.0.0.1:8081/schema/types" ]
       interval: 10s
       timeout: 60s
       retries: 3

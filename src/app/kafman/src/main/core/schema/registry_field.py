@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: schema_field.py
+      @file: registry_field.py
    @created: Thu, 5 Aug 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -15,19 +15,20 @@
 
 from typing import Union, Type, Optional, Tuple
 
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget, QSizePolicy, QAbstractSpinBox
 
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
-from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.schema.kafka_schema import KafkaSchema
 
 
-class SchemaField:
-    """TODO"""
+class RegistryField:
+    """Represents a schema registry field and form component.
+        - Avro Types: https://avro.apache.org/docs/current/spec.html#schema_record
+        - Json Types: https://json-schema.org/understanding-json-schema/reference/type.html
+    """
 
-    # Avro Types: https://avro.apache.org/docs/current/spec.html#schema_record
-    # Json Types: https://json-schema.org/understanding-json-schema/reference/type.html
     QWIDGET_TYPE_MAP = {
         'int': QSpinBox,
         'integer': QSpinBox,
@@ -43,23 +44,18 @@ class SchemaField:
     }
 
     @staticmethod
-    def of_dict(schema: KafkaSchema, field_attrs: dict, required: bool = True) -> 'SchemaField':
-        """TODO"""
-        return SchemaField(
-            schema,
-            field_attrs['name'],
-            field_attrs['type'],
-            required,
-            field_attrs
-        )
+    def of(
+        schema: KafkaSchema,
+        field_name: str,
+        field_type: str,
+        field_attrs: dict,
+        required: bool = True) -> 'RegistryField':
+        """Construct a RegistryField from a the field attributes"""
 
-    @staticmethod
-    def of_map(schema: KafkaSchema, field_name: str, field_attrs: dict, required: bool = True) -> 'SchemaField':
-        """TODO"""
-        return SchemaField(
+        return RegistryField(
             schema,
             field_name,
-            field_attrs['type'],
+            field_type,
             required,
             field_attrs
         )
@@ -84,23 +80,20 @@ class SchemaField:
     def __str__(self):
         return f"name={self._name}, type={self._type}, required={self._required}, widget={self._widget_type.__class__}"
 
-    def get_field_value(self, widget_instance: QWidget) -> Optional[dict]:
+    def get_value(self, widget_instance: QWidget) -> Optional[dict]:
         """TODO"""
         check_not_none(widget_instance)
-        if isinstance(widget_instance, (QSpinBox, QDoubleSpinBox)):
-            value = str(widget_instance.value())
+        if isinstance(widget_instance, QAbstractSpinBox):
+            value = widget_instance.value()
         elif isinstance(widget_instance, QCheckBox):
-            value = str(bool(widget_instance.get()))
+            value = bool(widget_instance.isChecked())
         elif isinstance(widget_instance, HComboBox):
-            value = str(bool(widget_instance.currentText()))
+            current_text = widget_instance.currentText()
+            value = [current_text] if self._type == 'array' else current_text
         else:
             value = widget_instance.text()
 
         return {self._name: value} if value else None
-
-    def is_valid(self, widget_instance: QWidget) -> bool:
-        """TODO"""
-        return not self.is_required() or self.get_field_value(widget_instance) is not None
 
     def get_name(self) -> str:
         """TODO"""
@@ -113,6 +106,10 @@ class SchemaField:
     def is_required(self) -> bool:
         """TODO"""
         return self._required
+
+    def is_valid(self, widget_instance: QWidget) -> bool:
+        """TODO"""
+        return not self.is_required() or self.get_value(widget_instance) is not None
 
     def widget(self) -> QWidget:
         """TODO"""
@@ -164,7 +161,7 @@ class SchemaField:
         """TODO"""
         min_val = get_by_key_or_default(self._field_attrs, 'minimum', 0)
         max_val = get_by_key_or_default(
-            self._field_attrs, 'maximum', 99.99
+            self._field_attrs, 'maximum', 99999.99
             if self._widget_type() == QDoubleSpinBox
-            else 99)
+            else 99999)
         return min_val, max_val

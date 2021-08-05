@@ -14,13 +14,16 @@
       "type": "string"
     },
     "quantity": {
-      "type": "integer"
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
     }
   },
   "required": [
     "brand",
     "market",
-    "product"
+    "product",
+    "quantity"
   ],
   "additionalProperties": false
 }

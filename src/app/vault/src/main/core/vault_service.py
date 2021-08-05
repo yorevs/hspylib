@@ -15,11 +15,11 @@
 """
 
 from typing import Optional
-
 from hspylib.core.crud.crud_service import CrudService
 from hspylib.core.metaclass.singleton import Singleton
 from vault.src.main.core.vault_repository import VaultRepository
 from vault.src.main.entity.vault_entry import VaultEntry
+
 
 
 class VaultService(CrudService, metaclass=Singleton):

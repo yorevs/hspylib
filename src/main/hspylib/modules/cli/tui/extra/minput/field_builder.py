@@ -14,7 +14,6 @@
    Copyright 2021, HSPyLib team
 """
 from typing import TypeVar, Any
-
 from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
@@ -22,6 +21,7 @@ from hspylib.modules.cli.tui.extra.minput.form_field import FormField
 from hspylib.modules.cli.tui.extra.minput.input_type import InputType
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
+
 
 T = TypeVar('T')
 

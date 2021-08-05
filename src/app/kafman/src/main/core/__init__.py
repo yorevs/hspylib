@@ -7,5 +7,11 @@
 
 __all__ = [
   'constants', 
-  'kafka'
+  'consumer_config', 
+  'consumer_worker', 
+  'kafka_message', 
+  'producer_config', 
+  'producer_worker', 
+  'schema', 
+  'statistics_worker'
 ]

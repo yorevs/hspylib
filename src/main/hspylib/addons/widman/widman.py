@@ -17,7 +17,6 @@ import atexit
 import os
 import sys
 from typing import List
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widget_entry import WidgetEntry
 from hspylib.core.enums.exit_code import ExitCode
@@ -29,6 +28,7 @@ from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
+
 
 HERE = get_path(__file__)
 
