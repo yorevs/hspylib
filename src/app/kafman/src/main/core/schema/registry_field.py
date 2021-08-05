@@ -121,13 +121,11 @@ class RegistryField:
             if tooltip \
             else placeholder_text
         if self._widget_type == HComboBox:
-            widget_instance.addItems(self._schema.array_items(self._field_attrs))
+            items = self._schema.array_items(self._field_attrs)
+            widget_instance.addItems(items)
             widget_instance.setEditable(True)
             widget_instance.lineEdit().setPlaceholderText(placeholder_text)
-            if default_value:
-                widget_instance.setCurrentText(default_value)
-            else:
-                widget_instance.setCurrentIndex(0)
+            widget_instance.setCurrentText(default_value or widget_instance.itemText(0))
         elif self._widget_type == QCheckBox:
             widget_instance.setChecked(bool(default_value))
         elif self._widget_type in [QSpinBox, QDoubleSpinBox]:
@@ -137,7 +135,7 @@ class RegistryField:
             widget_instance.setValue(default_value or 0)
         else:
             widget_instance.setPlaceholderText(placeholder_text)
-            widget_instance.setText(default_value)
+            widget_instance.setText(str(default_value))
 
         widget_instance.setToolTip(tooltip)
         widget_instance.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
