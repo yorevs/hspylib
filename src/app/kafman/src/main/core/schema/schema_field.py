@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-      @file: registry_field.py
+      @file: schema_field.py
    @created: Thu, 5 Aug 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -24,7 +24,7 @@ from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from kafman.src.main.core.schema.kafka_schema import KafkaSchema
 
 
-class RegistryField:
+class SchemaField:
     """Represents a schema registry field and form component.
         - Avro Types: https://avro.apache.org/docs/current/spec.html#schema_record
         - Json Types: https://json-schema.org/understanding-json-schema/reference/type.html
@@ -50,10 +50,10 @@ class RegistryField:
         field_name: str,
         field_type: str,
         field_attrs: dict,
-        required: bool = True) -> 'RegistryField':
-        """Construct a RegistryField from a the field attributes"""
+        required: bool = True) -> 'SchemaField':
+        """Construct a RegistryField from the schema field properties"""
 
-        return RegistryField(
+        return SchemaField(
             schema,
             field_name,
             field_type,
@@ -71,7 +71,7 @@ class RegistryField:
 
         self._schema = schema
         self._name = name
-        self._type = next((typ for typ in field_type if typ != 'null'), None) \
+        self._type = next((t for t in field_type if t != 'null'), None) \
             if isinstance(field_type, list) \
             else field_type
         self._required = required
@@ -127,7 +127,6 @@ class RegistryField:
             widget_instance.setEditable(True)
             widget_instance.lineEdit().setPlaceholderText(placeholder_text)
             widget_instance.setCurrentText(default_value or widget_instance.itemText(0))
-            widget_instance.setLayoutDirection(Qt.RightToLeft)
         elif self._widget_type == QCheckBox:
             widget_instance.setChecked(bool(default_value))
         elif self._widget_type in [QSpinBox, QDoubleSpinBox]:
@@ -135,6 +134,7 @@ class RegistryField:
             widget_instance.setMinimum(min_val)
             widget_instance.setMaximum(max_val)
             widget_instance.setValue(default_value or 0)
+            widget_instance.setLayoutDirection(Qt.RightToLeft)
         else:
             widget_instance.setPlaceholderText(placeholder_text)
             widget_instance.setText(str(default_value))
