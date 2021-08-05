@@ -20,10 +20,10 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
-from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
-from hspylib.modules.qt.kafka.producer_config import ProducerConfig
-from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
-from hspylib.modules.qt.kafka.schemas.schema_field import SchemaField
+from kafman.src.main.core.kafka.consumer_config import ConsumerConfig
+from kafman.src.main.core.kafka.producer_config import ProducerConfig
+from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.kafka.schemas.schema_field import SchemaField
 
 
 class KafkaAvroSchema(KafkaSchema):
@@ -50,7 +50,7 @@ class KafkaAvroSchema(KafkaSchema):
         return bool(
             next(
                 (t for t in field['type'] if isinstance(field['type'], list) and 'null' in field['type']
-            ), None) is None
+                 ), None) is None
         )
 
     def __init__(

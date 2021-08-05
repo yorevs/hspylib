@@ -16,8 +16,8 @@
 
 import base64
 import getpass
-import uuid
 import logging as log
+import uuid
 
 from requests.structures import CaseInsensitiveDict
 

@@ -1,3 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+      @file: schema_registry.py
+   @created: Thu, 5 Aug 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 import json
 from typing import Optional, List
 
@@ -7,7 +22,7 @@ from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.fetch.fetch import is_reachable, get, delete
-from hspylib.modules.qt.kafka.schemas.schema_subject import Subject
+from kafman.src.main.core.kafka.schemas.schema_subject import Subject
 
 
 class SchemaRegistry:

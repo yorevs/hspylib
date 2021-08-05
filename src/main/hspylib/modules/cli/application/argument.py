@@ -36,7 +36,6 @@ class Argument:
         validation_regex: str = '.*',
         required: bool = True,
         next_in_chain: Any = None):
-
         self.name = name
         self.validation_regex = validation_regex
         self.required = required

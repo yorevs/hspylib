@@ -13,7 +13,6 @@
 
    Copyright 2021, HSPyLib team
 """
-import typing
 from typing import List, Optional, Union
 
 from PyQt5.QtCore import pyqtSignal, Qt

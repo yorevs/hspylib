@@ -192,7 +192,7 @@ def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
     return flat_dict
 
 
-def get_or_default(options: Union[tuple,list], index: int, default_value=None) -> Optional[Any]:
+def get_or_default(options: Union[tuple, list], index: int, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or default_value if index is out of range
     :param options: The available list of options
     :param index: The index of the item
@@ -293,6 +293,7 @@ def human_readable_time(time_microseconds: int) -> str:
     str_line = f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
 
     return str_line
+
 
 def build_url(url_or_part: str) -> str:
     """TODO

@@ -2,7 +2,7 @@
   "namespace": "example.avro",
   "type": "record",
   "name": "Employee",
-  "doc" : "Represents an Employee at a company",
+  "doc": "Represents an Employee at a company",
   "fields": [
     {
       "name": "name",
@@ -15,7 +15,13 @@
     {
       "name": "role",
       "type": "enum",
-      "symbols": ["Manager","Developer","RH","PM","CEO"],
+      "symbols": [
+        "Manager",
+        "Developer",
+        "RH",
+        "PM",
+        "CEO"
+      ],
       "default": "Developer"
     },
     {

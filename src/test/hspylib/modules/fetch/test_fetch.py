@@ -122,6 +122,7 @@ class TestFetch(unittest.TestCase):
     def test_should_not_be_reachable(self):
         self.assertFalse(is_reachable('example.com:9999'))
 
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFetch)
     unittest \

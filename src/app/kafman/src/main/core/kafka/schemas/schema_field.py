@@ -1,11 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: HSPyLib
+      @file: schema_field.py
+   @created: Thu, 5 Aug 2021
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
+"""
+
 from typing import Union, Type, Optional, Tuple
 
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget, QSizePolicy
 
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
-from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
+from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
 
 
 class SchemaField:
@@ -59,7 +74,7 @@ class SchemaField:
 
         self._schema = schema
         self._name = name
-        self._type = next((typ for typ in field_type if typ != 'null'), None)\
+        self._type = next((typ for typ in field_type if typ != 'null'), None) \
             if isinstance(field_type, list) \
             else field_type
         self._required = required
@@ -81,7 +96,7 @@ class SchemaField:
         else:
             value = widget_instance.text()
 
-        return { self._name: value } if value else None
+        return {self._name: value} if value else None
 
     def is_valid(self, widget_instance: QWidget) -> bool:
         """TODO"""
@@ -145,11 +160,11 @@ class SchemaField:
         text = f"This field is {'required' if self._required else 'optional'}" if not text else text
         return text
 
-    def _min_max_values(self) -> Tuple[Union[int,float], Union[int,float]]:
+    def _min_max_values(self) -> Tuple[Union[int, float], Union[int, float]]:
         """TODO"""
         min_val = get_by_key_or_default(self._field_attrs, 'minimum', 0)
         max_val = get_by_key_or_default(
             self._field_attrs, 'maximum', 99.99
-                if self._widget_type() == QDoubleSpinBox
-                else 99)
+            if self._widget_type() == QDoubleSpinBox
+            else 99)
         return min_val, max_val

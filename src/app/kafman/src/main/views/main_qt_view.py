@@ -32,23 +32,23 @@ from hspylib.core.tools.commons import run_dir, now, now_ms, read_version, dirna
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.qt.kafka.consumer_config import ConsumerConfig
-from hspylib.modules.qt.kafka.kafka_consumer import KafkaConsumer
-from hspylib.modules.qt.kafka.kafka_message import KafkaMessage
-from hspylib.modules.qt.kafka.kafka_producer import KafkaProducer
-from hspylib.modules.qt.kafka.kafka_statistics import KafkaStatistics
-from hspylib.modules.qt.kafka.producer_config import ProducerConfig
-from hspylib.modules.qt.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
-from hspylib.modules.qt.kafka.schemas.kafka_json_schema import KafkaJsonSchema
-from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
-from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
-from hspylib.modules.qt.kafka.schemas.kafka_schema_factory import KafkaSchemaFactory
-from hspylib.modules.qt.kafka.schemas.schema_registry import SchemaRegistry
-from hspylib.modules.qt.kafka.schemas.schema_subject import Subject
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from kafman.src.main.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
+from kafman.src.main.core.kafka.consumer_config import ConsumerConfig
+from kafman.src.main.core.kafka.kafka_consumer import KafkaConsumer
+from kafman.src.main.core.kafka.kafka_message import KafkaMessage
+from kafman.src.main.core.kafka.kafka_producer import KafkaProducer
+from kafman.src.main.core.kafka.kafka_statistics import KafkaStatistics
+from kafman.src.main.core.kafka.producer_config import ProducerConfig
+from kafman.src.main.core.kafka.schemas.kafka_avro_schema import KafkaAvroSchema
+from kafman.src.main.core.kafka.schemas.kafka_json_schema import KafkaJsonSchema
+from kafman.src.main.core.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
+from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.kafka.schemas.kafka_schema_factory import KafkaSchemaFactory
+from kafman.src.main.core.kafka.schemas.schema_registry import SchemaRegistry
+from kafman.src.main.core.kafka.schemas.schema_subject import Subject
 from kafman.src.main.views.indexes import StkTools, StkProducerEdit, Tabs
 
 
@@ -221,7 +221,7 @@ class MainQtView(QtView):
                 if field_value:
                     message.update(field_value)
                 if hasattr(widget, 'clear') and not isinstance(widget, QComboBox): widget.clear()
-            return json.dumps(message, indent = 0).replace('\n', '')
+            return json.dumps(message, indent=0).replace('\n', '')
 
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
@@ -305,7 +305,6 @@ class MainQtView(QtView):
             if widget is not None:
                 widget.deleteLater()
         return layout
-
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""
@@ -614,8 +613,8 @@ class MainQtView(QtView):
                             elif prop_name == 'schemas':
                                 list(map(
                                     lambda s:
-                                        self._add_schema((s, '')) or
-                                        self._deselect_schema()
+                                    self._add_schema((s, '')) or
+                                    self._deselect_schema()
                                     , ast.literal_eval(prop_value)
                                 ))
                             elif prop_name == 'last_schema':

@@ -17,7 +17,7 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer, 
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
-from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
+from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
 
 
 class KafkaPlainSchema(KafkaSchema):
