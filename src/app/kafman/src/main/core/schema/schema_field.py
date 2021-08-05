@@ -137,7 +137,7 @@ class SchemaField:
             widget_instance.setLayoutDirection(Qt.RightToLeft)
         else:
             widget_instance.setPlaceholderText(placeholder_text)
-            widget_instance.setText(str(default_value))
+            widget_instance.setText(str(default_value or ''))
         widget_instance.setToolTip(tooltip)
         widget_instance.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 

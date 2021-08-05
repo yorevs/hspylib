@@ -69,12 +69,16 @@ class MainQtView(QtView):
         return ' '.join(schemas)
 
     @staticmethod
-    def is_json(text: str) -> bool:
+    def _is_json(text: str) -> bool:
         """Whether the provided text is a json code or not"""
         if not text:
             return False
         else:
-            return (text.startswith('{') and text.endswith('}')) or (text.startswith('[') and text.endswith(']'))
+            t = text.strip()
+            return (
+               t.startswith('{') and t.endswith('}')) \
+               or (t.startswith('[') and t.endswith(']')
+            )
 
     def __init__(self):
         # Must come after the initialization above
@@ -167,6 +171,8 @@ class MainQtView(QtView):
         self.ui.tbtn_form_view.setText(DashboardIcons.FORM.value)
         self.ui.tbtn_form_view.clicked.connect(
             lambda : self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value))
+        self.ui.tbtn_export_form.setText(DashboardIcons.EXPORT.value)
+        self.ui.tbtn_export_form.clicked.connect(self._export_form)
         self.ui.txt_producer.textChanged.connect(self._verify_message)
 
     def _setup_consumer_controls(self):
@@ -226,27 +232,37 @@ class MainQtView(QtView):
             msgs = [text] if text.startswith('{') and text.endswith('}') else text.split('\n')
             return list(filter(lambda m: m != '', msgs))
         else:
-            message = defaultdict()
-            layout = self.ui.fr_schema_fields.layout()
-            columns = layout.columnCount()
-            w_offset = 1  # offset
-            w_before = 1  # widgets before
-            for index, field in enumerate(schema.get_fields()):
-                widget_idx = ((index + w_offset) * columns) - w_before
-                widget = layout.itemAt(widget_idx).widget()
-                if not field.is_valid(widget):
-                    raise InvalidInputError('Form contains unfilled required fields')
-                field_value = field.get_value(widget)
-                if field_value:
-                    message.update(field_value)
-                if hasattr(widget, 'clear') and not isinstance(widget, QComboBox): widget.clear()
-            return json.dumps(message, indent=0).replace('\n', '')
+            return self._schema_form_message(schema=schema)
+
+    def _schema_form_message(self, clear_form: bool = True, validate: bool = True, schema: KafkaSchema = None) -> str:
+        """Return the message built from the schema form"""
+        if not schema:
+            schema = self._schema()
+        message = defaultdict()
+        layout = self.ui.fr_schema_fields.layout()
+        columns = layout.columnCount()
+        for index, field in enumerate(schema.get_fields()):
+            widget_idx = ((index + 1) * columns) - 1
+            widget = layout.itemAt(widget_idx).widget()
+            if validate and not field.is_valid(widget):
+                raise InvalidInputError('Form contains unfilled required fields')
+            field_value = field.get_value(widget)
+            message.update(field_value if field_value else {field.get_name(): ''})
+            if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
+                widget.clear()
+
+        return json.dumps(message, indent=0).replace('\n', '').strip()
+
+    def _export_form(self) -> None:
+        """Export the message from the schema form to the producer text editor"""
+        self.ui.txt_producer.setText(self._schema_form_message(clear_form=False, validate=False))
+        self._format_message()
 
     def _format_message(self) -> None:
-        """TODO"""
+        """Validate and format the producer json text"""
         text = self.ui.txt_producer.toPlainText()
         text = text.replace("'", '"')
-        if self.is_json(text):
+        if self._is_json(text):
             try:
                 formatted = json.dumps(json.loads(text), indent=2, sort_keys=False)
                 self.ui.txt_producer.setText(formatted)
@@ -257,8 +273,8 @@ class MainQtView(QtView):
                 self.ui.tbtn_format_msg.setStyleSheet("QToolButton {color: #FF554D;}")
 
     def _verify_message(self) -> None:
-        """TODO"""
-        enabled = self.is_json(self.ui.txt_producer.toPlainText())
+        """Sanity test to check if the producer text is eligible for formatting"""
+        enabled = self._is_json(self.ui.txt_producer.toPlainText())
         self.ui.tbtn_format_msg.setEnabled(enabled)
         self.ui.tbtn_format_msg.setStyleSheet("QToolButton {}")
 
@@ -470,6 +486,7 @@ class MainQtView(QtView):
             else:
                 self._display_error('Must subscribe to at least one topic')
                 return
+        self.ui.tbtn_export_form.setEnabled(not started)
         self.ui.fr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)

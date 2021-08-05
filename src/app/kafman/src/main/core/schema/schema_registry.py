@@ -119,7 +119,7 @@ class SchemaRegistry:
                             if subject_response.status_code == HttpCode.OK:
                                 subject = json.loads(subject_response.body)
                                 subjects.append(RegistrySubject(
-                                    subject['schemaType'] if hasattr(subject, 'schemaType') else 'AVRO',
+                                    subject['schemaType'] if 'schemaType' in subject else 'AVRO',
                                     subject['subject'],
                                     subject['id'],
                                     subject['version'],

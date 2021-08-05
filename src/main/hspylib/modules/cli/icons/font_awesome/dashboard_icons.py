@@ -95,6 +95,8 @@ class DashboardIcons(Awesome):
     GITHUB = u'\uF408'       # 
     CLOUD_PUT = u'\uF40A'    # 
     CLOUD_GET = u'\uF409'    # 
+    EXPORT = u'\uF5F6'       # 
+    IMPORT = u'\uF5F9'       # 
 
     # @formatter:on
 
