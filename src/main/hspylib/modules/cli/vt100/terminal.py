@@ -20,8 +20,8 @@ import shlex
 import subprocess
 from abc import ABC
 from typing import Optional
-from hspylib.core.tools.commons import syserr
 
+from hspylib.core.tools.commons import syserr
 
 
 class Terminal(ABC):

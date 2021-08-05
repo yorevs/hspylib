@@ -16,9 +16,9 @@
 
 import base64
 import os
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.preconditions import check_state
-
 
 
 class FileEntry:

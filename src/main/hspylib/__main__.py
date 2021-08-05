@@ -15,6 +15,7 @@
 """
 
 import sys
+
 from hspylib.addons.appman.app_extension import AppExtension
 from hspylib.addons.appman.app_type import AppType
 from hspylib.addons.appman.appman import AppManager
@@ -22,7 +23,6 @@ from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.tools.commons import get_path, read_version, run_dir, syserr, sysout, dirname
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
-
 
 HERE = get_path(__file__)
 

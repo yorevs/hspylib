@@ -14,9 +14,10 @@
    Copyright 2021, HSPyLib team
 """
 
+from test.hspylib.shared.entity_test import EntityTest
+
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
-from test.hspylib.shared.entity_test import EntityTest
 
 
 class FirebaseRepositoryTest(FirebaseRepository):

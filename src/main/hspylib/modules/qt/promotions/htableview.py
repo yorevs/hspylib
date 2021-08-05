@@ -14,11 +14,11 @@
 """
 
 from typing import Optional
+
 import pyperclip as clipboard
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPaintEvent, QCursor
 from PyQt5.QtWidgets import QTableView, QWidget, QMenu, QHeaderView, QAbstractScrollArea
-
 
 
 class HTableView(QTableView):

@@ -16,12 +16,12 @@
 
 import os
 import sys
+
 from calculator.ui.qt.views.main_qt_view import MainQtView
 from hspylib.core.tools.commons import dirname, read_version
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
-
 
 
 class Main(Application):

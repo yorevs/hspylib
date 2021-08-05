@@ -17,12 +17,12 @@
 import logging as log
 import sys
 from datetime import datetime
+
 from firebase.src.main.core.agent_config import AgentConfig
 from firebase.src.main.core.firebase import Firebase
 from hspylib.core.tools.commons import dirname, get_path, read_version, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
-
 
 HERE = get_path(__file__)
 

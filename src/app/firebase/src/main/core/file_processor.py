@@ -18,14 +18,14 @@ import json
 import os
 from abc import ABC
 from typing import List
+
 from requests.exceptions import HTTPError
+
 from firebase.src.main.entity.file_entry import FileEntry
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.preconditions import check_state, check_not_none, check_argument
 from hspylib.modules.fetch.fetch import get, put
-
-
 
 
 class FileProcessor(ABC):

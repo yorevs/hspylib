@@ -20,7 +20,6 @@ from confluent_kafka.serialization import StringSerializer, StringDeserializer
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_by_key_or_default, search_dict
-from hspylib.core.tools.preconditions import check_not_none
 from kafman.src.main.core.consumer_config import ConsumerConfig
 from kafman.src.main.core.producer_config import ProducerConfig
 from kafman.src.main.core.schema.kafka_schema import KafkaSchema
@@ -35,6 +34,7 @@ class AvroSchema(KafkaSchema):
 
     @classmethod
     def extensions(cls) -> List[str]:
+        """TODO"""
         return ['*.avsc']
 
     @classmethod
@@ -48,14 +48,13 @@ class AvroSchema(KafkaSchema):
 
     @classmethod
     def is_required(cls, field: dict) -> bool:
-        return bool(
-            next(
-                (t for t in field['type'] if isinstance(field['type'], list) and 'null' in field['type']
-                 ), None) is None
-        )
+        """TODO"""
+        return bool(next(
+            (t for t in field['type'] if isinstance(field['type'], list) and 'null' in field['type']), None) is None)
 
     @classmethod
     def find_type(cls, field: dict) -> str:
+        """TODO"""
         return next((ft['type'] for ft in field['type'] if isinstance(ft, dict)), None) \
             if isinstance(field['type'], list) \
             else field['type']
@@ -68,6 +67,7 @@ class AvroSchema(KafkaSchema):
         super().__init__('AVRO', filepath, registry_url, charset)
 
     def _parse(self) -> None:
+        """TODO"""
         self._name = get_by_key_or_default(
             self._content, 'name', path.basename(path.splitext(self._filepath)[0]))
         self._type = get_by_key_or_default(self._content, 'type', 'record')
@@ -79,12 +79,14 @@ class AvroSchema(KafkaSchema):
         self._doc = get_by_key_or_default(self._content, 'doc', '')
 
     def serializer_settings(self) -> dict:
+        """TODO"""
         return {
             ProducerConfig.KEY_SERIALIZER: StringSerializer(self._charset.value),
             ProducerConfig.VALUE_SERIALIZER: AvroSerializer(self._schema_client, self._schema_str, self.to_dict)
         }
 
     def deserializer_settings(self) -> dict:
+        """TODO"""
         return {
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._schema_str, self.from_dict)

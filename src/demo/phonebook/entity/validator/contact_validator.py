@@ -15,11 +15,11 @@
 """
 
 from typing import List, Tuple
+
 from hspylib.core.tools.constants import RE_COMMON_2_30_NAME, RE_PHONE_NUMBER
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Contact import Contact
-
 
 
 class ContactValidator(Validator):
