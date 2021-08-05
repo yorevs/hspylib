@@ -19,8 +19,8 @@ from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDese
 from confluent_kafka.serialization import StringSerializer, StringDeserializer
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.commons import get_by_key_or_default
-from hspylib.core.tools.preconditions import check_not_none
 from kafman.src.main.core.consumer_config import ConsumerConfig
 from kafman.src.main.core.producer_config import ProducerConfig
 from kafman.src.main.core.schema.kafka_schema import KafkaSchema
@@ -65,11 +65,7 @@ class JsonSchema(KafkaSchema):
         self._name = self._name = get_by_key_or_default(
             self._content, 'title', path.basename(path.splitext(self._filepath)[0]))
         self._type = self._type = get_by_key_or_default(self._content, 'type', 'object')
-        fields = get_by_key_or_default(self._content, 'properties', [])
-        check_not_none(fields)
-        self._fields = [
-            RegistryField.of(self, key, f['type'], f, self.is_required(key)) for key, f in fields.items()
-        ]
+        self._fields = self._parse_fields()
         self._doc = get_by_key_or_default(self._content, 'description', '')
         self._namespace = get_by_key_or_default(self._content, '$schema', '')
 
@@ -84,3 +80,17 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._schema_str, self.from_dict)
         }
+
+    def _parse_fields(self) -> List[RegistryField]:
+        """TODO"""
+        if self._type == 'object':
+            fields = get_by_key_or_default(self._content, 'properties', {})
+        elif self._type == 'array':
+            items = get_by_key_or_default(self._content, 'items')
+            fields = get_by_key_or_default(items if items else self._content, 'properties', {})
+        else:
+            raise SchemaRegistryError(f"Invalid field type: {self._type}")
+
+        return [
+            RegistryField.of(self, key, f['type'], f, self.is_required(key)) for key, f in fields.items()
+        ]
