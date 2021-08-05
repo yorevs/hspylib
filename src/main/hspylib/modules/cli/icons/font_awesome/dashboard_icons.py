@@ -47,6 +47,9 @@ class DashboardIcons(Awesome):
     PRINTER = u'\uF02F'      # 
     CAMERA = u'\uF030'       # 
     LIST = u'\uF03A'         # 
+    CODE = u'\uFABF'         # 謹
+    FORM = u'\uF767'         # 
+    FORMAT = u'\uF9C5'       # 暈
     PICTURE = u'\uF03E'      # 
     ERROR = u'\uF06A'        # 
     ALERT = u'\uF071'        # 

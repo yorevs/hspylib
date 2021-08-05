@@ -24,7 +24,7 @@ from hspylib.core.tools.commons import get_by_key_or_default
 from kafman.src.main.core.consumer_config import ConsumerConfig
 from kafman.src.main.core.producer_config import ProducerConfig
 from kafman.src.main.core.schema.kafka_schema import KafkaSchema
-from kafman.src.main.core.schema.registry_field import RegistryField
+from kafman.src.main.core.schema.schema_field import SchemaField
 
 
 class JsonSchema(KafkaSchema):
@@ -81,7 +81,7 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._schema_str, self.from_dict)
         }
 
-    def _parse_fields(self) -> List[RegistryField]:
+    def _parse_fields(self) -> List[SchemaField]:
         """TODO"""
         if self._type == 'object':
             fields = get_by_key_or_default(self._content, 'properties', {})
@@ -92,5 +92,5 @@ class JsonSchema(KafkaSchema):
             raise SchemaRegistryError(f"Invalid field type: {self._type}")
 
         return [
-            RegistryField.of(self, key, f['type'], f, self.is_required(key)) for key, f in fields.items()
+            SchemaField.of(self, key, f['type'], f, self.is_required(key)) for key, f in fields.items()
         ]

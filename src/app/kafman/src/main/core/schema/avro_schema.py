@@ -23,7 +23,7 @@ from hspylib.core.tools.commons import get_by_key_or_default, search_dict
 from kafman.src.main.core.consumer_config import ConsumerConfig
 from kafman.src.main.core.producer_config import ProducerConfig
 from kafman.src.main.core.schema.kafka_schema import KafkaSchema
-from kafman.src.main.core.schema.registry_field import RegistryField
+from kafman.src.main.core.schema.schema_field import SchemaField
 
 
 class AvroSchema(KafkaSchema):
@@ -73,7 +73,7 @@ class AvroSchema(KafkaSchema):
         self._type = get_by_key_or_default(self._content, 'type', 'record')
         fields = get_by_key_or_default(self._content, 'fields', [])
         self._fields = [
-            RegistryField.of(self, f['name'], self.find_type(f), f, self.is_required(f)) for f in fields
+            SchemaField.of(self, f['name'], self.find_type(f), f, self.is_required(f)) for f in fields
         ]
         self._namespace = get_by_key_or_default(self._content, 'namespace', '')
         self._doc = get_by_key_or_default(self._content, 'doc', '')

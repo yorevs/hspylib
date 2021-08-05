@@ -20,6 +20,7 @@ import logging as log
 import os
 import re
 from collections import defaultdict
+from json.decoder import JSONDecodeError
 from typing import List, Optional, Tuple, Union
 
 from PyQt5.QtCore import Qt
@@ -67,6 +68,14 @@ class MainQtView(QtView):
         schemas.extend(JsonSchema.extensions())
         return ' '.join(schemas)
 
+    @staticmethod
+    def is_json(text: str) -> bool:
+        """Whether the provided text is a json code or not"""
+        if not text:
+            return False
+        else:
+            return (text.startswith('{') and text.endswith('}')) or (text.startswith('[') and text.endswith(']'))
+
     def __init__(self):
         # Must come after the initialization above
         super().__init__()
@@ -102,11 +111,11 @@ class MainQtView(QtView):
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
         self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
         self.window.resize(1024, 768)
-        self.setup_general_controls()
-        self.setup_producer_controls()
-        self.setup_consumer_controls()
+        self._setup_general_controls()
+        self._setup_producer_controls()
+        self._setup_consumer_controls()
 
-    def setup_general_controls(self):
+    def _setup_general_controls(self):
         """Setup general components"""
         self.ui.splitter_pane.setSizes([350, 824])
         self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
@@ -130,9 +139,8 @@ class MainQtView(QtView):
         self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
         self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
         self.ui.txt_sel_schema.set_clearable(False)
-        self.ui.fr_schema_fields.setLayout(QGridLayout())
 
-    def setup_producer_controls(self):
+    def _setup_producer_controls(self):
         """Setup producer components"""
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
@@ -153,8 +161,15 @@ class MainQtView(QtView):
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_prod_settings.editingFinished.connect(self._edit_setting)
+        self.ui.fr_schema_fields.setLayout(QGridLayout())
+        self.ui.tbtn_format_msg.setText(DashboardIcons.FORMAT.value)
+        self.ui.tbtn_format_msg.clicked.connect(self._format_message)
+        self.ui.tbtn_form_view.setText(DashboardIcons.FORM.value)
+        self.ui.tbtn_form_view.clicked.connect(
+            lambda : self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value))
+        self.ui.txt_producer.textChanged.connect(self._verify_message)
 
-    def setup_consumer_controls(self):
+    def _setup_consumer_controls(self):
         """Setup consumer components"""
         self.ui.cmb_cons_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_cons_settings_add.clicked.connect(lambda: self.ui.lst_cons_settings.set_item('new.setting'))
@@ -173,6 +188,9 @@ class MainQtView(QtView):
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
+        self.ui.tbtn_text_view.setText(DashboardIcons.CODE.value)
+        self.ui.tbtn_text_view.clicked.connect(
+            lambda: self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value))
 
     def _is_producer(self) -> bool:
         """Whether producer or consumer tab is selected"""
@@ -203,8 +221,9 @@ class MainQtView(QtView):
     def _messages(self) -> Union[str, List[str]]:
         """Return the selected messages or build a json message from form"""
         schema = self._schema()
-        if isinstance(schema, PlainSchema):
-            msgs = self.ui.txt_producer.toPlainText().split('\n')
+        if isinstance(schema, PlainSchema) or self.ui.stk_producer_edit.currentIndex() == StkProducerEdit.TEXT.value:
+            text = self.ui.txt_producer.toPlainText()
+            msgs = [text] if text.startswith('{') and text.endswith('}') else text.split('\n')
             return list(filter(lambda m: m != '', msgs))
         else:
             message = defaultdict()
@@ -222,6 +241,26 @@ class MainQtView(QtView):
                     message.update(field_value)
                 if hasattr(widget, 'clear') and not isinstance(widget, QComboBox): widget.clear()
             return json.dumps(message, indent=0).replace('\n', '')
+
+    def _format_message(self) -> None:
+        """TODO"""
+        text = self.ui.txt_producer.toPlainText()
+        text = text.replace("'", '"')
+        if self.is_json(text):
+            try:
+                formatted = json.dumps(json.loads(text), indent=2, sort_keys=False)
+                self.ui.txt_producer.setText(formatted)
+                self.ui.tbtn_format_msg.setStyleSheet("QToolButton {color: #28C941;}")
+                self._display_text('The provided json is valid', StatusColor.green)
+            except JSONDecodeError as err:
+                self._display_error(f"Failed to format json => {str(err)}")
+                self.ui.tbtn_format_msg.setStyleSheet("QToolButton {color: #FF554D;}")
+
+    def _verify_message(self) -> None:
+        """TODO"""
+        enabled = self.is_json(self.ui.txt_producer.toPlainText())
+        self.ui.tbtn_format_msg.setEnabled(enabled)
+        self.ui.tbtn_format_msg.setStyleSheet("QToolButton {}")
 
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
@@ -266,10 +305,12 @@ class MainQtView(QtView):
             self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
             self._build_schema_layout()
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
+            self.ui.tbtn_form_view.setEnabled(True)
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.setText('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
+            self.ui.tbtn_form_view.setEnabled(False)
 
     def _build_schema_layout(self):
         """Build a form based on the selected schema using a grid layout"""
