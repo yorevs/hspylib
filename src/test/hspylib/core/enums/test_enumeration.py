@@ -16,8 +16,8 @@
 
 import sys
 import unittest
-from hspylib.core.enums.enumeration import Enumeration
 
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class TestClass(unittest.TestCase):

@@ -24,6 +24,8 @@ from kafman.src.main.core.schema.plain_schema import PlainSchema
 
 
 class SchemaFactory(ABC):
+    """TODO"""
+
     _all_schemas = [
         AvroSchema,
         JsonSchema,
@@ -32,6 +34,7 @@ class SchemaFactory(ABC):
 
     @classmethod
     def create_schema(cls, filepath: str, registry_url: str) -> KafkaSchema:
+        """TODO"""
         _, f_ext = os.path.splitext(filepath)
         schema_cls = next((schema for schema in cls._all_schemas if schema.supports(f_ext)), None)
         check_state(issubclass(schema_cls, KafkaSchema))

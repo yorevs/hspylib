@@ -24,7 +24,7 @@ from typing import List, Optional, Tuple, Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QComboBox
+from PyQt5.QtWidgets import QFileDialog, QLabel, QGridLayout, QComboBox
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import UnsupportedSchemaError, InvalidStateError, InvalidInputError
@@ -211,7 +211,7 @@ class MainQtView(QtView):
             layout = self.ui.fr_schema_fields.layout()
             columns = layout.columnCount()
             w_offset = 1  # offset
-            w_before = 2  # widgets before
+            w_before = 1  # widgets before
             for index, field in enumerate(schema.get_fields()):
                 widget_idx = ((index + w_offset) * columns) - w_before
                 widget = layout.itemAt(widget_idx).widget()
@@ -292,9 +292,6 @@ class MainQtView(QtView):
                     widget = field.widget()
                     widget.setStyleSheet('QWidget {padding: 5px;}')
                     layout.addWidget(widget, row, 2)
-                    layout.addItem(QSpacerItem(10, 10, QSizePolicy.MinimumExpanding, QSizePolicy.Fixed), row, 3, 1)
-                # Add a vertical spacer to fill the bottom of the form
-                layout.addItem(QSpacerItem(10, 10, QSizePolicy.Fixed, QSizePolicy.Expanding), len(fields) + 1, 0, 3)
 
     def _cleanup_schema_layout(self) -> QGridLayout:
         """Remove all widgets from the current grid layout"""

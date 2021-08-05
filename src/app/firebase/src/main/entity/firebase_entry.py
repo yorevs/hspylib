@@ -17,9 +17,9 @@
 import json
 from datetime import datetime
 from typing import List
+
 from firebase.src.main.entity.file_entry import FileEntry
 from hspylib.core.enums.charset import Charset
-
 
 
 class FirebaseEntry:

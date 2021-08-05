@@ -15,6 +15,7 @@
 
 from typing import Union, Type, Optional, Tuple
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget, QSizePolicy, QAbstractSpinBox
 
 from hspylib.core.tools.commons import get_by_key_or_default
@@ -126,6 +127,7 @@ class RegistryField:
             widget_instance.setEditable(True)
             widget_instance.lineEdit().setPlaceholderText(placeholder_text)
             widget_instance.setCurrentText(default_value or widget_instance.itemText(0))
+            widget_instance.setLayoutDirection(Qt.RightToLeft)
         elif self._widget_type == QCheckBox:
             widget_instance.setChecked(bool(default_value))
         elif self._widget_type in [QSpinBox, QDoubleSpinBox]:
@@ -136,7 +138,6 @@ class RegistryField:
         else:
             widget_instance.setPlaceholderText(placeholder_text)
             widget_instance.setText(str(default_value))
-
         widget_instance.setToolTip(tooltip)
         widget_instance.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 

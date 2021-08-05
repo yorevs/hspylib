@@ -15,8 +15,8 @@
 
 from abc import ABC
 from typing import TypeVar
-from PyQt5.QtWidgets import QApplication
 
+from PyQt5.QtWidgets import QApplication
 
 V = TypeVar('V')
 

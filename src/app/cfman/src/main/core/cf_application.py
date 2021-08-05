@@ -16,9 +16,9 @@
 
 import re
 from typing import List
+
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.preconditions import check_argument
-
 
 
 class CFApplication:

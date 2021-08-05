@@ -16,6 +16,7 @@
 
 import os
 from typing import List
+
 from hspylib.addons.appman.app_extension import AppExtension
 from hspylib.addons.appman.app_type import AppType
 from hspylib.core.enums.http_code import HttpCode
@@ -26,7 +27,6 @@ from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
-
 
 HERE = get_path(__file__)
 

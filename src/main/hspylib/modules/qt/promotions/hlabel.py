@@ -14,10 +14,10 @@
    Copyright 2021, HSPyLib team
 """
 from typing import Optional
+
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFontMetrics, QResizeEvent, QTextDocument
 from PyQt5.QtWidgets import QLabel, QWidget, QSizePolicy
-
 
 
 class HLabel(QLabel):

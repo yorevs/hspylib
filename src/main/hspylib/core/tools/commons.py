@@ -21,11 +21,11 @@ import re
 import sys
 from datetime import timedelta, datetime
 from typing import Any, List, Optional, Tuple, Type, Union
+
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
-
 
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',

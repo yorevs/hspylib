@@ -14,9 +14,9 @@
    Copyright 2021, HSPyLib team
 """
 from typing import List, Optional, Union
+
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget
-
 
 
 class HListWidget(QListWidget):
