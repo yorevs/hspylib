@@ -19,18 +19,17 @@ from typing import List, Any, Union
 
 from PyQt5.QtCore import pyqtSignal, QThread
 from avro.io import AvroTypeException
-from avro.schema import Schema
 from confluent_kafka import SerializingProducer
 from confluent_kafka.cimpl import KafkaError, Message
 from confluent_kafka.error import ValueSerializationError
 
 from hspylib.core.tools.commons import syserr
+from kafman.src.main.core.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
+from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
 
 
 # Example at: # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
 # For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
-from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 
 
 class KafkaProducer(QThread):

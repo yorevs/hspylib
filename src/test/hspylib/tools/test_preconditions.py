@@ -18,6 +18,7 @@ import unittest
 
 from hspylib.core.exception.exceptions import InvalidStateError, InvalidArgumentError
 from hspylib.core.tools.preconditions import check_not_none, check_state, check_argument, check_element_index, \
+ \
     check_index_in_range
 
 

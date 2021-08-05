@@ -22,12 +22,12 @@ from confluent_kafka import DeserializingConsumer
 from confluent_kafka.error import ValueDeserializationError, ConsumeError
 
 from hspylib.core.tools.commons import syserr
+from kafman.src.main.core.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
+from kafman.src.main.core.kafka.schemas.kafka_schema import KafkaSchema
 
 
 # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
 # For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-from hspylib.modules.qt.kafka.schemas.kafka_plain_schema import KafkaPlainSchema
-from hspylib.modules.qt.kafka.schemas.kafka_schema import KafkaSchema
 
 
 class KafkaConsumer(QThread):

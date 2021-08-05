@@ -81,7 +81,7 @@ class FileProcessor(ABC):
                 entry['data'],
                 entry['size']).save()
         sysout('%GREEN%File(s) [\n\t{}\n] successfully downloaded into {}%NC%'
-            .format(', \n\t'.join(list(map(lambda e: e['path'], file_entries))), destination_dir))
+               .format(', \n\t'.join(list(map(lambda e: e['path'], file_entries))), destination_dir))
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:

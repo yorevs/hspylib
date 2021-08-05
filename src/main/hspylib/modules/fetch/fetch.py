@@ -72,6 +72,7 @@ def head(
         silent=silent,
         timeout=timeout)
 
+
 def get(
     url: str,
     headers: List[str] = None,
@@ -84,6 +85,7 @@ def get(
         headers=headers,
         silent=silent,
         timeout=timeout)
+
 
 def delete(
     url: str,
@@ -98,6 +100,7 @@ def delete(
         headers=headers,
         silent=silent,
         timeout=timeout)
+
 
 def post(
     url: str,
@@ -115,6 +118,7 @@ def post(
         silent=silent,
         timeout=timeout)
 
+
 def put(
     url: str,
     body=None,
@@ -131,6 +135,7 @@ def put(
         silent=silent,
         timeout=timeout)
 
+
 def patch(
     url: str,
     body=None,
@@ -146,6 +151,7 @@ def patch(
         body=body,
         silent=silent,
         timeout=timeout)
+
 
 def is_reachable(
     url: str,

@@ -2,7 +2,7 @@
 #
 # HSPyLib v0.11.1
 #
-# Package: main.hspylib.modules.qt.kafka.schemas
+# Package: app.kafman.src.main.core.kafka.schemas
 """Package initialization."""
 
 __all__ = [

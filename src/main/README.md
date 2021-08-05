@@ -32,6 +32,7 @@ HSPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) projec
 - Gradle build system with many extensions.
 
 A menu select example:
+
 ```python
 from hspylib.modules.cli.tui.extra.mselect import mselect
 
@@ -43,8 +44,8 @@ if __name__ == '__main__':
 
 ![MenuSelect](doc/images/mselect.png "MenuSelect")
 
-
 A menu choose example:
+
 ```python
 from hspylib.modules.cli.tui.extra.mchoose import mchoose
 
@@ -57,6 +58,7 @@ if __name__ == '__main__':
 ![MenuChoose](doc/images/mchoose.png "MenuChoose")
 
 A Dashboard example:
+
 ```python
 if __name__ == '__main__':
 # @formatter:off
@@ -176,11 +178,11 @@ And many other cool features like repositories, Qt and CRUD helpers, etc...
 #### Operating Systems
 
 - Darwin
-    + High Sierra and higher
+  + High Sierra and higher
 - Linux
-    + Ubuntu 16 and higher
-    + CentOS 7 and higher
-    + Fedora 31 and higher
+  + Ubuntu 16 and higher
+  + CentOS 7 and higher
+  + Fedora 31 and higher
 
 You may want to install HSPyLib on other OS's and it will probably work, but there are no guarantees that it
 **WILL ACTUALLY WORK**.
@@ -222,7 +224,8 @@ You can contact us using our [Gitter](https://gitter.im/hspylib/community) commu
 
 ## Support HSPyLib
 
-You can support HSPyLib by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
+You can support HSPyLib
+by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 or coding. Fell free to contact me for details. When contributing with code change please take a look at our
 [guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 

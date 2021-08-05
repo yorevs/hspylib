@@ -6,5 +6,6 @@
 """Package initialization."""
 
 __all__ = [
+  'indexes', 
   'main_qt_view'
 ]

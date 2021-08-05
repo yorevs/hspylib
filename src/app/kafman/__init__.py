@@ -2,10 +2,9 @@
 #
 # HSPyLib v0.11.1
 #
-# Package: app.kafman.src.main.core
+# Package: app.kafman
 """Package initialization."""
 
 __all__ = [
-  'constants', 
-  'kafka'
+  'src'
 ]
