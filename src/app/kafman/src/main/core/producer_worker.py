@@ -109,7 +109,9 @@ class ProducerWorker(QThread):
                 except KeyboardInterrupt:
                     syserr("Keyboard interrupted")
                 except (AvroTypeException, ValueError, ValueSerializationError) as err:
-                    syserr(f"Invalid input, discarding record => {str(err)}")
+                    msg = f"Invalid input, discarding record => {str(err)}"
+                    syserr(msg)
+                    self.messageFailed.emit(msg)
                     continue
                 finally:
                     self._flush(self._flush_timeout)

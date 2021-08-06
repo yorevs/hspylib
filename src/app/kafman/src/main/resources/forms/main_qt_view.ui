@@ -87,15 +87,15 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page_settings">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
-            <height>528</height>
+            <width>104</width>
+            <height>120</height>
            </rect>
           </property>
           <attribute name="label">
@@ -117,7 +117,7 @@
            <item row="1" column="0">
             <widget class="QStackedWidget" name="stk_settings">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="stk_settings_producer">
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -164,6 +164,12 @@
                      <height>0</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Type in the setting value</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Type in the setting value</string>
+                   </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
@@ -179,6 +185,9 @@
                      <width>30</width>
                      <height>30</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Add a new setting</string>
                    </property>
                    <property name="text">
                     <string>+</string>
@@ -205,6 +214,9 @@
                      <height>30</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Remove current setting</string>
+                   </property>
                    <property name="text">
                     <string>-</string>
                    </property>
@@ -218,6 +230,9 @@
                  </item>
                  <item row="1" column="0" colspan="3">
                   <widget class="HListWidget" name="lst_prod_settings">
+                   <property name="toolTip">
+                    <string>Current settings in-use</string>
+                   </property>
                    <property name="editTriggers">
                     <set>QAbstractItemView::DoubleClicked</set>
                    </property>
@@ -272,6 +287,9 @@
                      <height>30</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Add a new setting</string>
+                   </property>
                    <property name="text">
                     <string>+</string>
                    </property>
@@ -309,6 +327,12 @@
                      <height>0</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Type in the setting value</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>Type in the setting value</string>
+                   </property>
                   </widget>
                  </item>
                  <item row="0" column="2">
@@ -325,6 +349,9 @@
                      <height>30</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Remove current setting</string>
+                   </property>
                    <property name="text">
                     <string>-</string>
                    </property>
@@ -338,6 +365,9 @@
                  </item>
                  <item row="1" column="0" colspan="3">
                   <widget class="HListWidget" name="lst_cons_settings">
+                   <property name="toolTip">
+                    <string>Current settings in-use</string>
+                   </property>
                    <property name="editTriggers">
                     <set>QAbstractItemView::DoubleClicked</set>
                    </property>
@@ -359,8 +389,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
-            <height>528</height>
+            <width>243</width>
+            <height>238</height>
            </rect>
           </property>
           <attribute name="label">
@@ -405,6 +435,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Remove the selected schema</string>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
@@ -429,6 +462,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Browse schemas from local disk</string>
                </property>
                <property name="text">
                 <string>...</string>
@@ -455,6 +491,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Deselect schema</string>
+               </property>
                <property name="text">
                 <string>x</string>
                </property>
@@ -480,6 +519,9 @@
                  <height>40</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Available schemas</string>
+               </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
                </property>
@@ -502,6 +544,9 @@
              </item>
              <item row="4" column="0" colspan="4">
               <widget class="HConsole" name="txt_sel_schema">
+               <property name="toolTip">
+                <string>Selected schema contents</string>
+               </property>
                <property name="acceptRichText">
                 <bool>false</bool>
                </property>
@@ -516,7 +561,7 @@
              <item row="0" column="0" colspan="3">
               <widget class="QLabel" name="label_3">
                <property name="text">
-                <string>Registry url:</string>
+                <string>Registry URL:</string>
                </property>
               </widget>
              </item>
@@ -533,6 +578,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Test the registry server</string>
                </property>
                <property name="text">
                 <string>.</string>
@@ -558,6 +606,9 @@
                  <width>0</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Select or type the registry server URL</string>
                </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
@@ -591,7 +642,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
+            <width>229</width>
             <height>528</height>
            </rect>
           </property>
@@ -648,30 +699,33 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_2">
-                   <property name="text">
-                    <string>Messages produced:</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="lbl_stats_produced">
+                   <property name="toolTip">
+                    <string>Total messages produced so far</string>
+                   </property>
                    <property name="text">
                     <string>0</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_4">
-                   <property name="text">
-                    <string>Messages per second:</string>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="lbl_stats_produced_avg">
+                   <property name="toolTip">
+                    <string>Average of the messages produced per second</string>
                    </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   <property name="text">
+                    <string>0</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="lbl_stats_produced_ps">
+                   <property name="toolTip">
+                    <string>Current produced messages per second</string>
+                   </property>
+                   <property name="text">
+                    <string>0</string>
                    </property>
                   </widget>
                  </item>
@@ -685,17 +739,23 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="lbl_stats_produced_avg">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_4">
                    <property name="text">
-                    <string>0</string>
+                    <string>Messages per second:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="lbl_stats_produced_ps">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_2">
                    <property name="text">
-                    <string>0</string>
+                    <string>Messages produced:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                    </property>
                   </widget>
                  </item>
@@ -719,6 +779,9 @@
                </property>
                <item>
                 <layout class="QGridLayout" name="gridLayout_6">
+                 <property name="leftMargin">
+                  <number>10</number>
+                 </property>
                  <item row="3" column="0" colspan="2">
                   <spacer name="verticalSpacer_2">
                    <property name="orientation">
@@ -732,18 +795,11 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>Messages per second:</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="lbl_stats_consumed">
+                   <property name="toolTip">
+                    <string>Total messages consumed so far</string>
+                   </property>
                    <property name="text">
                     <string>0</string>
                    </property>
@@ -751,18 +807,21 @@
                  </item>
                  <item row="1" column="1">
                   <widget class="QLabel" name="lbl_stats_consumed_ps">
+                   <property name="toolTip">
+                    <string>Current consumed messages per second</string>
+                   </property>
                    <property name="text">
                     <string>0</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="text">
-                    <string>Messages consumed:</string>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="lbl_stats_consumed_avg">
+                   <property name="toolTip">
+                    <string>Average of the messages consumed per second</string>
                    </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   <property name="text">
+                    <string>0</string>
                    </property>
                   </widget>
                  </item>
@@ -776,10 +835,23 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="lbl_stats_consumed_avg">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_8">
                    <property name="text">
-                    <string>0</string>
+                    <string>Messages per second:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>Messages consumed:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                    </property>
                   </widget>
                  </item>
@@ -859,6 +931,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Start producing to the selected Kafka topics</string>
+               </property>
                <property name="text">
                 <string>O</string>
                </property>
@@ -883,6 +958,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Clear all topics from the list</string>
                </property>
                <property name="text">
                 <string>x</string>
@@ -912,6 +990,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Send the selected message to Kafka</string>
+               </property>
                <property name="text">
                 <string>&gt;</string>
                </property>
@@ -936,6 +1017,9 @@
                  <width>300</width>
                  <height>40</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Select or type a new kafka topic</string>
                </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
@@ -978,6 +1062,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Add topic to the list</string>
+               </property>
                <property name="text">
                 <string>+</string>
                </property>
@@ -1002,6 +1089,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Remove topic from the list</string>
                </property>
                <property name="text">
                 <string>-</string>
@@ -1053,6 +1143,9 @@
                      <width>30</width>
                      <height>30</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Toggle to the form editor</string>
                    </property>
                    <property name="text">
                     <string>|||</string>
@@ -1110,6 +1203,9 @@
                      <height>30</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Validate and format current message</string>
+                   </property>
                    <property name="text">
                     <string>{</string>
                    </property>
@@ -1127,6 +1223,9 @@
                 <widget class="HConsole" name="txt_producer">
                  <property name="enabled">
                   <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>The message to be produced</string>
                  </property>
                  <property name="undoRedoEnabled">
                   <bool>true</bool>
@@ -1180,6 +1279,9 @@
                      <height>30</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Toggle to the message editor</string>
+                   </property>
                    <property name="text">
                     <string>&lt;&gt;</string>
                    </property>
@@ -1192,7 +1294,7 @@
                   </widget>
                  </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="label_7">
+                  <widget class="QLabel" name="lbl_schema_fields">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1212,7 +1314,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Schema Form Fields</string>
+                    <string>Form Schema Fields</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -1235,6 +1337,9 @@
                      <width>30</width>
                      <height>30</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Export the schema form to the message editor</string>
                    </property>
                    <property name="text">
                     <string>-&gt;</string>
@@ -1265,7 +1370,7 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>646</width>
+                    <width>739</width>
                     <height>511</height>
                    </rect>
                   </property>
@@ -1324,6 +1429,9 @@
                             <width>300</width>
                             <height>300</height>
                            </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>All schema fields will be shown here</string>
                           </property>
                           <property name="frameShape">
                            <enum>QFrame::StyledPanel</enum>
@@ -1452,6 +1560,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Clear all topics from the list</string>
+               </property>
                <property name="text">
                 <string>x</string>
                </property>
@@ -1476,6 +1587,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Start consuming from the selected Kafka topics</string>
                </property>
                <property name="text">
                 <string>O</string>
@@ -1502,6 +1616,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Add topic to the list</string>
+               </property>
                <property name="text">
                 <string>+</string>
                </property>
@@ -1526,6 +1643,9 @@
                  <width>300</width>
                  <height>40</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>Select or type a new kafka topic</string>
                </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
@@ -1561,6 +1681,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Remove topic from the list</string>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
@@ -1578,6 +1701,9 @@
             <widget class="HTableView" name="tbl_consumer">
              <property name="contextMenuPolicy">
               <enum>Qt::CustomContextMenu</enum>
+             </property>
+             <property name="toolTip">
+              <string>Current consumed Kafka messages</string>
              </property>
              <property name="sortingEnabled">
               <bool>true</bool>
@@ -1622,6 +1748,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Deregister selected schema</string>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
@@ -1647,6 +1776,9 @@
                  <height>40</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Selected registry schema</string>
+               </property>
               </widget>
              </item>
              <item row="0" column="1">
@@ -1670,6 +1802,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Refresh schema registry subjects</string>
+               </property>
                <property name="text">
                 <string>C</string>
                </property>
@@ -1687,6 +1822,9 @@
             <widget class="HTableView" name="tbl_registry">
              <property name="contextMenuPolicy">
               <enum>Qt::CustomContextMenu</enum>
+             </property>
+             <property name="toolTip">
+              <string>Actual schema registry subjects</string>
              </property>
              <property name="selectionMode">
               <enum>QAbstractItemView::MultiSelection</enum>
@@ -1722,7 +1860,14 @@
             <number>5</number>
            </property>
            <item>
-            <widget class="HConsole" name="txt_console"/>
+            <widget class="HConsole" name="txt_console">
+             <property name="toolTip">
+              <string>Output console messages</string>
+             </property>
+             <property name="placeholderText">
+              <string>Nothing yet to display</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1792,6 +1937,47 @@
    <header>hspylib.modules.qt.promotions.hlabel</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>le_prod_settings</tabstop>
+  <tabstop>tbtn_prod_settings_add</tabstop>
+  <tabstop>tbtn_prod_settings_del</tabstop>
+  <tabstop>lst_prod_settings</tabstop>
+  <tabstop>tab_widget</tabstop>
+  <tabstop>tbtn_prod_connect</tabstop>
+  <tabstop>tbtn_produce</tabstop>
+  <tabstop>cmb_prod_topics</tabstop>
+  <tabstop>tbtn_prod_add_topics</tabstop>
+  <tabstop>tbtn_prod_del_topics</tabstop>
+  <tabstop>tbtn_prod_clear_topics</tabstop>
+  <tabstop>tbtn_export_form</tabstop>
+  <tabstop>tbtn_text_view</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>le_cons_settings</tabstop>
+  <tabstop>tbtn_cons_settings_add</tabstop>
+  <tabstop>tbtn_cons_settings_del</tabstop>
+  <tabstop>lst_cons_settings</tabstop>
+  <tabstop>tbtn_cons_connect</tabstop>
+  <tabstop>cmb_cons_topics</tabstop>
+  <tabstop>tbtn_cons_add_topics</tabstop>
+  <tabstop>tbtn_cons_del_topics</tabstop>
+  <tabstop>tbtn_cons_clear_topics</tabstop>
+  <tabstop>tbl_consumer</tabstop>
+  <tabstop>tbtn_test_registry_url</tabstop>
+  <tabstop>cmb_registry_url</tabstop>
+  <tabstop>tbtn_desel_schema</tabstop>
+  <tabstop>tbtn_del_schema</tabstop>
+  <tabstop>tbtn_sel_schema</tabstop>
+  <tabstop>cmb_sel_schema</tabstop>
+  <tabstop>txt_sel_schema</tabstop>
+  <tabstop>tbtn_registry_refresh</tabstop>
+  <tabstop>cmb_registry_schema</tabstop>
+  <tabstop>tbtn_registry_delete</tabstop>
+  <tabstop>tbl_registry</tabstop>
+  <tabstop>txt_producer</tabstop>
+  <tabstop>txt_console</tabstop>
+  <tabstop>tbtn_format_msg</tabstop>
+  <tabstop>tbtn_form_view</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
