@@ -322,11 +322,13 @@ class MainQtView(QtView):
             self._build_schema_layout()
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
             self.ui.tbtn_form_view.setEnabled(True)
+            self.ui.lbl_schema_fields.setText(f"{schema_name} Schema Fields")
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.setText('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
             self.ui.tbtn_form_view.setEnabled(False)
+            self.ui.lbl_schema_fields.setText('Form Schema Fields')
 
     def _build_schema_layout(self):
         """Build a form based on the selected schema using a grid layout"""
@@ -486,6 +488,7 @@ class MainQtView(QtView):
             else:
                 self._display_error('Must subscribe to at least one topic')
                 return
+        self.ui.tbtn_format_msg.setEnabled(not started)
         self.ui.tbtn_export_form.setEnabled(not started)
         self.ui.fr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
