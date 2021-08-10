@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: avro_schema.py
    @created: Sat, 17 Jul 2021
@@ -34,12 +33,10 @@ class AvroSchema(KafkaSchema):
 
     @classmethod
     def extensions(cls) -> List[str]:
-        """TODO"""
         return ['*.avsc']
 
     @classmethod
-    def array_items(cls, field_attrs: dict) -> List[str]:
-        """TODO"""
+    def get_items(cls, field_attrs: dict) -> List[str]:
         found, symbols = search_dict(field_attrs, 'type.symbols')
         if found and isinstance(symbols, list):
             return symbols
@@ -48,13 +45,13 @@ class AvroSchema(KafkaSchema):
 
     @classmethod
     def is_required(cls, field: dict) -> bool:
-        """TODO"""
+        """Check if the field is required"""
         return bool(next(
             (t for t in field['type'] if isinstance(field['type'], list) and 'null' in field['type']), None) is None)
 
     @classmethod
     def find_type(cls, field: dict) -> str:
-        """TODO"""
+        """Return the field type"""
         return next((ft['type'] for ft in field['type'] if isinstance(ft, dict)), None) \
             if isinstance(field['type'], list) \
             else field['type']

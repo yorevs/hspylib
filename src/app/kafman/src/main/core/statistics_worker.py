@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: statistics.py
    @created: Wed, 30 Jun 2021
@@ -61,7 +60,7 @@ class StatisticsWorker(QThread):
             self._tick()
 
     def _tick(self) -> None:
-        """TODO"""
+        """Tick and report current tick statistics, preparing for the next tick"""
         diff_time = max(1, int(now_ms() - self._started_ts))
         self._produced.in_a_tick = 0
         self._consumed.in_a_tick = 0

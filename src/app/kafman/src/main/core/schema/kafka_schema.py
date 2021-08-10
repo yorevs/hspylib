@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: kafka_schema.py
    @created: Sum, 18 Jun 2021
@@ -33,16 +32,17 @@ class KafkaSchema(ABC):
 
     @classmethod
     def extensions(cls) -> List[str]:
-        """TODO"""
+        """Return the supported schema file extensions"""
         return []
 
     @classmethod
     def supports(cls, file_extension: str) -> bool:
-        """TODO"""
+        """Check if the provided file extension is supported by the schema"""
         return f"*{file_extension}" in cls.extensions()
 
     @classmethod
     def to_dict(cls, obj: str, ctx: SerializationContext) -> dict:  # pylint: disable=unused-argument
+        """Return a function to convert the string object into the schema dict"""
         return json.loads(obj)
 
     @classmethod
@@ -51,11 +51,11 @@ class KafkaSchema(ABC):
 
     @classmethod
     def key(cls) -> str:
-        """TODO"""
+        """Generate a new schema key for registration"""
         return str(uuid4())
 
     @classmethod
-    def array_items(cls, field_attrs: dict) -> List[str]:  # pylint: disable=unused-argument
+    def get_items(cls, field_attrs: dict) -> List[str]:  # pylint: disable=unused-argument
         return []
 
     def __init__(
@@ -67,7 +67,7 @@ class KafkaSchema(ABC):
 
         self._filepath = filepath
         self._registry_url = registry_url
-        self._schema_type = schema_type
+        self._avro_type = schema_type
         self._charset = charset
         self._fields = None
         self._schema_id = None
@@ -85,7 +85,7 @@ class KafkaSchema(ABC):
                     check_not_none(self._content)
                 self._schema_conf = {'url': build_url(self._registry_url) or 'http://localhost:8081'}
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
-                self._schema = Schema(self._schema_str, self._schema_type)
+                self._schema = Schema(self._schema_str, self._avro_type)
                 self._parse()
         except (KeyError, TypeError, JSONDecodeError) as err:
             syserr(f"Unable to initialize schema => {str(err)}")
@@ -95,60 +95,57 @@ class KafkaSchema(ABC):
         return self._fields[index]
 
     def __str__(self):
-        return f"[{self._schema_type}] name={self._name}, type={self._type}, namespace={self._namespace}"
+        return f"[{self._avro_type}] name={self._name}, type={self._type}, namespace={self._namespace}"
 
     def __repr__(self):
-        return self._schema_type
+        return self._avro_type
 
     @abstractmethod
     def _parse(self) -> None:
-        """TODO"""
+        """Parse the schema content and fill in the schema attributes"""
 
     @abstractmethod
     def serializer_settings(self) -> dict:
-        """TODO"""
+        """Return the required serializer settings for the schema"""
 
     @abstractmethod
     def deserializer_settings(self) -> dict:
-        """TODO"""
+        """Return the required deserializer settings for the schema"""
 
-    def get_schema_type(self) -> str:
-        """TODO"""
-        return self._schema_type
+    def get_avro_type(self) -> str:
+        """Return the schema type"""
+        return self._avro_type
 
     def get_filepath(self) -> str:
-        """TODO"""
+        """Return the schema file path"""
         return self._filepath
 
     def get_charset(self) -> str:
-        """TODO"""
+        """Return the schema charset"""
         return self._charset.value
 
     def get_content(self) -> dict:
-        """TODO"""
+        """Return the schema content"""
         return self._content
 
     def get_type(self) -> str:
-        """TODO"""
+        """Return the schema type"""
         return self._type
 
     def get_name(self) -> str:
-        """TODO"""
+        """Return the schema name"""
         return self._name
 
     def get_namespace(self) -> Optional[str]:
-        """TODO"""
+        """Return the schema namespace"""
         return self._namespace
 
     def get_doc(self) -> Optional[str]:
-        """TODO"""
+        """Return the schema description"""
         return self._doc
 
     def get_fields(self, sort_by_required: bool = True) -> List[Any]:
-        """TODO"""
-        if not self._fields:
-            return []
-
-        return self._fields \
+        """Return the schema fields"""
+        return [] if not self._fields else self._fields \
             if not sort_by_required \
             else sorted(self._fields, key=lambda f: f.is_required(), reverse=True)

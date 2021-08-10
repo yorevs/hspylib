@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: producer_config.py
    @created: Thu, 5 Aug 2021
@@ -17,7 +16,7 @@ from abc import ABC
 
 
 class ProducerConfig(ABC):  # pylint: disable=too-few-public-methods
-    """TODO"""
+    """Some of the confluence exposed producer properties"""
 
     BOOTSTRAP_SERVERS = 'bootstrap.servers'
     KEY_SERIALIZER = 'key.serializer'

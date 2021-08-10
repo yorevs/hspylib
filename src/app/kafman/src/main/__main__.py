@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.addons.appman.templates
       @file: tpl-main.py
@@ -26,7 +25,7 @@ HERE = get_path(__file__)
 
 
 class Main(Application):
-    """TODO"""
+    """Kafman application main class"""
 
     # The application version
     VERSION = read_version(f"{HERE}/.version")

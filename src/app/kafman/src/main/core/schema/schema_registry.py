@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: schema_registry.py
    @created: Thu, 5 Aug 2021
@@ -28,7 +27,7 @@ from kafman.src.main.core.schema.registry_subject import RegistrySubject
 
 
 class SchemaRegistry:
-    """TODO"""
+    """This class is used to manage and hold information about the schema registry server"""
 
     def __init__(self, url: str = None):
         self._url = url or 'localhost:8081'
@@ -37,15 +36,15 @@ class SchemaRegistry:
         self._subjects = []
 
     def is_valid(self) -> bool:
-        """TODO"""
+        """Whether the schema registry was validated or not"""
         return self._valid
 
     def url(self) -> Optional[str]:
-        """TODO"""
+        """Return the schema registry url"""
         return self._url
 
     def set_url(self, url: str, validate_url: bool = True) -> bool:
-        """TODO"""
+        """Set the schema registry url"""
         self._url = url
         if validate_url and is_reachable(url):
             self._valid = True
@@ -54,19 +53,19 @@ class SchemaRegistry:
         return self._valid
 
     def invalidate(self) -> None:
-        """TODO"""
+        """Invalidate the last schema registry validation"""
         self._valid = False
 
     def get_schema_types(self) -> Optional[List[str]]:
-        """TODO"""
+        """Return the schema types supported by the server"""
         return self._schema_types
 
     def get_subjects(self) -> Optional[List[str]]:
-        """TODO"""
+        """Return the subjects currently registered at the server"""
         return self._subjects
 
     def deregister(self, subjects: List[RegistrySubject]) -> None:
-        """TODO"""
+        """Deregister the list of subjects from the registry server"""
         for subject in subjects:
             # Invoke delete subject
             _ = delete(url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}")
@@ -107,17 +106,20 @@ class SchemaRegistry:
         return subjects
 
     def _make_request(self, url: str, expected_codes: List[HttpCode] = None) -> HttpResponse:
-        """TODO"""
-        try:
-            if not expected_codes:
-                expected_codes = [HttpCode.OK]
-            log.debug("Making request to: %s and expecting codes: %s", url, str(expected_codes))
-            response = get(url=url)
-            check_not_none(response)
-            if response.status_code not in expected_codes:
+        """Make a request from the registry server"""
+        if self._valid:
+            try:
+                if not expected_codes:
+                    expected_codes = [HttpCode.OK]
+                log.debug("Making request to: %s and expecting codes: %s", url, str(expected_codes))
+                response = get(url=url)
+                check_not_none(response)
+                if response.status_code not in expected_codes:
+                    raise SchemaRegistryError(
+                        f"Request failed. Expecting {str(expected_codes)} but was received: {response.status_code}")
+                return response
+            except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL) as err:
                 raise SchemaRegistryError(
-                    f"Request failed. Expecting {str(expected_codes)} but was received: {response.status_code}")
-            return response
-        except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL) as err:
-            raise SchemaRegistryError(
-                f"Unable to fetch from {self._url}\n => {str(err)}") from err
+                    f"Unable to fetch from {self._url}\n => {str(err)}") from err
+
+        raise SchemaRegistryError(f"Schema registry server {url} is not valid")

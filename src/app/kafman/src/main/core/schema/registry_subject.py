@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: registry_subject.py
    @created: Thu, 5 Aug 2021
@@ -15,7 +14,7 @@
 
 
 class RegistrySubject:
-    """TODO"""
+    """Represent a schema registry subject"""
 
     def __init__(
         self,
