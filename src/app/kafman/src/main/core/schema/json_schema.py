@@ -43,7 +43,7 @@ class JsonSchema(KafkaSchema):
         items = get_by_key_or_default(field_attrs, 'items')
         if isinstance(items, list):
             return items
-        elif isinstance(items, dict):
+        if isinstance(items, dict):
             return get_by_key_or_default(items, 'enum', [])
 
         return []

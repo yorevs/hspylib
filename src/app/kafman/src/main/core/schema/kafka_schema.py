@@ -42,11 +42,11 @@ class KafkaSchema(ABC):
         return f"*{file_extension}" in cls.extensions()
 
     @classmethod
-    def to_dict(cls, obj: str, ctx: SerializationContext) -> dict:
+    def to_dict(cls, obj: str, ctx: SerializationContext) -> dict:  # pylint: disable=unused-argument
         return json.loads(obj)
 
     @classmethod
-    def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:
+    def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:  # pylint: disable=unused-argument
         return json.dumps(obj)
 
     @classmethod
@@ -55,7 +55,7 @@ class KafkaSchema(ABC):
         return str(uuid4())
 
     @classmethod
-    def array_items(cls, field_attrs: dict) -> List[str]:
+    def array_items(cls, field_attrs: dict) -> List[str]:  # pylint: disable=unused-argument
         return []
 
     def __init__(
@@ -89,7 +89,7 @@ class KafkaSchema(ABC):
                 self._parse()
         except (KeyError, TypeError, JSONDecodeError) as err:
             syserr(f"Unable to initialize schema => {str(err)}")
-            log.error(f"Unable to initialize schema => {str(err)}")
+            log.error("Unable to initialize schema => %s", str(err))
 
     def __getitem__(self, index: int):
         return self._fields[index]

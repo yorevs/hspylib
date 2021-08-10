@@ -76,7 +76,7 @@ class SchemaField:
             else field_type
         self._required = required
         self._field_attrs = field_attrs
-        self._widget_type = self._widget_type()
+        self._widget_type = self._get_widget_type()
 
     def __str__(self):
         return f"name={self._name}, type={self._type}, required={self._required}, widget={self._widget_type.__class__}"
@@ -116,7 +116,7 @@ class SchemaField:
         """TODO"""
         widget_instance = self._widget_type()
         default_value = get_by_key_or_default(self._field_attrs, 'default', '')
-        placeholder_text = self._placeholder_text()
+        placeholder_text = self._get_placeholder_text()
         tooltip = get_by_key_or_default(self._field_attrs, 'examples')
         tooltip = ('Examples: \n' + '\n'.join([f'  - {str(t)}' for t in tooltip])) \
             if tooltip \
@@ -130,7 +130,7 @@ class SchemaField:
         elif self._widget_type == QCheckBox:
             widget_instance.setChecked(bool(default_value))
         elif self._widget_type in [QSpinBox, QDoubleSpinBox]:
-            min_val, max_val = self._min_max_values()
+            min_val, max_val = self._get_min_max_values()
             widget_instance.setMinimum(min_val)
             widget_instance.setMaximum(max_val)
             widget_instance.setValue(default_value or 0)
@@ -143,20 +143,20 @@ class SchemaField:
 
         return widget_instance
 
-    def _widget_type(self) -> Type[QWidget]:
+    def _get_widget_type(self) -> Type[QWidget]:
         """TODO"""
         return self.QWIDGET_TYPE_MAP[self._type] \
             if self._type in self.QWIDGET_TYPE_MAP \
             else QLineEdit
 
-    def _placeholder_text(self) -> str:
+    def _get_placeholder_text(self) -> str:
         """TODO"""
         text = get_by_key_or_default(self._field_attrs, 'description')
         text = get_by_key_or_default(self._field_attrs, 'doc') if not text else text
         text = f"This field is {'required' if self._required else 'optional'}" if not text else text
         return text
 
-    def _min_max_values(self) -> Tuple[Union[int, float], Union[int, float]]:
+    def _get_min_max_values(self) -> Tuple[Union[int, float], Union[int, float]]:
         """TODO"""
         min_val = get_by_key_or_default(self._field_attrs, 'minimum', 0)
         max_val = get_by_key_or_default(

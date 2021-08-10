@@ -76,7 +76,7 @@ class HTableModel(QAbstractTableModel):
             idx = r.row() if isinstance(r, QModelIndex) else r
             self.removeRow(idx)
 
-    def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:
+    def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:  # pylint: disable=unused-argument
         """TODO"""
         if 0 <= row < len(self.table_data):
             self.beginRemoveRows(QModelIndex(), row, row)

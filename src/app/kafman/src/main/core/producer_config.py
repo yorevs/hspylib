@@ -16,7 +16,7 @@
 from abc import ABC
 
 
-class ProducerConfig(ABC):
+class ProducerConfig(ABC):  # pylint: disable=too-few-public-methods
     """TODO"""
 
     BOOTSTRAP_SERVERS = 'bootstrap.servers'
