@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui.extra.minput
+   @package: hspylib.main.hspylib.modules.cli.tui.extra.minput
       @file: field_builder.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -27,6 +26,7 @@ T = TypeVar('T')
 
 
 class FieldBuilder:
+    """TODO"""
 
     def __init__(self, parent: Any):
         self.parent = parent

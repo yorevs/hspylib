@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.addons.widman
       @file: widget.py
@@ -22,6 +21,8 @@ from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):
+    """HSPyLib Widgets base class. All widgets must inherit from this class"""
+
     _USAGE_FMT = """
 HSPyLib Widget: {} v{}
 

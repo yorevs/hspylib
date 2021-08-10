@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui.extra
+   @package: hspylib.main.hspylib.modules.cli.tui.extra
       @file: minput.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -50,6 +49,7 @@ def minput(
 
 class MenuInput:
     """TODO"""
+
     SELECTED_BG = '%MOD(44)%'
 
     NAV_ICONS = '\u2191\u2193'

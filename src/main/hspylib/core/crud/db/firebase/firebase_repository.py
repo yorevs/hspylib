@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.core.crud.db.firebase
+   @Package: hspylib.main.hspylib.core.crud.db.firebase
       @file: firebase_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

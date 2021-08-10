@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui
+   @package: hspylib.main.hspylib.modules.cli.tui
       @file: tui.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,6 +17,8 @@ from abc import ABC, abstractmethod
 
 
 class Menu(ABC):
+    """TODO"""
+
     @abstractmethod
     def execute(self) -> 'Menu':
         """

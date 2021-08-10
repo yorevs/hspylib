@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui.factory
+   @package: hspylib.main.hspylib.modules.cli.tui.factory
       @file: menu_entry.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.core.enums
+   @Package: hspylib.main.hspylib.core.enums
       @file: exit_code.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,6 +20,8 @@ from hspylib.core.enums.enumeration import Enumeration
 class ExitCode(Enumeration):
     """TODO"""
 
+    # @formatter:off
+
     # Returned when something went wrong due to any Human interaction
     ERROR = -1
 
@@ -31,6 +33,8 @@ class ExitCode(Enumeration):
 
     # Additional exit codes can be defined here {
     # }
+
+    # @formatter:on
 
     def __str__(self):
         return f"{self.name}({self.value})"

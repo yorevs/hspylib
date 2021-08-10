@@ -3,8 +3,9 @@
 
 """
    TODO Purpose of the file
+
    @project: HSPyLib
-   hspylib.main.hspylib.addons.widman.widgets
+   @package: hspylib.main.hspylib.addons.widman.widgets
       @file: widget_free.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -54,7 +55,7 @@ class WidgetFree(Widget):
     # pylint: disable=too-many-locals
     @staticmethod
     def _report_usage():
-        """TODO"""
+        """Display the memory usage for the cycle"""
         ps = Terminal.shell_exec('ps -caxm -orss,comm')  # Get process info
         vm = Terminal.shell_exec('vm_stat')
 

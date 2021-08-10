@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
+   @package: hspylib.main.hspylib.core.tools
       @file: preconditions.py
    @created: Fri, 16 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

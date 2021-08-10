@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui.extra.minput
+   @package: hspylib.main.hspylib.modules.cli.tui.extra.minput
       @file: minput_utils.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -23,6 +22,8 @@ from hspylib.modules.cli.vt100.vt_codes import vt_print
 
 
 class MInputUtils(ABC):
+    """TODO"""
+
     @staticmethod
     def detail_len(field: Any) -> int:
         max_len = len(str(field.max_length))
