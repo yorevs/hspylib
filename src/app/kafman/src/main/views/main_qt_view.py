@@ -73,12 +73,12 @@ class MainQtView(QtView):
         """Whether the provided text is a json code or not"""
         if not text:
             return False
-        else:
-            t = text.strip()
-            return (
-               t.startswith('{') and t.endswith('}')) \
-               or (t.startswith('[') and t.endswith(']')
-            )
+
+        t = text.strip()
+        return (
+           t.startswith('{') and t.endswith('}')) \
+           or (t.startswith('[') and t.endswith(']')
+        )
 
     def __init__(self):
         # Must come after the initialization above
@@ -231,8 +231,8 @@ class MainQtView(QtView):
             text = self.ui.txt_producer.toPlainText()
             msgs = [text] if text.startswith('{') and text.endswith('}') else text.split('\n')
             return list(filter(lambda m: m != '', msgs))
-        else:
-            return self._schema_form_message(schema=schema)
+
+        return self._schema_form_message(schema=schema)
 
     def _schema_form_message(self, clear_form: bool = True, validate: bool = True, schema: KafkaSchema = None) -> str:
         """Return the message built from the schema form"""
@@ -450,7 +450,8 @@ class MainQtView(QtView):
         url = self.ui.cmb_registry_url.currentText()
         if self._registry.is_valid() and skip_if_tested:
             return url
-        elif url:
+
+        if url:
             if self._registry.set_url(url):
                 self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #28C941;}")
@@ -641,7 +642,7 @@ class MainQtView(QtView):
             fd_history.write(f"last_schema = {self.ui.cmb_sel_schema.currentText()}\n")
             fd_history.write(f"registry_url = {self.ui.cmb_registry_url.currentText()}\n")
 
-    def _load_history(self):
+    def _load_history(self):  # pylint: disable=too-many-branches
         """Load a previously saved app history."""
         if os.path.exists(self.HISTORY_FILE) and os.stat(self.HISTORY_FILE).st_size > MAX_HISTORY_SIZE_BYTES:
             self._display_text('History recovered')
@@ -670,17 +671,15 @@ class MainQtView(QtView):
                             elif prop_name == 'last_dir':
                                 self._last_schema_dir = prop_value
                             elif prop_name == 'schema':
-                                schema_tuple = ast.literal_eval(prop_value), \
-                                               f"Schema files ({self.supported_schemas()})"
-                                self._add_schema(schema_tuple)
+                                t_schema = ast.literal_eval(prop_value), f"Schema files ({self.supported_schemas()})"
+                                self._add_schema(t_schema)
                                 self._deselect_schema()
                             elif prop_name == 'last_schema':
                                 self.ui.cmb_sel_schema.setCurrentText(prop_value)
                             elif prop_name == 'registry_url':
                                 self.ui.cmb_registry_url.setCurrentText(prop_value)
                 except ValueError:
-                    log.warn(f"Invalid history value \"{prop_value}\" for setting \"{prop_name}\"")
-                    pass
+                    log.warning("Invalid history value \"%s\" for setting \"%s\"", prop_value, prop_name)
         else:
             # Defaults
             self._display_text('History discarded')

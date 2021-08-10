@@ -1,5 +1,5 @@
 [MASTER]
-extension-pkg-whitelist=PyQt5,confluent_kafka
+extension-pkg-whitelist=PyQt5,confluent_kafka,binascii
 init-hook='import sys; sys.path.append("src/main"); sys.path.append("src/demo"); sys.path.append("src/app"); sys.path.append("src/test");'
 
 [TYPECHECK]

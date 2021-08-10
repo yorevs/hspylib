@@ -17,7 +17,7 @@
 from typing import Any, Optional, List, Union, Tuple
 
 import requests
-from requests.exceptions import ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL
+from requests import exceptions as ex
 
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
@@ -161,5 +161,5 @@ def is_reachable(
     try:
         resp = fetch(url=url, method=HttpMethod.HEAD, timeout=timeout)
         return 200 <= resp.status_code.value < 300
-    except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL):
+    except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL):
         return False

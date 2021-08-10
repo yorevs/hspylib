@@ -14,14 +14,16 @@
 """
 
 import json
+import logging as log
 from typing import Optional, List
 
-from requests.exceptions import ConnectTimeout, ConnectionError, InvalidURL, ReadTimeout
+from requests import exceptions as ex
 
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.exception.exceptions import SchemaRegistryError
-from hspylib.core.tools.preconditions import check_state
+from hspylib.core.tools.preconditions import check_state, check_not_none
 from hspylib.modules.fetch.fetch import is_reachable, get, delete
+from hspylib.modules.fetch.http_response import HttpResponse
 from kafman.src.main.core.schema.registry_subject import RegistrySubject
 
 
@@ -65,75 +67,57 @@ class SchemaRegistry:
 
     def deregister(self, subjects: List[RegistrySubject]) -> None:
         """TODO"""
-        try:
-            for subject in subjects:
-                # Invoke delete subject
-                response = delete(url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}")
-                if response.status_code == HttpCode.OK:
-                    self._subjects.remove(subject.subject)
-                else:
-                    raise SchemaRegistryError(
-                        f"Unable to deregister schema subject. Response was not : {response.status_code}")
-        except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL) as err:
-            raise SchemaRegistryError(
-                f"Unable to fetch registry server information from {self._url}\n => {str(err)}") from err
+        for subject in subjects:
+            # Invoke delete subject
+            _ = delete(url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}")
+            self._subjects.remove(subject.subject)
 
     def fetch_server_info(self) -> None:
         """Fetch information about the selected schema registry server"""
-        try:
-            # Fetch server supported schema types
-            response = get(url=f"{self._url}/schemas/types")
-            if response.status_code == HttpCode.OK:
-                self._schema_types = response.body
-            elif response.status_code == HttpCode.NOT_FOUND:
-                raise SchemaRegistryError('AVRO is the only supported schema type in the server')
-            else:
-                raise SchemaRegistryError(
-                    f"Unable to fetch registry schema types. Response was not : {response.status_code}")
-            # Fetch current registered subjects
-            response = get(url=f"{self._url}/subjects")
-            if response.status_code == HttpCode.OK:
-                self._subjects = json.loads(response.body)
-            else:
-                raise SchemaRegistryError(
-                    f"Unable to fetch registry subjects. Response was not OK: {response.status_code}")
-        except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL) as err:
-            raise SchemaRegistryError(
-                f"Unable to fetch registry server information from {self._url}\n => {str(err)}") from err
+        # Fetch server supported schema types
+        response = self._make_request(url=f"{self._url}/schemas/types")
+        self._schema_types = response.body
+        # Fetch current registered subjects
+        response = self._make_request(url=f"{self._url}/subjects")
+        self._subjects = json.loads(response.body)
 
     def fetch_subjects_info(self) -> List[RegistrySubject]:
         """Fetch information about the schema registry existing subjects"""
         subjects = []
         if self._subjects:
-            try:
-                # Loop through recorded subjects
-                for subject in self._subjects:
-                    # Fetch all subject versions
-                    response = get(url=f"{self._url}/subjects/{subject}/versions")
-                    if response.status_code == HttpCode.OK:
-                        all_versions = json.loads(response.body)
-                        check_state(isinstance(all_versions, list))
-                        for v in all_versions:
-                            # Fetch information about the subject version
-                            subject_response = get(url=f"{self._url}/subjects/{subject}/versions/{v}")
-                            if subject_response.status_code == HttpCode.OK:
-                                subject = json.loads(subject_response.body)
-                                subjects.append(RegistrySubject(
-                                    subject['schemaType'] if 'schemaType' in subject else 'AVRO',
-                                    subject['subject'],
-                                    subject['id'],
-                                    subject['version'],
-                                    json.loads(subject['schema']),
-                                ))
-                            else:
-                                raise SchemaRegistryError(
-                                    f"Unable to fetch subject version. Response was not OK: {response.status_code}")
-                    else:
-                        raise SchemaRegistryError(
-                            f"Unable to fetch registry subjects. Response was not OK: {response.status_code}")
-
-            except (ConnectTimeout, ConnectionError, ReadTimeout, InvalidURL) as err:
-                raise SchemaRegistryError(
-                    f"Unable to fetch registry server information from {self._url}\n => {str(err)}") from err
+            # Loop through recorded subjects
+            for subject in self._subjects:
+                # Fetch all subject versions
+                response = self._make_request(url=f"{self._url}/subjects/{subject}/versions")
+                all_versions = json.loads(response.body)
+                check_state(isinstance(all_versions, list))
+                for v in all_versions:
+                    # Fetch information about the subject version
+                    subject_response = self._make_request(url=f"{self._url}/subjects/{subject}/versions/{v}")
+                    check_not_none(subject_response)
+                    subject = json.loads(subject_response.body)
+                    subjects.append(RegistrySubject(
+                        subject['schemaType'] if 'schemaType' in subject else 'AVRO',
+                        subject['subject'],
+                        subject['id'],
+                        subject['version'],
+                        json.loads(subject['schema']),
+                    ))
 
         return subjects
+
+    def _make_request(self, url: str, expected_codes: List[HttpCode] = None) -> HttpResponse:
+        """TODO"""
+        try:
+            if not expected_codes:
+                expected_codes = [HttpCode.OK]
+            log.debug("Making request to: %s and expecting codes: %s", url, str(expected_codes))
+            response = get(url=url)
+            check_not_none(response)
+            if response.status_code not in expected_codes:
+                raise SchemaRegistryError(
+                    f"Request failed. Expecting {str(expected_codes)} but was received: {response.status_code}")
+            return response
+        except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL) as err:
+            raise SchemaRegistryError(
+                f"Unable to fetch from {self._url}\n => {str(err)}") from err

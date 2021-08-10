@@ -205,7 +205,8 @@ def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') ->
     el = None
     if not found and isinstance(root_element, dict):
         for key, value in root_element.items():
-            if found: break
+            if found:
+                break
             el_path = parent_key + sep + key if parent_key else key
             if search_path == el_path:
                 found, el = True, value
@@ -328,5 +329,5 @@ def build_url(url_or_part: str) -> str:
     """
     if re.match(r'https?://.*', url_or_part):
         return url_or_part
-    else:
-        return f"http://{url_or_part}"
+
+    return f"http://{url_or_part}"
