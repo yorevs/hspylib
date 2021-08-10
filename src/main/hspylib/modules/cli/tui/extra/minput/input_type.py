@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui.extra.minput
+   @package: hspylib.main.hspylib.modules.cli.tui.extra.minput
       @file: input_type.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,6 +16,8 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class InputType(Enumeration):
+    """TODO"""
+
     TEXT = 'text'
     PASSWORD = 'password'
     CHECKBOX = 'checkbox'

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.addons.appman
       @file: appman.py
@@ -109,11 +108,11 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._mkfile('src/main/resources/application.properties', '# Main application property file')
         self._mkdir('src/main/resources/log')
         self._mkfile('.env', '# Type in here the environment variables your app requires')
-        self._mkfile('run-it.sh', (self.TEMPLATES / "tpl-run-it.sh").read_text())
-        os.chmod(f'{self._app_dir}/run-it.sh', 0o755)
+        self._mkfile('run.sh', (self.TEMPLATES / "tpl-run.sh").read_text())
+        os.chmod(f'{self._app_dir}/run.sh', 0o755)
 
     def _apply_extensions(self, extensions: List[AppExtension], app_name: str):
-        """TODO"""
+        """Apply the selected extensions to the app"""
         if AppExtension.GRADLE in extensions:
             sysout('Applying gradle extensions')
             self._init_gradle(app_name)

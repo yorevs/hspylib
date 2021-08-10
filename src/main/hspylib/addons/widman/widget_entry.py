@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.addons.widman
       @file: widget_entry.py
@@ -19,7 +18,7 @@ from hspylib.core.tools.text_tools import camelcase
 
 
 class WidgetEntry:
-    """Represents a widget and all details about it"""
+    """Placeholder entry for a HSPyLib Widget and details about it"""
 
     WIDGET_MODULE_PREFIX = 'widget_'
     WIDGET_CLASS_PREFIX = 'Widget'

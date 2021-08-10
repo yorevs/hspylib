@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.cli.tui.factory
+   @package: hspylib.main.hspylib.modules.cli.tui.factory
       @file: menu_option.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,6 +17,8 @@ from typing import Any
 
 
 class MenuOption:
+    """TODO"""
+
     def __init__(self, parent: Any, option_index: int, option_text: str):
         self.parent = parent
         self.option_index = option_index

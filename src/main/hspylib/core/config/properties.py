@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.core.config
+   @Package: hspylib.main.hspylib.core.config
       @file: properties.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -26,6 +25,8 @@ from hspylib.core.tools.commons import flatten_dict, run_dir
 
 
 class Properties:
+    """TODO"""
+
     _default_name = 'application'
     _default_extension = '.properties'
     _profiled_format = '{}-{}{}'

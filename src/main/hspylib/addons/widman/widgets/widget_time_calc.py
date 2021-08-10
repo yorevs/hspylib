@@ -3,8 +3,9 @@
 
 """
    TODO Purpose of the file
+
    @project: HSPyLib
-   hspylib.main.hspylib.addons.widman.widgets
+   @package: hspylib.main.hspylib.addons.widman.widgets
       @file: widget_time_calc.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.web
+   @package: hspylib.main.hspylib.modules.web
       @file: rest_utils.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -36,8 +35,9 @@ def rest_call(
         "Content-Type": "text/json",
         "Accept": "*/*"
     })
-    log.info('Processing REST {all_headers} {method} -> {url}')
+
+    log.debug('Processing REST {all_headers} {method} -> {url}')
     response = fetch(url=url, method=method, headers=all_headers, body=data)
-    log.info("Response <=  Status: %s  Payload: %s", response.status_code, response)
+    log.debug("Response <=  Status: %s  Payload: %s", response.status_code, response)
 
     return response

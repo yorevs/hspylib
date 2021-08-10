@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.addons.widman
       @file: widman.py
@@ -108,6 +107,6 @@ class WidgetManager(metaclass=Singleton):
                 f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}") from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
-        check_state(isinstance(widget, Widget),
-                    'All widgets must inherit from "hspylib.addons.widman.widget.Widget"')
+        check_state(isinstance(widget, Widget), 'All widgets must inherit from "hspylib.addons.widman.widget.Widget"')
+
         return widget

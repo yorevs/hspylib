@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    hspylib.main.hspylib.modules.cli.tui.extra.minput
       @file: input_validator.py
@@ -19,6 +18,8 @@ import typing
 
 
 class InputValidator:
+    """TODO"""
+
     RE_FMT_LETTER = r'^[a-zA-Z]{%min%,%max%}$'
     RE_FMT_WORD = r'^[a-zA-Z0-9 _]{%min%,%max%}$'
     RE_FMT_NUMBER = r'^[0-9\.]{%min%,%max%}$'

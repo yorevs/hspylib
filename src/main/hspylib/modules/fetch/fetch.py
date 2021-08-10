@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.modules.fetch
+   @package: hspylib.main.hspylib.modules.fetch
       @file: fetch.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,6 +16,7 @@
 from typing import Any, Optional, List, Union, Tuple
 
 import requests
+from hspylib.core.enums.http_code import HttpCode
 from requests import exceptions as ex
 
 from hspylib.core.enums.http_method import HttpMethod
@@ -160,6 +160,6 @@ def is_reachable(
 
     try:
         resp = fetch(url=url, method=HttpMethod.HEAD, timeout=timeout)
-        return 200 <= resp.status_code.value < 300
+        return HttpCode.OK.value <= resp.status_code.value < HttpCode.MULTIPLE_CHOICES.value
     except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL):
         return False

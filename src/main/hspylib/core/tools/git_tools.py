@@ -1,12 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """
-  deployer
-   @script: git_tools.py
-  @purpose: Provides some git utilities.
+   @project: HSPyLib
+   @package: hspylib.main.hspylib.core.tools
+   @file: git_tools.py
   @created: Nov 14, 2019
    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-   @mailto: yorevs@hotmail.com
      @site: https://github.com/yorevs/homesetup
-  @license: Please refer to <https://opensource.org/licenses/MIT>
+  @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2021, HSPyLib team
 """
 
 from hspylib.modules.cli.vt100.terminal import Terminal
