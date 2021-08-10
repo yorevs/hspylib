@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: json_schema.py
    @created: Sun, 18 Jul 2021
@@ -38,8 +37,8 @@ class JsonSchema(KafkaSchema):
         return ['*.json']
 
     @classmethod
-    def array_items(cls, field_attrs: dict) -> List[str]:
-        """TODO"""
+    def get_items(cls, field_attrs: dict) -> List[str]:
+        """Return the schema items from the loaded attributes"""
         items = get_by_key_or_default(field_attrs, 'items')
         if isinstance(items, list):
             return items
@@ -57,17 +56,9 @@ class JsonSchema(KafkaSchema):
         super().__init__('JSON', filepath, registry_url, charset)
 
     def is_required(self, key: str) -> bool:
-        """TODO"""
+        """Check if the field represented by 'key' is required"""
         required_list = get_by_key_or_default(self._content, 'required', [])
         return key in required_list
-
-    def _parse(self) -> None:
-        self._name = self._name = get_by_key_or_default(
-            self._content, 'title', path.basename(path.splitext(self._filepath)[0]))
-        self._type = self._type = get_by_key_or_default(self._content, 'type', 'object')
-        self._fields = self._parse_fields()
-        self._doc = get_by_key_or_default(self._content, 'description', '')
-        self._namespace = get_by_key_or_default(self._content, '$schema', '')
 
     def serializer_settings(self) -> dict:
         return {
@@ -81,8 +72,16 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._schema_str, self.from_dict)
         }
 
-    def _parse_fields(self) -> List[SchemaField]:
-        """TODO"""
+    def _parse(self) -> None:
+        self._name = self._name = get_by_key_or_default(
+            self._content, 'title', path.basename(path.splitext(self._filepath)[0]))
+        self._type = self._type = get_by_key_or_default(self._content, 'type', 'object')
+        self._fields = self._get_fields()
+        self._doc = get_by_key_or_default(self._content, 'description', '')
+        self._namespace = get_by_key_or_default(self._content, '$schema', '')
+
+    def _get_fields(self) -> List[SchemaField]:
+        """Return the list of schema fields based on the root element type"""
         if self._type == 'object':
             fields = get_by_key_or_default(self._content, 'properties', {})
         elif self._type == 'array':

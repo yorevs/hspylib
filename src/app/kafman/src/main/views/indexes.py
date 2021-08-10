@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: indexes.py
    @created: Thu, 5 Aug 2021

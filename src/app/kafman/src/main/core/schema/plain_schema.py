@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: json_schema.py
    @created: Sun, 18 Jul 2021
@@ -35,20 +34,18 @@ class PlainSchema(KafkaSchema):
         super().__init__(schema_type='PLAIN', charset=charset)
 
     def __str__(self):
-        return f"[{self._schema_type}] type=plaintext"
+        return f"[{self._avro_type}] type=plaintext"
 
     def _parse(self) -> None:
         pass
 
     def serializer_settings(self) -> dict:
-        """TODO"""
         return {
             'key.serializer': StringSerializer(self._charset.value),
             'value.serializer': StringSerializer(self._charset.value)
         }
 
     def deserializer_settings(self) -> dict:
-        """TODO"""
         return {
             'key.deserializer': StringDeserializer(self._charset.value),
             'value.deserializer': StringDeserializer(self._charset.value)

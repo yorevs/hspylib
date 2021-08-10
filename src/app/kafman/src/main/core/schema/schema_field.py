@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
       @file: schema_field.py
    @created: Thu, 5 Aug 2021
@@ -82,7 +81,7 @@ class SchemaField:
         return f"name={self._name}, type={self._type}, required={self._required}, widget={self._widget_type.__class__}"
 
     def get_value(self, widget_instance: QWidget) -> Optional[dict]:
-        """TODO"""
+        """Return the value contained by the schema widget. This may vary depending on the QWidget class"""
         check_not_none(widget_instance)
         if isinstance(widget_instance, QAbstractSpinBox):
             value = widget_instance.value()
@@ -97,23 +96,23 @@ class SchemaField:
         return {self._name: value} if value else None
 
     def get_name(self) -> str:
-        """TODO"""
+        """Return the name of the field"""
         return self._name
 
     def get_type(self) -> Union[str, list]:
-        """TODO"""
+        """Return the type of the field"""
         return self._type
 
     def is_required(self) -> bool:
-        """TODO"""
+        """Whether the field is required or optional"""
         return self._required
 
     def is_valid(self, widget_instance: QWidget) -> bool:
-        """TODO"""
+        """Whether the field is valid, based on it's values and required flag"""
         return not self.is_required() or self.get_value(widget_instance) is not None
 
     def widget(self) -> QWidget:
-        """TODO"""
+        """Return the QWidget that the field is displayed at the schema form"""
         widget_instance = self._widget_type()
         default_value = get_by_key_or_default(self._field_attrs, 'default', '')
         placeholder_text = self._get_placeholder_text()
@@ -122,7 +121,7 @@ class SchemaField:
             if tooltip \
             else placeholder_text
         if self._widget_type == HComboBox:
-            items = self._schema.array_items(self._field_attrs)
+            items = self._schema.get_items(self._field_attrs)
             widget_instance.addItems(items)
             widget_instance.setEditable(True)
             widget_instance.lineEdit().setPlaceholderText(placeholder_text)
@@ -144,20 +143,20 @@ class SchemaField:
         return widget_instance
 
     def _get_widget_type(self) -> Type[QWidget]:
-        """TODO"""
+        """Return the QWidget type required by this field"""
         return self.QWIDGET_TYPE_MAP[self._type] \
             if self._type in self.QWIDGET_TYPE_MAP \
             else QLineEdit
 
     def _get_placeholder_text(self) -> str:
-        """TODO"""
+        """Return the placeholder text to be displayed by this field"""
         text = get_by_key_or_default(self._field_attrs, 'description')
         text = get_by_key_or_default(self._field_attrs, 'doc') if not text else text
         text = f"This field is {'required' if self._required else 'optional'}" if not text else text
         return text
 
     def _get_min_max_values(self) -> Tuple[Union[int, float], Union[int, float]]:
-        """TODO"""
+        """Return the minimum and maximum numbers tha this field is allowed to hold"""
         min_val = get_by_key_or_default(self._field_attrs, 'minimum', 0)
         max_val = get_by_key_or_default(
             self._field_attrs, 'maximum', 99999.99
