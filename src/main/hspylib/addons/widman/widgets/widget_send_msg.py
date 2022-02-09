@@ -170,7 +170,7 @@ class WidgetSendMsg(Widget):
         # @formatter:on
         self.args = minput(form_fields)
 
-        return len(self.args.__dict__) > 1
+        return len(self.args.__dict__) > 1 if self.args else False
 
     def _parse_args(self, *args):
         """When arguments are passed from the command line, parse them"""

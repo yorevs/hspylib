@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.1
+# HSPyLib v0.11.5
 #
 # Package: main.hspylib.core.crud.db.firebase
 """Package initialization."""

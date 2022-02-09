@@ -18,7 +18,7 @@ import os
 import sys
 import unittest
 
-from requests import exceptions as ex
+from requests import exceptions as ex, ConnectTimeout
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
@@ -113,7 +113,7 @@ class TestFetch(unittest.TestCase):
 
     def test_should_except_when_connect_timeout_expires(self):
         self.assertRaisesRegex(
-            ConnectionError, r'.*\(connect timeout=1\).*',
+            ConnectTimeout, r'.*\(connect timeout=1\).*',
             lambda: get('example.com:9999', timeout=1))
 
     def test_should_be_reachable(self):
