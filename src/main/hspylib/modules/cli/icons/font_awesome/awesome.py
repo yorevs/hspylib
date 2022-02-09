@@ -15,7 +15,7 @@
 
 import struct
 
-from pyparsing import unicode
+import pyparsing
 
 from hspylib.core.enums.enumeration import Enumeration
 
@@ -36,7 +36,7 @@ class Awesome(Enumeration):
         i = 0
         st_base = ['F{:03X}'.format(x) for x in range(0, 4095)]
         for n in st_base:
-            hexa = unicode(struct.pack("!I", int(n, 16)), 'utf_32_be')
+            hexa = pyparsing.unicode(struct.pack("!I", int(n, 16)), 'utf_32_be')
             endz = '\n' if i != 0 and i % 10 == 0 else ' '
             print('{} {}'.format(hexa, n), end=endz)
             i += 1

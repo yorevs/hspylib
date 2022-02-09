@@ -17,10 +17,12 @@ project.ext.deps = [
   'twine',
   'wheel',
   'bumpversion',
+  'pipreqs',
   'pylint',
   'confluent-kafka',
   'fastavro',
   'avro-python3',
   'jsonschema',
   'pyperclip',
+  'pyparsing'
 ]

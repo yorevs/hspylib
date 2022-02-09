@@ -16,7 +16,8 @@
 import select
 import string
 import sys
-from typing import Optional
+import time
+from typing import Optional, Tuple
 
 import getkey
 
@@ -147,13 +148,13 @@ class Keyboard(Enumeration):
     VK_QUESTION_MARK = '?'
 
     @staticmethod
-    def kbhit():
+    def kbhit() -> bool:
         """TODO"""
         dr, _, _ = select.select([sys.stdin], [], [], 0)
         return dr != []
 
     @staticmethod
-    def getch():
+    def getch() -> str:
         """TODO"""
         return sys.stdin.read(1)
 
@@ -171,6 +172,12 @@ class Keyboard(Enumeration):
             sys.stdin.flush()
 
         return None
+
+    def __str__(self) -> str:
+        return self.name
+
+    def __repr__(self) -> str:
+        return str(self)
 
     def isdigit(self) -> bool:
         """TODO"""
