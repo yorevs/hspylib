@@ -4,12 +4,7 @@
     Created: 1st July, 2020
 */
 
-buildscript {
-  project.ext.gradleProperties = "$rootProject.projectDir/properties.gradle"
-  apply from: gradleProperties
-}
-
-allprojects {
+subprojects {
   tasks.withType(Exec) {
     doFirst {
       println commandLine
@@ -17,24 +12,12 @@ allprojects {
   }
 }
 
-apply from: "properties.gradle"
-
 ext {
-  app_name = "HSPyLib"
-  app_version = "${projectVersion}"
-  application = "main/__main__.py"
-  versionFile = "${rootProject.projectDir}/src/main/hspylib/.version"
+
   python = "python${pythonVersion}"
   pyrcc = "pyrcc3${pyrccVersion}"
-  sourceRoot = "${rootDir}/src"
   startTime = System.currentTimeMillis()
+  verbose = project.hasProperty('verbose') ? verbose : false
+
 }
 
-apply from: "gradle/dependencies.gradle"
-apply from: "gradle/python.gradle"
-apply from: "gradle/build-info.gradle"
-apply from: "gradle/pypi-publish.gradle"
-apply from: "gradle/docker.gradle"
-apply from: "gradle/oracle.gradle"
-apply from: "gradle/badges.gradle"
-apply from: "gradle/docgen.gradle"
