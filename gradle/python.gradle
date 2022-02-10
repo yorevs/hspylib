@@ -5,8 +5,9 @@
 */
 
 ext {
-  pythonPath = "${sourceRoot}:${sourceRoot}/main:${sourceRoot}/test:${sourceRoot}/app:${sourceRoot}/demo"
-  requirementsFile = "${rootProject.projectDir}/src/main/requirements.txt"
+  pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test:$sourceRoot/app:$sourceRoot/demo"
+  requirementsFile = project.hasProperty('requirementsFile') ? requirementsFile :
+    "$rootProject.projectDir/src/main/requirements.txt"
 }
 
 /* Helper Functions -------------------------------------------------------- */
@@ -60,19 +61,18 @@ __all__ = %modules%
 /* Cleanup distribution files */
 task cleanDist(type: Delete) {
   group = 'Build'
-  description = "Cleanup distribution files from rootProject.projectDir"
-  def projectRoot = "${rootProject.projectDir}"
-  println "Cleanup distribution files from ${projectRoot}"
-  delete dirsByPattern(projectRoot, /.*dist$/)
-  delete dirsByPattern(projectRoot, /.*build$/)
-  delete dirsByPattern(projectRoot, /.*egg-info$/)
+  description = "Cleanup distribution files from $sourceRoot"
+  println "Cleanup distribution files from $sourceRoot"
+  delete dirsByPattern(sourceRoot, /.*dist$/)
+  delete dirsByPattern(sourceRoot, /.*build$/)
+  delete dirsByPattern(sourceRoot, /.*egg-info$/)
 }
 
-/* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "${sourceRoot}" */
+/* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "$sourceRoot" */
 task cleanPython(type: Delete) {
   group = 'Build'
   description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
-  println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories  from ${sourceRoot}..."
+  println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories \n\t from $sourceRoot"
   delete fileTree(sourceRoot).matching {
     include "**/*.pyc"
     include "**/*.qrc"
@@ -85,11 +85,12 @@ task compilePython(type: Task) {
   group = 'Build'
   description = 'Compile all python files from sourceRoot'
   doLast {
-    fileTree("${sourceRoot}").matching {
+    println "Compiling Python files"
+    fileTree("$sourceRoot").matching {
       include "**/*.py"
       exclude "**/__init__.py"
     }.each { File file ->
-        println "Compiling Python file -> ${file.name}"
+        if (verbose) println "Compiling Python file -> ${file.name}"
         exec {
           commandLine rootProject.python, '-m', 'py_compile', file.path
         }
@@ -102,10 +103,10 @@ task compileQrc(type: Task) {
   group = 'Build'
   description = 'Compile all Qt resource files from sourceRoot'
   doLast {
-    fileTree("${sourceRoot}").matching {
+    fileTree("$sourceRoot").matching {
       include "**/*.qrc"
     }.each { File file ->
-        println "Compiling Qt Resource -> ${file.name}"
+        if (verbose) println "Compiling Qt Resource -> ${file.name}"
         exec {
           commandLine rootProject.pyrcc, '-m', 'py_compile', file.path
         }
@@ -120,10 +121,10 @@ task syncPythonPackages(type: Task) {
   group = 'Install'
   description = 'Find and synchronize all python packages'
   doLast {
-    project.file("${sourceRoot}").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
+    project.file("$sourceRoot").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
       directory.eachFileMatch(~/^__init__\.py$/) { initFile ->
         def pkg = initFile.getCanonicalPath()
-          .replaceAll("${sourceRoot}/", "")
+          .replaceAll("$sourceRoot/", "")
           .replaceAll("\\/", "\\.")
           .replaceAll("\\.?__init__\\.py", "")
         def modules = []
@@ -133,7 +134,7 @@ task syncPythonPackages(type: Task) {
               !module.name.endsWith("setup.py") &&
               ((module.isFile() && module.name.endsWith(".py")) ||
               new File(module.getCanonicalPath() + "/__init__.py").exists())) {
-            if (!module.isFile()) {
+            if (!module.isFile() && verbose) {
               println "Syncing package: ${initFile.getParentFile()}/${module.name}"
             }
             modules << "'${module.name.replaceAll("\\.py", "")}'"
@@ -177,22 +178,22 @@ task installModule(type: Task) {
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
   doLast {
-    def depsFile = project.file("${project.ext.requirementsFile}")
+    def depsFile = project.file("$project.ext.requirementsFile")
     depsFile.write ''
     project.ext.deps.each { dep ->
       depsFile.append dep + '\n'
     }
     copy {
-        from("${rootProject.projectDir}") {
+        from("$rootProject.projectDir") {
           include 'README.md'
         }
-        into "${sourceRoot}/main"
+        into "$sourceRoot/main"
     }
-    fileTree("${sourceRoot}").matching {
+    fileTree("$sourceRoot").matching {
       include "**/setup.py"
     }.each { File module ->
         def moduleDir = dirName(module)
-        println "Installing ${rootProject.name} from ${moduleDir} -> ${module.path}"
+        println "Installing $rootProject.name from $moduleDir -> $module.path"
         exec {
           workingDir "${moduleDir}"
           commandLine rootProject.python, '-m', 'pip', 'install', '--use-feature=in-tree-build', '--user', '.'
@@ -206,7 +207,7 @@ task uninstallModule(type: Task) {
   group = 'Install'
   description = "Uninstall the module as a python package using module's setup.py"
   doLast {
-    fileTree("${sourceRoot}/main").matching {
+    fileTree("$sourceRoot/main").matching {
       include "**/setup.py"
     }.each { File file ->
         def moduleDir = "${file.path.replace(file.name, "")}"
@@ -223,20 +224,23 @@ task uninstallModule(type: Task) {
 
 task check(type: Task) {
   group = 'Verification'
-  description = 'Run all Qt python tests "${sourceRoot}/test/**/test_*.py"'
+  description = "Run all Qt python tests $sourceRoot/test/**/test_*.py"
   dependsOn compilePython
   doLast {
-    fileTree("${sourceRoot}/test").matching {
+    println "Performing unittests from $sourceRoot"
+    fileTree("$sourceRoot/test").matching {
       include "**/test_*.py"
     }.each { File file ->
-        println ""
-        println "Running unittests -> ${file.name}"
-        println "  |- PYTHON_PATH: ${rootProject.ext.pythonPath}"
-        println ""
+      if (verbose) {
+          println ""
+          println "  |- PYTHON_PATH: $rootProject.ext.pythonPath"
+          println "Executing unittests from -> $file.name"
+          println ""
+        }
         exec {
           workingDir = dirName(file)
-          environment PYTHONPATH: "${rootProject.ext.pythonPath}"
-          commandLine rootProject.python, '-m', 'unittest', '-b', '-f', '-v', file.path
+          environment PYTHONPATH: "$pythonPath"
+          commandLine rootProject.python, '-m', 'unittest', '-b', '-f', '-v' ,file.path
         }
       }
   }
@@ -245,11 +249,11 @@ task check(type: Task) {
 /* Execute PyLint on sourceRoot */
 task pylint(type: Task) {
   group = 'Verification'
-  description = 'Run pylint on "${sourceRoot}"'
+  description = "Run pylint on $sourceRoot"
   doLast {
     def chk_str = "${pylint_disabled_checks.join(',')}"
     exec {
-      workingDir "${rootDir}"
+      workingDir "$rootDir"
       commandLine rootProject.python, '-m', 'pylint', '--rcfile=.pylintrc', "--disable=${chk_str}", sourceRoot
     }
   }

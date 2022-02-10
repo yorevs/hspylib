@@ -156,7 +156,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._download_ext('pypi-publish.gradle')
         self._download_ext('python.gradle')
         version_string = '.'.join(map(str, self._parent_app.VERSION))
-        self._mkfile('properties.gradle', self.GRADLE_PROPS.format(version_string).strip())
+        self._mkfile('gradle.properties', self.GRADLE_PROPS.format(version_string).strip())
         self._mkfile(
             'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self._app_name)
         )
