@@ -1,7 +1,7 @@
 ext {
 
   app_name = "HSPyLib-Core"
-  projectVersion = "${projectVersion}"
+  app_version = "${app_version}"
   sourceRoot = "$rootDir/modules/core/src"
   application = "main/__main__.py"
   versionFile = "$rootDir/modules/core/src/main/hspylib/.version"

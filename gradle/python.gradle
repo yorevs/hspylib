@@ -47,13 +47,14 @@ project.ext.pylint_disabled_checks =
 /* Used to created the __init__.py files { */
 def initTemplate = """# _*_ coding: utf-8 _*_
 #
-# ${project.ext.app_name} v${projectVersion}
+# $app_name v$app_version
 #
 # Package: %package%
 \"\"\"Package initialization.\"\"\"
 
 __all__ = %modules%
-%version%"""
+%version%
+"""
 /* } */
 
 /***** Build Group */
@@ -141,7 +142,7 @@ task syncPythonPackages(type: Task) {
           }
         }
         def ver_file = new File("${initFile.getParentFile()}/.version")
-        def version_string = ver_file.exists() ? "__version__ = \"${ver_file.text.trim()}\"\n" : ''
+        def version_string = "__version__ = \'$app_version\'"
         initFile.write initTemplate
           .replaceAll("%package%", pkg)
           .replaceAll("%modules%", modules.sort().toString())
