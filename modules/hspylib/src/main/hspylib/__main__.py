@@ -91,7 +91,7 @@ class Main(Application):
             else:
                 manager.dashboard()
         else:
-            syserr('### Invalid operation: {}'.format(op))
+            syserr(f'### Invalid operation: {op}')
             self.usage(1)
 
 

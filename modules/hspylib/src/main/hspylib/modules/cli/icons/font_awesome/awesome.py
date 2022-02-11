@@ -15,13 +15,7 @@
 
 import struct
 
-import pyparsing
-
 from hspylib.core.enums.enumeration import Enumeration
-
-
-def awe_print(awesome_str: str) -> None:
-    print(awesome_str + ' ', end='')
 
 
 class Awesome(Enumeration):
@@ -34,16 +28,20 @@ class Awesome(Enumeration):
     @staticmethod
     def demo_unicodes() -> None:
         i = 0
-        st_base = ['F{:03X}'.format(x) for x in range(0, 4095)]
+        st_base = [f'F{x:03X}' for x in range(0, 4095)]
         for n in st_base:
-            hexa = pyparsing.unicode(struct.pack("!I", int(n, 16)), 'utf_32_be')
-            endz = '\n' if i != 0 and i % 10 == 0 else ' '
-            print('{} {}'.format(hexa, n), end=endz)
+            hex_val = bytes.decode(struct.pack("!I", int(n, 16)), 'utf_32_be')
+            end_line = '\n' if i != 0 and i % 10 == 0 else ' '
+            print(f'{hex_val} {n:4}', end=end_line)
             i += 1
 
     @classmethod
     def demo_icons(cls) -> None:
-        list(map(awe_print, cls.values()))
+        i = 0
+        for n in cls.values():
+            end_line = '\n' if i != 0 and i % 10 == 0 else ' '
+            print(f'{n:2}', end=end_line)
+            i += 1
 
     def __str__(self) -> str:
         return str(self.value)
