@@ -19,7 +19,7 @@ import re
 from hspylib.core.tools.constants import RE_VERSION_STRING
 from hspylib.core.tools.preconditions import check_argument
 
-from src.main.enums.extension import Extension
+from src.main.versioner.enums.extension import Extension
 
 
 class Version:

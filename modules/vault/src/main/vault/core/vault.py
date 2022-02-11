@@ -27,10 +27,10 @@ from hspylib.core.tools.commons import sysout, syserr, file_is_not_empty, touch_
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt
 
-from src.main.core.vault_config import VaultConfig
-from src.main.core.vault_service import VaultService
-from src.main.entity.vault_entry import VaultEntry
-from src.main.exception.exceptions import VaultOpenError, VaultCloseError
+from src.main.vault.core.vault_config import VaultConfig
+from src.main.vault.core.vault_service import VaultService
+from src.main.vault.entity.vault_entry import VaultEntry
+from src.main.vault.exception.exceptions import VaultOpenError, VaultCloseError
 
 
 class Vault:
