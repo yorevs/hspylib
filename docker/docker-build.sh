@@ -6,7 +6,7 @@ USAGE="
     Usage: build.bash <container-name>
 
       Arguments
-        - container-name  : The docker container directory name (dirname). Must contain a Dockerfile inside.
+        - container-name  : The docker container directory name. Must contain a Dockerfile inside.
 "
 
 if [[ $# -lt 1 || "${1}" == -h || "${1}" == --help ]]; then
