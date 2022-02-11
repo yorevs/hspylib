@@ -8,6 +8,7 @@ ext {
   pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test:$sourceRoot/app:$sourceRoot/demo"
   requirementsFile = project.hasProperty('requirementsFile') ? requirementsFile :
     "$rootProject.projectDir/src/main/requirements.txt"
+  failScore = project.hasProperty('failScore') ? failScore : 8.0
 }
 
 /* Helper Functions -------------------------------------------------------- */
@@ -86,7 +87,7 @@ task compilePython(type: Task) {
   group = 'Build'
   description = 'Compile all python files from sourceRoot'
   doLast {
-    println "Compiling Python files"
+    println "Compiling Python files from $project.name \n\t $sourceRoot"
     fileTree("$sourceRoot").matching {
       include "**/*.py"
       exclude "**/__init__.py"
@@ -196,8 +197,8 @@ task installModule(type: Task) {
         def moduleDir = dirName(module)
         println "Installing $rootProject.name from $moduleDir -> $module.path"
         exec {
-          workingDir "${moduleDir}"
-          commandLine rootProject.python, '-m', 'pip', 'install', '--use-feature=in-tree-build', '--user', '.'
+          workingDir "$moduleDir"
+          commandLine rootProject.python, '-m', 'pip', 'install', '--use-feature=in-tree-build', '--user', ''
         }
       }
   }
@@ -212,10 +213,10 @@ task uninstallModule(type: Task) {
       include "**/setup.py"
     }.each { File file ->
         def moduleDir = "${file.path.replace(file.name, "")}"
-        println "Removing python modules from: ${file.path}"
+        println "Removing python modules from: $file.path"
         exec {
-          workingDir "${moduleDir}"
-          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', "${rootProject.name}"
+          workingDir "$moduleDir"
+          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', "$rootProject.name"
         }
       }
   }
@@ -257,12 +258,13 @@ task pylint(type: Task) {
     assert new File("$project.rootDir" + "/.pylintrc").exists()
     def srcDir = "$sourceRoot/main/$project.name"
     def chk_str = "${pylint_disabled_checks.join(',')}"
+    def failScore =
     println project.name + " Execute pylint against $srcDir"
     exec {
-      workingDir "$rootDir"
+      workingDir project.rootDir
       commandLine rootProject.python, '-m', 'pylint',
         "--rcfile=$project.rootDir/.pylintrc",
-        "--disable=$chk_str", "$srcDir", '--fail-under=8.0'
+        "--disable=$chk_str", "$srcDir", "--fail-under=$project.ext.failScore"
     }
   }
 }
@@ -300,8 +302,6 @@ task buildOnly(type: Task) {
   group = 'Build'
   dependsOn clean
   mustRunAfter clean
-  dependsOn installDependencies
-  mustRunAfter installDependencies
   dependsOn compile
   mustRunAfter compile
 }
