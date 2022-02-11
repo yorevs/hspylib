@@ -1,6 +1,6 @@
 ext {
 
-  app_name = "HSPyLib-Firebase"
+  app_name = "HSPyLib-Kafman"
   app_version = "${app_version}"
   sourceRoot = "$rootDir/modules/kafman/src"
   application = "main/__main__.py"
