@@ -7,17 +7,17 @@
 */
 
 /* Download and save the generated badge file */
-def badgeGen(subject, status, color, outDir="${project.buildDir}") {
-  def url = "https://badgen.net/badge/${subject}/${status}/${color}"
-  def outFile = "${rootProject.projectDir}/${subject}-badge.svg"
+def badgeGen(subject, status, color, outDir="${project.projectDir}") {
+  def url = "https://badgen.net/badge/$subject/$status/$color"
+  def outFile = "$outDir/${subject}-badge.svg"
   exec {
     executable "curl"
-    args "--connect-timeout", 3, "${url}", "--output", "${outFile}"
+    args "--connect-timeout", 3, "$url", "--output", "$outFile"
     standardOutput = new ByteArrayOutputStream()
     errorOutput = standardOutput
     ignoreExitValue = true
   }
-  println("Badge generated: ${url} => ${outFile}")
+  println("Badge generated: $url => $outFile")
 }
 
 /* Generate a badge based on build */
