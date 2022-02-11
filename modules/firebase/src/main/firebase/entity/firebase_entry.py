@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.firebase.src.main.entity
+   hspylib.app.firebase.entity
       @file: firebase_entry.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,7 +18,7 @@ import json
 from datetime import datetime
 from typing import List
 
-from firebase.src.main.entity.file_entry import FileEntry
+from firebase.entity.file_entry import FileEntry
 from hspylib.core.enums.charset import Charset
 
 

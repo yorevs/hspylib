@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.vault.src.main.core
+   hspylib.app.vault.core
       @file: vault.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -27,10 +27,10 @@ from hspylib.core.tools.commons import sysout, syserr, file_is_not_empty, touch_
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt
 
-from src.main.vault.core.vault_config import VaultConfig
-from src.main.vault.core.vault_service import VaultService
-from src.main.vault.entity.vault_entry import VaultEntry
-from src.main.vault.exception.exceptions import VaultOpenError, VaultCloseError
+from vault.core.vault_config import VaultConfig
+from vault.core.vault_service import VaultService
+from vault.entity.vault_entry import VaultEntry
+from vault.exception.exceptions import VaultOpenError, VaultCloseError
 
 
 class Vault:

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.firebase.src.main.core
+   hspylib.app.firebase.core
       @file: firebase.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -21,8 +21,8 @@ from typing import List
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.preconditions import check_argument
 
-from src.main.firebase.core.agent_config import AgentConfig
-from src.main.firebase.core.file_processor import FileProcessor
+from firebase.core.agent_config import AgentConfig
+from firebase.core.file_processor import FileProcessor
 
 
 class Firebase:

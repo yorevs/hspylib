@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.versioner.src.main.enums
+   hspylib.app.versioner.enums
       @file: extension.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

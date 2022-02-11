@@ -1,10 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-Firebase v0.9.2
 #
-# Package: app.vault.src.main.entity.validator
+# Package: main.vault.entity.validator
 """Package initialization."""
 
 __all__ = [
   'entry_validator'
 ]
+__version__ = '0.9.2'

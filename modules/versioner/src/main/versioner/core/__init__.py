@@ -1,10 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-Firebase v0.1.0
 #
-# Package: app.versioner.src.main.core
+# Package: main.versioner.core
 """Package initialization."""
 
 __all__ = [
   'versioner'
 ]
+__version__ = '0.1.0'

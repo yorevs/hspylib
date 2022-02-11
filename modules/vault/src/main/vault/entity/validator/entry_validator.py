@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.vault.src.main.entity.validator
+   hspylib.app.vault.entity.validator
       @file: entry_validator.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,7 +20,7 @@ from typing import List, Tuple
 from hspylib.core.tools.constants import RE_COMMON_2_30_NAME
 from hspylib.core.tools import check_argument, check_state
 from hspylib.core.tools import Validator
-from vault.src.main.entity.vault_entry import VaultEntry
+from vault.entity.vault_entry import VaultEntry
 
 
 class EntryValidator(Validator):

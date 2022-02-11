@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-Firebase v0.9.2
 #
-# Package: app.vault.src.main
+# Package: main.vault
 """Package initialization."""
 
 __all__ = [
@@ -11,4 +11,4 @@ __all__ = [
   'entity', 
   'exception'
 ]
-__version__ = "0.9.2"
+__version__ = '0.9.2'

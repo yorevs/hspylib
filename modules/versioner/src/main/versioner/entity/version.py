@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.versioner.src.main.entity
+   hspylib.app.versioner.entity
       @file: version.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,7 +19,7 @@ import re
 from hspylib.core.tools.constants import RE_VERSION_STRING
 from hspylib.core.tools.preconditions import check_argument
 
-from src.main.versioner.enums.extension import Extension
+from versioner.enums.extension import Extension
 
 
 class Version:

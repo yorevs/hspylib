@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-Firebase v0.1.0
 #
-# Package: app.kafman.src.main.core
+# Package: main.kafman.core
 """Package initialization."""
 
 __all__ = [
@@ -15,3 +15,4 @@ __all__ = [
   'schema', 
   'statistics_worker'
 ]
+__version__ = '0.1.0'
