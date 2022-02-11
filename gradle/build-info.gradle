@@ -18,7 +18,7 @@ task updateBuildInfo {
   description = 'Update the build-info.properties file with current build and version numbers'
   outputs.upToDateWhen { false }
   doLast {
-    def build_info_file = project.file("${project.ext.build_info_file}")
+    def build_info_file = project.file("$project.ext.build_info_file")
     def build_datetime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS z").format(new Date())
     if (build_info_file.exists()) {
       build_info_file.delete()
@@ -26,15 +26,16 @@ task updateBuildInfo {
     build_info_file <<
         """###
 #   (Automated) Build information
+#   Do not modify by hand. Automatic field update
 ###
-# Do not modify by hand. Automatic field update
-build.date = ${build_datetime}
+
+build.date = $build_datetime
+
 # Application version.
-# Do not modify by hand. Automatic field update
-app.version = ${project.ext.app_version}
-# JRE version used to compile.
-# Do not modify by hand. Automatic field update
-python.version = ${pythonVersion}
+app.version = $app_version
+
+# PYTHON version used to compile.
+python.version = $pythonVersion
 """
   }
 }
@@ -71,7 +72,7 @@ task changeVersion(type: Task) {
     exec {
       commandLine rootProject.python, '-m', 'bumpversion',
         '--allow-dirty', '--current-version', ver,
-        part, 'properties.gradle'
+        part, 'gradle.properties'
     }
   }
 }

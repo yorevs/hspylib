@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Core v0.11.6
+# HSPyLib-Core v0.11.7
 #
 # Package: main.hspylib.core.crud.db
 """Package initialization."""
@@ -11,3 +11,4 @@ __all__ = [
   'mysql', 
   'sql_factory'
 ]
+__version__ = '0.11.7'
