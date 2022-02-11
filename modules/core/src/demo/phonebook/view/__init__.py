@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Core v0.11.7
+# HSPyLib-Core v0.11.8
 #
 # Package: demo.phonebook.view
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
   'edit_view', 
   'search_view'
 ]
-__version__ = '0.11.7'
+__version__ = '0.11.8'

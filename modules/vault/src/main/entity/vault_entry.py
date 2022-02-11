@@ -18,7 +18,7 @@ import re
 from datetime import datetime
 from uuid import UUID
 
-from hspylib import CrudEntity
+from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.tools.constants import DATE_TIME_FORMAT
 
 

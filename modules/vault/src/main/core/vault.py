@@ -22,14 +22,15 @@ import os
 import uuid
 
 from cryptography.fernet import InvalidToken
+from hspylib.core.tools.commons import sysout, syserr, file_is_not_empty, touch_file, safe_del_file
 
-from hspylib.core.tools import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt
-from vault.src.main.core.vault_config import VaultConfig
-from vault.src.main.core.vault_service import VaultService
-from vault.src.main.entity.vault_entry import VaultEntry
-from vault.src.main.exception.exceptions import VaultCloseError, VaultOpenError
+
+from src.main.core.vault_config import VaultConfig
+from src.main.core.vault_service import VaultService
+from src.main.entity.vault_entry import VaultEntry
+from src.main.exception.exceptions import VaultOpenError, VaultCloseError
 
 
 class Vault:
