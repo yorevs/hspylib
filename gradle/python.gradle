@@ -64,22 +64,26 @@ __all__ = %modules%
 task cleanDist(type: Delete) {
   group = 'Build'
   description = "Cleanup distribution files from $sourceRoot"
-  println "Cleanup distribution files from $sourceRoot"
-  delete dirsByPattern(sourceRoot, /.*dist$/)
-  delete dirsByPattern(sourceRoot, /.*build$/)
-  delete dirsByPattern(sourceRoot, /.*egg-info$/)
+  doLast {
+    println "Cleanup distribution files from $sourceRoot"
+    delete dirsByPattern(sourceRoot, /.*dist$/)
+    delete dirsByPattern(sourceRoot, /.*build$/)
+    delete dirsByPattern(sourceRoot, /.*egg-info$/)
+  }
 }
 
 /* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "$sourceRoot" */
 task cleanPython(type: Delete) {
   group = 'Build'
   description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
-  println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories \n\t from $sourceRoot"
-  delete fileTree(sourceRoot).matching {
-    include "**/*.pyc"
-    include "**/*.qrc"
+  doLast {
+    println "Cleaning all compiled (*.py,*.qrc) files and cached (__pycache__/) directories \n\t from $sourceRoot"
+    delete fileTree(sourceRoot).matching {
+      include "**/*.pyc"
+      include "**/*.qrc"
+    }
+    delete dirsByPattern(sourceRoot, /.*__pycache__$/)
   }
-  delete dirsByPattern(sourceRoot, /.*__pycache__$/)
 }
 
 /* Compile all python files from sourceRoot */
@@ -229,6 +233,7 @@ task check(type: Task) {
   group = 'Verification'
   description = "Run all Qt python tests $sourceRoot/test/**/test_*.py"
   dependsOn compilePython
+  dependsOn compileQrc
   doLast {
     println "Performing unittests from $sourceRoot"
     fileTree("$sourceRoot/test").matching {
@@ -271,9 +276,10 @@ task pylint(type: Task) {
 
 /***** Task Wrappers */
 
-task clean(type: Task) {
+tasks.register('clean', Delete) {
   group = 'Build'
   dependsOn cleanPython
+  dependsOn cleanDist
 }
 
 task compile(type: Task) {
@@ -282,11 +288,12 @@ task compile(type: Task) {
   dependsOn compileQrc
 }
 
-task test(type: Task) {
-  group = 'Verification'
+task buildOnly(type: Task) {
+  group = 'Build'
+  dependsOn clean
+  mustRunAfter clean
   dependsOn compile
   mustRunAfter compile
-  dependsOn check
 }
 
 task build(type: Task) {
@@ -295,15 +302,7 @@ task build(type: Task) {
   mustRunAfter clean
   dependsOn installDependencies
   mustRunAfter installDependencies
-  dependsOn test
-}
-
-task buildOnly(type: Task) {
-  group = 'Build'
-  dependsOn clean
-  mustRunAfter clean
-  dependsOn compile
-  mustRunAfter compile
+  dependsOn check
 }
 
 task install(type: Task) {
