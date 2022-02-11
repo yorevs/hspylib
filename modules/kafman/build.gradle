@@ -1,12 +1,10 @@
 ext {
-
   app_name = "HSPyLib-Kafman"
   app_version = "${app_version}"
   sourceRoot = "$rootDir/modules/kafman/src"
   application = "main/__main__.py"
   versionFile = "$rootDir/modules/kafman/src/main/kafman/.version"
   requirementsFile = "$rootDir/modules/kafman/src/main/requirements.txt"
-
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"

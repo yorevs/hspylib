@@ -1,12 +1,10 @@
 ext {
-
   app_name = "HSPyLib-CFMan"
   app_version = "${app_version}"
   sourceRoot = "$rootDir/modules/cfman/src"
   application = "main/__main__.py"
   versionFile = "$rootDir/modules/cfman/src/main/cfman/.version"
   requirementsFile = "$rootDir/modules/cfman/src/main/requirements.txt"
-
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"

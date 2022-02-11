@@ -1,12 +1,10 @@
 ext {
-
   app_name = "HSPyLib-Versioner"
   app_version = "${app_version}"
   sourceRoot = "$rootDir/modules/versioner/src"
   application = "main/__main__.py"
   versionFile = "$rootDir/modules/versioner/src/main/versioner/.version"
   requirementsFile = "$rootDir/modules/versioner/src/main/requirements.txt"
-
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"

@@ -223,6 +223,7 @@ task uninstallModule(type: Task) {
 
 /***** Verification Group */
 
+/* Run all Qt python tests $sourceRoot */
 task check(type: Task) {
   group = 'Verification'
   description = "Run all Qt python tests $sourceRoot/test/**/test_*.py"
@@ -250,12 +251,18 @@ task check(type: Task) {
 /* Execute PyLint on sourceRoot */
 task pylint(type: Task) {
   group = 'Verification'
-  description = "Run pylint on $sourceRoot"
+  description = "Execute pylint against $sourceRoot"
+
   doLast {
+    assert new File("$project.rootDir" + "/.pylintrc").exists()
+    def srcDir = "$sourceRoot/main/$project.name"
     def chk_str = "${pylint_disabled_checks.join(',')}"
+    println project.name + " Execute pylint against $srcDir"
     exec {
       workingDir "$rootDir"
-      commandLine rootProject.python, '-m', 'pylint', '--rcfile=.pylintrc', "--disable=${chk_str}", sourceRoot
+      commandLine rootProject.python, '-m', 'pylint',
+        "--rcfile=$project.rootDir/.pylintrc",
+        "--disable=$chk_str", "$srcDir", '--fail-under=8.0'
     }
   }
 }
