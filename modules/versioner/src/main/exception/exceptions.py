@@ -13,8 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
-from hspylib.core.exception import HSBaseException
+from hspylib.core.exception.exceptions import HSBaseException
 
 
 class MissingExtensionError(HSBaseException):

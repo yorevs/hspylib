@@ -1,0 +1,19 @@
+ext {
+
+  app_name = "HSPyLib-Firebase"
+  app_version = "${app_version}"
+  sourceRoot = "$rootDir/modules/firebase/src"
+  application = "main/__main__.py"
+  versionFile = "$rootDir/modules/firebase/src/main/firebase/.version"
+  requirementsFile = "$rootDir/modules/firebase/src/main/requirements.txt"
+
+}
+
+apply from: "$rootDir/gradle/dependencies.gradle"
+apply from: "$rootDir/gradle/python.gradle"
+apply from: "$rootDir/gradle/build-info.gradle"
+apply from: "$rootDir/gradle/pypi-publish.gradle"
+apply from: "$rootDir/gradle/docker.gradle"
+apply from: "$rootDir/gradle/oracle.gradle"
+apply from: "$rootDir/gradle/badges.gradle"
+apply from: "$rootDir/gradle/docgen.gradle"

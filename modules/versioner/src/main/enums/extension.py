@@ -13,8 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
-from hspylib.core.enums import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class Extension(Enumeration):
