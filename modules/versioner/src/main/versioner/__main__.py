@@ -21,8 +21,8 @@ from hspylib.core.tools.constants import RE_VERSION_STRING
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 
-from src.main.core.versioner import Versioner
-from src.main.enums.part import Part
+from src.main.versioner.core.versioner import Versioner
+from src.main.versioner.enums.part import Part
 
 HERE = get_path(__file__)
 

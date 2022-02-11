@@ -19,8 +19,8 @@ from typing import Optional
 from hspylib.core.crud.crud_service import CrudService
 from hspylib.core.metaclass.singleton import Singleton
 
-from src.main.core.vault_repository import VaultRepository
-from src.main.entity.vault_entry import VaultEntry
+from src.main.vault.core.vault_repository import VaultRepository
+from src.main.vault.entity.vault_entry import VaultEntry
 
 
 class VaultService(CrudService, metaclass=Singleton):
