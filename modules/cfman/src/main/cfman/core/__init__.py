@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-CFManager v0.1.0
 #
-# Package: app.cfman.src.main.core
+# Package: main.cfman.core
 """Package initialization."""
 
 __all__ = [
@@ -11,3 +11,4 @@ __all__ = [
   'cf_endpoint', 
   'cf_manager'
 ]
+__version__ = '0.1.0'

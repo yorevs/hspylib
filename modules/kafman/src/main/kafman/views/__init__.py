@@ -1,11 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-Firebase v0.1.0
 #
-# Package: app.kafman.src.main.views
+# Package: main.kafman.views
 """Package initialization."""
 
 __all__ = [
   'indexes', 
   'main_qt_view'
 ]
+__version__ = '0.1.0'

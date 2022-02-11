@@ -23,9 +23,9 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir, sysout, syserr
 from hspylib.core.tools.preconditions import check_argument
 
-from src.main.versioner.entity.version import Version
-from src.main.versioner.enums.extension import Extension
-from src.main.versioner.exception.exceptions import MissingExtensionError
+from versioner.entity.version import Version
+from versioner.enums.extension import Extension
+from versioner.exception.exceptions import MissingExtensionError
 
 
 class Versioner(metaclass=Singleton):

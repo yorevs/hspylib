@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.vault.src.main.core
+   hspylib.app.vault.core
       @file: vault_service.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,8 +19,8 @@ from typing import Optional
 from hspylib.core.crud.crud_service import CrudService
 from hspylib.core.metaclass.singleton import Singleton
 
-from src.main.vault.core.vault_repository import VaultRepository
-from src.main.vault.entity.vault_entry import VaultEntry
+from vault.core.vault_repository import VaultRepository
+from vault.entity.vault_entry import VaultEntry
 
 
 class VaultService(CrudService, metaclass=Singleton):

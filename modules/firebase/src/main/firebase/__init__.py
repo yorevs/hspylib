@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib v0.11.5
+# HSPyLib-Firebase v0.9.3
 #
-# Package: app.firebase.src.main
+# Package: main.firebase
 """Package initialization."""
 
 __all__ = [
@@ -10,4 +10,4 @@ __all__ = [
   'core', 
   'entity'
 ]
-__version__ = "0.9.3"
+__version__ = '0.9.3'

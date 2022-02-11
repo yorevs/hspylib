@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.firebase.src.main.core
+   hspylib.app.firebase.core
       @file: file_processor.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -25,7 +25,7 @@ from hspylib.core.tools.preconditions import check_state, check_not_none, check_
 from hspylib.modules.fetch.fetch import put, get
 from requests.exceptions import HTTPError
 
-from src.main.firebase.entity.file_entry import FileEntry
+from firebase.entity.file_entry import FileEntry
 
 
 class FileProcessor(ABC):
