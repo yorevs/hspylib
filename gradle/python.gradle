@@ -190,7 +190,7 @@ task installModule(type: Task) {
       depsFile.append dep + '\n'
     }
     copy {
-        from("$rootProject.projectDir") {
+        from(rootDir) {
           include 'README.md'
         }
         into "$sourceRoot/main"
@@ -199,10 +199,10 @@ task installModule(type: Task) {
       include "**/setup.py"
     }.each { File module ->
         def moduleDir = dirName(module)
-        println "Installing $rootProject.name from $moduleDir -> $module.path"
+        println "Install $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '--use-feature=in-tree-build', '--user', ''
+          commandLine rootProject.python, '-m', 'pip', 'install', '--user', '-r', depsFile, project.name
         }
       }
   }
@@ -211,16 +211,16 @@ task installModule(type: Task) {
 /* Uninstall the module as a python package using module's setup.py */
 task uninstallModule(type: Task) {
   group = 'Install'
-  description = "Uninstall the module as a python package using module's setup.py"
+  description = "Install the module as a python package using module's setup.py"
   doLast {
     fileTree("$sourceRoot/main").matching {
       include "**/setup.py"
-    }.each { File file ->
-        def moduleDir = "${file.path.replace(file.name, "")}"
-        println "Removing python modules from: $file.path"
+    }.each { File module ->
+        def moduleDir = "${module.path.replace(module.name, "")}"
+        println "Uninstall $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', "$rootProject.name"
+          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', project.name
         }
       }
   }
@@ -264,7 +264,7 @@ task pylint(type: Task) {
     def srcDir = "$sourceRoot/main/$project.name"
     def chk_str = "${pylint_disabled_checks.join(',')}"
     def failScore =
-    println project.name + " Execute pylint against $srcDir"
+    println "[$project.name] Execute pylint \n\t SRC Root: $srcDir"
     exec {
       workingDir project.rootDir
       commandLine rootProject.python, '-m', 'pylint',

@@ -26,6 +26,7 @@ from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 
+# pylint: disable=consider-using-f-string
 LOG_FMT = '{} {} {} {}{} {} '.format(
     '%(asctime)s',
     '[%(threadName)-10.10s]',
@@ -62,7 +63,7 @@ def log_init(
     _reset_logger()
 
     create = bool(create_new or not os.path.exists(log_file))
-    with open(log_file, 'w' if create else 'a'):
+    with open(log_file, 'w' if create else 'a', encoding="utf8"):
         os.utime(log_file, None)
         log.basicConfig(
             filename=log_file,
@@ -95,7 +96,7 @@ def read_version(version_filepath: str = ".version") -> Tuple:
     """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
     try:
         log.info("Reading version from %s", version_filepath)
-        with open(version_filepath) as fh_version:
+        with open(version_filepath, encoding="utf8") as fh_version:
             ver = tuple(map(str.strip, fh_version.read().split('.')))
             return ver if ver else (0, 0, 0)
     except FileNotFoundError:
@@ -259,7 +260,7 @@ def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
         return True
 
     if on_not_found_except:
-        raise FileNotFoundError('File was not found on the system: {}'.format(filename))
+        raise FileNotFoundError(f'File was not found on the system: {filename}')
 
     return False
 
@@ -288,19 +289,19 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
     kb, mb, gb, tb = 2 ** 10, 2 ** 20, 2 ** 30, 2 ** 40
 
     if 0 <= byte_size <= kb:
-        ret_val = '%3.2f' % byte_size
+        ret_val = f'{byte_size:3.2f}'
         ret_unit = '[B]'
     elif kb < byte_size <= mb:
-        ret_val = '%3.2f' % (byte_size / kb)
+        ret_val = f'{byte_size / kb:3.2f}'
         ret_unit = '[Kb]'
     elif mb < byte_size <= gb:
-        ret_val = '%3.2f' % (byte_size / mb)
+        ret_val = f'{byte_size / mb:3.2f}'
         ret_unit = '[Mb]'
     elif gb < byte_size <= tb:
-        ret_val = '%3.2f' % (byte_size / gb)
+        ret_val = f'{byte_size / gb:3.2f}'
         ret_unit = '[Gb]'
     else:
-        ret_val = '%3.2f' % (byte_size / tb)
+        ret_val = f'{byte_size / tb:3.2f}'
         ret_unit = '[Tb]'
 
     return ret_val, ret_unit
