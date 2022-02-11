@@ -13,8 +13,9 @@
 
    Copyright 2021, HSPyLib team
 """
-from cli.tui.menu.main_menu import MainMenu
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
+
+from cli.tui.menu.main_menu import MainMenu
 
 if __name__ == '__main__':
     mm = MenuUi(MainMenu())

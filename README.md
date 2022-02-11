@@ -1,8 +1,8 @@
-# HomeSetup Python Library - HSPyLib
+class FormIcons:
+pass# HomeSetup Python Library - HSPyLib
 
 ## Your mature python application
 
-[![Tests](check-badge.svg)](check-badge.svg)
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
 [![Release](https://badgen.net/badge/release/v0.11.0/gray)](CHANGELOG.md#unreleased)
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
@@ -34,7 +34,7 @@ HSPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) projec
 A menu select example:
 
 ```python
-from hspylib.modules.cli.tui import mselect
+from hspylib.modules.cli.tui.extra.mselect import mselect
 
 if __name__ == '__main__':
     it = [f"Item-{n}" for n in range(1, 21)]
@@ -60,42 +60,46 @@ if __name__ == '__main__':
 
 A Dashboard example:
 ```python
+from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import MenuDashBoard, mdashboard
+
 if __name__ == '__main__':
-# @formatter:off
-dashboard_items = MenuDashBoard.builder() \
-    .item() \
-        .icon(DashboardIcons.PLUS) \
-        .tooltip('Add something') \
-        .on_trigger(lambda: print('Add')) \
-        .build() \
-    .item() \
-        .icon(DashboardIcons.MINUS) \
-        .tooltip('Remove something') \
-        .on_trigger(lambda: print('Del')) \
-        .build() \
-    .item() \
-        .icon(DashboardIcons.EDIT) \
-        .tooltip('Edit something') \
-        .on_trigger(lambda: print('Edit')) \
-        .build() \
-    .item() \
-        .icon(DashboardIcons.LIST) \
-        .tooltip('List everything') \
-        .on_trigger(lambda: print('List')) \
-        .build() \
-    .item() \
-        .icon(DashboardIcons.DATABASE) \
-        .tooltip('Database console') \
-        .on_trigger(lambda: print('Database')) \
-        .build() \
-    .item() \
-        .icon(DashboardIcons.EXIT) \
-        .tooltip('Exit application') \
-        .on_trigger(lambda: print('Exit')) \
-        .build() \
-    .build()
-# @formatter:on
-result = mdashboard(dashboard_items, 4)
+  # @formatter:off
+  dashboard_items = MenuDashBoard.builder() \
+      .item() \
+          .icon(FormIcons.PLUS) \
+          .tooltip('Add something') \
+          .on_trigger(lambda: print('Add')) \
+          .build() \
+      .item() \
+          .icon(FormIcons.MINUS) \
+          .tooltip('Remove something') \
+          .on_trigger(lambda: print('Del')) \
+          .build() \
+      .item() \
+          .icon(FormIcons.EDIT) \
+          .tooltip('Edit something') \
+          .on_trigger(lambda: print('Edit')) \
+          .build() \
+      .item() \
+          .icon(DashboardIcons.LIST) \
+          .tooltip('List everything') \
+          .on_trigger(lambda: print('List')) \
+          .build() \
+      .item() \
+          .icon(DashboardIcons.DATABASE) \
+          .tooltip('Database console') \
+          .on_trigger(lambda: print('Database')) \
+          .build() \
+      .item() \
+          .icon(DashboardIcons.EXIT) \
+          .tooltip('Exit application') \
+          .on_trigger(lambda: print('Exit')) \
+          .build() \
+      .build()
+  # @formatter:on
+  result = mdashboard(dashboard_items, 4)
 ```
 
 ![MenuDashboard](doc/images/mdashboard.png "MenuDashboard")
@@ -103,51 +107,54 @@ result = mdashboard(dashboard_items, 4)
 A form input example
 
 ```python
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
+
 if __name__ == '__main__':
-# @formatter:off
-form_fields = MenuInput.builder() \
-    .field() \
-        .label('letters') \
-        .validator(InputValidator.letters()) \
+    # @formatter:off
+    form_fields = MenuInput.builder() \
+        .field() \
+            .label('letters') \
+            .validator(InputValidator.letters()) \
+            .build() \
+        .field() \
+            .label('word') \
+            .validator(InputValidator.words()) \
+            .build() \
+        .field() \
+            .label('number') \
+            .validator(InputValidator.numbers()) \
+            .min_max_length(1, 2) \
+            .build() \
+        .field() \
+            .label('masked') \
+            .itype('masked') \
+            .value('|##::##::## @@') \
+            .build() \
+        .field() \
+            .label('selectable') \
+            .itype('select') \
+            .value('one|two|three') \
+            .build() \
+        .field() \
+            .label('checkbox') \
+            .itype('checkbox') \
         .build() \
-    .field() \
-        .label('word') \
-        .validator(InputValidator.words()) \
-        .build() \
-    .field() \
-        .label('number') \
-        .validator(InputValidator.numbers()) \
-        .min_max_length(1, 2) \
-        .build() \
-    .field() \
-        .label('masked') \
-        .itype('masked') \
-        .value('|##::##::## @@') \
-        .build() \
-    .field() \
-        .label('selectable') \
-        .itype('select') \
-        .value('one|two|three') \
-        .build() \
-    .field() \
-        .label('checkbox') \
-        .itype('checkbox') \
-    .build() \
-    .field() \
-        .label('password') \
-        .itype('password') \
-        .validator(InputValidator.anything()) \
-        .min_max_length(4, 8) \
-        .build() \
-    .field() \
-        .label('read-only') \
-        .access_type('read-only') \
-        .value('READ-ONLY') \
-        .build() \
-    .build()
-# @formatter:on
-result = minput(form_fields)
-print(result.__dict__)
+        .field() \
+            .label('password') \
+            .itype('password') \
+            .validator(InputValidator.anything()) \
+            .min_max_length(4, 8) \
+            .build() \
+        .field() \
+            .label('read-only') \
+            .access_type('read-only') \
+            .value('READ-ONLY') \
+            .build() \
+        .build()
+    # @formatter:on
+    result = minput(form_fields)
+    print(result.__dict__)
 ```
 
 ![MenuInput](doc/images/minput.png "MenuInput")
