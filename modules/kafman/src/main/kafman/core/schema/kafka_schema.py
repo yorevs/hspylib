@@ -79,7 +79,7 @@ class KafkaSchema(ABC):
         try:
             if filepath:
                 check_state(file_is_not_empty(filepath), f"Schema file not found: {filepath}")
-                with open(filepath, 'r') as f_schema:
+                with open(filepath, 'r', encoding='utf-8') as f_schema:
                     self._schema_str = f_schema.read()
                     self._content = defaultdict(None, json.loads(self._schema_str))
                     check_not_none(self._content)

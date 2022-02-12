@@ -2,10 +2,10 @@
 #
 # HSPyLib-Kafman v0.9.0
 #
-# Package: test.kafman
+# Package: test
 """Package initialization."""
 
 __all__ = [
-  'test_main'
+  'kafman'
 ]
 __version__ = '0.9.0'

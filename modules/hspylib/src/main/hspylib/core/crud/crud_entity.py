@@ -26,9 +26,7 @@ class CrudEntity(ABC):
         self.uuid = entity_id
 
     def __str__(self):
-        return "{}:{}".format(
-            self.__class__.__name__,
-            str(self.to_dict()))
+        return f"{self.__class__.__name__}:{str(self.to_dict())}"
 
     def __eq__(self, other):
         return isinstance(other, CrudEntity) \
@@ -70,7 +68,7 @@ class CrudEntity(ABC):
         fields = {}
         for key, value in self.__dict__.items():
             if not key.startswith('_'):
-                fields[key.replace("'", "").upper()] = "{}".format(str(value))
+                fields[key.replace("'", "").upper()] = f"{str(value)}"
         return fields
 
     def to_values(self) -> Tuple[str]:

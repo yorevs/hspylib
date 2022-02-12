@@ -27,14 +27,14 @@ from hspylib.core.tools.preconditions import check_argument, check_state
 class SqlFactory(metaclass=Singleton):
     """TODO"""
 
-    _DEFAULT_SQL_STUBS = '{}/sql/sql_stubs.sql'.format(os.path.dirname(__file__))
+    _DEFAULT_SQL_STUBS = f'{os.path.dirname(__file__)}/sql/sql_stubs.sql'
 
     @staticmethod
     def _read_stubs(sql_filename: str) -> dict:
         """TODO"""
         sql_stubs = {}
         check_argument(os.path.exists(sql_filename), "Sql file was not found: {}", sql_filename)
-        with open(sql_filename) as f_stubs:
+        with open(sql_filename, encoding='utf-8') as f_stubs:
             lines = f_stubs.readlines()
             check_state(len(lines) > 0, "SQL Stub file is empty")
             lines = list(map(str.strip, lines))
@@ -53,7 +53,7 @@ class SqlFactory(metaclass=Singleton):
         filter_string = ''
         if filters:
             for key, value in filters.items():
-                filter_string += "{} {} = '{}'".format(join_operator, key, value)
+                filter_string += f"{join_operator} {key} = '{value}'"
         return filter_string
 
     @staticmethod
@@ -62,7 +62,7 @@ class SqlFactory(metaclass=Singleton):
         fields = entity.to_column_set()
         field_set = ''
         for key, value in fields.items():
-            field_set += "{}{} = '{}'".format(', ' if field_set else '', key, value)
+            field_set += f"{', ' if field_set else ''}{key} = '{value}'"
         return field_set
 
     def __init__(self):

@@ -16,9 +16,9 @@
 from typing import Any, Optional, List, Union, Tuple
 
 import requests
-from hspylib.core.enums.http_code import HttpCode
 from requests import exceptions as ex
 
+from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
@@ -41,7 +41,7 @@ def fetch(
     :return:
     """
 
-    url = url if url and url.startswith("http") else 'http://{}'.format(url)
+    url = url if url and url.startswith("http") else f'http://{url}'
     if not silent:
         sysout(f"Fetching: "
                f"method={method} table_headers={headers if headers else '[]'} "

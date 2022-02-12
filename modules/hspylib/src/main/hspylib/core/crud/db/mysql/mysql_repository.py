@@ -96,7 +96,7 @@ class MySqlRepository(DBRepository):
         """TODO"""
         if self.is_connected():
             stm = self._sql_factory \
-                .update(entity, filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
+                 .update(entity, filters=SqlFilter({"UUID": f'{entity.uuid}'})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
@@ -107,7 +107,7 @@ class MySqlRepository(DBRepository):
         """TODO"""
         if self.is_connected():
             stm = self._sql_factory \
-                .delete(filters=SqlFilter({"UUID": '{}'.format(entity.uuid)})) \
+                .delete(filters=SqlFilter({"UUID": f'{entity.uuid}'})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
@@ -140,7 +140,7 @@ class MySqlRepository(DBRepository):
         if self.is_connected():
             if entity_id:
                 stm = self._sql_factory \
-                    .select(column_set=column_set, filters=SqlFilter({"UUID": '{}'.format(entity_id)})) \
+                    .select(column_set=column_set, filters=SqlFilter({"UUID": f'{entity_id}'})) \
                     .replace(':tableName', self.table_name())
                 log.debug('Executing SQL statement: %s', stm)
                 self.execute(stm, True)

@@ -77,10 +77,10 @@ class HTableView(QTableView):
         """Display the custom context menu"""
         if self._context_menu_enable:
             ctx_menu = QMenu(self)
-            ctx_menu.addAction(u'Copy', self.copy)
+            ctx_menu.addAction('Copy', self.copy)
             if self._clearable:
                 ctx_menu.addSeparator()
-                ctx_menu.addAction(u'Clear', self.clear)
+                ctx_menu.addAction('Clear', self.clear)
             ctx_menu.exec_(QCursor.pos())
 
     def set_context_menu_enable(self, enabled: bool = True):

@@ -43,8 +43,7 @@ class Argument:
         self.value = ''
 
     def __str__(self):
-        return "arg_name: {}, val_regex: {}, required: {}, value: {}, next_in_chain => [{}]" \
-            .format(self.name, self.validation_regex, self.required, self.value, self.next_in_chain)
+        return f"arg_name: {self.name}, val_regex: {self.validation_regex}, required: {self.required}, value: {self.value}, next_in_chain => [{self.next_in_chain}]"
 
     def __repr__(self):
         return str(self)

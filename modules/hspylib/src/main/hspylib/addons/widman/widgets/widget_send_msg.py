@@ -42,7 +42,7 @@ class WidgetSendMsg(Widget):
     NET_TYPE_TCP = 'TCP'
 
     # Help message to be displayed by the application.
-    USAGE = """Usage: SendMsg [options]
+    USAGE = f"""Usage: SendMsg [options]
 
   Options:
     -n, --net_type   <network_type>     : The network type to be used. Either UDP or TCP ( default is TCP ).
@@ -51,12 +51,12 @@ class WidgetSendMsg(Widget):
     -k, --packets    <num_packets>      : The number of max datagrams to be send. If zero is specified, then the app
                                           is going to send indefinitely ( default is 100 ).
     -i, --interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
-    -t, --threads    <threads_num>      : Number of threads [1-{}] to be opened to send simultaneously ( default is 1 ).
+    -t, --threads    <threads_num>      : Number of threads [1-{MAX_THREADS}] to be opened to send simultaneously ( default is 1 ).
     -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the file
                                           contents sent instead.
 
     E.g:. send-msg.py -m "Hello" -p 12345 -a 0.0.0.0 -k 100 -i 500 -t 2
-""".format(MAX_THREADS)
+"""
 
     def __init__(self):
         super().__init__(
@@ -104,7 +104,7 @@ class WidgetSendMsg(Widget):
         if self.args.message and os.path.isfile(self.args.message):
             file_size = os.stat(self.args.message).st_size
             sysout(f"Reading contents from file: {self.args.message} ({file_size}) [Bs] instead")
-            with open(self.args.message, 'r') as f_msg:
+            with open(self.args.message, 'r', encoding='utf-8') as f_msg:
                 self.message = f_msg.read()
         else:
             self.message = self.args.message or f"This is a {self.args.net_type} test"

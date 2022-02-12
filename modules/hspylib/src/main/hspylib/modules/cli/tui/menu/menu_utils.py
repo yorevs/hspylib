@@ -66,11 +66,7 @@ class MenuUtils(ABC):
         while not valid:
             try:
                 colorized = VtColors.colorize(
-                    '{}{}{}{}{}'.format(
-                        color.placeholder(),
-                        prompt_msg,
-                        '[{}]'.format(default_value) if default_value else '',
-                        end, VtColors.NC.placeholder())
+                    f"{color.placeholder()}{prompt_msg}{f'[{default_value}]' if default_value else ''}{end}{VtColors.NC.placeholder()}"
                 )
                 input_data = input(colorized)
                 if not validator:
@@ -82,7 +78,7 @@ class MenuUtils(ABC):
                 elif Validator.is_not_blank(input_data):
                     valid, msg = validator(input_data)
                     if not valid:
-                        MenuUtils.print_error("{}: ".format(msg), input_data)
+                        MenuUtils.print_error(f"{msg}: ", input_data)
                 else:
                     if not on_blank_abort:
                         MenuUtils.print_error("Input can't be empty: ", input_data)

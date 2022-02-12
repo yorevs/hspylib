@@ -117,12 +117,12 @@ class TableRenderer:
         cols = [self.header_alignment(self._header_text(idx), self.column_sizes[idx]) for idx in self.indexes]
         return ['| ' + ' | '.join(cols) + ' |']
 
+    # pylint: disable=consider-using-f-string
     def _join_data_columns(self) -> list:
         """TODO"""
         return [
             '| ' + ''.join(
-                '%s | ' % self.cell_alignment(self._cell_text(row, idx), self.column_sizes[idx]) for idx
-                in self.indexes
+                '%s | ' % self.cell_alignment(self._cell_text(row, idx), self.column_sizes[idx]) for idx in self.indexes
             ) for row in self.rows
         ]
 

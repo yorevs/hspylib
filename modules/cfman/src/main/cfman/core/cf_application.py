@@ -53,6 +53,7 @@ class CFApplication:
     def __repr__(self):
         return str(self)
 
+    # pylint: disable=consider-using-f-string
     def print_status(self):
         """TODO"""
         sysout("%CYAN%{}  %{}%{:5}  %WHITE%{:5}  {:4}  {:4}  {}".format(

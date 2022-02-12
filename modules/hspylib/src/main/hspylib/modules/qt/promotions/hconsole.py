@@ -70,7 +70,7 @@ class HConsole(QTextBrowser):
             ctx_menu = self.createStandardContextMenu()
             if self._clearable:
                 ctx_menu.addSeparator()
-                ctx_menu.addAction(u'Clear', self.clear)
+                ctx_menu.addAction('Clear', self.clear)
             ctx_menu.exec_(QCursor.pos())
 
     def set_context_menu_enable(self, enabled: bool = True):

@@ -272,11 +272,12 @@ def file_is_not_empty(filename: str) -> bool:
     return os.path.exists(filename) and os.stat(filename).st_size > 0
 
 
-def touch_file(filename: str) -> None:
+def touch_file(filename: str, encoding: str = 'utf-8') -> None:
     """TODO
     :param filename:
+    :param encoding:
     """
-    with open(filename, 'a'):
+    with open(filename, 'a', encoding=encoding):
         os.utime(filename, None)
 
 

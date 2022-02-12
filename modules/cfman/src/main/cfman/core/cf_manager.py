@@ -112,7 +112,7 @@ class CFManager:
     def _select_endpoint(self) -> None:
         """Select the PCF endpoint to connect to"""
         filename = f'{self.configs.resource_dir()}/api_endpoints.txt'
-        with open(filename, 'w+') as f_hosts:
+        with open(filename, 'w+', encoding='utf-8') as f_hosts:
             endpoints = list(map(lambda x: CFEndpoint(x.split(',')), f_hosts.readlines()))
             if len(endpoints) > 0:
                 selected = mselect(endpoints, title='Please select an endpoint')
@@ -234,6 +234,7 @@ class CFManager:
         """Display select apps status"""
         apps = self._get_apps(refresh=True)
         if len(apps) > 0:
+            # pylint: disable=consider-using-f-string
             sysout("{}  {}  {}  {}  {}  {}".format(
                 'Name'.ljust(CFApplication.max_name_length),
                 'State'.ljust(7), 'Inst'.ljust(5), 'Mem'.ljust(4),

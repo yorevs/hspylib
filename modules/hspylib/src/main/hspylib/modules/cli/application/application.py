@@ -112,7 +112,7 @@ class Application(metaclass=Singleton):
         :param no_exit: Do no exit the application on usage call
         :param exit_code: The exit code
         """
-        sysout('{} v{}'.format(self._app_name, '.'.join(map(str, self._app_version))))
+        sysout("{self._app_name} v{'.'.join(map(str, self._app_version))}")
         if not no_exit:
             self.exit_handler(exit_code)
 

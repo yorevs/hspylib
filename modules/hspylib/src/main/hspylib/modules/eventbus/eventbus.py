@@ -24,7 +24,7 @@ class EventBus:
 
     _buses = {}
     _subscribers = {}
-    _events: List[Event] = list()
+    _events: List[Event] = []
 
     @classmethod
     def get(cls, bus_name: str) -> Any:
@@ -38,7 +38,7 @@ class EventBus:
     @classmethod
     def _get_subscriber(cls, bus_name: str, event_name: str) -> Any:
         """TODO"""
-        cache_key = '{}.{}'.format(bus_name, event_name)
+        cache_key = f'{bus_name}.{event_name}'
         if cache_key in cls._subscribers:
             return cls._subscribers[cache_key]
         subscriber = {'callbacks': []}

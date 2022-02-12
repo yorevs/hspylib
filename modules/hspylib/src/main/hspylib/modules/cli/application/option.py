@@ -33,8 +33,7 @@ class Option:
         self.cb_handler = cb_handler
 
     def __str__(self) -> str:
-        return ("name: {}, shortopt: {}, longopt: {}, has_argument: {}, cb_handler: {}".format(
-            self.name, self.shortopt, self.longopt, self.has_argument, self.cb_handler))
+        return f"name: {self.name}, shortopt: {self.shortopt}, longopt: {self.longopt}, has_argument: {self.has_argument}, cb_handler: {self.cb_handler}"
 
     def __repr__(self):
         return f"[{self.shortopt.replace('-', '').replace(':', '')}, {self.longopt.replace('--', '').replace('=', '')}]"

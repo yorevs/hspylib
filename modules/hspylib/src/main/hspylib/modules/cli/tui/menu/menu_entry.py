@@ -31,11 +31,7 @@ class MenuEntry(MenuItem):
         super().__init__(parent, title)
         title_len = round(len(title) / 2) + 2
         self.menu_data = MENU_TPL.format(
-            '{}{}\n  {}\n{}'.format(
-                color.placeholder(),
-                '-=' * title_len,
-                self.title,
-                '-=' * title_len),
+            f"{color.placeholder()}{'-=' * title_len}\n  {self.title}\n{'-=' * title_len}",
             '\n'.join([str(value) for key, value in items.items()])
         )
         self.options = range(0, len(items))
