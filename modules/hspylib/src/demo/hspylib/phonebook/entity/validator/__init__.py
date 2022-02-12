@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Core v0.11.9
+# HSPyLib-Core v0.11.11
 #
 # Package: demo.hspylib.phonebook.entity.validator
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
   'contact_validator', 
   'person_validator'
 ]
-__version__ = '0.11.9'
+__version__ = '0.11.11'
