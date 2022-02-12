@@ -95,7 +95,7 @@ class JsonSearch:
 
         return sub_selected_element
 
-    # pylint: disable=too-many-branches,too-many-locals
+    # pylint: disable=too-many-branches,too-many-locals,consider-using-f-string
     def select(
         self,
         root_element,
@@ -153,7 +153,7 @@ class JsonSearch:
                             selected_element = selected_element[int(elem_array_index)]
 
                 elif nextElement.find('[') >= 0:  # Next element is indexed
-                    pat_sel_elem_idx = '(%s)\\[(%s)\\]' % (self.pat_elem, self.jsonArrayIndexRe)
+                    pat_sel_elem_idx = f'({self.pat_elem})\\[({self.jsonArrayIndexRe})\\]'
                     parts = re.search(pat_sel_elem_idx, nextElement)
                     sub_elem_id = parts.group(1)
                     elem_array_index = parts.group(2)

@@ -139,7 +139,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         """Create a file from the destination path with the specified contents"""
         file_path = f"{self._app_dir}/{filename}"
         sysout(f'  |- {file_path}')
-        with open(f'{file_path}', 'w') as fh:
+        with open(f'{file_path}', 'w', encoding='utf-8') as fh:
             fh.write(contents)
 
     def _init_gradle(self, app_name: str) -> None:
@@ -147,7 +147,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         sysout('Initializing gradle project')
         result = Terminal.shell_exec(
             f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self._app_dir)
-        sysout('Gradle execution result: {}'.format(result))
+        sysout(f'Gradle execution result: {result}')
         sysout('Downloading gradle extensions')
         self._download_ext('badges.gradle')
         self._download_ext('build-info.gradle')
@@ -163,7 +163,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
         result = Terminal.shell_exec(
             './gradlew build', cwd=self._app_dir)
-        sysout('Gradle execution result: {}'.format(result))
+        sysout(f'Gradle execution result: {result}')
 
     def _download_ext(self, extension: str) -> None:
         """Download a gradle extension from the HSPyLib repository"""
@@ -178,10 +178,10 @@ project.ext.set("siteUrl", "YourSiteUrl")
         sysout('Initializing git repository')
         result = Terminal.shell_exec(
             'git init', cwd=self._app_dir)
-        sysout('Git init result: {}'.format(result))
+        sysout(f'Git init result: {result}')
         sysout('Creating first commit')
         Terminal.shell_exec(
             'git add .', cwd=self._app_dir)
         result = Terminal.shell_exec(
             'git commit -m "First commit [@HSPyLib]"', cwd=self._app_dir)
-        sysout('Git commit result: {}'.format(result))
+        sysout(f'Git commit result: {result}')

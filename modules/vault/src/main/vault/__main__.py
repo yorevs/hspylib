@@ -94,7 +94,7 @@ class Main(Application):
                 elif op == 'list':
                     self.vault.list(self.getarg('filter'))
                 else:
-                    syserr('### Invalid operation: {}'.format(op))
+                    syserr(f'### Invalid operation: {op}')
                     self.usage(1)
         finally:
             self.vault.close()

@@ -36,7 +36,7 @@ class FileProcessor(ABC):
         """Upload files to URL"""
         file_data = []
         for f_path in file_paths:
-            check_state(os.path.exists(f_path), 'Input file "{}" does not exist'.format(f_path))
+            check_state(os.path.exists(f_path), f'Input file "{f_path}" does not exist')
             file = FileProcessor._read_and_encode(f_path)
             file_data.append(file)
         payload = FileProcessor._to_json(file_data)
@@ -44,9 +44,9 @@ class FileProcessor(ABC):
         check_not_none(response)
         if response.status_code != HttpCode.OK:
             raise HTTPError(
-                '{} - Unable to upload into={} with json_string={}'.format(response.status_code, url, payload))
-        sysout('%GREEN%File(s) [\n\t{}\n] successfully uploaded to {}%NC%'
-               .format(', \n\t'.join(file_paths), url))
+                '{response.status_code} - Unable to upload into={url} with json_string={payload}')
+        paths = ', \n\t'.join(file_paths)
+        sysout(f"%GREEN%File(s) [\n\t{paths}\n] successfully uploaded to {url}%NC%")
 
         return len(file_data)
 
@@ -61,7 +61,7 @@ class FileProcessor(ABC):
         check_not_none(response.body)
         if response.status_code != HttpCode.OK:
             raise HTTPError(
-                '{} - Unable to download from={} with response={}'.format(response.status_code, url, response))
+                f'{response.status_code} - Unable to download from={url} with response={response}')
         file_data = FileProcessor._from_json(response.body)
         FileProcessor._decode_and_write(destination_dir, file_data)
 
@@ -77,11 +77,11 @@ class FileProcessor(ABC):
         """B64 decode and write entries to file"""
         for entry in file_entries:
             FileEntry.of(
-                '{}/{}'.format(destination_dir, os.path.basename(entry['path'])),
+                f"{destination_dir}/{os.path.basename(entry['path'])}",
                 entry['data'],
                 entry['size']).save()
-        sysout('%GREEN%File(s) [\n\t{}\n] successfully downloaded into {}%NC%'
-               .format(', \n\t'.join(list(map(lambda e: e['path'], file_entries))), destination_dir))
+        files = ', \n\t'.join(list(map(lambda e: e['path'], file_entries)))
+        sysout(f'%GREEN%File(s) [\n\t{files}\n] successfully downloaded into {destination_dir}%NC%')
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:

@@ -21,11 +21,10 @@ import uuid
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
+from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from requests.structures import CaseInsensitiveDict
-
-from hspylib.core.enums.charset import Charset
 
 
 class AgentConfig(metaclass=Singleton):
@@ -87,11 +86,9 @@ class AgentConfig(metaclass=Singleton):
     def passphrase(self) -> str:
         """Return the firebase user passphrase"""
         passphrase = self.configs['firebase.passphrase']
+        passwd = getpass.getpass('Please type a password to encrypt your data: ')
         return passphrase if passphrase else base64.b32encode(
-            '{}:{}'.format(
-                self.username(),
-                getpass.getpass('Please type a password to encrypt your data: ')
-            ).encode(str(Charset.UTF_8))
+            f'{self.username()}:{passwd}'.encode(str(Charset.UTF_8))
         )
 
     def uuid(self) -> str:
@@ -108,6 +105,6 @@ class AgentConfig(metaclass=Singleton):
 
     def save(self) -> None:
         """Save current firebase configuration"""
-        with open(self.config_file(), 'w') as f_config:
+        with open(self.config_file(), 'w', encoding='utf-8') as f_config:
             f_config.write(str(self))
             log.debug("Firebase configuration saved !")

@@ -38,8 +38,7 @@ class CrudService(Generic[E, R]):
     def remove(self, entity: E) -> None:
         """TODO"""
         if not self.get(entity.uuid):
-            raise EntityNotFoundError(
-                "{} was not found: {}".format(entity.__class__, entity))
+            raise EntityNotFoundError("{entity.__class__} was not found: {entity}")
         self.repository.delete(entity)
 
     def list(self, filters: str = None) -> List[E]:

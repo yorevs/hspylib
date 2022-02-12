@@ -33,7 +33,7 @@ class DBRepository(CrudRepository):
         self.database = AppConfigs.INSTANCE['datasource.database']
 
     def __str__(self):
-        return "{}@{}:{}/{}".format(self.user, self.hostname, self.port, self.database)
+        return f"{self.user}@{self.hostname}:{self.port}/{self.database}"
 
     @abstractmethod
     def connect(self):

@@ -78,10 +78,10 @@ class VtCodes(Enumeration):
                 args = nextResult[1][1:-1] if nextResult[1] else ''
                 if args:
                     input_string = input_string.replace(
-                        '%{}%'.format(mnemonic + nextResult[1]), VtCodes.value_of(mnemonic)(args))
+                        f'%{mnemonic + nextResult[1]}%', VtCodes.value_of(mnemonic)(args))
                 else:
                     input_string = input_string.replace(
-                        '%{}%'.format(mnemonic), VtCodes.value_of(mnemonic).value)
+                        f'%{mnemonic}%', VtCodes.value_of(mnemonic).value)
 
         return input_string
 

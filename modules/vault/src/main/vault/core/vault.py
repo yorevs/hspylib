@@ -88,12 +88,12 @@ class Vault:
         if len(data) > 0:
             sysout("%YELLOW%{} {}%NC%".format(
                 "\n=== Listing all vault entries",
-                "matching \'{}\' ===\n".format(filter_expr) if filter_expr else "===\n"))
+                f"matching \'{filter_expr}\' ===\n" if filter_expr else "===\n"))
             for entry in data:
                 sysout(entry.to_string())
         else:
             if filter_expr:
-                sysout("%YELLOW%\nxXx No results to display containing '{}' xXx\n%NC%".format(filter_expr))
+                sysout(f"%YELLOW%\nxXx No results to display containing '{filter_expr}' xXx\n%NC%")
             else:
                 sysout("%YELLOW%\nxXx Vault is empty xXx\n%NC%")
         log.debug("Vault list issued. User=%s", getpass.getuser())
@@ -107,13 +107,13 @@ class Vault:
         entry = self.service.get_by_key(key)
         if not entry:
             while not password:
-                password = getpass.getpass("Type the password for '{}': ".format(key)).strip()
+                password = getpass.getpass(f"Type the password for '{key}': ").strip()
             entry = VaultEntry(uuid.uuid4(), key, key, password, hint)
             self.service.save(entry)
-            sysout("%GREEN%\n=== Entry added ===\n\n%NC%{}".format(entry.to_string()))
+            sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
         else:
             log.error("Attempt to add to Vault failed for name=%s", key)
-            syserr("### Entry specified by '{}' already exists in vault".format(key))
+            syserr(f"### Entry specified by '{key}' already exists in vault")
         log.debug("Vault add issued. User=%s", getpass.getuser())
 
     def get(self, key) -> None:
@@ -122,10 +122,10 @@ class Vault:
         """
         entry = self.service.get_by_key(key)
         if entry:
-            sysout("\n{}".format(entry.to_string(True, True)))
+            sysout(f"\n{entry.to_string(True, True)}")
         else:
             log.error("Attempt to get from Vault failed for name=%s", key)
-            syserr("### No entry specified by '{}' was found in vault".format(key))
+            syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault get issued. User=%s", getpass.getuser())
 
     def update(self, key, hint, password) -> None:
@@ -137,15 +137,15 @@ class Vault:
         entry = self.service.get_by_key(key)
         if entry:
             if not password:
-                passphrase = getpass.getpass("Type a password for '{}': ".format(key)).strip()
+                passphrase = getpass.getpass(f"Type a password for '{key}': ").strip()
             else:
                 passphrase = password
             upd_entry = VaultEntry(entry.uuid, key, key, passphrase, hint)
             self.service.save(upd_entry)
-            sysout("%GREEN%\n=== Entry updated ===\n\n%NC%{}".format(entry.to_string()))
+            sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
         else:
             log.error("Attempt to update Vault failed for name=%s", key)
-            syserr("### No entry specified by '{}' was found in vault".format(key))
+            syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault update issued. User=%s", getpass.getuser())
 
     def remove(self, key: str) -> None:
@@ -155,10 +155,10 @@ class Vault:
         entry = self.service.get_by_key(key)
         if entry:
             self.service.remove(entry)
-            sysout("%GREEN%\n=== Entry removed ===\n\n%NC%{}".format(entry.to_string()))
+            sysout(f"%GREEN%\n=== Entry removed ===\n\n%NC%{entry.to_string()}")
         else:
             log.error("Attempt to remove to Vault failed for name=%s", key)
-            syserr("### No entry specified by '{}' was found in vault".format(key))
+            syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault remove issued. User=%s", getpass.getuser())
 
     def _read_passphrase(self) -> str:
@@ -166,13 +166,13 @@ class Vault:
         if file_is_not_empty(self.configs.vault_file()):
             confirm_flag = False
         else:
-            sysout("%ORANGE%### Your Vault '{}' file is empty.".format(self.configs.vault_file()))
+            sysout(f"%ORANGE%### Your Vault '{self.configs.vault_file()}' file is empty.")
             sysout("%ORANGE%>>> Enter the new passphrase for this Vault")
             confirm_flag = True
             touch_file(self.configs.vault_file())
         passphrase = self.configs.passphrase()
         if passphrase:
-            return "{}:{}".format(self.configs.vault_user(), base64.b64decode(passphrase).decode("utf-8"))
+            return f"{self.configs.vault_user()}:{base64.b64decode(passphrase).decode('utf-8')}"
 
         while not passphrase:
             passphrase = getpass.getpass("Enter passphrase:").strip()
@@ -188,7 +188,7 @@ class Vault:
                     log.debug("Vault passphrase created for user=%s", self.configs.vault_user())
                     touch_file(self.configs.vault_file())
                     self.is_open = True
-        return "{}:{}".format(self.configs.vault_user(), passphrase)
+        return f"{self.configs.vault_user()}:{passphrase}"
 
     def _lock_vault(self) -> None:
         """Encrypt the vault file"""

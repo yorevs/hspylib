@@ -51,52 +51,52 @@ class FirebaseRepository(CrudRepository):
     def insert(self, entity: CrudEntity) -> None:
         """TODO"""
         entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
-        url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
+        url = f'{self.config.base_url()}/{entity.uuid}.json'
         payload = entity.to_json()
         log.debug("Inserting firebase entry: %s into: %s", entity, url)
         response = put(url, payload)
         check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
+            raise HTTPError(f'{response.status_code} - Unable to put into={url} with json_string={payload}')
 
     def update(self, entity: CrudEntity) -> None:
         """TODO"""
-        url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
+        url = f'{self.config.base_url()}/{entity.uuid}.json'
         payload = entity.to_json()
         log.debug('Updating firebase entry: %s into: %s', entity, url)
         response = put(url, payload)
         check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to put into={} with json_string={}'.format(response.status_code, url, payload))
+            raise HTTPError(f'{response.status_code} - Unable to put into={url} with json_string={payload}')
 
     def delete(self, entity: CrudEntity) -> None:
         """TODO"""
-        url = '{}/{}.json'.format(self.config.base_url(), entity.uuid)
+        url = f'{self.config.base_url()}/{entity.uuid}.json'
         log.debug('Deleting firebase entry: %s into: %s', entity, url)
         response = delete(url)
         check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to delete from={}'.format(response.status_code, url))
+            raise HTTPError(f'{response.status_code} - Unable to delete from={url}')
 
     def find_all(self, filters: CaseInsensitiveDict = None) -> Optional[list]:
         """TODO"""
-        url = '{}.json?orderBy="$key"'.format(self.config.base_url())
+        url = f'{self.config.base_url()}.json?orderBy="$key"'
         log.debug('Fetching firebase entries from %s', url)
         response = get(url)
         check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to get from={}'.format(response.status_code, url))
+            raise HTTPError(f'{response.status_code} - Unable to get from={url}')
 
         return self.to_list(response.body, filters) if response.body else []
 
     def find_by_id(self, entity_id: str) -> Optional[CrudEntity]:
         """TODO"""
-        url = '{}.json?orderBy="$key"&equalTo="{}"'.format(self.config.base_url(), entity_id)
+        url = f'{self.config.base_url()}.json?orderBy="$key"&equalTo="{entity_id}"'
         log.debug('Fetching firebase entry entity_id=%s from %s', entity_id, url)
         response = get(url)
         check_not_none(response, "Response is none")
         if response.status_code != HttpCode.OK:
-            raise HTTPError('{} - Unable to get from={}'.format(response.status_code, url))
+            raise HTTPError(f'{response.status_code} - Unable to get from={url}')
         result = self.to_list(response.body) if response.body else []
         check_state(len(result) <= 1, "Multiple results found with entity_id={}", entity_id)
 

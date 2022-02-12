@@ -11,7 +11,7 @@
 
    Copyright 2021, HSPyLib team
 """
-import os.path as path
+from os import path
 from typing import List
 
 from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDeserializer

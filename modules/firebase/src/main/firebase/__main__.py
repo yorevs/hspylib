@@ -94,7 +94,7 @@ class Main(Application):
                 self.getopt('dest-dir')
             )
         else:
-            syserr('### Unhandled operation: {}'.format(op))
+            syserr(f'### Unhandled operation: {op}')
             self.usage(1)
 
 

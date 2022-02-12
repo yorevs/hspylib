@@ -53,11 +53,11 @@ UUID={}
         )
 
     @staticmethod
-    def of_file(filename: str) -> 'FirebaseConfig':
+    def of_file(filename: str, encoding: str = 'utf-8') -> 'FirebaseConfig':
         """TODO"""
         check_argument(os.path.exists(filename), "Config file does not exist")
 
-        with open(filename) as f_config:
+        with open(filename, encoding=encoding) as f_config:
             cfg = CaseInsensitiveDict()
             for line in f_config:
                 line = line.strip()
@@ -112,7 +112,7 @@ UUID={}
 
     def validate_config(self) -> bool:
         """TODO"""
-        response = get('{}.json'.format(self.base_url()))
+        response = get(f'{self.base_url()}.json')
         is_valid = response is not None and response.status_code == HttpCode.OK
         if is_valid:
             self.current_state = response.body if response.body and response.body != 'null' else None
@@ -120,9 +120,8 @@ UUID={}
 
     def base_url(self) -> str:
         """TODO"""
-        return 'https://{}.firebaseio.com/{}/{}' \
-            .format(self.project_id, self.database, self.project_uuid)
+        return f'https://{self.project_id}.firebaseio.com/{self.database}/{self.project_uuid}'
 
     def url(self, db_alias: str) -> str:
         """TODO"""
-        return '{}/{}.json'.format(self.base_url(), db_alias)
+        return f'{self.base_url()}/{db_alias}.json'

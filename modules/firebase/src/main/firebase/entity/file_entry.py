@@ -41,7 +41,7 @@ class FileEntry:
         self.data = None
         if os.path.exists(file_path):
             self.size = os.path.getsize(file_path)
-            with open(file_path, 'r') as f_in:
+            with open(file_path, 'r', encoding='utf-8') as f_in:
                 self.data = f_in.read()
                 check_state(len(self.data) > 0, "File \"{}\" is empty", file_path)
 
@@ -60,6 +60,6 @@ class FileEntry:
 
     def save(self) -> 'FileEntry':
         """Write current file data into this file"""
-        with open(self.path, 'w') as f_in:
+        with open(self.path, 'w', encoding='utf-8') as f_in:
             f_in.write(self.data)
         return self

@@ -107,7 +107,7 @@ class Properties:
             self._parse()
         else:
             raise FileNotFoundError(
-                'File "{}" does not exist'.format(self.filepath))
+                f'File "{self.filepath}" does not exist')
 
     def _find_path(self) -> str:
         """Find the proper path for the properties file"""
@@ -121,7 +121,7 @@ class Properties:
 
     def _parse(self) -> None:
         """Parse the properties file according to it's extension"""
-        with open(self.filepath) as fh_props:
+        with open(self.filepath, encoding='utf-8') as fh_props:
             if self.extension in ['.ini', '.cfg']:
                 all_lines = ''.join(fh_props.readlines())
                 cfg = ConfigParser()

@@ -5,7 +5,8 @@
 */
 
 ext {
-  pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test:$sourceRoot/app:$sourceRoot/demo"
+  pythonPath = project.hasProperty('pythonPath') ? pythonPath :
+    "$sourceRoot:$sourceRoot/main:$sourceRoot/test"
   requirementsFile = project.hasProperty('requirementsFile') ? requirementsFile :
     "$rootProject.projectDir/src/main/requirements.txt"
   failScore = project.hasProperty('failScore') ? failScore : 8.0
@@ -41,6 +42,7 @@ project.ext.pylint_disabled_checks =
         'R0801', // duplicate-code
         'W0511', // fixme
         'W1113', // keyword-arg-before-vararg
+        'C0301', // line-too-long
       ]
 
 /***** Install Group */

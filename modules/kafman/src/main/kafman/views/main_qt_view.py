@@ -621,7 +621,7 @@ class MainQtView(QtView):
 
     def _save_history(self):
         """Save current app history."""
-        with open(self.HISTORY_FILE, 'w') as fd_history:
+        with open(self.HISTORY_FILE, 'w', encoding='utf-8') as fd_history:
             prod_topics = [self.ui.cmb_prod_topics.itemText(i) for i in range(self.ui.cmb_prod_topics.count())]
             cons_topics = [self.ui.cmb_cons_topics.itemText(i) for i in range(self.ui.cmb_cons_topics.count())]
             schemas = [
@@ -645,7 +645,7 @@ class MainQtView(QtView):
         """Load a previously saved app history."""
         if os.path.exists(self.HISTORY_FILE) and os.stat(self.HISTORY_FILE).st_size > MAX_HISTORY_SIZE_BYTES:
             self._display_text('History recovered')
-            with open(self.HISTORY_FILE, 'r') as fd_history:
+            with open(self.HISTORY_FILE, 'r', encoding='utf-8') as fd_history:
                 lines = fd_history.readlines()
                 try:
                     for line in lines:

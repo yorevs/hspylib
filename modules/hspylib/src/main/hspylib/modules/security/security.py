@@ -34,8 +34,8 @@ def encode(in_file, out_file, encoding: str = 'utf-8') -> int:
     :param out_file: The resulting encoded file
     :param encoding: The text encoding
     """
-    with open(in_file, 'r') as f_in_file:
-        with open(out_file, 'w') as f_out_file:
+    with open(in_file, 'r', encoding=encoding) as f_in_file:
+        with open(out_file, 'w', encoding=encoding) as f_out_file:
             data = base64.b64encode(str.encode(f_in_file.read()))
             return f_out_file.write(str(data, encoding=encoding))
 
@@ -46,8 +46,8 @@ def decode(in_file, out_file, encoding: str = 'utf-8') -> int:
     :param out_file: The resulting decoded file
     :param encoding: The text encoding
     """
-    with open(in_file, 'r') as f_in_file:
-        with open(out_file, 'w') as f_out_file:
+    with open(in_file, 'r', encoding=encoding) as f_in_file:
+        with open(out_file, 'w', encoding=encoding) as f_out_file:
             data = base64.b64decode(f_in_file.read())
             return f_out_file.write(str(data, encoding=encoding))
 
@@ -81,8 +81,8 @@ def encrypt(
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
     check_argument(os.path.exists(in_file), "Input file \"{}\" does not exist", in_file)
-    with open(in_file) as f_in_file:
-        with open(out_file, 'w') as f_out_file:
+    with open(in_file, encoding=encoding) as f_in_file:
+        with open(out_file, 'w', encoding=encoding) as f_out_file:
             f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
     check_state(os.path.exists(out_file), "Unable to encrypt file \"{}\"", in_file)
 
@@ -116,7 +116,7 @@ def decrypt(
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
     check_argument(os.path.exists(in_file), "Input file \"{}\" does not exist", in_file)
-    with open(in_file) as f_in_file:
-        with open(out_file, 'w') as f_out_file:
+    with open(in_file, encoding=encoding) as f_in_file:
+        with open(out_file, 'w', encoding=encoding) as f_out_file:
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
     check_state(os.path.exists(out_file), "Unable to decrypt file \"{}\"", in_file)

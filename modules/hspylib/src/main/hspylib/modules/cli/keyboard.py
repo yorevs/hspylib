@@ -16,8 +16,7 @@
 import select
 import string
 import sys
-import time
-from typing import Optional, Tuple
+from typing import Optional
 
 import getkey
 
