@@ -63,7 +63,7 @@ __all__ = %modules%
 /***** Build Group */
 
 /* Cleanup distribution files */
-task cleanDist(type: Delete) {
+task cleanDist(type: Task) {
   group = 'Build'
   description = "Cleanup distribution files from $sourceRoot"
   doLast {
@@ -75,7 +75,7 @@ task cleanDist(type: Delete) {
 }
 
 /* Clean all compiled (*.py,*.qrc) and cached (__pycache__$) python files from "$sourceRoot" */
-task cleanPython(type: Delete) {
+task cleanPython(type: Task) {
   group = 'Build'
   description = 'Clean all compiled (*.py,*.qrc) files and cached (__pycache__/) directories from sourceRoot'
   doLast {
@@ -278,7 +278,7 @@ task pylint(type: Task) {
 
 /***** Task Wrappers */
 
-tasks.register('clean', Delete) {
+tasks.register('clean', Task) {
   group = 'Build'
   dependsOn cleanPython
   dependsOn cleanDist
