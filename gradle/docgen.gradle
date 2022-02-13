@@ -56,11 +56,12 @@ String processPythonHeader(File file, String header_template) {
 
 /* Docgen tasks */
 
+/* Synchronize python headers (doc strings) */
 task syncPythonHeaders(type: Task) {
   group = 'Documentation'
   description = 'Synchronize all Python file headers'
   doLast {
-    println "Synchronizing python headers"
+    println "DEVEL: Synchronizing python headers"
     def files = filesByPattern(sourceRoot, /.*(?<!__init__)\.py$/)
     files.each {
       println "Processing file: ${it}"

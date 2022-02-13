@@ -30,7 +30,7 @@ class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The application version
-    VERSION = read_version('src/main/.version')
+    VERSION = read_version(f"{HERE}/.version")
 
     # CloudFoundry manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))

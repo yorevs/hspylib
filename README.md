@@ -1,5 +1,4 @@
-class FormIcons:
-pass# HomeSetup Python Library - HSPyLib
+# HomeSetup Python Library - HSPyLib
 
 ## Your mature python application
 

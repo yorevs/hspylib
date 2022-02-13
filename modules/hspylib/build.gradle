@@ -8,6 +8,13 @@ ext {
   requirementsFile = "$rootDir/modules/hspylib/src/main/requirements.txt"
 }
 
+task copyReadme(type: Copy) {
+  group = 'Documentation'
+  description = "Copy README into main folder"
+  from "$rootDir/README.md"
+  into "$sourceRoot/main"
+}
+
 apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/python.gradle"
 apply from: "$rootDir/gradle/build-info.gradle"
@@ -16,3 +23,5 @@ apply from: "$rootDir/gradle/docker.gradle"
 apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
+
+gatherRequirements.finalizedBy(copyReadme)

@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Core v0.11.11
+# HSPyLib-Core v0.11.12
 #
 # Package: test.hspylib.core.crud
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
   'test_firebase_repository', 
   'test_mysql_repository'
 ]
-__version__ = '0.11.11'
+__version__ = '0.11.12'

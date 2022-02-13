@@ -1,0 +1,5 @@
+include kafman/.version
+recursive-include kafman/resources *
+recursive-include kafman/resources/log *
+recursive-include kafman/resources/forms *
+recursive-include kafman/resources/schemas *

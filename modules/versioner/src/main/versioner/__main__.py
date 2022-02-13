@@ -31,7 +31,7 @@ class Main(Application):
     """Versioner - Provides an engine to manage app versions."""
 
     # The application version
-    VERSION = read_version()
+    VERSION = read_version(f"{HERE}/.version")
 
     # CloudFoundry manager usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
