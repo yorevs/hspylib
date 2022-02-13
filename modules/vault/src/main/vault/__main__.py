@@ -32,7 +32,7 @@ class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
     # The application version
-    VERSION = read_version('src/main/.version')
+    VERSION = read_version(f"{HERE}/.version")
 
     # Vault usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))

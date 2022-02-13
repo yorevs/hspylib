@@ -1,0 +1,5 @@
+include cfman/welcome.txt
+include cfman/usage.txt
+include cfman/.version
+recursive-include cfman/resources *
+recursive-include cfman/resources/log *

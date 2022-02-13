@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Core v0.11.11
+# HSPyLib-Core v0.11.12
 #
 # Package: demo.hspylib.phonebook.repository
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'company_repository', 
   'person_repository'
 ]
-__version__ = '0.11.11'
+__version__ = '0.11.12'

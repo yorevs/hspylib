@@ -32,7 +32,7 @@ class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
     # The application version
-    VERSION = read_version('src/main/.version')
+    VERSION = read_version(f"{HERE}/.version")
 
     # Usage message
     USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))

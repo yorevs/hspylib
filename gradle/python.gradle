@@ -191,12 +191,6 @@ task installModule(type: Task) {
     project.ext.deps.each { dep ->
       depsFile.append dep + '\n'
     }
-    copy {
-        from(rootDir) {
-          include 'README.md'
-        }
-        into "$sourceRoot/main"
-    }
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
     }.each { File module ->

@@ -44,13 +44,13 @@ task dist(type: Task) {
   dependsOn changeVersion
   dependsOn cleanDist
   doLast {
-    fileTree("${sourceRoot}").matching {
+    fileTree("$sourceRoot").matching {
         include "**/setup.py"
       }.each { File module ->
           def moduleDir = dirName(module)
-          println "Generating distribution files -> ${moduleDir}"
+          println "Generating distribution files -> $moduleDir"
           exec {
-            workingDir "${moduleDir}"
+            workingDir "$moduleDir"
             commandLine rootProject.python, "setup.py", 'sdist', 'bdist_wheel'
           }
         }
@@ -63,15 +63,15 @@ task checkDist(type: Task) {
   description = 'Check on the files created in dist'
   dependsOn dist
   doLast {
-    fileTree("${sourceRoot}").matching {
+    fileTree("$sourceRoot").matching {
         include "**/setup.py"
       }.each { File module ->
         def moduleDir = dirName(module)
-        def distDir = "${moduleDir}/dist"
-        println "Checking distribution files -> ${distDir}"
+        def distDir = "$moduleDir/dist"
+        println "Checking distribution files -> $distDir"
         exec {
-          workingDir "${moduleDir}"
-          commandLine rootProject.python, '-m', 'twine', 'check', "${distDir}/*"
+          workingDir "$moduleDir"
+          commandLine rootProject.python, '-m', 'twine', 'check', "$distDir/*"
         }
     }
   }
@@ -86,27 +86,27 @@ task publish(type: Task) {
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword
   doLast {
-    fileTree("${sourceRoot}").matching {
+    fileTree("$sourceRoot").matching {
         include "**/setup.py"
       }.each { File module ->
         def moduleDir = dirName(module)
-        def distDir = "${moduleDir}/dist"
+        def distDir = "$moduleDir/dist"
         println '--'
-        println "|-version: ${project.ext.app_version}"
-        println "|-setup: ${module}"
-        println "|-url: ${url}"
-        println "|-user: ${un}"
-        println "|-dist: ${distDir}/*"
+        println "|-version: $project.ext.app_version"
+        println "|-setup: $module"
+        println "|-url: $url"
+        println "|-user: $un"
+        println "|-dist: $distDir/*"
         println '--'
         println "Publishing module to PyPi..."
         exec {
-          workingDir "${moduleDir}"
+          workingDir "$moduleDir"
           commandLine rootProject.python, '-m', 'twine', 'upload',
             '--verbose',
-            '--repository-url', "${url}",
-            '-u', "${un}",
-            '-p', "${pw}",
-            "${distDir}/*"
+            '--repository-url', "$url",
+            '-u', "$un",
+            '-p', "$pw",
+            "$distDir/*"
         }
     }
   }
