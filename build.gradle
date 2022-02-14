@@ -5,11 +5,14 @@
 */
 
 subprojects {
+
   tasks.withType(Exec) {
     doFirst {
       println commandLine
     }
   }
+
+  apply from: "$projectDir/gradle.properties"
 }
 
 ext {

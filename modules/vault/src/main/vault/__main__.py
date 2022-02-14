@@ -21,7 +21,6 @@ from datetime import datetime
 from hspylib.core.tools.commons import get_path, read_version, dirname, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
-
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
 

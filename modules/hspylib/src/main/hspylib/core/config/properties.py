@@ -20,7 +20,6 @@ from configparser import ConfigParser
 from typing import Optional
 
 import yaml
-
 from hspylib.core.tools.commons import flatten_dict, run_dir
 
 
@@ -39,14 +38,11 @@ class Properties:
         """
         return re.sub('[ -.]', '_', property_name).upper()
 
-    def __init__(
-        self,
-        filename: str = None,
-        profile: str = None,
-        load_dir: str = None):
+    def __init__(self, filename: str = None, profile: str = None, load_dir: str = None):
 
         filename, extension = os.path.splitext(
             filename if filename else f'{self._default_name}{self._default_extension}')
+
         self.filename = filename
         self.extension = extension
         self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE')

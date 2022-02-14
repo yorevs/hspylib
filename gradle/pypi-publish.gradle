@@ -24,25 +24,12 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
-/* Gather python requirements for the module */
-task gatherRequirements(type: Exec) {
-  group = 'Publish'
-  description = 'Gather python requirements for the module'
-  workingDir sourceRoot
-  commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force' ,'main'
-  standardOutput = new ByteArrayOutputStream()
-  ext.output = {
-    return standardOutput.toString()
-  }
-}
-
 /* Generate PyPi distribution files */
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
   dependsOn gatherRequirements
   dependsOn changeVersion
-  dependsOn cleanDist
   doLast {
     fileTree("$sourceRoot").matching {
         include "**/setup.py"
@@ -82,6 +69,7 @@ task publish(type: Task) {
   group = 'Publish'
   description = "Publish the module to PyPi repository"
   dependsOn checkDist
+  dependsOn buildOnly
   def url = project.ext.pypiRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword

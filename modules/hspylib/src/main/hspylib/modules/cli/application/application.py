@@ -4,7 +4,7 @@
 """
    @project: HSPyLib
    @package: hspylib.main.hspylib.modules.cli.application
-      @file: application.py
+      @file: application_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -17,13 +17,14 @@ import getopt
 import logging as log
 import signal
 import sys
+from abc import abstractmethod
 from datetime import datetime
 from typing import Callable, List, Optional, Set, Tuple
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, get_path
 from hspylib.modules.cli.application.argument import Argument
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
 from hspylib.modules.cli.application.option import Option
@@ -32,8 +33,10 @@ from hspylib.modules.cli.application.option import Option
 class Application(metaclass=Singleton):
     """HSPyLib application framework"""
 
+    RUN_DIR = get_path(__file__)
     VERSION = None
     USAGE = None
+    WELCOME = None
 
     @staticmethod
     def exit_handler(signum=0, frame=None, clear_screen: bool = False) -> None:
@@ -75,7 +78,6 @@ class Application(metaclass=Singleton):
 
         if source_dir:
             self.configs = AppConfigs(
-                source_root=source_dir,
                 resource_dir=resource_dir,
                 log_dir=log_dir
             )
@@ -124,30 +126,22 @@ class Application(metaclass=Singleton):
         """Get the argument value named by the opt_name"""
         return next((val for arg, val in self._args.items() if arg == arg_name), None)
 
-    def _setup_parameters(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
+    @abstractmethod
+    def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
-        log.info('setup_parameters was not overridden')
 
-    def _main(self, *params, **kwargs) -> None:  # pylint: disable=unused-argument,no-self-use
+    def _main(self, *params, **kwargs) -> None:
         """Execute the application's main statements"""
-        log.info('main was not overridden')
 
-    def _cleanup(self) -> None:  # pylint: disable=no-self-use
+    @abstractmethod
+    def _cleanup(self) -> None:
         """Execute code cleanup before exiting"""
-        log.info('cleanup was not overridden')
 
-    def _with_option(
-        self,
-        shortopt: chr,
-        longopt: str,
-        has_argument: bool = False,
-        handler: Callable = None) -> None:
+    def _with_option(self, shortopt: chr, longopt: str, has_argument: bool = False, handler: Callable = None) -> None:
         """Specify an option for the command line"""
         self._options[longopt] = Option(shortopt, longopt, has_argument, handler)
 
-    def _with_arguments(
-        self,
-        chained_args: Set[ArgumentChain.ChainedArgument]) -> None:
+    def _with_arguments(self, chained_args: Set[ArgumentChain.ChainedArgument]) -> None:
         """Specify an argument for the command line"""
         self._arguments = chained_args
 
@@ -155,7 +149,6 @@ class Application(metaclass=Singleton):
         """ Handle program parameters.
         :param parameters: The list of unparsed program parameters passed by the command line
         """
-        # First parse all options, then, arguments
         self._parse_arguments(self._parse_options(parameters))
 
     def _parse_options(self, parameters: List[str]) -> List[str]:

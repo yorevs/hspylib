@@ -83,6 +83,7 @@ task cleanPython(type: Task) {
     delete fileTree(sourceRoot).matching {
       include "**/*.pyc"
       include "**/*.qrc"
+      include "**/requirements.txt"
     }
     delete dirsByPattern(sourceRoot, /.*__pycache__$/)
   }
@@ -162,6 +163,18 @@ task syncPythonPackages(type: Task) {
   }
 }
 
+/* Gather python requirements for the module */
+task gatherRequirements(type: Exec) {
+  group = 'Install'
+  description = 'Gather python requirements for the module'
+  workingDir sourceRoot
+  commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force', '--mode', 'gt' ,'main'
+  standardOutput = new ByteArrayOutputStream()
+  ext.output = {
+    return standardOutput.toString()
+  }
+}
+
 /* Install all required python packages */
 task installDependencies(type: Task) {
   group = 'Install'
@@ -174,7 +187,7 @@ task installDependencies(type: Task) {
     println "Installing dependencies using pip "
     deps.each { dep ->
       exec {
-        commandLine rootProject.python, '-m', 'pip', 'install', '--user', dep
+        commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', dep
       }
     }
   }
@@ -185,12 +198,8 @@ task installModule(type: Task) {
   group = 'Install'
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
+  dependsOn gatherRequirements
   doLast {
-    def depsFile = project.file("$project.ext.requirementsFile")
-    depsFile.write ''
-    project.ext.deps.each { dep ->
-      depsFile.append dep + '\n'
-    }
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
     }.each { File module ->
@@ -198,7 +207,7 @@ task installModule(type: Task) {
         println "Install $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '--user', '-r', depsFile, project.name
+          commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', '-r', project.ext.requirementsFile, project.ext.app_name
         }
       }
   }
@@ -216,7 +225,7 @@ task uninstallModule(type: Task) {
         println "Uninstall $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', project.name
+          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', project.ext.app_name
         }
       }
   }
@@ -228,8 +237,6 @@ task uninstallModule(type: Task) {
 task check(type: Task) {
   group = 'Verification'
   description = "Run all Qt python tests $sourceRoot/test/**/test_*.py"
-  dependsOn compilePython
-  dependsOn compileQrc
   doLast {
     println "Performing unittests from $sourceRoot"
     fileTree("$sourceRoot/test").matching {
@@ -278,13 +285,13 @@ tasks.register('clean', Task) {
   dependsOn cleanDist
 }
 
-task compile(type: Task) {
+tasks.register('compile', Task) {
   group = 'Build'
   dependsOn compilePython
   dependsOn compileQrc
 }
 
-task buildOnly(type: Task) {
+tasks.register('buildOnly', Task) {
   group = 'Build'
   dependsOn clean
   mustRunAfter clean
@@ -292,22 +299,18 @@ task buildOnly(type: Task) {
   mustRunAfter compile
 }
 
-task build(type: Task) {
+tasks.register('build', Task) {
   group = 'Build'
   dependsOn clean
   mustRunAfter clean
-  dependsOn installDependencies
-  mustRunAfter installDependencies
+  dependsOn compile
+  mustRunAfter compile
   dependsOn check
 }
 
-task install(type: Task) {
+tasks.register('install', Task) {
   group = 'Install'
-  dependsOn installDependencies
-  mustRunAfter installDependencies
   dependsOn buildOnly
   mustRunAfter buildOnly
-  dependsOn uninstallModule
-  mustRunAfter uninstallModule
   dependsOn installModule
 }

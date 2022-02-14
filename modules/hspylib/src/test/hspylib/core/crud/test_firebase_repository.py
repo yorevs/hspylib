@@ -19,13 +19,12 @@ import os
 import sys
 import unittest
 
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.modules.fetch.fetch import delete
 from requests.structures import CaseInsensitiveDict
 from test.hspylib.shared.decorators import integration_test
 from test.hspylib.shared.entity_test import EntityTest
 from test.hspylib.shared.firebase_repository_test import FirebaseRepositoryTest
-
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.modules.fetch.fetch import delete
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -38,7 +37,7 @@ class TestClass(unittest.TestCase):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
         self.configs = AppConfigs(
-            source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
+            resource_dir=resource_dir, log_dir=resource_dir
         )
         log.info(self.configs)
         self.repository = FirebaseRepositoryTest()

@@ -1,14 +1,14 @@
 SELECT :columnSet
 FROM
-    :tableName
+  :tableName
 WHERE 1 = 1 :filters
 ;
 
 INSERT
 INTO :tableName
-    :columnSet
+  :columnSet
 VALUES
-    :valueSet
+  :valueSet
 ;
 
 UPDATE :tableName

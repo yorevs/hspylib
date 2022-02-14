@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Versioner v0.9.3
+# hspylib-versioner v0.9.4
 #
 # Package: main.versioner.enums
 """Package initialization."""
 
 __all__ = [
-  'extension', 
-  'part'
+    'extension',
+    'part'
 ]
-__version__ = '0.9.3'
+__version__ = '0.9.4'

@@ -16,12 +16,11 @@
 from typing import Any, Optional, List, Union, Tuple
 
 import requests
-from requests import exceptions as ex
-
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
+from requests import exceptions as ex
 
 
 def fetch(

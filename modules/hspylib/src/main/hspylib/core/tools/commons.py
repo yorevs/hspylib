@@ -220,6 +220,7 @@ def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') ->
 
     return found, el
 
+
 def get_or_default(options: Union[tuple, list], index: int, default_value=None) -> Optional[Any]:
     """Retrieve an item from the options list or default_value if index is out of range
     :param options: The available list of options
