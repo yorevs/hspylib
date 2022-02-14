@@ -25,10 +25,10 @@ from cryptography.fernet import InvalidToken
 from hspylib.core.tools.commons import sysout, syserr, file_is_not_empty, touch_file, safe_del_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt
-from vault.core.vault_config import VaultConfig
-from vault.core.vault_service import VaultService
-from vault.entity.vault_entry import VaultEntry
-from vault.exception.exceptions import VaultOpenError, VaultCloseError
+from core.vault_config import VaultConfig
+from core.vault_service import VaultService
+from entity.vault_entry import VaultEntry
+from exception.exceptions import VaultOpenError, VaultCloseError
 
 
 class Vault:

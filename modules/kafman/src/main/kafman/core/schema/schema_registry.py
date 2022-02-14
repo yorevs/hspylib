@@ -21,7 +21,7 @@ from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.preconditions import check_state, check_not_none
 from hspylib.modules.fetch.fetch import is_reachable, delete, get
 from hspylib.modules.fetch.http_response import HttpResponse
-from kafman.core.schema.registry_subject import RegistrySubject
+from core.schema.registry_subject import RegistrySubject
 from requests import exceptions as ex
 
 

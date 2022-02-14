@@ -18,8 +18,8 @@ from typing import Optional
 
 from hspylib.core.crud.crud_service import CrudService
 from hspylib.core.metaclass.singleton import Singleton
-from vault.core.vault_repository import VaultRepository
-from vault.entity.vault_entry import VaultEntry
+from core.vault_repository import VaultRepository
+from entity.vault_entry import VaultEntry
 
 
 class VaultService(CrudService, metaclass=Singleton):

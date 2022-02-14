@@ -34,21 +34,21 @@ from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
-from kafman.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
-from kafman.core.consumer_config import ConsumerConfig
-from kafman.core.consumer_worker import ConsumerWorker
-from kafman.core.kafka_message import KafkaMessage
-from kafman.core.producer_config import ProducerConfig
-from kafman.core.producer_worker import ProducerWorker
-from kafman.core.schema.avro_schema import AvroSchema
-from kafman.core.schema.json_schema import JsonSchema
-from kafman.core.schema.kafka_schema import KafkaSchema
-from kafman.core.schema.plain_schema import PlainSchema
-from kafman.core.schema.registry_subject import RegistrySubject
-from kafman.core.schema.schema_factory import SchemaFactory
-from kafman.core.schema.schema_registry import SchemaRegistry
-from kafman.core.statistics_worker import StatisticsWorker
-from kafman.views.indexes import StkTools, StkProducerEdit, Tabs
+from core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
+from core.consumer_config import ConsumerConfig
+from core.consumer_worker import ConsumerWorker
+from core.kafka_message import KafkaMessage
+from core.producer_config import ProducerConfig
+from core.producer_worker import ProducerWorker
+from core.schema.avro_schema import AvroSchema
+from core.schema.json_schema import JsonSchema
+from core.schema.kafka_schema import KafkaSchema
+from core.schema.plain_schema import PlainSchema
+from core.schema.registry_subject import RegistrySubject
+from core.schema.schema_factory import SchemaFactory
+from core.schema.schema_registry import SchemaRegistry
+from core.statistics_worker import StatisticsWorker
+from views.indexes import StkTools, StkProducerEdit, Tabs
 
 
 class MainQtView(QtView):

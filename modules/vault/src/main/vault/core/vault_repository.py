@@ -18,8 +18,8 @@ import re
 from typing import List, Optional
 
 from hspylib.core.crud.file.file_repository import FileRepository
-from vault.core.vault_config import VaultConfig
-from vault.entity.vault_entry import VaultEntry
+from core.vault_config import VaultConfig
+from entity.vault_entry import VaultEntry
 
 
 class VaultRepository(FileRepository):
