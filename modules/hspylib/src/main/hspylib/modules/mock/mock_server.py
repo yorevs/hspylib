@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.mock
+   @package: main.modules.mock
       @file: mock_server.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,12 +19,12 @@ from threading import Thread
 from time import sleep
 from typing import Optional, Tuple
 
-from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.content_type import ContentType
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.enums.http_method import HttpMethod
-from hspylib.modules.fetch.http_response import HttpResponse
-from hspylib.modules.mock.mock_server_handler import MockServerHandler
+from core.enums.charset import Charset
+from core.enums.content_type import ContentType
+from core.enums.http_code import HttpCode
+from core.enums.http_method import HttpMethod
+from modules.fetch.http_response import HttpResponse
+from modules.mock.mock_server_handler import MockServerHandler
 from requests.structures import CaseInsensitiveDict
 
 

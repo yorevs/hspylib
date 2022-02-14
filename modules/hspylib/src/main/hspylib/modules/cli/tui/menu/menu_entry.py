@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.factory
+   @package: main.modules.cli.tui.factory
       @file: menu_entry.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,9 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.tui.menu.menu import Menu
-from hspylib.modules.cli.tui.menu.menu_item import MenuItem
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from modules.cli.tui.menu.menu import Menu
+from modules.cli.tui.menu.menu_item import MenuItem
+from modules.cli.vt100.vt_colors import VtColors
 
 MENU_TPL = """%ED2%%HOM%
 {}

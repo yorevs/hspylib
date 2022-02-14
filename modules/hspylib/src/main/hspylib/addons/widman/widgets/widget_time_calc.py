@@ -5,7 +5,7 @@
    TODO Purpose of the file
 
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.widman.widgets
+   @package: main.addons.widman.widgets
       @file: widget_time_calc.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,12 +19,12 @@ import math
 import re
 from typing import Optional
 
-from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_code import ExitCode
-from hspylib.core.exception.exceptions import WidgetExecutionError
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.tui.extra.minput.minput import minput, MenuInput
+from addons.widman.widget import Widget
+from core.enums.exit_code import ExitCode
+from core.exception.exceptions import WidgetExecutionError
+from core.tools.commons import sysout
+from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from modules.cli.tui.extra.minput.minput import minput, MenuInput
 
 
 class WidgetTimeCalc(Widget):

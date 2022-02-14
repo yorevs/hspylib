@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.cli.tui
+   demo.cli.tui
       @file: dynamic_menu_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,9 +13,9 @@
 
    Copyright 2021, HSPyLib team
 """
-from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
-from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
-from hspylib.modules.cli.vt100.vt_utils import exit_app
+from modules.cli.tui.menu.menu_factory import MenuFactory
+from modules.cli.tui.menu.menu_ui import MenuUi
+from modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == '__main__':
     # @formatter:off

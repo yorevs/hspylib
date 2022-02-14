@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui
+   @package: main.modules.cli.tui
       @file: menu_item.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,10 +16,10 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from hspylib.core.exception.exceptions import InputAbortedError
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.tui.menu.menu import Menu
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from core.exception.exceptions import InputAbortedError
+from core.tools.commons import sysout
+from modules.cli.tui.menu.menu import Menu
+from modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class MenuItem(Menu, ABC):

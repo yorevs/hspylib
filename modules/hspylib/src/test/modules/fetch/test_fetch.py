@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.modules.fetch
+   test.modules.fetch
       @file: test_fetch.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,11 +18,11 @@ import os
 import sys
 import unittest
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.enums.http_method import HttpMethod
-from hspylib.modules.fetch.fetch import delete, get, head, patch, post, put, is_reachable
-from hspylib.modules.mock.mock_server import MockServer
+from core.config.app_config import AppConfigs
+from core.enums.http_code import HttpCode
+from core.enums.http_method import HttpMethod
+from modules.fetch.fetch import delete, get, head, patch, post, put, is_reachable
+from modules.mock.mock_server import MockServer
 from requests import exceptions as ex, ConnectTimeout
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))

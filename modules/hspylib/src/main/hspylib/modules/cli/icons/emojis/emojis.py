@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.icons.emojis
+   @package: main.modules.cli.icons.emojis
       @file: emojis.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,7 @@
 
 from emoji.core import emojize
 
-from hspylib.core.enums.enumeration import Enumeration
+from core.enums.enumeration import Enumeration
 
 
 def emj_print(emoji_str: str) -> None:

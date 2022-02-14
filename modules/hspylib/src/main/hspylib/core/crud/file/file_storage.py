@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.crud.file
+   @Package: main.crud.file
       @file: file_storage.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

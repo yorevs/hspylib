@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.cli.tui.extra
+   demo.cli.tui.extra
       @file: menu_input_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,8 +13,8 @@
 
    Copyright 2021, HSPyLib team
 """
-from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
+from modules.cli.tui.extra.minput.input_validator import InputValidator
+from modules.cli.tui.extra.minput.minput import MenuInput, minput
 
 if __name__ == '__main__':
     # @formatter:off

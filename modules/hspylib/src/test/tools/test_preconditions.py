@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.tools
+   test.tools
       @file: test_preconditions.py
    @created: Fri, 16 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,8 +16,8 @@
 import sys
 import unittest
 
-from hspylib.core.exception.exceptions import InvalidStateError, InvalidArgumentError
-from hspylib.core.tools.preconditions import check_not_none, check_state, check_argument, check_element_index, \
+from core.exception.exceptions import InvalidStateError, InvalidArgumentError
+from core.tools.preconditions import check_not_none, check_state, check_argument, check_element_index, \
     check_index_in_range
 
 

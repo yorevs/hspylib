@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.icons.font_awesome
+   @package: main.modules.cli.icons.font_awesome
       @file: awesome.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,7 @@
 
 import struct
 
-from hspylib.core.enums.enumeration import Enumeration
+from core.enums.enumeration import Enumeration
 
 
 class Awesome(Enumeration):

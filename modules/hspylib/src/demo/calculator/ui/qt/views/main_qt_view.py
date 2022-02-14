@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.calculator.ui.qt.views
+   demo.calculator.ui.qt.views
       @file: main_qt_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,8 +17,8 @@
 import logging as log
 
 from PyQt5.QtCore import Qt
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.modules.qt.views.qt_view import QtView
+from core.config.app_config import AppConfigs
+from modules.qt.views.qt_view import QtView
 
 from calculator.core.enums.calc_operations import CalcOperations
 from calculator.ui.qt.views.blink_lcd_thread import BlinkLcdThread

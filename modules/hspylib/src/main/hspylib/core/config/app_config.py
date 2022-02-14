@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.config
+   @Package: main.config
       @file: app_config.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,10 +17,10 @@ import logging as log
 import os
 from typing import Any, Optional
 
-from hspylib.core.config.properties import Properties
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import log_init, run_dir
-from hspylib.core.tools.preconditions import check_argument, check_state
+from core.config.properties import Properties
+from core.metaclass.singleton import Singleton
+from core.tools.commons import log_init, run_dir
+from core.tools.preconditions import check_argument, check_state
 
 
 class AppConfigs(metaclass=Singleton):

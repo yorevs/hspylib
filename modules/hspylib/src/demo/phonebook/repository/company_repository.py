@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.phonebook.repository
+   demo.phonebook.repository
       @file: company_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.crud.file.file_repository import FileRepository
+from core.config.app_config import AppConfigs
+from core.crud.file.file_repository import FileRepository
 
 from phonebook.entity.Company import Company
 

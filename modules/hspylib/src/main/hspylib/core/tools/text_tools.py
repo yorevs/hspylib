@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.hspylib.tools
+   @package: main.tools
       @file: text_tools.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,7 +17,7 @@ import random
 import re
 from abc import ABC
 
-from hspylib.core.tools.commons import get_or_default
+from core.tools.commons import get_or_default
 
 
 def fit_text(text: str, width: int) -> str:

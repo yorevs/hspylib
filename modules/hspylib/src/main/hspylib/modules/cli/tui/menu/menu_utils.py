@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui
+   @package: main.modules.cli.tui
       @file: menu_utils.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,10 +17,10 @@ import time
 from abc import ABC
 from typing import Any, Callable, Optional
 
-from hspylib.core.exception.exceptions import InputAbortedError
-from hspylib.core.tools.commons import syserr, sysout
-from hspylib.core.tools.validator import Validator
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from core.exception.exceptions import InputAbortedError
+from core.tools.commons import syserr, sysout
+from core.tools.validator import Validator
+from modules.cli.vt100.vt_colors import VtColors
 
 
 class MenuUtils(ABC):

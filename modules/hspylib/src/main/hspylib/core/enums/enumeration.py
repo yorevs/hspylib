@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.enum
+   @Package: main.enum
       @file: enumeration.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 from enum import Enum
 from typing import Any, List
 
-from hspylib.core.tools.preconditions import check_not_none
+from core.tools.preconditions import check_not_none
 
 
 class Enumeration(Enum):

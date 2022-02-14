@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.hspylib.tools
+   @package: main.tools
       @file: preconditions.py
    @created: Fri, 16 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,7 @@
 
 from typing import Tuple, TypeVar
 
-from hspylib.core.exception.exceptions import InvalidStateError, InvalidArgumentError
+from core.exception.exceptions import InvalidStateError, InvalidArgumentError
 
 T = TypeVar('T')
 

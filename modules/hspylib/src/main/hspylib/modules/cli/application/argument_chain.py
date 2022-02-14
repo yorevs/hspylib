@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.application
+   @package: main.modules.cli.application
       @file: argument_chain.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.application.argument import Argument
+from modules.cli.application.argument import Argument
 
 
 class ArgumentChain:

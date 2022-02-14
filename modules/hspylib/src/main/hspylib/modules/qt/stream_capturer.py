@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.qt
+   @package: main.modules.qt
       @file: stream_capturer.py
    @created: Wed, 30 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,8 +19,8 @@ from contextlib import redirect_stdout, redirect_stderr
 from time import sleep
 
 from PyQt5.QtCore import QThread, pyqtSignal
-from hspylib.core.tools.commons import is_debugging, syserr
-from hspylib.core.tools.preconditions import check_argument
+from core.tools.commons import is_debugging, syserr
+from core.tools.preconditions import check_argument
 
 
 class StreamCapturer(QThread):

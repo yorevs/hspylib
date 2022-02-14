@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.cli.table
+   demo.cli.table
       @file: table_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.tools.text_tools import TextAlignment
-from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
+from core.tools.text_tools import TextAlignment
+from modules.cli.tui.table.table_renderer import TableRenderer
 
 if __name__ == '__main__':
     h = [

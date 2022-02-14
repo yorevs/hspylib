@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   hspylib.main.hspylib.addons.widman
+   main.addons.widman
       @file: widget_entry.py
    @created: Fri, 04 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,7 +14,7 @@
 """
 import os
 
-from hspylib.core.tools.text_tools import camelcase
+from core.tools.text_tools import camelcase
 
 
 class WidgetEntry:

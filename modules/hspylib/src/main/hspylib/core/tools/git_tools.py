@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.hspylib.tools
+   @package: main.tools
    @file: git_tools.py
   @created: Nov 14, 2019
    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.vt100.terminal import Terminal
+from modules.cli.vt100.terminal import Terminal
 
 
 class GitTools:

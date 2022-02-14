@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.crud.resources
+   test.crud.resources
       @file: entity_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 
 from uuid import UUID
 
-from hspylib.core.crud.crud_entity import CrudEntity
+from core.crud.crud_entity import CrudEntity
 
 
 class EntityTest(CrudEntity):

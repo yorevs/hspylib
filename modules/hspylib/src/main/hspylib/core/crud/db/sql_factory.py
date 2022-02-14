@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.crud.db
+   @Package: main.crud.db
       @file: sql_factory.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,9 +17,9 @@ import logging as log
 import os
 from typing import List, Optional
 
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.preconditions import check_argument, check_state
+from core.crud.crud_entity import CrudEntity
+from core.metaclass.singleton import Singleton
+from core.tools.preconditions import check_argument, check_state
 from requests.structures import CaseInsensitiveDict
 
 

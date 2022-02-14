@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.hspylib.modules.security
+# Package: main.modules.security
 """Package initialization."""
 
 __all__ = [

@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.extra.minput
+   @package: main.modules.cli.tui.extra.minput
       @file: access_type.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
+from core.enums.enumeration import Enumeration
 
 
 class AccessType(Enumeration):

@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.extra.minput
+   @package: main.modules.cli.tui.extra.minput
       @file: form_builder.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,7 @@
 
 from typing import Any
 
-from hspylib.modules.cli.tui.extra.minput.field_builder import FieldBuilder
+from modules.cli.tui.extra.minput.field_builder import FieldBuilder
 
 
 class FormBuilder:

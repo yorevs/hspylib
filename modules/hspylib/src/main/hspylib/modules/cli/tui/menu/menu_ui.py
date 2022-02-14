@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui
+   @package: main.modules.cli.tui
       @file: menu_ui.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,8 +16,8 @@
 import signal
 from typing import Optional
 
-from hspylib.modules.cli.tui.menu.menu import Menu
-from hspylib.modules.cli.vt100.vt_utils import exit_app
+from modules.cli.tui.menu.menu import Menu
+from modules.cli.vt100.vt_utils import exit_app
 
 
 class MenuUi:

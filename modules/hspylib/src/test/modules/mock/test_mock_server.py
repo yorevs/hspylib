@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.modules.mock
+   test.modules.mock
       @file: test_mock_server.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,10 +19,10 @@ import sys
 import unittest
 
 import requests
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.enums.http_method import HttpMethod
-from hspylib.modules.mock.mock_server import MockServer
+from core.config.app_config import AppConfigs
+from core.enums.http_code import HttpCode
+from core.enums.http_method import HttpMethod
+from modules.mock.mock_server import MockServer
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

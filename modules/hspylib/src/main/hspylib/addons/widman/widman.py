@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   hspylib.main.hspylib.addons.widman
+   main.addons.widman
       @file: widman.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,17 +17,17 @@ import os
 import sys
 from typing import List
 
-from hspylib.addons.widman.widget import Widget
-from hspylib.addons.widman.widget_entry import WidgetEntry
-from hspylib.core.enums.exit_code import ExitCode
-from hspylib.core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import get_path
-from hspylib.core.tools.preconditions import check_state
-from hspylib.core.tools.text_tools import camelcase
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
+from addons.widman.widget import Widget
+from addons.widman.widget_entry import WidgetEntry
+from core.enums.exit_code import ExitCode
+from core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
+from core.metaclass.singleton import Singleton
+from core.tools.commons import get_path
+from core.tools.preconditions import check_state
+from core.tools.text_tools import camelcase
+from modules.cli.application.application import Application
+from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
 
 HERE = get_path(__file__)
 
@@ -107,6 +107,6 @@ class WidgetManager(metaclass=Singleton):
                 f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}") from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
-        check_state(isinstance(widget, Widget), 'All widgets must inherit from "hspylib.addons.widman.widget.Widget"')
+        check_state(isinstance(widget, Widget), 'All widgets must inherit from "addons.widman.widget.Widget"')
 
         return widget

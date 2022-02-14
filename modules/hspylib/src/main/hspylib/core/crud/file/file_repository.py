@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.crud.file
+   @Package: main.crud.file
       @file: file_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,10 +19,10 @@ import uuid
 from abc import abstractmethod
 from typing import Any, List, Optional
 
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.crud.crud_repository import CrudRepository
-from hspylib.core.crud.file.file_storage import FileStorage
-from hspylib.core.exception.exceptions import ProgrammingError
+from core.crud.crud_entity import CrudEntity
+from core.crud.crud_repository import CrudRepository
+from core.crud.file.file_storage import FileStorage
+from core.exception.exceptions import ProgrammingError
 
 
 class FileRepository(CrudRepository):

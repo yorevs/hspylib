@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.extra.minput
+   @package: main.modules.cli.tui.extra.minput
       @file: field_builder.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,13 +14,13 @@
 """
 from typing import TypeVar, Any
 
-from hspylib.core.tools.preconditions import check_argument
-from hspylib.core.tools.text_tools import camelcase
-from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
-from hspylib.modules.cli.tui.extra.minput.form_field import FormField
-from hspylib.modules.cli.tui.extra.minput.input_type import InputType
-from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
+from core.tools.preconditions import check_argument
+from core.tools.text_tools import camelcase
+from modules.cli.tui.extra.minput.access_type import AccessType
+from modules.cli.tui.extra.minput.form_field import FormField
+from modules.cli.tui.extra.minput.input_type import InputType
+from modules.cli.tui.extra.minput.input_validator import InputValidator
+from modules.cli.tui.extra.minput.minput_utils import MInputUtils
 
 T = TypeVar('T')
 

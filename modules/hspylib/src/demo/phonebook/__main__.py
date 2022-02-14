@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.phonebook
+   demo.phonebook
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,11 +16,11 @@
 
 import sys
 
-from hspylib.core.tools.commons import dirname
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
-from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
-from hspylib.modules.cli.vt100.vt_utils import exit_app
+from core.tools.commons import dirname
+from modules.cli.application.application import Application
+from modules.cli.tui.menu.menu_factory import MenuFactory
+from modules.cli.tui.menu.menu_ui import MenuUi
+from modules.cli.vt100.vt_utils import exit_app
 
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView

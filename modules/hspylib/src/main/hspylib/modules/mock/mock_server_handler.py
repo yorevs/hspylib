@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.mock
+   @package: main.modules.mock
       @file: mock_server_handler.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,9 +17,9 @@ import logging as log
 from http.server import BaseHTTPRequestHandler
 from typing import List, Tuple
 
-from hspylib.core.enums.content_type import ContentType
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.enums.http_method import HttpMethod
+from core.enums.content_type import ContentType
+from core.enums.http_code import HttpCode
+from core.enums.http_method import HttpMethod
 from requests.structures import CaseInsensitiveDict
 
 

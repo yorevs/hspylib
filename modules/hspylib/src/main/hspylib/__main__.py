@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib
+   main.hspylib
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,13 +16,13 @@
 
 import sys
 
-from hspylib.addons.appman.app_extension import AppExtension
-from hspylib.addons.appman.app_type import AppType
-from hspylib.addons.appman.appman import AppManager
-from hspylib.addons.widman.widman import WidgetManager
-from hspylib.core.tools.commons import get_path, read_version, run_dir, syserr, sysout, dirname
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.argument_chain import ArgumentChain
+from addons.appman.app_extension import AppExtension
+from addons.appman.app_type import AppType
+from addons.appman.appman import AppManager
+from addons.widman.widman import WidgetManager
+from core.tools.commons import get_path, read_version, run_dir, syserr, sysout, dirname
+from modules.cli.application.application import Application
+from modules.cli.application.argument_chain import ArgumentChain
 
 HERE = get_path(__file__)
 

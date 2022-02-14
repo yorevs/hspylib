@@ -5,7 +5,7 @@
    TODO Purpose of the file
 
    @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.widman.widgets
+   @package: main.addons.widman.widgets
       @file: widget_free.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,12 +18,12 @@ import re
 import threading
 from time import sleep
 
-from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_code import ExitCode
-from hspylib.core.tools.commons import human_readable_bytes, sysout
-from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.terminal import Terminal
+from addons.widman.widget import Widget
+from core.enums.exit_code import ExitCode
+from core.tools.commons import human_readable_bytes, sysout
+from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from modules.cli.keyboard import Keyboard
+from modules.cli.vt100.terminal import Terminal
 
 
 class WidgetFree(Widget):

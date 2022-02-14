@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.modules.eventbus
+   test.modules.eventbus
       @file: test_eventbus.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,8 +18,8 @@ import sys
 import unittest
 from unittest.mock import MagicMock
 
-from hspylib.modules.eventbus.event import Event
-from hspylib.modules.eventbus.eventbus import EventBus
+from modules.eventbus.event import Event
+from modules.eventbus.eventbus import EventBus
 
 
 class TestEventBus(unittest.TestCase):

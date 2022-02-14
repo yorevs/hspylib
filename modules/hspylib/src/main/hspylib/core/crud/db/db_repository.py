@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.crud.db
+   @Package: main.crud.db
       @file: db_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,9 +16,9 @@
 from abc import abstractmethod
 from typing import Tuple
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.crud.crud_repository import CrudRepository
+from core.config.app_config import AppConfigs
+from core.crud.crud_entity import CrudEntity
+from core.crud.crud_repository import CrudRepository
 
 
 class DBRepository(CrudRepository):

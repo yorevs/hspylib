@@ -2,13 +2,13 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.hspylib.modules.cli.application
+# Package: main.modules.cli.application
 """Package initialization."""
 
 __all__ = [
-  'application', 
-  'argument', 
-  'argument_chain', 
+  'application',
+  'argument',
+  'argument_chain',
   'option'
 ]
 __version__ = '0.11.15'

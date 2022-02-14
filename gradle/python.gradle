@@ -244,7 +244,8 @@ task check(type: Task) {
     }.each { File file ->
       if (verbose) {
           println ""
-          println "  |- PYTHON_PATH: $rootProject.ext.pythonPath"
+          println "  PYTHON_PATHS: "
+          println "\t|- ${project.ext.pythonPath.split(':').join('\n\t|- ')}"
           println "Executing unittests from -> $file.name"
           println ""
         }

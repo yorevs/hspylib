@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.eventbus
+   @package: main.modules.eventbus
       @file: eventbus.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,8 +15,8 @@
 
 from typing import Any, Callable, List
 
-from hspylib.core.tools.commons import syserr
-from hspylib.modules.eventbus.event import Event
+from core.tools.commons import syserr
+from modules.eventbus.event import Event
 
 
 class EventBus:

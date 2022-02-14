@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.vt100
+   @package: main.modules.cli.vt100
       @file: vt_100.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 import re
 from abc import ABC
 
-from hspylib.core.tools.preconditions import check_argument
+from core.tools.preconditions import check_argument
 
 
 class Vt100(ABC):

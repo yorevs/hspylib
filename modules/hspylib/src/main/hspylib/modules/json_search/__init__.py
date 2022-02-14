@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.hspylib.modules.json_search
+# Package: main.modules.json_search
 """Package initialization."""
 
 __all__ = [
