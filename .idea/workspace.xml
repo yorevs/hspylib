@@ -52,6 +52,17 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="HsPyLib" type="f1a62948:ProjectNode" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HsPyLib" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HsPyLib" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -103,14 +114,35 @@
       <recent name="$PROJECT_DIR$/modules/cfman" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules/cfman/src" />
-      <recent name="$PROJECT_DIR$/modules/versioner/src/main" />
-      <recent name="$PROJECT_DIR$/modules/kafman/src/test/kafman" />
-      <recent name="$PROJECT_DIR$/modules/cfman/src/main/cfman" />
-      <recent name="$PROJECT_DIR$/modules/core" />
+      <recent name="$PROJECT_DIR$/modules/versioner/src/test" />
+      <recent name="$PROJECT_DIR$/modules/vault/src/test" />
+      <recent name="$PROJECT_DIR$/modules/kafman/src/test" />
+      <recent name="$PROJECT_DIR$/modules/hspylib/src/demo" />
+      <recent name="$PROJECT_DIR$/modules/hspylib/src/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.hspylib [cleanDist]">
+  <component name="RunManager" selected="Gradle.hspylib [check]">
+    <configuration name="hspylib [check]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="check" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="hspylib [cleanDist]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -132,10 +164,10 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="hspylib:modules:firebase [publish]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="hspylib [syncPythonPackages]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/modules/firebase" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -143,7 +175,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="publish" />
+            <option value="syncPythonPackages" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -153,10 +185,10 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="hspylib:modules:kafman [publish]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="hspylib:modules:hspylib [check]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/modules/kafman" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/modules/hspylib" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -164,28 +196,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="publish" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="hspylib:modules:vault [publish]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/modules/vault" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="publish" />
+            <option value="check" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -217,19 +228,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Gradle.hspylib:modules:firebase [publish]" />
-      <item itemvalue="Gradle.hspylib:modules:kafman [publish]" />
-      <item itemvalue="Gradle.hspylib:modules:vault [publish]" />
       <item itemvalue="Gradle.hspylib:modules:versioner [publish]" />
       <item itemvalue="Gradle.hspylib [cleanDist]" />
+      <item itemvalue="Gradle.hspylib [check]" />
+      <item itemvalue="Gradle.hspylib [syncPythonPackages]" />
+      <item itemvalue="Gradle.hspylib:modules:hspylib [check]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.hspylib [check]" />
+        <item itemvalue="Gradle.hspylib:modules:hspylib [check]" />
+        <item itemvalue="Gradle.hspylib [syncPythonPackages]" />
         <item itemvalue="Gradle.hspylib [cleanDist]" />
         <item itemvalue="Gradle.hspylib:modules:versioner [publish]" />
-        <item itemvalue="Gradle.hspylib:modules:vault [publish]" />
-        <item itemvalue="Gradle.hspylib:modules:kafman [publish]" />
-        <item itemvalue="Gradle.hspylib:modules:firebase [publish]" />
       </list>
     </recent_temporary>
   </component>
