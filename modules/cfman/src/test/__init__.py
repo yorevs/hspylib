@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-cfman v0.9.7
+# hspylib-cfman v0.9.8
 #
 # Package: test
 """Package initialization."""
 
 __all__ = [
-  'cfman'
+  'test_main'
 ]
-__version__ = '0.9.7'
+__version__ = '0.9.8'
