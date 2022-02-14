@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.modules.application
+   test.modules.application
       @file: test_application.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,12 +16,12 @@
 import sys
 import unittest
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import InvalidOptionError, InvalidArgumentError
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import dirname
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.option import Option
+from core.config.app_config import AppConfigs
+from core.exception.exceptions import InvalidOptionError, InvalidArgumentError
+from core.metaclass.singleton import Singleton
+from core.tools.commons import dirname
+from modules.cli.application.application import Application
+from modules.cli.application.option import Option
 
 from shared.application_test import ApplicationTest
 

@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.enum
+   @Package: main.enum
       @file: http_method.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
+from core.enums.enumeration import Enumeration
 
 
 class HttpMethod(Enumeration):

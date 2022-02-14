@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.factory
+   @package: main.modules.cli.tui.factory
       @file: menu_factory.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,10 +13,10 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.modules.cli.tui.menu.menu import Menu
-from hspylib.modules.cli.tui.menu.menu_entry import MenuEntry
-from hspylib.modules.cli.tui.menu.menu_option import MenuOption
+from core.metaclass.singleton import Singleton
+from modules.cli.tui.menu.menu import Menu
+from modules.cli.tui.menu.menu_entry import MenuEntry
+from modules.cli.tui.menu.menu_option import MenuOption
 
 
 class MenuFactory(metaclass=Singleton):

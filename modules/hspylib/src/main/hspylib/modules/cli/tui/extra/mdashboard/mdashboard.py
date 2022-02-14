@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.extra
+   @package: main.modules.cli.tui.extra
       @file: mdashboard.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,14 +15,14 @@
 
 from typing import List, Optional
 
-from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.preconditions import check_state
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import restore_terminal, restore_cursor, set_enable_echo, prepare_render
+from core.tools.commons import sysout
+from core.tools.preconditions import check_state
+from modules.cli.keyboard import Keyboard
+from modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
+from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from modules.cli.vt100.vt_codes import vt_print
+from modules.cli.vt100.vt_colors import VtColors
+from modules.cli.vt100.vt_utils import restore_terminal, restore_cursor, set_enable_echo, prepare_render
 
 
 def mdashboard(

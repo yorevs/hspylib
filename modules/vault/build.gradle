@@ -3,7 +3,7 @@ ext {
   application = "$sourceRoot/main/__main__.py"
   versionFile = "$sourceRoot/main/vault/.version"
   requirementsFile = "$sourceRoot/main/requirements.txt"
-  pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test"
+  pythonPath = "$sourceRoot/main/vault:$sourceRoot/test"
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"

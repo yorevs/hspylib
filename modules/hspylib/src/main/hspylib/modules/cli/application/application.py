@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.application
+   @package: main.modules.cli.application
       @file: application_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -21,13 +21,13 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import Callable, List, Optional, Set, Tuple
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout, get_path
-from hspylib.modules.cli.application.argument import Argument
-from hspylib.modules.cli.application.argument_chain import ArgumentChain
-from hspylib.modules.cli.application.option import Option
+from core.config.app_config import AppConfigs
+from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
+from core.metaclass.singleton import Singleton
+from core.tools.commons import sysout, get_path
+from modules.cli.application.argument import Argument
+from modules.cli.application.argument_chain import ArgumentChain
+from modules.cli.application.option import Option
 
 
 class Application(metaclass=Singleton):

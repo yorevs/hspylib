@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.icons.font_awesome
+   @package: main.modules.cli.icons.font_awesome
       @file: form_icons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class FormIcons(Awesome):

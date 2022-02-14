@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.crud
+   test.crud
       @file: mysql_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,8 +19,8 @@ import os
 import sys
 import unittest
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import syserr
+from core.config.app_config import AppConfigs
+from core.tools.commons import syserr
 from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
 

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.enum
+   test.enum
       @file: test_enumeration.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,7 +17,7 @@
 import sys
 import unittest
 
-from hspylib.core.enums.enumeration import Enumeration
+from core.enums.enumeration import Enumeration
 
 
 class TestClass(unittest.TestCase):

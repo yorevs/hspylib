@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.qt.views
+   @package: main.modules.qt.views
       @file: main_qt_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 from abc import abstractmethod
 
 from PyQt5 import uic
-from hspylib.modules.qt.views.qt_view import QtView
+from modules.qt.views.qt_view import QtView
 
 
 class MainView(QtView):

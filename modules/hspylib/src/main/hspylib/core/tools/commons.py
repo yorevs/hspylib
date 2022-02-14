@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.hspylib.tools
+   @package: main.tools
       @file: commons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -21,10 +21,10 @@ import sys
 from datetime import timedelta, datetime
 from typing import Any, List, Optional, Tuple, Type, Union
 
-from hspylib.core.tools.constants import DATE_TIME_FORMAT
-from hspylib.core.tools.validator import Validator
-from hspylib.modules.cli.vt100.vt_codes import VtCodes
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from core.tools.constants import DATE_TIME_FORMAT
+from core.tools.validator import Validator
+from modules.cli.vt100.vt_codes import VtCodes
+from modules.cli.vt100.vt_colors import VtColors
 
 # pylint: disable=consider-using-f-string
 LOG_FMT = '{} {} {} {}{} {} '.format(

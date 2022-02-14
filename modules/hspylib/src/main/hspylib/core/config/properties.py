@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.config
+   @Package: main.config
       @file: properties.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,7 +20,7 @@ from configparser import ConfigParser
 from typing import Optional
 
 import yaml
-from hspylib.core.tools.commons import flatten_dict, run_dir
+from core.tools.commons import flatten_dict, run_dir
 
 
 class Properties:

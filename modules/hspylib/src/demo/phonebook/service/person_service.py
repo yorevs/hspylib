@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.phonebook.service
+   demo.phonebook.service
       @file: person_service.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.crud.crud_service import CrudService
-from hspylib.core.metaclass.singleton import Singleton
+from core.crud.crud_service import CrudService
+from core.metaclass.singleton import Singleton
 
 from phonebook.repository.person_repository import PersonRepository
 

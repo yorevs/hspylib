@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.web
+   @package: main.modules.web
       @file: soap_utils.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,9 +16,9 @@
 import logging as log
 from typing import Optional
 
-from hspylib.core.enums.http_method import HttpMethod
-from hspylib.modules.fetch.fetch import fetch
-from hspylib.modules.fetch.http_response import HttpResponse
+from core.enums.http_method import HttpMethod
+from modules.fetch.fetch import fetch
+from modules.fetch.http_response import HttpResponse
 from requests.structures import CaseInsensitiveDict
 
 

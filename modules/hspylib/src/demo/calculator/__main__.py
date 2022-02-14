@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.calculator
+   demo.calculator
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,10 +17,10 @@
 import os
 import sys
 
-from hspylib.core.tools.commons import dirname, read_version
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.vt100.vt_utils import exit_app
-from hspylib.modules.qt.qt_application import QtApplication
+from core.tools.commons import dirname, read_version
+from modules.cli.application.application import Application
+from modules.cli.vt100.vt_utils import exit_app
+from modules.qt.qt_application import QtApplication
 
 from calculator.ui.qt.views.main_qt_view import MainQtView
 

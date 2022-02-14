@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.table
+   @package: main.modules.cli.table
       @file: table_renderer.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,8 +16,8 @@
 import sys
 from typing import List, Optional
 
-from hspylib.core.tools.preconditions import check_argument
-from hspylib.core.tools.text_tools import TextAlignment, fit_text
+from core.tools.preconditions import check_argument
+from core.tools.text_tools import TextAlignment, fit_text
 
 
 class TableRenderer:

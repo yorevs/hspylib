@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.crud.db.mysql
+   @Package: main.crud.db.mysql
       @file: mysql_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,10 +19,10 @@ from abc import abstractmethod
 from typing import List, Optional, Tuple
 
 import pymysql
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.crud.db.db_repository import DBRepository
-from hspylib.core.crud.db.sql_factory import SqlFactory
-from hspylib.core.exception.exceptions import NotConnectedError
+from core.crud.crud_entity import CrudEntity
+from core.crud.db.db_repository import DBRepository
+from core.crud.db.sql_factory import SqlFactory
+from core.exception.exceptions import NotConnectedError
 from pymysql.err import OperationalError, ProgrammingError
 from requests.structures import CaseInsensitiveDict as SqlFilter
 

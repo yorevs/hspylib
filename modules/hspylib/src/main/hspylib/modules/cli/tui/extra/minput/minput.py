@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.extra
+   @package: main.modules.cli.tui.extra
       @file: minput.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,18 +16,18 @@ import re
 import time
 from typing import List, Optional
 
-from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.commons import syserr, sysout, new_dynamic_object
-from hspylib.core.tools.text_tools import camelcase, snakecase
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.tui.extra.minput.form_builder import FormBuilder
-from hspylib.modules.cli.tui.extra.minput.form_field import FormField
-from hspylib.modules.cli.tui.extra.minput.input_type import InputType
-from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, get_cursor_position, \
+from core.exception.exceptions import InvalidInputError
+from core.tools.commons import syserr, sysout, new_dynamic_object
+from core.tools.text_tools import camelcase, snakecase
+from modules.cli.icons.font_awesome.form_icons import FormIcons
+from modules.cli.keyboard import Keyboard
+from modules.cli.tui.extra.minput.form_builder import FormBuilder
+from modules.cli.tui.extra.minput.form_field import FormField
+from modules.cli.tui.extra.minput.input_type import InputType
+from modules.cli.tui.extra.minput.minput_utils import MInputUtils
+from modules.cli.vt100.vt_codes import vt_print
+from modules.cli.vt100.vt_colors import VtColors
+from modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, get_cursor_position, \
     set_enable_echo
 
 

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.shared
+   test.shared
       @file: decorators.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,7 +17,7 @@
 import os
 import unittest
 
-from hspylib.core.tools.commons import str_to_bool
+from core.tools.commons import str_to_bool
 
 it_disabled = str_to_bool(os.environ.get('HSPYLIB_IT_DISABLED', 'True'))
 

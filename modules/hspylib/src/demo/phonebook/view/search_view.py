@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.phonebook.view
+   demo.phonebook.view
       @file: search_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,12 +16,12 @@
 
 from typing import List
 
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.exception.exceptions import InputAbortedError
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
+from core.crud.crud_entity import CrudEntity
+from core.exception.exceptions import InputAbortedError
+from core.metaclass.singleton import Singleton
+from core.tools.commons import sysout
+from modules.cli.tui.menu.menu_utils import MenuUtils
+from modules.cli.tui.table.table_renderer import TableRenderer
 
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService

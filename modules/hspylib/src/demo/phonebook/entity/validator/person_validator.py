@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.demo.phonebook.entity.validator
+   demo.phonebook.entity.validator
       @file: person_validator.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,9 +16,9 @@
 
 from typing import List, Tuple
 
-from hspylib.core.tools.constants import RE_EMAIL_W3C
-from hspylib.core.tools.preconditions import check_argument, check_state
-from hspylib.core.tools.validator import Validator
+from core.tools.constants import RE_EMAIL_W3C
+from core.tools.preconditions import check_argument, check_state
+from core.tools.validator import Validator
 
 from phonebook.entity.Person import Person
 from phonebook.entity.validator.contact_validator import ContactValidator

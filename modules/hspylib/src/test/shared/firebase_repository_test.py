@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.crud.resources
+   test.crud.resources
       @file: firebase_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
+from core.crud.crud_entity import CrudEntity
+from core.crud.db.firebase.firebase_repository import FirebaseRepository
 
 from shared.entity_test import EntityTest
 

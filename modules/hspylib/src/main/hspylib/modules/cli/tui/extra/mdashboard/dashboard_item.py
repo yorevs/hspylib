@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.tui.extra.mdashboard
+   @package: main.modules.cli.tui.extra.mdashboard
       @file: dashboard_item.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,7 +14,7 @@
 """
 from typing import Callable
 
-from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class DashboardItem:

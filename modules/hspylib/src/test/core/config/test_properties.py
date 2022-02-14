@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.config
+   test.config
       @file: test_properties.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,8 +18,8 @@ import logging as log
 import sys
 import unittest
 
-from hspylib.core.config.properties import Properties
-from hspylib.core.tools.commons import get_path
+from core.config.properties import Properties
+from core.tools.commons import get_path
 
 TEST_DIR = get_path(__file__)
 

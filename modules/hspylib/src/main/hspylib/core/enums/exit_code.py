@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.enums
+   @Package: main.enums
       @file: exit_code.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
+from core.enums.enumeration import Enumeration
 
 
 class ExitCode(Enumeration):

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.modules.security
+   test.modules.security
       @file: test_security.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,8 +17,8 @@
 import sys
 import unittest
 
-from hspylib.core.tools.commons import safe_del_file
-from hspylib.modules.security.security import decode, decrypt, encode, encrypt
+from core.tools.commons import safe_del_file
+from modules.security.security import decode, decrypt, encode, encrypt
 
 PASSPHRASE = '12345'
 SALT = '1234567890'

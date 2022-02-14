@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.hspylib.tools
+   @package: main.tools
       @file: validator.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Tuple, Type
 
-from hspylib.core.tools.constants import DATE_TIME_FORMAT
+from core.tools.constants import DATE_TIME_FORMAT
 
 
 class Validator(ABC):

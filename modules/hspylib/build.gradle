@@ -3,7 +3,7 @@ ext {
   application = "$sourceRoot/main/__main__.py"
   versionFile = "$sourceRoot/main/hspylib/.version"
   requirementsFile = "$sourceRoot/main/requirements.txt"
-  pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
+  pythonPath = "$sourceRoot/main/hspylib:$sourceRoot/test:$sourceRoot/demo"
 }
 
 task copyReadme(type: Copy) {

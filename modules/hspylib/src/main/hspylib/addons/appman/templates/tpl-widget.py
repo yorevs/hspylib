@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.addons.appman.templates
+   main.addons.appman.templates
       @file: tpl-widget.py
    @created: Tue, 1 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,11 +14,11 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_code import ExitCode
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from addons.widman.widget import Widget
+from core.enums.exit_code import ExitCode
+from core.tools.commons import sysout
+from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class Widget_WIDGET_NAME_(Widget):

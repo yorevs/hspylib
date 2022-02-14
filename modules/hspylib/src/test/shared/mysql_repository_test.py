@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.crud.resources
+   test.crud.resources
       @file: mysql_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,8 +16,8 @@
 
 from typing import Tuple
 
-from hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
-from hspylib.core.tools.commons import get_or_default, str_to_bool
+from core.crud.db.mysql.mysql_repository import MySqlRepository
+from core.tools.commons import get_or_default, str_to_bool
 
 from shared.entity_test import EntityTest
 

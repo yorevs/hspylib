@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.main.hspylib.hspylib.crud
+   @Package: main.crud
       @file: crud_service.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 from typing import Generic, List, Optional, TypeVar
 from uuid import UUID
 
-from hspylib.core.exception.exceptions import EntityNotFoundError
+from core.exception.exceptions import EntityNotFoundError
 
 E = TypeVar('E')
 R = TypeVar('R')

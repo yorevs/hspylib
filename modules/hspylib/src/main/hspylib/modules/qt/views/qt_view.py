@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.qt.views
+   @package: main.modules.qt.views
       @file: qt_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,8 +19,8 @@ from typing import Tuple, Type, Optional
 from PyQt5 import uic
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
-from hspylib.core.tools.commons import run_dir
-from hspylib.core.tools.preconditions import check_argument, check_state
+from core.tools.commons import run_dir
+from core.tools.preconditions import check_argument, check_state
 
 
 class QtView(ABC):

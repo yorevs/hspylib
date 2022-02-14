@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.fetch
+   @package: main.modules.fetch
       @file: http_response.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,10 +13,10 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.content_type import ContentType
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.enums.http_method import HttpMethod
+from core.enums.charset import Charset
+from core.enums.content_type import ContentType
+from core.enums.http_code import HttpCode
+from core.enums.http_method import HttpMethod
 from requests.models import CaseInsensitiveDict, Response
 
 

@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.hspylib.crud
+   test.crud
       @file: firebase_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,8 +19,8 @@ import os
 import sys
 import unittest
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.modules.fetch.fetch import delete
+from core.config.app_config import AppConfigs
+from modules.fetch.fetch import delete
 from requests.structures import CaseInsensitiveDict
 
 from shared.decorators import integration_test

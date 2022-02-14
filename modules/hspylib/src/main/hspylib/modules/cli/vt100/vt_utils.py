@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.vt100
+   @package: main.modules.cli.vt100
       @file: vt_utils.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -21,10 +21,10 @@ import termios
 import tty
 from typing import List, Optional, Tuple
 
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from core.tools.commons import is_debugging, sysout
+from modules.cli.vt100.vt_100 import Vt100
+from modules.cli.vt100.vt_codes import vt_print
+from modules.cli.vt100.vt_colors import VtColors
 
 
 def require_terminal():

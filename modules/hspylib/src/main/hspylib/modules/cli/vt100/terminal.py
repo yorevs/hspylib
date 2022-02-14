@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.cli.vt100
+   @package: main.modules.cli.vt100
       @file: terminal.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,7 +20,7 @@ import subprocess
 from abc import ABC
 from typing import Optional
 
-from hspylib.core.tools.commons import syserr
+from core.tools.commons import syserr
 
 
 class Terminal(ABC):

@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   hspylib.main.hspylib.addons.widman
+   main.addons.widman
       @file: widget.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,8 +16,8 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 
-from hspylib.core.enums.exit_code import ExitCode
-from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from core.enums.exit_code import ExitCode
+from modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):

@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.hspylib.modules.cli.icons.emojis.faces
+# Package: main.modules.cli.icons.emojis.faces
 """Package initialization."""
 
 __all__ = [

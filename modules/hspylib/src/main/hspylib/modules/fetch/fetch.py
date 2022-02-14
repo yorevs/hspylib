@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.fetch
+   @package: main.modules.fetch
       @file: fetch.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,10 +16,10 @@
 from typing import Any, Optional, List, Union, Tuple
 
 import requests
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.enums.http_method import HttpMethod
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.fetch.http_response import HttpResponse
+from core.enums.http_code import HttpCode
+from core.enums.http_method import HttpMethod
+from core.tools.commons import sysout
+from modules.fetch.http_response import HttpResponse
 from requests import exceptions as ex
 
 

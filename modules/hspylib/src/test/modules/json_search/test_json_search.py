@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.modules.json_search
+   test.modules.json_search
       @file: test_json_search.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,7 +19,7 @@ import sys
 import unittest
 from os import path
 
-from hspylib.modules.json_search.json_search import JsonSearch
+from modules.json_search.json_search import JsonSearch
 
 SAMPLE_FILE = "resources/json_search_sample.json"
 

@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.hspylib.tools
+   @package: main.tools
       @file: keyboard.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,9 +19,9 @@ import sys
 from typing import Optional
 
 import getkey
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError
-from hspylib.modules.cli.vt100.vt_utils import require_terminal
+from core.enums.enumeration import Enumeration
+from core.exception.exceptions import KeyboardInputError
+from modules.cli.vt100.vt_utils import require_terminal
 
 require_terminal()
 

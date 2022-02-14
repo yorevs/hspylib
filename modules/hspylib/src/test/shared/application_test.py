@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.test.hspylib.shared
+   test.shared
       @file: application_test.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.argument_chain import ArgumentChain
+from modules.cli.application.application import Application
+from modules.cli.application.argument_chain import ArgumentChain
 
 
 class ApplicationTest(Application):
