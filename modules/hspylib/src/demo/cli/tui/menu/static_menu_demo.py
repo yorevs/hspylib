@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    hspylib.demo.cli.tui
-      @file: static_menu.py
+      @file: static_menu_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib

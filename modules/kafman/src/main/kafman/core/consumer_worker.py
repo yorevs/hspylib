@@ -20,8 +20,8 @@ from PyQt5.QtCore import pyqtSignal, QThread
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.error import ValueDeserializationError, ConsumeError
 from hspylib.core.tools.commons import syserr
-from kafman.core.schema.kafka_schema import KafkaSchema
-from kafman.core.schema.plain_schema import PlainSchema
+from core.schema.kafka_schema import KafkaSchema
+from core.schema.plain_schema import PlainSchema
 
 
 class ConsumerWorker(QThread):

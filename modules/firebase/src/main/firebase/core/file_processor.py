@@ -19,7 +19,7 @@ import os
 from abc import ABC
 from typing import List
 
-from firebase.entity.file_entry import FileEntry
+from entity.file_entry import FileEntry
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.preconditions import check_state, check_not_none, check_argument

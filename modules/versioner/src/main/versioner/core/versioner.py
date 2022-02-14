@@ -22,9 +22,9 @@ from typing import List
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir, sysout, syserr
 from hspylib.core.tools.preconditions import check_argument
-from versioner.entity.version import Version
-from versioner.enums.extension import Extension
-from versioner.exception.exceptions import MissingExtensionError
+from entity.version import Version
+from enums.extension import Extension
+from exception.exceptions import MissingExtensionError
 
 
 class Versioner(metaclass=Singleton):

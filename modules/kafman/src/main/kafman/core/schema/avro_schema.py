@@ -18,10 +18,10 @@ from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserialize
 from confluent_kafka.serialization import StringSerializer, StringDeserializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import search_dict, get_by_key_or_default
-from kafman.core.consumer_config import ConsumerConfig
-from kafman.core.producer_config import ProducerConfig
-from kafman.core.schema.kafka_schema import KafkaSchema
-from kafman.core.schema.schema_field import SchemaField
+from core.consumer_config import ConsumerConfig
+from core.producer_config import ProducerConfig
+from core.schema.kafka_schema import KafkaSchema
+from core.schema.schema_field import SchemaField
 
 
 class AvroSchema(KafkaSchema):
