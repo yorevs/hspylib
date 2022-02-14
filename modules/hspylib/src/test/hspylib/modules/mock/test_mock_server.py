@@ -19,7 +19,6 @@ import sys
 import unittest
 
 import requests
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
@@ -35,7 +34,7 @@ class TestClass(unittest.TestCase):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
         AppConfigs(
-            source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
+            resource_dir=resource_dir, log_dir=resource_dir
         )
         self.server = MockServer('localhost', MockServer.RANDOM_PORT)
         self.server.start()

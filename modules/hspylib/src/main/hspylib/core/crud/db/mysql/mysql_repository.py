@@ -19,13 +19,12 @@ from abc import abstractmethod
 from typing import List, Optional, Tuple
 
 import pymysql
-from pymysql.err import OperationalError, ProgrammingError
-from requests.structures import CaseInsensitiveDict as SqlFilter
-
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.db.db_repository import DBRepository
 from hspylib.core.crud.db.sql_factory import SqlFactory
 from hspylib.core.exception.exceptions import NotConnectedError
+from pymysql.err import OperationalError, ProgrammingError
+from requests.structures import CaseInsensitiveDict as SqlFilter
 
 
 class MySqlRepository(DBRepository):
@@ -96,7 +95,7 @@ class MySqlRepository(DBRepository):
         """TODO"""
         if self.is_connected():
             stm = self._sql_factory \
-                 .update(entity, filters=SqlFilter({"UUID": f'{entity.uuid}'})) \
+                .update(entity, filters=SqlFilter({"UUID": f'{entity.uuid}'})) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)

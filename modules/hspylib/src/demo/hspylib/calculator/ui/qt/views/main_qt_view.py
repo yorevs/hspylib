@@ -17,7 +17,6 @@
 import logging as log
 
 from PyQt5.QtCore import Qt
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.qt.views.qt_view import QtView
 

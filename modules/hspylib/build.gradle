@@ -1,11 +1,9 @@
 ext {
-  app_name = "HSPyLib-Core"
-  app_version = "${app_version}"
-  sourceRoot = "$rootDir/modules/hspylib/src"
+  sourceRoot = "$projectDir/src"
+  application = "$sourceRoot/main/__main__.py"
+  versionFile = "$sourceRoot/main/hspylib/.version"
+  requirementsFile = "$sourceRoot/main/requirements.txt"
   pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
-  application = "main/__main__.py"
-  versionFile = "$rootDir/modules/hspylib/src/main/hspylib/.version"
-  requirementsFile = "$rootDir/modules/hspylib/src/main/requirements.txt"
 }
 
 task copyReadme(type: Copy) {

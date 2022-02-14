@@ -34,7 +34,6 @@ from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
-
 from kafman.core.constants import StatusColor, MAX_HISTORY_SIZE_BYTES
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.consumer_worker import ConsumerWorker
@@ -75,9 +74,9 @@ class MainQtView(QtView):
 
         t = text.strip()
         return (
-           t.startswith('{') and t.endswith('}')) \
-           or (t.startswith('[') and t.endswith(']')
-        )
+                   t.startswith('{') and t.endswith('}')) \
+               or (t.startswith('[') and t.endswith(']')
+                   )
 
     def __init__(self):
         # Must come after the initialization above
@@ -169,7 +168,7 @@ class MainQtView(QtView):
         self.ui.tbtn_format_msg.clicked.connect(self._format_message)
         self.ui.tbtn_form_view.setText(DashboardIcons.FORM.value)
         self.ui.tbtn_form_view.clicked.connect(
-            lambda : self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value))
+            lambda: self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value))
         self.ui.tbtn_export_form.setText(DashboardIcons.EXPORT.value)
         self.ui.tbtn_export_form.clicked.connect(self._export_form)
         self.ui.txt_producer.textChanged.connect(self._verify_message)

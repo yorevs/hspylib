@@ -32,7 +32,7 @@ class TestMain(unittest.TestCase):
         resource_dir = f'{TEST_DIR}/resources'
         os.environ['ACTIVE_PROFILE'] = "test"
         self.configs = AppConfigs(
-            source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
+            resource_dir=resource_dir, log_dir=resource_dir
         )
         self.assertIsNotNone(self.configs)
         self.assertIsNotNone(AppConfigs.INSTANCE)

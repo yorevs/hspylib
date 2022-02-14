@@ -18,13 +18,12 @@ import os
 import sys
 import unittest
 
-from requests import exceptions as ex, ConnectTimeout
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.fetch import delete, get, head, patch, post, put, is_reachable
 from hspylib.modules.mock.mock_server import MockServer
+from requests import exceptions as ex, ConnectTimeout
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -35,7 +34,7 @@ class TestFetch(unittest.TestCase):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
         AppConfigs(
-            source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
+            resource_dir=resource_dir, log_dir=resource_dir
         )
         self.mock_server = MockServer('localhost', MockServer.RANDOM_PORT)
         self.mock_server.start()

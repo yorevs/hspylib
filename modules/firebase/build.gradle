@@ -1,10 +1,9 @@
 ext {
-  app_name = "HSPyLib-Firebase"
-  app_version = "${app_version}"
   sourceRoot = "$rootDir/modules/firebase/src"
-  application = "main/__main__.py"
-  versionFile = "$rootDir/modules/firebase/src/main/firebase/.version"
-  requirementsFile = "$rootDir/modules/firebase/src/main/requirements.txt"
+  application = "$sourceRoot/main/__main__.py"
+  versionFile = "$sourceRoot/main/firebase/.version"
+  requirementsFile = "$sourceRoot/main/requirements.txt"
+  pythonPath = "$sourceRoot:$sourceRoot/main:$sourceRoot/test"
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"

@@ -19,7 +19,6 @@ from contextlib import redirect_stdout, redirect_stderr
 from time import sleep
 
 from PyQt5.QtCore import QThread, pyqtSignal
-
 from hspylib.core.tools.commons import is_debugging, syserr
 from hspylib.core.tools.preconditions import check_argument
 

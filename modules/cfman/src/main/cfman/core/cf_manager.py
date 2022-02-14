@@ -17,6 +17,10 @@ import sys
 from time import sleep
 from typing import List, Optional
 
+from cfman.core.cf import CloudFoundry
+from cfman.core.cf_application import CFApplication
+from cfman.core.cf_endpoint import CFEndpoint
+from cfman.exception.exceptions import CFExecutionError, CFConnectionError, CFAuthenticationError
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import get_by_key_or_default, sysout, syserr
@@ -25,11 +29,6 @@ from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.extra.mselect import mselect
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.fetch.fetch import head
-
-from cfman.core.cf import CloudFoundry
-from cfman.core.cf_application import CFApplication
-from cfman.core.cf_endpoint import CFEndpoint
-from cfman.exception.exceptions import CFExecutionError, CFConnectionError, CFAuthenticationError
 
 
 class CFManager:

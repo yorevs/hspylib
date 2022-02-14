@@ -21,7 +21,6 @@ from uuid import uuid4
 
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from confluent_kafka.serialization import SerializationContext
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import file_is_not_empty, build_url, syserr
 from hspylib.core.tools.preconditions import check_state, check_not_none

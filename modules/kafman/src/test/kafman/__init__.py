@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Kafman v0.9.6
+# hspylib-kafman v0.9.6
 #
 # Package: test.kafman
 """Package initialization."""

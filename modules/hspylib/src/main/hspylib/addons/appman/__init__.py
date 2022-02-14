@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# HSPyLib-Core v0.11.12
+# hspylib v0.11.15
 #
 # Package: main.hspylib.addons.appman
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'appman', 
   'templates'
 ]
-__version__ = '0.11.12'
+__version__ = '0.11.15'

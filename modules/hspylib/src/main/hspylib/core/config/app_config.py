@@ -19,7 +19,7 @@ from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import dirname, log_init
+from hspylib.core.tools.commons import log_init, run_dir
 from hspylib.core.tools.preconditions import check_argument, check_state
 
 
@@ -28,30 +28,21 @@ class AppConfigs(metaclass=Singleton):
 
     DISPLAY_FORMAT = """
 AppConfigs
-  |-SourceDir = {}
+  |-RunDir = {}
   |-ResourceDir = {}
   |-LogFile = {}
   |-AppProperties:
    \\-{}
 """
 
-    def __init__(
-        self,
-        source_root: str = None,
-        resource_dir: str = None,
-        log_dir: str = None,
-        log_file: str = None):
-        self._source_dir = source_root \
-            if source_root else os.environ.get('SOURCE_ROOT', dirname(__file__))
-        check_argument(os.path.exists(self._source_dir), "Unable to find the source dir: {}", self._source_dir)
-
+    def __init__(self, resource_dir: str = None, log_dir: str = None, log_file: str = None):
         self._resource_dir = resource_dir \
-            if resource_dir else os.environ.get('RESOURCE_DIR', f"{self._source_dir}/resources")
-        check_argument(os.path.exists(self._resource_dir), "Unable to find the resources dir: {}", self._resource_dir)
+            if resource_dir else os.environ.get('RESOURCE_DIR', f"{run_dir()}/resources")
+        check_argument(os.path.exists(self._resource_dir), "Unable to locate resources dir: {}", self._resource_dir)
 
         self._log_dir = log_dir \
             if log_dir else os.environ.get('LOG_DIR', f"{self._resource_dir}/log")
-        check_argument(os.path.exists(self._log_dir), "Unable to find the log dir: {}", self._log_dir)
+        check_argument(os.path.exists(self._log_dir), "Unable to locate log dir: {}", self._log_dir)
 
         self._log_file = log_file \
             if log_file else f"{self._log_dir}/application.log"
@@ -64,7 +55,7 @@ AppConfigs
         return '\n{}{}{}'.format(
             '-=' * 40,
             self.DISPLAY_FORMAT.format(
-                str(self._source_dir),
+                str(run_dir()),
                 str(self._resource_dir),
                 str(self._log_file),
                 str(self._app_properties).replace('\n', '\n   |-')
@@ -82,7 +73,7 @@ AppConfigs
     def __len__(self) -> int:
         return len(self._app_properties)
 
-    def source_dir(self) -> Optional[str]:
+    def run_dir(self) -> Optional[str]:
         """TODO"""
         return self._source_dir
 

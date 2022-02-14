@@ -19,7 +19,6 @@ import os
 import sys
 import unittest
 
-
 from hspylib.core.config.app_config import AppConfigs
 from test.hspylib.shared.entity_test import EntityTest
 from test.hspylib.shared.file_db_repository_test import FileDbRepositoryTest
@@ -35,7 +34,7 @@ class TestClass(unittest.TestCase):
         self.db_file = "{}/test-file-db.txt".format(resource_dir)
         os.environ['ACTIVE_PROFILE'] = "test"
         self.configs = AppConfigs(
-            source_root=TEST_DIR, resource_dir=resource_dir, log_dir=resource_dir
+            resource_dir=resource_dir, log_dir=resource_dir
         )
         log.info(self.configs)
         self.repository = FileDbRepositoryTest(self.db_file)
