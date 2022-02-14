@@ -4,6 +4,10 @@
     Created: 1st July, 2020
 */
 
+plugins {
+    id 'idea'
+}
+
 subprojects {
 
   tasks.withType(Exec) {
