@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    hspylib.demo.cli.tui.extra
-      @file: menu_input.py
+      @file: menu_input_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib

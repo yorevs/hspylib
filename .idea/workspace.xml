@@ -52,11 +52,6 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="HsPyLib" type="f1a62948:ProjectNode" />
               </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="HsPyLib" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
             </expand>
             <select />
           </tree_state>
@@ -115,49 +110,26 @@
       <recent name="$PROJECT_DIR$/modules/hspylib/src/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.__main__">
-    <configuration name="__main__ (3)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="HsPyLib.versioner" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/versioner/src/main/versioner" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/versioner/src/main/versioner/__main__.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="__main__ (4)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="HsPyLib.hspylib" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/demo/calculator" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/calculator/__main__.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+  <component name="RunManager" selected="Python.application_demo">
+    <configuration name="hspylib [uninstallModule]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="uninstallModule" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -204,6 +176,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="menu_choose_demo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="HsPyLib.hspylib" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/tui/extra" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/tui/extra/menu_choose_demo.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="vt100_demo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="HsPyLib.hspylib" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -227,19 +221,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.__main__ (3)" />
-      <item itemvalue="Python.__main__ (4)" />
       <item itemvalue="Python.application_demo" />
       <item itemvalue="Python.vt100_demo" />
       <item itemvalue="Python.__main__" />
+      <item itemvalue="Python.menu_choose_demo" />
+      <item itemvalue="Gradle.hspylib [uninstallModule]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.application_demo" />
+        <item itemvalue="Gradle.hspylib [uninstallModule]" />
+        <item itemvalue="Python.menu_choose_demo" />
         <item itemvalue="Python.__main__" />
         <item itemvalue="Python.vt100_demo" />
-        <item itemvalue="Python.application_demo" />
-        <item itemvalue="Python.__main__ (4)" />
-        <item itemvalue="Python.__main__ (3)" />
       </list>
     </recent_temporary>
   </component>
@@ -286,11 +280,12 @@
     <SUITE FILE_PATH="coverage/hspylib$HsPyLib_Widgets.coverage" NAME="HsPyLib Widgets Coverage Results" MODIFIED="1644524559371" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main/hspylib" />
     <SUITE FILE_PATH="coverage/HsPyLib$awesome.coverage" NAME="awesome Coverage Results" MODIFIED="1644619821402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/hspylib/src/main/hspylib/modules/cli/icons/font_awesome" />
     <SUITE FILE_PATH="coverage/HsPyLib$menu_select.coverage" NAME="menu_select Coverage Results" MODIFIED="1644547300823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/core/src/demo/cli/tui/extra" />
+    <SUITE FILE_PATH="coverage/HsPyLib$menu_choose_demo.coverage" NAME="menu_choose_demo Coverage Results" MODIFIED="1644878024542" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/hspylib/src/demo/cli/tui/extra" />
     <SUITE FILE_PATH="coverage/HsPyLib$__main____1_.coverage" NAME="__main__ (1) Coverage Results" MODIFIED="1644877284080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/firebase/src/main/firebase" />
     <SUITE FILE_PATH="coverage/HsPyLib$dynamic_menu.coverage" NAME="dynamic_menu Coverage Results" MODIFIED="1644547309059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/core/src/demo/cli/tui/menu" />
     <SUITE FILE_PATH="coverage/HsPyLib$vt100_demo.coverage" NAME="vt100_demo Coverage Results" MODIFIED="1644877825568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/hspylib/src/demo/cli/vt100" />
     <SUITE FILE_PATH="coverage/HsPyLib$dashboard_icons.coverage" NAME="dashboard_icons Coverage Results" MODIFIED="1644620891301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/hspylib/src/main/hspylib/modules/cli/icons/font_awesome" />
-    <SUITE FILE_PATH="coverage/HsPyLib$application_demo.coverage" NAME="application_demo Coverage Results" MODIFIED="1644877809938" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/hspylib/src/demo/cli/application" />
+    <SUITE FILE_PATH="coverage/HsPyLib$application_demo.coverage" NAME="application_demo Coverage Results" MODIFIED="1644878557914" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/hspylib/src/demo/cli/application" />
     <SUITE FILE_PATH="coverage/hspylib$__main__.coverage" NAME="HsPyLib Widgets Coverage Results" MODIFIED="1644446551417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main/hspylib" />
     <SUITE FILE_PATH="coverage/HsPyLib$static_menu.coverage" NAME="static_menu Coverage Results" MODIFIED="1644547344239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/core/src/demo/cli/tui/menu" />
     <SUITE FILE_PATH="coverage/HsPyLib$menu_dashboard.coverage" NAME="menu_dashboard Coverage Results" MODIFIED="1644547275463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules/core/src/demo/cli/tui/extra" />
