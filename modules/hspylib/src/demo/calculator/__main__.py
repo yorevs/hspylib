@@ -16,7 +16,7 @@
 import sys
 
 from calculator.ui.qt.views.main_qt_view import MainQtView
-from core.tools.commons import dirname, read_version
+from core.tools.commons import read_version
 from modules.cli.application.application import Application
 from modules.cli.vt100.vt_utils import exit_app
 from modules.qt.qt_application import QtApplication
@@ -29,7 +29,7 @@ class Main(Application):
         pass
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, read_version(), 'A simple calculator using Qt', dirname(__file__))
+        super().__init__(app_name, read_version(), 'A simple calculator using Qt')
         self.main_view = QtApplication(MainQtView)
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
