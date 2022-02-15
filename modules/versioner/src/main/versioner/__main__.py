@@ -16,10 +16,11 @@
 import re
 import sys
 
-from hspylib.core.tools.commons import get_path, read_version, sysout, syserr
+from hspylib.core.tools.commons import get_path, read_version, syserr, sysout
 from hspylib.core.tools.constants import RE_VERSION_STRING
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
+
 from core.versioner import Versioner
 from enums.part import Part
 

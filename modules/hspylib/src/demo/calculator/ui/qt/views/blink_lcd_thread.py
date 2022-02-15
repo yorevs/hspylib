@@ -17,6 +17,7 @@ from threading import Thread
 from time import sleep
 
 from PyQt5.QtWidgets import QLCDNumber
+
 from core.config.app_config import AppConfigs
 
 

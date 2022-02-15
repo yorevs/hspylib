@@ -2,12 +2,12 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.modules.cli.tui
+# Package: main.hspylib.modules.cli.tui
 """Package initialization."""
 
 __all__ = [
-  'extra',
-  'menu',
+  'extra', 
+  'menu', 
   'table'
 ]
 __version__ = '0.11.15'

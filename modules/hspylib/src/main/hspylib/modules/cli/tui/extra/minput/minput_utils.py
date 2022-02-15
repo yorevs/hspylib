@@ -14,7 +14,7 @@
 """
 import re
 from abc import ABC
-from typing import Optional, Tuple, Any
+from typing import Any, Optional, Tuple
 
 from core.exception.exceptions import InvalidInputError
 from core.tools.preconditions import check_argument

@@ -33,7 +33,7 @@ HSPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) projec
 A menu select example:
 
 ```python
-from modules.cli.tui.extra.mselect import mselect
+from hspylib.modules.cli.tui.extra.mselect import mselect
 
 if __name__ == '__main__':
     it = [f"Item-{n}" for n in range(1, 21)]
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 A menu choose example:
 
 ```python
-from modules.cli.tui.extra.mchoose import mchoose
+from hspylib.modules.cli.tui.extra.mchoose import mchoose
 
 if __name__ == '__main__':
     it = [f"Item-{n}" for n in range(1, 21)]
@@ -59,9 +59,9 @@ if __name__ == '__main__':
 
 A Dashboard example:
 ```python
-from modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
-from modules.cli.icons.font_awesome.form_icons import FormIcons
-from modules.cli.tui.extra.mdashboard.mdashboard import MenuDashBoard, mdashboard
+from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import MenuDashBoard, mdashboard
 
 if __name__ == '__main__':
   # @formatter:off
@@ -106,8 +106,8 @@ if __name__ == '__main__':
 A form input example
 
 ```python
-from modules.cli.tui.extra.minput.input_validator import InputValidator
-from modules.cli.tui.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 
 if __name__ == '__main__':
     # @formatter:off
@@ -217,7 +217,7 @@ To upgrade HSPyLib use the command:
 
 To clone HSPyLib into your local machine issue the command:
 
-`# git clone https://github.com/yorevs/git`
+`# git clone https://github.com/yorevs/hspylib.git`
 
 ## Documentation
 

@@ -12,12 +12,10 @@
    Copyright 2021, HSPyLib team
 """
 
-from confluent_kafka.serialization import StringSerializer, StringDeserializer, SerializationContext
-
+from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
+from core.schema.kafka_schema import KafkaSchema
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
-
-from core.schema.kafka_schema import KafkaSchema
 
 
 class PlainSchema(KafkaSchema):

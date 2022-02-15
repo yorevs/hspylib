@@ -13,7 +13,6 @@
 
    Copyright 2021, HSPyLib team
 """
-
 from core.enums.enumeration import Enumeration
 
 

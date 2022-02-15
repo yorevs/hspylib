@@ -20,10 +20,10 @@ from typing import List, Optional
 from core.cf import CloudFoundry
 from core.cf_application import CFApplication
 from core.cf_endpoint import CFEndpoint
-from exception.exceptions import CFExecutionError, CFConnectionError, CFAuthenticationError
+from exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.tools.commons import get_by_key_or_default, sysout, syserr
+from hspylib.core.tools.commons import get_by_key_or_default, syserr, sysout
 from hspylib.modules.cli.tui.extra.mchoose import mchoose
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.extra.mselect import mselect

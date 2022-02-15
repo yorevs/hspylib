@@ -12,14 +12,14 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Union, Type, Optional, Tuple
+from typing import Optional, Tuple, Type, Union
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QLineEdit, QWidget, QSizePolicy, QAbstractSpinBox
+from core.schema.kafka_schema import KafkaSchema
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
-from core.schema.kafka_schema import KafkaSchema
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QAbstractSpinBox, QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QWidget
 
 
 class SchemaField:

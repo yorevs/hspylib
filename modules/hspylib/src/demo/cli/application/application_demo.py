@@ -13,7 +13,6 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import sys
 
 from core.tools.commons import sysout
@@ -51,7 +50,7 @@ class Main(Application):
         elif self.getarg('operation') == 'upload':
             print('Uploading')
 
-        sysout('Done')
+        sysout(f'Done, running from {self.run_dir}')
 
 
 if __name__ == "__main__":

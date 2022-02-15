@@ -14,8 +14,9 @@
    Copyright 2021, HSPyLib team
 """
 
-from modules.cli.application.application import Application
 from modules.cli.application.argument_chain import ArgumentChain
+
+from modules.cli.application.application import Application
 
 
 class ApplicationTest(Application):

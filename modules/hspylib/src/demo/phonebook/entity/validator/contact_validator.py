@@ -19,7 +19,6 @@ from typing import List, Tuple
 from core.tools.constants import RE_COMMON_2_30_NAME, RE_PHONE_NUMBER
 from core.tools.preconditions import check_argument, check_state
 from core.tools.validator import Validator
-
 from phonebook.entity.Contact import Contact
 
 

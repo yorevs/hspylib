@@ -22,7 +22,7 @@ from modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
 from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 from modules.cli.vt100.vt_codes import vt_print
 from modules.cli.vt100.vt_colors import VtColors
-from modules.cli.vt100.vt_utils import restore_terminal, restore_cursor, set_enable_echo, prepare_render
+from modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
 
 
 def mdashboard(

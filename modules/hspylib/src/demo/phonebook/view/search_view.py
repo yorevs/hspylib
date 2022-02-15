@@ -22,7 +22,6 @@ from core.metaclass.singleton import Singleton
 from core.tools.commons import sysout
 from modules.cli.tui.menu.menu_utils import MenuUtils
 from modules.cli.tui.table.table_renderer import TableRenderer
-
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 

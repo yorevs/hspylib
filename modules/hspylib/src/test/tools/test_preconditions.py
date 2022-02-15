@@ -16,9 +16,9 @@
 import sys
 import unittest
 
-from core.exception.exceptions import InvalidStateError, InvalidArgumentError
-from core.tools.preconditions import check_not_none, check_state, check_argument, check_element_index, \
-    check_index_in_range
+from core.exception.exceptions import InvalidArgumentError, InvalidStateError
+from core.tools.preconditions import check_argument, check_element_index, check_index_in_range, check_not_none, \
+    check_state
 
 
 class TestFetch(unittest.TestCase):

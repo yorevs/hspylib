@@ -19,12 +19,13 @@ from abc import abstractmethod
 from typing import List, Optional, Tuple
 
 import pymysql
+from pymysql.err import OperationalError, ProgrammingError
+from requests.structures import CaseInsensitiveDict as SqlFilter
+
 from core.crud.crud_entity import CrudEntity
 from core.crud.db.db_repository import DBRepository
 from core.crud.db.sql_factory import SqlFactory
 from core.exception.exceptions import NotConnectedError
-from pymysql.err import OperationalError, ProgrammingError
-from requests.structures import CaseInsensitiveDict as SqlFilter
 
 
 class MySqlRepository(DBRepository):

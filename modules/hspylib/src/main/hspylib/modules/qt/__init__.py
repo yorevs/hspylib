@@ -2,13 +2,13 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.modules.qt
+# Package: main.hspylib.modules.qt
 """Package initialization."""
 
 __all__ = [
-  'promotions',
-  'qt_application',
-  'stream_capturer',
+  'promotions', 
+  'qt_application', 
+  'stream_capturer', 
   'views'
 ]
 __version__ = '0.11.15'

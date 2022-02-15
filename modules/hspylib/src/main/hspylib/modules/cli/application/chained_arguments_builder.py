@@ -45,7 +45,6 @@ class ChainedArgumentsBuilder:
             dest=name,
             help=help_string or f'the {name}',
             action='append',
-            required=True,
             choices=choices)
 
         return self

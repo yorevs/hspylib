@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'cf', 
-  'cf_application', 
-  'cf_endpoint', 
-  'cf_manager'
+    'cf',
+    'cf_application',
+    'cf_endpoint',
+    'cf_manager'
 ]
 __version__ = '0.9.8'

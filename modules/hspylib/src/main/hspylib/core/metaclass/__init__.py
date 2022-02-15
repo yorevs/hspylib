@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.core.metaclass
+# Package: main.hspylib.core.metaclass
 """Package initialization."""
 
 __all__ = [

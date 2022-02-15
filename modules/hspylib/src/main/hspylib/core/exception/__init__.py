@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.core.exception
+# Package: main.hspylib.core.exception
 """Package initialization."""
 
 __all__ = [

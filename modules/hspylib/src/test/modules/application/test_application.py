@@ -16,13 +16,13 @@
 import sys
 import unittest
 
+from modules.cli.application.option import Option
+
 from core.config.app_config import AppConfigs
-from core.exception.exceptions import InvalidOptionError, InvalidArgumentError
+from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from core.metaclass.singleton import Singleton
 from core.tools.commons import dirname
 from modules.cli.application.application import Application
-from modules.cli.application.option import Option
-
 from shared.application_test import ApplicationTest
 
 

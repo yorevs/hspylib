@@ -19,7 +19,7 @@ from typing import Any, Optional
 
 from core.config.properties import Properties
 from core.metaclass.singleton import Singleton
-from core.tools.commons import log_init, run_dir
+from core.tools.commons import log_init, run_dir, touch_file
 from core.tools.preconditions import check_argument, check_state
 
 
@@ -48,6 +48,8 @@ AppConfigs
             if log_file else f"{self._log_dir}/application.log"
         check_state(log_init(self._log_file), "Unable to create logger: {}", self._log_file)
 
+        if not os.path.isfile(f'{resource_dir}/application.properties'):
+            touch_file(f'{resource_dir}/application.properties')
         self._app_properties = Properties(load_dir=self._resource_dir)
         log.info(self)
 

@@ -2,13 +2,13 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.core.crud.db
+# Package: main.hspylib.core.crud.db
 """Package initialization."""
 
 __all__ = [
-  'db_repository',
-  'firebase',
-  'mysql',
+  'db_repository', 
+  'firebase', 
+  'mysql', 
   'sql_factory'
 ]
 __version__ = '0.11.15'

@@ -12,7 +12,7 @@
 
    Copyright 2021, HSPyLib team
 """
-from typing import TypeVar, Any
+from typing import Any, TypeVar
 
 from core.tools.preconditions import check_argument
 from core.tools.text_tools import camelcase

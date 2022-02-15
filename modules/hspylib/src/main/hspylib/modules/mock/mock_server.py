@@ -19,13 +19,14 @@ from threading import Thread
 from time import sleep
 from typing import Optional, Tuple
 
+from requests.structures import CaseInsensitiveDict
+
 from core.enums.charset import Charset
 from core.enums.content_type import ContentType
 from core.enums.http_code import HttpCode
 from core.enums.http_method import HttpMethod
 from modules.fetch.http_response import HttpResponse
 from modules.mock.mock_server_handler import MockServerHandler
-from requests.structures import CaseInsensitiveDict
 
 
 class MockServer(HTTPServer):

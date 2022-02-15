@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from modules.cli.icons.emojis.emojis import Emoji, emj_print
+from modules.cli.icons.emojis.emojis import emj_print, Emoji
 
 
 class FaceSmiling(Emoji):

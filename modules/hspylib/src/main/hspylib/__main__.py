@@ -20,7 +20,7 @@ from addons.appman.app_extension import AppExtension
 from addons.appman.app_type import AppType
 from addons.appman.appman import AppManager
 from addons.widman.widman import WidgetManager
-from core.tools.commons import get_path, read_version, run_dir, syserr, sysout, dirname
+from core.tools.commons import dirname, get_path, read_version, run_dir, syserr, sysout
 from modules.cli.application.application import Application
 
 HERE = get_path(__file__)

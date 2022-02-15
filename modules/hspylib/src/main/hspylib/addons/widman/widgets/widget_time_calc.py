@@ -24,7 +24,7 @@ from core.enums.exit_code import ExitCode
 from core.exception.exceptions import WidgetExecutionError
 from core.tools.commons import sysout
 from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from modules.cli.tui.extra.minput.minput import minput, MenuInput
+from modules.cli.tui.extra.minput.minput import MenuInput, minput
 
 
 class WidgetTimeCalc(Widget):

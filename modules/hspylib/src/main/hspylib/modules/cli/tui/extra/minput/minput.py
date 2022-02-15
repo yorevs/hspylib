@@ -17,7 +17,7 @@ import time
 from typing import List, Optional
 
 from core.exception.exceptions import InvalidInputError
-from core.tools.commons import syserr, sysout, new_dynamic_object
+from core.tools.commons import new_dynamic_object, syserr, sysout
 from core.tools.text_tools import camelcase, snakecase
 from modules.cli.icons.font_awesome.form_icons import FormIcons
 from modules.cli.keyboard import Keyboard
@@ -27,7 +27,7 @@ from modules.cli.tui.extra.minput.input_type import InputType
 from modules.cli.tui.extra.minput.minput_utils import MInputUtils
 from modules.cli.vt100.vt_codes import vt_print
 from modules.cli.vt100.vt_colors import VtColors
-from modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, get_cursor_position, \
+from modules.cli.vt100.vt_utils import get_cursor_position, prepare_render, restore_cursor, restore_terminal, \
     set_enable_echo
 
 

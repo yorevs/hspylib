@@ -18,12 +18,13 @@ import os
 import sys
 import unittest
 
+from requests import ConnectTimeout, exceptions as ex
+
 from core.config.app_config import AppConfigs
 from core.enums.http_code import HttpCode
 from core.enums.http_method import HttpMethod
-from modules.fetch.fetch import delete, get, head, patch, post, put, is_reachable
+from modules.fetch.fetch import delete, get, head, is_reachable, patch, post, put
 from modules.mock.mock_server import MockServer
-from requests import exceptions as ex, ConnectTimeout
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

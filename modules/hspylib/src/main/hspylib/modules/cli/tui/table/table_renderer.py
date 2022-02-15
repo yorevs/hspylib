@@ -17,7 +17,7 @@ import sys
 from typing import List, Optional
 
 from core.tools.preconditions import check_argument
-from core.tools.text_tools import TextAlignment, fit_text
+from core.tools.text_tools import fit_text, TextAlignment
 
 
 class TableRenderer:

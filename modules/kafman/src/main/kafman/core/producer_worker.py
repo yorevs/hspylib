@@ -14,16 +14,16 @@
 
 import threading
 from time import sleep
-from typing import List, Any, Union
+from typing import Any, List, Union
 
-from PyQt5.QtCore import pyqtSignal, QThread
 from avro.io import AvroTypeException
 from confluent_kafka import SerializingProducer
 from confluent_kafka.cimpl import KafkaError, Message
 from confluent_kafka.error import ValueSerializationError
-from hspylib.core.tools.commons import syserr
 from core.schema.kafka_schema import KafkaSchema
 from core.schema.plain_schema import PlainSchema
+from hspylib.core.tools.commons import syserr
+from PyQt5.QtCore import pyqtSignal, QThread
 
 
 class ProducerWorker(QThread):

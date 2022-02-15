@@ -13,11 +13,12 @@
    Copyright 2021, HSPyLib team
 """
 
+from requests.models import CaseInsensitiveDict, Response
+
 from core.enums.charset import Charset
 from core.enums.content_type import ContentType
 from core.enums.http_code import HttpCode
 from core.enums.http_method import HttpMethod
-from requests.models import CaseInsensitiveDict, Response
 
 
 class HttpResponse:
@@ -35,14 +36,15 @@ class HttpResponse:
             Charset(str(response.encoding).upper()) if response.encoding else None,
         )
 
-    def __init__(self,
-                 method: HttpMethod,
-                 url: str,
-                 status_code: HttpCode = None,
-                 body: str = None,
-                 headers: CaseInsensitiveDict = None,
-                 encoding: Charset = Charset.UTF_8,
-                 content_type=ContentType.APPLICATION_JSON):
+    def __init__(
+        self,
+        method: HttpMethod,
+        url: str,
+        status_code: HttpCode = None,
+        body: str = None,
+        headers: CaseInsensitiveDict = None,
+        encoding: Charset = Charset.UTF_8,
+        content_type=ContentType.APPLICATION_JSON):
         self.method = method
         self.url = url
         self.status_code = status_code

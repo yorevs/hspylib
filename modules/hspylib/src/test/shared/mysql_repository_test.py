@@ -18,7 +18,6 @@ from typing import Tuple
 
 from core.crud.db.mysql.mysql_repository import MySqlRepository
 from core.tools.commons import get_or_default, str_to_bool
-
 from shared.entity_test import EntityTest
 
 
