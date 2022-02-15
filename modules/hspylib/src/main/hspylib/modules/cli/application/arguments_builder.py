@@ -16,6 +16,7 @@ from argparse import ArgumentParser
 
 
 class ArgumentsBuilder:
+    """TODO"""
 
     def __init__(self, arg_parser: ArgumentParser):
         self._arg_parser = arg_parser
@@ -23,13 +24,15 @@ class ArgumentsBuilder:
     def argument(
         self,
         name: str,
-        help: str = None,
+        help_string: str = None,
         choices: list = None) -> 'ArgumentsBuilder':
+        """TODO"""
 
         self._arg_parser.add_argument(
             dest=name,
-            help=help or f'the {name}',
+            help=help_string or f'the {name}',
             action='append',
+            required=True,
             choices=choices)
 
         return self

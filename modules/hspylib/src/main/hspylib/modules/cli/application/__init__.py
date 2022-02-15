@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'application',
-  'argument',
-  'argument_chain',
-  'option'
+    'application',
+    'argument',
+    'argument_chain',
+    'option'
 ]
 __version__ = '0.11.15'

@@ -23,8 +23,6 @@ APP_NAME = 'AppTest'
 
 VERSION = (0, 1, 0)
 
-USAGE = "AppTest [-i input] [-o output] <one|two|three> <anything>"
-
 DESCRIPTION = "HsPyLib application Demo"
 
 EPILOG = "This is just a simple application demo"
@@ -35,26 +33,27 @@ class Main(Application):
     def _setup_arguments(self) -> None:
         # @formatter:off
         self._with_options()\
-                .option('output', 'o', 'output', 'the output file') \
-                .option('input', 'i', 'input', 'the input file')
-        self._with_arguments()\
-                .argument('number', 'the number to be used', choices=['one', 'two', 'three']) \
-                .argument('anything', 'any value')
+            .option('verbose', 'v', 'verbose', 'to be more verbose')
+        self._with_chained_args('operation', 'Upload/Download files from/to server')\
+            .argument('download', 'download a file from server') \
+                .add_argument('url', 'the url of the file') \
+            .argument('upload', 'upload a file to server') \
+                .add_argument('source', 'the source file') \
+                .add_argument('url', 'the url of the file') \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         self._exec_application()
 
     def _exec_application(self) -> None:
-        if self.getarg('number') == 'one':
-            sysout(f"One: {self.getarg('anything')}")
-        elif self.getarg('number') == 'two':
-            sysout(f"Two: {self.getarg('anything')}")
-        elif self.getarg('number') == 'three':
-            sysout(f"Three: {self.getarg('anything')}")
+        if self.getarg('operation') == 'download':
+            print('Downloading')
+        elif self.getarg('operation') == 'upload':
+            print('Uploading')
+
         sysout('Done')
 
 
 if __name__ == "__main__":
     # Application entry point
-    Main('AppTest', VERSION, DESCRIPTION, USAGE, EPILOG).INSTANCE.run(sys.argv[1:])
+    Main('AppTest', VERSION, DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])
