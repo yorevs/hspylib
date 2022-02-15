@@ -4,7 +4,6 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   demo.calculator
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -34,12 +33,8 @@ class Main(Application):
     # Version tuple: (major,minor,build)
     VERSION = (0, 9, 0)
 
-    # Application usage message
-    USAGE = f"""
-    Usage: {APP_NAME} <option> [arguments]"""
-
     def __init__(self, app_name: str):
-        super().__init__(app_name, read_version(), self.USAGE, dirname(__file__))
+        super().__init__(app_name, read_version(), 'A simple calculator using Qt', dirname(__file__))
         self.main_view = QtApplication(MainQtView)
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument

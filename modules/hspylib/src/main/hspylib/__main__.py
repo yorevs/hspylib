@@ -22,7 +22,6 @@ from addons.appman.appman import AppManager
 from addons.widman.widman import WidgetManager
 from core.tools.commons import get_path, read_version, run_dir, syserr, sysout, dirname
 from modules.cli.application.application import Application
-from modules.cli.application.argument_chain import ArgumentChain
 
 HERE = get_path(__file__)
 
