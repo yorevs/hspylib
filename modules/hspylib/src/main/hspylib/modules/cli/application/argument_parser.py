@@ -1,5 +1,5 @@
 import sys
-from argparse import ArgumentParser, ArgumentError
+from argparse import ArgumentError, ArgumentParser
 from gettext import gettext as _
 
 

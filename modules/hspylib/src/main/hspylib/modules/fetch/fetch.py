@@ -13,14 +13,15 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Any, Optional, List, Union, Tuple
+from typing import Any, List, Optional, Tuple, Union
 
 import requests
+from requests import exceptions as ex
+
 from core.enums.http_code import HttpCode
 from core.enums.http_method import HttpMethod
 from core.tools.commons import sysout
 from modules.fetch.http_response import HttpResponse
-from requests import exceptions as ex
 
 
 def fetch(

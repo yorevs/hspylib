@@ -18,13 +18,14 @@ import logging as log
 import os
 import uuid
 
+from requests.structures import CaseInsensitiveDict
+
 from core.config.app_config import AppConfigs
 from core.enums.charset import Charset
 from core.enums.http_code import HttpCode
 from core.metaclass.singleton import Singleton
 from core.tools.preconditions import check_argument, check_state
 from modules.fetch.fetch import get
-from requests.structures import CaseInsensitiveDict
 
 
 class FirebaseConfig(metaclass=Singleton):

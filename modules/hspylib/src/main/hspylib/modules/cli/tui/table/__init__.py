@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.modules.cli.tui.table
+# Package: main.hspylib.modules.cli.tui.table
 """Package initialization."""
 
 __all__ = [

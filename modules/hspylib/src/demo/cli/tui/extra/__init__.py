@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-    'menu_choose_demo.py',
-    'menu_dashboard_demo.py',
-    'menu_input_demo.py',
-    'menu_select_demo.py'
+  'menu_choose_demo', 
+  'menu_dashboard_demo', 
+  'menu_input_demo', 
+  'menu_select_demo'
 ]
 __version__ = '0.11.15'

@@ -2,13 +2,13 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.addons.appman.templates
+# Package: main.hspylib.addons.appman.templates
 """Package initialization."""
 
 __all__ = [
-  'tpl-main',
-  'tpl-main-qt',
-  'tpl-test_main',
+  'tpl-main', 
+  'tpl-main-qt', 
+  'tpl-test_main', 
   'tpl-widget'
 ]
 __version__ = '0.11.15'

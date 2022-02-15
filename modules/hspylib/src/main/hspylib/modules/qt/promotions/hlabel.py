@@ -16,7 +16,7 @@ from typing import Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFontMetrics, QResizeEvent, QTextDocument
-from PyQt5.QtWidgets import QLabel, QWidget, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget
 
 
 class HLabel(QLabel):

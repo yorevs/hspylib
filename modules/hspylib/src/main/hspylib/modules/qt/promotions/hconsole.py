@@ -16,8 +16,8 @@
 from typing import Optional
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QColor, QTextCursor, QCursor
-from PyQt5.QtWidgets import QWidget, QTextBrowser
+from PyQt5.QtGui import QColor, QCursor, QFont, QTextCursor
+from PyQt5.QtWidgets import QTextBrowser, QWidget
 
 
 class HConsole(QTextBrowser):

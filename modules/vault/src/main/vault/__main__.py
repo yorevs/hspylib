@@ -18,9 +18,10 @@ import logging as log
 import sys
 from datetime import datetime
 
-from hspylib.core.tools.commons import get_path, read_version, dirname, syserr
+from hspylib.core.tools.commons import dirname, get_path, read_version, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.argument_chain import ArgumentChain
+
 from core.vault import Vault
 from core.vault_config import VaultConfig
 

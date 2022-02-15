@@ -12,7 +12,6 @@
 
    Copyright 2021, HSPyLib team
 """
-import argparse
 import atexit
 import logging as log
 import os
@@ -25,7 +24,7 @@ from typing import Optional, Tuple
 from core.config.app_config import AppConfigs
 from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from core.metaclass.singleton import Singleton
-from core.tools.commons import sysout, get_path
+from core.tools.commons import get_path, sysout
 from modules.cli.application.argument_parser import HSArgumentParser
 from modules.cli.application.arguments_builder import ArgumentsBuilder
 from modules.cli.application.options_builder import OptionsBuilder
@@ -66,7 +65,7 @@ class Application(metaclass=Singleton):
         signal.signal(signal.SIGINT, self.exit_handler)
         signal.signal(signal.SIGTERM, self.exit_handler)
 
-        self.run_dir = get_path(__file__)
+        self.run_dir = os.getcwd()
         self._arg_parser = HSArgumentParser(
             prog=name, allow_abbrev=False, description=description, usage=usage, epilog=epilog)
         self._arg_parser.add_argument(
@@ -76,7 +75,7 @@ class Application(metaclass=Singleton):
         self._app_description = description
         self._args = {}
 
-        if os.path.isfile(f'{resource_dir}/application.properties'):
+        if os.path.exists(f'{resource_dir}'):
             self.configs = AppConfigs(
                 resource_dir=resource_dir,
                 log_dir=log_dir

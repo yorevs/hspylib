@@ -20,7 +20,7 @@ from typing import List
 from addons.widman.widget import Widget
 from addons.widman.widget_entry import WidgetEntry
 from core.enums.exit_code import ExitCode
-from core.exception.exceptions import WidgetNotFoundError, WidgetExecutionError
+from core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from core.metaclass.singleton import Singleton
 from core.tools.commons import get_path
 from core.tools.preconditions import check_state

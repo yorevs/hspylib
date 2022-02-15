@@ -14,15 +14,15 @@
 from os import path
 from typing import List
 
-from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDeserializer
-from confluent_kafka.serialization import StringSerializer, StringDeserializer
-from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import SchemaRegistryError
-from hspylib.core.tools.commons import get_by_key_or_default
+from confluent_kafka.schema_registry.json_schema import JSONDeserializer, JSONSerializer
+from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from core.consumer_config import ConsumerConfig
 from core.producer_config import ProducerConfig
 from core.schema.kafka_schema import KafkaSchema
 from core.schema.schema_field import SchemaField
+from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import SchemaRegistryError
+from hspylib.core.tools.commons import get_by_key_or_default
 
 
 class JsonSchema(KafkaSchema):

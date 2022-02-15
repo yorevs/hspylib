@@ -15,7 +15,7 @@
 
 from typing import Tuple, TypeVar
 
-from core.exception.exceptions import InvalidStateError, InvalidArgumentError
+from core.exception.exceptions import InvalidArgumentError, InvalidStateError
 
 T = TypeVar('T')
 

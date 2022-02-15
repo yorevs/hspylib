@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'indexes', 
-  'main_qt_view'
+    'indexes',
+    'main_qt_view'
 ]
 __version__ = '0.9.7'

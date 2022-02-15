@@ -21,7 +21,7 @@ from modules.cli.icons.font_awesome.form_icons import FormIcons
 from modules.cli.keyboard import Keyboard
 from modules.cli.vt100.vt_codes import vt_print
 from modules.cli.vt100.vt_colors import VtColors
-from modules.cli.vt100.vt_utils import restore_cursor, screen_size, restore_terminal, prepare_render
+from modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
 
 T = TypeVar('T')
 

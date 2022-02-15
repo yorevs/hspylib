@@ -24,11 +24,12 @@ from hspylib.core.enums.charset import Charset
 
 class FirebaseEntry:
 
-    def __init__(self,
-                 name: str = None,
-                 last_update_user: str = None,
-                 files: List[FileEntry] = None,
-                 encoding: Charset = Charset.UTF_8):
+    def __init__(
+        self,
+        name: str = None,
+        last_update_user: str = None,
+        files: List[FileEntry] = None,
+        encoding: Charset = Charset.UTF_8):
         self.name = name
         self.last_update_user = last_update_user
         self.files = files if files else []

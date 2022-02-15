@@ -17,10 +17,11 @@ import logging as log
 from http.server import BaseHTTPRequestHandler
 from typing import List, Tuple
 
+from requests.structures import CaseInsensitiveDict
+
 from core.enums.content_type import ContentType
 from core.enums.http_code import HttpCode
 from core.enums.http_method import HttpMethod
-from requests.structures import CaseInsensitiveDict
 
 
 class MockServerHandler(BaseHTTPRequestHandler):

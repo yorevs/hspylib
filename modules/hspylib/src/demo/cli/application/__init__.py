@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'application_demo'
+  'application_demo', 
+  'test'
 ]
 __version__ = '0.11.15'

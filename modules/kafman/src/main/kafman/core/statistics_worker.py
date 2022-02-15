@@ -14,8 +14,8 @@
 
 from typing import Tuple
 
-from PyQt5.QtCore import QThread, pyqtSignal
-from hspylib.core.tools.commons import now_ms, new_dynamic_object
+from hspylib.core.tools.commons import new_dynamic_object, now_ms
+from PyQt5.QtCore import pyqtSignal, QThread
 
 
 class StatisticsWorker(QThread):

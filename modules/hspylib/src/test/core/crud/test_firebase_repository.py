@@ -19,10 +19,10 @@ import os
 import sys
 import unittest
 
-from core.config.app_config import AppConfigs
-from modules.fetch.fetch import delete
 from requests.structures import CaseInsensitiveDict
 
+from core.config.app_config import AppConfigs
+from modules.fetch.fetch import delete
 from shared.decorators import integration_test
 from shared.entity_test import EntityTest
 from shared.firebase_repository_test import FirebaseRepositoryTest

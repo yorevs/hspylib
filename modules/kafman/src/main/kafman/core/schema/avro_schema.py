@@ -14,14 +14,14 @@
 from os import path
 from typing import List
 
-from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
-from confluent_kafka.serialization import StringSerializer, StringDeserializer
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import search_dict, get_by_key_or_default
+from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
+from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from core.consumer_config import ConsumerConfig
 from core.producer_config import ProducerConfig
 from core.schema.kafka_schema import KafkaSchema
 from core.schema.schema_field import SchemaField
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import get_by_key_or_default, search_dict
 
 
 class AvroSchema(KafkaSchema):

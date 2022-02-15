@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  '__main__', 
-  'core', 
-  'exception'
+    '__main__',
+    'core',
+    'exception'
 ]
 __version__ = '0.9.8'

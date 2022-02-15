@@ -18,4 +18,3 @@ indent_size = 2
 # 4 space indentation
 [*.py]
 indent_size = 4
-

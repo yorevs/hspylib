@@ -2,11 +2,11 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.modules.cli.icons
+# Package: main.hspylib.modules.cli.icons
 """Package initialization."""
 
 __all__ = [
-  'emojis',
+  'emojis', 
   'font_awesome'
 ]
 __version__ = '0.11.15'

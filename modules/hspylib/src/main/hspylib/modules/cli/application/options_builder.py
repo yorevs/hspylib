@@ -13,6 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 from argparse import ArgumentParser
+from typing import Any
 
 
 class OptionsBuilder:

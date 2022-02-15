@@ -17,10 +17,11 @@ import logging as log
 import os
 from typing import List, Optional
 
+from requests.structures import CaseInsensitiveDict
+
 from core.crud.crud_entity import CrudEntity
 from core.metaclass.singleton import Singleton
 from core.tools.preconditions import check_argument, check_state
-from requests.structures import CaseInsensitiveDict
 
 
 class SqlFactory(metaclass=Singleton):

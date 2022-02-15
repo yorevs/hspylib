@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'extension', 
-  'part'
+    'extension',
+    'part'
 ]
 __version__ = '0.9.6'

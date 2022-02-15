@@ -17,10 +17,10 @@
 from datetime import datetime
 from typing import List, Tuple
 
+from entity.vault_entry import VaultEntry
 from hspylib.core.tools.constants import RE_COMMON_2_30_NAME
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
-from entity.vault_entry import VaultEntry
 
 
 class EntryValidator(Validator):

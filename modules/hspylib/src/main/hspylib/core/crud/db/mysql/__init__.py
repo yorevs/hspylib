@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.core.crud.db.mysql
+# Package: main.hspylib.core.crud.db.mysql
 """Package initialization."""
 
 __all__ = [

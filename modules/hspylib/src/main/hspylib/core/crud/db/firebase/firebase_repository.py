@@ -19,14 +19,15 @@ import uuid
 from abc import abstractmethod
 from typing import Optional
 
+from requests.exceptions import HTTPError
+from requests.structures import CaseInsensitiveDict
+
 from core.crud.crud_entity import CrudEntity
 from core.crud.crud_repository import CrudRepository
 from core.crud.db.firebase.firebase_config import FirebaseConfig
 from core.enums.http_code import HttpCode
 from core.tools.preconditions import check_not_none, check_state
 from modules.fetch.fetch import delete, get, put
-from requests.exceptions import HTTPError
-from requests.structures import CaseInsensitiveDict
 
 
 class FirebaseRepository(CrudRepository):

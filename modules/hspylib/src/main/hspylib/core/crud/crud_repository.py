@@ -16,8 +16,9 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from core.crud.crud_entity import CrudEntity
 from requests.structures import CaseInsensitiveDict
+
+from core.crud.crud_entity import CrudEntity
 
 
 class CrudRepository(ABC):

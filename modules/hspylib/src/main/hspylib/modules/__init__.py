@@ -2,17 +2,17 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.modules
+# Package: main.hspylib.modules
 """Package initialization."""
 
 __all__ = [
-  'cli',
-  'eventbus',
-  'fetch',
-  'json_search',
-  'mock',
-  'qt',
-  'security',
+  'cli', 
+  'eventbus', 
+  'fetch', 
+  'json_search', 
+  'mock', 
+  'qt', 
+  'security', 
   'web'
 ]
 __version__ = '0.11.15'

@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'validator', 
-  'vault_entry'
+    'validator',
+    'vault_entry'
 ]
 __version__ = '0.9.9'

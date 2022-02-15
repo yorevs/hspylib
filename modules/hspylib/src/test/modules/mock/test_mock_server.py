@@ -19,6 +19,7 @@ import sys
 import unittest
 
 import requests
+
 from core.config.app_config import AppConfigs
 from core.enums.http_code import HttpCode
 from core.enums.http_method import HttpMethod

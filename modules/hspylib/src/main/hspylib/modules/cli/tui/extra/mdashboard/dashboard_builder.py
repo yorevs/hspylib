@@ -12,7 +12,7 @@
 
    Copyright 2021, HSPyLib team
 """
-from typing import List, Callable, Optional
+from typing import Callable, List, Optional
 
 from modules.cli.icons.font_awesome.awesome import Awesome
 from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem

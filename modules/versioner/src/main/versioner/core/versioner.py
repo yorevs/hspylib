@@ -19,12 +19,12 @@ import os
 import re
 from typing import List
 
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import run_dir, sysout, syserr
-from hspylib.core.tools.preconditions import check_argument
 from entity.version import Version
 from enums.extension import Extension
 from exception.exceptions import MissingExtensionError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import run_dir, syserr, sysout
+from hspylib.core.tools.preconditions import check_argument
 
 
 class Versioner(metaclass=Singleton):

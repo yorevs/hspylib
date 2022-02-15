@@ -2,16 +2,16 @@
 #
 # hspylib v0.11.15
 #
-# Package: main.core.enums
+# Package: main.hspylib.core.enums
 """Package initialization."""
 
 __all__ = [
-  'charset',
-  'content_type',
-  'database_type',
-  'enumeration',
-  'exit_code',
-  'http_code',
+  'charset', 
+  'content_type', 
+  'database_type', 
+  'enumeration', 
+  'exit_code', 
+  'http_code', 
   'http_method'
 ]
 __version__ = '0.11.15'
