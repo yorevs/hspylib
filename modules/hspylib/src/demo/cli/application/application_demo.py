@@ -50,7 +50,7 @@ class Main(Application):
         elif self.getarg('operation') == 'upload':
             print('Uploading')
 
-        sysout(f'Done, running from {self.run_dir}')
+        sysout(f'Done, running from {self._run_dir}')
 
 
 if __name__ == "__main__":

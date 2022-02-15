@@ -24,11 +24,11 @@ from typing import Optional, Tuple
 from core.config.app_config import AppConfigs
 from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from core.metaclass.singleton import Singleton
-from core.tools.commons import get_path, sysout
+from core.tools.commons import sysout
 from modules.cli.application.argument_parser import HSArgumentParser
 from modules.cli.application.arguments_builder import ArgumentsBuilder
+from modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
 from modules.cli.application.options_builder import OptionsBuilder
-from src.main.hspylib.modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
 
 
 class Application(metaclass=Singleton):
@@ -65,7 +65,7 @@ class Application(metaclass=Singleton):
         signal.signal(signal.SIGINT, self.exit_handler)
         signal.signal(signal.SIGTERM, self.exit_handler)
 
-        self.run_dir = os.getcwd()
+        self._run_dir = os.getcwd()
         self._arg_parser = HSArgumentParser(
             prog=name, allow_abbrev=False, description=description, usage=usage, epilog=epilog)
         self._arg_parser.add_argument(
@@ -75,9 +75,9 @@ class Application(metaclass=Singleton):
         self._app_description = description
         self._args = {}
 
-        if os.path.exists(f'{resource_dir}'):
+        if os.path.exists(f'{resource_dir}') or os.path.exists(f'{self._run_dir}/resources'):
             self.configs = AppConfigs(
-                resource_dir=resource_dir,
+                resource_dir=resource_dir or f'{self._run_dir}/resources',
                 log_dir=log_dir
             )
 
