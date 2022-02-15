@@ -18,28 +18,28 @@ import sys
 
 from core.tools.commons import sysout
 from modules.cli.application.application import Application
-from modules.cli.application.argument_chain import ArgumentChain
+
+APP_NAME = 'AppTest'
 
 VERSION = (0, 1, 0)
 
-USAGE = """
-Usage: AppTest [-i input] [-o output] <one|two|three> <anything>
-""".format()
+USAGE = "AppTest [-i input] [-o output] <one|two|three> <anything>"
+
+DESCRIPTION = "HsPyLib application Demo"
+
+EPILOG = "This is just a simple application demo"
 
 
 class Main(Application):
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
-        self._with_option('o', 'output', True, lambda arg: print(f'Option -o | --output = {arg}'))
-        self._with_option('i', 'input', True, lambda arg: print(f'Option -i | --input = {arg}'))
+    def _setup_arguments(self) -> None:
         # @formatter:off
-        self._with_arguments(
-            ArgumentChain.builder()
-                .when('number', 'one|two|three', False)
-                    .require('anything', '.+')
-                    .end()
-                .build()
-        )
+        self._with_options()\
+                .option('output', 'o', 'output', 'the output file') \
+                .option('input', 'i', 'input', 'the input file')
+        self._with_arguments()\
+                .argument('number', 'the number to be used', choices=['one', 'two', 'three']) \
+                .argument('anything', 'any value')
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
@@ -57,4 +57,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('AppTest', VERSION, USAGE).INSTANCE.run(sys.argv[1:])
+    Main('AppTest', VERSION, DESCRIPTION, USAGE, EPILOG).INSTANCE.run(sys.argv[1:])
