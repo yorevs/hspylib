@@ -16,6 +16,7 @@ from argparse import ArgumentParser
 
 
 class OptionsBuilder:
+    """TODO"""
 
     def __init__(self, arg_parser: ArgumentParser):
         self._arg_parser = arg_parser
@@ -25,13 +26,15 @@ class OptionsBuilder:
         name: str,
         shortopt: str,
         longopt: str,
-        help: str = None) -> 'OptionsBuilder':
+        help_string: str = None) -> 'OptionsBuilder':
+        """TODO"""
 
         self._arg_parser.add_argument(
-            f"-{shortopt.replace('^-','')[0]}",
-            f"--{longopt.replace('^-','')[0]}",
+            f"-{shortopt.replace('^-', '')[0]}",
+            f"--{longopt.replace('^-', '')[0]}",
             dest=name,
-            help=help or f'the {longopt}',
+            help=help_string or f'the {longopt}',
+            required=False,
             action='store_true')
 
         return self

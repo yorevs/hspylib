@@ -26,8 +26,10 @@ from core.config.app_config import AppConfigs
 from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from core.metaclass.singleton import Singleton
 from core.tools.commons import sysout, get_path
+from modules.cli.application.argument_parser import HSArgumentParser
 from modules.cli.application.arguments_builder import ArgumentsBuilder
 from modules.cli.application.options_builder import OptionsBuilder
+from src.main.hspylib.modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
 
 
 class Application(metaclass=Singleton):
@@ -65,10 +67,10 @@ class Application(metaclass=Singleton):
         signal.signal(signal.SIGTERM, self.exit_handler)
 
         self.run_dir = get_path(__file__)
-        self._arg_parser = argparse.ArgumentParser(
+        self._arg_parser = HSArgumentParser(
             prog=name, allow_abbrev=False, description=description, usage=usage, epilog=epilog)
         self._arg_parser.add_argument(
-            '-v', '--version', action='version', version=f"%(prog)s v{'.'.join(map(str, version))}")
+            '-V', '--version', action='version', version=f"%(prog)s v{'.'.join(map(str, version))}")
         self._app_name = name
         self._app_version = version
         self._app_description = description
@@ -88,6 +90,7 @@ class Application(metaclass=Singleton):
             self._setup_arguments()
             self._args = self._arg_parser.parse_args()
             self._main(*params, **kwargs)
+            log.debug(f'Command line arguments: {str(self._args)}')
         except (InvalidOptionError, InvalidArgumentError) as err:
             self.usage(exit_code=1, no_exit=True)
             raise err  # Re-Raise the exception so upper level layers can catch
@@ -105,7 +108,7 @@ class Application(metaclass=Singleton):
 
     def getarg(self, arg_name: str) -> Optional[str]:
         """Get the argument value named by the opt_name"""
-        arg = getattr(self._args, arg_name) if self._args else []
+        arg = getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else []
         return arg[0] if arg else None
 
     @abstractmethod
@@ -117,6 +120,9 @@ class Application(metaclass=Singleton):
 
     def _with_arguments(self) -> 'ArgumentsBuilder':
         return ArgumentsBuilder(self._arg_parser)
+
+    def _with_chained_args(self, subcommand_name: str, subcommand_help: str) -> 'ChainedArgumentsBuilder':
+        return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
     def _main(self, *params, **kwargs) -> None:
         """Execute the application's main statements"""
