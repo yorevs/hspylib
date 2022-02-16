@@ -19,7 +19,7 @@ import signal
 import sys
 from abc import abstractmethod
 from datetime import datetime
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from core.config.app_config import AppConfigs
 from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
@@ -67,7 +67,7 @@ class Application(metaclass=Singleton):
 
         self._run_dir = os.getcwd()
         self._arg_parser = HSArgumentParser(
-            prog=name, allow_abbrev=False, description=description, usage=usage, epilog=epilog)
+            prefix_chars="-", prog=name, allow_abbrev=False, description=description, usage=usage, epilog=epilog)
         self._arg_parser.add_argument(
             '-V', '--version', action='version', version=f"%(prog)s v{'.'.join(map(str, version))}")
         self._app_name = name
@@ -105,10 +105,9 @@ class Application(metaclass=Singleton):
         if not no_exit:
             self.exit_handler(exit_code)
 
-    def getarg(self, arg_name: str) -> Optional[str]:
-        """Get the argument value named by the opt_name"""
-        arg = getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else []
-        return arg[0] if arg else None
+    def getarg(self, arg_name: str) -> Optional[Union[str, list]]:
+        """Get the argument value named by arg_name"""
+        return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
 
     @abstractmethod
     def _setup_arguments(self) -> None:

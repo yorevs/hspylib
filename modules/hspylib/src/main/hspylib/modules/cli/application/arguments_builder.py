@@ -5,7 +5,7 @@
    @project: HSPyLib
    @package: main.modules.cli.application
       @file: arguments_builder.py
-   @created: Tue, 4 May 2021
+   @created: hu, 14 Feb 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -13,6 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 from argparse import ArgumentParser
+from typing import Any
+
+from modules.cli.application.parser_action import ParserAction
 
 
 class ArgumentsBuilder:
@@ -25,13 +28,18 @@ class ArgumentsBuilder:
         self,
         name: str,
         help_string: str = None,
-        choices: list = None) -> 'ArgumentsBuilder':
+        choices: list = None,
+        action: ParserAction = ParserAction.STORE,
+        nargs: str = None,
+        default: Any = None) -> 'ArgumentsBuilder':
         """TODO"""
 
         self._arg_parser.add_argument(
             dest=name,
             help=help_string or f'the {name}',
-            action='append',
-            choices=choices)
+            action=str(action),
+            choices=choices,
+            nargs=nargs,
+            default=default)
 
         return self

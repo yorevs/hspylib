@@ -17,7 +17,7 @@
 
 import math
 import re
-from typing import Optional
+from typing import List, Optional
 
 from addons.widman.widget import Widget
 from core.enums.exit_code import ExitCode
@@ -48,7 +48,7 @@ class WidgetTimeCalc(Widget):
         self.decimal = False
         self.args = None
 
-    def parse_args(self, *args) -> Optional[ExitCode]:
+    def parse_args(self, args: List[str]) -> Optional[ExitCode]:
         """TODO"""
 
         if (not args or len(args) < 3) and not any(a in args for a in ['-h', '--help']):
@@ -69,10 +69,10 @@ class WidgetTimeCalc(Widget):
 
         return None
 
-    def execute(self, *args) -> ExitCode:
+    def execute(self, args: List[str]) -> ExitCode:
         """TODO"""
 
-        ret_val = self.parse_args(*args)
+        ret_val = self.parse_args(args)
 
         if ret_val is not None:
             return ret_val
@@ -84,8 +84,7 @@ class WidgetTimeCalc(Widget):
                 try:
                     parts = [int(math.floor(float(s))) for s in tm.split(':')]
                 except ValueError:
-                    parts = [0, 0, 0]
-                    ret_val = ExitCode.ERROR
+                    return ExitCode.ERROR
                 f_hours = parts[0] if len(parts) > 0 else 0
                 f_minutes = parts[1] if len(parts) > 1 else 0
                 f_secs = parts[2] if len(parts) > 2 else 0
@@ -107,7 +106,7 @@ class WidgetTimeCalc(Widget):
         else:
             sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
 
-        return ret_val
+        return ExitCode.SUCCESS
 
     def _decimal(self, time_raw: int = 0) -> int:
         """ Convert a raw time into decimal """

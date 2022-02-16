@@ -20,6 +20,7 @@ import signal
 import socket
 import threading
 from time import sleep
+from typing import List
 
 from addons.widman.widget import Widget
 from core.enums.exit_code import ExitCode
@@ -45,17 +46,18 @@ class WidgetSendMsg(Widget):
     USAGE = f"""Usage: SendMsg [options]
 
   Options:
-    -n, --net_type   <network_type>     : The network type to be used. Either UDP or TCP ( default is TCP ).
-    -p, --port       <port_num>         : The port number [1-65535] ( default is 12345).
-    -a, --address    <host_address>     : The address of the datagram receiver ( default is 127.0.0.1 ).
-    -k, --packets    <num_packets>      : The number of max datagrams to be send. If zero is specified, then the app
+    +n, ++net_type   <network_type>     : The network type to be used. Either udp or tcp ( default is tcp ).
+    +p, ++port       <port_num>         : The port number [1-65535] ( default is 12345).
+    +a, ++address    <host_address>     : The address of the datagram receiver ( default is 127.0.0.1 ).
+    +k, ++packets    <num_packets>      : The number of max datagrams to be send. If zero is specified, then the app
                                           is going to send indefinitely ( default is 100 ).
-    -i, --interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
-    -t, --threads    <threads_num>      : Number of threads [1-{MAX_THREADS}] to be opened to send simultaneously ( default is 1 ).
-    -m, --message    <message/filename> : The message to be sent. If the message matches a filename, then the file
+    +i, ++interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
+    +t, ++threads    <threads_num>      : Number of threads [1-{MAX_THREADS}] to be opened to send simultaneously
+                                          ( default is 1 ).
+    +m, ++message    <message/filename> : The message to be sent. If the message matches a filename, then the file
                                           contents sent instead.
 
-    E.g:. send-msg.py -m "Hello" -p 12345 -a 0.0.0.0 -k 100 -i 500 -t 2
+    E.g:. send-msg.py +n tcp +m "Hello" +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2
 """
 
     def __init__(self):
@@ -76,8 +78,7 @@ class WidgetSendMsg(Widget):
         self.args = None
         self.socket = None
 
-    def execute(self, *args) -> ExitCode:
-        ret_val = ExitCode.SUCCESS
+    def execute(self, args: List[str]) -> ExitCode:
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
 
@@ -88,11 +89,10 @@ class WidgetSendMsg(Widget):
             sysout(self.version())
             return ExitCode.SUCCESS
 
-        if not args:
-            if not args and not self._read_args():
-                return ExitCode.ERROR
+        if not args and not self._read_args():
+            return ExitCode.ERROR
         else:
-            if not self._parse_args(*args):
+            if not self._parse_args(args):
                 return ExitCode.ERROR
 
         self.net_type = self.args.net_type or self.NET_TYPE_TCP
@@ -113,7 +113,7 @@ class WidgetSendMsg(Widget):
 
         MenuUtils.wait_enter()
 
-        return ret_val
+        return ExitCode.SUCCESS
 
     def cleanup(self) -> None:
         sysout('Terminating threads%NC%')
@@ -172,30 +172,30 @@ class WidgetSendMsg(Widget):
 
         return len(self.args.__dict__) > 1 if self.args else False
 
-    def _parse_args(self, *args):
+    def _parse_args(self, args: List[str]):
         """When arguments are passed from the command line, parse them"""
-        parser = argparse.ArgumentParser(description='Sends TCP/UDP messages (multi-threaded)')
+        parser = argparse.ArgumentParser(prefix_chars="+", description='Sends TCP/UDP messages (multi-threaded)')
         parser.add_argument(
-            '--net-type', action='store', type=str, required=False,
-            help='The network type to be used. Either UDP or TCP ( default is TCP )')
+            '+n', '++net-type', action='store', type=str, choices=['udp', 'tcp'], default='tcp', required=False,
+            help='The network type to be used. Either udp or tcp ( default is tcp )')
         parser.add_argument(
-            '--address', action='store', type=str, required=False,
+            '+a', '++address', action='store', type=str, default='127.0.0.1', required=False,
             help='The address of the datagram receiver ( default is 127.0.0.1 )')
         parser.add_argument(
-            '--port', action='store', type=int, required=False,
+            '+p', '++port', action='store', type=int, default=12345, required=False,
             help='The port number [1-65535] ( default is 12345)')
         parser.add_argument(
-            '--packets', action='store', type=int, required=False,
+            '+k', '++packets', action='store', type=int, default=100, required=False,
             help='The number of max datagrams to be send. If zero is specified, then the app '
                  'is going to send indefinitely ( default is 100 ).')
         parser.add_argument(
-            '--interval', action='store', type=float, required=False,
+            '+i', '++interval', action='store', type=float, default=1, required=False,
             help='The interval in seconds between each datagram ( default is 1 Second )')
         parser.add_argument(
-            '--threads', action='store', type=int, required=False,
+            '+t', '++threads', action='store', type=int, default=1, required=False,
             help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
         parser.add_argument(
-            '--message', action='store', type=str, required=False,
+            '+m', '++message', action='store', type=str, required=True,
             help='The message to be sent. If the message matches a filename, then the file contents sent instead')
         self.args = parser.parse_args(args)
 
