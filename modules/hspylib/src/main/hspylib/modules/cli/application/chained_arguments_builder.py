@@ -5,7 +5,7 @@
    @project: HSPyLib
    @package: main.modules.cli.application
       @file: argument_chain_builder.py
-   @created: Tue, 4 May 2021
+   @created: hu, 14 Feb 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -13,6 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 from argparse import ArgumentParser
+from typing import Any
+
+from modules.cli.application.parser_action import ParserAction
 
 
 class ChainedArgumentsBuilder:
@@ -38,14 +41,19 @@ class ChainedArgumentsBuilder:
         self,
         name: str,
         help_string: str = None,
-        choices: list = None) -> 'ChainedArgumentsBuilder':
+        choices: list = None,
+        action: ParserAction = ParserAction.STORE,
+        nargs: str = None,
+        default: Any = None) -> 'ChainedArgumentsBuilder':
         """TODO"""
 
         self._current.add_argument(
             dest=name,
             help=help_string or f'the {name}',
-            action='append',
-            choices=choices)
+            action=str(action),
+            choices=choices,
+            nargs=nargs,
+            default=default)
 
         return self
 
@@ -54,15 +62,21 @@ class ChainedArgumentsBuilder:
         name: str,
         shortopt: str,
         longopt: str,
-        help_string: str = None) -> 'ChainedArgumentsBuilder':
+        help_string: str = None,
+        action: ParserAction = ParserAction.STORE,
+        required: bool = False,
+        nargs: str = None,
+        default: Any = None) -> 'ChainedArgumentsBuilder':
         """TODO"""
 
         self._current.add_argument(
-            f"-{shortopt.replace('^-', '')[0]}",
-            f"--{longopt.replace('^-', '')[0]}",
+            f"-{shortopt.replace('^-*', '')[0]}",
+            f"--{longopt.replace('^-*', '')[0]}",
             dest=name,
             help=help_string or f'the {longopt}',
-            action='store_true',
-            required=False)
+            action=str(action),
+            nargs=nargs,
+            default=default,
+            required=required)
 
         return self

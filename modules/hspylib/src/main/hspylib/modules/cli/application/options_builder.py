@@ -5,7 +5,7 @@
    @project: HSPyLib
    @package: main.modules.cli.application
       @file: options_builder.py
-   @created: Tue, 4 May 2021
+   @created: hu, 14 Feb 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -13,6 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 from argparse import ArgumentParser
+from typing import Any
+
+from modules.cli.application.parser_action import ParserAction
 
 
 class OptionsBuilder:
@@ -26,7 +29,11 @@ class OptionsBuilder:
         name: str,
         shortopt: str,
         longopt: str,
-        help_string: str = None) -> 'OptionsBuilder':
+        help_string: str = None,
+        action: ParserAction = ParserAction.STORE_TRUE,
+        required: bool = False,
+        nargs: str = None,
+        default: Any = None) -> 'OptionsBuilder':
         """TODO"""
 
         self._arg_parser.add_argument(
@@ -34,7 +41,9 @@ class OptionsBuilder:
             f"--{longopt.replace('^-', '')[0]}",
             dest=name,
             help=help_string or f'the {longopt}',
-            required=False,
-            action='store_true')
+            required=required,
+            action=str(action),
+            nargs=nargs,
+            default=default)
 
         return self

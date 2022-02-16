@@ -17,6 +17,7 @@
 import re
 import threading
 from time import sleep
+from typing import List
 
 from addons.widman.widget import Widget
 from core.enums.exit_code import ExitCode
@@ -44,7 +45,7 @@ class WidgetFree(Widget):
         self.is_alive = True
         self.report_interval = 1.5
 
-    def execute(self, *args) -> ExitCode:
+    def execute(self, args: List[str]) -> ExitCode:
         while not Keyboard.kbhit():
             tr = threading.Thread(target=self._report_usage)
             tr.start()
