@@ -29,9 +29,6 @@ HERE = get_path(__file__)
 class Main(Application):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
-    # The usage message
-    USAGE = 'hspylib [application] <operation> <arguments>'
-
     # The welcome message
     DESCRIPTION = (HERE / "welcome.txt").read_text()
 
