@@ -16,19 +16,15 @@
 
 import sys
 from argparse import ArgumentError, ArgumentParser
-from gettext import gettext as _
 
 
 class HSArgumentParser(ArgumentParser):
 
     def _check_value(self, action, value):
-        # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
-            args = {'value': value,
-                    'choices': ', '.join(map(repr, action.choices))}
-            msg = _('invalid choice: %(value)r (choose from %(choices)s)')
-            raise ArgumentError(action, msg % args)
+            msg = f"invalid choice: {value} (choose from [{', '.join(map(repr, action.choices))}])"
+            raise ArgumentError(action, msg)
 
     def error(self, message):
         self.print_help(sys.stderr)
-        self.exit(2, _(f'\n### Error {self.prog} -> {message}\n\n'))
+        self.exit(2, f'\n### Error {self.prog} -> {message}\n\n')

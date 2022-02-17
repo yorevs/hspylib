@@ -13,17 +13,14 @@
 
    Copyright 2021, HSPyLib team
 """
-
-from modules.cli.application.argument_chain import ArgumentChain
+import sys
 
 from modules.cli.application.application import Application
+from modules.cli.application.version import AppVersion
 
 
 class ApplicationTest(Application):
     """Versioner - Provides an engine to manage app versions."""
-
-    # The application version
-    VERSION = (0, 0, 1)
 
     # CloudFoundry manager usage message
     USAGE = 'Usage: Its just a test'
@@ -32,19 +29,17 @@ class ApplicationTest(Application):
     WELCOME = 'Welcome to test app'
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE)
+        super().__init__(app_name, AppVersion.load(), self.USAGE)
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
-        self._with_option('i', 'input', True)
-        self._with_option('o', 'output', True)
+    def _setup_arguments(self) -> None:
+
         # @formatter:off
-        self._with_arguments(
-            ArgumentChain.builder()
-                .when('amount', 'one|two|three', False)
-                    .require('item', 'donut|bagel')
-                .end()
-                .build()
-        )
+        self._with_options() \
+            .option('input', 'i', 'input', required=True) \
+            .option('output', 'o', 'output', required=True)
+        self._with_arguments() \
+            .argument('amount', 'the amount', choices=['one', 'two', 'three']) \
+            .argument('item', 'the item', choices=['donut', 'bagel'])
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:

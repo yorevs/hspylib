@@ -13,46 +13,58 @@
 
    Copyright 2021, HSPyLib team
 """
-import os
 import sys
 
 from addons.appman.app_extension import AppExtension
 from addons.appman.app_type import AppType
 from addons.appman.appman import AppManager
 from addons.widman.widman import WidgetManager
-from core.tools.commons import get_path, read_version, run_dir, syserr
+from core.tools.commons import get_path, run_dir, syserr
 from modules.cli.application.application import Application
+from modules.cli.application.version import AppVersion
 
 HERE = get_path(__file__)
 
 
 class Main(Application):
-    """HSPyLib Manager v{} - Manage HSPyLib applications."""
+    """HSPyLib Manager - Manage HSPyLib applications."""
 
-    # The hspylib version
-    VERSION = read_version(f"{HERE}/.version")
+    # The usage message
+    USAGE = 'hspylib [application] <operation> <arguments>'
 
     # The welcome message
-    WELCOME = (HERE / "welcome.txt").read_text()
-
-    # The application description
-    DESCRIPTION = 'HSPyLib Manager v{} - Manage HSPyLib applications.'
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.DESCRIPTION)
+        version = AppVersion.load()
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
         # @formatter:off
-        self._with_chained_args('application', 'The HSPyLib application to run') \
-            .argument('appman', 'Application manager - Create HSPyLib based python applications') \
-                .add_option('dest-dir', 'd', 'dest-dir', 'destination directory', nargs='?', default=os.getcwd()) \
+        self._with_chained_args('application', 'the HSPyLib application to run') \
+            .argument('appman', 'app Application Manager: Create HSPyLib based python applications') \
+                .add_option(
+                    'dest-dir', 'd', 'dest-dir',
+                    'the destination directory. If omitted, the current directory will be used.',
+                    nargs='?', default=self._run_dir) \
                 .add_argument('app-name', 'the application name') \
-                .add_argument('app-type', 'the application type', choices=['app', 'qt-app', 'widget']) \
-                .add_argument('app-ext', 'the application extensions', nargs="+", default=["git", "gradle"]) \
-            .argument('widgets', 'Execute an HSPyLib widget') \
-                .add_argument('widget-name', 'the name of the widget to be executed', nargs='?') \
-            .add_argument('widget-args', 'the arguments to be handled to the widget', nargs='*') \
+                .add_argument(
+                    'app-type',
+                    'the application type. Appman is going to scaffold a basic app based on this type',
+                    choices=['app', 'qt-app', 'widget']) \
+                .add_argument(
+                    'app-ext',
+                    '"gradle" is going to initialize you project with gradle (requires gradle). '
+                    '"git" is going to initialize a git repository (requires git)',
+                    nargs="+", choices=['git', 'gradle'], default=["git", "gradle"]) \
+            .argument('widgets', 'app Widgets Manager: Execute an HSPyLib widget') \
+                .add_argument(
+                    'widget-name',
+                    'the name of the widget to be executed. If omitted, all available widgets will be '
+                    'presented in a dashboard',
+                    nargs='?') \
+                .add_argument('widget-args', "the widget's arguments (if applicable)", nargs='*') \
             # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
@@ -86,4 +98,4 @@ class Main(Application):
 
 # Application entry point
 if __name__ == "__main__":
-    Main('HSPyLib Manager').INSTANCE.run(sys.argv[1:])
+    Main('hspylib').INSTANCE.run(sys.argv[1:])

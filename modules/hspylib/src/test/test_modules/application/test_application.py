@@ -13,15 +13,13 @@
 
    Copyright 2021, HSPyLib team
 """
+import argparse
 import sys
 import unittest
 
-from modules.cli.application.option import Option
-
 from core.config.app_config import AppConfigs
-from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from core.metaclass.singleton import Singleton
-from core.tools.commons import dirname
+from core.tools.commons import get_path
 from modules.cli.application.application import Application
 from shared.application_test import ApplicationTest
 
@@ -32,6 +30,7 @@ class TestApplication(unittest.TestCase):
     def setUp(self) -> None:
         Singleton.del_instance(Application)
         Singleton.del_instance(AppConfigs)
+        Singleton.del_instance(ApplicationTest)
 
     # TC1 - Application should be singleton
     def test_application_should_be_singleton(self):
@@ -43,63 +42,50 @@ class TestApplication(unittest.TestCase):
 
     # TC2 - Creating an application without specifying source root directory
     def test_should_not_instantiate_configs(self):
-        Application('App-test')
+        Application('APP-TEST', resource_dir='/gabs')
         self.assertFalse(hasattr(AppConfigs, 'INSTANCE'))
 
     # TC3 - Creating an application specifying source root directory
     def test_should_instantiate_configs(self):
-        Application('App-test', source_dir=dirname(__file__))
+        rd = get_path(__file__)
+        Application('APP-TEST', resource_dir=f'{str(rd)}/resources')
         self.assertTrue(hasattr(AppConfigs, 'INSTANCE'))
 
-    # TC4 - Check application should accept -v|--version when version is specified
-    def test_should_define_version_and_help_options(self):
-        app = Application('App-test', app_version=(0, 0, 1), app_usage="Usage: This is a test")
-        expected_op_version = Option('-v', '--version', cb_handler=app.version)
-        expected_op_help = Option('-h', '--help', cb_handler=app.usage)
-        self.assertTrue('version' in app._options)  # pylint: disable=protected-access
-        self.assertTrue('help' in app._options)  # pylint: disable=protected-access
-        op_version = app._find_option('version')  # pylint: disable=protected-access
-        self.assertIsNotNone(op_version)
-        op_help = app._find_option('help')  # pylint: disable=protected-access
-        self.assertIsNotNone(op_help)
-        self.assertEqual(str(op_version), str(expected_op_version))
-        self.assertEqual(str(op_help), str(expected_op_help))
-
-    # TC5 - Check when passing defined options and arguments
+    # TC4 - Check when passing defined options and arguments
     def test_calling_an_app_with_correct_opts_and_args_should_not_raise_errors(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
         app.run(params)
-        self.assertEqual('input.txt', app.getopt('input'))
-        self.assertEqual('output.txt', app.getopt('output'))
+        self.assertEqual('input.txt', app.getarg('input'))
+        self.assertEqual('output.txt', app.getarg('output'))
         self.assertEqual('one', app.getarg('amount'))
         self.assertEqual('donut', app.getarg('item'))
 
-    # TC6 - Check when passing undefined options and arguments
+    # TC5 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_opts_should_raise_errors(self):
         app = ApplicationTest('APP-TEST')
         params = ['-g', 'input.txt', '-j', 'output.txt', 'one', 'donut']
-        self.assertRaises(InvalidOptionError, app.run, params)
+        self.assertRaises(argparse.ArgumentError, app.run, params)
 
-    # TC7 - Check when passing undefined options and arguments
+    # TC6 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_1(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'four', 'donut']
-        self.assertRaises(InvalidArgumentError, app.run, params)
+        self.assertRaises(argparse.ArgumentError, app.run, params)
 
-    # TC8 - Check when passing undefined options and arguments
+    # TC7 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_2(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'pretzel']
-        self.assertRaises(InvalidArgumentError, app.run, params)
+        self.assertRaises(argparse.ArgumentError, app.run, params)
 
-    # TC9 - Check options and arguments passed can be retrieved
+    # TC8 - Check options and arguments passed can be retrieved
     def test_should_be_able_to_retrieve_passed_args_and_opts(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
         app.run(params)
-        self.assertEqual('input.txt', app.getopt('input'))
-        self.assertEqual('output.txt', app.getopt('output'))
+        self.assertEqual('input.txt', app.getarg('input'))
+        self.assertEqual('output.txt', app.getarg('output'))
         self.assertEqual('one', app.getarg('amount'))
         self.assertEqual('donut', app.getarg('item'))
 

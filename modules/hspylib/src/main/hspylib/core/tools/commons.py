@@ -59,7 +59,8 @@ def log_init(
     :param level:  TODO
     :param filename:  TODO
     """
-    # if someone tried to log something before log_init is called, Python creates a default handler that
+    # if someone tried to log something before log_init is called, Python creates a default handler that is going to
+    # mess our logs.
     _reset_logger()
 
     create = bool(create_new or not os.path.exists(log_file))
@@ -77,6 +78,7 @@ def log_init(
 
 
 def is_debugging():
+    """TODO"""
     for frame in inspect.stack():
         if frame[1].endswith("pydevd.py"):
             return True
@@ -89,10 +91,11 @@ def now() -> str:
 
 
 def now_ms() -> int:
+    """TODO"""
     return int(datetime.now().timestamp())
 
 
-def read_version(version_filepath: str = ".version") -> Tuple:
+def read_version(version_filepath: str = ".version") -> Tuple[int, int, int]:
     """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
     try:
         log.info("Reading version from %s", version_filepath)

@@ -14,7 +14,6 @@
 
    Copyright 2021, HSPyLib team
 """
-import argparse
 import os
 import signal
 import socket
@@ -26,6 +25,7 @@ from addons.widman.widget import Widget
 from core.enums.exit_code import ExitCode
 from core.exception.exceptions import WidgetExecutionError
 from core.tools.commons import sysout
+from modules.cli.application.argument_parser import HSArgumentParser
 from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from modules.cli.tui.extra.minput.input_validator import InputValidator
 from modules.cli.tui.extra.minput.minput import MenuInput, minput
@@ -174,7 +174,8 @@ class WidgetSendMsg(Widget):
 
     def _parse_args(self, args: List[str]):
         """When arguments are passed from the command line, parse them"""
-        parser = argparse.ArgumentParser(prefix_chars="+", description='Sends TCP/UDP messages (multi-threaded)')
+        parser = HSArgumentParser(
+            prog='sendmsg', prefix_chars="+", description='Sends TCP/UDP messages (multi-threaded)')
         parser.add_argument(
             '+n', '++net-type', action='store', type=str, choices=['udp', 'tcp'], default='tcp', required=False,
             help='The network type to be used. Either udp or tcp ( default is tcp )')
