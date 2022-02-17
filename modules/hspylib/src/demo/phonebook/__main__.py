@@ -16,8 +16,8 @@
 
 import sys
 
-from core.tools.commons import dirname, read_version
 from modules.cli.application.application import Application
+from modules.cli.application.version import AppVersion
 from modules.cli.tui.menu.menu_factory import MenuFactory
 from modules.cli.tui.menu.menu_ui import MenuUi
 from modules.cli.vt100.vt_utils import exit_app
@@ -30,7 +30,7 @@ class Main(Application):
     """TODO"""
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, read_version(), 'A simple CLI phonebook')
+        super().__init__(app_name, AppVersion.load(), 'A simple CLI phonebook')
 
     def _setup_arguments(self) -> None:
         pass

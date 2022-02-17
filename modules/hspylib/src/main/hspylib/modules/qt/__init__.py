@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.15
+# hspylib v0.11.16
 #
 # Package: main.hspylib.modules.qt
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'stream_capturer', 
   'views'
 ]
-__version__ = '0.11.15'
+__version__ = '0.11.16'

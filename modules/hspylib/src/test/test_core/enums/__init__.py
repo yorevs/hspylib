@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.15
+# hspylib v0.11.16
 #
-# Package: test.core.enums
+# Package: test.test_core.enums
 """Package initialization."""
 
 __all__ = [
   'test_enumeration'
 ]
-__version__ = '0.11.15'
+__version__ = '0.11.16'

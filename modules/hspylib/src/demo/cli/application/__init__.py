@@ -1,12 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.15
+# hspylib v0.11.16
 #
 # Package: demo.cli.application
 """Package initialization."""
 
 __all__ = [
-  'application_demo', 
-  'test'
+  'application_demo'
 ]
-__version__ = '0.11.15'
+__version__ = '0.11.16'
