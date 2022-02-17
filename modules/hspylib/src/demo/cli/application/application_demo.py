@@ -17,10 +17,9 @@ import sys
 
 from core.tools.commons import sysout
 from modules.cli.application.application import Application
+from modules.cli.application.version import AppVersion
 
 APP_NAME = 'AppTest'
-
-VERSION = (0, 1, 0)
 
 DESCRIPTION = "HsPyLib application Demo"
 
@@ -32,7 +31,7 @@ class Main(Application):
     def _setup_arguments(self) -> None:
         # @formatter:off
         self._with_options()\
-            .option('verbose', 'v', 'verbose', 'to be more verbose')
+            .option('verbose', 'V', 'verbose', 'to be more verbose')
         self._with_chained_args('operation', 'Upload/Download files from/to server')\
             .argument('download', 'download a file from server') \
                 .add_argument('url', 'the url of the file') \
@@ -55,4 +54,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('AppTest', VERSION, DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])
+    Main('AppTest', AppVersion.load(), DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])

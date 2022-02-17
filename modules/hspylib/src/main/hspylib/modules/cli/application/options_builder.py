@@ -30,7 +30,6 @@ class OptionsBuilder:
         shortopt: str,
         longopt: str,
         help_string: str = None,
-        action: ParserAction = ParserAction.STORE_TRUE,
         required: bool = False,
         nargs: str = None,
         default: Any = None) -> 'OptionsBuilder':
@@ -38,11 +37,11 @@ class OptionsBuilder:
 
         self._arg_parser.add_argument(
             f"-{shortopt.replace('^-', '')[0]}",
-            f"--{longopt.replace('^-', '')[0]}",
+            f"--{longopt.replace('^-*', '')}",
             dest=name,
             help=help_string or f'the {longopt}',
             required=required,
-            action=str(action),
+            action=ParserAction.STORE.value,
             nargs=nargs,
             default=default)
 

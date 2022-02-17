@@ -12,6 +12,7 @@
 
    Copyright 2021, HSPyLib team
 """
+import argparse
 import atexit
 import logging as log
 import os
@@ -19,7 +20,8 @@ import signal
 import sys
 from abc import abstractmethod
 from datetime import datetime
-from typing import Optional, Tuple, Union
+from textwrap import dedent
+from typing import Optional, Union
 
 from core.config.app_config import AppConfigs
 from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
@@ -29,6 +31,7 @@ from modules.cli.application.argument_parser import HSArgumentParser
 from modules.cli.application.arguments_builder import ArgumentsBuilder
 from modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
 from modules.cli.application.options_builder import OptionsBuilder
+from modules.cli.application.version import AppVersion
 
 
 class Application(metaclass=Singleton):
@@ -55,7 +58,7 @@ class Application(metaclass=Singleton):
     def __init__(
         self,
         name: str,
-        version: Tuple[int, int, int] = None,
+        version: AppVersion = None,
         description: str = None,
         usage: str = None,
         epilog: str = None,
@@ -66,20 +69,20 @@ class Application(metaclass=Singleton):
         signal.signal(signal.SIGTERM, self.exit_handler)
 
         self._run_dir = os.getcwd()
-        self._arg_parser = HSArgumentParser(
-            prefix_chars="-", prog=name, allow_abbrev=False, description=description, usage=usage, epilog=epilog)
-        self._arg_parser.add_argument(
-            '-V', '--version', action='version', version=f"%(prog)s v{'.'.join(map(str, version))}")
         self._app_name = name
         self._app_version = version
         self._app_description = description
+        self._arg_parser = HSArgumentParser(
+            exit_on_error=False, prefix_chars="-", prog=name, allow_abbrev=False,
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description=dedent(description or ''), usage=usage, epilog=dedent(epilog or ''))
+        self._arg_parser.add_argument(
+            '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
         self._args = {}
-
-        if os.path.exists(f'{resource_dir}') or os.path.exists(f'{self._run_dir}/resources'):
-            self.configs = AppConfigs(
-                resource_dir=resource_dir or f'{self._run_dir}/resources',
-                log_dir=log_dir
-            )
+        if os.path.exists(f'{resource_dir}'):
+            self.configs = AppConfigs(resource_dir=resource_dir, log_dir=log_dir)
+        elif not resource_dir and os.path.exists(f'{self._run_dir}/resources'):
+            self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources', log_dir=log_dir)
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
@@ -87,7 +90,7 @@ class Application(metaclass=Singleton):
         try:
             atexit.register(self._cleanup)
             self._setup_arguments()
-            self._args = self._arg_parser.parse_args()
+            self._args = self._arg_parser.parse_args(*params)
             self._main(*params, **kwargs)
             log.debug(f'Command line arguments: {str(self._args)}')
         except (InvalidOptionError, InvalidArgumentError) as err:
@@ -119,7 +122,7 @@ class Application(metaclass=Singleton):
     def _with_arguments(self) -> 'ArgumentsBuilder':
         return ArgumentsBuilder(self._arg_parser)
 
-    def _with_chained_args(self, subcommand_name: str, subcommand_help: str) -> 'ChainedArgumentsBuilder':
+    def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
     def _main(self, *params, **kwargs) -> None:

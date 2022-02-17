@@ -42,7 +42,6 @@ class ChainedArgumentsBuilder:
         name: str,
         help_string: str = None,
         choices: list = None,
-        action: ParserAction = ParserAction.STORE,
         nargs: str = None,
         default: Any = None) -> 'ChainedArgumentsBuilder':
         """TODO"""
@@ -50,7 +49,7 @@ class ChainedArgumentsBuilder:
         self._current.add_argument(
             dest=name,
             help=help_string or f'the {name}',
-            action=str(action),
+            action=ParserAction.STORE.value,
             choices=choices,
             nargs=nargs,
             default=default)
@@ -63,7 +62,6 @@ class ChainedArgumentsBuilder:
         shortopt: str,
         longopt: str,
         help_string: str = None,
-        action: ParserAction = ParserAction.STORE,
         required: bool = False,
         nargs: str = None,
         default: Any = None) -> 'ChainedArgumentsBuilder':
@@ -71,10 +69,10 @@ class ChainedArgumentsBuilder:
 
         self._current.add_argument(
             f"-{shortopt.replace('^-*', '')[0]}",
-            f"--{longopt.replace('^-*', '')[0]}",
+            f"--{longopt.replace('^-*', '')}",
             dest=name,
             help=help_string or f'the {longopt}',
-            action=str(action),
+            action=ParserAction.STORE.value,
             nargs=nargs,
             default=default,
             required=required)
