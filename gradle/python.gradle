@@ -193,6 +193,25 @@ task installDependencies(type: Task) {
   }
 }
 
+/* Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url. */
+task installProject(type: Task) {
+  group = 'Install'
+  description = "Install a project in editable mode (i.e. setuptools develop mode)"
+  dependsOn gatherRequirements
+  doLast {
+    fileTree("$sourceRoot").matching {
+      include "**/setup.py"
+    }.each { File module ->
+        def moduleDir = dirName(module)
+        println "Install $project.name in DEVELOPER MODE: $moduleDir -> $module.path"
+        exec {
+          workingDir "$moduleDir"
+          commandLine rootProject.python, '-m', 'pip', 'install', '-e', "$sourceRoot/main"
+        }
+      }
+  }
+}
+
 /* Install this application as a python package using module's setup.py */
 task installModule(type: Task) {
   group = 'Install'
