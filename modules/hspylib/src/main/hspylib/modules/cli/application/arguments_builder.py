@@ -12,8 +12,8 @@
 
    Copyright 2021, HSPyLib team
 """
-from argparse import ArgumentError, ArgumentParser
-from typing import Any
+from argparse import ArgumentParser
+from typing import Any, Union
 
 from hspylib.modules.cli.application.parser_action import ParserAction
 
@@ -29,7 +29,7 @@ class ArgumentsBuilder:
         name: str,
         help_string: str = None,
         choices: list = None,
-        nargs: str = None,
+        nargs: Union[str, int] = None,
         default: Any = None) -> 'ArgumentsBuilder':
         """TODO"""
 

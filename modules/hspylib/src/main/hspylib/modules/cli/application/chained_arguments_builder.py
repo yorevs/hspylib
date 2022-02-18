@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 from argparse import ArgumentParser
-from typing import Any
+from typing import Any, Union
 
 from hspylib.modules.cli.application.parser_action import ParserAction
 
@@ -42,7 +42,7 @@ class ChainedArgumentsBuilder:
         name: str,
         help_string: str = None,
         choices: list = None,
-        nargs: str = None,
+        nargs: Union[str, int] = None,
         default: Any = None) -> 'ChainedArgumentsBuilder':
         """TODO"""
 
@@ -62,8 +62,9 @@ class ChainedArgumentsBuilder:
         shortopt: str,
         longopt: str,
         help_string: str = None,
+        choices: list = None,
         required: bool = False,
-        nargs: str = None,
+        nargs: Union[str, int] = None,
         default: Any = None) -> 'ChainedArgumentsBuilder':
         """TODO"""
 
@@ -73,6 +74,7 @@ class ChainedArgumentsBuilder:
             dest=name,
             help=help_string or f'the {longopt}',
             action=ParserAction.STORE.value,
+            choices=choices,
             nargs=nargs,
             default=default,
             required=required)

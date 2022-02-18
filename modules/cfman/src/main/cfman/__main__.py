@@ -43,11 +43,11 @@ class Main(Application):
         """Initialize application parameters and options"""
 
         self._with_options() \
-            .option('api', 'a', 'api', 'the API to connect to (API endpoint, e.g. https://api.example.com)') \
-            .option('org', 'o', 'org', 'the organization to connect to (Target organization)') \
-            .option('org', 's', 'space', 'the space to connect to (Target organization space)') \
-            .option('org', 'u', 'username', 'the PCF username', required=True) \
-            .option('org', 'p', 'password', 'the PCF password', required=True)
+            .option('api', 'a', 'api', 'the API endpoint to connect to (e.g. https://api.example.com)', nargs='?') \
+            .option('org', 'o', 'org', 'the organization to connect to (Target organization)', nargs='?') \
+            .option('org', 's', 'space', 'the space to connect to (Target organization space)', nargs='?') \
+            .option('org', 'u', 'username', 'the PCF username', nargs='?') \
+            .option('org', 'p', 'password', 'the PCF password', nargs='?')
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
@@ -57,7 +57,7 @@ class Main(Application):
 
         Settings ==============================
                 STARTED: {}
-        ''').format(self._app_name, AppVersion.load(), datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        ''').format(self._app_name, self._app_version, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         self._exec_application()
 
     def _exec_application(self) -> None:

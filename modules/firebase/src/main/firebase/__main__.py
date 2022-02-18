@@ -17,10 +17,11 @@
 import logging as log
 import sys
 from datetime import datetime
+from textwrap import dedent
 
-from hspylib.core.tools.commons import dirname, get_path, read_version, syserr
+from hspylib.core.tools.commons import dirname, get_path, syserr
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.argument_chain import ArgumentChain
+from hspylib.modules.cli.application.version import AppVersion
 
 from core.agent_config import AgentConfig
 from core.firebase import Firebase
@@ -31,48 +32,47 @@ HERE = get_path(__file__)
 class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
-    # The application version
-    VERSION = read_version(f"{HERE}/.version")
-
-    # Usage message
-    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-
     # The welcome message
-    WELCOME = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
+        version = AppVersion.load()
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.firebase = Firebase()
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_arguments(self) -> None:
         # @formatter:off
-        self._with_option('d', 'dest-dir', True)
-        self._with_arguments(
-            ArgumentChain.builder()
-                .when('operation', 'setup')
-                    .end()
-                .when('operation', 'upload')
-                    .require('db_alias', '.+')
-                    .require('files', '.+')
-                    .end()
-                .when('operation', 'download')
-                    .require('db_alias', '.+')
-                    .accept('files', '.+')
-                    .end()
-                .build()
-        )
+        self._with_chained_args('operation', 'the Firebase operation to process') \
+            .argument('setup', 'setup your Firebase account') \
+            .argument('upload', 'upload files to your Firebase Realtime Database') \
+                .add_option(
+                    'dest-dir', 'd', 'dest-dir',
+                    'the destination directory. If omitted, the current directory will be used.',
+                    nargs='?', default=self._run_dir) \
+                .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
+                .add_argument('files', 'list of files to upload (separated by a space)', nargs='*') \
+            .argument('download', 'download files from your Firebase Realtime Database') \
+                .add_option(
+                    'dest-dir', 'd', 'dest-dir',
+                    'the destination directory. If omitted, the current directory will be used.',
+                    nargs='?', default=self._run_dir) \
+            .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        log.info(
-            self.WELCOME.format(
-                self._app_name,
-                self.VERSION,
-                AgentConfig.INSTANCE.username(),
-                AgentConfig.INSTANCE.config_file(),
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        )
+        log.info(dedent('''
+        {} v{}
+
+        Settings ==============================
+                FIREBASE_USER: {}
+                FIREBASE_CONFIG_FILE: {}
+                STARTED: {}
+        ''').format(
+            self._app_name, self._app_version,
+            AgentConfig.INSTANCE.username(),
+            AgentConfig.INSTANCE.config_file(),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         self._exec_application()
 
     def _exec_application(self) -> None:
@@ -86,12 +86,12 @@ class Main(Application):
         elif op == 'upload':
             self.firebase.upload(
                 self.getarg('db_alias'),
-                self.getarg('files').split(',')
+                self.getarg('files')
             )
         elif op == 'download':
             self.firebase.download(
                 self.getarg('db_alias'),
-                self.getopt('dest-dir')
+                self.getarg('dest-dir')
             )
         else:
             syserr(f'### Unhandled operation: {op}')

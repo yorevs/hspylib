@@ -13,16 +13,17 @@
 
    Copyright 2021, HSPyLib team
 """
+import logging as log
 import re
 import sys
+from datetime import datetime
+from textwrap import dedent
 
-from hspylib.core.tools.commons import get_path, read_version, syserr, sysout
-from hspylib.core.tools.constants import RE_VERSION_STRING
+from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.argument_chain import ArgumentChain
+from hspylib.modules.cli.application.version import AppVersion
 
 from core.versioner import Versioner
-from enums.part import Part
 
 HERE = get_path(__file__)
 
@@ -30,45 +31,52 @@ HERE = get_path(__file__)
 class Main(Application):
     """Versioner - Provides an engine to manage app versions."""
 
-    # The application version
-    VERSION = read_version(f"{HERE}/.version")
-
-    # CloudFoundry manager usage message
-    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-
     # The welcome message
-    WELCOME = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE)
+        version = AppVersion.load()
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.option_map = {}
         self.versioner = None
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
-        self._with_option('b', 'backup', True)
-        self._with_option('d', 'search-dir', True)
         # @formatter:off
-        self._with_arguments(
-            ArgumentChain.builder()
-                .when('version', RE_VERSION_STRING)
-                    .require('part', '|'.join(list(map(str.lower, Part.names()))))
-                    .require('files', '.*')
-                    .end()
-                .when('version', RE_VERSION_STRING)
-                    .require('state', 'promote|demote')
-                    .require('files', '.*')
-                    .end()
-              .build()
-        )
+        self._with_options() \
+            .option(
+                'backup', 'b', 'backup',
+                'create a backup of the original files using the specified extension', nargs=1) \
+            .option(
+                'search-dir', 'd', 'search-dir',
+                'specify the search directory. If omitted, current execution path will be used', nargs=1) \
+            .option('state', 's', 'state', 'promote or demote the version', nargs=1, choices=['promote', 'demote'])
+        self._with_arguments() \
+            .argument('version', 'the searching version to be updated') \
+            .argument('part', 'the version part to be updated', choices=['major', 'minor', 'patch']) \
+            .argument(
+                'files',
+                'the list of files containing te version to be updated', nargs='*') \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
+        log.info(dedent('''
+        {} v{}
+
+        Settings ==============================
+                BACKUP: {}
+                SEARCH-DIR: {}
+                STARTED: {}
+        ''').format(
+            self._app_name, self._app_version,
+            self.getarg('backup'), self.getarg('search-dir'),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         self.versioner = Versioner(
             self.getarg('version'),
-            self.getopt('search-dir'),
+            self.getarg('search-dir'),
             re.split(r'[, ]', str(self.getarg('files'))))
+
         self._exec_application()
 
     def _exec_application(self) -> None:
@@ -78,7 +86,7 @@ class Main(Application):
         else:
             caller = getattr(self.versioner, self.getarg('state'))
         caller()
-        if self.versioner.save(self.getopt('backup')):
+        if self.versioner.save(self.getarg('backup')):
             sysout(f"%GREEN%Successfully updated version to {self.versioner.version()}")
         else:
             syserr(f"Failed to update version. No matches found for version {self.getarg('version')}")
