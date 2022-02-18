@@ -41,7 +41,7 @@ class Application(metaclass=Singleton):
     def exit_handler(signum=0, frame=None, clear_screen: bool = False) -> None:
         """
         Handle interruptions to shutdown gracefully
-        :param signum: The signal number or the exit code
+        :param signum: The signal number or the exit http_code
         :param frame: The frame raised by the signal
         :param clear_screen: Whether to clean the screen before execution or not
         """
@@ -100,9 +100,9 @@ class Application(metaclass=Singleton):
             log.info('Run finished %s', datetime.now())
 
     def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
-        """Display the usage message and exit with the specified code ( or zero as default )
+        """Display the usage message and exit with the specified http_code ( or zero as default )
         :param no_exit: Do no exit the application on usage call
-        :param exit_code: The exit code
+        :param exit_code: The exit http_code
         """
         self._arg_parser.print_help(sys.stderr if exit_code != 0 else sys.stdout)
         if not no_exit:
@@ -129,4 +129,4 @@ class Application(metaclass=Singleton):
         """Execute the application's main statements"""
 
     def _cleanup(self) -> None:
-        """Execute code cleanup before exiting"""
+        """Execute http_code cleanup before exiting"""

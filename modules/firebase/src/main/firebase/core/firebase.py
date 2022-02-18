@@ -18,8 +18,8 @@ import logging as log
 import os
 from typing import List
 
-from core.agent_config import AgentConfig
-from core.file_processor import FileProcessor
+from firebase.core.agent_config import AgentConfig
+from firebase.core.file_processor import FileProcessor
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.preconditions import check_argument
 

@@ -21,7 +21,7 @@ import threading
 from time import sleep
 from typing import List
 
-from addons.widman.widget import Widget
+from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout

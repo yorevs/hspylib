@@ -16,8 +16,8 @@
 import os
 from typing import List
 
-from addons.appman.app_extension import AppExtension
-from addons.appman.app_type import AppType
+from hspylib.addons.appman.app_extension import AppExtension
+from hspylib.addons.appman.app_type import AppType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout

@@ -194,10 +194,11 @@ task installDependencies(type: Task) {
 }
 
 /* Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url. */
-task installProject(type: Task) {
+task checkSetupPy(type: Task) {
   group = 'Install'
   description = "Install a project in editable mode (i.e. setuptools develop mode)"
   dependsOn gatherRequirements
+  finalizedBy cleanDist
   doLast {
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
@@ -218,6 +219,7 @@ task installModule(type: Task) {
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
   dependsOn gatherRequirements
+  finalizedBy cleanDist
   doLast {
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
@@ -324,6 +326,8 @@ tasks.register('build', Task) {
   group = 'Build'
   dependsOn clean
   mustRunAfter clean
+  dependsOn installDependencies
+  mustRunAfter installDependencies
   dependsOn compile
   mustRunAfter compile
   dependsOn check
@@ -331,7 +335,7 @@ tasks.register('build', Task) {
 
 tasks.register('install', Task) {
   group = 'Install'
-  dependsOn buildOnly
-  mustRunAfter buildOnly
+  dependsOn build
+  mustRunAfter build
   dependsOn installModule
 }

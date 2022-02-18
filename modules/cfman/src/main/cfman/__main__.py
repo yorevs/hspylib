@@ -23,7 +23,7 @@ from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-from core.cf_manager import CFManager
+from cfman.core.cf_manager import CFManager
 
 HERE = get_path(__file__)
 

@@ -16,7 +16,7 @@ import json
 import logging as log
 from typing import List, Optional
 
-from core.schema.registry_subject import RegistrySubject
+from kafman.core.schema.registry_subject import RegistrySubject
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.preconditions import check_not_none, check_state
