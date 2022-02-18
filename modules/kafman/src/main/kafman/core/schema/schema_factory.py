@@ -15,10 +15,10 @@
 import os
 from abc import ABC
 
-from core.schema.avro_schema import AvroSchema
-from core.schema.json_schema import JsonSchema
-from core.schema.kafka_schema import KafkaSchema
-from core.schema.plain_schema import PlainSchema
+from kafman.core.schema.avro_schema import AvroSchema
+from kafman.core.schema.json_schema import JsonSchema
+from kafman.core.schema.kafka_schema import KafkaSchema
+from kafman.core.schema.plain_schema import PlainSchema
 from hspylib.core.tools.preconditions import check_not_none, check_state
 
 

@@ -14,7 +14,7 @@
 
 from typing import Optional, Tuple, Type, Union
 
-from core.schema.kafka_schema import KafkaSchema
+from kafman.core.schema.kafka_schema import KafkaSchema
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hcombobox import HComboBox

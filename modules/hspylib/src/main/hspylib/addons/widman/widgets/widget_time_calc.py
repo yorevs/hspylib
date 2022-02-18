@@ -19,7 +19,7 @@ import math
 import re
 from typing import List, Optional
 
-from addons.widman.widget import Widget
+from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout

@@ -37,7 +37,7 @@ class Widget_WIDGET_NAME_(Widget):
             self.VERSION)
 
     def execute(self, *args) -> ExitCode:
-        # Include the widget's main code
+        # Include the widget's main http_code
         sysout('')
         sysout('My widget is running')
         sysout('')

@@ -20,8 +20,8 @@ from avro.io import AvroTypeException
 from confluent_kafka import SerializingProducer
 from confluent_kafka.cimpl import KafkaError, Message
 from confluent_kafka.error import ValueSerializationError
-from core.schema.kafka_schema import KafkaSchema
-from core.schema.plain_schema import PlainSchema
+from kafman.core.schema.kafka_schema import KafkaSchema
+from kafman.core.schema.plain_schema import PlainSchema
 from hspylib.core.tools.commons import syserr
 from PyQt5.QtCore import pyqtSignal, QThread
 

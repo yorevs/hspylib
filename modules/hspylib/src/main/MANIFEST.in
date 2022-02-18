@@ -1,5 +1,4 @@
 include hspylib/welcome.txt
-include hspylib/usage.txt
 include hspylib/.version
 recursive-include hspylib/resources *
 recursive-include hspylib/resources/log *

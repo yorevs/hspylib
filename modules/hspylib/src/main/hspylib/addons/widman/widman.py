@@ -17,8 +17,8 @@ import os
 import sys
 from typing import List
 
-from addons.widman.widget import Widget
-from addons.widman.widget_entry import WidgetEntry
+from hspylib.addons.widman.widget import Widget
+from hspylib.addons.widman.widget_entry import WidgetEntry
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton

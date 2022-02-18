@@ -19,7 +19,7 @@ import threading
 from time import sleep
 from typing import List
 
-from addons.widman.widget import Widget
+from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons

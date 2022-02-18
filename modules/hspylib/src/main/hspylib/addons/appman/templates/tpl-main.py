@@ -43,7 +43,7 @@ class Main(Application):
         sysout(f'Hello {self._app_name}')
 
     def _cleanup(self) -> None:
-        """Execute code cleanup before exiting"""
+        """Execute http_code cleanup before exiting"""
 
 
 if __name__ == "__main__":

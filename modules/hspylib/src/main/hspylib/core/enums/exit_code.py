@@ -23,13 +23,13 @@ class ExitCode(Enumeration):
     # @formatter:off
 
     # Returned when something went wrong due to any Human interaction
-    ERROR = -1
+    ERROR   = -1
 
     # Returned when something ran successfully without errors
     SUCCESS = 0
 
     # Returned when something that was supposed to work and failed due to unexpected software behaviour
-    FAILED = 1
+    FAILED  = 1
 
     # Additional exit codes can be defined here {
     # }

@@ -19,9 +19,9 @@ import os
 import re
 from typing import List
 
-from entity.version import Version
-from enums.extension import Extension
-from exception.exceptions import MissingExtensionError
+from versioner.entity.version import Version
+from versioner.enums.extension import Extension
+from versioner.exception.exceptions import MissingExtensionError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir, syserr, sysout
 from hspylib.core.tools.preconditions import check_argument

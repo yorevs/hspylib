@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.16
+# hspylib v0.11.18
 #
 # Package: main.hspylib.addons.appman.templates
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'tpl-test_main', 
   'tpl-widget'
 ]
-__version__ = '0.11.16'
+__version__ = '0.11.18'

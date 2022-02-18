@@ -21,11 +21,11 @@ import logging as log
 import os
 import uuid
 
-from core.vault_config import VaultConfig
-from core.vault_service import VaultService
+from vault.core.vault_config import VaultConfig
+from vault.core.vault_service import VaultService
 from cryptography.fernet import InvalidToken
-from entity.vault_entry import VaultEntry
-from exception.exceptions import VaultCloseError, VaultOpenError
+from vault.entity.vault_entry import VaultEntry
+from vault.exception.exceptions import VaultCloseError, VaultOpenError
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt

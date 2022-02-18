@@ -58,7 +58,7 @@ class Main(Application):
         exit_app(self.main_view.run())
 
     def _cleanup(self) -> None:
-        """Execute code cleanup before exiting"""
+        """Execute http_code cleanup before exiting"""
 
 
 if __name__ == "__main__":

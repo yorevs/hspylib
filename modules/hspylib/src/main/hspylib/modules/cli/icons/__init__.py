@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.16
+# hspylib v0.11.18
 #
 # Package: main.hspylib.modules.cli.icons
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'emojis', 
   'font_awesome'
 ]
-__version__ = '0.11.16'
+__version__ = '0.11.18'
