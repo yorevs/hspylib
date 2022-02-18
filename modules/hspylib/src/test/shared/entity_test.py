@@ -16,7 +16,7 @@
 
 from uuid import UUID
 
-from core.crud.crud_entity import CrudEntity
+from hspylib.core.crud.crud_entity import CrudEntity
 
 
 class EntityTest(CrudEntity):

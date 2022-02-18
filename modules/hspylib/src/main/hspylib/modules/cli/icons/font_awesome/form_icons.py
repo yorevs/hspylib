@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class FormIcons(Awesome):

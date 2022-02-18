@@ -16,9 +16,9 @@
 
 from typing import List, Tuple
 
-from core.tools.constants import RE_SIMPLE_URL
-from core.tools.preconditions import check_argument, check_state
-from core.tools.validator import Validator
+from hspylib.core.tools.constants import RE_SIMPLE_URL
+from hspylib.core.tools.preconditions import check_argument, check_state
+from hspylib.core.tools.validator import Validator
 from phonebook.entity.Company import Company
 from phonebook.entity.validator.contact_validator import ContactValidator
 

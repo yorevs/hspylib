@@ -22,14 +22,14 @@ from time import sleep
 from typing import List
 
 from addons.widman.widget import Widget
-from core.enums.exit_code import ExitCode
-from core.exception.exceptions import WidgetExecutionError
-from core.tools.commons import sysout
-from modules.cli.application.argument_parser import HSArgumentParser
-from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from modules.cli.tui.extra.minput.input_validator import InputValidator
-from modules.cli.tui.extra.minput.minput import MenuInput, minput
-from modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.exception.exceptions import WidgetExecutionError
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.application.argument_parser import HSArgumentParser
+from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class WidgetSendMsg(Widget):

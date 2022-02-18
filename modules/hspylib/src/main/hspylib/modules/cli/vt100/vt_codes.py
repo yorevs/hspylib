@@ -16,8 +16,8 @@
 import re
 from enum import auto
 
-from core.enums.enumeration import Enumeration
-from modules.cli.vt100.vt_100 import Vt100
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 def vt_print(vt100_str: str, end: str = '') -> None:

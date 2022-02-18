@@ -20,11 +20,11 @@ from time import sleep
 from typing import List
 
 from addons.widman.widget import Widget
-from core.enums.exit_code import ExitCode
-from core.tools.commons import human_readable_bytes, sysout
-from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from modules.cli.keyboard import Keyboard
-from modules.cli.vt100.terminal import Terminal
+from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.tools.commons import human_readable_bytes, sysout
+from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class WidgetFree(Widget):

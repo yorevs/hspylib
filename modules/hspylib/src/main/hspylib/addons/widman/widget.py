@@ -16,8 +16,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from core.enums.exit_code import ExitCode
-from modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.core.enums.exit_code import ExitCode
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):

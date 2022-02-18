@@ -19,9 +19,9 @@ from typing import List, Tuple
 
 from requests.structures import CaseInsensitiveDict
 
-from core.enums.content_type import ContentType
-from core.enums.http_code import HttpCode
-from core.enums.http_method import HttpMethod
+from hspylib.core.enums.content_type import ContentType
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.enums.http_method import HttpMethod
 
 
 class MockServerHandler(BaseHTTPRequestHandler):

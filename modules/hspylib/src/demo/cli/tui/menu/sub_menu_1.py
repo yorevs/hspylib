@@ -13,9 +13,9 @@
 
    Copyright 2021, HSPyLib team
 """
-from modules.cli.tui.menu.menu import Menu
-from modules.cli.tui.menu.menu_item import MenuItem
-from modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.cli.tui.menu.menu import Menu
+from hspylib.modules.cli.tui.menu.menu_item import MenuItem
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 MENU = """%ED2%%HOM%
 {}

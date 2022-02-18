@@ -12,7 +12,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from core.enums.enumeration import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class AppType(Enumeration):

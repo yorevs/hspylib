@@ -19,9 +19,9 @@ from addons.appman.app_extension import AppExtension
 from addons.appman.app_type import AppType
 from addons.appman.appman import AppManager
 from addons.widman.widman import WidgetManager
-from core.tools.commons import get_path, run_dir, syserr
-from modules.cli.application.application import Application
-from modules.cli.application.version import AppVersion
+from hspylib.core.tools.commons import get_path, run_dir, syserr
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
 
 HERE = get_path(__file__)
 

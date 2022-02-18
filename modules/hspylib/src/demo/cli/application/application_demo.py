@@ -15,9 +15,9 @@
 """
 import sys
 
-from core.tools.commons import sysout
-from modules.cli.application.application import Application
-from modules.cli.application.version import AppVersion
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
 
 APP_NAME = 'AppTest'
 

@@ -18,14 +18,14 @@ from typing import List
 
 from addons.appman.app_extension import AppExtension
 from addons.appman.app_type import AppType
-from core.enums.http_code import HttpCode
-from core.metaclass.singleton import Singleton
-from core.tools.commons import get_path, syserr, sysout
-from core.tools.preconditions import check_argument
-from core.tools.text_tools import camelcase
-from modules.cli.application.application import Application
-from modules.cli.vt100.terminal import Terminal
-from modules.fetch.fetch import get
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.tools.text_tools import camelcase
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.vt100.terminal import Terminal
+from hspylib.modules.fetch.fetch import get
 
 HERE = get_path(__file__)
 

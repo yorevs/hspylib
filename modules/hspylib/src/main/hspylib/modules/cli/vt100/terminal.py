@@ -20,7 +20,7 @@ import subprocess
 from abc import ABC
 from typing import Optional
 
-from core.tools.commons import syserr
+from hspylib.core.tools.commons import syserr
 
 
 class Terminal(ABC):

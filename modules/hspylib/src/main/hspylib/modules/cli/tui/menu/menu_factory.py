@@ -13,10 +13,10 @@
    Copyright 2021, HSPyLib team
 """
 
-from core.metaclass.singleton import Singleton
-from modules.cli.tui.menu.menu import Menu
-from modules.cli.tui.menu.menu_entry import MenuEntry
-from modules.cli.tui.menu.menu_option import MenuOption
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.modules.cli.tui.menu.menu import Menu
+from hspylib.modules.cli.tui.menu.menu_entry import MenuEntry
+from hspylib.modules.cli.tui.menu.menu_option import MenuOption
 
 
 class MenuFactory(metaclass=Singleton):

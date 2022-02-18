@@ -15,10 +15,10 @@
 """
 
 from addons.widman.widget import Widget
-from core.enums.exit_code import ExitCode
-from core.tools.commons import sysout
-from modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class Widget_WIDGET_NAME_(Widget):

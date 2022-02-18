@@ -14,7 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_codes import vt_print
 
 if __name__ == '__main__':
     vt_print('%CSV%')

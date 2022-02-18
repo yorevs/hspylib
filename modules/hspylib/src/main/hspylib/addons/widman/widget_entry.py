@@ -14,7 +14,7 @@
 """
 import os
 
-from core.tools.text_tools import camelcase
+from hspylib.core.tools.text_tools import camelcase
 
 
 class WidgetEntry:

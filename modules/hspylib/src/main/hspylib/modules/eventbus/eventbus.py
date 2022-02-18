@@ -15,8 +15,8 @@
 
 from typing import Any, Callable, List
 
-from core.tools.commons import syserr
-from modules.eventbus.event import Event
+from hspylib.core.tools.commons import syserr
+from hspylib.modules.eventbus.event import Event
 
 
 class EventBus:

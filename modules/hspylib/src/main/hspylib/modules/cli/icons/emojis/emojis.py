@@ -15,7 +15,7 @@
 
 from emoji.core import emojize
 
-from core.enums.enumeration import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 
 
 def emj_print(emoji_str: str) -> None:

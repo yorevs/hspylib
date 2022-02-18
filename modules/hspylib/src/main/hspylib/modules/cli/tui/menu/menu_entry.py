@@ -13,9 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 
-from modules.cli.tui.menu.menu import Menu
-from modules.cli.tui.menu.menu_item import MenuItem
-from modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.tui.menu.menu import Menu
+from hspylib.modules.cli.tui.menu.menu_item import MenuItem
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 MENU_TPL = """%ED2%%HOM%
 {}

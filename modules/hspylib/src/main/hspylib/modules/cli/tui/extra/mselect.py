@@ -16,12 +16,12 @@ import re
 from abc import ABC
 from typing import List, Optional, TypeVar
 
-from core.tools.commons import sysout
-from modules.cli.icons.font_awesome.form_icons import FormIcons
-from modules.cli.keyboard import Keyboard
-from modules.cli.vt100.vt_codes import vt_print
-from modules.cli.vt100.vt_colors import VtColors
-from modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
 
 T = TypeVar('T')
 

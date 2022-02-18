@@ -21,12 +21,12 @@ from typing import Optional, Tuple
 
 from requests.structures import CaseInsensitiveDict
 
-from core.enums.charset import Charset
-from core.enums.content_type import ContentType
-from core.enums.http_code import HttpCode
-from core.enums.http_method import HttpMethod
-from modules.fetch.http_response import HttpResponse
-from modules.mock.mock_server_handler import MockServerHandler
+from hspylib.core.enums.charset import Charset
+from hspylib.core.enums.content_type import ContentType
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.enums.http_method import HttpMethod
+from hspylib.modules.fetch.http_response import HttpResponse
+from hspylib.modules.mock.mock_server_handler import MockServerHandler
 
 
 class MockServer(HTTPServer):

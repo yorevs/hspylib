@@ -14,8 +14,8 @@
 """
 from typing import Callable, List, Optional
 
-from modules.cli.icons.font_awesome.awesome import Awesome
-from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 
 
 class DashboardBuilder:

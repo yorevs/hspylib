@@ -19,15 +19,15 @@ from typing import List
 
 from addons.widman.widget import Widget
 from addons.widman.widget_entry import WidgetEntry
-from core.enums.exit_code import ExitCode
-from core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
-from core.metaclass.singleton import Singleton
-from core.tools.commons import get_path
-from core.tools.preconditions import check_state
-from core.tools.text_tools import camelcase
-from modules.cli.application.application import Application
-from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
-from modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
+from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import get_path
+from hspylib.core.tools.preconditions import check_state
+from hspylib.core.tools.text_tools import camelcase
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
 
 HERE = get_path(__file__)
 

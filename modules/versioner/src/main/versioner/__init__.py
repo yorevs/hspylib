@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-    '__main__',
-    'core',
-    'entity',
-    'enums',
-    'exception'
+  '__main__', 
+  'core', 
+  'entity', 
+  'enums', 
+  'exception'
 ]
 __version__ = '0.9.6'

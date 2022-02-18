@@ -15,7 +15,7 @@
 
 import struct
 
-from core.enums.enumeration import Enumeration
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class Awesome(Enumeration):

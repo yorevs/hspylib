@@ -15,14 +15,14 @@
 
 from typing import List, Optional
 
-from core.tools.commons import sysout
-from core.tools.preconditions import check_state
-from modules.cli.keyboard import Keyboard
-from modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
-from modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
-from modules.cli.vt100.vt_codes import vt_print
-from modules.cli.vt100.vt_colors import VtColors
-from modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
+from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.preconditions import check_state
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
 
 
 def mdashboard(
