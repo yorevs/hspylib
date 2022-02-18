@@ -18,7 +18,7 @@ from typing import List, Optional
 
 from requests.structures import CaseInsensitiveDict
 
-from core.crud.crud_entity import CrudEntity
+from hspylib.core.crud.crud_entity import CrudEntity
 
 
 class CrudRepository(ABC):

@@ -21,7 +21,7 @@ from typing import Optional
 
 import yaml
 
-from core.tools.commons import flatten_dict, run_dir
+from hspylib.core.tools.commons import flatten_dict, run_dir
 
 
 class Properties:

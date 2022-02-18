@@ -14,8 +14,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from core.crud.crud_service import CrudService
-from core.metaclass.singleton import Singleton
+from hspylib.core.crud.crud_service import CrudService
+from hspylib.core.metaclass.singleton import Singleton
 
 from phonebook.repository.person_repository import PersonRepository
 

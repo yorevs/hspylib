@@ -16,10 +16,10 @@
 import sys
 
 from calculator.ui.qt.views.main_qt_view import MainQtView
-from modules.cli.application.application import Application
-from modules.cli.application.version import AppVersion
-from modules.cli.vt100.vt_utils import exit_app
-from modules.qt.qt_application import QtApplication
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.qt.qt_application import QtApplication
 
 
 class Main(Application):

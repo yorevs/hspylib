@@ -17,9 +17,11 @@
 import logging as log
 import sys
 from datetime import datetime
+from textwrap import dedent
 
-from hspylib.core.tools.commons import dirname, get_path, read_version
+from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
 
 from core.cf_manager import CFManager
 
@@ -29,31 +31,33 @@ HERE = get_path(__file__)
 class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
-    # The application version
-    VERSION = read_version(f"{HERE}/.version")
-
-    # CloudFoundry manager usage message
-    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-
     # The welcome message
-    WELCOME = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
+        version = AppVersion.load()
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.cfman = None
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
-        self._with_option('a', 'api', True)
-        self._with_option('o', 'org', True)
-        self._with_option('s', 'space', True)
-        self._with_option('u', 'username', True)
-        self._with_option('p', 'password', True)
+
+        self._with_options() \
+            .option('api', 'a', 'api', 'the API to connect to (API endpoint, e.g. https://api.example.com)') \
+            .option('org', 'o', 'org', 'the organization to connect to (Target organization)') \
+            .option('org', 's', 'space', 'the space to connect to (Target organization space)') \
+            .option('org', 'u', 'username', 'the PCF username', required=True) \
+            .option('org', 'p', 'password', 'the PCF password', required=True)
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.cfman = CFManager(self._opts)
-        log.info(self.WELCOME.format(self._app_name, self.VERSION, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        self.cfman = CFManager(self._args)
+        log.info(dedent('''
+        {} v{}
+
+        Settings ==============================
+                STARTED: {}
+        ''').format(self._app_name, AppVersion.load(), datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         self._exec_application()
 
     def _exec_application(self) -> None:

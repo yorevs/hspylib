@@ -1,9 +1,9 @@
 ext {
-  sourceRoot = "$rootDir/modules/vault/src"
+  sourceRoot = "$rootDir/modules/$project.name/src"
   application = "$sourceRoot/main/__main__.py"
-  versionFile = "$sourceRoot/main/vault/.version"
+  versionFile = "$sourceRoot/main/$project.name/.version"
   requirementsFile = "$sourceRoot/main/requirements.txt"
-  pythonPath = "$sourceRoot/main/vault:$sourceRoot/test"
+  pythonPath = "$sourceRoot/main:$sourceRoot/test"
 }
 
 apply from: "$rootDir/gradle/dependencies.gradle"

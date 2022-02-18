@@ -13,9 +13,9 @@
 
    Copyright 2021, HSPyLib team
 """
-from modules.cli.tui.menu.menu_factory import MenuFactory
-from modules.cli.tui.menu.menu_ui import MenuUi
-from modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
+from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == '__main__':
     # @formatter:off

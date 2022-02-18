@@ -21,7 +21,7 @@ from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt, QVariant
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QTableView
 
-from core.tools.commons import class_attribute_names, class_attribute_values
+from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
 
 T = TypeVar('T')
 

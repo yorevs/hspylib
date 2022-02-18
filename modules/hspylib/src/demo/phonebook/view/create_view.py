@@ -14,9 +14,9 @@
    Copyright 2021, HSPyLib team
 """
 
-from core.exception.exceptions import InputAbortedError
-from core.metaclass.singleton import Singleton
-from modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.core.exception.exceptions import InputAbortedError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 from phonebook.entity.Company import Company
 from phonebook.entity.Person import Person

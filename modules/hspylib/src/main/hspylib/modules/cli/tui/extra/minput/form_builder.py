@@ -15,7 +15,7 @@
 
 from typing import Any
 
-from modules.cli.tui.extra.minput.field_builder import FieldBuilder
+from hspylib.modules.cli.tui.extra.minput.field_builder import FieldBuilder
 
 
 class FormBuilder:

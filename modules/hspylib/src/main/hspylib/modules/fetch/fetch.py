@@ -18,10 +18,10 @@ from typing import Any, List, Optional, Tuple, Union
 import requests
 from requests import exceptions as ex
 
-from core.enums.http_code import HttpCode
-from core.enums.http_method import HttpMethod
-from core.tools.commons import sysout
-from modules.fetch.http_response import HttpResponse
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.enums.http_method import HttpMethod
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.fetch.http_response import HttpResponse
 
 
 def fetch(

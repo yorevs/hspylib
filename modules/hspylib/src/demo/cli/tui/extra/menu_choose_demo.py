@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-from modules.cli.tui.extra.mchoose import mchoose
+from hspylib.modules.cli.tui.extra.mchoose import mchoose
 
 
 class ChooseableItem:

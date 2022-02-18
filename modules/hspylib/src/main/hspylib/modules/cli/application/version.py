@@ -15,7 +15,7 @@
 import os
 from typing import Tuple
 
-from core.tools.commons import read_version
+from hspylib.core.tools.commons import read_version
 
 
 class AppVersion:

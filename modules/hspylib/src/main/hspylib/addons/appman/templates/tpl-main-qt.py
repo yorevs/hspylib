@@ -16,12 +16,12 @@
 
 import sys
 
-from core.config.app_config import AppConfigs
-from core.tools.commons import dirname, get_path, read_version
-from modules.cli.application.application import Application
-from modules.cli.vt100.vt_utils import exit_app
-from modules.qt.qt_application import QtApplication
-from modules.qt.views.qt_view import QtView
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import dirname, get_path, read_version
+from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.qt.qt_application import QtApplication
+from hspylib.modules.qt.views.qt_view import QtView
 
 HERE = get_path(__file__)
 

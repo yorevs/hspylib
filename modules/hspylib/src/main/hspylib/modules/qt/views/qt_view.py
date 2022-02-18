@@ -20,8 +20,8 @@ from PyQt5 import uic
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
 
-from core.tools.commons import run_dir
-from core.tools.preconditions import check_argument, check_state
+from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.preconditions import check_argument, check_state
 
 
 class QtView(ABC):

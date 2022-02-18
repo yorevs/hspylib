@@ -19,8 +19,8 @@ import os
 import sys
 import unittest
 
-from core.config.app_config import AppConfigs
-from core.tools.commons import dirname
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import dirname
 
 TEST_DIR = dirname(__file__)
 

@@ -13,7 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 
-from modules.cli.vt100.terminal import Terminal
+from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class GitTools:

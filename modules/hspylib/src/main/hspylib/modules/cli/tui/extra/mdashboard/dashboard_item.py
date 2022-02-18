@@ -14,7 +14,7 @@
 """
 from typing import Callable
 
-from modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class DashboardItem:

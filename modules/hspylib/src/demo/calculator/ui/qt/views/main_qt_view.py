@@ -20,8 +20,8 @@ from PyQt5.QtCore import Qt
 
 from calculator.enums.calc_operations import CalcOperations
 from calculator.ui.qt.views.blink_lcd_thread import BlinkLcdThread
-from core.config.app_config import AppConfigs
-from modules.qt.views.qt_view import QtView
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.modules.qt.views.qt_view import QtView
 
 
 class MainQtView(QtView):

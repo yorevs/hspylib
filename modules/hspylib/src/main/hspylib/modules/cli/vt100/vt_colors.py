@@ -13,8 +13,8 @@
    Copyright 2021, HSPyLib team
 """
 
-from core.enums.enumeration import Enumeration
-from modules.cli.vt100.vt_100 import Vt100
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 class VtColors(Enumeration):

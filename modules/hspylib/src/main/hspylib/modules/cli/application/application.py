@@ -23,15 +23,15 @@ from datetime import datetime
 from textwrap import dedent
 from typing import Optional, Union
 
-from core.config.app_config import AppConfigs
-from core.exception.exceptions import InvalidArgumentError, InvalidOptionError
-from core.metaclass.singleton import Singleton
-from core.tools.commons import sysout
-from modules.cli.application.argument_parser import HSArgumentParser
-from modules.cli.application.arguments_builder import ArgumentsBuilder
-from modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
-from modules.cli.application.options_builder import OptionsBuilder
-from modules.cli.application.version import AppVersion
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.application.argument_parser import HSArgumentParser
+from hspylib.modules.cli.application.arguments_builder import ArgumentsBuilder
+from hspylib.modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
+from hspylib.modules.cli.application.options_builder import OptionsBuilder
+from hspylib.modules.cli.application.version import AppVersion
 
 
 class Application(metaclass=Singleton):

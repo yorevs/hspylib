@@ -13,7 +13,7 @@
 
    Copyright 2021, HSPyLib team
 """
-from modules.cli.tui.extra.mselect import mselect
+from hspylib.modules.cli.tui.extra.mselect import mselect
 
 
 class SelectableItem:

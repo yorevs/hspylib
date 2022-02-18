@@ -21,10 +21,10 @@ import sys
 from datetime import datetime, timedelta
 from typing import Any, List, Optional, Tuple, Type, Union
 
-from core.tools.constants import DATE_TIME_FORMAT
-from core.tools.validator import Validator
-from modules.cli.vt100.vt_codes import VtCodes
-from modules.cli.vt100.vt_colors import VtColors
+from hspylib.core.tools.constants import DATE_TIME_FORMAT
+from hspylib.core.tools.validator import Validator
+from hspylib.modules.cli.vt100.vt_codes import VtCodes
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 # pylint: disable=consider-using-f-string
 LOG_FMT = '{} {} {} {}{} {} '.format(

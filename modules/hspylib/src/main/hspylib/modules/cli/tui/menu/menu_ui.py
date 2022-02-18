@@ -16,8 +16,8 @@
 import signal
 from typing import Optional
 
-from modules.cli.tui.menu.menu import Menu
-from modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.cli.tui.menu.menu import Menu
+from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 
 class MenuUi:

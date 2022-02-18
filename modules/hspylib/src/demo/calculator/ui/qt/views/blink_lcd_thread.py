@@ -18,7 +18,7 @@ from time import sleep
 
 from PyQt5.QtWidgets import QLCDNumber
 
-from core.config.app_config import AppConfigs
+from hspylib.core.config.app_config import AppConfigs
 
 
 class BlinkLcdThread(Thread):

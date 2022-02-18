@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
+  'core', 
+  'modules', 
   'shared', 
-  'test_core', 
-  'test_modules', 
-  'test_tools'
+  'tools'
 ]
 __version__ = '0.11.16'

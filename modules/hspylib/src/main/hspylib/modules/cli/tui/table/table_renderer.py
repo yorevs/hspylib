@@ -16,8 +16,8 @@
 import sys
 from typing import List, Optional
 
-from core.tools.preconditions import check_argument
-from core.tools.text_tools import fit_text, TextAlignment
+from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.tools.text_tools import fit_text, TextAlignment
 
 
 class TableRenderer:

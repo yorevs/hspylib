@@ -1,9 +1,9 @@
 ext {
-  sourceRoot = "$projectDir/src"
+  sourceRoot = "$rootDir/modules/$project.name/src"
   application = "$sourceRoot/main/__main__.py"
-  versionFile = "$sourceRoot/main/hspylib/.version"
+  versionFile = "$sourceRoot/main/$project.name/.version"
   requirementsFile = "$sourceRoot/main/requirements.txt"
-  pythonPath = "$sourceRoot/main/hspylib:$sourceRoot/test:$sourceRoot/demo"
+  pythonPath = "$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
 }
 
 task copyReadme(type: Copy) {

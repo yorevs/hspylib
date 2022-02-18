@@ -18,9 +18,9 @@ from typing import Optional
 
 from requests.structures import CaseInsensitiveDict
 
-from core.enums.http_method import HttpMethod
-from modules.fetch.fetch import fetch
-from modules.fetch.http_response import HttpResponse
+from hspylib.core.enums.http_method import HttpMethod
+from hspylib.modules.fetch.fetch import fetch
+from hspylib.modules.fetch.http_response import HttpResponse
 
 
 def rest_call(
