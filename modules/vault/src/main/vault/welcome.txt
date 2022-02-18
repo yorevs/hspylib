@@ -1,6 +1,8 @@
-{} v{}
 
-Settings ==============================
-        VAULT_USER: {}
-        VAULT_FILE: {}
-        STARTED: {}
+__     __          _ _
+\ \   / /_ _ _   _| | |_
+ \ \ / / _` | | | | | __|
+  \ V / (_| | |_| | | |_
+   \_/ \__,_|\__,_|_|\__|
+
+HSPyLib Vault v{} - Manage your secrets.

@@ -17,10 +17,11 @@
 import logging as log
 import sys
 from datetime import datetime
+from textwrap import dedent
 
-from hspylib.core.tools.commons import dirname, get_path, read_version, syserr
+from hspylib.core.tools.commons import get_path, syserr
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.argument_chain import ArgumentChain
+from hspylib.modules.cli.application.version import AppVersion
 
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
@@ -31,48 +32,57 @@ HERE = get_path(__file__)
 class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
-    # The application version
-    VERSION = read_version(f"{HERE}/.version")
-
-    # Vault usage message
-    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
-
-    # Welcome message
-    WELCOME = (HERE / "welcome.txt").read_text()
+    # The welcome message
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, self.VERSION, self.USAGE, dirname(__file__))
+        version = AppVersion.load()
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.vault = Vault()
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_arguments(self) -> None:
         # @formatter:off
-        self._with_arguments(
-            ArgumentChain.builder()
-                .when('operation', 'list')
-                    .accept('filter', '.+')
-                    .end()
-                .when('operation', 'add|upd')
-                    .require('name', '.+')
-                    .require('hint', '.+')
-                    .accept('password', '.+')
-                    .end()
-                .when('operation', 'del|get')
-                    .require('name', '.+')
-                    .end()
-                .build()
-        )
+
+        self._with_chained_args('operation', 'the Vault operation to process') \
+            .argument('list', 'list all entries matching the given filter criteria, if specified') \
+                .add_option(
+                    'filter', 'f', 'filter',
+                    "filter the listed vault entries by it's name",
+                    nargs='?', default=None) \
+            .argument('get', 'get a vault entry') \
+                .add_argument('name', 'the name of the vault entry which identifies it') \
+            .argument('del', 'delete an existing vault entry') \
+                .add_argument('name', 'the name of the vault entry which identifies it') \
+            .argument('add', 'add a NEW UNIQUE vault entry') \
+                .add_argument('name', 'the name of the vault entry which identifies it') \
+                .add_argument('hint', 'applicable hints related to that vault entry') \
+                .add_argument(
+                    'password',
+                    'the password of the entry. If not provided, it will be prompted',
+                    nargs='?', default=None) \
+            .argument('upd', 'update an existing vault entry') \
+                .add_argument('name', 'the name of the vault entry which identifies it') \
+                .add_argument('hint', 'applicable hints related to that vault entry') \
+                .add_argument(
+                    'password',
+                    'the password of the entry. If not provided, it will be prompted',
+                    nargs='?', default=None) \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        log.info(
-            self.WELCOME.format(
-                self._app_name,
-                self.VERSION,
-                VaultConfig.INSTANCE.vault_user(),
-                VaultConfig.INSTANCE.vault_file(),
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        )
+        log.info(dedent('''
+        {} v{}
+
+        Settings ==============================
+                VAULT_USER: {}
+                VAULT_FILE: {}
+                STARTED: {}
+        ''').format(
+            self._app_name, self._app_version,
+            VaultConfig.INSTANCE.vault_user(),
+            VaultConfig.INSTANCE.vault_file(),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         self._exec_application()
 
     def _cleanup(self) -> None:

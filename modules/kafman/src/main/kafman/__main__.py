@@ -32,11 +32,12 @@ class Main(Application):
     VERSION = read_version(f"{HERE}/.version")
 
     def __init__(self, app_name: str):
-        # Invoke the super constructor without source_dir parameter to skip creation of log and properties
-        super().__init__(app_name, self.VERSION, self.USAGE, source_dir=dirname(__file__))
+        from hspylib.modules.cli.application.version import AppVersion
+        version = AppVersion.load()
+        super().__init__(app_name, version)
         self.main_view = QtApplication(MainQtView)
 
-    def _setup_parameters(self, *params, **kwargs) -> None:
+    def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
 
     def _main(self, *params, **kwargs) -> None:
