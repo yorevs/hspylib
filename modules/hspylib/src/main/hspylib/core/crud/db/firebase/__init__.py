@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.20
+# hspylib v0.11.21
 #
 # Package: main.hspylib.core.crud.db.firebase
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'firebase_config', 
   'firebase_repository'
 ]
-__version__ = '0.11.20'
+__version__ = '0.11.21'

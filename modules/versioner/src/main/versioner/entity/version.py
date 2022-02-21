@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.versioner.entity
+   hspylib.versioner.entity
       @file: version.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -16,7 +16,7 @@
 
 import re
 
-from versioner.enums.extension import Extension
+from versioner.enums.version_state import VersionState
 from hspylib.core.tools.constants import RE_VERSION_STRING
 from hspylib.core.tools.preconditions import check_argument
 
@@ -32,7 +32,7 @@ class Version:
             int(parts[0]),
             int(parts[1]),
             int(parts[2]),
-            Extension.value_of(parts[3]) if len(parts) > 3 else None)
+            VersionState.value_of(parts[3]) if len(parts) > 3 else None)
 
     @classmethod
     def of(cls, version: tuple) -> 'Version':
@@ -41,14 +41,14 @@ class Version:
             int(version[0]),
             int(version[1]),
             int(version[2]),
-            Extension.value_of(version[3]) if len(version) > 3 else None)
+            VersionState.value_of(version[3]) if len(version) > 3 else None)
 
     def __init__(
         self,
         major: int,
         minor: int,
         patch: int,
-        state: Extension):
+        state: VersionState):
         self.major = major
         self.minor = minor
         self.patch = patch

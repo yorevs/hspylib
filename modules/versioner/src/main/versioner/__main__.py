@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.versioner.src.main
+   @package: hspylib.versioner.src.main
       @file: __main__.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,7 +14,6 @@
    Copyright 2021, HSPyLib team
 """
 import logging as log
-import re
 import sys
 from datetime import datetime
 from textwrap import dedent
@@ -37,8 +36,7 @@ class Main(Application):
     def __init__(self, app_name: str):
         version = AppVersion.load()
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
-        self.option_map = {}
-        self.versioner = None
+        self._versioner = None
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
@@ -49,14 +47,18 @@ class Main(Application):
                 'create a backup of the original files using the specified extension', nargs=1) \
             .option(
                 'search-dir', 'd', 'search-dir',
-                'specify the search directory. If omitted, current execution path will be used', nargs=1) \
-            .option('state', 's', 'state', 'promote or demote the version', nargs=1, choices=['promote', 'demote'])
-        self._with_arguments() \
-            .argument('version', 'the searching version to be updated') \
-            .argument('part', 'the version part to be updated', choices=['major', 'minor', 'patch']) \
-            .argument(
-                'files',
-                'the list of files containing te version to be updated', nargs='*') \
+                'specify the search directory. If omitted, current execution path will be used', nargs=1)
+        self._with_chained_args('action', 'what to do with the version') \
+            .argument('update', 'increment a version part') \
+                .add_argument('part', 'the version part to be updated', choices=['major', 'minor', 'patch']) \
+                .add_argument('version', 'the searching version to be updated') \
+                .add_argument('files', 'the list of files containing te version to be updated', nargs='*') \
+            .argument('promote', 'promote current version') \
+                .add_argument('version', 'the searching version to be updated') \
+                .add_argument('files', 'the list of files containing te version to be updated', nargs='*') \
+            .argument('demote', 'demote current version') \
+                .add_argument('version', 'the searching version to be updated') \
+                .add_argument('files', 'the list of files containing te version to be updated', nargs='*')
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
@@ -72,24 +74,27 @@ class Main(Application):
             self._app_name, self._app_version,
             self.getarg('backup'), self.getarg('search-dir'),
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-        self.versioner = Versioner(
+        self._versioner = Versioner(
             self.getarg('version'),
             self.getarg('search-dir'),
-            re.split(r'[, ]', str(self.getarg('files'))))
+            self.getarg('files'))
 
         self._exec_application()
 
     def _exec_application(self) -> None:
         """Execute the application"""
-        if self.getarg('part'):
-            caller = getattr(self.versioner, self.getarg('part'))
+        if 'update' == self.getarg('action'):
+            caller = getattr(self._versioner, self.getarg('part'))
         else:
-            caller = getattr(self.versioner, self.getarg('state'))
+            caller = getattr(self._versioner, self.getarg('action'))
         caller()
-        if self.versioner.save(self.getarg('backup')):
-            sysout(f"%GREEN%Successfully updated version to {self.versioner.version()}")
+        result = self._versioner.save(self.getarg('backup'))
+        if result:
+            sysout(f"%GREEN%Successfully updated from version {self.getarg('version')} to {self._versioner.version()}")
+            sysout('%ORANGE%Files changed:')
+            list(map(lambda r: sysout(f'%BLUE%  |- {r}'), result))
         else:
-            syserr(f"Failed to update version. No matches found for version {self.getarg('version')}")
+            syserr(f"%RED%No matches found for version {self.getarg('version')}")
 
 
 if __name__ == "__main__":
