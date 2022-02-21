@@ -4,8 +4,8 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.versioner.enums
-      @file: extension.py
+   @package: hspylib.app.versioner.enums
+      @file: version_state.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -16,7 +16,7 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class Extension(Enumeration):
+class VersionState(Enumeration):
     DEVELOPMENT = 1
     SNAPSHOT = 2
     STABLE = 4

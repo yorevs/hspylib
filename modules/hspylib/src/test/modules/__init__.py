@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.20
+# hspylib v0.11.21
 #
 # Package: test.modules
 """Package initialization."""
@@ -13,4 +13,4 @@ __all__ = [
   'mock', 
   'security'
 ]
-__version__ = '0.11.20'
+__version__ = '0.11.21'
