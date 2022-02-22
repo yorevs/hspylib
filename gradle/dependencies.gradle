@@ -23,5 +23,6 @@ project.ext.deps = [
   'fastavro',
   'avro-python3',
   'jsonschema',
-  'pyperclip'
+  'pyperclip',
+  'cryptocode',
 ]

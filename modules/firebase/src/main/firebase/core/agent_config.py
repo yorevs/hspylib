@@ -113,3 +113,4 @@ class AgentConfig(metaclass=Singleton):
     def _input_passphrase(self) -> bytes:
         passwd = getpass.getpass('Please type a password to encrypt your data: ')
         return base64.b64encode(f'{self.username()}:{passwd}'.encode(str(Charset.UTF_8)))
+

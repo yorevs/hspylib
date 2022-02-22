@@ -19,8 +19,10 @@ import binascii
 import getpass
 import logging as log
 import os
+import shutil
 import uuid
 
+import cryptocode
 from cryptography.fernet import InvalidToken
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
@@ -29,11 +31,14 @@ from hspylib.modules.security.security import decrypt, encrypt
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_service import VaultService
 from vault.entity.vault_entry import VaultEntry
-from vault.exception.exceptions import VaultCloseError, VaultOpenError
+from vault.exception.exceptions import VaultCloseError, VaultOpenError, VaultSecurityException
 
 
 class Vault:
     """Represents the vault and it's functionalities"""
+
+    # Vault hash code
+    _VAULT_HASHCODE = os.getenv('VAULT_HASHCODE', 'e4f362fd1e02df6bc9c684c9310e3550')
 
     def __init__(self):
         self.is_open = False
@@ -51,6 +56,7 @@ class Vault:
     def open(self) -> bool:
         """Open and read the Vault file"""
         try:
+            self._check_backup()
             self.passphrase = self._read_passphrase()
             if not self.is_open:
                 self._unlock_vault()
@@ -107,25 +113,13 @@ class Vault:
         if not entry:
             while not password:
                 password = getpass.getpass(f"Type the password for '{key}': ").strip()
-            entry = VaultEntry(uuid.uuid4(), key, key, password, hint)
+            entry = VaultEntry(uuid.uuid4(), key, key, self._get_password(password), hint)
             self.service.save(entry)
             sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
         else:
             log.error("Attempt to add to Vault failed for name=%s", key)
             syserr(f"### Entry specified by '{key}' already exists in vault")
         log.debug("Vault add issued. User=%s", getpass.getuser())
-
-    def get(self, key) -> None:
-        """Display the vault entry specified by name
-        :param key: The vault entry name to get
-        """
-        entry = self.service.get_by_key(key)
-        if entry:
-            sysout(f"\n{entry.to_string(True, True)}")
-        else:
-            log.error("Attempt to get from Vault failed for name=%s", key)
-            syserr(f"### No entry specified by '{key}' was found in vault")
-        log.debug("Vault get issued. User=%s", getpass.getuser())
 
     def update(self, key, hint, password) -> None:
         """Update a vault entry
@@ -135,17 +129,28 @@ class Vault:
         """
         entry = self.service.get_by_key(key)
         if entry:
-            if not password:
-                passphrase = getpass.getpass(f"Type a password for '{key}': ").strip()
-            else:
-                passphrase = password
-            upd_entry = VaultEntry(entry.uuid, key, key, passphrase, hint)
+            while not password:
+                password = getpass.getpass(f"Type a password for '{key}': ").strip()
+            upd_entry = VaultEntry(entry.uuid, key, key, self._get_password(password), hint)
             self.service.save(upd_entry)
             sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
         else:
             log.error("Attempt to update Vault failed for name=%s", key)
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault update issued. User=%s", getpass.getuser())
+
+    def get(self, key) -> None:
+        """Display the vault entry specified by name
+        :param key: The vault entry name to get
+        """
+        entry = self.service.get_by_key(key)
+        entry.password = cryptocode.decrypt(entry.password, self._VAULT_HASHCODE)
+        if entry:
+            sysout(f"\n{entry.to_string(True, True)}")
+        else:
+            log.error("Attempt to get from Vault failed for name=%s", key)
+            syserr(f"### No entry specified by '{key}' was found in vault")
+        log.debug("Vault get issued. User=%s", getpass.getuser())
 
     def remove(self, key: str) -> None:
         """Remove a vault entry
@@ -160,9 +165,12 @@ class Vault:
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault remove issued. User=%s", getpass.getuser())
 
+    def _get_password(self, password: str):
+        return cryptocode.encrypt(password, self._VAULT_HASHCODE)
+
     def _read_passphrase(self) -> str:
         """Retrieve and read the vault passphrase"""
-        if file_is_not_empty(self.configs.vault_file()):
+        if os.path.exists(self.configs.vault_file()):
             confirm_flag = False
         else:
             sysout(f"%ORANGE%### Your Vault '{self.configs.vault_file()}' file is empty.")
@@ -185,7 +193,6 @@ class Vault:
                 else:
                     sysout("%GREEN%Passphrase successfully stored")
                     log.debug("Vault passphrase created for user=%s", self.configs.vault_user())
-                    touch_file(self.configs.vault_file())
                     self.is_open = True
         return f"{self.configs.vault_user()}:{passphrase}"
 
@@ -214,3 +221,26 @@ class Vault:
             os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
         self.is_open = True
         safe_del_file(self.configs.vault_file())
+
+    def _check_backup(self) -> None:
+        vault_file = self.configs.vault_file()
+        unlocked_vault_file = self.configs.unlocked_vault_file()
+        backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/.{os.path.basename(vault_file)}.bak"
+        locked_empty = not file_is_not_empty(vault_file)
+        unlocked_empty = not file_is_not_empty(unlocked_vault_file)
+        if locked_empty and unlocked_empty:
+            return
+        elif not locked_empty and unlocked_empty:
+            log.debug(f'Creating a vault backup before opening it => {backup_file}')
+            shutil.copyfile(vault_file, backup_file)
+        elif not unlocked_empty:
+            log.warning(f'Vault file was found open and will be removed => {vault_file}')
+            if os.path.exists(backup_file):
+                log.warning(f'Restoring last backup => {backup_file}')
+                shutil.copyfile(backup_file, vault_file)
+                safe_del_file(unlocked_vault_file)
+            else:
+                log.warning(f'No backups found !')
+                raise VaultSecurityException(
+                    f'Unable to either restore or re-lock the vault file. Please manually backup your secrets '
+                    'and remove the unlocked file "{unlocked_vault_file}"')
