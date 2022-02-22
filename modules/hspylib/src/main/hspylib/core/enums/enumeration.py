@@ -56,4 +56,13 @@ class Enumeration(Enum):
         return str(self)
 
     def __eq__(self, other: 'Enumeration') -> bool:
-        return other.name == self.name or self.value == other.value
+        return (
+            self.__class__ == other.__class__ and
+            (other.name == self.name and self.value == other.value)
+        )
+
+    def __hash__(self) -> int:
+        hash_code = 7
+        hash_code = 31 * hash_code + (0 if self.name is None else hash(self.name))
+        hash_code = 31 * hash_code + (0 if self.value is None else hash(self.value))
+        return hash_code

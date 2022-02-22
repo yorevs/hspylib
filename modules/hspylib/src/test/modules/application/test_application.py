@@ -21,7 +21,10 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
 from shared.application_test import ApplicationTest
+
+APP_VERSION = AppVersion((0, 1, 0))
 
 
 class TestApplication(unittest.TestCase):
@@ -34,21 +37,21 @@ class TestApplication(unittest.TestCase):
 
     # TC1 - Application should be singleton
     def test_application_should_be_singleton(self):
-        app_1 = Application('App-test-1')
-        app_2 = Application('App-test-2')
+        app_1 = Application('App-test-1', APP_VERSION)
+        app_2 = Application('App-test-2', APP_VERSION)
         self.assertIsNotNone(app_1)
         self.assertIsNotNone(app_2)
         self.assertEqual(app_1, app_2)
 
     # TC2 - Creating an application without specifying source root directory
     def test_should_not_instantiate_configs(self):
-        Application('APP-TEST', resource_dir='/gabs')
+        Application('APP-TEST', APP_VERSION, resource_dir='/gabs')
         self.assertFalse(hasattr(AppConfigs, 'INSTANCE'))
 
     # TC3 - Creating an application specifying source root directory
     def test_should_instantiate_configs(self):
         rd = get_path(__file__)
-        Application('APP-TEST', resource_dir=f'{str(rd)}/resources')
+        Application('APP-TEST', APP_VERSION, resource_dir=f'{str(rd)}/resources')
         self.assertTrue(hasattr(AppConfigs, 'INSTANCE'))
 
     # TC4 - Check when passing defined options and arguments
