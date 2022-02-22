@@ -54,3 +54,6 @@ class Enumeration(Enum):
 
     def __repr__(self):
         return str(self)
+
+    def __eq__(self, other: 'Enumeration') -> bool:
+        return other.name == self.name or self.value == other.value
