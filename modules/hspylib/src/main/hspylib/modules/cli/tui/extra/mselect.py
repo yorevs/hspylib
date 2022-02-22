@@ -75,14 +75,12 @@ class MenuSelect(ABC):
         nav_color: VtColors) -> Optional[T]:
         """TODO"""
 
-        ret_val = None
+        ret_val = Keyboard.VK_NONE
         length = len(self.items)
 
-        # When only one option is provided, select the element at index 0 and return
         if length == 0:
             return None
-
-        if length == 1:
+        elif length == 1:  # When only one option is provided, select the element at index 0 and return
             return self.items[0]
 
         prepare_render(title, title_color)

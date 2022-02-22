@@ -82,19 +82,22 @@ class MenuChoose(ABC):
         nav_color: VtColors) -> Optional[List[T]]:
         """TODO"""
 
-        ret_val = None
+        ret_val = Keyboard.VK_NONE
+        length = len(self.items)
 
-        if len(self.items) > 0:
-            prepare_render(title, title_color)
+        if length == 0:
+            return None
 
-            # Wait for user interaction
-            while not self.done and ret_val not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
-                # Menu Renderization
-                if self.re_render:
-                    self._render(highlight_color, nav_color)
+        prepare_render(title, title_color)
 
-                # Navigation input
-                ret_val = self._nav_input()
+        # Wait for user interaction
+        while not self.done and ret_val not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+            # Menu Renderization
+            if self.re_render:
+                self._render(highlight_color, nav_color)
+
+            # Navigation input
+            ret_val = self._nav_input()
 
         restore_terminal()
 
