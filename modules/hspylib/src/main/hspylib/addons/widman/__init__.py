@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.21
+# hspylib v0.11.22
 #
 # Package: main.hspylib.addons.widman
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'widgets', 
   'widman'
 ]
-__version__ = '0.11.21'
+__version__ = '0.11.22'
