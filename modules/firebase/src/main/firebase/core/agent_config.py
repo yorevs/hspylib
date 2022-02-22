@@ -60,37 +60,22 @@ class AgentConfig(metaclass=Singleton):
         config = CaseInsensitiveDict()
         sysout("### Firebase setup")
         sysout('-' * 31)
-        config['PROJECT_ID'] = input('Please type you project ID: ')
-        config['DATABASE'] = input('Please type you database Name: ')
-        config['USERNAME'] = getpass.getuser()
-        config['PASSPHRASE'] = self._get_passphrase()
+        config['PROJECT_ID'] = self.project_id()
+        config['DATABASE'] = self.database()
+        config['USERNAME'] = self.username()
+        config['PASSPHRASE'] = self.passphrase()
         config['UUID'] = self.uuid()
         self.setup(config)
 
     def config_file(self) -> str:
         """Return the configuration file"""
         file = self.app_configs['firebase.config.file']
-        return file if file else f"{os.getenv('HOME', os.getcwd())}/firebase.cfg"
+        return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase.cfg"
 
     def project_id(self) -> Optional[str]:
         """Return the firebase project ID"""
         project_id = self.app_configs['firebase.project.id']
-        return project_id if project_id else None
-
-    def database(self) -> Optional[str]:
-        """Return the firebase project database name"""
-        database = self.app_configs['firebase.database']
-        return database if database else None
-
-    def username(self) -> Optional[str]:
-        """Return the firebase username"""
-        user = self.app_configs['firebase.last_update_user']
-        return user if user else None
-
-    def passphrase(self) -> Optional[str]:
-        """Return the firebase user passphrase"""
-        passphrase = self.app_configs['firebase.passphrase']
-        return passphrase if passphrase else None
+        return project_id if project_id else input('Please type you project ID: ')
 
     def uuid(self) -> Optional[str]:
         """Return the firebase project UUID or assign a new one if not specified"""
@@ -99,6 +84,21 @@ class AgentConfig(metaclass=Singleton):
             project_uuid = input('Please type a UUID to use or press [Enter] to generate a new one: ')
             project_uuid = str(uuid.uuid4()) if not project_uuid else project_uuid
         return project_uuid
+
+    def database(self) -> Optional[str]:
+        """Return the firebase project database name"""
+        database = self.app_configs['firebase.database']
+        return database if database else input('Please type you database Name: ')
+
+    def username(self) -> Optional[str]:
+        """Return the firebase username"""
+        user = self.app_configs['firebase.username']
+        return user if user else os.getenv('USER', getpass.getuser())
+
+    def passphrase(self) -> Optional[str]:
+        """Return the firebase user passphrase"""
+        passphrase = self.app_configs['firebase.passphrase']
+        return passphrase if passphrase else self._input_passphrase()
 
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
@@ -110,7 +110,6 @@ class AgentConfig(metaclass=Singleton):
             f_config.write(str(self))
             log.debug(f"Firebase configuration saved => {self.config_file()} !")
 
-    def _get_passphrase(self):
+    def _input_passphrase(self) -> bytes:
         passwd = getpass.getpass('Please type a password to encrypt your data: ')
-        base64.b32encode(f'{self.username()}:{passwd}'.encode(str(Charset.UTF_8)))
-
+        return base64.b64encode(f'{self.username()}:{passwd}'.encode(str(Charset.UTF_8)))

@@ -34,6 +34,7 @@ class FileProcessor(ABC):
     @staticmethod
     def upload_files(url: str, file_paths: List[str]) -> int:
         """Upload files to URL"""
+        sysout('Uploading files to Firebase ...')
         file_data = []
         for f_path in file_paths:
             check_state(os.path.exists(f_path), f'Input file "{f_path}" does not exist')
@@ -56,6 +57,7 @@ class FileProcessor(ABC):
         check_argument(
             destination_dir and os.path.exists(destination_dir),
             "Unable find destination directory: {}", destination_dir)
+        sysout('Downloading files from Firebase ...')
         response = get(url)
         check_not_none(response)
         check_not_none(response.body)

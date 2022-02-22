@@ -34,7 +34,7 @@ from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
-from views.indexes import StkProducerEdit, StkTools, Tabs
+from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
@@ -55,8 +55,8 @@ from kafman.core.statistics_worker import StatisticsWorker
 class MainQtView(QtView):
     """Main application view"""
     VERSION = read_version(f"{run_dir()}/.version")
-    HISTORY_FILE = f"{run_dir()}/resources/.kafman-history.properties"
-    INITIAL_SCHEMA_DIR = f"{run_dir()}/resources/schema"
+    HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
+    SCHEMA_DIR = f"{run_dir()}/resources/schema"
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
     @staticmethod
@@ -92,7 +92,7 @@ class MainQtView(QtView):
         self._producer.messageProduced.connect(self._message_produced)
         self._producer.messageFailed.connect(self._display_error)
         self._all_settings = {}
-        self._last_schema_dir = self.INITIAL_SCHEMA_DIR
+        self._last_schema_dir = self.SCHEMA_DIR
         self._all_schemas = defaultdict(None, {})
         self._stats = StatisticsWorker()
         self._stats.statisticsReported.connect(self._update_stats)
