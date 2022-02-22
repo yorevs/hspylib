@@ -78,7 +78,7 @@ class WidgetSendMsg(Widget):
         self.args = None
         self.socket = None
 
-    def execute(self, args: List[str]) -> ExitCode:
+    def execute(self, args: List[str] = None) -> ExitCode:
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
 

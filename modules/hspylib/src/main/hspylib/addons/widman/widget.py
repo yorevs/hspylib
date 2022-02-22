@@ -45,7 +45,7 @@ HSPyLib Widget: {} v{}
         self._version = version
 
     @abstractmethod
-    def execute(self, args: List[str]) -> ExitCode:
+    def execute(self, args: List[str] = None) -> ExitCode:
         """Execute the widget main flow"""
 
     def cleanup(self) -> None:
