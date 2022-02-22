@@ -33,11 +33,11 @@ class Terminal(ABC):
         try:
             log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            result = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
-            log.info("Execution result: %s", result)
-            return result.strip() if result else None, ExitCode.SUCCESS
+            output = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
+            log.info("Execution result: %s", ExitCode.SUCCESS)
+            return output.strip() if output else None, ExitCode.SUCCESS
         except subprocess.CalledProcessError as err:
-            log.error("Failed => %s", err)
+            log.error("Command failed: %s => %s", cmd_line, err)
             syserr(str(err))
             return None, ExitCode.FAILED
 
@@ -60,5 +60,5 @@ class Terminal(ABC):
         except (InterruptedError, KeyboardInterrupt):
             log.warning("Polling process has been interrupted command='%s'", cmd_line)
         except subprocess.CalledProcessError as err:
-            log.debug("Failed => %s", err)
+            log.error("Command failed: %s => %s", cmd_line, err)
             syserr(str(err))

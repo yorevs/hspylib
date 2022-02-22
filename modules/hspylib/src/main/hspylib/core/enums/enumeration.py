@@ -57,7 +57,7 @@ class Enumeration(Enum):
 
     def __eq__(self, other: 'Enumeration') -> bool:
         return (
-            self.__class__ == other.__class__ and
+            self.__class__.__qualname__ == other.__class__.__qualname__ and
             (other.name == self.name and self.value == other.value)
         )
 
