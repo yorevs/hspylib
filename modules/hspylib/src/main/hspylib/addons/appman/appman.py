@@ -14,10 +14,14 @@
 """
 
 import os
+from textwrap import dedent
 from typing import List
+
+import urllib3
 
 from hspylib.addons.appman.app_extension import AppExtension
 from hspylib.addons.appman.app_type import AppType
+from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path, syserr, sysout
@@ -29,6 +33,11 @@ from hspylib.modules.fetch.fetch import get
 
 HERE = get_path(__file__)
 
+INITIAL_REVISION = '0.1.0'
+
+# Disable this warning because we trust our project repo
+urllib3.disable_warnings()
+
 
 class AppManager(metaclass=Singleton):
     """HSPyLib application manager that helps creating HSPyLib based applications and widgets"""
@@ -37,14 +46,17 @@ class AppManager(metaclass=Singleton):
     TEMPLATES = (HERE / "templates")
 
     # The general gradle properties
-    GRADLE_PROPS = """
-project.ext.set("projectVersion", "{}")
-project.ext.set("pythonVersion", "3")
-project.ext.set("pyrccVersion", "5")
-project.ext.set("author", "YourUser")
-project.ext.set("mailTo", "YourEmail")
-project.ext.set("siteUrl", "YourSiteUrl")
-"""
+    GRADLE_PROPS = dedent("""
+        app_name    = '{}'
+        app_version = '{}'
+
+        pythonVersion=3
+        pyrccVersion=5
+
+        author="<Author>")
+        mailTo="<MailTo")
+        siteUrl="<SiteUrl>")
+    """)
 
     def __init__(self, parent_app: Application):
         self._parent_app = parent_app
@@ -55,7 +67,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
 
     def create(self, app_name: str, app_type: AppType, app_ext: List[AppExtension], dest_dir: str) -> None:
         """Create the application based on the parameters"""
-        sysout(f'Creating app: {app_name} -> {dest_dir} ...')
+        sysout(f'Creating "{app_name}" at {dest_dir}')
         try:
             check_argument(os.path.exists(dest_dir), 'Destination not found: {}', dest_dir)
             self._app_name = app_name
@@ -68,18 +80,19 @@ project.ext.set("siteUrl", "YourSiteUrl")
             elif app_type == AppType.QT_APP:
                 self._app_dir = f'{dest_dir}/{app_name}'
                 self._create_qt_app(app_name, app_ext)
+            else:
+                raise TypeError(f'Unsupported application type: {app_type}')
         except OSError as err:
-            syserr(f"Creation of the application {dest_dir}/{app_name} failed")
-            syserr(str(err))
-        else:
-            sysout(f"Successfully created the {app_type.value} {app_name}")
+            syserr(f'Could not create application "{app_name}"!\n  => {str(err)}')
+            self._parent_app.exit(ExitCode.FAILED)
+
+        sysout(f"Successfully created the {app_type.value} {app_name}")
 
     def _create_app(self, app_name: str, extensions: List[AppExtension]) -> None:
         """Create a Simple HSPyLib application"""
         sysout(f'Application: {app_name}')
         self._create_base_app_struct(app_name)
         self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
-        self._mkfile('src/main/usage.txt', (self.TEMPLATES / "tpl-usage.txt").read_text())
         self._apply_extensions(extensions, app_name)
 
     def _create_qt_app(self, app_name: str, extensions: List[AppExtension]) -> None:
@@ -90,6 +103,15 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._mkfile('src/main/resources/forms/main_qt_view.ui', (self.TEMPLATES / "tpl-main_qt_view.ui").read_text())
         self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main-qt.py").read_text())
         self._apply_extensions(extensions, app_name)
+
+    def _create_widget(self, app_name: str) -> None:
+        """Create an HSPyLib Widget application"""
+        widget_name = camelcase(app_name).replace('_', '').replace(' ', '')
+        sysout(f'Widget: {widget_name}')
+        self._mkfile(
+            f"widget_{app_name.lower()}.py",
+            (self.TEMPLATES / "tpl-widget.py").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
+        )
 
     def _create_base_app_struct(self, app_name):
         """Create HSPyLib application structure"""
@@ -103,7 +125,7 @@ project.ext.set("siteUrl", "YourSiteUrl")
         self._mkdir('src/test/resources/log')
         self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
         self._mkdir('src/main')
-        self._mkfile('src/main/.version', '0.1.0')
+        self._mkfile('src/main/.version', INITIAL_REVISION)
         self._mkdir('src/main/resources')
         self._mkfile('src/main/resources/application.properties', '# Main application property file')
         self._mkdir('src/main/resources/log')
@@ -113,21 +135,13 @@ project.ext.set("siteUrl", "YourSiteUrl")
 
     def _apply_extensions(self, extensions: List[AppExtension], app_name: str):
         """Apply the selected extensions to the app"""
+        result = True
         if AppExtension.GRADLE in extensions:
             sysout('Applying gradle extensions')
-            self._init_gradle(app_name)
-        if AppExtension.GIT in extensions:
+            result = self._init_gradle(app_name)
+        if result and AppExtension.GIT in extensions:
             sysout('Initializing git repository')
             self._init_git()
-
-    def _create_widget(self, app_name: str) -> None:
-        """Create an HSPyLib Widget application"""
-        widget_name = camelcase(app_name).replace('_', '').replace(' ', '')
-        sysout(f'Widget: {widget_name}')
-        self._mkfile(
-            f"widget_{app_name.lower()}.py",
-            (self.TEMPLATES / "tpl-widget.py").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
-        )
 
     def _mkdir(self, dirname: str = '') -> None:
         """Create a directory from the destination path, or the destination path itself"""
@@ -142,46 +156,61 @@ project.ext.set("siteUrl", "YourSiteUrl")
         with open(f'{file_path}', 'w', encoding='utf-8') as fh:
             fh.write(contents)
 
-    def _init_gradle(self, app_name: str) -> None:
-        """Initialize the as a gradle project"""
-        sysout('Initializing gradle project')
-        result = Terminal.shell_exec(
-            f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self._app_dir)
-        sysout(f'Gradle execution result: {result}')
-        sysout('Downloading gradle extensions')
-        self._download_ext('badges.gradle')
-        self._download_ext('build-info.gradle')
-        self._download_ext('docker.gradle')
-        self._download_ext('oracle.gradle')
-        self._download_ext('pypi-publish.gradle')
-        self._download_ext('python.gradle')
-        version_string = '.'.join(map(str, self._parent_app.VERSION))
-        self._mkfile('gradle.properties', self.GRADLE_PROPS.format(version_string).strip())
-        self._mkfile(
-            'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text().replace('%APP_NAME%', self._app_name)
-        )
-        self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
-        result = Terminal.shell_exec(
-            './gradlew build', cwd=self._app_dir)
-        sysout(f'Gradle execution result: {result}')
-
     def _download_ext(self, extension: str) -> None:
         """Download a gradle extension from the HSPyLib repository"""
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')
         check_argument(resp.status_code == HttpCode.OK, 'Unable to download {}', extension)
         self._mkfile(f'gradle/{extension}', resp.body)
 
-    def _init_git(self) -> None:
+    def _init_gradle(self, app_name: str) -> bool:
+        """Initialize the as a gradle project"""
+        sysout('Initializing gradle project [press enter to continue] ...')
+        output, exit_code = Terminal.shell_exec(
+            f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self._app_dir)
+        sysout(f'Gradle execution result: {exit_code}')
+        sysout(output)
+
+        if exit_code == ExitCode.SUCCESS:
+            sysout('Downloading gradle extensions ...')
+            self._download_ext('badges.gradle')
+            self._download_ext('build-info.gradle')
+            self._download_ext('docker.gradle')
+            self._download_ext('oracle.gradle')
+            self._download_ext('pypi-publish.gradle')
+            self._download_ext('python.gradle')
+            sysout('Creating gradle files')
+            self._mkfile('gradle.properties', self.GRADLE_PROPS.format(
+                self._parent_app.name(),
+                self._parent_app.version()
+            ).strip())
+            self._mkfile(
+                'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text()
+                    .replace('%APP_NAME%', self._app_name)
+            )
+            self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
+            sysout('Building gradle project, please wait ...')
+            output, exit_code = Terminal.shell_exec(
+                './gradlew buildOnly', cwd=self._app_dir)
+            sysout(f'Gradle execution result: {output}')
+
+        return exit_code == ExitCode.SUCCESS
+
+    def _init_git(self) -> bool:
         """Initialize a git repository for the project"""
         self._mkfile('src/main/resources/log/.gitkeep')
         self._mkfile('.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
         sysout('Initializing git repository')
-        result = Terminal.shell_exec(
+        output, exit_code = Terminal.shell_exec(
             'git init', cwd=self._app_dir)
-        sysout(f'Git init result: {result}')
-        sysout('Creating first commit')
-        Terminal.shell_exec(
-            'git add .', cwd=self._app_dir)
-        result = Terminal.shell_exec(
-            'git commit -m "First commit [@HSPyLib]"', cwd=self._app_dir)
-        sysout(f'Git commit result: {result}')
+        sysout(f'Git init result: {exit_code}')
+        sysout(output)
+        if exit_code:
+            sysout('Creating first commit')
+            Terminal.shell_exec(
+                'git add .', cwd=self._app_dir)
+            output, exit_code = Terminal.shell_exec(
+                'git commit -m "First commit [@HSPyLib]"', cwd=self._app_dir)
+            sysout(f'Git commit result: {exit_code}')
+            sysout(output)
+
+        return exit_code == ExitCode.SUCCESS
