@@ -38,7 +38,7 @@ class Application(metaclass=Singleton):
     """HSPyLib application framework"""
 
     @staticmethod
-    def exit_handler(signum=0, frame=None, clear_screen: bool = False) -> None:
+    def exit(signum=0, frame=None, clear_screen: bool = False) -> None:
         """
         Handle interruptions to shutdown gracefully
         :param signum: The signal number or the exit http_code
@@ -58,15 +58,15 @@ class Application(metaclass=Singleton):
     def __init__(
         self,
         name: str,
-        version: AppVersion = None,
+        version: AppVersion,
         description: str = None,
         usage: str = None,
         epilog: str = None,
         resource_dir: str = None,
         log_dir: str = None):
 
-        signal.signal(signal.SIGINT, self.exit_handler)
-        signal.signal(signal.SIGTERM, self.exit_handler)
+        signal.signal(signal.SIGINT, self.exit)
+        signal.signal(signal.SIGTERM, self.exit)
 
         self._run_dir = os.getcwd()
         self._app_name = name
@@ -106,7 +106,15 @@ class Application(metaclass=Singleton):
         """
         self._arg_parser.print_help(sys.stderr if exit_code != 0 else sys.stdout)
         if not no_exit:
-            self.exit_handler(exit_code)
+            self.exit(exit_code)
+
+    def version(self) -> str:
+        """Return the application version"""
+        return str(self._app_version)
+
+    def name(self) -> str:
+        """Return the application name"""
+        return self._app_name
 
     def getarg(self, arg_name: str) -> Optional[Union[str, list]]:
         """Get the argument value named by arg_name"""
@@ -117,9 +125,11 @@ class Application(metaclass=Singleton):
         """Initialize application parameters and options"""
 
     def _with_options(self) -> 'OptionsBuilder':
+        """TODO"""
         return OptionsBuilder(self._arg_parser)
 
     def _with_arguments(self) -> 'ArgumentsBuilder':
+        """TODO"""
         return ArgumentsBuilder(self._arg_parser)
 
     def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':

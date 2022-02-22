@@ -31,10 +31,7 @@ class ExitCode(Enumeration):
     # Returned when something that was supposed to work and failed due to unexpected software behaviour
     FAILED  = 1
 
-    # Additional exit codes can be defined here {
-    # }
-
     # @formatter:on
 
     def __str__(self):
-        return f"{self.name}({self.value})"
+        return f"{'%GREEN%' if self.name == 'SUCCESS' else '%RED%'}{self.name}({self.value})"
