@@ -18,8 +18,9 @@ import select
 import shlex
 import subprocess
 from abc import ABC
-from typing import Optional
+from typing import Optional, Tuple
 
+from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import syserr
 
 
@@ -27,18 +28,18 @@ class Terminal(ABC):
     """TODO"""
 
     @staticmethod
-    def shell_exec(cmd_line: str, **kwargs) -> Optional[str]:
+    def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitCode]:
         """TODO"""
         try:
             log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             result = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
             log.info("Execution result: %s", result)
-            return result.strip() if result else None
+            return result.strip() if result else None, ExitCode.SUCCESS
         except subprocess.CalledProcessError as err:
             log.error("Failed => %s", err)
             syserr(str(err))
-            return None
+            return None, ExitCode.FAILED
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
