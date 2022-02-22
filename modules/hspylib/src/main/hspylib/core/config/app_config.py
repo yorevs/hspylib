@@ -19,7 +19,7 @@ from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import log_init, run_dir, touch_file
+from hspylib.core.tools.commons import log_init, run_dir
 from hspylib.core.tools.preconditions import check_argument, check_state
 
 
@@ -48,8 +48,6 @@ AppConfigs
             if log_file else f"{self._log_dir}/application.log"
         check_state(log_init(self._log_file), "Unable to create logger: {}", self._log_file)
 
-        if not os.path.isfile(f'{resource_dir}/application.properties'):
-            touch_file(f'{resource_dir}/application.properties')
         self._app_properties = Properties(load_dir=self._resource_dir)
         log.info(self)
 
@@ -74,10 +72,6 @@ AppConfigs
 
     def __len__(self) -> int:
         return len(self._app_properties)
-
-    def run_dir(self) -> Optional[str]:
-        """TODO"""
-        return self._source_dir
 
     def resource_dir(self) -> Optional[str]:
         """TODO"""
