@@ -15,6 +15,7 @@
 """
 
 import getpass
+import os
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
@@ -29,7 +30,7 @@ class VaultConfig(metaclass=Singleton):
     def vault_user(self) -> str:
         """Return the vault user"""
         user = self.configs['hhs.vault.user']
-        return user if user else getpass.getuser()
+        return user if user else os.getenv('USER', getpass.getuser())
 
     def passphrase(self) -> str:
         """Return the vault user passphrase"""
@@ -38,7 +39,7 @@ class VaultConfig(metaclass=Singleton):
     def vault_file(self) -> str:
         """Return the locked vault filename"""
         file = self.configs['hhs.vault.file']
-        return file if file else f"{self.configs.resource_dir()}/.vault"
+        return file if file else f"{os.getenv('HOME', os.getcwd())}/.vault"
 
     def unlocked_vault_file(self) -> str:
         """Return the unlocked vault filename"""

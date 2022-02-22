@@ -15,6 +15,7 @@
 """
 
 import logging as log
+import signal
 import sys
 from datetime import datetime
 from textwrap import dedent
@@ -83,10 +84,21 @@ class Main(Application):
             VaultConfig.INSTANCE.vault_user(),
             VaultConfig.INSTANCE.vault_file(),
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+
+        signal.signal(signal.SIGINT, self._abort)
+        signal.signal(signal.SIGTERM, self._abort)
+        signal.signal(signal.SIGABRT, self._abort)
+
         self._exec_application()
 
     def _cleanup(self) -> None:
+        """TODO"""
         self.vault.close()
+
+    def _abort(self, signum=0, frame=None) -> None:
+        """TODO"""
+        self._cleanup()
+        self.exit(signum, frame)
 
     def _exec_application(self, ) -> None:
         """Execute the specified vault operation"""

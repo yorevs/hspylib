@@ -22,3 +22,7 @@ class VaultCloseError(HSBaseException):
 
 class VaultOpenError(HSBaseException):
     """Raised when opening the vault"""
+
+
+class VaultSecurityException(HSBaseException):
+    """Raised when something unexpected happened to vault file"""

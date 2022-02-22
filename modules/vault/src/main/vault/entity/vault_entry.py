@@ -13,7 +13,6 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import re
 from datetime import datetime
 from uuid import UUID
@@ -35,7 +34,7 @@ class VaultEntry(CrudEntity):
 """
 
     # Vault file entry format
-    _FILE_ENTRY_FORMAT = """{}|{}|{}|{}\n"""
+    _FILE_ENTRY_FORMAT = "{}|{}|{}|{}\n"
 
     def __init__(
         self,
@@ -64,6 +63,6 @@ class VaultEntry(CrudEntity):
         :param show_password: Whether to exhibit the password or not
         :param show_hint: Whether to exhibit the hint or not
         """
-        password = self.password if show_password else re.sub('.*', '*' * min(len(self.password), 8), self.password)
+        password = self.password if show_password else re.sub('.*', '*' * min(len(self.password), 5), self.password)
         hint = self.hint if show_hint else re.sub('.*', '*' * min(len(self.hint), 8), self.hint)
         return self._DISPLAY_FORMAT.format(self.key.upper(), self.name, password, hint, self.modified)
