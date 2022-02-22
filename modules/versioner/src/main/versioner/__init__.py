@@ -9,7 +9,6 @@ __all__ = [
   '__main__', 
   'core', 
   'entity', 
-  'enums', 
-  'exception'
+  'enums'
 ]
 __version__ = '0.9.6'

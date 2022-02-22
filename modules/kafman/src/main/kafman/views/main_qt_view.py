@@ -22,6 +22,20 @@ from collections import defaultdict
 from json.decoder import JSONDecodeError
 from typing import List, Optional, Tuple, Union
 
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
+from hspylib.core.tools.commons import dirname, now, now_ms, read_version, run_dir
+from hspylib.core.tools.text_tools import strip_escapes
+from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.qt.promotions.htablemodel import HTableModel
+from hspylib.modules.qt.stream_capturer import StreamCapturer
+from hspylib.modules.qt.views.qt_view import QtView
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
+from views.indexes import StkProducerEdit, StkTools, Tabs
+
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.consumer_worker import ConsumerWorker
@@ -36,19 +50,6 @@ from kafman.core.schema.registry_subject import RegistrySubject
 from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
 from kafman.core.statistics_worker import StatisticsWorker
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
-from hspylib.core.tools.commons import dirname, now, now_ms, read_version, run_dir
-from hspylib.core.tools.text_tools import strip_escapes
-from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.qt.promotions.htablemodel import HTableModel
-from hspylib.modules.qt.stream_capturer import StreamCapturer
-from hspylib.modules.qt.views.qt_view import QtView
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
-from views.indexes import StkProducerEdit, StkTools, Tabs
 
 
 class MainQtView(QtView):

@@ -16,13 +16,14 @@ import json
 import logging as log
 from typing import List, Optional
 
-from kafman.core.schema.registry_subject import RegistrySubject
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.modules.fetch.fetch import delete, get, is_reachable
 from hspylib.modules.fetch.http_response import HttpResponse
 from requests import exceptions as ex
+
+from kafman.core.schema.registry_subject import RegistrySubject
 
 
 class SchemaRegistry:
