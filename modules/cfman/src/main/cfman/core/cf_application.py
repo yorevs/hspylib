@@ -17,19 +17,31 @@
 import re
 from typing import List
 
+from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.preconditions import check_argument
 
 
 class CFApplication:
-    max_name_length = 0
+    max_name_length = 70
 
     @classmethod
     def of(cls, app_line: str):
         """TODO"""
         parts = re.split(r' {2,}', app_line)
-        check_argument(len(parts) >= 6, f"Invalid application line: {app_line}")
-        return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
+        # format: name | state | instances | memory | disk | urls
+        if len(parts) == 6:
+            return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
+        # format: name | state | type:i/o | urls
+        elif len(parts) == 4:
+            mat = re.search("(\w+):(\d+/\d+)", parts[2])
+            if not mat:
+                raise InvalidArgumentError(f"Invalid application line: {app_line}")
+            instances = mat.group(2)
+            memory = '-'
+            disk = '-'
+            return CFApplication(parts[0], parts[1], instances, memory, disk, parts[3].split(', '))
+        else:
+            raise InvalidArgumentError(f"Invalid application line: {app_line}")
 
     def __init__(
         self,
@@ -56,7 +68,7 @@ class CFApplication:
     # pylint: disable=consider-using-f-string
     def print_status(self):
         """TODO"""
-        sysout("%CYAN%{}  %{}%{:5}  %WHITE%{:5}  {:4}  {:4}  {}".format(
+        sysout("%CYAN%{}  %{}%{:5}  %NC%{:10}  {:4}  {:4}  {}".format(
             self.name.ljust(self.max_name_length),
             'GREEN' if self.state == 'started' else 'RED',
             self.state,
@@ -65,3 +77,4 @@ class CFApplication:
             self.disk,
             self.urls
         ))
+

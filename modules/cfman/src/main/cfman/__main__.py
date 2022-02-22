@@ -13,8 +13,8 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import logging as log
+import os
 import sys
 from datetime import datetime
 from textwrap import dedent
@@ -26,6 +26,8 @@ from hspylib.modules.cli.application.version import AppVersion
 from cfman.core.cf_manager import CFManager
 
 HERE = get_path(__file__)
+
+log.captureWarnings(True)
 
 
 class Main(Application):
@@ -41,17 +43,24 @@ class Main(Application):
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
-
         self._with_options() \
             .option('api', 'a', 'api', 'the API endpoint to connect to (e.g. https://api.example.com)', nargs='?') \
             .option('org', 'o', 'org', 'the organization to connect to (Target organization)', nargs='?') \
-            .option('org', 's', 'space', 'the space to connect to (Target organization space)', nargs='?') \
-            .option('org', 'u', 'username', 'the PCF username', nargs='?') \
-            .option('org', 'p', 'password', 'the PCF password', nargs='?')
+            .option('space', 's', 'space', 'the space to connect to (Target organization space)', nargs='?') \
+            .option('username', 'u', 'username', 'the PCF username', nargs='?') \
+            .option('password', 'p', 'password', 'the PCF password', nargs='?') \
+            .option(
+                'endpoints', 'f', 'endpoints',
+                'the file containing the CF API endpoint entries. If not provided, '
+                '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        self.cfman = CFManager(self._args)
+        self.cfman = CFManager(
+            self.getarg('api'), self.getarg('org'), self.getarg('space'),
+            self.getarg('username'), self.getarg('password'),
+            self.getarg('endpoints') or os.getenv('HOME', os.getcwd()) + '/cf_endpoints.txt'
+        )
         log.info(dedent('''
         {} v{}
 
