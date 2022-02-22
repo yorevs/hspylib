@@ -32,7 +32,7 @@ class WidgetTimeCalc(Widget):
     WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
     TOOLTIP = "Calculate time based operations."
-    USAGE = "Usage: TimeCalc [-d|--decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
+    USAGE = "Usage: TimeCalc [+d|++decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
     VERSION = (0, 1, 0)
 
     def __init__(self):
@@ -51,16 +51,16 @@ class WidgetTimeCalc(Widget):
     def parse_args(self, args: List[str]) -> Optional[ExitCode]:
         """TODO"""
 
-        if (not args or len(args) < 3) and not any(a in args for a in ['-h', '--help']):
+        if (not args or len(args) < 3) and (args and not any(a in args for a in ['+h', '++help'])):
             if not self._read_args():
                 return ExitCode.ERROR
-        elif args[0] in ['-h', '--help']:
+        elif args[0] in ['+h', '++help']:
             sysout(self.usage())
             return ExitCode.SUCCESS
-        elif args[0] in ['-v', '--version']:
+        elif args[0] in ['+v', '++version']:
             sysout(self.version())
             return ExitCode.SUCCESS
-        elif args[0] in ['-d', '--decimal']:
+        elif args[0] in ['+d', '++decimal']:
             self.decimal = True
             args = args[1:]
 
@@ -69,7 +69,7 @@ class WidgetTimeCalc(Widget):
 
         return None
 
-    def execute(self, args: List[str]) -> ExitCode:
+    def execute(self, args: List[str] = None) -> ExitCode:
         """TODO"""
 
         ret_val = self.parse_args(args)
