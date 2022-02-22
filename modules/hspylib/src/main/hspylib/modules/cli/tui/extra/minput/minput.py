@@ -78,19 +78,22 @@ class MenuInput:
         nav_color: VtColors) -> Optional['MenuInput.FormFields']:
         """TODO"""
 
-        ret_val = None
+        ret_val = Keyboard.VK_NONE
+        length = len(self.all_fields)
 
-        if len(self.all_fields) > 0:
-            prepare_render(title, title_color)
+        if length == 0:
+            return None
 
-            # Wait for user interaction
-            while not self.done and ret_val not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
-                # Menu Renderization
-                if self.re_render:
-                    self._render(nav_color)
+        prepare_render(title, title_color)
 
-                # Navigation input
-                ret_val = self._nav_input()
+        # Wait for user interaction
+        while not self.done and ret_val not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+            # Menu Renderization
+            if self.re_render:
+                self._render(nav_color)
+
+            # Navigation input
+            ret_val = self._nav_input()
 
         restore_terminal()
 
