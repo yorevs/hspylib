@@ -34,4 +34,7 @@ class ExitCode(Enumeration):
     # @formatter:on
 
     def __str__(self):
-        return f"{'%GREEN%' if self.name == 'SUCCESS' else '%RED%'}{self.name}({self.value})"
+        return "{}{}({})".format(
+            '\033[0;32m' if self.name == 'SUCCESS' else '\033[0;31m',
+            self.name, self.value
+        )

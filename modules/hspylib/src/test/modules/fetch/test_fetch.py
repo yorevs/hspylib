@@ -117,7 +117,7 @@ class TestFetch(unittest.TestCase):
             lambda: get('example.com:9999', timeout=1))
 
     def test_should_be_reachable(self):
-        self.assertTrue(is_reachable('example.com'))
+        self.assertTrue(is_reachable('google.com'))
 
     def test_should_not_be_reachable(self):
         self.assertFalse(is_reachable('example.com:9999'))

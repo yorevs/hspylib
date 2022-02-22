@@ -13,9 +13,11 @@
    Copyright 2021, HSPyLib team
 """
 
+import logging as log
 from typing import Type
 
 
+# pylint: disable=bad-mcs-classmethod-argument
 class Singleton(type):
     """TODO"""
 
@@ -25,26 +27,29 @@ class Singleton(type):
         """TODO"""
         if not cls.has_instance(cls):
             instance = super(Singleton, cls).__call__(*args, **kwargs)
+            assert instance is not None, f'Unable to create Singleton instance: {cls}'
             cls.INSTANCE = instance
             cls._instances[cls] = instance
+            log.debug(f'Created a new Singleton instance: {cls.__module__}.{cls.__name__}')
 
         return cls._instances[cls]
 
     @classmethod
-    def instances(mcs) -> dict:  # pylint: disable=bad-mcs-classmethod-argument
+    def instances(mcs) -> dict:
         """TODO"""
         return Singleton._instances
 
     @classmethod
-    def has_instance(mcs, cls) -> bool:  # pylint: disable=bad-mcs-classmethod-argument
+    def has_instance(mcs, cls) -> bool:
         """TODO"""
         return cls in Singleton._instances
 
     @classmethod
-    def del_instance(mcs, clazz: Type) -> bool:  # pylint: disable=bad-mcs-classmethod-argument
+    def del_instance(mcs, clazz: Type) -> bool:
         """TODO"""
         singleton_instances = Singleton.__getattribute__(mcs, '_instances')
         if clazz in singleton_instances:
+            log.warning(f'Deleted an existing Singleton instance: {mcs.__module__}.{mcs.__name__}')
             del mcs._instances[clazz]
             delattr(clazz, 'INSTANCE')
             del clazz
