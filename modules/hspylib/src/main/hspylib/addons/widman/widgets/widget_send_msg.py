@@ -77,6 +77,7 @@ class WidgetSendMsg(Widget):
         self.message = None
         self.args = None
         self.socket = None
+        self.counter = 1
 
     def execute(self, args: List[str] = None) -> ExitCode:
         signal.signal(signal.SIGINT, self.cleanup)
@@ -107,7 +108,7 @@ class WidgetSendMsg(Widget):
             with open(self.args.message, 'r', encoding='utf-8') as f_msg:
                 self.message = f_msg.read()
         else:
-            self.message = self.args.message or f"This is a {self.args.net_type} test"
+            self.message = self.args.message or f"This is a {self.args.net_type} test %(count)"
 
         self._start_send()
 
@@ -196,7 +197,7 @@ class WidgetSendMsg(Widget):
             '+t', '++threads', action='store', type=int, default=1, required=False,
             help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
         parser.add_argument(
-            '+m', '++message', action='store', type=str, required=True,
+            '+m', '++message', action='store', type=str, required=False,
             help='The message to be sent. If the message matches a filename, then the file contents sent instead')
         self.args = parser.parse_args(args)
 
@@ -216,7 +217,7 @@ class WidgetSendMsg(Widget):
 
     def _start_send(self) -> None:
         """Start sending packets"""
-        thread_relief = 0.25
+        thread_relief = 0.05
         self._init_sockets()
         sysout(f"\n%ORANGE%Start sending {self.packets} "
                f"{self.net_type.upper()} packet(s) "
@@ -234,19 +235,22 @@ class WidgetSendMsg(Widget):
 
     def _send_packet(self, thread_num: int) -> None:
         """Send a packet"""
-        counter = 1
-        length = len(self.message)
+        message = self.message
+        lock = threading.Lock()
 
-        while self.is_alive and self.packets <= 0 or counter <= self.packets:
+        while self.is_alive and self.packets <= 0 or self.counter <= self.packets:
+            message = self.message.replace('%(count)', str(self.counter))
+            length = len(message)
             sysout(f"%BLUE%[Thread-{thread_num:d}] "
-                   f"%GREEN%Sending \"{self.message:s}\" ({length:d}) bytes, "
-                   f"Pkt = {counter:>d}/{self.packets:>d} %NC%...")
+                   f"%GREEN%Sending \"{message:s}\" ({length:d}) bytes, "
+                   f"Pkt = {self.counter:>d}/{self.packets:>d} %NC%...")
             if self.net_type == self.NET_TYPE_UDP:
-                self.socket.sendto(self.message.encode(), self.host)
+                self.socket.sendto(message.encode(), self.host)
             else:
                 try:
-                    self.socket.sendall((self.message + '\n').encode())
+                    self.socket.sendall((message + '\n').encode())
+                    with lock:
+                        self.counter += 1
                 except socket.error as err:
                     raise WidgetExecutionError('Unable to send packet') from err
-            counter += 1
             sleep(self.interval)
