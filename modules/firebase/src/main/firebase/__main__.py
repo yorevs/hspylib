@@ -15,16 +15,20 @@
 """
 
 import logging as log
+import os
 import sys
 from datetime import datetime
 from textwrap import dedent
 
-from hspylib.core.tools.commons import dirname, get_path, syserr
+import urllib3
+from hspylib.core.tools.commons import get_path, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-from core.agent_config import AgentConfig
 from core.firebase import Firebase
+
+# Disable this warning because we are hitting our own database
+urllib3.disable_warnings()
 
 HERE = get_path(__file__)
 
@@ -42,6 +46,11 @@ class Main(Application):
 
     def _setup_arguments(self) -> None:
         # @formatter:off
+        self._with_options() \
+            .option(
+                'config-dir', 'd', 'config-dir',
+                "the configuration directory. If omitted, the User's home will be used.",
+                nargs='?', default=os.getenv('HOME', self._run_dir))
         self._with_chained_args('operation', 'the Firebase operation to process') \
             .argument('setup', 'setup your Firebase account') \
             .argument('upload', 'upload files to your Firebase Realtime Database') \
@@ -63,15 +72,10 @@ class Main(Application):
         """Run the application with the command line arguments"""
         log.info(dedent('''
         {} v{}
-
         Settings ==============================
-                FIREBASE_USER: {}
-                FIREBASE_CONFIG_FILE: {}
                 STARTED: {}
         ''').format(
             self._app_name, self._app_version,
-            AgentConfig.INSTANCE.username(),
-            AgentConfig.INSTANCE.config_file(),
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         self._exec_application()
 
