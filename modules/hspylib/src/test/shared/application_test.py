@@ -22,13 +22,13 @@ class ApplicationTest(Application):
     """Versioner - Provides an engine to manage app versions."""
 
     # CloudFoundry manager usage message
-    USAGE = 'Usage: Its just a test'
+    DESCRIPTION = 'Usage: Its just a test'
 
     # The welcome message
     WELCOME = 'Welcome to test app'
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, AppVersion.load(), self.USAGE)
+        super().__init__(app_name, AppVersion.load(), self.DESCRIPTION)
 
     def _setup_arguments(self) -> None:
 
