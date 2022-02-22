@@ -16,12 +16,13 @@ from typing import List
 
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import get_by_key_or_default, search_dict
+
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_field import SchemaField
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import get_by_key_or_default, search_dict
 
 
 class AvroSchema(KafkaSchema):

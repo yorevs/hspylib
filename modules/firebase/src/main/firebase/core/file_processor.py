@@ -19,12 +19,13 @@ import os
 from abc import ABC
 from typing import List
 
-from firebase.entity.file_entry import FileEntry
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
 from hspylib.modules.fetch.fetch import get, put
 from requests.exceptions import HTTPError
+
+from firebase.entity.file_entry import FileEntry
 
 
 class FileProcessor(ABC):
