@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.7
+# hspylib-kafman v0.9.17
 #
 # Package: main.kafman.core
 """Package initialization."""
@@ -15,4 +15,4 @@ __all__ = [
   'schema', 
   'statistics_worker'
 ]
-__version__ = '0.9.7'
+__version__ = '0.9.17'

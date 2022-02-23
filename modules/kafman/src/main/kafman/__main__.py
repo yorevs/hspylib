@@ -15,8 +15,9 @@
 
 import sys
 
-from hspylib.core.tools.commons import get_path, read_version
+from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
 
@@ -28,13 +29,15 @@ HERE = get_path(__file__)
 class Main(Application):
     """Kafman application main class"""
 
-    # The application version
-    VERSION = read_version(f"{HERE}/.version")
+    # The welcome message
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
+
+    # location of the .version file
+    VERSION_DIR = str(HERE)
 
     def __init__(self, app_name: str):
-        from hspylib.modules.cli.application.version import AppVersion
-        version = AppVersion.load()
-        super().__init__(app_name, version)
+        version = AppVersion.load(load_dir=self.VERSION_DIR)
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.main_view = QtApplication(MainQtView)
 
     def _setup_arguments(self) -> None:
@@ -50,4 +53,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('Application name').INSTANCE.run(sys.argv[1:])
+    Main('kafman').INSTANCE.run(sys.argv[1:])

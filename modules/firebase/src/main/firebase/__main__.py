@@ -39,11 +39,14 @@ class Main(Application):
     # The welcome message
     DESCRIPTION = (HERE / "welcome.txt").read_text()
 
+    # location of the .version file
+    VERSION_DIR = str(HERE)
+
     # The resources folder
     RESOURCE_DIR = str(HERE / "resources")
 
     def __init__(self, app_name: str):
-        version = AppVersion.load()
+        version = AppVersion.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
         self.firebase = Firebase()
 
@@ -107,4 +110,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('HSPyLib Firebase Agent').INSTANCE.run(sys.argv[1:])
+    Main('firebase').INSTANCE.run(sys.argv[1:])

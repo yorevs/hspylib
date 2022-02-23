@@ -32,8 +32,11 @@ class Main(Application):
     # The welcome message
     DESCRIPTION = (HERE / "welcome.txt").read_text()
 
+    # location of the .version file
+    VERSION_DIR = str(HERE)
+
     def __init__(self, app_name: str):
-        version = AppVersion.load()
+        version = AppVersion.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_arguments(self) -> None:
