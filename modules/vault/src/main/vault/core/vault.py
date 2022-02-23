@@ -144,8 +144,8 @@ class Vault:
         :param key: The vault entry name to get
         """
         entry = self.service.get_by_key(key)
-        entry.password = cryptocode.decrypt(entry.password, self._VAULT_HASHCODE)
         if entry:
+            entry.password = cryptocode.decrypt(entry.password, self._VAULT_HASHCODE)
             sysout(f"\n{entry.to_string(True, True)}")
         else:
             log.error("Attempt to get from Vault failed for name=%s", key)
