@@ -13,6 +13,7 @@
    Copyright 2021, HSPyLib team
 """
 import os
+import logging as log
 from typing import Tuple
 
 from hspylib.core.tools.commons import read_version
@@ -21,12 +22,13 @@ from hspylib.core.tools.commons import read_version
 class AppVersion:
 
     @staticmethod
-    def load(filepath: str = None) -> 'AppVersion':
-        if filepath and not os.path.exists(filepath):
-            raise FileNotFoundError(
-                f'File "{filepath}" does not exist')
-        version = read_version(filepath or f"{os.getcwd()}/.version")
-        return AppVersion(version)
+    def load(filename: str = '.version', load_dir: str = os.getcwd()) -> 'AppVersion':
+        filepath = f'{load_dir}/{filename}'
+        if not os.path.exists(filepath):
+            log.warning(f'File "{filepath}" does not exist')
+            return AppVersion((0, 0, 0))
+
+        return AppVersion(read_version(filepath))
 
     def __init__(self, version: Tuple[int, int, int]):
         self.version = version

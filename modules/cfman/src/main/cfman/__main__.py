@@ -36,8 +36,11 @@ class Main(Application):
     # The welcome message
     DESCRIPTION = (HERE / "welcome.txt").read_text()
 
+    # location of the .version file
+    VERSION_DIR = str(HERE)
+
     def __init__(self, app_name: str):
-        version = AppVersion.load()
+        version = AppVersion.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.cfman = None
 
@@ -76,4 +79,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('HSPyLib Cloud Foundry Manager').INSTANCE.run(sys.argv[1:])
+    Main('cfman').INSTANCE.run(sys.argv[1:])
