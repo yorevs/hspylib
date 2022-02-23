@@ -1,0 +1,6 @@
+project.ext.set("projectVersion", "0.10.4-RELEASE")
+project.ext.set("pythonVersion", "3")
+project.ext.set("pyrccVersion", "5")
+project.ext.set("author", "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")
+project.ext.set("mailTo", "yorevs@hotmail.com")
+project.ext.set("siteUrl", "https://github.com/yorevs/hspylib")

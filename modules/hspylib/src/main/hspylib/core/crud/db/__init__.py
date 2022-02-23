@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.28
+# hspylib v0.11.25
 #
 # Package: main.hspylib.core.crud.db
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'mysql', 
   'sql_factory'
 ]
-__version__ = '0.11.28'
+__version__ = '0.11.25'

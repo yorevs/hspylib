@@ -57,7 +57,7 @@ class FileProcessor(ABC):
         check_argument(
             destination_dir and os.path.exists(destination_dir),
             "Unable find destination directory: {}", destination_dir)
-        sysout(f'Downloading files from Firebase into "{destination_dir}" ...')
+        sysout('Downloading files from Firebase ...')
         response = get(url)
         check_not_none(response)
         check_not_none(response.body)
@@ -82,7 +82,7 @@ class FileProcessor(ABC):
                 f"{destination_dir}/{os.path.basename(entry['path'])}",
                 entry['data'],
                 entry['size']).save()
-        files = ', \n\t'.join(list(map(lambda e: os.path.basename(e['path']), file_entries)))
+        files = ', \n\t'.join(list(map(lambda e: e['path'], file_entries)))
         sysout(f'%GREEN%File(s) [\n\t{files}\n] successfully downloaded into {destination_dir}%NC%')
 
     @staticmethod

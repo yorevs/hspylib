@@ -36,12 +36,9 @@ class Main(Application):
     # The welcome message
     DESCRIPTION = (HERE / "welcome.txt").read_text()
 
-    # The resources folder
-    RESOURCE_DIR = str(HERE / "resources")
-
     def __init__(self, app_name: str):
         version = AppVersion.load()
-        super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
         self.vault = Vault()
 
     def _setup_arguments(self) -> None:
