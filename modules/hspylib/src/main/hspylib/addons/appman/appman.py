@@ -28,6 +28,8 @@ from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
 
@@ -87,6 +89,41 @@ class AppManager(metaclass=Singleton):
             self._parent_app.exit(ExitCode.FAILED)
 
         sysout(f"Successfully created the {app_type.value} {app_name}")
+
+    def prompt(self):
+        """When no input is provided, prompt the user for the info. """
+        # # @formatter:off
+        form_fields = MenuInput.builder() \
+            .field() \
+                .label('App Name') \
+                .validator(InputValidator.words()) \
+                .min_max_length(1, 40) \
+                .value('my_app') \
+                .build() \
+            .field() \
+                .label('App Type') \
+                .itype('select') \
+                .value(f"{AppType.APP}|{AppType.QT_APP}|{AppType.WIDGET}") \
+                .build() \
+            .field() \
+                .label('Dest Dir') \
+                .validator(InputValidator.anything()) \
+                .min_max_length(3, 80) \
+                .value(os.getenv('HOME', os.getcwd())) \
+                .build() \
+            .field() \
+                .label('Initialize gradle') \
+                .itype('checkbox') \
+                .value(True) \
+                .build() \
+            .field() \
+                .label('Initialize git') \
+                .itype('checkbox') \
+                .value(True) \
+                .build() \
+            .build()
+        # @formatter:on
+        return minput(form_fields)
 
     def _create_app(self, app_name: str, extensions: List[AppExtension]) -> None:
         """Create a Simple HSPyLib application"""
@@ -180,13 +217,10 @@ class AppManager(metaclass=Singleton):
             self._download_ext('python.gradle')
             sysout('Creating gradle files')
             self._mkfile('gradle.properties', self.GRADLE_PROPS.format(
-                self._parent_app.name(),
-                self._parent_app.version()
-            ).strip())
+                self._app_name, INITIAL_REVISION).strip())
             self._mkfile(
                 'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text()
-                    .replace('%APP_NAME%', self._app_name)
-            )
+                    .replace('%APP_NAME%', self._app_name))
             self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
             sysout('Building gradle project, please wait ...')
             output, exit_code = Terminal.shell_exec(
