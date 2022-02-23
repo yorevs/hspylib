@@ -33,7 +33,7 @@ from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 
 class WidgetSendMsg(Widget):
-    """HSPyLib to send TCP/UDP messages (multi-threaded)"""
+    """HSPyLib Widget to send TCP/UDP messages (multi-threaded)"""
     WIDGET_ICON = WidgetIcons.NETWORK
     WIDGET_NAME = "SendMsg"
     TOOLTIP = "IP Message Sender. Sends TCP/UDP messages (multi-threaded)"

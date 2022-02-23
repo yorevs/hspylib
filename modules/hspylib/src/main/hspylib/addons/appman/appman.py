@@ -37,6 +37,8 @@ HERE = get_path(__file__)
 
 INITIAL_REVISION = '0.1.0'
 
+WELCOME_MESSAGE = f'My Application v{INITIAL_REVISION}'
+
 # Disable this warning because we trust our project repo
 urllib3.disable_warnings()
 
@@ -159,13 +161,12 @@ class AppManager(metaclass=Singleton):
         self._mkdir('src/test')
         self._mkfile('src/test/test_main.py', (self.TEMPLATES / "tpl-test_main.py").read_text())
         self._mkdir('src/test/resources')
-        self._mkdir('src/test/resources/log')
         self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
         self._mkdir('src/main')
         self._mkfile('src/main/.version', INITIAL_REVISION)
+        self._mkfile('src/main/welcome.txt', WELCOME_MESSAGE)
         self._mkdir('src/main/resources')
         self._mkfile('src/main/resources/application.properties', '# Main application property file')
-        self._mkdir('src/main/resources/log')
         self._mkfile('.env', '# Type in here the environment variables your app requires')
         self._mkfile('run.sh', (self.TEMPLATES / "tpl-run.sh").read_text())
         os.chmod(f'{self._app_dir}/run.sh', 0o755)
@@ -231,7 +232,6 @@ class AppManager(metaclass=Singleton):
 
     def _init_git(self) -> bool:
         """Initialize a git repository for the project"""
-        self._mkfile('src/main/resources/log/.gitkeep')
         self._mkfile('.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
         sysout('Initializing git repository')
         output, exit_code = Terminal.shell_exec(
