@@ -570,7 +570,7 @@
     <customwidget>
       <class>HFrame</class>
       <extends>QFrame</extends>
-      <header>modules.qt.promotions.hframe</header>
+      <header>hspylib.modules.qt.promotions.hframe</header>
       <container>1</container>
     </customwidget>
   </customwidgets>

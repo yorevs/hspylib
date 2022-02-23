@@ -1,6 +1,4 @@
 include hspylib/welcome.txt
 include hspylib/.version
-recursive-include hspylib/resources *
-recursive-include hspylib/resources/log *
 recursive-include hspylib/addons/appman/templates *
 recursive-include hspylib/core/crud/db/sql *
