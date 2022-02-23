@@ -22,9 +22,8 @@ from collections import defaultdict
 from json.decoder import JSONDecodeError
 from typing import List, Optional, Tuple, Union
 
-from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
-from hspylib.core.tools.commons import dirname, now, now_ms, read_version, run_dir
+from hspylib.core.tools.commons import dirname, get_path, now, now_ms
 from hspylib.core.tools.text_tools import strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -34,7 +33,6 @@ from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
-from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
@@ -50,13 +48,21 @@ from kafman.core.schema.registry_subject import RegistrySubject
 from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
 from kafman.core.statistics_worker import StatisticsWorker
+from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
+
+HERE = get_path(__file__)
 
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = read_version(f"{run_dir()}/.version")
+    VERSION = (HERE / "../.version").read_text()
+
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
-    SCHEMA_DIR = f"{run_dir()}/resources/schema"
+
+    SCHEMA_DIR = str(HERE / "../resources/schema")
+
+    FORMS_DIR = str(HERE / "../resources/forms")
+
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
     @staticmethod
@@ -74,15 +80,14 @@ class MainQtView(QtView):
             return False
 
         t = text.strip()
-        return (
-                   t.startswith('{') and t.endswith('}')) \
-               or (t.startswith('[') and t.endswith(']')
-                   )
+        # @formatter:off
+        return (t.startswith('{') and t.endswith('}')) \
+                or (t.startswith('[') and t.endswith(']'))
+        # @formatter:on
 
     def __init__(self):
         # Must come after the initialization above
-        super().__init__()
-        self.configs = AppConfigs.INSTANCE
+        super().__init__(load_dir=self.FORMS_DIR)
         self._started = False
         self._registry = SchemaRegistry()
         self._consumer = ConsumerWorker()
@@ -112,7 +117,7 @@ class MainQtView(QtView):
     def _setup_ui(self) -> None:
         """Setup UI: Connect signals and Setup components"""
         self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
-        self.window.setWindowTitle(f"Kafman v{'.'.join(self.VERSION)}")
+        self.window.setWindowTitle(f"Kafman v{self.VERSION}")
         self.window.resize(1024, 768)
         self._setup_general_controls()
         self._setup_producer_controls()

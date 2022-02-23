@@ -59,7 +59,7 @@ class Main(Application):
         self.cfman = CFManager(
             self.getarg('api'), self.getarg('org'), self.getarg('space'),
             self.getarg('username'), self.getarg('password'),
-            self.getarg('endpoints') or os.getenv('HOME', os.getcwd()) + '/cf_endpoints.txt'
+            self.getarg('endpoints') or os.getenv('HOME', os.getcwd()) + '/.cfman_endpoints.txt'
         )
         log.info(dedent('''
         {} v{}
