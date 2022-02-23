@@ -52,9 +52,8 @@ class Main(Application):
 
         self._with_chained_args('operation', 'the Vault operation to process') \
             .argument('list', 'list all entries matching the given filter criteria, if specified') \
-                .add_option(
-                    'filter', 'f', 'filter',
-                    "filter the listed vault entries by it's name",
+                .add_argument(
+                    'filter', "filter the listed vault entries by it's name",
                     nargs='?', default=None) \
             .argument('get', 'get a vault entry') \
                 .add_argument('name', 'the name of the vault entry which identifies it') \
