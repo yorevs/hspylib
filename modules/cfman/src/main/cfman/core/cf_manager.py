@@ -17,7 +17,6 @@ import sys
 from time import sleep
 from typing import List, Optional
 
-from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.cli.tui.extra.mchoose import mchoose
@@ -62,7 +61,6 @@ class CFManager:
     def __init__(self, api: str, org: str, space: str, username: str, password: str, cf_endpoints: str):
         assert file_is_not_empty(cf_endpoints), \
             f'CF Endpoints file {cf_endpoints} is empty or does not exist !'
-        self.configs = AppConfigs.INSTANCE
         self._cf = CloudFoundry()
         self._api = api
         self._org = org

@@ -1,4 +1,2 @@
 include versioner/welcome.txt
 include versioner/.version
-recursive-include versioner/resources *
-recursive-include versioner/resources/log *
