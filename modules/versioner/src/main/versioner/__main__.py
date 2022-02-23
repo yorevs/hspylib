@@ -22,7 +22,7 @@ from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-from core.versioner import Versioner
+from versioner.core.versioner import Versioner
 
 HERE = get_path(__file__)
 

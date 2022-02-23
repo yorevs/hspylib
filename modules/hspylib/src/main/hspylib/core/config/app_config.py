@@ -40,10 +40,6 @@ class AppConfigs(metaclass=Singleton):
         check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
 
-        self._log_dir = log_dir \
-            if log_dir else os.environ.get('LOG_DIR', f"{self._resource_dir}/log")
-        check_argument(os.path.exists(self._log_dir), "Unable to locate log dir: {}", self._log_dir)
-
         self._app_properties = Properties(load_dir=resource_dir)
 
         log.info(self)
