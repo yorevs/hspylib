@@ -92,7 +92,7 @@ class Vault:
         data = self.service.list(filter_expr)
         if len(data) > 0:
             sysout("%YELLOW%{} {}%NC%".format(
-                "\n=== Listing all vault entries",
+                f"\n=== Listing all ({len(data)}) vault entries",
                 f"matching \'{filter_expr}\' ===\n" if filter_expr else "===\n"))
             for entry in data:
                 sysout(entry.to_string())
