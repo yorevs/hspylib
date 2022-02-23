@@ -21,7 +21,7 @@ import sys
 from datetime import datetime, timedelta
 from typing import Any, List, Optional, Tuple, Type, Union
 
-from hspylib.core.tools.constants import DATE_TIME_FORMAT
+from hspylib.core.tools.constants import DATE_TIME_FORMAT, TRUE_VALUES
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
@@ -247,10 +247,10 @@ def str_to_bool(string: str, true_values: List[str] = None) -> bool:
     :param string: The string to be converted
     :param true_values: The list of strings that will become True value
     """
+    if string is None:
+        return False
     if true_values is None:
-        true_values = [
-            'true', 'on', 'yes', '1', 'y'
-        ]
+        true_values = TRUE_VALUES
     return string.lower() in true_values if string else False
 
 

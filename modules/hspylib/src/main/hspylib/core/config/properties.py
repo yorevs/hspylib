@@ -21,7 +21,8 @@ from typing import Optional
 
 import yaml
 
-from hspylib.core.tools.commons import flatten_dict, run_dir, touch_file
+from hspylib.core.tools.commons import flatten_dict, run_dir, str_to_bool, touch_file
+from hspylib.core.tools.constants import TRUE_VALUES
 
 
 class Properties:
@@ -89,7 +90,7 @@ class Properties:
     def get_bool(self, key: str, default_value=None) -> Optional[bool]:
         """Get and convert a property value into bool or return a default value if any error occurred"""
         try:
-            return self.get(key).lower() in ['true', '1', 'on', 'yes']
+            return str_to_bool(self.get(key).lower())
         except TypeError:
             return default_value
 

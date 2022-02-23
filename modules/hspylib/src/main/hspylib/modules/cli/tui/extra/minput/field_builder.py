@@ -14,6 +14,8 @@
 """
 from typing import Any, TypeVar
 
+from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.constants import TRUE_VALUES
 from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
@@ -63,7 +65,7 @@ class FieldBuilder:
     def build(self) -> Any:
         self.field.itype = self.field.itype or InputType.TEXT
         if self.field.itype == InputType.CHECKBOX:
-            self.field.value = self.field.value if self.field.value in ['0', '1'] else 0
+            self.field.value = '1' if str_to_bool(str(self.field.value)) else '0'
             self.field.min_length = self.field.max_length = 1
             self.validator(InputValidator.custom(r'[01]'))
         elif self.field.itype == InputType.SELECT:
