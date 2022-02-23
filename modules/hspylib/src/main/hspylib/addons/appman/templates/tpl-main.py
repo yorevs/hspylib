@@ -16,8 +16,9 @@
 
 import sys
 
-from hspylib.core.tools.commons import dirname, get_path, read_version, sysout
+from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import AppVersion
 
 HERE = get_path(__file__)
 
@@ -25,15 +26,15 @@ HERE = get_path(__file__)
 class Main(Application):
     """TODO"""
 
-    # The application version
-    VERSION = read_version(f"{HERE}/.version")
+    # The welcome message
+    DESCRIPTION = (HERE / "welcome.txt").read_text()
 
-    # Usage message
-    USAGE = (HERE / "usage.txt").read_text().format('.'.join(map(str, VERSION)))
+    # location of the .version file
+    VERSION_DIR = str(HERE)
 
     def __init__(self, app_name: str):
-        # Invoke the super constructor without source_dir parameter to skip creation of log and properties
-        super().__init__(app_name, self.VERSION, self.USAGE, source_dir=dirname(__file__))
+        version = AppVersion.load(load_dir=self.VERSION_DIR)
+        super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
@@ -48,4 +49,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('Application name').INSTANCE.run(sys.argv[1:])
+    Main('application-name').INSTANCE.run(sys.argv[1:])
