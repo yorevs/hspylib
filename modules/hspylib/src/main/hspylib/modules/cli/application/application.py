@@ -83,6 +83,8 @@ class Application(metaclass=Singleton):
             self.configs = AppConfigs(resource_dir=resource_dir, log_dir=log_dir)
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources', log_dir=log_dir)
+        else:
+            log.warning(f'Resource dir "{resource_dir}" was not found. AppConfigs will not be available.')
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""

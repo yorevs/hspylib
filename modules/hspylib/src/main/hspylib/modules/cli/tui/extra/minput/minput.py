@@ -34,17 +34,19 @@ from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, prepare_rend
 def minput(
     form_fields: List[FormField],
     title: str = 'Please fill all fields of the form fields below',
+    prefix: str = None,
     title_color: VtColors = VtColors.ORANGE,
     nav_color: VtColors = VtColors.YELLOW) -> Optional['MenuInput.FormFields']:
     """
     TODO
     :param form_fields:
     :param title:
+    :param prefix:
     :param title_color:
     :param nav_color:
     :return:
     """
-    return MenuInput(form_fields).input(title, title_color, nav_color)
+    return MenuInput(form_fields).input(title, prefix, title_color, nav_color)
 
 
 class MenuInput:
@@ -74,6 +76,7 @@ class MenuInput:
     def input(
         self,
         title: str,
+        prefix: str,
         title_color: VtColors,
         nav_color: VtColors) -> Optional['MenuInput.FormFields']:
         """TODO"""
@@ -100,7 +103,7 @@ class MenuInput:
         if ret_val == Keyboard.VK_ENTER:
             form_fields = self.FormFields
             for field in self.all_fields:
-                att_name = snakecase(field.label)
+                att_name = f"{prefix or ''}{snakecase(field.label)}"
                 setattr(form_fields, att_name, field.value)
             return form_fields
 

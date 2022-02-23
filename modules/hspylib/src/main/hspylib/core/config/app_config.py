@@ -15,6 +15,7 @@
 
 import logging as log
 import os
+from textwrap import dedent
 from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
@@ -26,19 +27,19 @@ from hspylib.core.tools.preconditions import check_argument, check_state
 class AppConfigs(metaclass=Singleton):
     """Holds all of the application configurations (properties)"""
 
-    DISPLAY_FORMAT = """
-AppConfigs
-  |-RunDir = {}
-  |-ResourceDir = {}
-  |-LogFile = {}
-  |-AppProperties:
-   \\-{}
-"""
+    DISPLAY_FORMAT = dedent("""
+    AppConfigs
+      |-RunDir = {}
+      |-ResourceDir = {}
+      |-LogFile = {}
+      |-AppProperties:
+       \\-{}
+    """)
 
-    def __init__(self, resource_dir: str = None, log_dir: str = None, log_file: str = None):
-        self._resource_dir = resource_dir \
-            if resource_dir else os.environ.get('RESOURCE_DIR', f"{run_dir()}/resources")
-        check_argument(os.path.exists(self._resource_dir), "Unable to locate resources dir: {}", self._resource_dir)
+    def __init__(self, resource_dir: str, log_dir: str = None, log_file: str = None):
+
+        check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
+        self._resource_dir = resource_dir
 
         self._log_dir = log_dir \
             if log_dir else os.environ.get('LOG_DIR', f"{self._resource_dir}/log")
@@ -46,9 +47,10 @@ AppConfigs
 
         self._log_file = log_file \
             if log_file else f"{self._log_dir}/application.log"
-        check_state(log_init(self._log_file), "Unable to create logger: {}", self._log_file)
+        check_state(log_init(self._log_file), "Unable to initialize log file: {}", self._log_file)
 
-        self._app_properties = Properties(load_dir=self._resource_dir)
+        self._app_properties = Properties(load_dir=resource_dir)
+
         log.info(self)
 
     def __str__(self):
@@ -80,6 +82,10 @@ AppConfigs
     def log_dir(self) -> Optional[str]:
         """TODO"""
         return self._log_dir
+
+    def log_file(self) -> Optional[str]:
+        """TODO"""
+        return self._log_file
 
     def get(self, property_name: str) -> Optional[str]:
         """TODO"""

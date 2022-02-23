@@ -25,7 +25,7 @@ from hspylib.core.tools.commons import get_path, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-from core.firebase import Firebase
+from firebase.core.firebase import Firebase
 
 # Disable this warning because we are hitting our own database
 urllib3.disable_warnings()
