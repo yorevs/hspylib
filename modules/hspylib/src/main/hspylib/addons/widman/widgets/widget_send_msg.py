@@ -90,11 +90,12 @@ class WidgetSendMsg(Widget):
             sysout(self.version())
             return ExitCode.SUCCESS
 
-        if not args and not self._read_args():
+        if args and not self._parse_args(args):
             return ExitCode.ERROR
-        else:
-            if not self._parse_args(args):
-                return ExitCode.ERROR
+        elif not args and not self._read_args():
+            return ExitCode.ERROR
+        elif not args and not self.args:
+            return ExitCode.ERROR
 
         self.net_type = self.args.net_type or self.NET_TYPE_TCP
         self.host = (self.args.address or '127.0.0.1', self.args.port or 12345)
@@ -235,7 +236,6 @@ class WidgetSendMsg(Widget):
 
     def _send_packet(self, thread_num: int) -> None:
         """Send a packet"""
-        message = self.message
         lock = threading.Lock()
 
         while self.is_alive and self.packets <= 0 or self.counter <= self.packets:

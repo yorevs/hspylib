@@ -20,7 +20,7 @@ from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
 
-from views.main_qt_view import MainQtView
+from kafman.views.main_qt_view import MainQtView
 
 HERE = get_path(__file__)
 

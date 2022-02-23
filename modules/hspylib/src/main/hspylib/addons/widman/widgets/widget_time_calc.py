@@ -51,7 +51,7 @@ class WidgetTimeCalc(Widget):
     def parse_args(self, args: List[str]) -> Optional[ExitCode]:
         """TODO"""
 
-        if (not args or len(args) < 3) and (args and not any(a in args for a in ['+h', '++help'])):
+        if (not args or len(args) < 3) or not any(a in args for a in ['+h', '++help']):
             if not self._read_args():
                 return ExitCode.ERROR
         elif args[0] in ['+h', '++help']:

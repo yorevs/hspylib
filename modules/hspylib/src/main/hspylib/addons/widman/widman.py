@@ -79,6 +79,7 @@ class WidgetManager(metaclass=Singleton):
         except Exception as err:
             raise WidgetExecutionError(f"Failed to execute widget :: {str(err)}") from err
 
+    # pylint: disable=cell-var-from-loop
     def _load_widgets(self) -> int:
         """Search and load all widgets from the widget lookup paths"""
         for path in self._lookup_paths:
@@ -86,7 +87,7 @@ class WidgetManager(metaclass=Singleton):
                 filtered = list(filter(
                     lambda p: p.startswith(WidgetEntry.WIDGET_MODULE_PREFIX) and p.endswith('py'), files
                 ))
-                widgets = list(map(lambda w: WidgetEntry(w, f"{root}/{w}"), filtered))  # pylint: disable=W0640
+                widgets = list(map(lambda w: WidgetEntry(w, f"{root}/{w}"), filtered))
                 self._widgets.extend(widgets)
 
         return len(self._widgets)
