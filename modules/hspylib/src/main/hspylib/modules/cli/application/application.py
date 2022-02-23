@@ -26,7 +26,8 @@ from typing import Optional, Union
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import log_init, sysout
+from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.cli.application.argument_parser import HSArgumentParser
 from hspylib.modules.cli.application.arguments_builder import ArgumentsBuilder
 from hspylib.modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
@@ -79,12 +80,18 @@ class Application(metaclass=Singleton):
         self._arg_parser.add_argument(
             '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
         self._args = {}
+
+        # Initialize application configs
         if os.path.exists(f'{resource_dir}'):
             self.configs = AppConfigs(resource_dir=resource_dir, log_dir=log_dir)
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources', log_dir=log_dir)
         else:
-            log.warning(f'Resource dir "{resource_dir}" was not found. AppConfigs will not be available.')
+            pass  # AppConfigs will not be available
+
+        # Initialize application logs
+        log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"
+        check_state(log_init(log_file), "Unable to initialize logging. log_file={}", log_file)
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""

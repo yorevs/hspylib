@@ -20,8 +20,8 @@ from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import log_init, run_dir
-from hspylib.core.tools.preconditions import check_argument, check_state
+from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.preconditions import check_argument
 
 
 class AppConfigs(metaclass=Singleton):
@@ -29,14 +29,13 @@ class AppConfigs(metaclass=Singleton):
 
     DISPLAY_FORMAT = dedent("""
     AppConfigs
-      |-RunDir = {}
-      |-ResourceDir = {}
-      |-LogFile = {}
-      |-AppProperties:
+      |-Working dir = {}
+      |-Resources dir = {}
+      |-Properties:
        \\-{}
     """)
 
-    def __init__(self, resource_dir: str, log_dir: str = None, log_file: str = None):
+    def __init__(self, resource_dir: str, log_dir: str = None):
 
         check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
@@ -44,10 +43,6 @@ class AppConfigs(metaclass=Singleton):
         self._log_dir = log_dir \
             if log_dir else os.environ.get('LOG_DIR', f"{self._resource_dir}/log")
         check_argument(os.path.exists(self._log_dir), "Unable to locate log dir: {}", self._log_dir)
-
-        self._log_file = log_file \
-            if log_file else f"{self._log_dir}/application.log"
-        check_state(log_init(self._log_file), "Unable to initialize log file: {}", self._log_file)
 
         self._app_properties = Properties(load_dir=resource_dir)
 
@@ -59,7 +54,6 @@ class AppConfigs(metaclass=Singleton):
             self.DISPLAY_FORMAT.format(
                 str(run_dir()),
                 str(self._resource_dir),
-                str(self._log_file),
                 str(self._app_properties).replace('\n', '\n   |-')
                 if len(self._app_properties) > 0 else ''
             ),
