@@ -13,10 +13,10 @@
 
    Copyright 2021, HSPyLib team
 """
-
 import json
 import os
 from abc import ABC
+from fnmatch import fnmatch
 from typing import List, Union
 
 from hspylib.core.enums.http_code import HttpCode
@@ -32,7 +32,7 @@ class FileProcessor(ABC):
     """Utility class to upload and download B64 encoded files"""
 
     @staticmethod
-    def upload_files(url: str, file_paths: List[str]) -> int:
+    def upload_files(url: str, file_paths: List[str], glob_exp: str = '*.*') -> int:
         """Upload files to URL"""
         sysout('Uploading files to Firebase ...')
         file_data = []
@@ -42,9 +42,11 @@ class FileProcessor(ABC):
                 f_entry = FileProcessor._read_and_encode(f_path)
                 file_data.append(f_entry)
             else:
-                for file in next(os.walk(f_path))[2]:
-                    f_entry = FileProcessor._read_and_encode(os.path.join(f_path, file))
-                    file_data.append(f_entry)
+                for file in os.listdir(f_path):
+                    filename = os.path.join(f_path, file)
+                    if os.path.isfile(filename) and fnmatch(file, glob_exp):
+                        f_entry = FileProcessor._read_and_encode(filename)
+                        file_data.append(f_entry)
         payload = FileProcessor._to_json(file_data)
         response = put(url, payload)
         check_not_none(response)

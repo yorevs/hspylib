@@ -39,11 +39,11 @@ class Firebase:
         self.agent_config.prompt()
         log.debug(self.agent_config)
 
-    def upload(self, db_alias: str, file_paths: List[str]) -> bool:
+    def upload(self, db_alias: str, file_paths: List[str], glob_exp: str = None) -> bool:
         """Upload files to firebase"""
         url = self.agent_config.url(db_alias)
         check_argument(len(file_paths) > 0, "Unable to upload file_paths (zero size).")
-        return self.processor.upload_files(url, file_paths) > 0
+        return self.processor.upload_files(url, file_paths, glob_exp) > 0
 
     def download(self, db_alias: str, dest_dir: str) -> bool:
         """Download files from firebase specified by it's aliases"""
