@@ -17,7 +17,6 @@ import base64
 import getpass
 import logging as log
 import os
-import uuid
 from typing import Optional
 
 from hspylib.core.config.app_config import AppConfigs
@@ -64,7 +63,6 @@ class AgentConfig(metaclass=Singleton):
         config['DATABASE'] = self.database()
         config['USERNAME'] = self.username()
         config['PASSPHRASE'] = self.passphrase()
-        config['UUID'] = self.uuid()
         self.setup(config)
 
     def config_file(self) -> str:
@@ -76,14 +74,6 @@ class AgentConfig(metaclass=Singleton):
         """Return the firebase project ID"""
         project_id = self.app_configs['firebase.project.id']
         return project_id if project_id else input('Please type you project ID: ')
-
-    def uuid(self) -> Optional[str]:
-        """Return the firebase project UUID or assign a new one if not specified"""
-        project_uuid = self.app_configs['firebase.project.uuid']
-        if not project_uuid:
-            project_uuid = input('Please type a UUID to use or press [Enter] to generate a new one: ')
-            project_uuid = str(uuid.uuid4()) if not project_uuid else project_uuid
-        return project_uuid
 
     def database(self) -> Optional[str]:
         """Return the firebase project database name"""
@@ -102,13 +92,14 @@ class AgentConfig(metaclass=Singleton):
 
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
-        return self.firebase_configs.url(db_alias)
+        final_alias = db_alias.replace('.', '/')
+        return self.firebase_configs.url(f'hspylib/{final_alias}')
 
     def save(self) -> None:
         """Save current firebase configuration"""
-        with open(self.config_file(), 'w', encoding='utf-8') as f_config:
+        with open(self.config_file(), 'w+', encoding='utf-8') as f_config:
             f_config.write(str(self))
-            log.debug(f"Firebase configuration saved => {self.config_file()} !")
+            sysout(f"Firebase configuration saved => {self.config_file()} !")
 
     def _input_passphrase(self) -> bytes:
         passwd = getpass.getpass('Please type a password to encrypt your data: ')

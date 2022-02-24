@@ -16,8 +16,9 @@
 import base64
 import logging as log
 import os
-import uuid
+from textwrap import dedent
 
+import cryptocode
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
@@ -31,15 +32,16 @@ from hspylib.modules.fetch.fetch import get
 class FirebaseConfig(metaclass=Singleton):
     """TODO"""
 
-    CONFIG_FORMAT = """
-# Your Firebase configuration:
-# --------------------------
-PROJECT_ID={}
-USERNAME={}
-DATABASE={}
-PASSPHRASE={}
-UUID={}
-"""
+    _FIREBASE_HASHCODE = '065577bcd5dde0d70d24fad7dec74a8b'
+
+    CONFIG_FORMAT = dedent("""
+    # Your Firebase configuration:
+    # --------------------------
+    PROJECT_ID={}
+    USERNAME={}
+    DATABASE={}
+    PASSPHRASE={}
+    """)
 
     @staticmethod
     def of(config_dict: CaseInsensitiveDict) -> 'FirebaseConfig':
@@ -47,17 +49,16 @@ UUID={}
         return FirebaseConfig(
             config_dict['PROJECT_ID'],
             config_dict['DATABASE'],
-            config_dict['UUID'] if 'UUID' in config_dict else None,
             config_dict['USERNAME'],
             config_dict['PASSPHRASE'],
         )
 
     @staticmethod
-    def of_file(filename: str, encoding: str = 'utf-8') -> 'FirebaseConfig':
+    def of_file(filename: str, encoding: str = None) -> 'FirebaseConfig':
         """TODO"""
-        check_argument(os.path.exists(filename), "Config file does not exist")
+        check_argument(os.path.exists(filename), f"Config file does not exist: {filename}")
 
-        with open(filename, encoding=encoding) as f_config:
+        with open(filename, encoding=encoding or str(Charset.UTF_8)) as f_config:
             cfg = CaseInsensitiveDict()
             for line in f_config:
                 line = line.strip()
@@ -67,15 +68,15 @@ UUID={}
                 cfg[key.strip()] = value.strip()
             check_state(
                 len(cfg) > 4,
-                "Invalid configuration file. Must include at least: [PROJECT_ID, FIREBASE_URL, USERNAME, PASSPHRASE]")
+                "Invalid configuration file. Must include at least: \n"
+                "\t[PROJECT_ID, FIREBASE_URL, USERNAME, PASSPHRASE]")
 
-            return FirebaseConfig.of(cfg) if len(cfg) == 5 else None
+            return FirebaseConfig.of(cfg)
 
     def __init__(
         self,
         project_id: str = None,
         database: str = None,
-        project_uuid: str = None,
         username: str = None,
         passphrase: str = None):
 
@@ -83,24 +84,19 @@ UUID={}
         self.current_state = None
         self.project_id = project_id if project_id else AppConfigs.INSTANCE['firebase.project.id']
         self.database = database if database else AppConfigs.INSTANCE['firebase.database']
-        self.project_uuid = project_uuid if project_uuid else AppConfigs.INSTANCE['firebase.project.uuid']
         self.username = username if username else AppConfigs.INSTANCE['firebase.username']
         self.passphrase = passphrase if passphrase else AppConfigs.INSTANCE['firebase.passphrase']
         check_state(self.project_id, "Project ID must be defined")
         check_state(self.database, "Database name must be defined")
         check_state(self.username, "Username must be defined")
         self.set_passphrase()
-        self.project_uuid = str(self.project_uuid) if self.project_uuid else str(uuid.uuid4())
-        check_state(self.validate_config(), "Your Firebase configuration is not valid")
-        log.debug("Successfully connected to Firebase: %s", self.base_url())
 
     def __str__(self):
         return self.CONFIG_FORMAT.format(
             self.project_id,
             self.username,
             self.database,
-            str(base64.b64encode(self.passphrase.encode(self.encoding)), encoding=self.encoding),
-            self.project_uuid
+            cryptocode.encrypt(self.passphrase, self._FIREBASE_HASHCODE)
         )
 
     def set_passphrase(self) -> None:
@@ -116,12 +112,18 @@ UUID={}
         is_valid = response is not None and response.status_code == HttpCode.OK
         if is_valid:
             self.current_state = response.body if response.body and response.body != 'null' else None
+            log.debug("Successfully connected to Firebase: %s", self.base_url())
+        else:
+            self.current_state = None
+            log.error("Your Firebase configuration is not valid")
+
         return is_valid
 
     def base_url(self) -> str:
         """TODO"""
-        return f'https://{self.project_id}.firebaseio.com/{self.database}/{self.project_uuid}'
+        return f'https://{self.project_id}.firebaseio.com/{self.database}'
 
     def url(self, db_alias: str) -> str:
         """TODO"""
-        return f'{self.base_url()}/{db_alias}.json'
+        final_alias_url = db_alias.replace('.', '/')
+        return f'{self.base_url()}/{final_alias_url}.json'
