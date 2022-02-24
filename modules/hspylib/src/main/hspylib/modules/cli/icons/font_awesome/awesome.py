@@ -13,9 +13,9 @@
    Copyright 2021, HSPyLib team
 """
 
-import struct
-
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import end_ln, print_unicode
 
 
 class Awesome(Enumeration):
@@ -27,20 +27,18 @@ class Awesome(Enumeration):
 
     @staticmethod
     def demo_unicodes() -> None:
-        i = 0
+        n = 0
         st_base = [f'F{x:03X}' for x in range(0, 4095)]
-        for n in st_base:
-            hex_val = bytes.decode(struct.pack("!I", int(n, 16)), 'utf_32_be')
-            end_line = '\n' if i != 0 and i % 10 == 0 else ' '
-            print(f'{hex_val} {n:4}', end=end_line)
-            i += 1
+        for h in st_base:
+            print_unicode(h)
+            sysout(f' {h:4}', end=end_ln(n, 10))
+            n += 1
 
     @classmethod
     def demo_icons(cls) -> None:
         i = 0
         for n in cls.values():
-            end_line = '\n' if i != 0 and i % 10 == 0 else ' '
-            print(f'{n:2}', end=end_line)
+            sysout(f'{n:2}', end=end_ln(n, 10))
             i += 1
 
     def __str__(self) -> str:

@@ -14,10 +14,14 @@
 """
 
 import logging as log
+import traceback
 from typing import Type
 
 
 # pylint: disable=bad-mcs-classmethod-argument
+from hspylib.core.tools.commons import syserr
+
+
 class Singleton(type):
     """TODO"""
 
@@ -26,11 +30,15 @@ class Singleton(type):
     def __call__(cls, *args, **kwargs):
         """TODO"""
         if not cls.has_instance(cls):
-            instance = super(Singleton, cls).__call__(*args, **kwargs)
-            assert instance is not None, f'Unable to create Singleton instance: {cls}'
-            cls.INSTANCE = instance
-            cls._instances[cls] = instance
-            log.debug(f'Created a new Singleton instance: {cls.__module__}.{cls.__name__}')
+            try:
+                instance = super(Singleton, cls).__call__(*args, **kwargs)
+                assert instance is not None, f'Unable to create Singleton instance: {cls}'
+                cls.INSTANCE = instance
+                cls._instances[cls] = instance
+                log.debug(f'Created a new Singleton instance: {cls.__module__}.{cls.__name__}')
+            except Exception:
+                log.error(traceback.format_exc())
+                syserr(traceback.format_exc())
 
         return cls._instances[cls]
 

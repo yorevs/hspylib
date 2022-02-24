@@ -15,9 +15,11 @@
 
 import random
 import re
+import struct
 from abc import ABC
+from typing import Union
 
-from hspylib.core.tools.commons import get_or_default
+from hspylib.core.tools.commons import get_or_default, sysout
 
 
 def fit_text(text: str, width: int) -> str:
@@ -77,6 +79,23 @@ def strip_escapes(string: str) -> str:
     return re.compile(r'\x1b[^m]*m').sub('', string)
 
 
+def print_unicode(uni_code: Union[str, int]) -> None:
+    """TODO"""
+    if isinstance(uni_code, str) and re.match(r"^[a-fA-F0-9]{1,4}$", uni_code):
+        hex_val = bytes.decode(struct.pack("!I", int(uni_code.zfill(4), 16)), 'utf_32_be')
+        sysout(hex_val, end='')
+    elif isinstance(uni_code, int):
+        hex_val = bytes.decode(struct.pack("!I", uni_code), 'utf_32_be')
+        sysout(hex_val, end='')
+    else:
+        raise TypeError(f'Invalid unicode: {uni_code}')
+
+
+def end_ln(current: int, split_at: int, hit_str: str = '\n', miss_str: str = ' ') -> str:
+    """TODO"""
+    return hit_str if current != 0 and current % split_at == 0 else miss_str
+
+
 # pylint: disable=too-few-public-methods
 class TextAlignment(ABC):
     """
@@ -95,3 +114,9 @@ class TextCase(ABC):
     UPPER_CASE = uppercase
     LOWER_CASE = lowercase
     CAMEL_CASE = camelcase
+
+
+if __name__ == '__main__':
+    print_unicode('118')
+    print_unicode('f118')
+    print_unicode(0xf118)
