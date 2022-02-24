@@ -93,7 +93,7 @@ class AgentConfig(metaclass=Singleton):
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
         final_alias = db_alias.replace('.', '/')
-        return self.firebase_configs.url(f'hspylib/{final_alias}')
+        return self.firebase_configs.url(f'{final_alias}')
 
     def save(self) -> None:
         """Save current firebase configuration"""

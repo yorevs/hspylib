@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.36
+# hspylib v0.11.37
 #
 # Package: main.hspylib.modules.cli.application
 """Package initialization."""
@@ -14,4 +14,4 @@ __all__ = [
   'parser_action', 
   'version'
 ]
-__version__ = '0.11.36'
+__version__ = '0.11.37'

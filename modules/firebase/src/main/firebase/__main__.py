@@ -64,7 +64,11 @@ class Main(Application):
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
-                .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
+            .add_option(
+                    'glob', 'g', 'glob',
+                    'filter path names matching a specified glob pattern.',
+                    nargs='?', default=self._run_dir) \
+            .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
                 .add_argument('files', 'list of files to upload (separated by a space)', nargs='*') \
             .argument('download', 'download files from your Firebase Realtime Database') \
                 .add_option(
@@ -96,8 +100,8 @@ class Main(Application):
         elif op == 'upload':
             self.firebase.upload(
                 self.getarg('db_alias'),
-                self.getarg('files')
-            )
+                self.getarg('files'),
+                self.getarg('glob'))
         elif op == 'download':
             self.firebase.download(
                 self.getarg('db_alias'),
