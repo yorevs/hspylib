@@ -14,6 +14,7 @@
    Copyright 2021, HSPyLib team
 """
 import json
+import logging as log
 import os
 from abc import ABC
 from fnmatch import fnmatch
@@ -32,31 +33,40 @@ class FileProcessor(ABC):
     """Utility class to upload and download B64 encoded files"""
 
     @staticmethod
-    def upload_files(url: str, file_paths: List[str], glob_exp: str = '*.*') -> int:
+    def upload_files(url: str, file_paths: List[str], glob_exp: str) -> int:
         """Upload files to URL"""
-        sysout('Uploading files to Firebase ...')
-        file_data = []
+        data = []
         for f_path in file_paths:
             check_state(os.path.exists(f_path), f'Input file "{f_path}" does not exist')
             if os.path.isfile(f_path):
+                sysout(f'Uploading file "{f_path}" to Firebase ...')
                 f_entry = FileProcessor._read_and_encode(f_path)
-                file_data.append(f_entry)
+                data.append(f_entry)
             else:
-                for file in os.listdir(f_path):
+                sysout(f'Uploading files from "{f_path}" to Firebase ...')
+                all_files = next(os.walk(f_path))[2]
+                log.debug('\nGlob: {} \nFiles: {}'.format(glob_exp, all_files))
+                for file in all_files:
                     filename = os.path.join(f_path, file)
-                    if os.path.isfile(filename) and fnmatch(file, glob_exp):
+                    if os.path.isfile(filename) and fnmatch(file, glob_exp or '*.*'):
                         f_entry = FileProcessor._read_and_encode(filename)
-                        file_data.append(f_entry)
-        payload = FileProcessor._to_json(file_data)
-        response = put(url, payload)
-        check_not_none(response)
-        if response.status_code != HttpCode.OK:
-            raise HTTPError(
-                f'{response.status_code} - Unable to upload into={url} with json_string={payload}')
-        paths = ', \n\t'.join([f.path for f in file_data])
-        sysout(f"%GREEN%File(s) [\n\t{paths}\n] successfully uploaded to: {url}%NC%")
+                        data.append(f_entry)
+        if data and len(data) > 0:
+            payload = FileProcessor._to_json(data)
+            response = put(url, payload)
+            check_not_none(response)
+            if response.status_code != HttpCode.OK:
+                raise HTTPError(
+                    f'{response.status_code} - Unable to upload into={url} with json_string={payload}')
+            paths = ', \n  |- '.join([f.path for f in data])
 
-        return len(file_data)
+            sysout(f"%GREEN%File(s) [\n  |- {paths}\n] successfully uploaded to: {url}%NC%")
+
+            return len(data)
+
+        sysout(f'%ORANGE%No files were uploaded from {file_paths} %NC%')
+
+        return 0
 
     @staticmethod
     def download_files(url: str, destination_dir: str) -> int:
@@ -92,12 +102,15 @@ class FileProcessor(ABC):
             for entry in data:
                 FileEntry \
                     .of(f"{destination_dir}/{os.path.basename(entry['path'])}", entry['data'], entry['size']).save()
-            paths = ', \n\t'.join([f['path'] for f in data])
-        else:
+            paths = ', \n  |- '.join([f['path'] for f in data])
+        elif isinstance(data, dict):
             FileEntry \
                 .of(f"{destination_dir}/{os.path.basename(data['path'])}", data['data'], data['size']).save()
             paths = data['path']
-        sysout(f"%GREEN%File(s) [\n\t{paths}\n] successfully downloaded into: {destination_dir}%NC%")
+        else:
+            raise TypeError(f'Downloaded data format is not supported: {type(data)}')
+
+        sysout(f"%GREEN%File(s) [\n  |- {paths}\n] successfully downloaded into: {destination_dir}%NC%")
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:

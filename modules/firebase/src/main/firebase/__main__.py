@@ -67,7 +67,7 @@ class Main(Application):
             .add_option(
                     'glob', 'g', 'glob',
                     'filter path names matching a specified glob pattern.',
-                    nargs='?', default=self._run_dir) \
+                    nargs='?') \
             .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
                 .add_argument('files', 'list of files to upload (separated by a space)', nargs='*') \
             .argument('download', 'download files from your Firebase Realtime Database') \
