@@ -15,6 +15,7 @@
 """
 
 import base64
+import logging as log
 import os
 
 from hspylib.core.enums.charset import Charset
@@ -52,7 +53,7 @@ class FileEntry:
             with open(self.path, 'r', encoding='utf-8') as f_in:
                 self.data = f_in.read()
                 self.size = len(self.data)
-                check_state(self.size > 0, "File \"{}\" is empty", self.path)
+                log.warning("File \"%s\" is empty", self.path)
 
         return self
 
