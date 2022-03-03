@@ -68,7 +68,7 @@ class FirebaseConfig(metaclass=Singleton):
                 cfg[key.strip()] = value.strip()
             check_state(
                 len(cfg) > 4,
-                "Invalid configuration file. Must include at least: \n"
+                f"Invalid configuration file {str(cfg)}. Must include at least: \n"
                 "\t[PROJECT_ID, FIREBASE_URL, USERNAME, PASSPHRASE]")
 
             return FirebaseConfig.of(cfg)
