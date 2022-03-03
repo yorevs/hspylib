@@ -67,27 +67,27 @@ class AgentConfig(metaclass=Singleton):
 
     def config_file(self) -> str:
         """Return the configuration file"""
-        file = self.app_configs['firebase.config.file']
-        return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase.cfg"
+        file = self.app_configs['hhs.firebase.config.file']
+        return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase"
 
     def project_id(self) -> Optional[str]:
         """Return the firebase project ID"""
-        project_id = self.app_configs['firebase.project.id']
+        project_id = self.app_configs['hhs.firebase.project.id']
         return project_id if project_id else input('Please type you project ID: ')
 
     def database(self) -> Optional[str]:
         """Return the firebase project database name"""
-        database = self.app_configs['firebase.database']
+        database = self.app_configs['hhs.firebase.database']
         return database if database else input('Please type you database Name: ')
 
     def username(self) -> Optional[str]:
         """Return the firebase username"""
-        user = self.app_configs['firebase.username']
+        user = self.app_configs['hhs.firebase.username']
         return user if user else os.getenv('USER', getpass.getuser())
 
     def passphrase(self) -> Optional[str]:
         """Return the firebase user passphrase"""
-        passphrase = self.app_configs['firebase.passphrase']
+        passphrase = self.app_configs['hhs.firebase.passphrase']
         return passphrase if passphrase else self._input_passphrase()
 
     def url(self, db_alias: str) -> str:

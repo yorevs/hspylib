@@ -13,7 +13,6 @@
    Copyright 2021, HSPyLib team
 """
 
-import base64
 import logging as log
 import os
 from textwrap import dedent
@@ -46,6 +45,11 @@ class FirebaseConfig(metaclass=Singleton):
     @staticmethod
     def of(config_dict: CaseInsensitiveDict) -> 'FirebaseConfig':
         """TODO"""
+        required_settings = ['PROJECT_ID', 'DATABASE', 'USERNAME', 'PASSPHRASE']
+        check_state(
+            all(k in config_dict for k in required_settings),
+            "Invalid configuration file.\nMust contain all settings: {}",
+            f"\t{required_settings}")
         return FirebaseConfig(
             config_dict['PROJECT_ID'],
             config_dict['DATABASE'],
@@ -66,10 +70,6 @@ class FirebaseConfig(metaclass=Singleton):
                     continue
                 key, value = line.split("=", 1)
                 cfg[key.strip()] = value.strip()
-            check_state(
-                len(cfg) > 4,
-                f"Invalid configuration file {str(cfg)}. Must include at least: \n"
-                "\t[PROJECT_ID, FIREBASE_URL, USERNAME, PASSPHRASE]")
 
             return FirebaseConfig.of(cfg)
 
@@ -104,7 +104,7 @@ class FirebaseConfig(metaclass=Singleton):
         check_state(
             self.passphrase and len(self.passphrase) >= 8,
             "Passphrase must be have least 8 characters size and must be base64 encoded")
-        self.passphrase = str(base64.b64decode(self.passphrase), encoding=self.encoding)
+        # self.passphrase = str(base64.b64decode(self.passphrase), encoding=self.encoding)
 
     def validate_config(self) -> bool:
         """TODO"""
