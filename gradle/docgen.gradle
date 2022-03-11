@@ -18,13 +18,14 @@ def PY_FILE_HEADER = """#!/usr/bin/env python3
 \"\"\"
    TODO Purpose of the file
    @project: ${project.ext.app_name}
+   @package: %package%
       @file: %filename%
    @created: ${curDate}
     @author: ${project.ext.author}"
       @site: ${project.ext.siteUrl}
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright ${year}, ${project.ext.app_name} team
+   Copyright ${year}, HomeSetup team
 \"\"\"
 """
 
@@ -49,6 +50,7 @@ String processPythonHeader(File file, String header_template) {
     def pkg = getPackageName(file)
     def header = header_template
       .replaceAll("%filename%", file.getName())
+      .replaceAll("%package%", pkg)
 
     return header
 }
@@ -61,7 +63,8 @@ task syncPythonHeaders(type: Task) {
   group = 'Documentation'
   description = 'Synchronize all Python file headers'
   doLast {
-    println "DEVEL: Synchronizing python headers"
+    def replaceHeaders = project.hasProperty("replaceHeaders")
+    println "Synchronizing python headers replace: ${replaceHeaders}"
     def files = filesByPattern(sourceRoot, /.*(?<!__init__)\.py$/)
     files.each {
       println "Processing file: ${it}"
@@ -76,18 +79,23 @@ task syncPythonHeaders(type: Task) {
         if ('headers'.equals(parseState) && !(line ==~ /^(import|from) .*/)) {
           // Ignore all header lines (we could keep them tho)
           old_headers << line
-          if (line.startsWith('"""')) {
+          if (!replaceHeaders && line.startsWith('"""')) {
             has_old_headers = true
           }
         }
-        else if (line ==~ /^(import|from) .*/) {
+        else if ('imports'.equals(parseState) || line ==~ /^(import|from) .*/) {
           imports << line
-          parseState = parseState.equals('headers') ? 'code' : parseState
+          if (line.trim().endsWith('\\')) {
+            parseState = 'imports'
+          }
+          else{
+            parseState = parseState.equals('headers') ? 'code' : parseState
+          }
         } else if ('code'.equals(parseState) || !(line.isEmpty() && line ==~ /^(import|from) .*/)) {
           code << line
         }
       }
-      fh_file.setText("${has_old_headers ? old_headers.join('\n') : headers }\n${imports.join('\n')}\n${code.join('\n')}\n")
+      fh_file.setText("${has_old_headers ? old_headers.join('\n') : headers }\n${imports.join('\n')}${code.join('\n')}\n")
     }
     println "Finished processing all python files"
   }
