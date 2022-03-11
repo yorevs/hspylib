@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.cfman.src.main
+   @package: hspylib.app.cfman.src.main
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,11 +19,10 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
+from cfman.core.cf_manager import CFManager
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
-
-from cfman.core.cf_manager import CFManager
 
 HERE = get_path(__file__)
 

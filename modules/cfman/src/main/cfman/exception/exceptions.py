@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.cfman.exception
+   @package: hspylib.app.cfman.exception
       @file: exceptions.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,6 @@
 """
 
 from hspylib.core.exception.exceptions import HSBaseException
-
 
 class CFConnectionError(HSBaseException):
     """Raised when failed to connect to CloudFoundry"""

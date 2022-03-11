@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.main.hspylib.addons.appman.templates
+   @package: hspylib.main.hspylib.addons.appman.templates
       @file: tpl-test_main.py
    @created: Tue, 1 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,7 +18,6 @@ import logging as log
 import os
 import sys
 import unittest
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import dirname
 
