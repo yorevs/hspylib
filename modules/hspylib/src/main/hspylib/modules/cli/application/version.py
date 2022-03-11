@@ -12,8 +12,8 @@
 
    Copyright 2021, HSPyLib team
 """
-import os
 import logging as log
+import os
 from typing import Tuple
 
 from hspylib.core.tools.commons import read_version

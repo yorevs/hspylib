@@ -19,15 +19,14 @@ import uuid
 from abc import abstractmethod
 from typing import Optional
 
-from requests.exceptions import HTTPError
-from requests.structures import CaseInsensitiveDict
-
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.crud_repository import CrudRepository
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.modules.fetch.fetch import delete, get, put
+from requests.exceptions import HTTPError
+from requests.structures import CaseInsensitiveDict
 
 
 class FirebaseRepository(CrudRepository):

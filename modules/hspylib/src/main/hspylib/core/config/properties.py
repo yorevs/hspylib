@@ -20,9 +20,7 @@ from configparser import ConfigParser
 from typing import Optional
 
 import yaml
-
 from hspylib.core.tools.commons import flatten_dict, run_dir, str_to_bool, touch_file
-from hspylib.core.tools.constants import TRUE_VALUES
 
 
 class Properties:

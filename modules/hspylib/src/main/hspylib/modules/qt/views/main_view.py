@@ -16,7 +16,6 @@
 from abc import abstractmethod
 
 from PyQt5 import uic
-
 from hspylib.modules.qt.views.qt_view import QtView
 
 

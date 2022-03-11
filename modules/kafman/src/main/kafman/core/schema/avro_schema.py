@@ -18,7 +18,6 @@ from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerialize
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_by_key_or_default, search_dict
-
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.kafka_schema import KafkaSchema

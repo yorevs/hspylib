@@ -17,9 +17,10 @@ import logging as log
 import traceback
 from typing import Type
 
+from hspylib.core.tools.commons import syserr
+
 
 # pylint: disable=bad-mcs-classmethod-argument
-from hspylib.core.tools.commons import syserr
 
 
 class Singleton(type):

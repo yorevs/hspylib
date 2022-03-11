@@ -15,7 +15,6 @@
 """
 
 from hspylib.core.crud.file.file_repository import FileRepository
-
 from shared.entity_test import EntityTest
 
 

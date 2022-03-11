@@ -15,7 +15,6 @@
 
 from hspylib.modules.cli.icons.emojis.emojis import emj_print, Emoji
 
-
 class FaceSmiling(Emoji):
     """
         Face smiling emojis.
