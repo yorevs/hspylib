@@ -23,7 +23,6 @@ from typing import List, Optional
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir
 from hspylib.core.tools.preconditions import check_argument
-
 from versioner.entity.version import Version
 from versioner.enums.version_state import VersionState
 

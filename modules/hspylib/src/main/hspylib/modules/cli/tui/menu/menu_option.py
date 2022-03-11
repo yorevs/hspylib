@@ -15,7 +15,6 @@
 
 from typing import Any
 
-
 class MenuOption:
     """TODO"""
 

@@ -23,7 +23,6 @@ from textwrap import dedent
 from hspylib.core.tools.commons import get_path, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
-
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
 

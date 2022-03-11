@@ -15,7 +15,6 @@
 from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
-
 from kafman.core.schema.kafka_schema import KafkaSchema
 
 

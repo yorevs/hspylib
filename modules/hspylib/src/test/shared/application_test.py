@@ -17,7 +17,6 @@
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-
 class ApplicationTest(Application):
     """Versioner - Provides an engine to manage app versions."""
 

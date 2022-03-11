@@ -15,7 +15,6 @@
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
-
 class FormIcons(Awesome):
     """
         Form UI icons.

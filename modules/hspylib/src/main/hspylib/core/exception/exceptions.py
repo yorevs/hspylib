@@ -15,7 +15,6 @@
 
 import logging as log
 
-
 class HSBaseException(Exception):
     """This is a generic exception and should not be raised. It may be inherited instead"""
 
