@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   hspylib.app.cfman.core
+   @package: hspylib.app.cfman.core
       @file: cf_endpoint.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,6 @@
 """
 
 from typing import Tuple
-
 
 class CFEndpoint:
     """TODO"""

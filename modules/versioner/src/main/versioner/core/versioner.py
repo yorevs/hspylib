@@ -4,7 +4,7 @@
 """
    Provides an engine to manage app versions
    @project: HSPyLib
-   hspylib.app._versioner.src.main
+   @package: hspylib.app._versioner.src.main
       @file: _versioner.py
    @created: Thu, 14 Nov 2019
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
