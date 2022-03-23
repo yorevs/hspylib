@@ -31,6 +31,8 @@ class JsonSchema(KafkaSchema):
        Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
     """
 
+    DEFAULT_NAMESPACE = 'http://json-schema.org/draft-04/schema#'
+
     @classmethod
     def extensions(cls) -> List[str]:
         return ['*.json']
@@ -76,19 +78,26 @@ class JsonSchema(KafkaSchema):
             self._content, 'title', path.basename(path.splitext(self._filepath)[0]))
         self._type = self._type = get_by_key_or_default(self._content, 'type', 'object')
         self._fields = self._get_fields()
-        self._doc = get_by_key_or_default(self._content, 'description', '')
-        self._namespace = get_by_key_or_default(self._content, '$schema', '')
+        self._doc = get_by_key_or_default(self._content, 'description', 'no-description')
+        self._namespace = get_by_key_or_default(self._content, '$schema', self.DEFAULT_NAMESPACE)
 
     def _get_fields(self) -> List[SchemaField]:
         """Return the list of schema fields based on the root element type"""
         if self._type == 'object':
             fields = get_by_key_or_default(self._content, 'properties', {})
+            if not fields:
+                fields = self._content
         elif self._type == 'array':
             items = get_by_key_or_default(self._content, 'items')
             fields = get_by_key_or_default(items if items else self._content, 'properties', {})
+            if not fields:
+                fields = self._content
         else:
             raise SchemaRegistryError(f"Invalid field type: {self._type}")
 
         return [
-            SchemaField.of(self, key, f['type'], f, self.is_required(key)) for key, f in fields.items()
+            SchemaField.of(
+                self, key,
+                f['type'] if 'type' in f else 'object', f,
+                self.is_required(key)) for key, f in fields.items()
         ]

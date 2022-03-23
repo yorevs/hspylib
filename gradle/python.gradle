@@ -164,41 +164,11 @@ task syncPythonPackages(type: Task) {
   }
 }
 
-/* Gather python requirements for the module */
-task gatherRequirements(type: Exec) {
-  group = 'Install'
-  description = 'Gather python requirements for the module'
-  workingDir sourceRoot
-  commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force', '--mode', 'gt' ,'main'
-  standardOutput = new ByteArrayOutputStream()
-  ext.output = {
-    return standardOutput.toString()
-  }
-}
-
-/* Install all required python packages */
-task installDependencies(type: Task) {
-  group = 'Install'
-  description = 'Install all required python packages'
-  doLast {
-    println "Upgrading pip module to the latest "
-    exec {
-      commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', 'pip'
-    }
-    println "Installing dependencies using pip "
-    deps.each { dep ->
-      exec {
-        commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', dep
-      }
-    }
-  }
-}
-
 /* Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url. */
 task checkSetupPy(type: Task) {
   group = 'Install'
   description = "Install a project in editable mode (i.e. setuptools develop mode)"
-  dependsOn gatherRequirements
+  dependsOn pipRequirements
   finalizedBy cleanDist
   doLast {
     fileTree("$sourceRoot").matching {
@@ -219,7 +189,7 @@ task installModule(type: Task) {
   group = 'Install'
   description = "Install the module as a python package using module's setup.py"
   dependsOn syncPythonPackages
-  dependsOn gatherRequirements
+  dependsOn pipRequirements
   finalizedBy cleanDist
   doLast {
     fileTree("$sourceRoot").matching {

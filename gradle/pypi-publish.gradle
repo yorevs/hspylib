@@ -28,7 +28,7 @@ String dirName(File file) {
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
-  dependsOn gatherRequirements
+  dependsOn pipRequirements
   dependsOn changeVersion
   doLast {
     fileTree("$sourceRoot").matching {

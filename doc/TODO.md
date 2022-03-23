@@ -18,17 +18,7 @@ D. [ ] IP **Improvement**:
 E. [ ] NS **Improvement**: Rename firebase to fireblaze
 F. [ ] NS **Improvement**: Rename vault to volt
 G. [ ] NS **Improvement**: Add vault menu
-
-## HsPyLib
-
-1. [ ] Fix app app according to the new app FW (use home folder for input files).
-   1. [x] cfman
-   2. [s] firebase
-   3. [s] hspylib
-      1. [x] appman (fix templates)
-      2. [x] widgets (sendmsg)
-   4. [x] kafman
-   5. [ ] vault
-   6. [ ] versioner
+H. [ ] NS **Fix** Replace setup.py: https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
+I. [ ] NS **Improvement**: Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
 
 
