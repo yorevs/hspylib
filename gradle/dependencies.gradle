@@ -4,25 +4,88 @@
     Created: 4th March, 2021
 */
 
-project.ext.deps = [
-  'PyQt5',
-  'PyQt5-stubs',
-  'cryptography',
-  'pycodestyle',
-  'pymysql',
-  'requests',
-  'emoji',
-  'getkey',
-  'PyYAML',
-  'twine',
-  'wheel',
-  'bumpversion',
-  'pipreqs',
-  'pylint',
-  'confluent-kafka',
-  'fastavro',
-  'avro-python3',
-  'jsonschema',
-  'pyperclip',
-  'cryptocode',
-]
+/* Dependencies files*/
+project.ext.depsFile = "$rootDir/dependencies.txt"
+
+/* List of project dependencies*/
+project.ext.deps = []
+
+/* Helper Functions -------------------------------------------------------- */
+
+void readDependencies() {
+  def depsFile = new File(depsFile)
+  depsFile.eachLine { line ->
+    def dep = null
+    if (dep = line =~ /package: (.+), version: (latest|[0-9]+(\.[0-9]+){0,2}), space: (user|global)/) {
+      dep.each {
+        deps << [package: "${it[1]}", version: "${it[2]}", space: "${it[4]}"]
+      }
+    }
+    else if (dep = line =~ /package: (.+), space: (user|global)/) {
+      dep.each {
+        deps <<  [package: "${it[1]}", version: "latest", space: "${it[2]}"]
+      }
+    }
+    else if (dep = line =~ /package: (.+), version: (latest|[0-9]+(\.[0-9]+){0,2})/) {
+      dep.each {
+        deps <<  [package: "${it[1]}", version: "${it[2]}", space: "user"]
+      }
+    }
+  }
+}
+
+/* Tasks ------------------------------------------------------------------- */
+
+/* List project dependencies */
+task listDependencies(type: Task) {
+  group = 'Dependencies'
+  description = 'Output all project dependencies'
+  doLast {
+    println "\nListing dependencies from:\n\t${depsFile}\n"
+    readDependencies()
+    deps.each {
+      println("Package: ${it.package}, Version: ${it.version}, Space: ${it.space}")
+    }
+  }
+}
+
+/* Gather python requirements for the module */
+task pipFreeze(type: Exec) {
+  group = 'Dependencies'
+  description = 'Output user-site installed packages in requirements format'
+  workingDir sourceRoot
+  commandLine rootProject.python, '-m', 'pip', 'freeze', '--user'
+}
+
+/* Gather python requirements for the module */
+task pipRequirements(type: Exec) {
+  group = 'Dependencies'
+  description = 'Using pipreqs to gather package requirements'
+  workingDir sourceRoot
+  commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force', '--mode', 'gt' , 'main'
+}
+
+/* Install all required python packages */
+task installDependencies(type: Task) {
+  group = 'Dependencies'
+  description = 'Install required python packages'
+  doLast {
+    println "Upgrading pip module to the latest "
+    readDependencies()
+    exec {
+      commandLine rootProject.python, '-m', 'ensurepip', '-q', '--upgrade'
+      commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
+    }
+    deps.each { dep ->
+      println "Installing Package: $dep.package  Version: $dep.version  Space: $dep.space"
+      def args = [rootProject.python, '-m', 'pip', 'install']
+      if (! verbose) args << '-q'
+      if ('user' == dep.space) args << '--user'
+      if ('latest' == dep.version) args << ['--upgrade', dep.package]
+      else args << ['-Iv', "${dep.package}==${dep.version}"]
+      exec {
+        commandLine args.flatten()
+      }
+    }
+  }
+}

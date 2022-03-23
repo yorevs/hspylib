@@ -6,6 +6,16 @@ ext {
   pythonPath = "$sourceRoot/main:$sourceRoot/test"
 }
 
+task fixAvroDependencies(type: Task) {
+  doLast {
+    def dep_file = new File(requirementsFile)
+    dep_file.append('fastavro>=1.4.10\n')
+    dep_file.append('jsonschema>=4.4.0\n')
+    dep_file.append('confluent-kafka>=1.8.2\n')
+    dep_file.append('avro-python3>=1.10.2\n')
+  }
+}
+
 apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/python.gradle"
 apply from: "$rootDir/gradle/build-info.gradle"
@@ -14,3 +24,5 @@ apply from: "$rootDir/gradle/docker.gradle"
 apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
+
+pipRequirements.finalizedBy(fixAvroDependencies)

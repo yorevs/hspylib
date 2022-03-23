@@ -22,4 +22,4 @@ apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
 
-gatherRequirements.finalizedBy(copyReadme)
+pipRequirements.finalizedBy(copyReadme)

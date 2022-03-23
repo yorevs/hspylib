@@ -84,7 +84,7 @@ class Application(metaclass=Singleton):
         # Initialize application configs
         if os.path.exists(f'{resource_dir}'):
             self.configs = AppConfigs(resource_dir=resource_dir, log_dir=log_dir)
-        elif not resource_dir and os.path.exists(f'{self._run_dir}/resources'):
+        elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources', log_dir=log_dir)
         else:
             pass  # AppConfigs will not be available
