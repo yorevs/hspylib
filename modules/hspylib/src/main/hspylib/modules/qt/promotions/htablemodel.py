@@ -67,12 +67,11 @@ class HTableModel(QAbstractTableModel):
         rows = model.selectedRows() if model else []
         return rows, [self.table_data[r.row()] for r in rows] if model else []
 
-    def remove_rows(self, rows: List[Union[int, QModelIndex]]):
+    def remove_rows(self, rows: List[QModelIndex]):
         """TODO"""
-        rows.sort(reverse=True)
-        for r in rows:
-            idx = r.row() if isinstance(r, QModelIndex) else r
-            self.removeRow(idx)
+        rows.sort(reverse=True)  # Because we are using deque, we need to sort DESC to avoid deleting wrong indexes
+        for row in rows:
+            self.removeRow(row.row())
 
     def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:  # pylint: disable=unused-argument
         """TODO"""
