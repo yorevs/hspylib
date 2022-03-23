@@ -28,6 +28,7 @@ class HTableView(QTableView):
         super().__init__(parent)
         self._context_menu_enable = True
         self._clearable = True
+        self._deletable = True
         self._placeholder = placeholder or 'No data to display'
         self.customContextMenuRequested.connect(self._context_menu)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -36,7 +37,7 @@ class HTableView(QTableView):
         self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
 
     def clear(self):
-        """TODO"""
+        """Clear the entire table"""
         model = self.model()
         if model:
             model.clear()
@@ -56,7 +57,7 @@ class HTableView(QTableView):
         painter.restore()
 
     def copy(self) -> None:
-        """TODO"""
+        """Copy selected cell into clipboard"""
 
         sel_model = self.selectionModel()
         if sel_model:
@@ -73,11 +74,18 @@ class HTableView(QTableView):
                 last_row = index.row()
             clipboard.copy(text)
 
+    def delete(self) -> None:
+        """Delete selected rows"""
+
+        self.model().remove_rows(self.model().selected_rows()[0])
+
     def _context_menu(self):
         """Display the custom context menu"""
         if self._context_menu_enable:
             ctx_menu = QMenu(self)
             ctx_menu.addAction('Copy', self.copy)
+            if self._deletable:
+                ctx_menu.addAction('Delete', self.delete)
             if self._clearable:
                 ctx_menu.addSeparator()
                 ctx_menu.addAction('Clear', self.clear)
@@ -90,3 +98,7 @@ class HTableView(QTableView):
     def set_clearable(self, clearable: bool = True):
         """Whether the widget is clearable or not"""
         self._clearable = clearable
+
+    def set_deletable(self, deletable: bool = True):
+        """Whether the widget is clearable or not"""
+        self._deletable = deletable
