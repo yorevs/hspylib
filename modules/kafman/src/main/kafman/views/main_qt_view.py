@@ -146,11 +146,11 @@ class MainQtView(QtView):
         self.ui.tbtn_registry_delete.clicked.connect(self._deregister_subject)
         self.ui.tbtn_registry_refresh.setText(FormIcons.REFRESH.value)
         self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
-        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
         self.ui.txt_sel_schema.set_clearable(False)
 
     def _setup_producer_controls(self):
         """Setup producer components"""
+        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_add.setText(FormIcons.PLUS.value)
@@ -183,6 +183,7 @@ class MainQtView(QtView):
         self.ui.txt_producer.textChanged.connect(self._verify_message)
         self.ui.txt_producer.setReadOnly(False)
         self.ui.txt_producer.set_show_line_numbers(True)
+        self.ui.txt_producer.set_highlight_enable(True)
 
     def _setup_consumer_controls(self):
         """Setup consumer components"""
