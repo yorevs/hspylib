@@ -22,8 +22,10 @@ from uuid import uuid4
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.commons import build_url, file_is_not_empty, syserr
 from hspylib.core.tools.preconditions import check_not_none, check_state
+from hspylib.core.tools.text_tools import remove_linebreaks
 
 
 class KafkaSchema(ABC):
@@ -79,7 +81,7 @@ class KafkaSchema(ABC):
             if filepath:
                 check_state(file_is_not_empty(filepath), f"Schema file not found: {filepath}")
                 with open(filepath, 'r', encoding='utf-8') as f_schema:
-                    self._schema_str = f_schema.read()
+                    self._schema_str = remove_linebreaks(f_schema.read())
                     self._content = defaultdict(None, json.loads(self._schema_str))
                     check_not_none(self._content)
                 self._schema_conf = {'url': build_url(self._registry_url) or 'http://localhost:8081'}
@@ -87,8 +89,10 @@ class KafkaSchema(ABC):
                 self._schema = Schema(self._schema_str, self._avro_type)
                 self._parse()
         except (KeyError, TypeError, JSONDecodeError) as err:
-            syserr(f"Unable to initialize schema => {str(err)}")
-            log.error("Unable to initialize schema => %s", str(err))
+            err_msg = f"Unable to initialize schema => {str(err)}"
+            syserr(err_msg)
+            log.error(err_msg)
+            raise InvalidStateError(err_msg)
 
     def __getitem__(self, index: int):
         return self._fields[index]
