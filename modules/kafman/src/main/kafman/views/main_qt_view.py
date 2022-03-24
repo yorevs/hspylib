@@ -147,10 +147,10 @@ class MainQtView(QtView):
         self.ui.tbtn_registry_refresh.setText(FormIcons.REFRESH.value)
         self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
         self.ui.txt_sel_schema.set_clearable(False)
+        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
 
     def _setup_producer_controls(self):
         """Setup producer components"""
-        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
         self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
         self.ui.tbtn_prod_settings_add.setText(FormIcons.PLUS.value)
@@ -336,14 +336,14 @@ class MainQtView(QtView):
         if schema_name:
             content = self._all_schemas[schema_name].get_content()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
-            self.ui.txt_sel_schema.setText(json.dumps(content, indent=2, sort_keys=False))
+            self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2, sort_keys=False))
             self._build_schema_layout()
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
             self.ui.tbtn_form_view.setEnabled(True)
             self.ui.lbl_schema_fields.setText(f"{schema_name} Schema Fields")
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
-            self.ui.txt_sel_schema.setText('')
+            self.ui.txt_sel_schema.set_plain_text('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
             self.ui.tbtn_form_view.setEnabled(False)
             self.ui.lbl_schema_fields.setText('Form Schema Fields')
@@ -687,7 +687,7 @@ class MainQtView(QtView):
                                 size = ast.literal_eval(prop_value)
                                 self.ui.splitter_pane.setSizes([int(size[0]), int(size[1])])
                             elif prop_name == 'selected_tab':
-                                self._activate_tab(int(prop_value))
+                                self._activate_tab(int(prop_value or Tabs.PRODUCER.value))
                             elif prop_name == 'last_schema_dir':
                                 self._last_schema_dir = prop_value
                             elif prop_name == 'last_used_dir':
