@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.41
+# hspylib v0.11.43
 #
 # Package: demo.calculator.ui
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
   'qt'
 ]
-__version__ = '0.11.41'
+__version__ = '0.11.43'
