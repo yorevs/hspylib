@@ -60,6 +60,11 @@ class HConsole(QPlainTextEdit):
         self.update_line_number_area_width(0)
         self.highlight_current_line()
 
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        cr = self.contentsRect()
+        self._line_number_area.setGeometry(QRect(cr.left(), cr.top(), self.line_number_area_width(), cr.height()))
+
     def line_number_area_paint_event(self, event: QPaintEvent) -> None:
         """Paint the numbers of the line number area"""
         margin_right = -2
@@ -99,17 +104,11 @@ class HConsole(QPlainTextEdit):
         else:
             return 0
 
-    def resizeEvent(self, event: QResizeEvent) -> None:
-        super().resizeEvent(event)
-        cr = self.contentsRect()
-        self._line_number_area.setGeometry(QRect(cr.left(), cr.top(), self.line_number_area_width(), cr.height()))
-
     def highlight_current_line(self) -> None:
         """Highlight current line number if highlighting is enabled"""
         if self._highlight_enabled and self.line_count() > 1:
-            line_color = QColor(42, 109, 158).lighter(160)
             selection = QTextEdit.ExtraSelection()
-            selection.format.setBackground(line_color)
+            selection.format.setBackground(self.palette().color(QPalette.Highlight).lighter(160))
             selection.format.setProperty(QTextFormat.FullWidthSelection, True)
             selection.cursor = self.textCursor()
             selection.cursor.clearSelection()
