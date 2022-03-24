@@ -20,6 +20,7 @@ import os
 import re
 from collections import defaultdict
 from json.decoder import JSONDecodeError
+from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
 from PyQt5.QtCore import Qt
@@ -27,7 +28,7 @@ from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
-from hspylib.core.tools.text_tools import strip_escapes
+from hspylib.core.tools.text_tools import strip_escapes, remove_linebreaks
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
@@ -65,7 +66,7 @@ class MainQtView(QtView):
     REQUIRED_SETTINGS = ['bootstrap.servers']
 
     @staticmethod
-    def supported_schemas() -> str:
+    def _supported_schemas() -> str:
         """Return a list of the supported serialization schema"""
         schemas = []
         schemas.extend(AvroSchema.extensions())
@@ -97,6 +98,7 @@ class MainQtView(QtView):
         self._producer.messageFailed.connect(self._display_error)
         self._all_settings = {}
         self._last_schema_dir = self.SCHEMA_DIR
+        self._last_used_dir = os.getcwd()
         self._all_schemas = defaultdict(None, {})
         self._stats = StatisticsWorker()
         self._stats.statisticsReported.connect(self._update_stats)
@@ -163,6 +165,8 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_add_topics.clicked.connect(self._add_topic)
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
+        self.ui.tbtn_prod_open_file.setText(DashboardIcons.FOLDER_OPEN.value)
+        self.ui.tbtn_prod_open_file.clicked.connect(self._open_message_file)
         self.ui.tbtn_prod_del_topics.clicked.connect(self._del_topic)
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
@@ -177,6 +181,8 @@ class MainQtView(QtView):
         self.ui.tbtn_export_form.setText(DashboardIcons.EXPORT.value)
         self.ui.tbtn_export_form.clicked.connect(self._export_form)
         self.ui.txt_producer.textChanged.connect(self._verify_message)
+        self.ui.txt_producer.setReadOnly(False)
+        self.ui.txt_producer.set_show_line_numbers(True)
 
     def _setup_consumer_controls(self):
         """Setup consumer components"""
@@ -232,10 +238,18 @@ class MainQtView(QtView):
         schema = self._schema()
         if isinstance(schema, PlainSchema) or self.ui.stk_producer_edit.currentIndex() == StkProducerEdit.TEXT.value:
             text = self.ui.txt_producer.toPlainText()
-            msgs = [text] if text.startswith('{') and text.endswith('}') else text.split('\n')
-            return list(filter(lambda m: m != '', msgs))
+            msgs = [text] if self._is_json(text) else text.split('\n')
+            return list(map(lambda x: remove_linebreaks(x), filter(None, msgs)))
 
         return self._schema_form_message(schema=schema)
+
+    def _open_message_file(self) -> None:
+        file_tuple = QFileDialog.getOpenFileNames(
+            self.ui.tab_widget,
+            'Open file', self._last_used_dir or '.', "Select a message file (*.txt *.json *.csv)")
+        if file_tuple and file_tuple[0]:
+            self._last_used_dir = dirname(file_tuple[0][0])
+            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text())
 
     def _schema_form_message(self, clear_form: bool = True, validate: bool = True, schema: KafkaSchema = None) -> str:
         """Return the message built from the schema form"""
@@ -268,7 +282,7 @@ class MainQtView(QtView):
         if self._is_json(text):
             try:
                 formatted = json.dumps(json.loads(text), indent=2, sort_keys=False)
-                self.ui.txt_producer.setText(formatted)
+                self.ui.txt_producer.set_plain_text(formatted)
                 self.ui.tbtn_format_msg.setStyleSheet("QToolButton {color: #28C941;}")
                 self._display_text('The provided json is valid', StatusColor.green)
             except JSONDecodeError as err:
@@ -293,7 +307,7 @@ class MainQtView(QtView):
         if not file_tuple:
             file_tuple = QFileDialog.getOpenFileNames(
                 self.ui.splitter_pane,
-                'Open schema', self._last_schema_dir or '.', f"Schema files ({self.supported_schemas()})")
+                'Open schema', self._last_schema_dir or '.', f"Schema files ({self._supported_schemas()})")
         if file_tuple and file_tuple[0]:
             for schema_file in file_tuple[0]:
                 self._last_schema_dir = dirname(schema_file)
@@ -496,6 +510,7 @@ class MainQtView(QtView):
         self.ui.tbtn_export_form.setEnabled(not started)
         self.ui.fr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
+        self.ui.tbtn_prod_open_file.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)
         self.ui.cmb_prod_topics.setEnabled(started)
         self.ui.tbtn_prod_add_topics.setEnabled(started)
@@ -640,7 +655,8 @@ class MainQtView(QtView):
             fd_history.write(f"cons_topics = {cons_topics}\n")
             fd_history.write(f"settings = {str(self._all_settings)}\n")
             fd_history.write(f"selected_tab = {self.ui.tab_widget.currentIndex()}\n")
-            fd_history.write(f"last_dir = {self._last_schema_dir}\n")
+            fd_history.write(f"last_used_dir = {self._last_used_dir}\n")
+            fd_history.write(f"last_schema_dir = {self._last_schema_dir}\n")
             fd_history.write(f"schema = {schemas}\n")
             fd_history.write(f"last_schema = {self.ui.cmb_sel_schema.currentText()}\n")
             fd_history.write(f"registry_url = {self.ui.cmb_registry_url.currentText()}\n")
@@ -671,10 +687,12 @@ class MainQtView(QtView):
                                 self.ui.splitter_pane.setSizes([int(size[0]), int(size[1])])
                             elif prop_name == 'selected_tab':
                                 self._activate_tab(int(prop_value))
-                            elif prop_name == 'last_dir':
+                            elif prop_name == 'last_schema_dir':
                                 self._last_schema_dir = prop_value
+                            elif prop_name == 'last_used_dir':
+                                self._last_used_dir = prop_value
                             elif prop_name == 'schema':
-                                t_schema = ast.literal_eval(prop_value), f"Schema files ({self.supported_schemas()})"
+                                t_schema = ast.literal_eval(prop_value), f"Schema files ({self._supported_schemas()})"
                                 self._add_schema(t_schema)
                                 self._deselect_schema()
                             elif prop_name == 'last_schema':

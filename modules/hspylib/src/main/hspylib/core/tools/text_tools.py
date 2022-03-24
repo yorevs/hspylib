@@ -79,6 +79,11 @@ def strip_escapes(string: str) -> str:
     return re.compile(r'\x1b[^m]*m').sub('', string)
 
 
+def remove_linebreaks(text: str) -> str:
+    """TODO"""
+    return re.sub(re.compile(r'\s+'), '', text)
+
+
 def print_unicode(uni_code: Union[str, int]) -> None:
     """TODO"""
     if isinstance(uni_code, str) and re.match(r"^[a-fA-F0-9]{1,4}$", uni_code):
