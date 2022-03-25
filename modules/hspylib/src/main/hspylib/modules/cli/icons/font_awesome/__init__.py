@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'awesome', 
-  'dashboard_icons', 
-  'form_icons', 
-  'widget_icons'
+    'awesome',
+    'dashboard_icons',
+    'form_icons',
+    'widget_icons'
 ]
 __version__ = '0.11.43'

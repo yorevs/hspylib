@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'test_fetch'
+    'test_fetch'
 ]
 __version__ = '0.11.43'

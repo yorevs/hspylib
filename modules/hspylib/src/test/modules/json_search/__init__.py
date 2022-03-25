@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'test_json_search'
+    'test_json_search'
 ]
 __version__ = '0.11.43'

@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'dashboard_builder', 
-  'dashboard_item', 
-  'mdashboard'
+    'dashboard_builder',
+    'dashboard_item',
+    'mdashboard'
 ]
 __version__ = '0.11.43'

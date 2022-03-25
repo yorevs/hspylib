@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'calculator', 
-  'cli', 
-  'phonebook'
+    'calculator',
+    'cli',
+    'phonebook'
 ]
 __version__ = '0.11.43'

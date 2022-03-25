@@ -18,6 +18,7 @@ import re
 
 from hspylib.core.tools.constants import RE_VERSION_STRING
 from hspylib.core.tools.preconditions import check_argument
+
 from versioner.enums.version_state import VersionState
 
 

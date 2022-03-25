@@ -19,10 +19,11 @@ import os
 import sys
 import unittest
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import syserr
 from pymysql.err import InternalError, OperationalError
 from requests.structures import CaseInsensitiveDict
+
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import syserr
 from shared.decorators import integration_test
 from shared.entity_test import EntityTest
 from shared.mysql_repository_test import MysqlRepositoryTest

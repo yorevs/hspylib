@@ -17,6 +17,7 @@
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
+
 class ApplicationTest(Application):
     """Versioner - Provides an engine to manage app versions."""
 
@@ -30,7 +31,6 @@ class ApplicationTest(Application):
         super().__init__(app_name, AppVersion.load(), self.DESCRIPTION)
 
     def _setup_arguments(self) -> None:
-
         # @formatter:off
         self._with_options() \
             .option('input', 'i', 'input', required=True) \

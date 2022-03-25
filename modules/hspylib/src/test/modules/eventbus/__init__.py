@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'test_eventbus'
+    'test_eventbus'
 ]
 __version__ = '0.11.43'

@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'test_preconditions'
+    'test_preconditions'
 ]
 __version__ = '0.11.43'

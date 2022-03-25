@@ -18,6 +18,7 @@ from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerialize
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_by_key_or_default, search_dict
+
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.kafka_schema import KafkaSchema
@@ -59,10 +60,10 @@ class AvroSchema(KafkaSchema):
         self,
         filepath: str = None,
         registry_url: str = None,
-        charset: Charset = Charset.ISO8859_1):
+        charset: Charset = Charset.UTF_8):
         super().__init__('AVRO', filepath, registry_url, charset)
 
-    def _parse(self) -> None:
+    def _parse_schema(self) -> None:
         """TODO"""
         self._name = get_by_key_or_default(
             self._content, 'name', path.basename(path.splitext(self._filepath)[0]))

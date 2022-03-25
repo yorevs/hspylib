@@ -15,6 +15,7 @@
 """
 from hspylib.modules.cli.tui.extra.mselect import mselect
 
+
 class SelectableItem:
     def __init__(self, name: str, value: str):
         self.name = name

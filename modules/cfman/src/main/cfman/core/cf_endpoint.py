@@ -15,6 +15,8 @@
 """
 
 from typing import Tuple
+
+
 class CFEndpoint:
     """TODO"""
 

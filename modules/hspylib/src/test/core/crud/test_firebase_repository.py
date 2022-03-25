@@ -19,9 +19,10 @@ import os
 import sys
 import unittest
 
+from requests.structures import CaseInsensitiveDict
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.fetch.fetch import delete
-from requests.structures import CaseInsensitiveDict
 from shared.decorators import integration_test
 from shared.entity_test import EntityTest
 from shared.firebase_repository_test import FirebaseRepositoryTest

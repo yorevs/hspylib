@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'app_extension', 
-  'app_type', 
-  'appman', 
-  'templates'
+    'app_extension',
+    'app_type',
+    'appman',
+    'templates'
 ]
 __version__ = '0.11.43'

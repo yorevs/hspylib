@@ -23,17 +23,18 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
-from hspylib.core.tools.text_tools import strip_escapes, remove_linebreaks
+from hspylib.core.tools.text_tools import remove_linebreaks, strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
+
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.consumer_worker import ConsumerWorker

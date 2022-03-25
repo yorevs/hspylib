@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  '__main__', 
-  'entity', 
-  'repository', 
-  'service', 
-  'view'
+    '__main__',
+    'entity',
+    'repository',
+    'service',
+    'view'
 ]
 __version__ = '0.11.43'

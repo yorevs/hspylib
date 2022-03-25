@@ -19,6 +19,7 @@ import sys
 from typing import Optional
 
 import getkey
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.exception.exceptions import KeyboardInputError
 from hspylib.modules.cli.vt100.vt_utils import require_terminal

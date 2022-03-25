@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'exceptions'
+    'exceptions'
 ]
 __version__ = '0.9.20'

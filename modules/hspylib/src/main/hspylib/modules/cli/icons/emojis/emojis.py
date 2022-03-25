@@ -14,6 +14,7 @@
 """
 
 from emoji.core import emojize
+
 from hspylib.core.enums.enumeration import Enumeration
 
 

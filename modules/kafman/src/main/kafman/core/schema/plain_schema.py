@@ -15,6 +15,7 @@
 from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
+
 from kafman.core.schema.kafka_schema import KafkaSchema
 
 
@@ -35,7 +36,7 @@ class PlainSchema(KafkaSchema):
     def __str__(self):
         return f"[{self._avro_type}] type=plaintext"
 
-    def _parse(self) -> None:
+    def _parse_schema(self) -> None:
         pass
 
     def serializer_settings(self) -> dict:

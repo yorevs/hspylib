@@ -17,6 +17,7 @@
 import logging as log
 
 from PyQt5.QtCore import Qt
+
 from calculator.enums.calc_operations import CalcOperations
 from calculator.ui.qt.views.blink_lcd_thread import BlinkLcdThread
 from hspylib.core.config.app_config import AppConfigs

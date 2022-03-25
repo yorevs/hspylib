@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'hspylib'
+    'hspylib'
 ]
 __version__ = '0.11.43'

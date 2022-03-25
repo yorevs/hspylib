@@ -87,7 +87,7 @@ class KafkaSchema(ABC):
                 self._schema_conf = {'url': build_url(self._registry_url) or 'http://localhost:8081'}
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
                 self._schema = Schema(self._schema_str, self._avro_type)
-                self._parse()
+                self._parse_schema()
         except (KeyError, TypeError, JSONDecodeError) as err:
             err_msg = f"Unable to initialize schema => {str(err)}"
             syserr(err_msg)
@@ -104,7 +104,7 @@ class KafkaSchema(ABC):
         return self._avro_type
 
     @abstractmethod
-    def _parse(self) -> None:
+    def _parse_schema(self) -> None:
         """Parse the schema content and fill in the schema attributes"""
 
     @abstractmethod

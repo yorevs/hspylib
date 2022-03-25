@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'singleton'
+    'singleton'
 ]
 __version__ = '0.11.43'
