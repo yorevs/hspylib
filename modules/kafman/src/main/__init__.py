@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'kafman'
+    'kafman'
 ]
 __version__ = '0.9.26'

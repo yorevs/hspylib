@@ -77,4 +77,3 @@ class CFApplication:
             self.disk,
             self.urls
         ))
-

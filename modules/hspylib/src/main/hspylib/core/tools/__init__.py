@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'commons', 
-  'constants', 
-  'git_tools', 
-  'preconditions', 
-  'text_tools', 
-  'validator'
+    'commons',
+    'constants',
+    'git_tools',
+    'preconditions',
+    'text_tools',
+    'validator'
 ]
 __version__ = '0.11.43'

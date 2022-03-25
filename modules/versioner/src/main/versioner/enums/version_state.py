@@ -15,6 +15,7 @@
 """
 from hspylib.core.enums.enumeration import Enumeration
 
+
 class VersionState(Enumeration):
     DEVELOPMENT = 1
     SNAPSHOT = 2

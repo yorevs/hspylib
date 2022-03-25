@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'crud_entity', 
-  'crud_repository', 
-  'crud_service', 
-  'db', 
-  'file'
+    'crud_entity',
+    'crud_repository',
+    'crud_service',
+    'db',
+    'file'
 ]
 __version__ = '0.11.43'

@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  '__main__', 
-  'core', 
-  'entity', 
-  'enums'
+    '__main__',
+    'core',
+    'entity',
+    'enums'
 ]
 __version__ = '0.9.13'

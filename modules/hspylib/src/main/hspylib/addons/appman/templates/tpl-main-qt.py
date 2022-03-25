@@ -40,7 +40,6 @@ class Main(Application):
     VERSION_DIR = str(HERE)
 
     class MainQtView(QtView):
-
         FORMS_DIR = str(HERE / f"{RESOURCES_DIR}/forms")
 
         def __init__(self):

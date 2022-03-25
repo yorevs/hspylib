@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'vault'
+    'vault'
 ]
 __version__ = '0.9.20'

@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'test_enumeration'
+    'test_enumeration'
 ]
 __version__ = '0.11.43'

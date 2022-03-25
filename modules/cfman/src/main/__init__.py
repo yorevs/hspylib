@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'cfman'
+    'cfman'
 ]
 __version__ = '0.9.16'

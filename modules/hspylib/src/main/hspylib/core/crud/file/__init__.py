@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'file_repository', 
-  'file_storage'
+    'file_repository',
+    'file_storage'
 ]
 __version__ = '0.11.43'

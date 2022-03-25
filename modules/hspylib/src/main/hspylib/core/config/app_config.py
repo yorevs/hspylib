@@ -36,7 +36,6 @@ class AppConfigs(metaclass=Singleton):
     """)
 
     def __init__(self, resource_dir: str, log_dir: str = None):
-
         check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
 

@@ -15,6 +15,7 @@
 """
 
 from hspylib.modules.cli.vt100.vt_codes import vt_print
+
 if __name__ == '__main__':
     vt_print('%CSV%')
     vt_print('%MOD(1;35)%HUGO%MOD(0)%\n')

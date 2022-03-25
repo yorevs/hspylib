@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'application', 
-  'icons', 
-  'keyboard', 
-  'tui', 
-  'vt100'
+    'application',
+    'icons',
+    'keyboard',
+    'tui',
+    'vt100'
 ]
 __version__ = '0.11.43'

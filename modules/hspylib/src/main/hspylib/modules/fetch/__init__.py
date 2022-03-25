@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'fetch', 
-  'http_response'
+    'fetch',
+    'http_response'
 ]
 __version__ = '0.11.43'

@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'emojis', 
-  'font_awesome'
+    'emojis',
+    'font_awesome'
 ]
 __version__ = '0.11.43'

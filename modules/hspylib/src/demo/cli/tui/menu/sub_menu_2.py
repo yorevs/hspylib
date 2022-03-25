@@ -15,6 +15,7 @@
 """
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_item import MenuItem
+
 MENU = """%ED2%%HOM%
 {}
 

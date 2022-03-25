@@ -1,6 +1,6 @@
 /*
   Syntax for dependencies:
-  package: <pkg_name>>, version: <latest|versionNum>, space: <user|global>
+  package: <pkg_name>, version: <latest|versionNum>, space: <user|global>
 */
 
 package: PyQt5, version: latest, space: global

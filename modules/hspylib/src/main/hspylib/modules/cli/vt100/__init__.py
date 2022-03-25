@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'terminal', 
-  'vt_100', 
-  'vt_codes', 
-  'vt_colors', 
-  'vt_utils'
+    'terminal',
+    'vt_100',
+    'vt_codes',
+    'vt_colors',
+    'vt_utils'
 ]
 __version__ = '0.11.43'

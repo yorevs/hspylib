@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'config', 
-  'crud', 
-  'enums'
+    'config',
+    'crud',
+    'enums'
 ]
 __version__ = '0.11.43'

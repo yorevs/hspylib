@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'table_renderer'
+    'table_renderer'
 ]
 __version__ = '0.11.43'

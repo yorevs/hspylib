@@ -19,6 +19,7 @@ from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import SchemaRegistryError
 from hspylib.core.tools.commons import get_by_key_or_default
+
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.kafka_schema import KafkaSchema
@@ -52,7 +53,7 @@ class JsonSchema(KafkaSchema):
         self,
         filepath: str = None,
         registry_url: str = None,
-        charset: Charset = Charset.ISO8859_1):
+        charset: Charset = Charset.UTF_8):
 
         super().__init__('JSON', filepath, registry_url, charset)
 
@@ -73,7 +74,7 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._schema_str, self.from_dict)
         }
 
-    def _parse(self) -> None:
+    def _parse_schema(self) -> None:
         self._name = self._name = get_by_key_or_default(
             self._content, 'title', path.basename(path.splitext(self._filepath)[0]))
         self._type = self._type = get_by_key_or_default(self._content, 'type', 'object')

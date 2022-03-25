@@ -19,10 +19,11 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
-from cfman.core.cf_manager import CFManager
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
+
+from cfman.core.cf_manager import CFManager
 
 HERE = get_path(__file__)
 
@@ -52,9 +53,9 @@ class Main(Application):
             .option('username', 'u', 'username', 'the PCF username', nargs='?') \
             .option('password', 'p', 'password', 'the PCF password', nargs='?') \
             .option(
-                'endpoints', 'f', 'endpoints',
-                'the file containing the CF API endpoint entries. If not provided, '
-                '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
+            'endpoints', 'f', 'endpoints',
+            'the file containing the CF API endpoint entries. If not provided, '
+            '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""

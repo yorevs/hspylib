@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'config', 
-  'crud', 
-  'enums', 
-  'exception', 
-  'metaclass', 
-  'tools'
+    'config',
+    'crud',
+    'enums',
+    'exception',
+    'metaclass',
+    'tools'
 ]
 __version__ = '0.11.43'
