@@ -27,6 +27,8 @@ from hspylib.core.tools.commons import build_url, file_is_not_empty, syserr
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import remove_linebreaks
 
+from kafman.core.schema.schema_type import SchemaType
+
 
 class KafkaSchema(ABC):
     """String schema serializer/deserializer"""
@@ -61,14 +63,14 @@ class KafkaSchema(ABC):
 
     def __init__(
         self,
-        schema_type: str,
+        schema_type: SchemaType,
         filepath: str = None,
         registry_url: str = None,
         charset: Charset = Charset.ISO8859_1):
 
         self._filepath = filepath
         self._registry_url = registry_url
-        self._avro_type = schema_type
+        self._avro_type = schema_type.value
         self._charset = charset
         self._fields = None
         self._schema_id = None

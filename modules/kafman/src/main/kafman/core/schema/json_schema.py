@@ -24,6 +24,7 @@ from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_field import SchemaField
+from kafman.core.schema.schema_type import SchemaType
 
 
 class JsonSchema(KafkaSchema):
@@ -55,7 +56,7 @@ class JsonSchema(KafkaSchema):
         registry_url: str = None,
         charset: Charset = Charset.UTF_8):
 
-        super().__init__('JSON', filepath, registry_url, charset)
+        super().__init__(SchemaType.JSON, filepath, registry_url, charset)
 
     def is_required(self, key: str) -> bool:
         """Check if the field represented by 'key' is required"""
