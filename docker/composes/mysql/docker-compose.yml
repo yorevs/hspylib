@@ -2,8 +2,9 @@ version: '3.9'
 
 services:
   mysql:
-    container_name: mysql
     image: mysql/mysql-server:latest
+    container_name: mysql
+    hostname: mysql
     restart: on-failure
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
@@ -15,17 +16,13 @@ services:
       MYSQL_PASSWORD: mysql
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 3306:3306
+      - "3306:3306"
     expose:
       - 3306
     volumes:
-      - mysql-data:/var/lib/mysql:rw
+      - ./data/mysql:/var/lib/mysql:rw
     networks:
       - esnet
-
-volumes:
-  mysql-data:
-    driver: local
 
 networks:
   esnet:

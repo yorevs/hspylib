@@ -1,9 +1,10 @@
 version: '3.9'
 
 services:
+
   zookeeper:
-    container_name: zookeeper
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     hostname: zookeeper
     restart: on-failure
     healthcheck:
@@ -25,11 +26,10 @@ services:
     networks:
       - esnet
 
-
-  kafka:
-    container_name: kafka
+  kafka-broker:
     image: confluentinc/cp-kafka:latest
-    hostname: kafka_broker
+    container_name: kafka-broker
+    hostname: kafka-broker
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "nc -vz localhost 9092" ]
@@ -42,18 +42,19 @@ services:
     ports:
       - "9092:9092"
       - "9093:9093"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_JMX_PORT: 9093
       KAFKA_JMX_HOSTNAME: localhost
       KAFKA_NUM_PARTITIONS: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema_registry:8081
-      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka_broker:29092
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka-broker:29092
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
@@ -62,54 +63,55 @@ services:
     networks:
       - esnet
 
-
-  kafka-manager:
-    container_name: kafka-manager
-    image: yorevs/hhs-kafka-manager:latest
-    hostname: kafka_manager
-    restart: on-failure
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://localhost:9000" ]
-      interval: 10s
-      timeout: 60s
-      retries: 3
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-    command: -Dconfig.file=conf/application.conf -Dapplication.home=bin/kafkamanager
-    ports:
-      - "9000:9000"
-    environment:
-      ZK_HOSTS: zookeeper
-      APPLICATION_SECRET: letmein
-    networks:
-      - esnet
-
-
-  kafka-schema-registry:
-    container_name: kafka-schema-registry
+  schema-registry:
     image: confluentinc/cp-schema-registry:latest
-    hostname: schema_registry
+    container_name: schema-registry
+    hostname: schema-registry
     restart: on-failure
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://127.0.0.1:8081/schema/types" ]
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://0.0.0.0:8081" ]
       interval: 10s
       timeout: 60s
       retries: 3
     depends_on:
       zookeeper:
         condition: service_healthy
-      kafka:
+      kafka-broker:
         condition: service_healthy
     ports:
       - "8081:8081"
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka_broker:29092"
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka-broker:29092"
       SCHEMA_REGISTRY_ZOOKEEPER_CONNECT: "zookeeper:2181"
       SCHEMA_REGISTRY_HOST_NAME: schema_registry
       SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+    networks:
+      - esnet
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:6.1.0
+    container_name: control-center
+    hostname: control-center
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fail -o /dev/null -s -w \"%{http_code}\n\" http://localhost:9021" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    depends_on:
+      schema-registry:
+        condition: service_healthy
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
+      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
     networks:
       - esnet
 

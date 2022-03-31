@@ -2,16 +2,15 @@
 
 source "docker-tools-inc.sh"
 
-pushd 'composes/' &> /dev/null || exit 1
-ALL_CONTAINERS=${ALL_CONTAINERS:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
-popd &> /dev/null || exit 1
+RUNNING_CONTAINERS=$(docker ps --format '{{.Names}}' | tr '\n' ' ')
+[[ "${#RUNNING_CONTAINERS[@]}" -eq 0 ]] && exit 0
 
 # @purpose: Stop all docker-compose.yml
 # -param $1: if the execution is on an interactive console or not
 stopContainers() {
-  all=()
+  local all=() container count
 
-  for container in ${ALL_CONTAINERS}; do
+  for container in ${RUNNING_CONTAINERS}; do
     read -r -n 1 -p "Stop container ${container} (y/[n]): " ANS
     test -n "${ANS}" && echo ''
     if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
@@ -20,25 +19,25 @@ stopContainers() {
   done
   echo ''
 
-  [[ "${#all[@]}" -gt 0 ]] && timeout $$ 90
+  count=${#all[@]}
+  [[ "${count}" -gt 0 ]] && timeout $$ $((count * 30))
 
-  for container in ${all[*]}; do
+  for container in "${all[@]}"; do
     status=$(getStatus "${container}")
-    if [ "${status}" = "\"running\"" ]; then
-      echo -e "${BLUE}⠿ Stopping container ${container} \${NC}"
-      pushd "composes/${container}" &>/dev/null || exit 1
-      if docker compose rm --stop --force; then
+    if [[ "${status}" == "\"running\"" ]]; then
+      echo -en "${BLUE}⠿ Stopping container ${container} ${NC}"
+      id=$(docker ps -aqf "name=${container}")
+      if docker stop "${id}" &>/dev/null; then
         assertStatus "${container}" "exited"
-        echo ''
+        if docker rm "${id}" &>/dev/null; then echo -e "${GREEN}⠿ OK ⠿"; else echo "${RED}⠿ FAILED ⠿"; fi
       else
-        echo -e "${RED}⠿ Docker (docker compose rm) command failed! \${NC}\n"
+        echo -e ' ⠿ FAILED ⠿'
       fi
-      popd &>/dev/null || exit 1
     else
-      echo -e "${BLUE}⠿ Container \"${container}\" is not up\${NC}"
+      echo -e "${ORANGE}⠿ Container \"${container}\" is not up"
     fi
   done
+  echo -e "${NC}"
 }
 
-echo ''
 stopContainers

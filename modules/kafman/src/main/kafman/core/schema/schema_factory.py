@@ -26,7 +26,7 @@ from kafman.core.schema.plain_schema import PlainSchema
 class SchemaFactory(ABC):
     """Factory method to create Avro schemas"""
 
-    _all_schemas = [
+    _schemas_types = [
         AvroSchema,
         JsonSchema,
         PlainSchema
@@ -36,7 +36,7 @@ class SchemaFactory(ABC):
     def create_schema(cls, filepath: str, registry_url: str) -> KafkaSchema:
         """Create a schema based on the provided file extension"""
         _, f_ext = os.path.splitext(filepath)
-        schema_cls = next((schema for schema in cls._all_schemas if schema.supports(f_ext)), None)
+        schema_cls = next((schema for schema in cls._schemas_types if schema.supports(f_ext)), None)
         check_not_none(schema_cls)
         check_state(issubclass(schema_cls, KafkaSchema))
 

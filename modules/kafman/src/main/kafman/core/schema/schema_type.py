@@ -19,6 +19,7 @@ class SchemaType(Enumeration):
     """TODO"""
 
     # @formatter:off
+    PLAIN           = 'PLAIN'
     AVRO            = 'AVRO'
     JSON            = 'JSON'
     PROTOBUF        = 'PROTOBUF'

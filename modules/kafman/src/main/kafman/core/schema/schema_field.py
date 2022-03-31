@@ -12,15 +12,15 @@
    Copyright 2021, HSPyLib team
 """
 
-from typing import Optional, Tuple, Type, Union
+from typing import Any, Optional, Tuple, Type, Union
 
 from hspylib.core.tools.commons import get_by_key_or_default
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QAbstractSpinBox, QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QWidget
-
-from kafman.core.schema.kafka_schema import KafkaSchema
+from PyQt5.QtWidgets import QAbstractSpinBox, QCheckBox, QDoubleSpinBox, QLabel, QLineEdit, QPushButton, QSizePolicy, \
+    QSpinBox, \
+    QWidget
 
 
 class SchemaField:
@@ -30,90 +30,91 @@ class SchemaField:
     """
 
     QWIDGET_TYPE_MAP = {
-        'int': QSpinBox,
+        'boolean': QCheckBox,
         'integer': QSpinBox,
+        'int': QSpinBox,
         'long': QSpinBox,
         'float': QDoubleSpinBox,
         'double': QDoubleSpinBox,
         'number': QDoubleSpinBox,
-        'boolean': QCheckBox,
-        'string': QLineEdit,
         'bytes': QLineEdit,
-        'array': HComboBox,
+        'string': QLineEdit,
+        'fixed': QLineEdit,
         'enum': HComboBox,
+        'array': HComboBox,
+        'record': QPushButton,
+        'object': QPushButton
     }
 
     @staticmethod
     def of(
-        schema: KafkaSchema,
         field_name: str,
         field_type: str,
         field_attrs: dict,
+        field_symbols: list = None,
         required: bool = True) -> 'SchemaField':
         """Construct a RegistryField from the schema field properties"""
 
         return SchemaField(
-            schema,
             field_name,
             field_type,
+            field_attrs,
+            field_symbols,
             required,
-            field_attrs
         )
 
     def __init__(
         self,
-        schema: KafkaSchema,
-        name: str,
-        field_type: Union[str, list],
-        required: bool,
-        field_attrs: dict):
+        field_name: str,
+        field_type: Any,
+        field_attrs: dict,
+        field_symbols: list,
+        required: bool):
 
-        self._schema = schema
-        self._name = name
-        self._type = next((t for t in field_type if t != 'null'), None) \
-            if isinstance(field_type, list) \
-            else field_type
-        self._required = required
+        self._field_name = field_name
+        self._field_type = field_type
         self._field_attrs = field_attrs
+        self._field_symbols = field_symbols
+        self._required = required
         self._widget_type = self._get_widget_type()
 
     def __str__(self):
-        return f"name={self._name}, type={self._type}, required={self._required}, widget={self._widget_type.__class__}"
+        return f"name={self._field_name}, type={self._field_type}, required={self._required}, widget={self._widget_type.__class__}"
 
-    def get_value(self, widget_instance: QWidget) -> Optional[dict]:
+    def get_value(self, widget: QWidget) -> Optional[dict]:
         """Return the value contained by the schema widget. This may vary depending on the QWidget class"""
-        check_not_none(widget_instance)
-        if isinstance(widget_instance, QAbstractSpinBox):
-            value = widget_instance.value()
-        elif isinstance(widget_instance, QCheckBox):
-            value = bool(widget_instance.isChecked())
-        elif isinstance(widget_instance, HComboBox):
-            current_text = widget_instance.currentText()
-            value = [current_text] if self._type == 'array' else current_text
+        check_not_none(widget)
+        if isinstance(widget, QAbstractSpinBox):
+            value = widget.value()
+        elif isinstance(widget, QCheckBox):
+            value = bool(widget.isChecked())
+        elif isinstance(widget, HComboBox):
+            current_text = widget.currentText()
+            value = [current_text] if self._field_type == 'array' else current_text
         else:
-            value = widget_instance.text()
+            value = widget.text()
 
-        return {self._name: value} if value else None
+        return {self._field_name: value} if value else None
 
     def get_name(self) -> str:
         """Return the name of the field"""
-        return self._name
+        return self._field_name
 
     def get_type(self) -> Union[str, list]:
         """Return the type of the field"""
-        return self._type
+        return self._field_type
 
     def is_required(self) -> bool:
         """Whether the field is required or optional"""
         return self._required
 
-    def is_valid(self, widget_instance: QWidget) -> bool:
+    def is_valid(self, widget: QWidget) -> bool:
         """Whether the field is valid, based on it's values and required flag"""
-        return not self.is_required() or self.get_value(widget_instance) is not None
+        return not self.is_required() or self.get_value(widget) is not None
 
-    def widget(self) -> QWidget:
+    def get_widget(self) -> QWidget:
         """Return the QWidget that the field is displayed at the schema form"""
-        widget_instance = self._widget_type()
+        widget = self._widget_type()
         default_value = get_by_key_or_default(self._field_attrs, 'default', '')
         placeholder_text = self._get_placeholder_text()
         tooltip = get_by_key_or_default(self._field_attrs, 'examples')
@@ -121,32 +122,31 @@ class SchemaField:
             if tooltip \
             else placeholder_text
         if self._widget_type == HComboBox:
-            items = self._schema.get_items(self._field_attrs)
-            widget_instance.addItems(items)
-            widget_instance.setEditable(True)
-            widget_instance.lineEdit().setPlaceholderText(placeholder_text)
-            widget_instance.setCurrentText(default_value or widget_instance.itemText(0))
+            widget.addItems(self._field_symbols)
+            widget.setEditable(True)
+            widget.lineEdit().setPlaceholderText(placeholder_text)
+            widget.setCurrentText(default_value or widget.itemText(0))
         elif self._widget_type == QCheckBox:
-            widget_instance.setChecked(bool(default_value))
+            widget.setChecked(bool(default_value))
         elif self._widget_type in [QSpinBox, QDoubleSpinBox]:
             min_val, max_val = self._get_min_max_values()
-            widget_instance.setMinimum(min_val)
-            widget_instance.setMaximum(max_val)
-            widget_instance.setValue(default_value or 0)
-            widget_instance.setLayoutDirection(Qt.RightToLeft)
+            widget.setMinimum(min_val)
+            widget.setMaximum(max_val)
+            widget.setValue(default_value or 0)
+            widget.setLayoutDirection(Qt.RightToLeft)
         else:
-            widget_instance.setPlaceholderText(placeholder_text)
-            widget_instance.setText(str(default_value or ''))
-        widget_instance.setToolTip(tooltip)
-        widget_instance.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            widget.setPlaceholderText(placeholder_text)
+            widget.setText(str(default_value or ''))
+        widget.setToolTip(tooltip)
+        widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
-        return widget_instance
+        return widget
 
     def _get_widget_type(self) -> Type[QWidget]:
         """Return the QWidget type required by this field"""
-        return self.QWIDGET_TYPE_MAP[self._type] \
-            if self._type in self.QWIDGET_TYPE_MAP \
-            else QLineEdit
+        return self.QWIDGET_TYPE_MAP[self._field_type] \
+            if self._field_type in self.QWIDGET_TYPE_MAP \
+            else QLabel
 
     def _get_placeholder_text(self) -> str:
         """Return the placeholder text to be displayed by this field"""
