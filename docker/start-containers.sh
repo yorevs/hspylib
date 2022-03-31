@@ -3,15 +3,16 @@
 source "docker-tools-inc.sh"
 
 pushd 'composes/' &> /dev/null || exit 1
-ALL_CONTAINERS=${ALL_CONTAINERS:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
+COMPOSES=${COMPOSES:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
 popd &> /dev/null || exit 1
+[[ "${#COMPOSES[@]}" -eq 0 ]] && exit 0
 
 # @purpose: Start all docker-compose.yml
 # -param $1: if the execution is on an interactive console or not
 startContainers() {
-  all=()
+  local all=() container
 
-  for container in ${ALL_CONTAINERS}; do
+  for container in ${COMPOSES}; do
     read -r -n 1 -p "Start container ${container} (y/[n]): " ANS
     test -n "${ANS}" && echo ''
     if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
@@ -19,8 +20,6 @@ startContainers() {
     fi
   done
   echo ''
-
-  [[ "${#all[@]}" -gt 0 ]] && timeout $$ 180
 
   for container in ${all[*]}; do
     status=$(getHealth "${container}")
@@ -31,7 +30,6 @@ startContainers() {
       echo -e "⠿ Starting container ${container} ${NC}"
       pushd "composes/${container}" &>/dev/null || exit 1
       if docker compose up --force-recreate --build --remove-orphans --detach; then
-        waitHealthy "${container}"
         echo ''
       else
         echo -e "${RED}⠿ Docker (docker compose up) command failed! ${NC}\n"
@@ -39,6 +37,11 @@ startContainers() {
       popd &>/dev/null || exit 1
     fi
   done
+
+  all=($(docker ps --format '{{.Names}}'))
+  count=${#all[@]}
+  [[ "${count}" -gt 0 ]] && timeout $$ $((count * 60))
+  waitHealthy "${all[@]}"
 }
 
 echo ''

@@ -50,17 +50,19 @@ getStatus() {
 }
 
 # @purpose: Wait for a docker container to start and become healthy; fail otherwise
-# -param $1: the docker container name
+# -param $1: the container names to wait to be healthy
 waitHealthy() {
-  local status
-  status=$(getHealth "$1")
-  echo -en "${BLUE} ⠿ Waiting \"${1}\" to become healthy ..."
-  while [ "${status}" != "\"healthy\"" ]; do
-    status=$(getHealth "$1")
-    echo -n "."
-    sleep 1
+  local status all=() done=()
+  all=("$@")
+  echo -en "${BLUE}⠿ Waiting all containers [$(echo " ${all[*]}" | awk '{gsub(/ /,"\n  |- ")}1')\n] to become healthy "
+  while [ ${#all[@]} -gt ${#done[@]} ]; do
+    for nextContainer in "${all[@]}"; do
+      status=$(getHealth "${nextContainer}")
+      [[ "${status}" == "\"healthy\"" ]] && done+=("${nextContainer}")
+    done
+    sleep 1 && echo -n "."
   done
-  echo -e "${GREEN}[  OK  ]${NC}\n"
+  echo -e "${GREEN} ⠿ OK ⠿${NC}\n"
   return 0
 }
 
@@ -73,4 +75,15 @@ assertStatus() {
     echo -e "${RED}⠿ Status assertion failed. Expecting ${2} but got ${status}${NC}\n"
     exit 1
   fi
+}
+
+# @purpose: Quit and exhibits an exit message if specified.
+# @param $1 [Req] : The exit return code.
+# @param $2 [Opt] : The exit message to be displayed.
+quit() {
+  test "$1" != '0' -a "$1" != '1' && echo -e "${RED}"
+  test -n "$2" -a "$2" != "" && echo -e "${2}"
+  test "$1" != '0' -a "$1" != '1' && echo -e "${NC}"
+  echo ''
+  exit "$1"
 }

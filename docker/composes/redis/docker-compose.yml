@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+
+  redis-server:
+    image: grokzen/redis-cluster:latest
+    container_name: redis-server
+    hostname: redis-server
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 10s
+      timeout: 60s
+      retries: 3
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass password
+    volumes:
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/redis:/data
+    networks:
+      - esnet
+
+networks:
+  esnet:

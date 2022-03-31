@@ -17,6 +17,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
 
 from kafman.core.schema.kafka_schema import KafkaSchema
+from kafman.core.schema.schema_type import SchemaType
 
 
 class PlainSchema(KafkaSchema):
@@ -30,23 +31,19 @@ class PlainSchema(KafkaSchema):
     def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:
         return str(new_dynamic_object('PlainSchemaObject'))
 
-    def __init__(self, charset: Charset = Charset.ISO8859_1):
-        super().__init__(schema_type='PLAIN', charset=charset)
+    def __init__(self, charset: Charset = Charset.UTF_8):
+        super().__init__(SchemaType.PLAIN, charset=charset)
 
     def __str__(self):
-        return f"[{self._avro_type}] type=plaintext"
+        return f"[{self._schema_type}] type=plaintext"
 
-    def _parse_schema(self) -> None:
+    def _parse(self) -> None:
         pass
 
-    def serializer_settings(self) -> dict:
+    def settings(self) -> dict:
         return {
-            'key.serializer': StringSerializer(self._charset.value),
-            'value.serializer': StringSerializer(self._charset.value)
-        }
-
-    def deserializer_settings(self) -> dict:
-        return {
-            'key.deserializer': StringDeserializer(self._charset.value),
-            'value.deserializer': StringDeserializer(self._charset.value)
+            'key.serializer': StringSerializer(str(self._charset)),
+            'value.serializer': StringSerializer(str(self._charset)),
+            'key.deserializer': StringDeserializer(str(self._charset)),
+            'value.deserializer': StringDeserializer(str(self._charset))
         }

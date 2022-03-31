@@ -1,28 +1,26 @@
 version: '3.9'
 
 services:
+
   jenkins:
-    container_name: jenkins
     image: jenkins/jenkins:lts
+    container_name: jenkins
+    hostname: jenkins
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-o", '/dev/null', '-m', '3', "http://localhost:8080/login"]
+      test: ["CMD-SHELL", "curl", "-o", '/dev/null', '-m', '3', "http://jenkins:8080/login"]
       timeout: 60s
       retries: 3
     privileged: true
     user: root
     ports:
-      - 9001:8080
-      - 50003:50000
+      - "9001:8080"
+      - "50003:50000"
     volumes:
-      - jenkins-data:/var/jenkins_home:rw
+      - ./data/jenkins:/var/jenkins_home:rw
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - esnet
-
-volumes:
-  jenkins-data:
-    driver: local
 
 networks:
   esnet:
