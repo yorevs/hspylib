@@ -33,7 +33,7 @@ from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QGridLayout, QLabel
+from PyQt5.QtWidgets import QComboBox, QFileDialog
 
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
@@ -173,7 +173,6 @@ class MainQtView(QtView):
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_prod_settings.editingFinished.connect(self._edit_setting)
-        self.ui.fr_schema_fields.setLayout(QGridLayout())
         self.ui.tbtn_format_msg.setText(DashboardIcons.FORMAT.value)
         self.ui.tbtn_format_msg.clicked.connect(self._format_message)
         self.ui.tbtn_form_view.setText(DashboardIcons.FORM.value)
@@ -260,7 +259,7 @@ class MainQtView(QtView):
         message = defaultdict()
         layout = self.ui.fr_schema_fields.layout()
         columns = layout.columnCount()
-        for index, field in enumerate(schema.get_fields()):
+        for index, field in enumerate(schema.get_schema_fields()):
             widget_idx = ((index + 1) * columns) - 1
             widget = layout.itemAt(widget_idx).widget()
             if validate and not field.is_valid(widget):
@@ -317,10 +316,10 @@ class MainQtView(QtView):
                 if registry_url:
                     try:
                         schema = SchemaFactory.create_schema(schema_file, registry_url)
-                        self._all_schemas[schema.get_name()] = schema
-                        self.ui.cmb_sel_schema.set_item(schema.get_name())
-                        self.ui.cmb_registry_schema.set_item(schema.get_name())
-                        self.ui.cmb_sel_schema.setCurrentText(schema.get_name())
+                        self._all_schemas[schema.get_schema_name()] = schema
+                        self.ui.cmb_sel_schema.set_item(schema.get_schema_name())
+                        self.ui.cmb_registry_schema.set_item(schema.get_schema_name())
+                        self.ui.cmb_sel_schema.setCurrentText(schema.get_schema_name())
                         self._display_text(f"Schema added: \"{str(schema)}\"")
                     except UnsupportedSchemaError as err:
                         self._display_error(f"Unsupported schema: => {str(err)}")
@@ -335,7 +334,7 @@ class MainQtView(QtView):
     def _change_schema(self, schema_name: str):
         """Change the current serialization schema text content"""
         if schema_name:
-            content = self._all_schemas[schema_name].get_content()
+            content = self._all_schemas[schema_name].get_content_dict()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
             self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2, sort_keys=False))
             self._build_schema_layout()
@@ -355,31 +354,18 @@ class MainQtView(QtView):
         if sel_schema:
             schema = self._all_schemas[sel_schema]
             if schema:
-                fields = schema.get_fields()
-                layout = self._cleanup_schema_layout()
-                for row, field in enumerate(fields):
-                    label = QLabel(f"{field.get_name()}: ")
-                    layout.addWidget(label, row, 0)
-                    if field.is_required():
-                        req_star = QLabel('*')
-                        req_star.setStyleSheet('QLabel {color: #FF554D;}')
-                    else:
-                        req_star = QLabel(' ')
-                    req_star.setToolTip(f"This field is {'required' if field.is_required() else 'optional'}")
-                    layout.addWidget(req_star, row, 1)
-                    widget = field.widget()
-                    widget.setStyleSheet('QWidget {padding: 5px;}')
-                    layout.addWidget(widget, row, 2)
+                self._cleanup_schema_layout()
+                form_widget = schema.create_schema_form_widget(self.ui.tab_widget)
+                self.ui.scr_schema_fields.setWidget(form_widget)
 
-    def _cleanup_schema_layout(self) -> QGridLayout:
+    def _cleanup_schema_layout(self) -> None:
         """Remove all widgets from the current grid layout"""
-        layout = self.ui.fr_schema_fields.layout()
-        while layout.count() > 0:
+        layout = self.ui.scr_schema_fields.widget().layout()
+        while layout and layout.count() > 0:
             item = layout.takeAt(0)
             widget = item.widget()
             if widget is not None:
                 widget.deleteLater()
-        return layout
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""

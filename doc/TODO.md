@@ -24,6 +24,10 @@
 ## HSPYLIB-KAFMAN
 
 1. Install Droid font with kafman pip install
+    '''int id = QFontDatabase::addApplicationFont(":/SMSicons/segoeui_0.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont _font(family, 8);
+    qApp->setFont(_font);'''
 2. Fix json schema with complex types
 3. Add a save button for message edit
 4. Add a button to find all topics
