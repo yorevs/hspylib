@@ -16,37 +16,21 @@ from typing import List
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.exception.exceptions import InvalidStateError
+from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
 
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
-
-
-class _AvroType(Enumeration):
-    """TODO"""
-
-    # @formatter:off
-    NULL            = 'null'
-    BOOLEAN         = 'boolean'
-    INT             = 'int'
-    LONG            = 'long'
-    FLOAT           = 'float'
-    DOUBLE          = 'double'
-    BYTES           = 'bytes'
-    STRING          = 'string'
-    RECORD          = 'record'
-    ENUM            = 'enum'
-    ARRAY           = 'array'
-    MAP             = 'map'
-    FIXED           = 'fixed'
-    # @formatter:on
+from kafman.core.schema.schema_utils import SchemaUtils
 
 
 class AvroSchema(KafkaSchema):
     """Apache AVRO schema serializer/deserializer
-       Documentation: https://avro.apache.org/docs/current/gettingstartedpython.html
+       Documentation:
+        - https://avro.apache.org/docs/current/spec.html
+        - https://avro.apache.org/docs/current/gettingstartedpython.html
        Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
 
         E.g:.
@@ -72,15 +56,6 @@ class AvroSchema(KafkaSchema):
         charset: Charset = Charset.UTF_8):
         super().__init__(SchemaType.AVRO, filepath, registry_url, charset)
 
-    def _parse(self) -> None:
-        """TODO"""
-        if self._content_text.startswith('{') and self._content_text.endswith('}'):
-            # Defined type or record
-            pass
-        elif self._content_text.startswith('[') and self._content_text.endswith(']'):
-            # Array
-            pass
-
     def settings(self) -> dict:
         """TODO"""
         return {
@@ -89,3 +64,45 @@ class AvroSchema(KafkaSchema):
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
         }
+
+    def create_schema_form_widget(self, parent: QWidget) -> QStackedWidget:
+        """TODO"""
+        # TODO Create according to descendant fields using QStackedWidget
+        fields = self._schema_attributes.fields
+        self._form_widget = QStackedWidget(parent)
+        if fields and len(fields) > 0:
+            form_pane = QFrame(self._form_widget)
+            layout = QGridLayout(form_pane)
+            form_pane.setLayout(layout)
+            for row, field in enumerate(fields):
+                req_label, label, widget = field.create_form_row_widgets(self._form_widget)
+                layout.addWidget(label, row, 0)
+                layout.addWidget(req_label, row, 1)
+                layout.addWidget(widget, row, 2)
+        else:
+            form_pane = QFrame(self._form_widget)
+            layout = QVBoxLayout(form_pane)
+            label = QLabel(f'Unable to detect valid fields')
+            label.setStyleSheet('QLabel {color: #FF554D;}')
+            layout.addWidget(label)
+        self._form_widget.addWidget(form_pane)
+
+        return self._form_widget
+
+    def _parse(self) -> None:
+        """TODO"""
+        if self._content_text.startswith('{') and self._content_text.endswith('}'):
+            self._schema_name = SchemaUtils.check_and_get('name', self._content_dict)
+            field_type = SchemaUtils.check_and_get('type', self._content_dict)
+            self._schema_attributes.name = self._schema_name
+            self._schema_attributes.namespace = SchemaUtils.check_and_get(
+                'namespace', self._content_dict, required=False)
+            self._schema_attributes.doc = SchemaUtils.check_and_get(
+                'doc', self._content_dict, required=False, default=f'the {self._schema_name}')
+            self._schema_attributes.aliases = SchemaUtils.check_and_get(
+                'aliases', self._content_dict, required=False)
+            if 'record' == field_type:
+                fields = SchemaUtils.check_and_get('fields', self._content_dict)
+                self._schema_attributes.fields = SchemaUtils.parse_record(fields)
+        else:
+            raise InvalidStateError(f"UnsupportedSchema: {self._filepath}")

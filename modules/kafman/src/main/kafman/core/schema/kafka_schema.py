@@ -27,6 +27,7 @@ from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import remove_linebreaks
 
+from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 
 
@@ -66,11 +67,14 @@ class KafkaSchema(ABC):
         registry_url: str = None,
         charset: Charset = Charset.UTF_8):
 
+        self._schema_name = 'undefined'
+        self._schema_type = schema_type.value
         self._filepath = filepath
         self._registry_url = build_url(registry_url or self.LOCAL_REG_SERVER_URL)
-        self._schema_type = schema_type.value
         self._charset = charset
-        self._root_attribute = new_dynamic_object('KafkaSchemaObject')
+        self._schema_attributes = new_dynamic_object('SchemaAttributes')
+        self._schema_fields = None
+        self._form_widget = None
 
         try:
             if filepath:
@@ -88,6 +92,9 @@ class KafkaSchema(ABC):
             log.error(err_msg)
             raise InvalidStateError(err_msg)
 
+    def __str__(self):
+        return self._schema_name
+
     @abstractmethod
     def _parse(self) -> None:
         """Parse the schema content and fill in the schema attributes"""
@@ -96,14 +103,26 @@ class KafkaSchema(ABC):
     def settings(self) -> dict:
         """Return the required schema settings"""
 
+    def get_filepath(self) -> str:
+        """Return the schema file path"""
+        return self._filepath
+
     def get_schema_type(self) -> str:
         """Return the schema type"""
         return self._schema_type
 
-    def get_content_dict(self) -> dict:
-        """Return the schema content dictionary"""
-        return self._content_dict
+    def get_schema_name(self) -> str:
+        """Return the schema name"""
+        return self._schema_attributes.name
+
+    def get_schema_fields(self) -> List['SchemaField']:
+        """Return the schema fields"""
+        return self._schema_fields
 
     def get_content_text(self) -> str:
         """Return the schema content text"""
         return self._content_text
+
+    def get_content_dict(self) -> dict:
+        """Return the schema content dictionary"""
+        return self._content_dict

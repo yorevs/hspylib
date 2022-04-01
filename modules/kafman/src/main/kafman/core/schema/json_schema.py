@@ -28,7 +28,6 @@ class _JsonType(Enumeration):
     """TODO"""
 
     # @formatter:off
-    NULL            = 'null'
     BOOLEAN         = 'boolean'
     INTEGER         = 'integer'  # int|long
     NUMBER          = 'number'   # float|double
