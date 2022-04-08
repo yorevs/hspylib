@@ -1,7 +1,6 @@
 from abc import ABC
-from typing import Any, List, Union
+from typing import List, Type, Union
 
-from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from PyQt5.QtCore import Qt
@@ -32,53 +31,10 @@ class WidgetUtils(ABC):
     }
 
     @staticmethod
-    def create_input_widget(
-        field_type: SchemaFieldType,
-        complex_type: dict,
-        doc: str,
-        default: Any) -> QWidget:
-        """Return the QWidget type required by this field"""
-
-        if field_type.value not in WidgetUtils.QWIDGET_TYPE_MAP:
-            raise InvalidStateError(f'Unrecognized field type: {field_type}')
-
-        return WidgetUtils.QWIDGET_TYPE_MAP[field_type.value]() \
-            if not complex_type \
-            else WidgetUtils.create_complex_type_widget(complex_type, doc, default)
-
-    @staticmethod
-    def create_complex_type_widget(
-        complex_types: Union[list, dict],
-        doc: str,
-        default: Any) -> QWidget:
-        """TODO"""
-
-        if isinstance(complex_types, list):
-            types = list(filter(lambda f: f != 'null', complex_types))
-            if len(types) > 1:
-                raise InvalidStateError('Multi-type is not supported yet')
-            else:
-                return WidgetUtils.setup_complex_widget(types[0], doc, default)
-        elif isinstance(complex_types, dict):
-            return WidgetUtils.setup_complex_widget(complex_types, doc, default)
-
-    @staticmethod
-    def setup_complex_widget(complex_object: dict, doc: str, default: Any) -> QWidget:
-        """TODO"""
-
-        c_type = complex_object['type']
-        widget_type = WidgetUtils.QWIDGET_TYPE_MAP[c_type] \
-            if c_type not in ['record', 'complex'] else QToolButton
-        if widget_type == HComboBox:
-            c_symbols = complex_object['symbols']
-            widget = widget_type()
-            WidgetUtils.setup_combo_box(widget, c_symbols, doc, default)
-            return widget
-        elif widget_type == QToolButton:
-            btn_fill_record = widget_type()
-            return WidgetUtils.setup_tool_button(btn_fill_record)
-        else:
-            raise InvalidStateError(f'WidgetType {widget_type} is not supported yet')
+    def get_widget(field_type: Union[str, SchemaFieldType]) -> Type[QWidget]:
+        return WidgetUtils.QWIDGET_TYPE_MAP[field_type.value] \
+            if isinstance(field_type, SchemaFieldType) \
+            else WidgetUtils.QWIDGET_TYPE_MAP[field_type]
 
     @staticmethod
     def setup_widget(
@@ -124,47 +80,43 @@ class WidgetUtils(ABC):
         widget.setEditable(True)
         widget.lineEdit().setPlaceholderText(tooltip)
         widget.setCurrentText(default or widget.itemText(0))
-        WidgetUtils.setup_widget_commons(widget, tooltip)
 
-        return widget
+        return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
     def setup_checkbox(
         widget: QWidget,
         tooltip: str = None,
-        default: Union[int, float] = None) -> QWidget:
+        default: Union[int, float] = False) -> QWidget:
 
-        widget.setChecked(default)
-        WidgetUtils.setup_widget_commons(widget, tooltip)
+        widget.setChecked(default or False)
 
-        return widget
+        return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
     def setup_spin_box(
         widget: QWidget,
         tooltip: str = None,
-        default: Union[int, float] = None) -> QWidget:
+        default: Union[int, float] = 0) -> QWidget:
 
         min_val, max_val = 0.0, 9999.999
         widget.setMinimum(min_val)
         widget.setMaximum(max_val)
         widget.setValue(default or 0)
         widget.setLayoutDirection(Qt.RightToLeft)
-        WidgetUtils.setup_widget_commons(widget, tooltip)
 
-        return widget
+        return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
     def setup_line_edit(
         widget: QWidget,
         tooltip: str = None,
-        default: str = None) -> QWidget:
+        default: str = '') -> QWidget:
 
         widget.setPlaceholderText(tooltip)
         widget.setText(default or '')
-        WidgetUtils.setup_widget_commons(widget, tooltip)
 
-        return widget
+        return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
     def setup_tool_button(widget: QWidget) -> QWidget:

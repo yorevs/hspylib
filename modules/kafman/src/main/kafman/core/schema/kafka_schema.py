@@ -27,7 +27,7 @@ from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import remove_linebreaks
 
-from kafman.core.schema.schema_field import SchemaField
+from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 
 
@@ -72,8 +72,8 @@ class KafkaSchema(ABC):
         self._filepath = filepath
         self._registry_url = build_url(registry_url or self.LOCAL_REG_SERVER_URL)
         self._charset = charset
-        self._schema_attributes = new_dynamic_object('SchemaAttributes')
-        self._schema_fields = None
+        self._attributes = new_dynamic_object('SchemaAttributes')
+        self._fields = None
         self._form_widget = None
 
         try:
@@ -113,11 +113,11 @@ class KafkaSchema(ABC):
 
     def get_schema_name(self) -> str:
         """Return the schema name"""
-        return self._schema_attributes.name
+        return self._attributes.name
 
     def get_schema_fields(self) -> List['SchemaField']:
         """Return the schema fields"""
-        return self._schema_fields
+        return self._fields
 
     def get_content_text(self) -> str:
         """Return the schema content text"""
