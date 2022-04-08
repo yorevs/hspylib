@@ -3,7 +3,12 @@ from typing import Any, List
 
 from hspylib.core.exception.exceptions import InvalidStateError
 
-from kafman.core.schema.schema_field import SchemaField
+from kafman.core.schema.field.array_field import ArrayField
+from kafman.core.schema.field.complex_field import ComplexField
+from kafman.core.schema.field.enum_field import EnumField
+from kafman.core.schema.field.map_field import MapField
+from kafman.core.schema.field.primitive_field import PrimitiveField
+from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_field_type import SchemaFieldType
 
 
@@ -20,6 +25,16 @@ class SchemaUtils(ABC):
         return default
 
     @staticmethod
+    def parse_record(fields: List[dict]) -> List[SchemaField]:
+        """TODO"""
+        record_fields = []
+        for next_field in fields:
+            field = SchemaUtils.parse_field(next_field)
+            record_fields.append(field)
+
+        return record_fields
+
+    @staticmethod
     def parse_field(field: dict) -> 'SchemaField':
         """TODO"""
         field_name = SchemaUtils.check_and_get('name', field, True)
@@ -29,27 +44,17 @@ class SchemaUtils(ABC):
         required = 'null' not in field_type
         avro_type = SchemaFieldType.of_type(field_type)
         if avro_type.is_complex():
-            return SchemaField.of_complex(field_name, field_doc, field_type, field_default, required)
+            return ComplexField(field_name, field_doc, field_type, field_default, required)
         elif avro_type.is_primitive():
-            return SchemaField.of_primitive(field_name, field_doc, avro_type, field_default, required)
+            return PrimitiveField(field_name, field_doc, avro_type, field_default, required)
         elif avro_type.is_enum():
             symbols = SchemaUtils.check_and_get('symbols', field, True)
-            return SchemaField.of_enum(field_name, field_doc, symbols, field_default, required)
+            return EnumField(field_name, field_doc, symbols, field_default, required)
         elif avro_type.is_array():
             items = SchemaUtils.check_and_get('items', field, True)
-            return SchemaField.of_array(field_name, field_doc, items, field_default, required)
+            return ArrayField(field_name, field_doc, items, field_default, required)
         elif avro_type.is_map():
             values = SchemaUtils.check_and_get('values', field, True)
-            return SchemaField.of_array(field_name, field_doc, values, field_default, required)
+            return MapField(field_name, field_doc, values, field_default, required)
         else:
             raise InvalidStateError(f'Invalid field type: {avro_type}')
-
-    @staticmethod
-    def parse_record(fields: List[dict]) -> List[SchemaField]:
-        """TODO"""
-        record_fields = []
-        for next_field in fields:
-            field = SchemaUtils.parse_field(next_field)
-            record_fields.append(field)
-
-        return record_fields
