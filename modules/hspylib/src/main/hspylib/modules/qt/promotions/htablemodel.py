@@ -48,32 +48,6 @@ class HTableModel(QAbstractTableModel):
         self.parent.setModel(self)
         log.info('%s table_headers=%s', clazz.__class__.__name__, '|'.join(self.headers))
 
-    def row(self, index: Union[int, QModelIndex]) -> T:
-        """TODO"""
-        return self.table_data[index.row() if isinstance(index, QModelIndex) else index]
-
-    def push_data(self, data: List[T]) -> None:
-        """TODO"""
-        list(map(self.table_data.append, data))
-        self.layoutChanged.emit()
-
-    def clear(self):
-        """TODO"""
-        self.table_data.clear()
-        self.layoutChanged.emit()
-
-    def selected_rows(self) -> Tuple[List[QModelIndex], List[T]]:
-        """TODO"""
-        model = self.parent.selectionModel()
-        rows = model.selectedRows() if model else []
-        return rows, [self.table_data[r.row()] for r in rows] if model else []
-
-    def remove_rows(self, rows: List[QModelIndex]):
-        """TODO"""
-        rows.sort(reverse=True)  # Because we are using deque, we need to sort DESC to avoid deleting wrong indexes
-        for row in rows:
-            self.removeRow(row.row())
-
     def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:  # pylint: disable=unused-argument
         """TODO"""
         if 0 <= row < len(self.table_data):
@@ -124,6 +98,38 @@ class HTableModel(QAbstractTableModel):
     def columnCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""
         return len(self.table_data[0].__dict__.keys()) if self.table_data and len(self.table_data) > 0 else 0
+
+    def row(self, index: Union[int, QModelIndex]) -> T:
+        """TODO"""
+        return self.table_data[index.row() if isinstance(index, QModelIndex) else index]
+
+    def column(self, index: QModelIndex) -> T:
+        """TODO"""
+        row = self.table_data[index.row()]
+        col_name = str(list(vars(row))[index.column()])
+        return getattr(row, col_name)
+
+    def push_data(self, data: List[T]) -> None:
+        """TODO"""
+        list(map(self.table_data.append, data))
+        self.layoutChanged.emit()
+
+    def clear(self):
+        """TODO"""
+        self.table_data.clear()
+        self.layoutChanged.emit()
+
+    def selected_rows(self) -> Tuple[List[QModelIndex], List[T]]:
+        """TODO"""
+        model = self.parent.selectionModel()
+        rows = model.selectedRows() if model else []
+        return rows, [self.table_data[r.row()] for r in rows] if model else []
+
+    def remove_rows(self, rows: List[QModelIndex]):
+        """TODO"""
+        rows.sort(reverse=True)  # Because we are using deque, we need to sort DESC to avoid deleting wrong indexes
+        for row in rows:
+            self.removeRow(row.row())
 
     def _headers_by_entity(self) -> List[str]:
         """TODO"""
