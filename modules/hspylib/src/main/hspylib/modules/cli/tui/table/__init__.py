@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.43
+# hspylib v0.11.45
 #
 # Package: main.hspylib.modules.cli.tui.table
 """Package initialization."""
 
 __all__ = [
-    'table_renderer'
+  'table_renderer'
 ]
-__version__ = '0.11.43'
+__version__ = '0.11.45'

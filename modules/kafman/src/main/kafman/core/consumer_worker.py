@@ -49,8 +49,10 @@ class ConsumerWorker(QThread):
         if self._consumer is None:
             consumer_conf = {}
             consumer_conf.update(settings)
-            consumer_conf.update(schema.deserializer_settings())
-            self._consumer = DeserializingConsumer(consumer_conf)
+            consumer_conf.update(schema.settings())
+            self._consumer = DeserializingConsumer(
+                {k: v for k, v in consumer_conf.items() if not k.endswith('.serializer')}
+            )
             self._started = True
 
     def stop_consumer(self) -> None:

@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QToolButton, QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_field_type import SchemaFieldType
+from kafman.core.schema.schema_utils import SchemaUtils
 from kafman.core.schema.widget_utils import WidgetUtils
 
 
@@ -44,7 +45,7 @@ class ComplexField(SchemaField):
     def _setup_complex_widget(self, complex_object: dict) -> QWidget:
         """TODO"""
 
-        c_type = complex_object['type']
+        c_type = SchemaUtils.check_and_get('type', complex_object, True)
         widget_type = WidgetUtils.get_widget(c_type) \
             if c_type not in ['record', 'complex'] else None
         if widget_type is None:
