@@ -45,6 +45,8 @@ project.ext.pylint_disabled_checks =
         'C0301', // line-too-long
       ]
 
+defaultTasks 'clean', 'run'
+
 /***** Install Group */
 
 /* Used to created the __init__.py files { */
@@ -164,30 +166,10 @@ task syncPythonPackages(type: Task) {
   }
 }
 
-/* Install a project in editable mode (i.e. setuptools "develop mode") from a local project path or a VCS url. */
-task checkSetupPy(type: Task) {
-  group = 'Install'
-  description = "Install a project in editable mode (i.e. setuptools develop mode)"
-  dependsOn pipRequirements
-  finalizedBy cleanDist
-  doLast {
-    fileTree("$sourceRoot").matching {
-      include "**/setup.py"
-    }.each { File module ->
-        def moduleDir = dirName(module)
-        println "Install $project.name in DEVELOPER MODE: $moduleDir -> $module.path"
-        exec {
-          workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '-e', "$sourceRoot/main"
-        }
-      }
-  }
-}
-
-/* Install this application as a python package using module's setup.py */
+/* Install module in editable mode (i.e. setuptools 'develop mode') */
 task installModule(type: Task) {
   group = 'Install'
-  description = "Install the module as a python package using module's setup.py"
+  description = "Install module in editable mode (i.e. setuptools 'develop mode')"
   dependsOn syncPythonPackages
   dependsOn pipRequirements
   finalizedBy cleanDist
@@ -205,8 +187,31 @@ task installModule(type: Task) {
   }
 }
 
+/* Install to the Python user install directory for your platform and upgrade all specified packages to
+ * the newest available version
+ */
+task install(type: Task) {
+  group = 'Install'
+  description = "Install to the Python user install directory for your platform and upgrade all specified packages to the newest available version"
+  dependsOn syncPythonPackages
+  dependsOn pipRequirements
+  finalizedBy cleanDist
+  doLast {
+    fileTree("$sourceRoot").matching {
+      include "**/setup.py"
+    }.each { File module ->
+        def moduleDir = dirName(module)
+        println "Install $project.name : $moduleDir -> $module.path"
+        exec {
+          workingDir "$moduleDir"
+          commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', moduleDir
+        }
+      }
+  }
+}
+
 /* Uninstall the module as a python package using module's setup.py */
-task uninstallModule(type: Task) {
+task uninstall(type: Task) {
   group = 'Install'
   description = "Install the module as a python package using module's setup.py"
   doLast {
@@ -301,11 +306,4 @@ tasks.register('build', Task) {
   dependsOn compile
   mustRunAfter compile
   dependsOn check
-}
-
-tasks.register('install', Task) {
-  group = 'Install'
-  dependsOn build
-  mustRunAfter build
-  dependsOn installModule
 }

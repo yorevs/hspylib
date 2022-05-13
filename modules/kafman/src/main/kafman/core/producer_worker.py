@@ -54,8 +54,10 @@ class ProducerWorker(QThread):
             self._schema = schema
             producer_conf = {}
             producer_conf.update(settings)
-            producer_conf.update(schema.serializer_settings())
-            self._producer = SerializingProducer(producer_conf)
+            producer_conf.update(schema.settings())
+            self._producer = SerializingProducer(
+                {k: v for k, v in producer_conf.items() if not k.endswith('.deserializer')}
+            )
             self._started = True
 
     def stop_producer(self) -> None:

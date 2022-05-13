@@ -496,7 +496,7 @@ class MainQtView(QtView):
                 return
         self.ui.tbtn_format_msg.setEnabled(not started)
         self.ui.tbtn_export_form.setEnabled(not started)
-        self.ui.fr_schema_fields.setEnabled(not started)
+        self.ui.scr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.tbtn_prod_open_file.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)

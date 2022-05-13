@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.43
+# hspylib v0.11.45
 #
 # Package: demo.calculator.enums
 """Package initialization."""
 
 __all__ = [
-    'calc_operations'
+  'calc_operations'
 ]
-__version__ = '0.11.43'
+__version__ = '0.11.45'

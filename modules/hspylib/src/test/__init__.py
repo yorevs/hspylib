@@ -1,14 +1,14 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.43
+# hspylib v0.11.45
 #
 # Package: test
 """Package initialization."""
 
 __all__ = [
-    'core',
-    'modules',
-    'shared',
-    'tools'
+  'core', 
+  'modules', 
+  'shared', 
+  'tools'
 ]
-__version__ = '0.11.43'
+__version__ = '0.11.45'
