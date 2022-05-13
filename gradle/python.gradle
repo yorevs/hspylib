@@ -181,7 +181,7 @@ task installModule(type: Task) {
         println "Install $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '-e', moduleDir
+          commandLine rootProject.python, '-m', 'pip', 'install', '-e', "$sourceRoot/main"
         }
       }
   }
