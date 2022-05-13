@@ -168,7 +168,7 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
         self.ui.tbtn_prod_open_file.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_prod_open_file.clicked.connect(self._open_message_file)
-        self.ui.tbtn_prod_del_topics.clicked.connect(self._del_topic)
+        self.ui.tbtn_prod_del_topics.clicked.connect(lambda: self._del_topic(is_producer=True))
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
         self.ui.lst_prod_settings.itemChanged.connect(self._edit_setting)
@@ -262,10 +262,10 @@ class MainQtView(QtView):
         for index, field in enumerate(schema.get_schema_fields()):
             widget_idx = ((index + 1) * columns) - 1
             widget = layout.itemAt(widget_idx).widget()
-            if validate and not field.is_valid(widget):
+            if validate and not field.is_valid():
                 raise InvalidInputError('Form contains unfilled required fields')
-            field_value = field.get_value(widget)
-            message.update(field_value if field_value else {field.get_name(): ''})
+            field_value = field.get_value()
+            message.update(field_value if field_value else {field.name: ''})
             if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
                 widget.clear()
 
@@ -422,27 +422,27 @@ class MainQtView(QtView):
         """Add a topic to the combo box."""
         if is_producer:
             new_topic = self.ui.cmb_prod_topics.currentText()
-            if topic or new_topic:
-                self.ui.cmb_prod_topics.set_item(topic or new_topic)
-                self.ui.cmb_prod_topics.setEditText('')
+            cmb = self.ui.cmb_prod_topics
         else:
             new_topic = self.ui.cmb_cons_topics.currentText()
-            if topic or new_topic:
-                self.ui.cmb_cons_topics.set_item(topic or new_topic)
-                self.ui.cmb_cons_topics.setEditText('')
+            cmb = self.ui.cmb_cons_topics
+        if topic or new_topic:
+            cmb.set_item(topic or new_topic)
+            cmb.setEditText('')
+        if cmb.count() >= 1:
+            cmb.setCurrentIndex(0)
 
-    def _del_topic(self, is_producer: bool = True) -> None:
+    def _del_topic(self, is_producer: bool) -> None:
         """Delete a topic to the combo box."""
-        if is_producer:
-            current_text = self.ui.cmb_prod_topics.currentText()
-            if current_text:
-                self._display_text(f"Topic {current_text} removed from producer")
-                self.ui.cmb_prod_topics.removeItem(self.ui.cmb_prod_topics.currentIndex())
+        if not is_producer:
+            del_topic = self.ui.cmb_cons_topics.currentText()
+            cmb = self.ui.cmb_cons_topics
         else:
-            current_text = self.ui.cmb_cons_topics.currentText()
-            if current_text:
-                self._display_text(f"Topic {current_text} removed from consumer")
-                self.ui.cmb_cons_topics.removeItem(self.ui.cmb_cons_topics.currentIndex())
+            del_topic = self.ui.cmb_prod_topics.currentText()
+            cmb = self.ui.cmb_prod_topics
+        if del_topic:
+            self._display_text(f"Topic {del_topic} has been removed from {self._kafka_type()}")
+            cmb.removeItem(cmb.currentIndex())
 
     def _invalidate_registry_url(self) -> None:
         """Mark current schema registry url as not valid"""
