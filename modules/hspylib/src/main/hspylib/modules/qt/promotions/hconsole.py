@@ -57,7 +57,7 @@ class HConsole(QPlainTextEdit):
         self.document().blockCountChanged.connect(self.update_line_number_area_width)
         self.updateRequest.connect(self.update_line_number_area)
         self.cursorPositionChanged.connect(self.highlight_current_line)
-        self.update_line_number_area_width(0)
+        self.update_line_number_area_width()
         self.highlight_current_line()
 
     def resizeEvent(self, event: QResizeEvent) -> None:
@@ -68,8 +68,8 @@ class HConsole(QPlainTextEdit):
     def line_number_area_paint_event(self, event: QPaintEvent) -> None:
         """Paint the numbers of the line number area"""
         margin_right = -2
-        bg_color = self.palette().color(QPalette.Window).lighter(160)
-        txt_color = self.palette().color(QPalette.WindowText)
+        bg_color = self.palette().color(QPalette.Window).lighter(100)
+        txt_color = self.palette().color(QPalette.WindowText).darker(160)
         painter = QPainter(self._line_number_area)
         painter.fillRect(event.rect(), bg_color)
         block = self.firstVisibleBlock()
@@ -107,8 +107,10 @@ class HConsole(QPlainTextEdit):
     def highlight_current_line(self) -> None:
         """Highlight current line number if highlighting is enabled"""
         if self._highlight_enabled and self.line_count() > 1:
+            bg = self.palette().color(QPalette.Background).lighter(120)
+            bg.setAlphaF(0.6)
             selection = QTextEdit.ExtraSelection()
-            selection.format.setBackground(self.palette().color(QPalette.Highlight).lighter(160))
+            selection.format.setBackground(bg)
             selection.format.setProperty(QTextFormat.FullWidthSelection, True)
             selection.cursor = self.textCursor()
             selection.cursor.clearSelection()
@@ -125,7 +127,7 @@ class HConsole(QPlainTextEdit):
         else:
             self._line_number_area.update(0, rect.y(), self._line_number_area.width(), rect.height())
         if rect.contains(self.viewport().rect()):
-            self.update_line_number_area_width(0)
+            self.update_line_number_area_width()
 
     def line_count(self) -> int:
         """Return the number of lines the console contains"""
