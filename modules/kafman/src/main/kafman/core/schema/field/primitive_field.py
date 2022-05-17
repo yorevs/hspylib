@@ -24,9 +24,5 @@ class PrimitiveField(SchemaField):
             default,
             required=required)
 
-    def create_input_widget(self) -> QWidget:
-        self.widget = WidgetUtils.get_widget(self.a_type)()
-        return WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)
-
     def get_value(self) -> Optional[dict]:
         pass

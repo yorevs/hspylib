@@ -20,8 +20,5 @@ class FixedField(SchemaField):
             SchemaFieldType.FIXED,
             default=size)
 
-    def create_input_widget(self) -> QWidget:
-        pass
-
     def get_value(self) -> Optional[dict]:
         pass

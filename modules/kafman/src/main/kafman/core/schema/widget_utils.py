@@ -3,6 +3,7 @@ from typing import List, Type, Union
 
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
+from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
@@ -24,10 +25,9 @@ class WidgetUtils(ABC):
         'string': QLineEdit,
         'fixed': QLineEdit,
         'enum': HComboBox,
-        'array': HComboBox,
+        'array': HListWidget,
         'record': QToolButton,
         'object': QToolButton,
-        'complex': QToolButton,
     }
 
     @staticmethod
@@ -38,7 +38,7 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_widget(
-        widget: QWidget,
+        widget: Union[QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget],
         doc: str = None,
         symbols: list = None,
         default: Union[str, int, float, bool] = None) -> QWidget:
@@ -48,6 +48,8 @@ class WidgetUtils(ABC):
         tooltip = doc
         if widget_type == HComboBox:
             WidgetUtils.setup_combo_box(widget, symbols, tooltip, default)
+        elif widget_type == HListWidget:
+            WidgetUtils.setup_list(widget, tooltip, default)
         elif widget_type == QCheckBox:
             WidgetUtils.setup_checkbox(widget, tooltip, default)
         elif widget_type in [QSpinBox, QDoubleSpinBox]:
@@ -71,12 +73,12 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_combo_box(
-        widget: QWidget,
+        widget: HComboBox,
         symbols: List[str],
         tooltip: str = None,
         default: str = None) -> QWidget:
 
-        widget.addItems(symbols or [])
+        widget.addItems(symbols or default or [])
         widget.setEditable(True)
         widget.lineEdit().setPlaceholderText(tooltip)
         widget.setCurrentText(default or widget.itemText(0))
@@ -84,8 +86,19 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
+    def setup_list(
+        widget: HListWidget,
+        tooltip: str = None,
+        default: str = None) -> QWidget:
+
+        widget.addItems(default or [])
+        widget.set_editable()
+
+        return WidgetUtils.setup_widget_commons(widget, tooltip)
+
+    @staticmethod
     def setup_checkbox(
-        widget: QWidget,
+        widget: QCheckBox,
         tooltip: str = None,
         default: Union[int, float] = False) -> QWidget:
 
@@ -95,11 +108,11 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_spin_box(
-        widget: QWidget,
+        widget: QSpinBox,
         tooltip: str = None,
         default: Union[int, float] = 0) -> QWidget:
 
-        min_val, max_val = 0.0, 9999.999
+        min_val, max_val = 0, 9999
         widget.setMinimum(min_val)
         widget.setMaximum(max_val)
         widget.setValue(default or 0)
@@ -109,7 +122,7 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_line_edit(
-        widget: QWidget,
+        widget: QLineEdit,
         tooltip: str = None,
         default: str = '') -> QWidget:
 
@@ -119,7 +132,7 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_tool_button(widget: QWidget) -> QWidget:
+    def setup_tool_button(widget: QToolButton) -> QWidget:
         WidgetUtils.setup_widget_commons(widget, "Click to fill")
         widget.setText(FormIcons.SELECTOR.value)
         widget.setMaximumWidth(30)

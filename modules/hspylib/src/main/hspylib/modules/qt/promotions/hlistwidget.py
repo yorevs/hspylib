@@ -28,7 +28,7 @@ class HListWidget(QListWidget):
         """TODO"""
         return flags ^ flag if flags & flag == flag else flags
 
-    def __init__(self, parent: Optional[QWidget]):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.editable = False
         self.selectable = True

@@ -130,7 +130,8 @@ class AvroSchema(KafkaSchema):
         else:
             raise InvalidStateError(f"UnsupportedSchema: {self._filepath}")
 
-    def form_dict(self) -> dict:
+    def form_object(self) -> dict:
+        """TODO"""
         dict_fields = defaultdict()
         for field in self._attributes.fields:
             dict_fields.update({field.name: field.a_type.empty_value()})

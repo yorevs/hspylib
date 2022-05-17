@@ -14,7 +14,10 @@
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
+from PyQt5.QtWidgets import QWidget
+
 from kafman.core.schema.schema_field_type import SchemaFieldType
+from kafman.core.schema.widget_utils import WidgetUtils
 
 
 class SchemaField(ABC):
@@ -52,6 +55,6 @@ class SchemaField(ABC):
     def get_value(self) -> Optional[dict]:
         """Return the value contained by the schema widget. This may vary depending on the QWidget class"""
 
-    @abstractmethod
-    def create_input_widget(self):
-        """Return the QWidget type required by this field"""
+    def create_input_widget(self) -> QWidget:
+        self.widget = WidgetUtils.get_widget(self.a_type)()
+        return WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)

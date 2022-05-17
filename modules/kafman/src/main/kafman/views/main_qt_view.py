@@ -256,7 +256,7 @@ class MainQtView(QtView):
         """Return the message built from the schema form"""
         if not schema:
             schema = self._schema()
-        message = schema.form_dict()
+        message = schema.form_object()
         stk_form_panel = self.ui.scr_schema_fields.widget()
         # for idx in range(0, stk_form_panel.count()):
         #     layout = stk_form_panel.widget(idx).layout()
@@ -328,6 +328,7 @@ class MainQtView(QtView):
                         self._display_error(f"Unsupported schema: => {str(err)}")
                     except InvalidStateError as err:
                         self._display_error(f"Add schema failed: => {str(err)}")
+                        raise InvalidStateError(err)
 
     def _deselect_schema(self):
         """Deselect current selected serialization schema"""
