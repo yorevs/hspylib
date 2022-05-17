@@ -94,8 +94,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
-            <height>528</height>
+            <width>104</width>
+            <height>120</height>
            </rect>
           </property>
           <attribute name="label">
@@ -633,8 +633,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
-            <height>528</height>
+            <width>165</width>
+            <height>74</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1100,7 +1100,7 @@
            <item>
             <widget class="QStackedWidget" name="stk_producer_edit">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="page_txt_producer">
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1248,6 +1248,9 @@
                  </property>
                  <property name="toolTip">
                   <string>The message to be produced</string>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Type in the message to be produced</string>
                  </property>
                 </widget>
                </item>
