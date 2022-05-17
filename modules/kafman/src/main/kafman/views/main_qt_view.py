@@ -33,7 +33,7 @@ from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QComboBox, QFileDialog
+from PyQt5.QtWidgets import QFileDialog
 
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
@@ -256,21 +256,21 @@ class MainQtView(QtView):
         """Return the message built from the schema form"""
         if not schema:
             schema = self._schema()
-        message = defaultdict()
+        message = schema.form_dict()
         stk_form_panel = self.ui.scr_schema_fields.widget()
-        for idx in range(0, stk_form_panel.count()):
-            layout = stk_form_panel.widget(idx).layout()
-            columns = layout.columnCount()
-            fields = schema.get_schema_fields()
-            for index, field in enumerate(fields) if fields else []:
-                widget_idx = ((index + 1) * columns) - 1
-                widget = layout.itemAt(widget_idx).widget()
-                if validate and not field.is_valid():
-                    raise InvalidInputError('Form contains unfilled required fields')
-                field_value = field.get_value()
-                message.update(field_value if field_value else {field.name: ''})
-                if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
-                    widget.clear()
+        # for idx in range(0, stk_form_panel.count()):
+        #     layout = stk_form_panel.widget(idx).layout()
+        #     columns = layout.columnCount()
+        #     fields = schema.get_schema_fields()
+        #     for index, field in enumerate(fields) if fields else []:
+        #         widget_idx = ((index + 1) * columns) - 1
+        #         widget = layout.itemAt(widget_idx).widget()
+        #         if validate and not field.is_valid():
+        #             raise InvalidInputError('Form contains unfilled required fields')
+        #         field_value = field.get_value()
+        #         message.update(field_value if field_value else {field.name: ''})
+        #         if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
+        #             widget.clear()
 
         return json.dumps(message, indent=0).replace('\n', '').strip()
 
@@ -575,7 +575,6 @@ class MainQtView(QtView):
         average_produced: int,
         average_consumed: int) -> None:
         """Update the consumer and producer statistics"""
-
         self.ui.lbl_stats_produced.setText(str(produced_total))
         self.ui.lbl_stats_produced_ps.setText(str(produced_in_a_tick))
         self.ui.lbl_stats_produced_avg.setText(str(average_produced))

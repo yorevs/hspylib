@@ -11,6 +11,7 @@
 
    Copyright 2021, HSPyLib team
 """
+from collections import defaultdict
 
 from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
@@ -47,3 +48,6 @@ class PlainSchema(KafkaSchema):
             'key.deserializer': StringDeserializer(str(self._charset)),
             'value.deserializer': StringDeserializer(str(self._charset))
         }
+
+    def form_dict(self) -> dict:
+        return defaultdict()
