@@ -11,7 +11,7 @@
 
    Copyright 2021, HSPyLib team
 """
-from typing import List, Union
+from typing import Any, List, Union
 
 from hspylib.core.enums.enumeration import Enumeration
 
@@ -47,7 +47,21 @@ class SchemaFieldType(Enumeration):
 
     @classmethod
     def is_simple_type(cls, type_str: str):
-        return type_str not in ['null', 'complex', 'record'] and type_str in SchemaFieldType.values()
+        return type_str not in ['complex', 'record'] and type_str in SchemaFieldType.values()
+
+    def empty_value(self) -> Any:
+        if self.value == 'boolean':
+            return False
+        elif self.value in ['int', 'long']:
+            return 0
+        elif self.value in ['float', 'double']:
+            return 0.0
+        elif self.value == 'bytes':
+            return b''
+        elif self.value == 'array':
+            return []
+        else:
+            return ''
 
     def is_complex(self):
         return self.value == 'complex'

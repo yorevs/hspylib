@@ -103,6 +103,10 @@ class KafkaSchema(ABC):
     def settings(self) -> dict:
         """Return the required schema settings"""
 
+    @abstractmethod
+    def form_dict(self) -> dict:
+        """Return the empty json schema object"""
+
     def get_filepath(self) -> str:
         """Return the schema file path"""
         return self._filepath

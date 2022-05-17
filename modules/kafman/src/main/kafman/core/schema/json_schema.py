@@ -11,6 +11,7 @@
 
    Copyright 2021, HSPyLib team
 """
+from collections import defaultdict
 from typing import List
 
 from confluent_kafka.schema_registry.json_schema import JSONDeserializer, JSONSerializer
@@ -84,3 +85,6 @@ class JsonSchema(KafkaSchema):
 
     def _parse(self) -> None:
         pass
+
+    def form_dict(self) -> dict:
+        return defaultdict()

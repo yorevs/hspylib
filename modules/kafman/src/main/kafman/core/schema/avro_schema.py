@@ -11,6 +11,7 @@
 
    Copyright 2021, HSPyLib team
 """
+from collections import defaultdict
 from typing import List, Tuple
 
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
@@ -128,3 +129,10 @@ class AvroSchema(KafkaSchema):
                 self._attributes.fields = FieldFactory.create_fields(fields)
         else:
             raise InvalidStateError(f"UnsupportedSchema: {self._filepath}")
+
+    def form_dict(self) -> dict:
+        dict_fields = defaultdict()
+        for field in self._attributes.fields:
+            dict_fields.update({field.name: field.a_type.empty_value()})
+
+        return dict_fields
