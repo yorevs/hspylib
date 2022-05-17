@@ -242,7 +242,7 @@ class MainQtView(QtView):
             msgs = [text] if self._is_json(text) else text.split('\n')
             return list(map(lambda x: remove_linebreaks(x), filter(None, msgs)))
 
-        return self._schema_form_message(schema=schema)
+        return self._form_to_message(schema=schema)
 
     def _open_message_file(self) -> None:
         file_tuple = QFileDialog.getOpenFileNames(
@@ -252,28 +252,31 @@ class MainQtView(QtView):
             self._last_used_dir = dirname(file_tuple[0][0])
             self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text())
 
-    def _schema_form_message(self, clear_form: bool = True, validate: bool = True, schema: KafkaSchema = None) -> str:
+    def _form_to_message(self, clear_form: bool = True, validate: bool = True, schema: KafkaSchema = None) -> str:
         """Return the message built from the schema form"""
         if not schema:
             schema = self._schema()
         message = defaultdict()
-        layout = self.ui.fr_schema_fields.layout()
-        columns = layout.columnCount()
-        for index, field in enumerate(schema.get_schema_fields()):
-            widget_idx = ((index + 1) * columns) - 1
-            widget = layout.itemAt(widget_idx).widget()
-            if validate and not field.is_valid():
-                raise InvalidInputError('Form contains unfilled required fields')
-            field_value = field.get_value()
-            message.update(field_value if field_value else {field.name: ''})
-            if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
-                widget.clear()
+        stk_form_panel = self.ui.scr_schema_fields.widget()
+        for idx in range(0, stk_form_panel.count()):
+            layout = stk_form_panel.widget(idx).layout()
+            columns = layout.columnCount()
+            fields = schema.get_schema_fields()
+            for index, field in enumerate(fields) if fields else []:
+                widget_idx = ((index + 1) * columns) - 1
+                widget = layout.itemAt(widget_idx).widget()
+                if validate and not field.is_valid():
+                    raise InvalidInputError('Form contains unfilled required fields')
+                field_value = field.get_value()
+                message.update(field_value if field_value else {field.name: ''})
+                if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
+                    widget.clear()
 
         return json.dumps(message, indent=0).replace('\n', '').strip()
 
     def _export_form(self) -> None:
         """Export the message from the schema form to the producer text editor"""
-        self.ui.txt_producer.setText(self._schema_form_message(clear_form=False, validate=False))
+        self.ui.txt_producer.setText(self._form_to_message(clear_form=False, validate=False))
         self._format_message()
 
     def _format_message(self) -> None:
@@ -309,7 +312,7 @@ class MainQtView(QtView):
             file_tuple = QFileDialog.getOpenFileNames(
                 self.ui.splitter_pane,
                 'Open schema', self._last_schema_dir or '.', f"Schema files ({self._supported_schemas()})")
-        if file_tuple and file_tuple[0]:
+        if file_tuple and len(file_tuple[0]):
             for schema_file in file_tuple[0]:
                 self._last_schema_dir = dirname(schema_file)
                 registry_url = self._test_registry_url()
@@ -337,10 +340,10 @@ class MainQtView(QtView):
             content = self._all_schemas[schema_name].get_content_dict()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
             self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2, sort_keys=False))
-            self._build_schema_layout()
-            self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
-            self.ui.tbtn_form_view.setEnabled(True)
-            self.ui.lbl_schema_fields.setText(f"{schema_name} Schema Fields")
+            if self._build_schema_layout():
+                self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
+                self.ui.tbtn_form_view.setEnabled(True)
+                self.ui.lbl_schema_fields.setText(f"{schema_name} Schema Fields")
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.set_plain_text('')
@@ -348,15 +351,21 @@ class MainQtView(QtView):
             self.ui.tbtn_form_view.setEnabled(False)
             self.ui.lbl_schema_fields.setText('Form Schema Fields')
 
-    def _build_schema_layout(self):
+    def _build_schema_layout(self) -> bool:
         """Build a form based on the selected schema using a grid layout"""
         sel_schema = self.ui.cmb_sel_schema.currentText()
         if sel_schema:
             schema = self._all_schemas[sel_schema]
-            if schema:
-                self._cleanup_schema_layout()
-                form_widget = schema.create_schema_form_widget(self.ui.tab_widget)
-                self.ui.scr_schema_fields.setWidget(form_widget)
+            try:
+                if schema:
+                    self._cleanup_schema_layout()
+                    form_widget = schema.create_schema_form_widget(self.ui.tab_widget)
+                    self.ui.scr_schema_fields.setWidget(form_widget)
+                    return True
+            except AttributeError:
+                self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
+                self._display_error(f"Invalid schema {schema} was removed")
+        return False
 
     def _cleanup_schema_layout(self) -> None:
         """Remove all widgets from the current grid layout"""
@@ -681,12 +690,13 @@ class MainQtView(QtView):
                                 self._last_used_dir = prop_value
                             elif prop_name == 'schema':
                                 t_schema = ast.literal_eval(prop_value), f"Schema files ({self._supported_schemas()})"
-                                self._add_schema(t_schema)
-                                self._deselect_schema()
+                                if len(t_schema[0]) > 0:
+                                    self._add_schema(t_schema)
+                                    self._deselect_schema()
                             elif prop_name == 'last_schema':
                                 self.ui.cmb_sel_schema.setCurrentText(prop_value)
                             elif prop_name == 'registry_url':
-                                self.ui.cmb_registry_url.setCurrentText(prop_value)
+                                self.ui.cmb_registry_url.setCurrentText(prop_value or 'localhost:8081')
                 except ValueError:
                     log.warning("Invalid history value \"%s\" for setting \"%s\"", prop_value, prop_name)
         else:

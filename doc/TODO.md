@@ -10,7 +10,6 @@
 6. Fix README.md images and finish the documentation.
 7. Replace setup.py: https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
-9. PyPi Use token instead of un/pw
 
 ## HSPYLIB-FIREBASE
 

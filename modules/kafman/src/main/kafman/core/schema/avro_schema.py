@@ -22,7 +22,6 @@ from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QStackedWidget, QVBoxLa
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.field.field_factory import FieldFactory
-from kafman.core.schema.field.record_field import RecordField
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType

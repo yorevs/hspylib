@@ -113,7 +113,7 @@ class KafkaSchema(ABC):
 
     def get_schema_name(self) -> str:
         """Return the schema name"""
-        return self._attributes.name
+        return self._schema_name
 
     def get_schema_fields(self) -> List['SchemaField']:
         """Return the schema fields"""
