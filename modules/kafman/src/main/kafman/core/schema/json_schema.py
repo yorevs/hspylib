@@ -86,5 +86,5 @@ class JsonSchema(KafkaSchema):
     def _parse(self) -> None:
         pass
 
-    def form_dict(self) -> dict:
+    def form_object(self) -> dict:
         return defaultdict()

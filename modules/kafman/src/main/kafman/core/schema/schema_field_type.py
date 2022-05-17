@@ -20,36 +20,34 @@ class SchemaFieldType(Enumeration):
     """TODO"""
 
     # @formatter:off
-    BOOLEAN         = 'boolean'
-    INT             = 'int'
-    LONG            = 'long'
-    FLOAT           = 'float'
-    DOUBLE          = 'double'
-    BYTES           = 'bytes'
-    STRING          = 'string'
-    RECORD          = 'record'
-    ENUM            = 'enum'
-    ARRAY           = 'array'
-    MAP             = 'map'
-    FIXED           = 'fixed'
-    COMPLEX         = 'complex'
+    BOOLEAN         = 'boolean'  # A binary value
+    INT             = 'int'      # 32-bit signed integer
+    LONG            = 'long'     # 64-bit signed integer
+    FLOAT           = 'float'    # Single precision (32-bit) IEEE 754 floating-point number
+    DOUBLE          = 'double'   # Double precision (64-bit) IEEE 754 floating-point number
+    BYTES           = 'bytes'    # Sequence of 8-bit unsigned bytes
+    STRING          = 'string'   # Unicode character sequence
+    RECORD          = 'record'   # Records use the type name "record"
+    ENUM            = 'enum'     # Enums use the type name "enum"
+    ARRAY           = 'array'    # Arrays use the type name "array"
+    MAP             = 'map'      # Maps use the type name "map"
+    UNION           = 'union'    # Unions, as mentioned above, are represented using JSON arrays
+    FIXED           = 'fixed'    # Fixed uses the type name "fixed"
     # @formatter:on
 
     @classmethod
     def of_type(cls, r_type: Union[str, List[Union[str, dict]]]) -> 'SchemaFieldType':
-        if isinstance(r_type, str):
+        """TODO"""
+        if isinstance(r_type, str):  # Primitive Types
             return SchemaFieldType.of_value(r_type)
-        else:
-            c_type = next(
-                (x for x in r_type if cls.is_simple_type(x)),
-                'record' if 'record' in r_type else 'complex')
+        elif isinstance(r_type, dict):
+            return SchemaFieldType.of_value(r_type['type'])
+        else:  # Complex Types
+            c_type = next((x['type'] if isinstance(x, dict) else x for x in r_type if x != 'null'), None)
             return SchemaFieldType.of_value(c_type)
 
-    @classmethod
-    def is_simple_type(cls, type_str: str):
-        return type_str not in ['complex', 'record'] and type_str in SchemaFieldType.values()
-
     def empty_value(self) -> Any:
+        """TODO"""
         if self.value == 'boolean':
             return False
         elif self.value in ['int', 'long']:
@@ -63,11 +61,8 @@ class SchemaFieldType(Enumeration):
         else:
             return ''
 
-    def is_complex(self):
-        return self.value == 'complex'
-
     def is_primitive(self):
-        return self.value not in ['record', 'enum', 'array', 'map', 'fixed']
+        return self.value not in ['record', 'enum', 'array', 'map', 'union', 'fixed']
 
     def is_record(self):
         return self.value == 'record'

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_field_type import SchemaFieldType
+from kafman.core.schema.widget_utils import WidgetUtils
 
 
 class ArrayField(SchemaField):
@@ -26,7 +27,8 @@ class ArrayField(SchemaField):
         self.items = items
 
     def create_input_widget(self) -> QWidget:
-        pass
+        self.widget = WidgetUtils.get_widget(self.a_type)()
+        return WidgetUtils.setup_widget(self.widget, self.doc, self.items, default=self.default)
 
     def get_value(self) -> Optional[dict]:
         pass
