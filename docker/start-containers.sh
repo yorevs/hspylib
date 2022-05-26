@@ -7,6 +7,8 @@ COMPOSES=${COMPOSES:-$(find . -maxdepth 1 ! -path . -type d | cut -c3-)}
 popd &> /dev/null || exit 1
 [[ "${#COMPOSES[@]}" -eq 0 ]] && exit 0
 
+DOCKER_FLAGS=('--force-recreate' '--build' '--remove-orphans' '--detach')
+
 # @purpose: Start all docker-compose.yml
 # -param $1: if the execution is on an interactive console or not
 startContainers() {
@@ -29,7 +31,7 @@ startContainers() {
       echo -e "${BLUE}⠿ Container ${container} is ${status}"
       echo -e "⠿ Starting container ${container} ${NC}"
       pushd "composes/${container}" &>/dev/null || exit 1
-      if docker compose up --force-recreate --build --remove-orphans --detach; then
+      if docker compose up ${DOCKER_FLAGS[*]}; then
         echo ''
       else
         echo -e "${RED}⠿ Docker (docker compose up) command failed! ${NC}\n"
