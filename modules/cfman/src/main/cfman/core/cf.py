@@ -27,6 +27,7 @@ class CloudFoundry(metaclass=Singleton):
         self.connected = False
         self.targeted = {'org': None, 'space': None, 'targeted': False}
         self.last_result = None
+        self.last_exit_code = None
 
     def is_targeted(self) -> bool:
         return self.targeted['org'] and self.targeted['space'] and self.targeted['targeted']
@@ -105,5 +106,5 @@ class CloudFoundry(metaclass=Singleton):
         Terminal.shell_poll(f"cf logs {kwargs['app']}")
 
     def _exec(self, cmd_line: str) -> str:
-        self.last_result = Terminal.shell_exec(f"cf {cmd_line}")
+        self.last_result, self.last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")
         return self.last_result

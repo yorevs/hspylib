@@ -132,6 +132,7 @@ class AvroSchema(KafkaSchema):
 
     def form_object(self) -> dict:
         """TODO"""
+
         dict_fields = defaultdict()
         for field in self._attributes.fields:
             dict_fields.update({field.name: field.a_type.empty_value()})
