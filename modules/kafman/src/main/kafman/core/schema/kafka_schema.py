@@ -13,10 +13,11 @@
 """
 import json
 import logging as log
+from jsonschema import ValidationError, validate as json_validate
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from json.decoder import JSONDecodeError
-from typing import List
+from typing import List, Tuple
 from uuid import uuid4
 
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
@@ -26,6 +27,7 @@ from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic_object
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import remove_linebreaks
+from PyQt5.QtWidgets import QLabel, QStackedWidget, QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
@@ -34,7 +36,7 @@ from kafman.core.schema.schema_type import SchemaType
 class KafkaSchema(ABC):
     """String schema serializer/deserializer"""
 
-    LOCAL_REG_SERVER_URL = 'http://localhost:8081'
+    LOCAL_REGISTRY_SERVER_URL = 'http://localhost:8081'
 
     @classmethod
     def extensions(cls) -> List[str]:
@@ -70,11 +72,11 @@ class KafkaSchema(ABC):
         self._schema_name = 'undefined'
         self._schema_type = schema_type.value
         self._filepath = filepath
-        self._registry_url = build_url(registry_url or self.LOCAL_REG_SERVER_URL)
+        self._registry_url = build_url(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
         self._charset = charset
         self._attributes = new_dynamic_object('SchemaAttributes')
         self._fields = None
-        self._form_widget = None
+        self._stacked_form_widget = None
 
         try:
             if filepath:
@@ -94,6 +96,17 @@ class KafkaSchema(ABC):
 
     def __str__(self):
         return self._schema_name
+
+    @abstractmethod
+    def create_schema_form_widget(self, parent: QWidget) -> QStackedWidget:
+        """Create the stacked frame with the form widget"""
+
+    @abstractmethod
+    def create_schema_form_row_widget(
+        self,
+        field: SchemaField,
+        stack_widget: QStackedWidget) -> Tuple[QLabel, QLabel, QWidget]:
+        """Create a schema form row widget"""
 
     @abstractmethod
     def _parse(self) -> None:
@@ -130,3 +143,11 @@ class KafkaSchema(ABC):
     def get_content_dict(self) -> dict:
         """Return the schema content dictionary"""
         return self._content_dict
+
+    def validate(self, instance: dict) -> bool:
+        """Validate current json instance. If no exception is raised by validate(), the instance is valid."""
+        try:
+            json_validate(instance, self._content_dict)
+            return True
+        except ValidationError:
+            return False

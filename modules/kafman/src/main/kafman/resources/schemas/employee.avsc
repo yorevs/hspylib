@@ -40,6 +40,26 @@
       "name": "active",
       "type": "boolean",
       "default": true
+    },
+    {
+      "name": "properties",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "CustomAttributes",
+          "fields": [
+            {
+              "name": "key",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "type": "string"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

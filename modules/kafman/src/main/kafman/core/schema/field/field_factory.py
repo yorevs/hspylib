@@ -9,7 +9,7 @@ from kafman.core.schema.field.map_field import MapField
 from kafman.core.schema.field.primitive_field import PrimitiveField
 from kafman.core.schema.field.record_field import RecordField
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import SchemaFieldType
 from kafman.core.schema.schema_utils import SchemaUtils
 
 
