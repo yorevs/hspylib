@@ -258,6 +258,7 @@ class MainQtView(QtView):
             schema = self._schema()
         message = schema.form_object()
         stk_form_panel = self.ui.scr_schema_fields.widget()
+        # TODO Complete implementation
         # for idx in range(0, stk_form_panel.count()):
         #     layout = stk_form_panel.widget(idx).layout()
         #     columns = layout.columnCount()
@@ -365,7 +366,7 @@ class MainQtView(QtView):
                     return True
             except AttributeError:
                 self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
-                self._display_error(f"Invalid schema {schema} was removed")
+                self._display_error(f"Invalid schema {schema} was not loaded")
         return False
 
     def _cleanup_schema_layout(self) -> None:

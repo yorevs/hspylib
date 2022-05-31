@@ -1,7 +1,7 @@
 from typing import Optional, Union
 
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import SchemaFieldType
 
 
 class RecordField(SchemaField):

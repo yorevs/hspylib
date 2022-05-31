@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
 
-from kafman.core.schema.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import SchemaFieldType
 
 
 class WidgetUtils(ABC):

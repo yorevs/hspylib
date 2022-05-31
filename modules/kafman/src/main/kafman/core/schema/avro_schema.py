@@ -69,37 +69,36 @@ class AvroSchema(KafkaSchema):
         }
 
     def create_schema_form_widget(self, parent: QWidget) -> QStackedWidget:
-        """TODO"""
-        # TODO Create according to descendant fields using QStackedWidget
+
+        # TODO Fix according to descendant fields using QStackedWidget
         fields = self._attributes.fields
-        self._form_widget = QStackedWidget(parent)
+        self._stacked_form_widget = QStackedWidget(parent)
         if fields and len(fields) > 0:
-            form_pane = QFrame(self._form_widget)
+            form_pane = QFrame(self._stacked_form_widget)
             layout = QGridLayout(form_pane)
             form_pane.setLayout(layout)
             for row, field in enumerate(fields):
                 req_label, label, widget = self \
-                    .create_form_row_widgets(field, self._form_widget)
+                    .create_schema_form_row_widget(field, self._stacked_form_widget)
                 layout.addWidget(label, row, 0)
                 layout.addWidget(req_label, row, 1)
                 layout.addWidget(widget, row, 2)
         else:
-            form_pane = QFrame(self._form_widget)
+            form_pane = QFrame(self._stacked_form_widget)
             layout = QVBoxLayout(form_pane)
             label = QLabel(f'Unable to detect valid fields')
             label.setStyleSheet('QLabel {color: #FF554D;}')
             layout.addWidget(label)
-        self._form_widget.addWidget(form_pane)
+        self._stacked_form_widget.addWidget(form_pane)
 
-        return self._form_widget
+        return self._stacked_form_widget
 
-    def create_form_row_widgets(
+    def create_schema_form_row_widget(
         self,
         field: SchemaField,
-        stack_widget: QStackedWidget) -> Tuple[QLabel, QLabel, QWidget]:
-        """TODO"""
+        stacked_widget: QStackedWidget) -> Tuple[QLabel, QLabel, QWidget]:
 
-        self._form_widget = stack_widget
+        self._stacked_form_widget = stacked_widget
         label = QLabel(f"{field.name[0].upper() + field.name[1:]}: ")
         if field.required:
             req_label = QLabel('*')
@@ -112,26 +111,25 @@ class AvroSchema(KafkaSchema):
         return req_label, label, widget
 
     def _parse(self) -> None:
-        """TODO"""
 
-        if self._content_text.startswith('{') and self._content_text.endswith('}'):
-            self._schema_name = SchemaUtils.check_and_get('name', self._content_dict)
-            field_type = SchemaUtils.check_and_get('type', self._content_dict)
-            self._attributes.name = self._schema_name
-            self._attributes.namespace = SchemaUtils.check_and_get(
-                'namespace', self._content_dict, required=False)
-            self._attributes.doc = SchemaUtils.check_and_get(
-                'doc', self._content_dict, required=False, default=f'the {self._schema_name}')
-            self._attributes.aliases = SchemaUtils.check_and_get(
-                'aliases', self._content_dict, required=False)
-            if 'record' == field_type:
-                fields = SchemaUtils.check_and_get('fields', self._content_dict)
-                self._attributes.fields = FieldFactory.create_fields(fields)
-        else:
+        if not self._content_text.startswith('{') or not  self._content_text.endswith('}'):
             raise InvalidStateError(f"UnsupportedSchema: {self._filepath}")
 
+        self._schema_name = SchemaUtils.check_and_get('name', self._content_dict)
+        self._attributes.name = self._schema_name
+        self._attributes.namespace = SchemaUtils.check_and_get(
+            'namespace', self._content_dict, required=False)
+        self._attributes.doc = SchemaUtils.check_and_get(
+            'doc', self._content_dict, required=False, default=f'the {self._schema_name}')
+        self._attributes.aliases = SchemaUtils.check_and_get(
+            'aliases', self._content_dict, required=False)
+
+        field_type = SchemaUtils.check_and_get('type', self._content_dict)
+        if 'record' == field_type:
+            fields = SchemaUtils.check_and_get('fields', self._content_dict)
+            self._attributes.fields = FieldFactory.create_fields(fields)
+
     def form_object(self) -> dict:
-        """TODO"""
 
         dict_fields = defaultdict()
         for field in self._attributes.fields:

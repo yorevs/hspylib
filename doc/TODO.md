@@ -27,7 +27,7 @@
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont _font(family, 8);
     qApp->setFont(_font);'''
-2. Fix json schema with complex types
+2. Fix json schema form builder
 3. Add a save button for message edit
 4. Add a button to find all topics
 5. Add offset filters
