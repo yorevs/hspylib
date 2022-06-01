@@ -59,7 +59,7 @@ class FieldFactory(ABC):
         return ret_type
 
     @staticmethod
-    def create_fields(fields: List[dict]) -> List[SchemaField]:
+    def create_schema_fields(fields: List[dict]) -> List[SchemaField]:
         """TODO"""
         record_fields = []
         for next_field in fields:

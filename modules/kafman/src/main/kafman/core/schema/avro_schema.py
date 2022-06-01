@@ -117,7 +117,7 @@ class AvroSchema(KafkaSchema):
             if widget is not None:
                 layout.addWidget(widget, row, 2)
             elif isinstance(field, RecordField):
-                record_fields = FieldFactory.create_fields(field.fields)
+                record_fields = FieldFactory.create_schema_fields(field.fields)
                 child_index = self.create_schema_form_widget(form_stack, form_pane, field.name, record_fields)
                 button_next = WidgetUtils.create_goto_form_button(child_index, form_stack)
                 layout.addWidget(button_next, row, 2)
@@ -142,13 +142,16 @@ class AvroSchema(KafkaSchema):
             'doc', self._content_dict, required=False, default=f'the {self._schema_name}')
         self._attributes.aliases = SchemaUtils.check_and_get(
             'aliases', self._content_dict, required=False)
-
         field_type = SchemaUtils.check_and_get('type', self._content_dict)
+
         if 'record' == field_type:
             fields = SchemaUtils.check_and_get('fields', self._content_dict)
-            self._attributes.fields = FieldFactory.create_fields(fields)
+            self._attributes.fields = FieldFactory.create_schema_fields(fields)
+        else:
+            # TODO Need to add the other types such as array, map, etc...
+            raise InvalidStateError(f'Unsupported field type {field_type}')
 
-    def form_object(self) -> dict:
+    def get_json_template(self) -> dict:
 
         dict_fields = defaultdict()
         for field in self._attributes.fields:

@@ -257,7 +257,7 @@ class MainQtView(QtView):
         """Return the message built from the schema form"""
         if not schema:
             schema = self._schema()
-        message = schema.form_object()
+        message = schema.get_json_template()
         stk_form_panel = self.ui.scr_schema_fields.widget()
         # TODO Complete implementation
         # for idx in range(0, stk_form_panel.count()):
@@ -390,7 +390,7 @@ class MainQtView(QtView):
                 widget = form_widget.widget(index)
                 if widget is not None:
                     obj_name = widget.objectName() or str(index)
-                    form_name = f'{obj_name.capitalize()} Form'
+                    form_name = f'{obj_name} Form'
                     self.ui.lbl_current_form.setText(form_name)
 
     def _get_setting(self) -> None:
