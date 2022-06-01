@@ -58,15 +58,31 @@
               "type": "string"
             },
             {
-              "name": "value",
+              "name": "property",
               "type": [
                 "null",
                 {
                   "type": "record",
-                  "name": "CustomValues",
+                  "name": "CustomProperties",
                   "fields": [
                     {
-                      "name": "value",
+                      "name": "PropertyName",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "valuable",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "CustomValuables",
+                  "fields": [
+                    {
+                      "name": "ValuableName",
                       "type": "string"
                     }
                   ]

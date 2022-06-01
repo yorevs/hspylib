@@ -55,6 +55,12 @@ class SchemaField(ABC):
     def get_value(self) -> Optional[dict]:
         """Return the value contained by the schema widget. This may vary depending on the QWidget class"""
 
-    def create_input_widget(self) -> QWidget:
-        self.widget = WidgetUtils.get_widget(self.a_type)()
-        return WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)
+    def create_input_widget(self) -> Optional[QWidget]:
+        widget_type = WidgetUtils.get_widget_type(self.a_type)
+        if widget_type is not None:
+            self.widget = widget_type()
+            widget = WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)
+            widget.setObjectName(f'{widget.__class__.__name__}({self.name})')
+            return widget
+        else:
+            return None

@@ -1,12 +1,15 @@
 from abc import ABC
 from typing import List, Type, Union
 
+from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
+from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
+from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QPushButton, QSizePolicy, QSpinBox, QToolButton, \
+    QWidget
 
 from kafman.core.schema.field.schema_field_type import SchemaFieldType
 
@@ -26,12 +29,12 @@ class WidgetUtils(ABC):
         'fixed': QLineEdit,
         'enum': HComboBox,
         'array': HListWidget,
-        'record': QToolButton,
-        'object': QToolButton,
+        'record': None,
+        'object': None,
     }
 
     @staticmethod
-    def get_widget(field_type: Union[str, SchemaFieldType]) -> Type[QWidget]:
+    def get_widget_type(field_type: Union[str, SchemaFieldType]) -> Type[QWidget]:
         return WidgetUtils.QWIDGET_TYPE_MAP[field_type.value] \
             if isinstance(field_type, SchemaFieldType) \
             else WidgetUtils.QWIDGET_TYPE_MAP[field_type]
@@ -56,8 +59,8 @@ class WidgetUtils(ABC):
             WidgetUtils.setup_spin_box(widget, tooltip, default)
         elif widget_type == QLineEdit:
             WidgetUtils.setup_line_edit(widget, tooltip)
-        elif widget_type == QToolButton:
-            WidgetUtils.setup_tool_button(widget)
+        else:
+            raise InvalidStateError(f'Widget type "{widget_type.name}" is not supported')
 
         return widget
 
@@ -132,10 +135,24 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_tool_button(widget: QToolButton) -> QWidget:
-        WidgetUtils.setup_widget_commons(widget, "Click to fill")
-        widget.setText(FormIcons.SELECTOR.value)
-        widget.setMaximumWidth(30)
-        widget.setMinimumHeight(30)
+    def create_goto_form_button(index : int, form_stack: HStackedWidget) -> QToolButton:
+        tool_button = QToolButton()
+        tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
+        WidgetUtils.setup_widget_commons(tool_button, f'Click to fill the form')
+        tool_button.setText(FormIcons.ARROW_RIGHT.value)
+        tool_button.setMaximumWidth(30)
+        tool_button.setMinimumHeight(30)
 
-        return widget
+        return tool_button
+
+    @staticmethod
+    def create_back_button(index : int, form_stack: HStackedWidget) -> QPushButton:
+        tool_button = QPushButton(FormIcons.ARROW_LEFT.value + " Back")
+        tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
+        WidgetUtils.setup_widget_commons(tool_button, "Click to go to previous form")
+        tool_button.setMaximumWidth(100)
+        tool_button.setMinimumHeight(30)
+        tool_button.setDefault(False)
+        tool_button.setAutoDefault(False)
+
+        return tool_button

@@ -28,7 +28,7 @@ from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from jsonschema import validate as json_validate, ValidationError
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtWidgets import QFrame, QLabel, QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
@@ -98,13 +98,14 @@ class KafkaSchema(ABC):
     def __str__(self):
         return self._schema_name
 
-    @abstractmethod
-    def create_schema_form_widget(self, form_stack: HStackedWidget, fields: List[SchemaField] = None) -> None:
-        """Create the stacked frame with the form widget"""
-
-    @abstractmethod
     def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
         """Create a schema form row widget"""
+        pass
+
+    def create_schema_form_widget(
+        self, form_stack: HStackedWidget, parent_pane: QFrame = None, fields: List[SchemaField] = None) -> int:
+        """Create the stacked frame with the form widget"""
+        pass
 
     @abstractmethod
     def _parse(self) -> None:

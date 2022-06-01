@@ -362,9 +362,9 @@ class MainQtView(QtView):
             try:
                 if schema:
                     self._cleanup_schema_layout()
-                    form_widget = HStackedWidget(self.ui.tab_widget)
-                    schema.create_schema_form_widget(form_widget)
-                    self.ui.scr_schema_fields.setWidget(form_widget)
+                    schema_form = HStackedWidget(self.ui.tab_widget)
+                    schema.create_schema_form_widget(schema_form)
+                    self.ui.scr_schema_fields.setWidget(schema_form)
                     return True
             except AttributeError:
                 self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
@@ -695,7 +695,6 @@ class MainQtView(QtView):
                                 t_schema = ast.literal_eval(prop_value), f"Schema files ({self._supported_schemas()})"
                                 if len(t_schema[0]) > 0:
                                     self._add_schema(t_schema)
-                                    self._deselect_schema()
                             elif prop_name == 'last_schema':
                                 self.ui.cmb_sel_schema.setCurrentText(prop_value)
                             elif prop_name == 'registry_url':

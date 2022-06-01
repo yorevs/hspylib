@@ -19,7 +19,7 @@ from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtWidgets import QFrame, QLabel, QWidget
 
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
@@ -85,12 +85,6 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._content_text, self.from_dict)
         }
-
-    def create_schema_form_widget(self, form_stack: HStackedWidget, fields: List[SchemaField] = None) -> None:
-        pass
-
-    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
-        pass
 
     def _parse(self) -> None:
         pass
