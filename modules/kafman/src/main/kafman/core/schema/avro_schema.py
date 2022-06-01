@@ -18,11 +18,13 @@ from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerialize
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
-from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QStackedWidget, QVBoxLayout, QWidget
+from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
+from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QToolButton, QVBoxLayout, QWidget
 
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
 from kafman.core.schema.field.field_factory import FieldFactory
+from kafman.core.schema.field.record_field import RecordField
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
@@ -68,37 +70,38 @@ class AvroSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
         }
 
-    def create_schema_form_widget(self, parent: QWidget) -> QStackedWidget:
+    def create_schema_form_widget(self, form_stack: HStackedWidget, fields: List[SchemaField] = None) -> QFrame:
 
-        # TODO Fix according to descendant fields using QStackedWidget
-        fields = self._attributes.fields
-        self._stacked_form_widget = QStackedWidget(parent)
-        if fields and len(fields) > 0:
-            form_pane = QFrame(self._stacked_form_widget)
-            layout = QGridLayout(form_pane)
-            form_pane.setLayout(layout)
-            for row, field in enumerate(fields):
-                req_label, label, widget = self \
-                    .create_schema_form_row_widget(field, self._stacked_form_widget)
-                layout.addWidget(label, row, 0)
-                layout.addWidget(req_label, row, 1)
-                layout.addWidget(widget, row, 2)
-        else:
-            form_pane = QFrame(self._stacked_form_widget)
+        form_fields = fields if fields is not None else self._attributes.fields
+        form_pane = QFrame(form_stack)
+
+        if not form_fields or len(form_fields) <= 0:
             layout = QVBoxLayout(form_pane)
             label = QLabel(f'Unable to detect valid fields')
             label.setStyleSheet('QLabel {color: #FF554D;}')
             layout.addWidget(label)
-        self._stacked_form_widget.addWidget(form_pane)
+            form_pane.setLayout(layout)
+            form_pane.resize(600, 400)
+            return form_pane
 
-        return self._stacked_form_widget
+        layout = QGridLayout(form_pane)
+        form_pane.setLayout(layout)
+        index = form_stack.addWidget(form_pane)
 
-    def create_schema_form_row_widget(
-        self,
-        field: SchemaField,
-        stacked_widget: QStackedWidget) -> Tuple[QLabel, QLabel, QWidget]:
+        for row, field in enumerate(form_fields):
+            req_label, label, widget = self.create_schema_form_row_widget(field)
+            layout.addWidget(label, row, 0)
+            layout.addWidget(req_label, row, 1)
+            layout.addWidget(widget, row, 2)
+            if isinstance(widget, QToolButton) and isinstance(field, RecordField):
+                record_fields = FieldFactory.create_fields(field.fields)
+                widget.clicked.connect(lambda: form_stack.slide_to_index(index + 1))
+                self.create_schema_form_widget(form_stack, record_fields)
 
-        self._stacked_form_widget = stacked_widget
+        return form_pane
+
+    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
+
         label = QLabel(f"{field.name[0].upper() + field.name[1:]}: ")
         if field.required:
             req_label = QLabel('*')

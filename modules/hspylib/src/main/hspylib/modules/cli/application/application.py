@@ -31,6 +31,7 @@ from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.cli.application.argument_parser import HSArgumentParser
 from hspylib.modules.cli.application.arguments_builder import ArgumentsBuilder
 from hspylib.modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
+from hspylib.modules.cli.application.exit_hooks import ExitHooks
 from hspylib.modules.cli.application.options_builder import OptionsBuilder
 from hspylib.modules.cli.application.version import AppVersion
 
@@ -69,14 +70,17 @@ class Application(metaclass=Singleton):
         signal.signal(signal.SIGINT, self.exit)
         signal.signal(signal.SIGTERM, self.exit)
 
+        self.exit_hooks = ExitHooks()
+        self.exit_hooks.hook()
         self._run_dir = os.getcwd()
         self._app_name = name
         self._app_version = version
         self._app_description = description
         self._arg_parser = HSArgumentParser(
-            exit_on_error=False, prefix_chars="-", prog=name, allow_abbrev=False,
+            exit_on_error=False, prog=name, allow_abbrev=False,
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            description=dedent(description or ''), usage=usage, epilog=dedent(epilog or ''))
+            description=dedent(description or ''), usage=usage,
+            epilog=dedent(epilog or ''))
         self._arg_parser.add_argument(
             '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
         self._args = {}
@@ -97,6 +101,7 @@ class Application(metaclass=Singleton):
         """Main entry point handler"""
         log.info('Run started %s', datetime.now())
         try:
+
             atexit.register(self._cleanup)
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)

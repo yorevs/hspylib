@@ -79,9 +79,13 @@ def strip_escapes(string: str) -> str:
     return re.compile(r'\x1b[^m]*m').sub('', string)
 
 
-def remove_linebreaks(text: str) -> str:
+def strip_linebreaks(text: str, re_exp : str = '(\n|\r|\n\r)+') -> str:
     """TODO"""
-    return re.sub(re.compile(r'\s+'), '', text)
+    return re.sub(re.compile(rf'{re_exp}'), '', text)
+
+def strip_extra_spaces(text: str, re_exp: str = '\s+') -> str:
+    """TODO"""
+    return re.sub(re.compile(rf'{re_exp}'), ' ', text)
 
 
 def print_unicode(uni_code: Union[str, int]) -> None:
@@ -119,9 +123,3 @@ class TextCase(ABC):
     UPPER_CASE = uppercase
     LOWER_CASE = lowercase
     CAMEL_CASE = camelcase
-
-
-if __name__ == '__main__':
-    print_unicode('118')
-    print_unicode('f118')
-    print_unicode(0xf118)

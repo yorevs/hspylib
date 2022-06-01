@@ -13,7 +13,6 @@
 """
 import json
 import logging as log
-from jsonschema import ValidationError, validate as json_validate
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from json.decoder import JSONDecodeError
@@ -26,8 +25,10 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic_object
 from hspylib.core.tools.preconditions import check_not_none, check_state
-from hspylib.core.tools.text_tools import remove_linebreaks
-from PyQt5.QtWidgets import QLabel, QStackedWidget, QWidget
+from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
+from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
+from jsonschema import validate as json_validate, ValidationError
+from PyQt5.QtWidgets import QLabel, QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
@@ -76,13 +77,13 @@ class KafkaSchema(ABC):
         self._charset = charset
         self._attributes = new_dynamic_object('SchemaAttributes')
         self._fields = None
-        self._stacked_form_widget = None
+        self._form_stack = None
 
         try:
             if filepath:
                 check_state(file_is_not_empty(filepath), f"Schema file is empty or not found: {filepath}")
                 with open(filepath, 'r', encoding=str(self._charset)) as f_schema:
-                    self._content_text = remove_linebreaks(f_schema.read())
+                    self._content_text = strip_extra_spaces(strip_linebreaks(f_schema.read()))
                     self._content_dict = defaultdict(None, json.loads(self._content_text))
                     check_not_none(self._content_dict)
                 self._parse()
@@ -98,14 +99,11 @@ class KafkaSchema(ABC):
         return self._schema_name
 
     @abstractmethod
-    def create_schema_form_widget(self, parent: QWidget) -> QStackedWidget:
+    def create_schema_form_widget(self, form_stack: HStackedWidget, fields: List[SchemaField] = None) -> None:
         """Create the stacked frame with the form widget"""
 
     @abstractmethod
-    def create_schema_form_row_widget(
-        self,
-        field: SchemaField,
-        stack_widget: QStackedWidget) -> Tuple[QLabel, QLabel, QWidget]:
+    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
         """Create a schema form row widget"""
 
     @abstractmethod
