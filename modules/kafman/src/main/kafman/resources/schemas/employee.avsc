@@ -56,6 +56,22 @@
             {
               "name": "value",
               "type": "string"
+            },
+            {
+              "name": "value",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "CustomValues",
+                  "fields": [
+                    {
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

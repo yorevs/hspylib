@@ -25,9 +25,10 @@ from typing import List, Optional, Tuple, Union
 
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
-from hspylib.core.tools.text_tools import remove_linebreaks, strip_escapes
+from hspylib.core.tools.text_tools import strip_linebreaks, strip_escapes
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
@@ -240,7 +241,7 @@ class MainQtView(QtView):
         if isinstance(schema, PlainSchema) or self.ui.stk_producer_edit.currentIndex() == StkProducerEdit.TEXT.value:
             text = self.ui.txt_producer.toPlainText()
             msgs = [text] if self._is_json(text) else text.split('\n')
-            return list(map(lambda x: remove_linebreaks(x), filter(None, msgs)))
+            return list(map(lambda x: strip_linebreaks(x), filter(None, msgs)))
 
         return self._form_to_message(schema=schema)
 
@@ -361,7 +362,8 @@ class MainQtView(QtView):
             try:
                 if schema:
                     self._cleanup_schema_layout()
-                    form_widget = schema.create_schema_form_widget(self.ui.tab_widget)
+                    form_widget = HStackedWidget(self.ui.tab_widget)
+                    schema.create_schema_form_widget(form_widget)
                     self.ui.scr_schema_fields.setWidget(form_widget)
                     return True
             except AttributeError:

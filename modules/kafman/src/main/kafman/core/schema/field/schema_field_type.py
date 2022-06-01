@@ -20,31 +20,34 @@ class SchemaFieldType(Enumeration):
     """TODO"""
 
     # @formatter:off
-    BOOLEAN         = 'boolean'  # A binary value
-    INT             = 'int'      # 32-bit signed integer
-    LONG            = 'long'     # 64-bit signed integer
-    FLOAT           = 'float'    # Single precision (32-bit) IEEE 754 floating-point number
-    DOUBLE          = 'double'   # Double precision (64-bit) IEEE 754 floating-point number
-    BYTES           = 'bytes'    # Sequence of 8-bit unsigned bytes
-    STRING          = 'string'   # Unicode character sequence
-    RECORD          = 'record'   # Records use the type name "record"
-    ENUM            = 'enum'     # Enums use the type name "enum"
-    ARRAY           = 'array'    # Arrays use the type name "array"
-    MAP             = 'map'      # Maps use the type name "map"
-    UNION           = 'union'    # Unions, as mentioned above, are represented using JSON arrays
-    FIXED           = 'fixed'    # Fixed uses the type name "fixed"
+    BOOLEAN         = 'boolean'     # A binary value
+    INT             = 'int'         # 32-bit signed integer
+    LONG            = 'long'        # 64-bit signed integer
+    FLOAT           = 'float'       # Single precision (32-bit) IEEE 754 floating-point number
+    DOUBLE          = 'double'      # Double precision (64-bit) IEEE 754 floating-point number
+    BYTES           = 'bytes'       # Sequence of 8-bit unsigned bytes
+    STRING          = 'string'      # Unicode character sequence
+    RECORD          = 'record'      # Records use the type name "record"
+    ENUM            = 'enum'        # Enums use the type name "enum"
+    ARRAY           = 'array'       # Arrays use the type name "array"
+    MAP             = 'map'         # Maps use the type name "map"
+    UNION           = 'union'       # Unions, as mentioned above, are represented using JSON arrays
+    FIXED           = 'fixed'       # Fixed uses the type name "fixed"
     # @formatter:on
 
     @classmethod
     def of_type(cls, r_type: Union[str, List[Union[str, dict]]]) -> 'SchemaFieldType':
         """TODO"""
-        if isinstance(r_type, str):  # Primitive Types
-            return SchemaFieldType.of_value(r_type)
-        elif isinstance(r_type, dict):
-            return SchemaFieldType.of_value(r_type['type'])
-        else:  # Complex Types
-            c_type = next((x['type'] if isinstance(x, dict) else x for x in r_type if x != 'null'), None)
-            return SchemaFieldType.of_value(c_type)
+        try:
+            if isinstance(r_type, str):  # Primitive Types
+                return SchemaFieldType.of_value(r_type)
+            elif isinstance(r_type, dict):
+                return SchemaFieldType.of_value(r_type['type'])
+            else:  # Complex Types
+                c_type = next((x['type'] if isinstance(x, dict) else x for x in r_type if x != 'null'), None)
+                return SchemaFieldType.of_value(c_type)
+        except TypeError:
+            return SchemaFieldType.STRING
 
     def empty_value(self) -> Any:
         """TODO"""
