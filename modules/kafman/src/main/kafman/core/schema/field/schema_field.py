@@ -60,7 +60,7 @@ class SchemaField(ABC):
         if widget_type is not None:
             self.widget = widget_type()
             widget = WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)
-            widget.setObjectName(f'{widget.__class__.__name__}({self.name})')
+            widget.setObjectName(self.name)
             return widget
         else:
             return None

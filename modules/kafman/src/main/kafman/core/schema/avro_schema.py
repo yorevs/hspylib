@@ -85,9 +85,14 @@ class AvroSchema(KafkaSchema):
         return req_label, label, widget
 
     def create_schema_form_widget(
-        self, form_stack: HStackedWidget, parent_pane: QFrame = None, fields: List[SchemaField] = None) -> int:
+        self,
+        form_stack: HStackedWidget,
+        parent_pane: QFrame = None,
+        form_name: str = None,
+        fields: List[SchemaField] = None) -> int:
 
         form_fields = fields if fields is not None else self._attributes.fields
+        form_name = form_name if form_name is not None else self._schema_name
         form_pane = QFrame(form_stack)
 
         if not form_fields or len(form_fields) <= 0:
@@ -102,19 +107,20 @@ class AvroSchema(KafkaSchema):
         layout = QGridLayout(form_pane)
         form_pane.setLayout(layout)
         index = form_stack.addWidget(form_pane)
-        form_pane.setObjectName(f"Form {str(index)}")
+        form_pane.setObjectName(form_name)
         row = None
 
         for row, field in enumerate(form_fields):
             req_label, label, widget = self.create_schema_form_row_widget(field)
             layout.addWidget(label, row, 0)
             layout.addWidget(req_label, row, 1)
-            if isinstance(field, RecordField):
-                record_fields = FieldFactory.create_fields(field.fields)
-                child_index = self.create_schema_form_widget(form_stack, form_pane, record_fields)
-                widget = WidgetUtils.create_goto_form_button(child_index, form_stack)
             if widget is not None:
                 layout.addWidget(widget, row, 2)
+            elif isinstance(field, RecordField):
+                record_fields = FieldFactory.create_fields(field.fields)
+                child_index = self.create_schema_form_widget(form_stack, form_pane, field.name, record_fields)
+                button_next = WidgetUtils.create_goto_form_button(child_index, form_stack)
+                layout.addWidget(button_next, row, 2)
 
         if index > 0:
             parent_index = form_stack.indexOf(parent_pane)

@@ -135,13 +135,14 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def create_goto_form_button(index : int, form_stack: HStackedWidget) -> QToolButton:
-        tool_button = QToolButton()
+    def create_goto_form_button(index : int, form_stack: HStackedWidget) -> QPushButton:
+        tool_button = QPushButton(FormIcons.ARROW_RIGHT.value + " Fill")
         tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
         WidgetUtils.setup_widget_commons(tool_button, f'Click to fill the form')
-        tool_button.setText(FormIcons.ARROW_RIGHT.value)
-        tool_button.setMaximumWidth(30)
+        tool_button.setMaximumWidth(100)
         tool_button.setMinimumHeight(30)
+        tool_button.setDefault(False)
+        tool_button.setAutoDefault(False)
 
         return tool_button
 
