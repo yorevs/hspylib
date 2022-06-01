@@ -103,7 +103,11 @@ class KafkaSchema(ABC):
         pass
 
     def create_schema_form_widget(
-        self, form_stack: HStackedWidget, parent_pane: QFrame = None, fields: List[SchemaField] = None) -> int:
+        self,
+        form_stack: HStackedWidget,
+        parent_pane: QFrame = None,
+        form_name: str = None,
+        fields: List[SchemaField] = None) -> int:
         """Create the stacked frame with the form widget"""
         pass
 

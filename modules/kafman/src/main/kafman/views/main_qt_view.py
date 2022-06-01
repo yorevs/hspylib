@@ -352,7 +352,7 @@ class MainQtView(QtView):
             self.ui.txt_sel_schema.set_plain_text('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
             self.ui.tbtn_form_view.setEnabled(False)
-            self.ui.lbl_schema_fields.setText('Form Schema Fields')
+            self.ui.lbl_schema_fields.setText('Schema Fields')
 
     def _build_schema_layout(self) -> bool:
         """Build a form based on the selected schema using a grid layout"""
@@ -362,9 +362,11 @@ class MainQtView(QtView):
             try:
                 if schema:
                     self._cleanup_schema_layout()
-                    schema_form = HStackedWidget(self.ui.tab_widget)
-                    schema.create_schema_form_widget(schema_form)
-                    self.ui.scr_schema_fields.setWidget(schema_form)
+                    form_widget = HStackedWidget(self.ui.tab_widget)
+                    form_widget.currentChanged.connect(self._change_form_name)
+                    schema.create_schema_form_widget(form_widget)
+                    self.ui.scr_schema_fields.setWidget(form_widget)
+                    self._change_form_name(0)
                     return True
             except AttributeError:
                 self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
@@ -379,6 +381,17 @@ class MainQtView(QtView):
             widget = item.widget()
             if widget is not None:
                 widget.deleteLater()
+
+    def _change_form_name(self, index: int):
+        """Change the name of the schema form"""
+        if index >= 0:
+            form_widget = self.ui.scr_schema_fields.widget()
+            if form_widget is not None and isinstance(form_widget, HStackedWidget):
+                widget = form_widget.widget(index)
+                if widget is not None:
+                    obj_name = widget.objectName() or str(index)
+                    form_name = f'{obj_name.capitalize()} Form'
+                    self.ui.lbl_current_form.setText(form_name)
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""
