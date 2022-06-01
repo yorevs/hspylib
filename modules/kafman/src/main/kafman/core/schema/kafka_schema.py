@@ -76,6 +76,7 @@ class KafkaSchema(ABC):
         self._registry_url = build_url(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
         self._charset = charset
         self._attributes = new_dynamic_object('SchemaAttributes')
+        self._json_template = defaultdict()
         self._fields = None
         self._form_stack = None
 
@@ -119,9 +120,9 @@ class KafkaSchema(ABC):
     def settings(self) -> dict:
         """Return the required schema settings"""
 
-    @abstractmethod
-    def form_object(self) -> dict:
-        """Return the empty json schema object"""
+    def get_json_template(self) -> dict:
+        """Return the empty schema json template object"""
+        return self._json_template
 
     def get_filepath(self) -> str:
         """Return the schema file path"""

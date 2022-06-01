@@ -89,5 +89,5 @@ class JsonSchema(KafkaSchema):
     def _parse(self) -> None:
         pass
 
-    def form_object(self) -> dict:
+    def get_json_template(self) -> dict:
         return defaultdict()

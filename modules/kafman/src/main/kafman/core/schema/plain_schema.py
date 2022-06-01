@@ -52,6 +52,3 @@ class PlainSchema(KafkaSchema):
             'key.deserializer': StringDeserializer(str(self._charset)),
             'value.deserializer': StringDeserializer(str(self._charset))
         }
-
-    def form_object(self) -> dict:
-        return defaultdict()
