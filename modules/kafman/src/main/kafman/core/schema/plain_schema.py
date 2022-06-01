@@ -18,7 +18,7 @@ from confluent_kafka.serialization import SerializationContext, StringDeserializ
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtWidgets import QFrame, QLabel, QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.kafka_schema import KafkaSchema
@@ -41,12 +41,6 @@ class PlainSchema(KafkaSchema):
 
     def __str__(self):
         return f"[{self._schema_type}] type=plaintext"
-
-    def create_schema_form_widget(self, form_stack: HStackedWidget, fields: List[SchemaField] = None) -> None:
-        pass
-
-    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
-        pass
 
     def _parse(self) -> None:
         pass

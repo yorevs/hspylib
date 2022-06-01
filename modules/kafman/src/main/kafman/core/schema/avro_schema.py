@@ -19,7 +19,7 @@ from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QToolButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QVBoxLayout, QWidget
 
 from kafman.core.consumer_config import ConsumerConfig
 from kafman.core.producer_config import ProducerConfig
@@ -29,6 +29,7 @@ from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
 from kafman.core.schema.schema_utils import SchemaUtils
+from kafman.core.schema.widget_utils import WidgetUtils
 
 
 class AvroSchema(KafkaSchema):
@@ -70,36 +71,6 @@ class AvroSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
         }
 
-    def create_schema_form_widget(self, form_stack: HStackedWidget, fields: List[SchemaField] = None) -> QFrame:
-
-        form_fields = fields if fields is not None else self._attributes.fields
-        form_pane = QFrame(form_stack)
-
-        if not form_fields or len(form_fields) <= 0:
-            layout = QVBoxLayout(form_pane)
-            label = QLabel(f'Unable to detect valid fields')
-            label.setStyleSheet('QLabel {color: #FF554D;}')
-            layout.addWidget(label)
-            form_pane.setLayout(layout)
-            form_pane.resize(600, 400)
-            return form_pane
-
-        layout = QGridLayout(form_pane)
-        form_pane.setLayout(layout)
-        index = form_stack.addWidget(form_pane)
-
-        for row, field in enumerate(form_fields):
-            req_label, label, widget = self.create_schema_form_row_widget(field)
-            layout.addWidget(label, row, 0)
-            layout.addWidget(req_label, row, 1)
-            layout.addWidget(widget, row, 2)
-            if isinstance(widget, QToolButton) and isinstance(field, RecordField):
-                record_fields = FieldFactory.create_fields(field.fields)
-                widget.clicked.connect(lambda: form_stack.slide_to_index(index + 1))
-                self.create_schema_form_widget(form_stack, record_fields)
-
-        return form_pane
-
     def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
 
         label = QLabel(f"{field.name[0].upper() + field.name[1:]}: ")
@@ -112,6 +83,45 @@ class AvroSchema(KafkaSchema):
         widget = field.create_input_widget()
 
         return req_label, label, widget
+
+    def create_schema_form_widget(
+        self, form_stack: HStackedWidget, parent_pane: QFrame = None, fields: List[SchemaField] = None) -> int:
+
+        form_fields = fields if fields is not None else self._attributes.fields
+        form_pane = QFrame(form_stack)
+
+        if not form_fields or len(form_fields) <= 0:
+            layout = QVBoxLayout(form_pane)
+            label = QLabel(f'Unable to detect valid fields')
+            label.setStyleSheet('QLabel {color: #FF554D;}')
+            layout.addWidget(label)
+            form_pane.setLayout(layout)
+            form_pane.resize(600, 400)
+            return 0
+
+        layout = QGridLayout(form_pane)
+        form_pane.setLayout(layout)
+        index = form_stack.addWidget(form_pane)
+        form_pane.setObjectName(f"Form {str(index)}")
+        row = None
+
+        for row, field in enumerate(form_fields):
+            req_label, label, widget = self.create_schema_form_row_widget(field)
+            layout.addWidget(label, row, 0)
+            layout.addWidget(req_label, row, 1)
+            if isinstance(field, RecordField):
+                record_fields = FieldFactory.create_fields(field.fields)
+                child_index = self.create_schema_form_widget(form_stack, form_pane, record_fields)
+                widget = WidgetUtils.create_goto_form_button(child_index, form_stack)
+            if widget is not None:
+                layout.addWidget(widget, row, 2)
+
+        if index > 0:
+            parent_index = form_stack.indexOf(parent_pane)
+            button_back = WidgetUtils.create_back_button(parent_index, form_stack)
+            layout.addWidget(button_back, row + 1, 0)
+
+        return index
 
     def _parse(self) -> None:
 
