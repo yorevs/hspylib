@@ -72,7 +72,6 @@ class JsonSchema(KafkaSchema):
         filepath: str,
         registry_url: str,
         charset: Charset = Charset.UTF_8):
-
         super().__init__(SchemaType.JSON, filepath, registry_url, charset)
 
     def settings(self) -> dict:

@@ -79,9 +79,10 @@ def strip_escapes(string: str) -> str:
     return re.compile(r'\x1b[^m]*m').sub('', string)
 
 
-def strip_linebreaks(text: str, re_exp : str = '(\n|\r|\n\r)+') -> str:
+def strip_linebreaks(text: str, re_exp: str = '(\n|\r|\n\r)+') -> str:
     """TODO"""
     return re.sub(re.compile(rf'{re_exp}'), '', text)
+
 
 def strip_extra_spaces(text: str, re_exp: str = '\s+') -> str:
     """TODO"""

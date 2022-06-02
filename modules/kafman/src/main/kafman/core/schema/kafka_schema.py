@@ -29,6 +29,7 @@ from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QFrame, QLabel, QWidget
 
+from kafman.core.exception.exceptions import InvalidSchemaError
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 

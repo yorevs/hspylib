@@ -32,7 +32,6 @@ class EnumField(SchemaField):
         symbols: List[str],
         default: str = None,
         required: bool = True):
-
         super().__init__(
             name,
             doc,

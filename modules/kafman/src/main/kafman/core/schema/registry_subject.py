@@ -32,4 +32,3 @@ class RegistrySubject:
     def __str__(self):
         return f"type={self.schema_type}, subject={self.subject}, id={self.registry_id}, " \
                f"version={self.version}  => {str(self.schema)}"
-

@@ -41,21 +41,21 @@ class FieldFactory(ABC):
         required = FieldFactory.is_required(field)
         avro_type = SchemaFieldType.of_type(field_type)
         if avro_type.is_primitive():
-            schema_field =  PrimitiveField(field_name, field_doc, avro_type, field_default, required)
+            schema_field = PrimitiveField(field_name, field_doc, avro_type, field_default, required)
         else:
             complex_type = FieldFactory._get_union_type(field_type) if avro_type.is_union() else field_type
             if isinstance(complex_type, PrimitiveSchema):
-                schema_field =  PrimitiveField(field_name, field_doc, complex_type.type, field_default, required)
+                schema_field = PrimitiveField(field_name, field_doc, complex_type.type, field_default, required)
             elif isinstance(complex_type, EnumSchema):
-                schema_field =  EnumField(field_name, field_doc, complex_type.symbols, field_default, required)
+                schema_field = EnumField(field_name, field_doc, complex_type.symbols, field_default, required)
             elif isinstance(complex_type, ArraySchema):
-                schema_field =  ArrayField(field_name, field_doc, complex_type.items, field_default, required)
+                schema_field = ArrayField(field_name, field_doc, complex_type.items, field_default, required)
             elif isinstance(complex_type, MapSchema):
-                schema_field =  MapField(field_name, field_doc, complex_type.values, field_default, required)
+                schema_field = MapField(field_name, field_doc, complex_type.values, field_default, required)
             elif isinstance(complex_type, RecordSchema):
-                schema_field =  RecordField(field_name, field_doc, complex_type.fields, required)
+                schema_field = RecordField(field_name, field_doc, complex_type.fields, required)
             else:
-                schema_field =  InvalidStateError(f'Invalid field type: {complex_type}')
+                schema_field = InvalidStateError(f'Invalid field type: {complex_type}')
 
         check_not_none(schema_field, f'Unable to parse field {field_name}')
 
@@ -65,7 +65,7 @@ class FieldFactory(ABC):
     def _get_union_type(union_type: UnionSchema) -> Optional[Schema]:
         return next((
             sch for sch in union_type.schemas if
-                not isinstance(sch, PrimitiveSchema) or sch.name != 'null'
+            not isinstance(sch, PrimitiveSchema) or sch.name != 'null'
         ), None)
 
     @staticmethod

@@ -34,7 +34,6 @@ from kafman.core.schema.field.schema_field_type import SchemaFieldType
 
 
 class WidgetUtils(ABC):
-
     QWIDGET_TYPE_MAP = {
         'boolean': QCheckBox,
         'integer': QSpinBox,
@@ -154,7 +153,7 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def create_goto_form_button(index : int, form_stack: HStackedWidget) -> QPushButton:
+    def create_goto_form_button(index: int, form_stack: HStackedWidget) -> QPushButton:
         tool_button = QPushButton(FormIcons.ARROW_RIGHT.value + " Fill")
         tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
         WidgetUtils.setup_widget_commons(tool_button, f'Click to fill the form')
@@ -166,7 +165,7 @@ class WidgetUtils(ABC):
         return tool_button
 
     @staticmethod
-    def create_back_button(index : int, form_stack: HStackedWidget) -> QPushButton:
+    def create_back_button(index: int, form_stack: HStackedWidget) -> QPushButton:
         tool_button = QPushButton(FormIcons.ARROW_LEFT.value + " Back")
         tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
         WidgetUtils.setup_widget_commons(tool_button, "Click to go to previous form")

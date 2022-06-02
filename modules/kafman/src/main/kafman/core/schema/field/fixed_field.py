@@ -27,7 +27,6 @@ class FixedField(SchemaField):
         name: str,
         doc: str,
         size: int):
-
         super().__init__(
             name,
             doc,

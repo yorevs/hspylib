@@ -30,7 +30,6 @@ class RecordField(SchemaField):
         doc: str,
         fields: Tuple[Field],
         required: bool = True):
-
         super().__init__(
             name,
             doc,

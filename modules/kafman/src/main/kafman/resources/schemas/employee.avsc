@@ -6,7 +6,10 @@
   "fields": [
     {
       "name": "name",
-      "type": ["null", "string"]
+      "type": [
+        "null",
+        "string"
+      ]
     },
     {
       "name": "age",

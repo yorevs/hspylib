@@ -29,7 +29,6 @@ class MapField(SchemaField):
         values: dict,
         default: str = None,
         required: bool = True):
-
         super().__init__(
             name,
             doc,
