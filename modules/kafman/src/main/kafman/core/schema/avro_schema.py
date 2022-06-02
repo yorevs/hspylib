@@ -13,7 +13,6 @@
 """
 from collections import defaultdict
 from typing import List, Tuple
-
 import avro.schema as schema_parser
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
@@ -22,15 +21,15 @@ from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QFrame, QLabel, QSizePolicy, QSpacerItem, QWidget
-
-from kafman.core.consumer_config import ConsumerConfig
-from kafman.core.producer_config import ProducerConfig
+from kafman.core.consumer.consumer_config import ConsumerConfig
+from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.schema.field.field_factory import FieldFactory
 from kafman.core.schema.field.record_field import RecordField
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
 from kafman.core.schema.widget_utils import WidgetUtils
+
 
 
 class AvroSchema(KafkaSchema):
@@ -138,7 +137,7 @@ class AvroSchema(KafkaSchema):
         if 'record' == field_type:
             self._attributes.fields = FieldFactory.create_schema_fields(self._parsed.fields)
         else:
-            # TODO Need to add the other types such as array, map, etc...
+            # TODO Check if it is needed to add the other types such as array, map, etc...
             raise InvalidStateError(f'Unsupported field type {field_type}')
 
     def get_json_template(self) -> dict:

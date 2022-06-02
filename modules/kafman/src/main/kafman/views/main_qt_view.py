@@ -22,7 +22,6 @@ from collections import defaultdict
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
-
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
 from hspylib.core.tools.text_tools import strip_escapes, strip_linebreaks
@@ -34,14 +33,13 @@ from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QFileDialog, QSizePolicy
-
+from PyQt5.QtWidgets import QFileDialog
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
-from kafman.core.consumer_config import ConsumerConfig
-from kafman.core.consumer_worker import ConsumerWorker
+from kafman.core.consumer.consumer_config import ConsumerConfig
+from kafman.core.consumer.consumer_worker import ConsumerWorker
 from kafman.core.kafka_message import KafkaMessage
-from kafman.core.producer_config import ProducerConfig
-from kafman.core.producer_worker import ProducerWorker
+from kafman.core.producer.producer_config import ProducerConfig
+from kafman.core.producer.producer_worker import ProducerWorker
 from kafman.core.schema.avro_schema import AvroSchema
 from kafman.core.schema.json_schema import JsonSchema
 from kafman.core.schema.kafka_schema import KafkaSchema
@@ -51,6 +49,7 @@ from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
 from kafman.core.statistics_worker import StatisticsWorker
 from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
+
 
 HERE = get_path(__file__)
 
@@ -393,8 +392,6 @@ class MainQtView(QtView):
                     obj_name = form_pane.objectName() or str(index)
                     form_name = f'{obj_name} Form'
                     self.ui.lbl_current_form.setText(form_name)
-                    form_pane.adjustSize()
-                    form_stack.adjustSize()
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""
