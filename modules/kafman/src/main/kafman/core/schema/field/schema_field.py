@@ -46,13 +46,13 @@ class SchemaField(ABC):
             f"type={str(self.a_type)}, " \
             f"required={self.required}, "
 
-    def is_valid(self) -> bool:
-        """Whether the field is valid, based on it's values and required flag"""
-        return not self.required or self.get_value() is not None
-
     @abstractmethod
     def get_value(self) -> Optional[dict]:
         """Return the value contained by the schema widget. This may vary depending on the QWidget class"""
+
+    def is_valid(self) -> bool:
+        """Whether the field is valid, based on it's values and required flag"""
+        return not self.required or self.get_value() is not None
 
     def create_input_widget(self) -> Optional[QWidget]:
         widget_type = WidgetUtils.get_widget_type(self.a_type)
