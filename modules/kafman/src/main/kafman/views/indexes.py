@@ -13,6 +13,7 @@
 """
 from hspylib.core.enums.enumeration import Enumeration
 
+
 class Tabs(Enumeration):
     """TabWidget indexes"""
     PRODUCER = 0

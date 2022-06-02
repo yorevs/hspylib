@@ -14,6 +14,7 @@
 
 from abc import ABC
 
+
 class ConsumerConfig(ABC):  # pylint: disable=too-few-public-methods
     """Some of the confluence exposed consumer properties"""
 

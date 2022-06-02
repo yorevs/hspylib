@@ -93,7 +93,7 @@ class TestPreconditions(unittest.TestCase):
             lambda: check_index_in_range(2, 1, arr))
 
     def test_should_get_the_element_value(self):
-        dct = { "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5 }
+        dct = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
         self.assertEqual(check_and_get('zero', dct), 0)
         self.assertEqual(check_and_get('one', dct), 1)
         self.assertEqual(check_and_get('two', dct), 2)
@@ -102,13 +102,13 @@ class TestPreconditions(unittest.TestCase):
         self.assertEqual(check_and_get('five', dct), 5)
 
     def test_should_get_the_default_value(self):
-        dct = { "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5 }
-        self.assertEqual(check_and_get('six', dct, False, default = 6), 6)
-        self.assertEqual(check_and_get('seven', dct, False, default = 7), 7)
+        dct = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
+        self.assertEqual(check_and_get('six', dct, False, default=6), 6)
+        self.assertEqual(check_and_get('seven', dct, False, default=7), 7)
         self.assertEqual(check_and_get('eight', dct, False), None)
 
     def test_should_fail_if_element_if_not_found_and_required(self):
-        dct = { "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5 }
+        dct = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
         self.assertRaisesRegex(
             InvalidArgumentError,
             'Precondition failed: Required attribute six was not found in the content dictionary',

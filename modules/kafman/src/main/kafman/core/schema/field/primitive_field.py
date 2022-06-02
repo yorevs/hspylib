@@ -29,7 +29,6 @@ class PrimitiveField(SchemaField):
         p_type: SchemaFieldType,
         default: Any = None,
         required: bool = True):
-
         super().__init__(
             name,
             doc,
