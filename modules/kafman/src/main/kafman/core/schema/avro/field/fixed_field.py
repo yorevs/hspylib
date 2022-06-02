@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: hspylib-kafman
    @package: hspylib-kafman.main.kafman.core.schema.field
-      @file: primitive_field.py
+      @file: fixed_field.py
    @created: Wed, 1 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
       @site: "https://github.com/yorevs/hspylib")
@@ -14,27 +14,24 @@
    Copyright 2022, HomeSetup team
 """
 
-from typing import Any, Optional
+from typing import Optional
 
-from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import AvroType
+from kafman.core.schema.schema_field import SchemaField
+from kafman.core.schema.avro.avro_type import AvroType
 
 
-class PrimitiveField(SchemaField):
+class FixedField(SchemaField):
 
     def __init__(
         self,
         name: str,
         doc: str,
-        p_type: AvroType,
-        default: Any = None,
-        required: bool = True):
+        size: int):
         super().__init__(
             name,
             doc,
-            p_type,
-            default,
-            required=required)
+            AvroType.FIXED,
+            default=size)
 
     def get_value(self) -> Optional[dict]:
         pass

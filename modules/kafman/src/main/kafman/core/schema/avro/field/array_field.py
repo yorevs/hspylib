@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: hspylib-kafman
    @package: hspylib-kafman.main.kafman.core.schema.field
-      @file: enum_field.py
+      @file: array_field.py
    @created: Wed, 1 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
       @site: "https://github.com/yorevs/hspylib")
@@ -18,32 +18,32 @@ from typing import List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
-from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import AvroType
+from kafman.core.schema.schema_field import SchemaField
+from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.widget_utils import WidgetUtils
 
 
-class EnumField(SchemaField):
+class ArrayField(SchemaField):
 
     def __init__(
         self,
         name: str,
         doc: str,
-        symbols: List[str],
+        items: List[str],
         default: str = None,
         required: bool = True):
         super().__init__(
             name,
             doc,
-            AvroType.ENUM,
+            AvroType.ARRAY,
             default,
             required=required)
 
-        self.symbols = symbols
+        self.items = items
 
     def create_input_widget(self) -> QWidget:
         self.widget = WidgetUtils.get_widget_type(self.a_type)()
-        return WidgetUtils.setup_widget(self.widget, self.doc, self.symbols, default=self.default)
+        return WidgetUtils.setup_widget(self.widget, self.doc, self.items, default=self.default)
 
     def get_value(self) -> Optional[dict]:
         pass

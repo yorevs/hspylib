@@ -11,7 +11,6 @@
 
    Copyright 2021, HSPyLib team
 """
-from collections import defaultdict
 from typing import List, Tuple
 
 import avro.schema as schema_parser
@@ -21,16 +20,17 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QFrame, QLabel, QSizePolicy, QSpacerItem, QWidget
+from PyQt5.QtWidgets import QLabel
 
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
-from kafman.core.schema.field.field_factory import FieldFactory
-from kafman.core.schema.field.record_field import RecordField
-from kafman.core.schema.field.schema_field import SchemaField
+from kafman.core.schema.avro.field.field_factory import FieldFactory
+from kafman.core.schema.avro.field.record_field import RecordField
 from kafman.core.schema.kafka_schema import KafkaSchema
+from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
-from kafman.core.schema.widget_utils import WidgetUtils
+from kafman.core.schema.widget_utils import INPUT_WIDGET
+from kafman.views.form_pane import FormPane
 
 
 class AvroSchema(KafkaSchema):
@@ -72,23 +72,24 @@ class AvroSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
         }
 
-    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
+    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, INPUT_WIDGET]:
 
-        label = QLabel(f"{field.name[0].upper() + field.name[1:]}: ")
+        field_name = field.name.replace('_', ' ').title()
+        label = QLabel(f"{field_name}: ")
         if field.required:
             req_label = QLabel('*')
             req_label.setStyleSheet('QLabel {color: #FF554D;}')
         else:
             req_label = QLabel(' ')
         req_label.setToolTip(f"This field is {'required' if field.required else 'optional'}")
-        widget = field.create_input_widget()
+        input_widget = field.create_input_widget()
 
-        return req_label, label, widget
+        return req_label, label, input_widget
 
     def create_schema_form_widget(
         self,
         form_stack: HStackedWidget,
-        parent_pane: QFrame = None,
+        parent_pane: FormPane = None,
         form_name: str = None,
         fields: List[SchemaField] = None) -> int:
 
@@ -98,29 +99,22 @@ class AvroSchema(KafkaSchema):
             return 0
 
         form_name = form_name if form_name is not None else self._schema_name
-        form_pane, layout = WidgetUtils.create_form_pane(form_stack, form_name)
+        form_pane = FormPane(form_stack, parent_pane, form_name)
         index = form_stack.addWidget(form_pane)
-        row = None
 
         for row, field in enumerate(form_fields):
             check_not_none(field)
             req_label, label, widget = self.create_schema_form_row_widget(field)
-            layout.addWidget(label, row, 0)
-            layout.addWidget(req_label, row, 1)
-            if widget is not None:
-                layout.addWidget(widget, row, 2)
-            elif isinstance(field, RecordField):
+            if isinstance(field, RecordField):
                 record_fields = FieldFactory.create_schema_fields(field.fields)
                 child_index = self.create_schema_form_widget(form_stack, form_pane, field.name, record_fields)
-                button_next = WidgetUtils.create_goto_form_button(child_index, form_stack)
-                layout.addWidget(button_next, row, 2)
-                h_spacer = QSpacerItem(20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum)
-                layout.addItem(h_spacer, row + 1, 2)
+                form_pane.add_form_button(field.name, label, req_label, row, child_index, form_stack)
+            else:
+                form_pane.add_field(field.name, label, req_label, widget, row)
 
         if index > 0:
             parent_index = form_stack.indexOf(parent_pane)
-            button_back = WidgetUtils.create_back_button(parent_index, form_stack)
-            layout.addWidget(button_back, row + 1, 0)
+            form_pane.add_back_button(parent_index, form_stack)
 
         return index
 
@@ -140,11 +134,3 @@ class AvroSchema(KafkaSchema):
         else:
             # TODO Check if it is needed to add the other types such as array, map, etc...
             raise InvalidStateError(f'Unsupported field type {field_type}')
-
-    def get_json_template(self) -> dict:
-
-        dict_fields = defaultdict()
-        for field in self._attributes.fields:
-            dict_fields.update({field.name: field.a_type.empty_value()})
-
-        return dict_fields

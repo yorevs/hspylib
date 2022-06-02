@@ -42,8 +42,8 @@ from kafman.core.consumer.consumer_worker import ConsumerWorker
 from kafman.core.kafka_message import KafkaMessage
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.producer.producer_worker import ProducerWorker
-from kafman.core.schema.avro_schema import AvroSchema
-from kafman.core.schema.json_schema import JsonSchema
+from kafman.core.schema.avro.avro_schema import AvroSchema
+from kafman.core.schema.json.json_schema import JsonSchema
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.plain_schema import PlainSchema
 from kafman.core.schema.registry_subject import RegistrySubject
@@ -178,7 +178,7 @@ class MainQtView(QtView):
         self.ui.tbtn_format_msg.clicked.connect(self._format_message)
         self.ui.tbtn_form_view.setText(DashboardIcons.FORM.value)
         self.ui.tbtn_form_view.clicked.connect(
-            lambda: self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value))
+            lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.FORM.value))
         self.ui.tbtn_export_form.setText(DashboardIcons.EXPORT.value)
         self.ui.tbtn_export_form.clicked.connect(self._export_form)
         self.ui.txt_producer.textChanged.connect(self._verify_message)
@@ -207,7 +207,7 @@ class MainQtView(QtView):
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
         self.ui.tbtn_text_view.setText(DashboardIcons.CODE.value)
         self.ui.tbtn_text_view.clicked.connect(
-            lambda: self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value))
+            lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value))
 
     def _is_producer(self) -> bool:
         """Whether producer or consumer tab is selected"""
@@ -257,29 +257,15 @@ class MainQtView(QtView):
         """Return the message built from the schema form"""
         if not schema:
             schema = self._schema()
-        message = schema.get_json_template()
-        stk_form_panel = self.ui.scr_schema_fields.widget()
-        # TODO Complete implementation
-        # for idx in range(0, stk_form_panel.count()):
-        #     layout = stk_form_panel.widget(idx).layout()
-        #     columns = layout.columnCount()
-        #     fields = schema.get_schema_fields()
-        #     for index, field in enumerate(fields) if fields else []:
-        #         widget_idx = ((index + 1) * columns) - 1
-        #         widget = layout.itemAt(widget_idx).widget()
-        #         if validate and not field.is_valid():
-        #             raise InvalidInputError('Form contains unfilled required fields')
-        #         field_value = field.get_value()
-        #         message.update(field_value if field_value else {field.name: ''})
-        #         if clear_form and hasattr(widget, 'clear') and not isinstance(widget, QComboBox):
-        #             widget.clear()
+        message = self.ui.scr_schema_fields.values()
 
-        return json.dumps(message, indent=0).replace('\n', '').strip()
+        return message
 
     def _export_form(self) -> None:
         """Export the message from the schema form to the producer text editor"""
-        self.ui.txt_producer.setText(self._form_to_message(clear_form=False, validate=False))
+        self.ui.txt_producer.set_plain_text(self._form_to_message(clear_form=False, validate=False))
         self._format_message()
+        self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value)
 
     def _format_message(self) -> None:
         """Validate and format the producer json text"""
