@@ -1,19 +1,19 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.28
+# hspylib-kafman v0.9.30
 #
 # Package: main.kafman.core.schema.field
 """Package initialization."""
 
 __all__ = [
   'array_field', 
-  'complex_field', 
   'enum_field', 
   'field_factory', 
   'fixed_field', 
   'map_field', 
   'primitive_field', 
   'record_field', 
-  'schema_field'
+  'schema_field', 
+  'schema_field_type'
 ]
-__version__ = '0.9.28'
+__version__ = '0.9.30'

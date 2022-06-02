@@ -25,7 +25,7 @@ from typing import List, Optional, Tuple, Union
 
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
-from hspylib.core.tools.text_tools import strip_linebreaks, strip_escapes
+from hspylib.core.tools.text_tools import strip_escapes, strip_linebreaks
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
@@ -34,7 +34,7 @@ from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QSizePolicy
 
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer_config import ConsumerConfig
@@ -337,7 +337,7 @@ class MainQtView(QtView):
         self.ui.cmb_sel_schema.setCurrentIndex(-1)
         self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
 
-    def _change_schema(self, schema_name: str):
+    def _change_schema(self, schema_name: str) -> None:
         """Change the current serialization schema text content"""
         if schema_name:
             content = self._all_schemas[schema_name].get_content_dict()
@@ -363,14 +363,15 @@ class MainQtView(QtView):
                 if schema:
                     self._cleanup_schema_layout()
                     form_widget = HStackedWidget(self.ui.tab_widget)
-                    form_widget.currentChanged.connect(self._change_form_name)
+                    form_widget.currentChanged.connect(self._schema_form_changed)
                     schema.create_schema_form_widget(form_widget)
                     self.ui.scr_schema_fields.setWidget(form_widget)
-                    self._change_form_name(0)
+                    self._schema_form_changed(0)
                     return True
-            except AttributeError:
+            except AttributeError as err:
                 self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
-                self._display_error(f"Invalid schema {schema} was not loaded")
+                self._display_error(f"Invalid schema {schema} was not loaded => {err}")
+                raise InvalidStateError(err)
         return False
 
     def _cleanup_schema_layout(self) -> None:
@@ -382,16 +383,18 @@ class MainQtView(QtView):
             if widget is not None:
                 widget.deleteLater()
 
-    def _change_form_name(self, index: int):
-        """Change the name of the schema form"""
+    def _schema_form_changed(self, index: int):
+        """Adjustments after schema form changed"""
         if index >= 0:
-            form_widget = self.ui.scr_schema_fields.widget()
-            if form_widget is not None and isinstance(form_widget, HStackedWidget):
-                widget = form_widget.widget(index)
-                if widget is not None:
-                    obj_name = widget.objectName() or str(index)
+            form_stack = self.ui.scr_schema_fields.widget()
+            if form_stack is not None and isinstance(form_stack, HStackedWidget):
+                form_pane = form_stack.widget(index)
+                if form_pane is not None:
+                    obj_name = form_pane.objectName() or str(index)
                     form_name = f'{obj_name} Form'
                     self.ui.lbl_current_form.setText(form_name)
+                    form_pane.adjustSize()
+                    form_stack.adjustSize()
 
     def _get_setting(self) -> None:
         """Get a setting and display it on the proper line edit field"""

@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.28
+# hspylib-kafman v0.9.30
 #
 # Package: main.kafman.core.schema
 """Package initialization."""
@@ -13,10 +13,9 @@ __all__ = [
   'plain_schema', 
   'registry_subject', 
   'schema_factory', 
-  'schema_field_type', 
   'schema_registry', 
   'schema_type', 
   'schema_utils', 
   'widget_utils'
 ]
-__version__ = '0.9.28'
+__version__ = '0.9.30'
