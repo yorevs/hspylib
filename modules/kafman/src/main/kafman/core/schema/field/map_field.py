@@ -17,7 +17,7 @@
 from typing import Optional
 
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 
 
 class MapField(SchemaField):
@@ -32,7 +32,7 @@ class MapField(SchemaField):
         super().__init__(
             name,
             doc,
-            SchemaFieldType.MAP,
+            AvroType.MAP,
             default, required=required)
 
         self.values = values

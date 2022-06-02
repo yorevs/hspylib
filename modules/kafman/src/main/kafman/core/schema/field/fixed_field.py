@@ -17,7 +17,7 @@
 from typing import Optional
 
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 
 
 class FixedField(SchemaField):
@@ -30,7 +30,7 @@ class FixedField(SchemaField):
         super().__init__(
             name,
             doc,
-            SchemaFieldType.FIXED,
+            AvroType.FIXED,
             default=size)
 
     def get_value(self) -> Optional[dict]:

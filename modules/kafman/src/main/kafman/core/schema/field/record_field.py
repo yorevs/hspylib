@@ -19,7 +19,7 @@ from typing import Optional, Tuple
 from avro.schema import Field
 
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 
 
 class RecordField(SchemaField):
@@ -33,7 +33,7 @@ class RecordField(SchemaField):
         super().__init__(
             name,
             doc,
-            SchemaFieldType.RECORD,
+            AvroType.RECORD,
             required=required)
 
         self.fields = fields

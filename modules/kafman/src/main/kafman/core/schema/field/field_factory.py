@@ -27,7 +27,7 @@ from kafman.core.schema.field.map_field import MapField
 from kafman.core.schema.field.primitive_field import PrimitiveField
 from kafman.core.schema.field.record_field import RecordField
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 
 
 class FieldFactory(ABC):
@@ -39,7 +39,7 @@ class FieldFactory(ABC):
         field_doc = field.doc or f'the {field_name}'
         field_default = field.default if field.has_default else None
         required = FieldFactory.is_required(field)
-        avro_type = SchemaFieldType.of_type(field_type)
+        avro_type = AvroType.of_type(field_type)
         if avro_type.is_primitive():
             schema_field = PrimitiveField(field_name, field_doc, avro_type, field_default, required)
         else:
