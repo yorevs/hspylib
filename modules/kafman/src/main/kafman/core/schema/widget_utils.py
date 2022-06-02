@@ -15,23 +15,21 @@
 """
 
 from abc import ABC
-from typing import List, Tuple, Type, Union
+from typing import List, Type, TypeVar, Union
 
 from hspylib.core.exception.exceptions import InvalidStateError
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
-from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLineEdit, QPushButton, \
-    QSizePolicy, \
-    QSpinBox, \
-    QToolButton, \
-    QWidget
+from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
 
-from kafman.core.schema.field.schema_field_type import AvroType
+from kafman.core.schema.avro.avro_type import AvroType
 
+INPUT_WIDGET = TypeVar(
+    'INPUT_WIDGET', QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget)
+
+INPUT_VALUE = TypeVar('INPUT_VALUE', int, str, bool, float, list)
 
 class WidgetUtils(ABC):
     QWIDGET_TYPE_MAP = {
@@ -59,7 +57,7 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_widget(
-        widget: Union[QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget],
+        widget: INPUT_WIDGET,
         doc: str = None,
         symbols: list = None,
         default: Union[str, int, float, bool] = None) -> QWidget:
@@ -73,8 +71,10 @@ class WidgetUtils(ABC):
             WidgetUtils.setup_list(widget, tooltip, default)
         elif widget_type == QCheckBox:
             WidgetUtils.setup_checkbox(widget, tooltip, default)
-        elif widget_type in [QSpinBox, QDoubleSpinBox]:
+        elif widget_type == QSpinBox:
             WidgetUtils.setup_spin_box(widget, tooltip, default)
+        elif widget_type == QDoubleSpinBox:
+            WidgetUtils.setup_double_spin_box(widget, tooltip, default)
         elif widget_type == QLineEdit:
             WidgetUtils.setup_line_edit(widget, tooltip)
         else:
@@ -131,9 +131,23 @@ class WidgetUtils(ABC):
     def setup_spin_box(
         widget: QSpinBox,
         tooltip: str = None,
-        default: Union[int, float] = 0) -> QWidget:
+        default: int = 0) -> QWidget:
 
         min_val, max_val = 0, 9999
+        widget.setMinimum(min_val)
+        widget.setMaximum(max_val)
+        widget.setValue(default or 0)
+        widget.setLayoutDirection(Qt.RightToLeft)
+
+        return WidgetUtils.setup_widget_commons(widget, tooltip)
+
+    @staticmethod
+    def setup_double_spin_box(
+        widget: QDoubleSpinBox,
+        tooltip: str = None,
+        default: float = 0.0) -> QWidget:
+
+        min_val, max_val = 0.0, 9999.9999
         widget.setMinimum(min_val)
         widget.setMaximum(max_val)
         widget.setValue(default or 0)
@@ -151,37 +165,3 @@ class WidgetUtils(ABC):
         widget.setText(default or '')
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)
-
-    @staticmethod
-    def create_goto_form_button(index: int, form_stack: HStackedWidget) -> QPushButton:
-        tool_button = QPushButton(FormIcons.ARROW_RIGHT.value + " Fill")
-        tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
-        WidgetUtils.setup_widget_commons(tool_button, f'Click to fill the form')
-        tool_button.setMaximumWidth(100)
-        tool_button.setMinimumHeight(30)
-        tool_button.setDefault(False)
-        tool_button.setAutoDefault(False)
-
-        return tool_button
-
-    @staticmethod
-    def create_back_button(index: int, form_stack: HStackedWidget) -> QPushButton:
-        tool_button = QPushButton(FormIcons.ARROW_LEFT.value + " Back")
-        tool_button.clicked.connect(lambda: form_stack.slide_to_index(index))
-        WidgetUtils.setup_widget_commons(tool_button, "Click to go to previous form")
-        tool_button.setMaximumWidth(100)
-        tool_button.setMinimumHeight(30)
-        tool_button.setDefault(False)
-        tool_button.setAutoDefault(False)
-
-        return tool_button
-
-    @classmethod
-    def create_form_pane(cls, form_stack: HStackedWidget, form_name: str) -> Tuple[QFrame, QGridLayout]:
-        form_pane = QFrame(form_stack)
-        form_pane.setContentsMargins(0, 0, 0, 0)
-        form_pane.setObjectName(form_name)
-        layout = QGridLayout(form_pane)
-        form_pane.setLayout(layout)
-
-        return form_pane, layout

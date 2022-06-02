@@ -30,12 +30,12 @@ from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QFrame, QLabel, QWidget
 
 from kafman.core.exception.exceptions import InvalidSchemaError
-from kafman.core.schema.field.schema_field import SchemaField
+from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 
 
 class KafkaSchema(ABC):
-    """String schema serializer/deserializer"""
+    """Generic Kafka avro schema"""
 
     LOCAL_REGISTRY_SERVER_URL = 'http://localhost:8081'
 
@@ -118,10 +118,6 @@ class KafkaSchema(ABC):
     @abstractmethod
     def settings(self) -> dict:
         """Return the required schema settings"""
-
-    def get_json_template(self) -> dict:
-        """Return the empty schema json template object"""
-        return self._json_template
 
     def get_filepath(self) -> str:
         """Return the schema file path"""

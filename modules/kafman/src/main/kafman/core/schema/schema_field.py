@@ -16,7 +16,7 @@ from typing import Any, Optional
 
 from PyQt5.QtWidgets import QWidget
 
-from kafman.core.schema.field.schema_field_type import AvroType
+from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.widget_utils import WidgetUtils
 
 
@@ -60,7 +60,6 @@ class SchemaField(ABC):
         if widget_type is not None:
             self.widget = widget_type()
             widget = WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)
-            widget.setObjectName(self.name)
             return widget
         else:
             return None

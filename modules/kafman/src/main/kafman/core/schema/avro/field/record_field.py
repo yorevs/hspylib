@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: hspylib-kafman
    @package: hspylib-kafman.main.kafman.core.schema.field
-      @file: map_field.py
+      @file: record_field.py
    @created: Wed, 1 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
       @site: "https://github.com/yorevs/hspylib")
@@ -14,28 +14,29 @@
    Copyright 2022, HomeSetup team
 """
 
-from typing import Optional
+from typing import Optional, Tuple
 
-from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import AvroType
+from avro.schema import Field
+
+from kafman.core.schema.schema_field import SchemaField
+from kafman.core.schema.avro.avro_type import AvroType
 
 
-class MapField(SchemaField):
+class RecordField(SchemaField):
 
     def __init__(
         self,
         name: str,
         doc: str,
-        values: dict,
-        default: str = None,
+        fields: Tuple[Field],
         required: bool = True):
         super().__init__(
             name,
             doc,
-            AvroType.MAP,
-            default, required=required)
+            AvroType.RECORD,
+            required=required)
 
-        self.values = values
+        self.fields = fields
 
     def get_value(self) -> Optional[dict]:
         pass

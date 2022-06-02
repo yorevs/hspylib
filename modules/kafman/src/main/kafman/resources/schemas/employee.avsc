@@ -50,7 +50,7 @@
         "null",
         {
           "type": "record",
-          "name": "CustomAttributes",
+          "name": "custom_attributes",
           "fields": [
             {
               "name": "key",
@@ -66,10 +66,10 @@
                 "null",
                 {
                   "type": "record",
-                  "name": "CustomProperties",
+                  "name": "custom_properties",
                   "fields": [
                     {
-                      "name": "PropertyName",
+                      "name": "property_name",
                       "type": "string"
                     }
                   ]
@@ -82,10 +82,10 @@
                 "null",
                 {
                   "type": "record",
-                  "name": "CustomValuables",
+                  "name": "custom_valuables",
                   "fields": [
                     {
-                      "name": "ValuableName",
+                      "name": "valuable_name",
                       "type": "string"
                     }
                   ]
