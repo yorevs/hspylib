@@ -15,6 +15,7 @@
 """
 
 from typing import Optional
+
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.field.schema_field_type import SchemaFieldType
 

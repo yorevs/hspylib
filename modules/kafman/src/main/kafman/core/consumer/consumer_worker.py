@@ -15,13 +15,14 @@
 import threading
 from time import sleep
 from typing import List
+
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.error import ConsumeError, ValueDeserializationError
 from hspylib.core.tools.commons import syserr
 from PyQt5.QtCore import pyqtSignal, QThread
+
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.plain_schema import PlainSchema
-
 
 
 class ConsumerWorker(QThread):

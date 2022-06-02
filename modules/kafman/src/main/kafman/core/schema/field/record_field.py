@@ -15,10 +15,11 @@
 """
 
 from typing import Optional, Tuple
+
 from avro.schema import Field
+
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.field.schema_field_type import SchemaFieldType
-
 
 
 class RecordField(SchemaField):

@@ -15,11 +15,12 @@
 """
 
 from typing import List, Optional
+
 from PyQt5.QtWidgets import QWidget
+
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.field.schema_field_type import SchemaFieldType
 from kafman.core.schema.widget_utils import WidgetUtils
-
 
 
 class ArrayField(SchemaField):
