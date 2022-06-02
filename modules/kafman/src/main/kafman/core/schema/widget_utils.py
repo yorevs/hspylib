@@ -16,6 +16,7 @@
 
 from abc import ABC
 from typing import List, Tuple, Type, Union
+
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
@@ -23,7 +24,7 @@ from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLayout, QLineEdit, QPushButton, \
+from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLineEdit, QPushButton, \
     QSizePolicy, \
     QSpinBox, \
     QToolButton, \
