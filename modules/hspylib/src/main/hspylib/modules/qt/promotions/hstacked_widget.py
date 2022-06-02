@@ -1,6 +1,8 @@
+from typing import List
+
 from PyQt5.QtCore import pyqtSlot, QAbstractAnimation, QEasingCurve, QParallelAnimationGroup, QPoint, \
     QPropertyAnimation, Qt
-from PyQt5.QtWidgets import QStackedWidget, QWidget
+from PyQt5.QtWidgets import QSizePolicy, QStackedWidget, QWidget
 
 
 class HStackedWidget(QStackedWidget):
@@ -15,27 +17,40 @@ class HStackedWidget(QStackedWidget):
         self._wrap = False
         self._pos_current = QPoint(0, 0)
         self._active = False
+        self._widgets = []
 
     def set_direction(self, direction) -> None:
         self._slide_direction = direction
 
-    def set_speed(self, speed)  -> None:
+    def set_speed(self, speed) -> None:
         self._slide_speed = speed
 
-    def set_animation(self, animationtype)  -> None:
-        self._animation_type = animationtype
+    def set_animation(self, animation_type) -> None:
+        self._animation_type = animation_type
 
-    def set_wrap(self, wrap)  -> None:
+    def set_wrap(self, wrap) -> None:
         self._wrap = wrap
 
+    def widgets(self) -> List[QWidget]:
+        return self._widgets
+
+    def addWidget(self, widget: QWidget) -> int:
+        widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self._widgets.append(widget)
+        return super().addWidget(widget)
+
+    def setCurrentIndex(self, index: int) -> None:
+        super().setCurrentIndex(index)
+        self._show_current_widget()
+
     @pyqtSlot()
-    def slide_previous(self)  -> None:
+    def slide_previous(self) -> None:
         now = self.currentIndex()
         if self._wrap or now > 0:
             self.slide_to_index(now - 1)
 
     @pyqtSlot()
-    def slide_next(self)  -> None:
+    def slide_next(self) -> None:
         now = self.currentIndex()
         if self._wrap or now < (self.count() - 1):
             self.slide_to_index(now + 1)
@@ -105,8 +120,21 @@ class HStackedWidget(QStackedWidget):
         anim_group.start(QAbstractAnimation.DeleteWhenStopped)
 
     @pyqtSlot()
-    def animation_done(self)  -> None:
+    def animation_done(self) -> None:
         self.setCurrentIndex(self._next_idx)
         self.widget(self._cur_idx).hide()
         self.widget(self._cur_idx).move(self._pos_current)
         self._active = False
+        self._show_current_widget()
+
+    def _show_current_widget(self):
+        for idx, widget in enumerate(self._widgets):
+            if idx == self.currentIndex():
+                widget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+                widget.adjustSize()
+                widget.show()
+            else:
+                widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+                widget.hide()
+        self.adjustSize()
+        self.updateGeometry()

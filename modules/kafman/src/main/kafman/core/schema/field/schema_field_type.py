@@ -11,8 +11,9 @@
 
    Copyright 2021, HSPyLib team
 """
-from typing import Any, List, Union
+from typing import Any
 
+from avro.schema import Schema
 from hspylib.core.enums.enumeration import Enumeration
 
 
@@ -36,18 +37,9 @@ class SchemaFieldType(Enumeration):
     # @formatter:on
 
     @classmethod
-    def of_type(cls, r_type: Union[str, List[Union[str, dict]]]) -> 'SchemaFieldType':
+    def of_type(cls, r_type: Schema) -> 'SchemaFieldType':
         """TODO"""
-        try:
-            if isinstance(r_type, str):  # Primitive Types
-                return SchemaFieldType.of_value(r_type)
-            elif isinstance(r_type, dict):
-                return SchemaFieldType.of_value(r_type['type'])
-            else:  # Complex Types
-                c_type = next((x['type'] if isinstance(x, dict) else x for x in r_type if x != 'null'), None)
-                return SchemaFieldType.of_value(c_type)
-        except TypeError:
-            return SchemaFieldType.STRING
+        return cls.of_value(r_type.type)
 
     def empty_value(self) -> Any:
         """TODO"""
@@ -67,20 +59,8 @@ class SchemaFieldType(Enumeration):
     def is_primitive(self):
         return self.value not in ['record', 'enum', 'array', 'map', 'union', 'fixed']
 
+    def is_union(self):
+        return self.value == 'union'
+
     def is_record(self):
         return self.value == 'record'
-
-    def is_enum(self):
-        return self.value == 'enum'
-
-    def is_array(self):
-        return self.value == 'array'
-
-    def is_map(self):
-        return self.value == 'map'
-
-    def is_fixed(self):
-        return self.value == 'fixed'
-
-    def is_read_only(self):
-        return self.value in ['record', 'fixed', 'complex']

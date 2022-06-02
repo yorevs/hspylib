@@ -94,7 +94,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
+            <width>321</width>
             <height>528</height>
            </rect>
           </property>
@@ -389,7 +389,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
+            <width>321</width>
             <height>528</height>
            </rect>
           </property>
@@ -633,7 +633,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>322</width>
+            <width>321</width>
             <height>528</height>
            </rect>
           </property>
@@ -1377,7 +1377,7 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>646</width>
+                    <width>647</width>
                     <height>511</height>
                    </rect>
                   </property>
@@ -1467,7 +1467,10 @@
                         <item row="1" column="1">
                          <widget class="QScrollArea" name="scr_schema_fields">
                           <property name="horizontalScrollBarPolicy">
-                           <enum>Qt::ScrollBarAlwaysOff</enum>
+                           <enum>Qt::ScrollBarAsNeeded</enum>
+                          </property>
+                          <property name="sizeAdjustPolicy">
+                           <enum>QAbstractScrollArea::AdjustIgnored</enum>
                           </property>
                           <property name="widgetResizable">
                            <bool>true</bool>
@@ -1477,7 +1480,7 @@
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>542</width>
+                             <width>543</width>
                              <height>430</height>
                             </rect>
                            </property>

@@ -19,6 +19,7 @@ from json.decoder import JSONDecodeError
 from typing import List, Tuple
 from uuid import uuid4
 
+from avro.schema import SchemaParseException
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
@@ -27,7 +28,6 @@ from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from jsonschema import validate as json_validate, ValidationError
 from PyQt5.QtWidgets import QFrame, QLabel, QWidget
 
 from kafman.core.schema.field.schema_field import SchemaField
@@ -77,7 +77,6 @@ class KafkaSchema(ABC):
         self._charset = charset
         self._attributes = new_dynamic_object('SchemaAttributes')
         self._json_template = defaultdict()
-        self._fields = None
         self._form_stack = None
 
         try:
@@ -91,13 +90,13 @@ class KafkaSchema(ABC):
                 self._schema_conf = {'url': self._registry_url}
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
                 self._schema = Schema(self._content_text, self._schema_type)
-        except (KeyError, TypeError, JSONDecodeError) as err:
+        except (KeyError, TypeError, JSONDecodeError, SchemaParseException) as err:
             err_msg = f"Unable to initialize schema ({self._registry_url}) => {str(err)}"
             log.error(err_msg)
             raise InvalidStateError(err_msg)
 
     def __str__(self):
-        return self._schema_name
+        return self._attributes.name
 
     def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
         """Create a schema form row widget"""
@@ -138,7 +137,7 @@ class KafkaSchema(ABC):
 
     def get_schema_fields(self) -> List['SchemaField']:
         """Return the schema fields"""
-        return self._fields
+        return self._attributes.fields
 
     def get_content_text(self) -> str:
         """Return the schema content text"""
@@ -147,11 +146,3 @@ class KafkaSchema(ABC):
     def get_content_dict(self) -> dict:
         """Return the schema content dictionary"""
         return self._content_dict
-
-    def validate(self, instance: dict) -> bool:
-        """Validate current json instance. If no exception is raised by validate(), the instance is valid."""
-        try:
-            json_validate(instance, self._content_dict)
-            return True
-        except ValidationError:
-            return False

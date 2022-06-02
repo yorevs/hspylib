@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Type, Union
+from typing import List, Tuple, Type, Union
 
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -8,7 +8,10 @@ from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QPushButton, QSizePolicy, QSpinBox, QToolButton, \
+from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLayout, QLineEdit, QPushButton, \
+    QSizePolicy, \
+    QSpinBox, \
+    QToolButton, \
     QWidget
 
 from kafman.core.schema.field.schema_field_type import SchemaFieldType
@@ -157,3 +160,13 @@ class WidgetUtils(ABC):
         tool_button.setAutoDefault(False)
 
         return tool_button
+
+    @classmethod
+    def create_form_pane(cls, form_stack: HStackedWidget, form_name: str) -> Tuple[QFrame, QGridLayout]:
+        form_pane = QFrame(form_stack)
+        form_pane.setContentsMargins(0, 0, 0, 0)
+        form_pane.setObjectName(form_name)
+        layout = QGridLayout(form_pane)
+        form_pane.setLayout(layout)
+
+        return form_pane, layout
