@@ -12,7 +12,6 @@
    Copyright 2021, HSPyLib team
 """
 from typing import Any
-
 from avro.schema import Schema
 from hspylib.core.enums.enumeration import Enumeration
 

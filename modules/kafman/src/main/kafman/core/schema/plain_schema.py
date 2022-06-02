@@ -13,16 +13,15 @@
 """
 from collections import defaultdict
 from typing import List, Tuple
-
 from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import new_dynamic_object
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QFrame, QLabel, QWidget
-
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
+
 
 
 class PlainSchema(KafkaSchema):

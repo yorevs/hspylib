@@ -13,7 +13,6 @@
 """
 
 from typing import Tuple
-
 from hspylib.core.tools.commons import new_dynamic_object, now_ms
 from PyQt5.QtCore import pyqtSignal, QThread
 

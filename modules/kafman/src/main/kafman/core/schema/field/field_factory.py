@@ -1,10 +1,24 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib-kafman
+   @package: hspylib-kafman.main.kafman.core.schema.field
+      @file: field_factory.py
+   @created: Wed, 1 Jun 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HomeSetup team
+"""
+
 from abc import ABC
 from typing import List, Optional, Tuple
-
 from avro.schema import ArraySchema, EnumSchema, Field, MapSchema, PrimitiveSchema, RecordSchema, Schema, UnionSchema
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.preconditions import check_not_none
-
 from kafman.core.schema.field.array_field import ArrayField
 from kafman.core.schema.field.enum_field import EnumField
 from kafman.core.schema.field.map_field import MapField
@@ -12,6 +26,7 @@ from kafman.core.schema.field.primitive_field import PrimitiveField
 from kafman.core.schema.field.record_field import RecordField
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.field.schema_field_type import SchemaFieldType
+
 
 
 class FieldFactory(ABC):

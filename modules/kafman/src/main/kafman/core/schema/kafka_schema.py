@@ -18,7 +18,6 @@ from collections import defaultdict
 from json.decoder import JSONDecodeError
 from typing import List, Tuple
 from uuid import uuid4
-
 from avro.schema import SchemaParseException
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
@@ -29,9 +28,9 @@ from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QFrame, QLabel, QWidget
-
 from kafman.core.schema.field.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
+
 
 
 class KafkaSchema(ABC):
@@ -93,7 +92,7 @@ class KafkaSchema(ABC):
         except (KeyError, TypeError, JSONDecodeError, SchemaParseException) as err:
             err_msg = f"Unable to initialize schema ({self._registry_url}) => {str(err)}"
             log.error(err_msg)
-            raise InvalidStateError(err_msg)
+            raise InvalidSchemaError(err_msg)
 
     def __str__(self):
         return self._attributes.name

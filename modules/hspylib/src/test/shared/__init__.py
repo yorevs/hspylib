@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.57
+# hspylib v0.11.58
 #
 # Package: test.shared
 """Package initialization."""
@@ -13,4 +13,4 @@ __all__ = [
   'firebase_repository_test', 
   'mysql_repository_test'
 ]
-__version__ = '0.11.57'
+__version__ = '0.11.58'
