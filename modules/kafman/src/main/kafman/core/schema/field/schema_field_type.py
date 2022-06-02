@@ -17,7 +17,7 @@ from avro.schema import Schema
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class SchemaFieldType(Enumeration):
+class AvroType(Enumeration):
     """TODO"""
 
     # @formatter:off
@@ -37,7 +37,7 @@ class SchemaFieldType(Enumeration):
     # @formatter:on
 
     @classmethod
-    def of_type(cls, r_type: Schema) -> 'SchemaFieldType':
+    def of_type(cls, r_type: Schema) -> 'AvroType':
         """TODO"""
         return cls.of_value(r_type.type)
 

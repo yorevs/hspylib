@@ -30,7 +30,7 @@ from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLin
     QToolButton, \
     QWidget
 
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 
 
 class WidgetUtils(ABC):
@@ -52,9 +52,9 @@ class WidgetUtils(ABC):
     }
 
     @staticmethod
-    def get_widget_type(field_type: Union[str, SchemaFieldType]) -> Type[QWidget]:
+    def get_widget_type(field_type: Union[str, AvroType]) -> Type[QWidget]:
         return WidgetUtils.QWIDGET_TYPE_MAP[field_type.value] \
-            if isinstance(field_type, SchemaFieldType) \
+            if isinstance(field_type, AvroType) \
             else WidgetUtils.QWIDGET_TYPE_MAP[field_type]
 
     @staticmethod

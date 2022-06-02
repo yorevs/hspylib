@@ -16,7 +16,7 @@ from typing import Any, Optional
 
 from PyQt5.QtWidgets import QWidget
 
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 from kafman.core.schema.widget_utils import WidgetUtils
 
 
@@ -30,7 +30,7 @@ class SchemaField(ABC):
         self,
         name: str,
         doc: str,
-        a_type: SchemaFieldType,
+        a_type: AvroType,
         default: Any = None,
         required: bool = True):
 

@@ -17,7 +17,7 @@
 from typing import Any, Optional
 
 from kafman.core.schema.field.schema_field import SchemaField
-from kafman.core.schema.field.schema_field_type import SchemaFieldType
+from kafman.core.schema.field.schema_field_type import AvroType
 
 
 class PrimitiveField(SchemaField):
@@ -26,7 +26,7 @@ class PrimitiveField(SchemaField):
         self,
         name: str,
         doc: str,
-        p_type: SchemaFieldType,
+        p_type: AvroType,
         default: Any = None,
         required: bool = True):
         super().__init__(
