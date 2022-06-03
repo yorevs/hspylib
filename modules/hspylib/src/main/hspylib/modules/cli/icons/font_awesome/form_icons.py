@@ -42,6 +42,8 @@ class FormIcons(Awesome):
     UNMARKED = '\uF630'        # 
     CLEAR = '\uF5E1'           # 
     REFRESH = '\uF01E'         # 
+    FILTER  = '\uF0B0'         # 
+    ATTACH = '\uF0C6'          # 
 
     HIDDEN = '\uF070'          # 
     VISIBLE = '\uF06E'         # 

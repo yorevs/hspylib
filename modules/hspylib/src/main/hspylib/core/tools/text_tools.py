@@ -12,7 +12,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import os
 import random
 import re
 import struct
@@ -101,9 +101,9 @@ def print_unicode(uni_code: Union[str, int]) -> None:
         raise TypeError(f'Invalid unicode: {uni_code}')
 
 
-def end_ln(current: int, split_at: int, hit_str: str = '\n', miss_str: str = ' ') -> str:
-    """TODO"""
-    return hit_str if current != 0 and current % split_at == 0 else miss_str
+def eol(current: int, split_len: int, hit_str: str = os.linesep, miss_str: str = ' ') -> str:
+    """Give the eol character according to the splitting length"""
+    return hit_str if current != 0 and current % split_len == 0 else miss_str
 
 
 # pylint: disable=too-few-public-methods
