@@ -23,6 +23,8 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
+from fastavro._validate_common import ValidationError
+from fastavro.validation import validate as validate_schema
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
@@ -181,6 +183,8 @@ class MainQtView(QtView):
             lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.FORM.value))
         self.ui.tbtn_export_form.setText(DashboardIcons.EXPORT.value)
         self.ui.tbtn_export_form.clicked.connect(self._export_form)
+        self.ui.tbtn_validate_form.setText(FormIcons.CHECK.value)
+        self.ui.tbtn_validate_form.clicked.connect(self._validate_schema_form)
         self.ui.txt_producer.textChanged.connect(self._verify_message)
         self.ui.txt_producer.setReadOnly(False)
         self.ui.txt_producer.set_show_line_numbers(True)
@@ -243,7 +247,7 @@ class MainQtView(QtView):
             msgs = [text] if self._is_json(text) else text.split('\n')
             return list(map(lambda x: strip_linebreaks(x), filter(None, msgs)))
 
-        return strip_extra_spaces(strip_linebreaks(self._form_to_message(schema=schema)))
+        return strip_extra_spaces(strip_linebreaks(self._form_to_message()))
 
     def _open_message_file(self) -> None:
         file_tuple = QFileDialog.getOpenFileNames(
@@ -253,11 +257,13 @@ class MainQtView(QtView):
             self._last_used_dir = dirname(file_tuple[0][0])
             self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text())
 
-    def _form_to_message(self, clear_form: bool = True, validate: bool = True, schema: KafkaSchema = None) -> str:
+    def _form_to_message(self, clear_form: bool = True, validate: bool = True) -> str:
         """Return the message built from the schema form"""
-        if not schema:
-            schema = self._schema()
         message = self.ui.scr_schema_fields.values()
+        if clear_form:
+            self._build_schema_layout()
+        if validate:
+            self._validate_schema_form()
 
         return message
 
@@ -286,6 +292,16 @@ class MainQtView(QtView):
         enabled = self._is_json(self.ui.txt_producer.toPlainText())
         self.ui.tbtn_format_msg.setEnabled(enabled)
         self.ui.tbtn_format_msg.setStyleSheet("QToolButton {}")
+
+    def _validate_schema_form(self):
+        """TODO"""
+        schema = self._schema().get_content_dict()
+        json_form = json.loads(self.ui.scr_schema_fields.values())
+        try:
+            validate_schema(json_form, schema, raise_errors=True)
+            self._display_text('Schema form is valid', StatusColor.green)
+        except ValidationError as err:
+            self._display_error(f'Schema form is not valid:: {err}')
 
     def _activate_tab(self, index: int = None) -> None:
         """Set the selected tab"""
@@ -350,6 +366,7 @@ class MainQtView(QtView):
                     self._cleanup_schema_layout()
                     form_widget = HStackedWidget(self.ui.tab_widget)
                     form_widget.currentChanged.connect(self._schema_form_changed)
+                    form_widget.installEventFilter(form_widget)
                     schema.create_schema_form_widget(form_widget)
                     self.ui.scr_schema_fields.setWidget(form_widget)
                     self._schema_form_changed(0)
@@ -509,6 +526,7 @@ class MainQtView(QtView):
                 return
         self.ui.tbtn_format_msg.setEnabled(not started)
         self.ui.tbtn_export_form.setEnabled(not started)
+        self.ui.tbtn_validate_form.setEnabled(not started)
         self.ui.scr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.tbtn_prod_open_file.setEnabled(not started)
