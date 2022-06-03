@@ -30,7 +30,7 @@ from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 from kafman.core.schema.widget_utils import INPUT_WIDGET
-from kafman.views.form_pane import FormPane
+from kafman.views.promotions.form_pane import FormPane
 
 
 class AvroSchema(KafkaSchema):

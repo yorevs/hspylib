@@ -87,7 +87,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_settings">
           <property name="geometry">
@@ -1118,7 +1118,7 @@
                </property>
                <item>
                 <layout class="QGridLayout" name="gridLayout_12">
-                 <item row="0" column="0">
+                 <item row="0" column="1">
                   <widget class="QLabel" name="label_11">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1147,7 +1147,7 @@
                   </widget>
                  </item>
                  <item row="0" column="2">
-                  <widget class="QToolButton" name="tbtn_format_msg">
+                  <widget class="QToolButton" name="tbtn_prod_open_file">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -1164,10 +1164,10 @@
                     </size>
                    </property>
                    <property name="toolTip">
-                    <string>Validate and format current JSON message</string>
+                    <string>Open a json or text file</string>
                    </property>
                    <property name="text">
-                    <string>{</string>
+                    <string>...</string>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -1177,7 +1177,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="3">
+                 <item row="0" column="4">
                   <widget class="QToolButton" name="tbtn_form_view">
                    <property name="enabled">
                     <bool>false</bool>
@@ -1208,8 +1208,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <widget class="QToolButton" name="tbtn_prod_open_file">
+                 <item row="0" column="3">
+                  <widget class="QToolButton" name="tbtn_format_msg">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -1226,10 +1226,41 @@
                     </size>
                    </property>
                    <property name="toolTip">
-                    <string>Open a json or text file</string>
+                    <string>Validate and format current JSON message</string>
                    </property>
                    <property name="text">
-                    <string>...</string>
+                    <string>{</string>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QToolButton" name="tbtn_prod_save_file">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Save current message to file</string>
+                   </property>
+                   <property name="text">
+                    <string>s</string>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -1971,7 +2002,7 @@
   <customwidget>
    <class>FormArea</class>
    <extends>QScrollArea</extends>
-   <header>kafman.views.form_area</header>
+   <header>kafman.views.promotions.form_area</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
