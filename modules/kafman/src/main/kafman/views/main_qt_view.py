@@ -23,6 +23,7 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
+from confluent_kafka.cimpl import Consumer
 from fastavro.validation import validate as validate_schema
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
@@ -68,6 +69,10 @@ class MainQtView(QtView):
     FORMS_DIR = str(HERE / "../resources/forms")
 
     REQUIRED_SETTINGS = ['bootstrap.servers']
+
+    KAFKA_INTERNAL_TOPICS = (
+        '_confluent-', '_schemas', '__consumer_offsets', '__transaction_state'
+    )
 
     @staticmethod
     def _supported_schemas() -> str:
@@ -166,6 +171,8 @@ class MainQtView(QtView):
         self.ui.tbtn_produce.clicked.connect(self._produce)
         self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
         self.ui.tbtn_prod_clear_topics.setText(FormIcons.CLEAR.value)
+        self.ui.tbtn_prod_find_topics.setText(DashboardIcons.SEARCH.value)
+        self.ui.tbtn_prod_find_topics.clicked.connect(lambda: self._find_broker_topics(is_producer=True))
         self.ui.tbtn_prod_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_add_topics.clicked.connect(self._add_topic)
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
@@ -203,6 +210,8 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_connect.setText(DashboardIcons.PLUG_IN.value)
         self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: #2380FA;}')
         self.ui.tbtn_cons_clear_topics.setText(FormIcons.CLEAR.value)
+        self.ui.tbtn_cons_find_topics.setText(DashboardIcons.SEARCH.value)
+        self.ui.tbtn_cons_find_topics.clicked.connect(lambda: self._find_broker_topics(is_producer=False))
         self.ui.tbtn_cons_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_cons_add_topics.clicked.connect(lambda: self._add_topic(is_producer=False))
         self.ui.tbtn_cons_del_topics.setText(FormIcons.MINUS.value)
@@ -470,6 +479,21 @@ class MainQtView(QtView):
                 del self._all_settings[ktype][setting]
             else:
                 self._display_error(f"Setting {setting} is required")
+
+    def _find_broker_topics(self, is_producer: bool) -> None:
+        """Find all topics from broker"""
+        config = {
+            k: v for (k, v) in self._all_settings['consumer'].items() if k in ['bootstrap.servers', 'group.id']
+        }
+        consumer = Consumer(config)
+        topics = [
+            k for (k, v) in consumer.list_topics().topics.items()
+            if not k.startswith(self.KAFKA_INTERNAL_TOPICS) and not k.startswith(f"{config['group.id']}--")
+        ]
+        self._display_text(f"Retrieved {len(topics)} topics from broker: {config['bootstrap.servers']}")
+        consumer.close()
+        for topic in topics:
+            self._add_topic(topic, is_producer)
 
     def _add_topic(self, topic: str = None, is_producer: bool = True) -> None:
         """Add a topic to the combo box."""
@@ -753,8 +777,8 @@ class MainQtView(QtView):
                 },
                 'consumer': {
                     ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
-                    ConsumerConfig.GROUP_ID: 'kafka_test_group',
-                    ConsumerConfig.CLIENT_ID: 'client_1',
+                    ConsumerConfig.GROUP_ID: 'kafman_testing_group',
+                    ConsumerConfig.CLIENT_ID: 'kafman_client_1',
                     ConsumerConfig.ENABLE_AUTO_COMMIT: True,
                     ConsumerConfig.SESSION_TIMEOUT_MS: 6000,
                     ConsumerConfig.AUTO_OFFSET_RESET: 'earliest'

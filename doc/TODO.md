@@ -31,4 +31,3 @@
 4. Add a button to find all topics
 5. Add offset filters
 6. Add a commit offset button
-7. Add settings from all_settings.txt
