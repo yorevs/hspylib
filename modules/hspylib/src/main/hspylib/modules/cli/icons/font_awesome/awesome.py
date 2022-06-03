@@ -15,7 +15,7 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import end_ln, print_unicode
+from hspylib.core.tools.text_tools import eol, print_unicode
 
 
 class Awesome(Enumeration):
@@ -31,14 +31,14 @@ class Awesome(Enumeration):
         st_base = [f'F{x:03X}' for x in range(0, 4095)]
         for h in st_base:
             print_unicode(h)
-            sysout(f' {h:4}', end=end_ln(n, 10))
+            sysout(f' {h:4}', end=eol(n, 10))
             n += 1
 
     @classmethod
     def demo_icons(cls) -> None:
         i = 0
         for n in cls.values():
-            sysout(f'{n:2}', end=end_ln(n, 10))
+            sysout(f'{n:2}', end=eol(i, 10))
             i += 1
 
     def __str__(self) -> str:
