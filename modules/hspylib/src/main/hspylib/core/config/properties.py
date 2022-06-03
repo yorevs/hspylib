@@ -17,7 +17,7 @@ import logging as log
 import os
 import re
 from configparser import ConfigParser
-from typing import Optional
+from typing import List, Optional
 
 import yaml
 
@@ -38,6 +38,26 @@ class Properties:
         :param property_name: the name of the property using space, dot or dash notations
         """
         return re.sub('[ -.]', '_', property_name).upper()
+
+    @staticmethod
+    def read_properties(all_lines: List[str]) -> dict:
+        return {
+            p[0].strip(): p[1].strip() for p in [
+                p.split('=', 1) for p in list(
+                    filter(lambda l: re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]* *=.*', l), all_lines)
+                )
+            ]
+        }
+
+    @staticmethod
+    def read_cfg_or_ini(all_lines: List[str]):
+        string = os.linesep.join(all_lines)
+        all_cfgs = {}
+        cfg = ConfigParser()
+        cfg.read_string(string)
+        for section in cfg.sections():
+            all_cfgs.update(dict(cfg.items(section)))
+        return all_cfgs
 
     def __init__(self, filename: str = None, profile: str = None, load_dir: str = None):
 
@@ -122,20 +142,11 @@ class Properties:
             touch_file(self._find_path())
         with open(self.filepath, encoding='utf-8') as fh_props:
             if self.extension in ['.ini', '.cfg']:
-                all_lines = ''.join(fh_props.readlines())
-                cfg = ConfigParser()
-                cfg.read_string(all_lines)
-                for section in cfg.sections():
-                    self.properties.update(dict(cfg.items(section)))
+                all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
+                self.properties.update(self.read_cfg_or_ini(all_lines))
             elif self.extension == '.properties':
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
-                self.properties.update({
-                    p[0].strip(): p[1].strip() for p in [
-                        p.split('=', 1) for p in list(
-                            filter(lambda l: re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]* *=.*', l), all_lines)
-                        )
-                    ]
-                })
+                self.properties.update(self.read_properties(all_lines))
             elif self.extension in ['.yml', '.yaml']:
                 self.properties.update(flatten_dict(yaml.safe_load(fh_props)))
             else:
