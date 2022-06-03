@@ -73,13 +73,9 @@ class FormPane(QFrame):
         return self._grid
 
     def name(self) -> str:
-        """TODO"""
-
         return self._name
 
     def parent_name(self) -> Optional[str]:
-        """TODO"""
-
         return self._parent_form.name() if self._parent_form else None
 
     def add_field(
