@@ -28,10 +28,7 @@
     QFont _font(family, 8);
     qApp->setFont(_font);'''
 2. Implement json schema type form builder
-3. Add a save button for message edit
 4. Add a button to find all topics
 5. Add offset filters
 6. Add a commit offset button
-7. Fix namespace references for schema builders
-8. Get schema template and filled form json
-9. Add settings from all_settings.txt
+7. Add settings from all_settings.txt

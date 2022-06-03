@@ -23,7 +23,6 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-from fastavro._validate_common import ValidationError
 from fastavro.validation import validate as validate_schema
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
@@ -53,6 +52,7 @@ from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
 from kafman.core.statistics_worker import StatisticsWorker
 from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
+from kafman.views.promotions.settings_dialog import SettingsDialog
 
 HERE = get_path(__file__)
 
@@ -156,7 +156,7 @@ class MainQtView(QtView):
     def _setup_producer_controls(self):
         """Setup producer components"""
         self.ui.cmb_prod_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
-        self.ui.tbtn_prod_settings_add.clicked.connect(lambda: self.ui.lst_prod_settings.set_item('new.setting'))
+        self.ui.tbtn_prod_settings_add.clicked.connect(self._add_producer_setting)
         self.ui.tbtn_prod_settings_add.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_settings_del.clicked.connect(self._del_setting)
         self.ui.tbtn_prod_settings_del.setText(FormIcons.MINUS.value)
@@ -171,6 +171,8 @@ class MainQtView(QtView):
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
         self.ui.tbtn_prod_open_file.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_prod_open_file.clicked.connect(self._open_message_file)
+        self.ui.tbtn_prod_save_file.setText(DashboardIcons.SAVE.value)
+        self.ui.tbtn_prod_save_file.clicked.connect(self._save_message_file)
         self.ui.tbtn_prod_del_topics.clicked.connect(lambda: self._del_topic(is_producer=True))
         self.ui.lst_prod_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_prod_settings.set_editable()
@@ -193,7 +195,7 @@ class MainQtView(QtView):
     def _setup_consumer_controls(self):
         """Setup consumer components"""
         self.ui.cmb_cons_topics.lineEdit().setPlaceholderText("Select or type a new kafka topic")
-        self.ui.tbtn_cons_settings_add.clicked.connect(lambda: self.ui.lst_cons_settings.set_item('new.setting'))
+        self.ui.tbtn_cons_settings_add.clicked.connect(self._add_consumer_setting)
         self.ui.tbtn_cons_settings_add.setText(FormIcons.PLUS.value)
         self.ui.tbtn_cons_settings_del.clicked.connect(self._del_setting)
         self.ui.tbtn_cons_settings_del.setText(FormIcons.MINUS.value)
@@ -249,6 +251,18 @@ class MainQtView(QtView):
 
         return strip_extra_spaces(strip_linebreaks(self._form_to_message()))
 
+    def _add_consumer_setting(self):
+        settings_dlg = SettingsDialog(
+            self.ui.splitter_pane, SettingsDialog.SettingsType.CONSUMER, self._settings(), self.ui.lst_cons_settings)
+        settings_dlg.set_window_title("Add a consumer setting")
+        settings_dlg.show()
+
+    def _add_producer_setting(self):
+        settings_dlg = SettingsDialog(
+            self.ui.splitter_pane, SettingsDialog.SettingsType.PRODUCER, self._settings(), self.ui.lst_prod_settings)
+        settings_dlg.set_window_title("Add a producer setting")
+        settings_dlg.show()
+
     def _open_message_file(self) -> None:
         file_tuple = QFileDialog.getOpenFileNames(
             self.ui.tab_widget,
@@ -256,6 +270,15 @@ class MainQtView(QtView):
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0][0])
             self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text())
+
+    def _save_message_file(self) -> None:
+        file_tuple = QFileDialog.getSaveFileName(
+            self.ui.tab_widget,
+            'Save file', self._last_used_dir or '.', "Save file as (*.*)")
+        if file_tuple and file_tuple[0]:
+            self._last_used_dir = dirname(file_tuple[0])
+            with open(Path(file_tuple[0]), "w") as fd_file:
+                fd_file.write(self.ui.txt_producer.toPlainText())
 
     def _form_to_message(self, clear_form: bool = True, validate: bool = True) -> str:
         """Return the message built from the schema form"""
@@ -300,7 +323,7 @@ class MainQtView(QtView):
         try:
             validate_schema(json_form, schema, raise_errors=True)
             self._display_text('Schema form is valid', StatusColor.green)
-        except ValidationError as err:
+        except Exception as err:
             self._display_error(f'Schema form is not valid:: {err}')
 
     def _activate_tab(self, index: int = None) -> None:
@@ -530,6 +553,7 @@ class MainQtView(QtView):
         self.ui.scr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.tbtn_prod_open_file.setEnabled(not started)
+        self.ui.tbtn_prod_save_file.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)
         self.ui.scr_schema_fields.setEnabled(not started)
         self.ui.cmb_prod_topics.setEnabled(started)

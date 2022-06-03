@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLab
     QVBoxLayout, QWidget
 
 from kafman.core.schema.widget_utils import INPUT_VALUE, INPUT_WIDGET, WidgetUtils
-from kafman.views.form_area import FormArea
+from kafman.views.promotions.form_area import FormArea
 
 
 class FormPane(HFrame):
