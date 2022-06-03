@@ -25,7 +25,7 @@ from typing import List, Optional, Tuple, Union
 
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
-from hspylib.core.tools.text_tools import strip_escapes, strip_linebreaks
+from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
@@ -243,7 +243,7 @@ class MainQtView(QtView):
             msgs = [text] if self._is_json(text) else text.split('\n')
             return list(map(lambda x: strip_linebreaks(x), filter(None, msgs)))
 
-        return self._form_to_message(schema=schema)
+        return strip_extra_spaces(strip_linebreaks(self._form_to_message(schema=schema)))
 
     def _open_message_file(self) -> None:
         file_tuple = QFileDialog.getOpenFileNames(
@@ -513,6 +513,7 @@ class MainQtView(QtView):
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.tbtn_prod_open_file.setEnabled(not started)
         self.ui.txt_producer.setEnabled(not started)
+        self.ui.scr_schema_fields.setEnabled(not started)
         self.ui.cmb_prod_topics.setEnabled(started)
         self.ui.tbtn_prod_add_topics.setEnabled(started)
         self.ui.tbtn_prod_del_topics.setEnabled(started)
