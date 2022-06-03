@@ -1,9 +1,8 @@
 import json
 from collections import defaultdict
 
-from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QScrollArea, QWidget
+from PyQt5.QtWidgets import QAbstractScrollArea, QFrame, QScrollArea, QWidget
 
 
 class FormArea(QScrollArea):
@@ -12,6 +11,9 @@ class FormArea(QScrollArea):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
         self._form = None
+        self.setWidgetResizable(True)
+        self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.setFrameStyle(QFrame.NoFrame | QFrame.Plain)
 
     def setWidget(self, widget: QWidget) -> None:
         if self._form is not None:
@@ -37,4 +39,4 @@ class FormArea(QScrollArea):
                 current.update(pane.fields())
 
 
-        return strip_extra_spaces(strip_linebreaks(json.dumps(root, indent=0)))
+        return json.dumps(root, indent=2)

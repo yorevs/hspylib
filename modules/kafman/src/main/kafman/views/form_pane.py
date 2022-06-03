@@ -7,9 +7,10 @@ from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox, \
-    QWidget
+    QVBoxLayout, QWidget
 
 from kafman.core.schema.widget_utils import INPUT_VALUE, INPUT_WIDGET, WidgetUtils
+from kafman.views.form_area import FormArea
 
 
 class FormPane(QFrame):
@@ -23,7 +24,7 @@ class FormPane(QFrame):
 
     INPUT_WIDGETS = ['HComboBox', 'HListWidget', 'QCheckBox', 'QSpinBox', 'QDoubleSpinBox', 'QLineEdit']
 
-    forms = defaultdict()
+    _forms = defaultdict()
 
     @staticmethod
     def _field_value(widget: INPUT_WIDGET) -> Optional[INPUT_VALUE]:
@@ -48,17 +49,25 @@ class FormPane(QFrame):
     def __init__(self, parent: QWidget, parent_form: 'FormPane', form_name: str):
         super().__init__(parent)
         check_argument(form_name is not None and len(form_name) > 1, f'Invalid form name: {form_name}')
+        self._fields = defaultdict()
+        self._forms[form_name] = self
         self._name = form_name
         self._parent_form = parent_form
-        self._grid = QGridLayout(self)
-        self._fields = defaultdict()
-        self.setContentsMargins(0, 0, 0, 0)
+        self._form_frame = QFrame(self)
+        self._form_area = FormArea(self)
+        self._box = QVBoxLayout(self)
+        self._grid = QGridLayout(self._form_frame)
+
         self.setObjectName(form_name)
-        self.setLayout(self._grid)
-        self.forms[form_name] = self
+        self.setContentsMargins(0, 0, 0, 0)
+        self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        self._box.addWidget(self._form_area)
+        self._form_frame.setFrameStyle(QFrame.NoFrame)
+        self._form_frame.setContentsMargins(0, 0, 0, 0)
+        self._form_area.setWidget(self._form_frame)
 
     def __getitem__(self, form_name):
-        return self.forms[form_name]
+        return self._forms[form_name]
 
     def grid(self) -> QGridLayout:
         return self._grid
@@ -111,7 +120,7 @@ class FormPane(QFrame):
     def add_back_button(self, back_index: int, form_stack: HStackedWidget) -> None:
         """TODO"""
 
-        row = self._grid.columnCount() + 1
+        row = self._grid.rowCount() + 1
         back_button = QPushButton(FormIcons.ARROW_LEFT.value + " Back")
         back_button.clicked.connect(lambda: form_stack.slide_to_index(back_index))
         WidgetUtils.setup_widget_commons(back_button, "Click to go to previous form")

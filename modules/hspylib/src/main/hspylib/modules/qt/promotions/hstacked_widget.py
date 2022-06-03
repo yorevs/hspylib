@@ -2,13 +2,14 @@ from typing import List
 
 from PyQt5.QtCore import pyqtSlot, QAbstractAnimation, QEasingCurve, QParallelAnimationGroup, QPoint, \
     QPropertyAnimation, Qt
-from PyQt5.QtWidgets import QSizePolicy, QStackedWidget, QWidget
+from PyQt5.QtWidgets import QStackedWidget, QWidget
 
 
 class HStackedWidget(QStackedWidget):
+    """TODO"""
+
     def __init__(self, parent=None):
         super(HStackedWidget, self).__init__(parent)
-
         self._slide_direction = Qt.Horizontal
         self._slide_speed = 500
         self._animation_type = QEasingCurve.OutCubic
@@ -16,8 +17,8 @@ class HStackedWidget(QStackedWidget):
         self._next_idx = 0
         self._wrap = False
         self._pos_current = QPoint(0, 0)
-        self._active = False
         self._widgets = []
+        self._active = False
 
     def set_direction(self, direction) -> None:
         self._slide_direction = direction
@@ -35,13 +36,8 @@ class HStackedWidget(QStackedWidget):
         return self._widgets
 
     def addWidget(self, widget: QWidget) -> int:
-        widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self._widgets.append(widget)
         return super().addWidget(widget)
-
-    def setCurrentIndex(self, index: int) -> None:
-        super().setCurrentIndex(index)
-        self._show_current_widget()
 
     @pyqtSlot()
     def slide_previous(self) -> None:
@@ -121,20 +117,7 @@ class HStackedWidget(QStackedWidget):
 
     @pyqtSlot()
     def animation_done(self) -> None:
-        self.setCurrentIndex(self._next_idx)
         self.widget(self._cur_idx).hide()
         self.widget(self._cur_idx).move(self._pos_current)
         self._active = False
-        self._show_current_widget()
-
-    def _show_current_widget(self):
-        for idx, widget in enumerate(self._widgets):
-            if idx == self.currentIndex():
-                widget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-                widget.adjustSize()
-                widget.show()
-            else:
-                widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-                widget.hide()
-        self.adjustSize()
-        self.updateGeometry()
+        self.setCurrentIndex(self._next_idx)

@@ -1331,7 +1331,7 @@
                  <item row="0" column="1">
                   <widget class="QToolButton" name="tbtn_export_form">
                    <property name="enabled">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </property>
                    <property name="minimumSize">
                     <size>
@@ -1363,6 +1363,9 @@
                </item>
                <item>
                 <widget class="QScrollArea" name="scrollArea">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -1464,43 +1467,6 @@
                           </property>
                          </spacer>
                         </item>
-                        <item row="1" column="1">
-                         <widget class="FormArea" name="scr_schema_fields">
-                          <property name="horizontalScrollBarPolicy">
-                           <enum>Qt::ScrollBarAsNeeded</enum>
-                          </property>
-                          <property name="sizeAdjustPolicy">
-                           <enum>QAbstractScrollArea::AdjustIgnored</enum>
-                          </property>
-                          <property name="widgetResizable">
-                           <bool>true</bool>
-                          </property>
-                          <widget class="QWidget" name="scrollAreaWidgetContents_3">
-                           <property name="geometry">
-                            <rect>
-                             <x>0</x>
-                             <y>0</y>
-                             <width>543</width>
-                             <height>430</height>
-                            </rect>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_18">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                           </layout>
-                          </widget>
-                         </widget>
-                        </item>
                         <item row="0" column="0" colspan="3">
                          <widget class="QLabel" name="lbl_current_form">
                           <property name="minimumSize">
@@ -1515,6 +1481,26 @@
                           <property name="alignment">
                            <set>Qt::AlignBottom|Qt::AlignHCenter</set>
                           </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="FormArea" name="scr_schema_fields">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                          <property name="widgetResizable">
+                           <bool>true</bool>
+                          </property>
+                          <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                           <property name="geometry">
+                            <rect>
+                             <x>0</x>
+                             <y>0</y>
+                             <width>543</width>
+                             <height>430</height>
+                            </rect>
+                           </property>
+                          </widget>
                          </widget>
                         </item>
                        </layout>
