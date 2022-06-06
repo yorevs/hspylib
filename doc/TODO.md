@@ -28,6 +28,5 @@
     QFont _font(family, 8);
     qApp->setFont(_font);'''
 2. Implement json schema type form builder
-4. Add a button to find all topics
 5. Add offset filters
 6. Add a commit offset button

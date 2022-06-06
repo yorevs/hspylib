@@ -216,6 +216,7 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_add_topics.clicked.connect(lambda: self._add_topic(is_producer=False))
         self.ui.tbtn_cons_del_topics.setText(FormIcons.MINUS.value)
         self.ui.tbtn_cons_del_topics.clicked.connect(lambda: self._del_topic(is_producer=False))
+        self.ui.tbtn_cons_filters.setText(FormIcons.FILTER.value)
         self.ui.lst_cons_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
@@ -223,6 +224,7 @@ class MainQtView(QtView):
         self.ui.tbtn_text_view.setText(DashboardIcons.CODE.value)
         self.ui.tbtn_text_view.clicked.connect(
             lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value))
+        self.ui.tbl_consumer.add_custom_menu_action('Commit offset', self._commit_offset, True)
 
     def _is_producer(self) -> bool:
         """Whether producer or consumer tab is selected"""
@@ -552,6 +554,21 @@ class MainQtView(QtView):
             self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
 
         return url
+
+    def _commit_offset(self) -> None:
+        """TODO"""
+        table = self.ui.tbl_consumer
+        model = table.model()
+        sel_model = table.selectionModel()
+        if sel_model:
+            index_list = sel_model.selectedIndexes()
+            offset_idx, header = next(
+                ((i, h) for i, h in enumerate(model.headers) if str(h).lower() == 'offset'), None)
+            for index in index_list:
+                offset_col_idx = index.sibling(index.row(), offset_idx)
+                offset = int(str(model.column(offset_col_idx)))
+                self._consumer.commit(offset)
+                self._display_text(f"Offset committed: {offset} (all topics)")
 
     def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
