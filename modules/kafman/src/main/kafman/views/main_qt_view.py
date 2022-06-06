@@ -27,6 +27,7 @@ from confluent_kafka.cimpl import Consumer
 from fastavro.validation import validate as validate_schema
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, get_path, now, now_ms
+from hspylib.core.tools.preconditions import check_state
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
@@ -67,8 +68,6 @@ class MainQtView(QtView):
     SCHEMA_DIR = str(HERE / "../resources/schema")
 
     FORMS_DIR = str(HERE / "../resources/forms")
-
-    REQUIRED_SETTINGS = ['bootstrap.servers']
 
     KAFKA_INTERNAL_TOPICS = (
         '_confluent-', '_schemas', '__consumer_offsets', '__transaction_state'
@@ -234,6 +233,10 @@ class MainQtView(QtView):
         """Whether kafka type is producer or consumer"""
         return 'producer' if self._is_producer() else 'consumer'
 
+    def _required_settings(self) -> List[str]:
+        """Return the required consumer/producer settings to start properly"""
+        return (ProducerConfig if self._is_producer() else ConsumerConfig).required_settings()
+
     def _topics(self, is_producer: bool) -> Optional[List[str]]:
         """Return the selected topic or a list containing all of them"""
         cmb_topics = self.ui.cmb_prod_topics if is_producer else self.ui.cmb_cons_topics
@@ -245,7 +248,8 @@ class MainQtView(QtView):
     def _settings(self) -> Optional[dict]:
         """Return the configured settings"""
         settings = self._all_settings[self._kafka_type()]
-        return settings if all(s in settings for s in self.REQUIRED_SETTINGS) else None
+        check_state(all(s in settings for s in self._required_settings()))
+        return settings
 
     def _schema(self) -> KafkaSchema:
         """Return the selected serialization schema"""
@@ -476,7 +480,7 @@ class MainQtView(QtView):
         item = lst.currentItem()
         if item:
             setting = item.text()
-            if setting and setting not in self.REQUIRED_SETTINGS:
+            if setting and setting not in self._required_settings():
                 lst.del_item(lst.currentRow())
                 del self._all_settings[ktype][setting]
             else:
@@ -564,9 +568,11 @@ class MainQtView(QtView):
             index_list = sel_model.selectedIndexes()
             offset_idx, header = next(
                 ((i, h) for i, h in enumerate(model.headers) if str(h).lower() == 'offset'), None)
+            offset = -1
             for index in index_list:
                 offset_col_idx = index.sibling(index.row(), offset_idx)
-                offset = int(str(model.column(offset_col_idx)))
+                offset = max(offset, int(str(model.column(offset_col_idx))))
+            if offset >= 0:
                 self._consumer.commit(offset)
                 self._display_text(f"Offset committed: {offset} (all topics)")
 

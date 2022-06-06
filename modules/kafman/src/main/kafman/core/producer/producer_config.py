@@ -13,6 +13,7 @@
 """
 
 from abc import ABC
+from typing import List
 
 
 class ProducerConfig(ABC):  # pylint: disable=too-few-public-methods
@@ -22,3 +23,7 @@ class ProducerConfig(ABC):  # pylint: disable=too-few-public-methods
     KEY_SERIALIZER = 'key.serializer'
     VALUE_SERIALIZER = 'value.serializer'
     SCHEMA_REGISTRY_URL = 'schema.registry.url'
+
+    @classmethod
+    def required_settings(cls) -> List[str]:
+        return [cls.BOOTSTRAP_SERVERS]
