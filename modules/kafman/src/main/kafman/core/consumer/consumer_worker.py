@@ -79,6 +79,13 @@ class ConsumerWorker(QThread):
         while not self.isFinished():
             sleep(self._poll_interval)
 
+    def commit(self, offset: int):
+        """TODO"""
+        topic_partitions = self._consumer.assignment()
+        for tp in topic_partitions:
+            tp.offset = offset + 1
+            self._consumer.commit(offsets=topic_partitions, asynchronous=False)
+
     def _consume(self, topics: List[str]) -> None:
         """Consume messages from the selected Kafka topics"""
         try:

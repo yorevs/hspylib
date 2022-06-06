@@ -15,7 +15,7 @@
 
 import collections
 import logging as log
-from typing import List, Tuple, Type, TypeVar, Union
+from typing import List, Tuple, Type, TypeVar
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt, QVariant
 from PyQt5.QtGui import QColor
@@ -99,13 +99,13 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         return len(self.table_data[0].__dict__.keys()) if self.table_data and len(self.table_data) > 0 else 0
 
-    def row(self, index: Union[int, QModelIndex]) -> T:
+    def row(self, index: QModelIndex) -> T:
         """TODO"""
-        return self.table_data[index.row() if isinstance(index, QModelIndex) else index]
+        return self.table_data[index.row()]
 
     def column(self, index: QModelIndex) -> T:
         """TODO"""
-        row = self.table_data[index.row()]
+        row = self.row(index)
         col_name = str(list(vars(row))[index.column()])
         return getattr(row, col_name)
 
