@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.64
+# hspylib v0.11.66
 #
 # Package: main.hspylib.modules.qt.promotions
 """Package initialization."""
@@ -15,4 +15,4 @@ __all__ = [
   'htablemodel', 
   'htableview'
 ]
-__version__ = '0.11.64'
+__version__ = '0.11.66'
