@@ -793,18 +793,7 @@ class MainQtView(QtView):
                     log.warning("Invalid history value \"%s\" for setting \"%s\"", prop_value, prop_name)
         else:
             # Defaults
-            self._display_text('History discarded')
-            self._all_settings = {
-                'producer': {
-                    ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
-                },
-                'consumer': {
-                    ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
-                    ConsumerConfig.GROUP_ID: 'kafman_testing_group',
-                    ConsumerConfig.CLIENT_ID: 'kafman_client_1',
-                    ConsumerConfig.ENABLE_AUTO_COMMIT: True,
-                    ConsumerConfig.SESSION_TIMEOUT_MS: 6000,
-                    ConsumerConfig.AUTO_OFFSET_RESET: 'earliest'
-                }
-            }
+            self._display_text('Kafman history was not loaded')
+            self._all_settings.update(ProducerConfig.defaults())
+            self._all_settings.update(ConsumerConfig.defaults())
             self._activate_tab()
