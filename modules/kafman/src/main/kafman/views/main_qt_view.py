@@ -197,6 +197,8 @@ class MainQtView(QtView):
         self.ui.txt_producer.setReadOnly(False)
         self.ui.txt_producer.set_show_line_numbers(True)
         self.ui.txt_producer.set_highlight_enable(True)
+        self.ui.tbtn_prod_clear_on_send_txt.setText(FormIcons.CLEAR.value)
+        self.ui.tbtn_prod_clear_on_send_form.setText(FormIcons.CLEAR.value)
 
     def _setup_consumer_controls(self):
         """Setup consumer components"""
@@ -295,11 +297,9 @@ class MainQtView(QtView):
             with open(Path(file_tuple[0]), "w") as fd_file:
                 fd_file.write(self.ui.txt_producer.toPlainText())
 
-    def _form_to_message(self, clear_form: bool = True, validate: bool = True) -> str:
+    def _form_to_message(self, validate: bool = True) -> str:
         """Return the message built from the schema form"""
         message = self.ui.scr_schema_fields.values()
-        if clear_form:
-            self._build_schema_layout()
         if validate:
             self._validate_schema_form()
 
@@ -307,7 +307,7 @@ class MainQtView(QtView):
 
     def _export_form(self) -> None:
         """Export the message from the schema form to the producer text editor"""
-        self.ui.txt_producer.set_plain_text(self._form_to_message(clear_form=False, validate=False))
+        self.ui.txt_producer.set_plain_text(self._form_to_message(validate=False))
         self._format_message()
         self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value)
 
@@ -683,7 +683,12 @@ class MainQtView(QtView):
         self._console_print(text, StatusColor.blue)
         self._stats.report_produced()
         self._display_text(f"Produced {self._stats.get_in_a_tick()[0]} messages to Kafka", StatusColor.blue, False)
-        self.ui.txt_producer.clear()
+        clear_txt = self.ui.tbtn_prod_clear_on_send_txt.isChecked()
+        if clear_txt:
+            self.ui.txt_producer.clear()
+        clear_form = self.ui.tbtn_prod_clear_on_send_form.isChecked()
+        if clear_form:
+            self._build_schema_layout()
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: str) -> None:
         """Callback when a kafka message has been consumed."""
