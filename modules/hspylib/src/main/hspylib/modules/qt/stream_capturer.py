@@ -35,7 +35,7 @@ class StreamCapturer(QThread):
 
         streamCaptured = pyqtSignal(str)
 
-        def __init__(self, parent, poll_interval: float):
+        def __init__(self, parent: 'StreamCapturer', poll_interval: float):
             super().__init__()
             self._poll_interval = poll_interval
             self._parent = parent
@@ -46,7 +46,7 @@ class StreamCapturer(QThread):
                 while not self._parent.isFinished():
                     output = buf.getvalue()
                     if output and output != '':
-                        log.debug(output)
+                        log.info(output)
                         self.streamCaptured.emit(output)
                         buf.truncate(0)
                     sleep(self._poll_interval)
@@ -56,7 +56,7 @@ class StreamCapturer(QThread):
 
         streamCaptured = pyqtSignal(str)
 
-        def __init__(self, parent, poll_interval: float):
+        def __init__(self, parent: 'StreamCapturer', poll_interval: float):
             super().__init__()
             self._poll_interval = poll_interval
             self._parent = parent
@@ -98,7 +98,6 @@ class StreamCapturer(QThread):
             self._stderr_capturer.start()
         if self._capture_stdout:
             self._stdout_capturer.start()
-
         while not self.isFinished():
             sleep(self._poll_interval)
 

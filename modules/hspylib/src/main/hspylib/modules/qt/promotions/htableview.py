@@ -12,7 +12,7 @@
 
    Copyright 2021, HSPyLib team
 """
-
+import os
 from typing import Callable, Optional
 
 import pyperclip as clipboard
@@ -21,6 +21,7 @@ from PyQt5.QtGui import QCursor, QPainter, QPaintEvent
 from PyQt5.QtWidgets import QAbstractScrollArea, QHeaderView, QMenu, QTableView, QWidget
 
 from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
+from hspylib.core.tools.text_tools import strip_linebreaks
 
 
 class HTableView(QTableView):
@@ -71,10 +72,10 @@ class HTableView(QTableView):
             for index in index_list:
                 if len(text) > 0:
                     if last_row == index.row():
-                        text += ' '
+                        text += '\t'
                     else:
-                        text += '\n'
-                text += str(self.model().column(index))
+                        text += os.linesep
+                text += strip_linebreaks(str(self.model().column(index)))
                 last_row = index.row()
             clipboard.copy(text)
 
