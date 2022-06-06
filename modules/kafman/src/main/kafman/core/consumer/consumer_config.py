@@ -31,3 +31,16 @@ class ConsumerConfig(ABC):  # pylint: disable=too-few-public-methods
     @classmethod
     def required_settings(cls) -> List[str]:
         return [cls.BOOTSTRAP_SERVERS, cls.GROUP_ID, cls.CLIENT_ID]
+
+    @classmethod
+    def defaults(cls) -> dict:
+        return {
+            'consumer': {
+                ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
+                ConsumerConfig.GROUP_ID: 'kafman_testing_group',
+                ConsumerConfig.CLIENT_ID: 'kafman_client_1',
+                ConsumerConfig.ENABLE_AUTO_COMMIT: True,
+                ConsumerConfig.SESSION_TIMEOUT_MS: 6000,
+                ConsumerConfig.AUTO_OFFSET_RESET: 'earliest'
+            }
+        }

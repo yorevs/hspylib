@@ -27,3 +27,11 @@ class ProducerConfig(ABC):  # pylint: disable=too-few-public-methods
     @classmethod
     def required_settings(cls) -> List[str]:
         return [cls.BOOTSTRAP_SERVERS]
+
+    @classmethod
+    def defaults(cls) -> dict:
+        return {
+            'producer': {
+                ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
+            }
+        }
