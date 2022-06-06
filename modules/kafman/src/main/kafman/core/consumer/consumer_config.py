@@ -13,6 +13,7 @@
 """
 
 from abc import ABC
+from typing import List
 
 
 class ConsumerConfig(ABC):  # pylint: disable=too-few-public-methods
@@ -26,3 +27,7 @@ class ConsumerConfig(ABC):  # pylint: disable=too-few-public-methods
     AUTO_OFFSET_RESET = 'auto.offset.reset'
     KEY_DESERIALIZER = 'key.deserializer'
     VALUE_DESERIALIZER = 'value.deserializer'
+
+    @classmethod
+    def required_settings(cls) -> List[str]:
+        return [cls.BOOTSTRAP_SERVERS, cls.GROUP_ID, cls.CLIENT_ID]
