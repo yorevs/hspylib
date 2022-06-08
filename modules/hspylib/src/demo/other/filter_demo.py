@@ -11,7 +11,7 @@
       @site: "https://github.com/yorevs/hspylib")
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2022, HomeSetup team
+   Copyright 2022, HSPyLib team
 """
 
 import collections

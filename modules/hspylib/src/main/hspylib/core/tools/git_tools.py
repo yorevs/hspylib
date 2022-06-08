@@ -10,7 +10,7 @@
      @site: https://github.com/yorevs/homesetup
   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2021, HSPyLib team
+   Copyright 2022, HSPyLib team
 """
 
 from hspylib.modules.cli.vt100.terminal import Terminal

@@ -25,7 +25,7 @@ def PY_FILE_HEADER = """#!/usr/bin/env python3
       @site: ${project.ext.siteUrl}
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright ${year}, HomeSetup team
+   Copyright ${year}, HSPyLib team
 \"\"\"
 """
 
