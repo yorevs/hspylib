@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.qt.promotions
+   @package: hspylib.main.hspylib.modules.qt.promotions
       @file: htableview.py
    @created: Wed, 30 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -20,6 +20,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QPainter, QPaintEvent
 from PyQt5.QtWidgets import QAbstractScrollArea, QHeaderView, QMenu, QTableView, QWidget
 
+from hspylib.core.tools.collection_filter import CollectionFilter
 from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_linebreaks
 
@@ -55,6 +56,13 @@ class HTableView(QTableView):
         painter.drawText(self.viewport().rect(), Qt.AlignCenter, elided_text)
         painter.restore()
 
+    def filters(self) -> Optional[CollectionFilter]:
+        """TODO"""
+        return self.model().filters if self.model() else None
+
+    def refresh(self) -> None:
+        self.model().refresh_data()
+
     def clear(self):
         """Clear the entire table"""
         model = self.model()
@@ -85,7 +93,7 @@ class HTableView(QTableView):
 
     def context_menu(self) -> None:
         """Display the custom context menu"""
-        if self._context_menu_enable:
+        if self.model().has_data() and self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self._copyable:
                 ctx_menu.addAction('Copy Cells', self.copy)

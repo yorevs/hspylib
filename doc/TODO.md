@@ -27,7 +27,6 @@
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont _font(family, 8);
     qApp->setFont(_font);'''
-2. Add offset filters
-3. Fix dependency issues (avro-python3)
-4. Implement json schema type form builder
-5. Implement protobuf schema type form builder
+2. Fix dependency issues (avro-python3)
+3. Implement json schema type form builder
+4. Implement protobuf schema type form builder
