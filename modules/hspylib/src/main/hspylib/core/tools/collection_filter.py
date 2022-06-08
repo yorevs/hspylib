@@ -28,10 +28,10 @@ class FilterConditions(Enumeration):
     """TODO"""
 
     # @formatter:off
-    LESS_THEN                   =      '<', Union[int, float]
-    LESS_THEN_OR_EQUALS_TO      =     '<=', Union[int, float]
-    GREATER_THEN                =      '>', Union[int, float]
-    GREATER_THEN_OR_EQUALS_TO   =     '>=', Union[int, float]
+    LESS_THAN                   =      '<', Union[int, float]
+    LESS_THAN_OR_EQUALS_TO      =     '<=', Union[int, float]
+    GREATER_THAN                =      '>', Union[int, float]
+    GREATER_THAN_OR_EQUALS_TO   =     '>=', Union[int, float]
     EQUALS_TO                   =     '==', Union[str, int, bool, float]
     DIFFERENT_FROM              =     '!=', Union[str, int, bool, float]
     CONTAINS                    =     'in', Union[str]
@@ -98,13 +98,21 @@ class CollectionFilter:
         self._filters: Set[ElementFilter] = set()
 
     def __str__(self):
-        return ' '.join([f"{'AND ' if i > 0 else ''}{str(f)}" for i, f in enumerate(self._filters)])
+        if len(self._filters) > 0:
+            return ' '.join([f"{'AND ' if i > 0 else ''}{str(f)}" for i, f in enumerate(self._filters)])
+
+        return 'No filters applied'
 
     def __repr__(self):
         return str(self)
 
+    def __iter__(self):
+        """Returns the Iterator object"""
+        return self._filters.__iter__()
+
     def apply_filter(
-        self, name: str,
+        self,
+        name: str,
         el_name: str,
         condition: 'FilterConditions',
         el_value: Union[int, str, bool, float]) -> None:
@@ -112,8 +120,12 @@ class CollectionFilter:
 
         check_argument(not any(f.name == name for f in self._filters),
                        f'Filter {name} already exists!')
-
-        self._filters.add(ElementFilter(name, el_name, condition, el_value))
+        # Avoid applying the same filter
+        if not any(
+                f.el_name == el_name
+                and f.condition == condition
+                and f.el_value == el_value for f in self._filters):
+            self._filters.add(ElementFilter(name, el_name, condition, el_value))
 
     def clear(self) -> None:
         """TODO"""
@@ -128,14 +140,18 @@ class CollectionFilter:
         """TODO"""
         filtered: List[T] = []
         for element in data:
-            if all(f.matches(element) for f in self._filters):
+            if not self.should_filter(element):
                 filtered.append(element)
         return filtered
 
-    def filter_reverse(self, data: List[T]) -> List[T]:
+    def filter_inverse(self, data: List[T]) -> List[T]:
         """TODO"""
         filtered: List[T] = []
         for element in data:
-            if not any(f.matches(element) for f in self._filters):
+            if self.should_filter(element):
                 filtered.append(element)
         return filtered
+
+    def should_filter(self, data: T) -> bool:
+        """TODO"""
+        return not all(f.matches(data) for f in self._filters)

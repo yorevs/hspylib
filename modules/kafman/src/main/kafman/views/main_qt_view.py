@@ -53,8 +53,9 @@ from kafman.core.schema.registry_subject import RegistrySubject
 from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
 from kafman.core.statistics_worker import StatisticsWorker
+from kafman.views.filters_dialog import FiltersDialog
 from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
-from kafman.views.promotions.settings_dialog import SettingsDialog
+from kafman.views.settings_dialog import SettingsDialog
 
 HERE = get_path(__file__)
 
@@ -218,6 +219,9 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_del_topics.setText(FormIcons.MINUS.value)
         self.ui.tbtn_cons_del_topics.clicked.connect(lambda: self._del_topic(is_producer=False))
         self.ui.tbtn_cons_filters.setText(FormIcons.FILTER.value)
+        self.ui.tbtn_cons_filters.clicked.connect(self._add_consumer_filters)
+        self.ui.tbtn_cons_filters_refresh.setText(FormIcons.REFRESH.value)
+        self.ui.tbtn_cons_filters_refresh.clicked.connect(self.ui.tbl_consumer.refresh)
         self.ui.lst_cons_settings.currentRowChanged.connect(self._get_setting)
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
@@ -226,6 +230,8 @@ class MainQtView(QtView):
         self.ui.tbtn_text_view.clicked.connect(
             lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value))
         self.ui.tbl_consumer.add_custom_menu_action('Commit offset', self._commit_offset, True)
+        HTableModel(self.ui.tbl_consumer, KafkaMessage)
+        self.ui.lbl_cons_filters.setText(str(self.ui.tbl_consumer.filters()))
 
     def _is_producer(self) -> bool:
         """Whether producer or consumer tab is selected"""
@@ -279,6 +285,12 @@ class MainQtView(QtView):
             self.ui.splitter_pane, SettingsDialog.SettingsType.PRODUCER, self._settings(), self.ui.lst_prod_settings)
         settings_dlg.set_window_title("Add a producer setting")
         settings_dlg.show()
+
+    def _add_consumer_filters(self):
+        filters_dlg = FiltersDialog(self.ui.splitter_pane, self.ui.tbl_consumer.filters())
+        filters_dlg.filtersChanged.connect(
+            lambda s: self.ui.lbl_cons_filters.setText(f'Filters: {s}'))
+        filters_dlg.show()
 
     def _open_message_file(self) -> None:
         file_tuple = QFileDialog.getOpenFileNames(
@@ -574,7 +586,7 @@ class MainQtView(QtView):
                 offset = max(offset, int(str(model.column(offset_col_idx))))
             if offset >= 0:
                 self._consumer.commit(offset)
-                self._display_text(f"Offset committed: {offset} (all topics)")
+                self._display_text(f"Offset committed: {offset} (all topics)", StatusColor.yellow)
 
     def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
@@ -616,14 +628,14 @@ class MainQtView(QtView):
         started = self._consumer.is_started()
         settings = self._settings()
         if started:  # Stop
-            self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
+            self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
             self._consumer.stop_consumer()
             self._display_text("Consumption from kafka topics stopped", StatusColor.yellow)
         else:  # Start
             topics = self._topics(False)
             if topics:
                 schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
+                self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
                 self._consumer.start_consumer(settings, self._schema())
                 self._consumer.consume(topics)
                 self._display_text(f"Started consuming from topics {topics}{schema_name}", StatusColor.green)
@@ -692,8 +704,6 @@ class MainQtView(QtView):
 
     def _message_consumed(self, topic: str, partition: int, offset: int, value: str) -> None:
         """Callback when a kafka message has been consumed."""
-        if not self.ui.tbl_consumer.model():
-            HTableModel(self.ui.tbl_consumer, KafkaMessage)
         row = KafkaMessage(now_ms(), topic, partition, offset, value)
         text = f"-> Consumed {row}"
         self.ui.tbl_consumer.model().push_data([row])
