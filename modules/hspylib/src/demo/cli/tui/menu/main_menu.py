@@ -11,7 +11,7 @@
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2021, HSPyLib team
+   Copyright 2022, HSPyLib team
 """
 from cli.tui.menu.sub_menu_1 import SubMenu1
 from cli.tui.menu.sub_menu_2 import SubMenu2
