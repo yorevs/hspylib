@@ -105,6 +105,7 @@ def eol(current: int, split_len: int, hit_str: str = os.linesep, miss_str: str =
     """Give the eol character according to the splitting length"""
     return hit_str if current != 0 and current % split_len == 0 else miss_str
 
+
 def quote(value: str) -> str:
     """Quote or double quote a string according to the quote used and value type"""
     return value if not isinstance(value, str) \

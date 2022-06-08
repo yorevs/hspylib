@@ -18,8 +18,8 @@ from typing import List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
-from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.avro.avro_type import AvroType
+from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.widget_utils import WidgetUtils
 
 

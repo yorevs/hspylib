@@ -11,7 +11,6 @@
 
    Copyright 2021, HSPyLib team
 """
-from collections import defaultdict
 from typing import List
 
 from confluent_kafka.schema_registry.json_schema import JSONDeserializer, JSONSerializer

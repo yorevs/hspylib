@@ -16,8 +16,8 @@
 
 from typing import Any, Optional
 
-from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.avro.avro_type import AvroType
+from kafman.core.schema.schema_field import SchemaField
 
 
 class PrimitiveField(SchemaField):

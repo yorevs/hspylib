@@ -18,8 +18,8 @@ from typing import Optional, Tuple
 
 from avro.schema import Field
 
-from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.avro.avro_type import AvroType
+from kafman.core.schema.schema_field import SchemaField
 
 
 class RecordField(SchemaField):
