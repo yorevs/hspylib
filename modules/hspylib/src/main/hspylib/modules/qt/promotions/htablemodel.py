@@ -69,7 +69,7 @@ class HTableModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             row_dict = self._display_data()[index.row()].__dict__
             value = class_attribute_values(row_dict)[index.column()]
-            ret_val = QVariant(str(value if value is not None else''))
+            ret_val = QVariant(str(value if value is not None else ''))
         elif role == Qt.TextAlignmentRole:
             ret_val = QVariant(self.cell_alignments[index.column()]) \
                 if self.cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)

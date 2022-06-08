@@ -62,6 +62,7 @@ def example3() -> collections.deque:
     list(map(deq.append, example1()))
     return deq
 
+
 if __name__ == '__main__':
     arr = example1()
     records = example2()

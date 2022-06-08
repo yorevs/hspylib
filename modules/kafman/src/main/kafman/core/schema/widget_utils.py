@@ -31,6 +31,7 @@ INPUT_WIDGET = TypeVar(
 
 INPUT_VALUE = TypeVar('INPUT_VALUE', int, str, bool, float, list)
 
+
 class WidgetUtils(ABC):
     QWIDGET_TYPE_MAP = {
         'boolean': QCheckBox,

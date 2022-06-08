@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib-kafman
+   @package: hspylib-kafman.main.kafman.views.promotions
+      @file: form_area.py
+   @created: Wed, 8 Jun 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HomeSetup team
+"""
+
 import json
 from collections import defaultdict
 from typing import Union
@@ -51,6 +67,5 @@ class FormArea(QScrollArea):
             else:
                 current = pane[pane.parent_name()].fields()[pane.name()]
                 current.update(fields)
-
 
         return json.dumps(root, indent=2)

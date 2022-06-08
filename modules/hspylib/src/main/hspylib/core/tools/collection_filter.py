@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib
+   @package: hspylib.main.hspylib.core.tools
+      @file: collection_filter.py
+   @created: Wed, 8 Jun 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HomeSetup team
+"""
+
 from typing import get_args, List, Set, TypeVar, Union
 
 from hspylib.core.enums.enumeration import Enumeration
@@ -46,6 +62,7 @@ class FilterConditions(Enumeration):
         except TypeError:
             return isinstance(value, get_args(self.value[1]))
 
+
 class ElementFilter:
 
     def __init__(
@@ -71,7 +88,7 @@ class ElementFilter:
             return self.el_name in entry \
                    and self.condition.matches(entry[self.el_name], self.el_value)
         except (NameError, TypeError, AttributeError):
-                return False
+            return False
 
 
 class CollectionFilter:
@@ -122,23 +139,3 @@ class CollectionFilter:
             if not any(f.matches(element) for f in self._filters):
                 filtered.append(element)
         return filtered
-
-
-if __name__ == '__main__':
-    arr = [
-        {'id': 0, 'name': 'hugo', 'age': 43, 'score': 9.8, 'active': True},
-        {'id': 1, 'name': 'joao', 'age': 22, 'score': 2.5, 'active': True},
-        {'id': 2, 'name': 'juca', 'age': 15, 'score': 4.0, 'active': True},
-        {'id': 3, 'name': 'kako', 'age': 67, 'score': 3.9, 'active': True},
-        {'id': 4, 'name': 'lucas', 'age': 33, 'score': 5.0, 'active': True},
-        {'id': 5, 'name': 'gabits', 'age': 1, 'score': 7.8, 'active': False},
-        {'id': 6, 'name': 'claudia', 'age': 34, 'score': 6.1, 'active': True},
-        {'id': 7, 'name': 'be', 'age': 10, 'score': 10.0, 'active': False},
-    ]
-    f = CollectionFilter()
-    f.apply_filter('f1', 'score', FilterConditions.GREATER_THEN_OR_EQUALS_TO, 5.0)
-    f.apply_filter('f2', 'active', FilterConditions.IS, True)
-    f.apply_filter('f3', 'name', FilterConditions.CONTAINS, 'u')
-    f.apply_filter('f4', 'age', FilterConditions.LESS_THEN_OR_EQUALS_TO, 40)
-    print(f'Filters: {f}')
-    print('\n'.join([str(e) for e in f.filter(arr)]))
