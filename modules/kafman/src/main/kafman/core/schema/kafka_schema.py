@@ -19,7 +19,7 @@ from json.decoder import JSONDecodeError
 from typing import List, Tuple
 from uuid import uuid4
 
-from avro.schema import SchemaParseException
+from avro.errors import SchemaParseException
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
