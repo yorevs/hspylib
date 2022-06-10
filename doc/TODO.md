@@ -14,6 +14,7 @@
 ## HSPYLIB-FIREBASE
 
 1. Rename firebase to fireblaze
+2. Add a print when nothing was uploaded (??dir not found??)
 
 ## HSPYLIB-VAULT
 
@@ -27,6 +28,5 @@
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont _font(family, 8);
     qApp->setFont(_font);'''
-2. Fix dependency issues (avro-python3)
-3. Implement json schema type form builder
-4. Implement protobuf schema type form builder
+2. Implement json schema type form builder
+3. Implement protobuf schema type form builder
