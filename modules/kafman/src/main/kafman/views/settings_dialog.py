@@ -15,29 +15,29 @@
 """
 
 import os
-from pathlib import Path
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import run_dir
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
 
+from kafman.__classpath__ import get_resource
+
 
 class SettingsDialog(QObject):
     """TODO"""
 
-    DIALOG_FORM = str(Path(run_dir()) / "resources/forms/settings_dlg.ui")
+    DIALOG_FORM = get_resource("forms/settings_dlg.ui")
 
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = (Path(run_dir()) / "resources/producer-settings.properties").read_text()
+        PRODUCER_SETTINGS = get_resource("producer-settings.properties").read_text()
 
-        CONSUMER_SETTINGS = (Path(run_dir()) / "resources/consumer-settings.properties").read_text()
+        CONSUMER_SETTINGS = get_resource("consumer-settings.properties").read_text()
 
         # @formatter:off
         PRODUCER = 'PRODUCER', PRODUCER_SETTINGS

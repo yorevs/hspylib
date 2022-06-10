@@ -14,25 +14,23 @@
 """
 import sys
 
-from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
 
+from kafman.__classpath__ import Classpath, get_source
 from kafman.views.main_qt_view import MainQtView
-
-HERE = get_path(__file__)
 
 
 class Main(Application):
     """Kafman application main class"""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text()
 
-    # location of the .version file
-    VERSION_DIR = str(HERE)
+    # Location of the .version file
+    VERSION_DIR = Classpath.SOURCE_ROOT
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)

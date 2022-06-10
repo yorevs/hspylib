@@ -1,15 +1,31 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib-kafman
+   @package: hspylib-kafman.main.kafman.views.promotions
+      @file: settings_dialog.py
+   @created: Wed, 8 Jun 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HSPyLib team
+"""
+
 import random
 import string
-from pathlib import Path
 from typing import Optional, Union
 
 from hspylib.core.tools.collection_filter import CollectionFilter, ElementFilter, FilterConditions
-from hspylib.core.tools.commons import run_dir
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
+
+from kafman.__classpath__ import get_resource
 
 
 class FiltersDialog(QObject):
@@ -17,7 +33,7 @@ class FiltersDialog(QObject):
 
     filtersChanged = pyqtSignal(str)
 
-    DIALOG_FORM = str(Path(run_dir()) / "resources/forms/filters_dlg.ui")
+    DIALOG_FORM = get_resource("forms/filters_dlg.ui")
 
     def __init__(self, parent: QWidget, filters: CollectionFilter):
         super().__init__(parent)

@@ -37,9 +37,10 @@ class Singleton(type):
                 cls.INSTANCE = instance
                 cls._instances[cls] = instance
                 log.debug(f'Created a new Singleton instance: {cls.__module__}.{cls.__name__}')
-            except Exception:
+            except Exception as err:
                 log.error(traceback.format_exc())
                 syserr(traceback.format_exc())
+                print(err)
 
         return cls._instances[cls]
 

@@ -35,10 +35,9 @@ class AppConfigs(metaclass=Singleton):
        \\-{}
     """)
 
-    def __init__(self, resource_dir: str, log_dir: str = None):
+    def __init__(self, resource_dir: str):
         check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
-
         self._app_properties = Properties(load_dir=resource_dir)
 
         log.info(self)
@@ -67,14 +66,6 @@ class AppConfigs(metaclass=Singleton):
     def resource_dir(self) -> Optional[str]:
         """TODO"""
         return self._resource_dir
-
-    def log_dir(self) -> Optional[str]:
-        """TODO"""
-        return self._log_dir
-
-    def log_file(self) -> Optional[str]:
-        """TODO"""
-        return self._log_file
 
     def get(self, property_name: str) -> Optional[str]:
         """TODO"""

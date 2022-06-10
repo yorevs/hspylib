@@ -87,15 +87,15 @@ class Application(metaclass=Singleton):
 
         # Initialize application configs
         if os.path.exists(f'{resource_dir}'):
-            self.configs = AppConfigs(resource_dir=resource_dir, log_dir=log_dir)
+            self.configs = AppConfigs(resource_dir=resource_dir)
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
-            self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources', log_dir=log_dir)
+            self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources')
         else:
             pass  # AppConfigs will not be available
 
         # Initialize application logs
-        log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"
-        check_state(log_init(log_file), "Unable to initialize logging. log_file={}", log_file)
+        self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"
+        check_state(log_init(self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
