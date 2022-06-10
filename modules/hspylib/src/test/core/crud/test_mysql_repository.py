@@ -38,9 +38,7 @@ class TestMySqlRepository(unittest.TestCase):
     def setUp(self):
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
-        self.configs = AppConfigs(
-            resource_dir=resource_dir, log_dir=resource_dir
-        )
+        self.configs = AppConfigs(resource_dir=resource_dir)
         log.info(self.configs)
         self.repository = MysqlRepositoryTest()
         self.table = self.repository.table_name()

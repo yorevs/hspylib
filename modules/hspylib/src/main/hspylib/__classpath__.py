@@ -3,8 +3,8 @@
 
 """
    TODO Purpose of the file
-   @project: hspylib-kafman
-   @package: hspylib-kafman.main.kafman
+   @project: hspylib
+   @package: hspylib.main.hspylib
       @file: __classpath__.py
    @created: Wed, 8 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
@@ -13,7 +13,6 @@
 
    Copyright 2022, HSPyLib team
 """
-
 import os
 from pathlib import Path
 from textwrap import dedent

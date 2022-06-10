@@ -33,9 +33,7 @@ class TestClass(unittest.TestCase):
         resource_dir = '{}/resources'.format(TEST_DIR)
         self.db_file = "{}/test-file-db.txt".format(resource_dir)
         os.environ['ACTIVE_PROFILE'] = "test"
-        self.configs = AppConfigs(
-            resource_dir=resource_dir, log_dir=resource_dir
-        )
+        self.configs = AppConfigs(resource_dir=resource_dir)
         log.info(self.configs)
         self.repository = FileDbRepositoryTest(self.db_file)
 

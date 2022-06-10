@@ -3,8 +3,8 @@
 
 """
    TODO Purpose of the file
-   @project: HSPyLib
-   main.hspylib
+   @project: hspylib
+   @package: main.hspylib
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,25 +15,24 @@
 """
 import sys
 
+from hspylib.__classpath__ import Classpath, get_source
 from hspylib.addons.appman.app_extension import AppExtension
 from hspylib.addons.appman.app_type import AppType
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.widman.widman import WidgetManager
-from hspylib.core.tools.commons import get_path, run_dir, syserr
+from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
-
-HERE = get_path(__file__)
 
 
 class Main(Application):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text()
 
     # location of the .version file
-    VERSION_DIR = str(HERE)
+    VERSION_DIR = Classpath.SOURCE_ROOT
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
