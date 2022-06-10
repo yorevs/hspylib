@@ -65,7 +65,7 @@ class FieldFactory(ABC):
     def _get_union_type(union_type: UnionSchema) -> Optional[Schema]:
         return next((
             sch for sch in union_type.schemas if
-            not isinstance(sch, PrimitiveSchema) or sch.name != 'null'
+            not isinstance(sch, PrimitiveSchema) or sch.fullname != 'null'
         ), None)
 
     @staticmethod
@@ -81,7 +81,7 @@ class FieldFactory(ABC):
     @staticmethod
     def is_required(field: Field) -> bool:
         if isinstance(field.type, UnionSchema):
-            has_null = next((sch for sch in field.type.schemas if sch.name == 'null'), None)
+            has_null = next((sch for sch in field.type.schemas if sch.fullname == 'null'), None)
             return has_null is None
         else:
             return True
