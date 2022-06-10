@@ -8,7 +8,9 @@
 4. Include a form validator for minput.
 5. Improve tui -> extra with settings and remove parameters.
 6. Fix README.md images and finish the documentation.
-7. Replace setup.py: https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
+7. Fix pypi deployment:
+   1. https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
+   2. https://packaging.python.org/en/latest/tutorials/packaging-projects/
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
 
 ## HSPYLIB-FIREBASE
