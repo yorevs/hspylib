@@ -1,3 +1,11 @@
+idea {
+    module {
+        settings {
+            rootModuleType = 'PYTHON_MODULE'
+        }
+    }
+}
+
 ext {
   sourceRoot = "$rootDir/modules/$project.name/src"
   application = "$sourceRoot/main/__main__.py"
@@ -9,10 +17,10 @@ ext {
 task fixAvroDependencies(type: Task) {
   doLast {
     def dep_file = new File(requirementsFile)
-    dep_file.append('fastavro>=1.4.10\n')
-    dep_file.append('jsonschema>=4.4.0\n')
-    dep_file.append('confluent-kafka>=1.8.2\n')
-    dep_file.append('avro-python3>=1.10.2\n')
+    dep_file.append('fastavro~=1.5.1\n')
+    dep_file.append('jsonschema~=4.6.0\n')
+    dep_file.append('confluent-kafka~=1.8.2\n')
+    dep_file.append('avro-python3~=1.10.2\n')
   }
 }
 

@@ -1,3 +1,11 @@
+idea {
+    module {
+        settings {
+            rootModuleType = 'PYTHON_MODULE'
+        }
+    }
+}
+
 ext {
   sourceRoot = "$rootDir/modules/$project.name/src"
   application = "$sourceRoot/main/__main__.py"
