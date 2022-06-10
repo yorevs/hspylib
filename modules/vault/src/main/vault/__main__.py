@@ -20,27 +20,26 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
-from hspylib.core.tools.commons import get_path, syserr
+from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
+from vault.__classpath__ import Classpath, get_source
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
-
-HERE = get_path(__file__)
 
 
 class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text()
 
     # location of the .version file
-    VERSION_DIR = str(HERE)
+    VERSION_DIR = Classpath.SOURCE_ROOT
 
     # The resources folder
-    RESOURCE_DIR = str(HERE / "resources")
+    RESOURCE_DIR = Classpath.RESOURCE_DIR
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)

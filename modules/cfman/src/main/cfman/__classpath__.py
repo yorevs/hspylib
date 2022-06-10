@@ -3,8 +3,8 @@
 
 """
    TODO Purpose of the file
-   @project: hspylib-kafman
-   @package: hspylib-kafman.main.kafman
+   @project: hspylib-cfman
+   @package: hspylib-cfman.main.cfman
       @file: __classpath__.py
    @created: Wed, 8 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

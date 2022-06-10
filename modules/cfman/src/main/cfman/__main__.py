@@ -19,13 +19,11 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
-from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
+from cfman.__classpath__ import Classpath, get_source
 from cfman.core.cf_manager import CFManager
-
-HERE = get_path(__file__)
 
 log.captureWarnings(True)
 
@@ -34,10 +32,10 @@ class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text()
 
     # location of the .version file
-    VERSION_DIR = str(HERE)
+    VERSION_DIR = Classpath.SOURCE_ROOT
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)

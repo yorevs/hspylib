@@ -21,29 +21,28 @@ from datetime import datetime
 from textwrap import dedent
 
 import urllib3
-from hspylib.core.tools.commons import get_path, syserr
+from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
+from firebase.__classpath__ import Classpath, get_source
 from firebase.core.firebase import Firebase
 
 # Disable this warning because we are hitting our own database
 urllib3.disable_warnings()
-
-HERE = get_path(__file__)
 
 
 class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text()
 
     # location of the .version file
-    VERSION_DIR = str(HERE)
+    VERSION_DIR = Classpath.SOURCE_ROOT
 
     # The resources folder
-    RESOURCE_DIR = str(HERE / "resources")
+    RESOURCE_DIR = Classpath.RESOURCE_DIR
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)

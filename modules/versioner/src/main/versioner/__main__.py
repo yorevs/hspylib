@@ -18,23 +18,22 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
-from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.core.tools.commons import syserr, sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
+from versioner.__classpath__ import Classpath, get_source
 from versioner.core.versioner import Versioner
-
-HERE = get_path(__file__)
 
 
 class Main(Application):
     """Versioner - Provides an engine to manage app versions."""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text()
 
     # location of the .version file
-    VERSION_DIR = str(HERE)
+    VERSION_DIR = Classpath.SOURCE_ROOT
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
