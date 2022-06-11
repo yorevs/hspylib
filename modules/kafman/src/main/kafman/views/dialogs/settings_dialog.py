@@ -32,11 +32,17 @@ class SettingsDialog(QObject):
 
     DIALOG_FORM = get_resource("forms/settings_dlg.ui")
 
+    # @formatter:off
+    FORBIDDEN_SETTINGS = {
+        'key.deserializer': '', 'value.deserializer': '',
+        'key.serializer': '', 'value.serializer': ''
+    }
+    # @formatter:on
+
     class SettingsType(Enumeration):
         """TODO"""
 
         PRODUCER_SETTINGS = get_resource("producer-settings.properties").read_text()
-
         CONSUMER_SETTINGS = get_resource("consumer-settings.properties").read_text()
 
         # @formatter:off
@@ -48,7 +54,7 @@ class SettingsDialog(QObject):
             return self.value[1]
 
     def __init__(
-        self, parent: QWidget, settings_type: 'SettingsType', current_settings: dict, settings_widget: HListWidget):
+            self, parent: QWidget, settings_type: 'SettingsType', current_settings: dict, settings_widget: HListWidget):
 
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)
@@ -57,7 +63,8 @@ class SettingsDialog(QObject):
         self.ui.setupUi(self.dialog)
         self._settings = {}
         self._settings_type = settings_type
-        self._current_settings = current_settings
+        self._forbidden_settings = current_settings
+        self._forbidden_settings.update(self.FORBIDDEN_SETTINGS)
         self._settings_widget = settings_widget
         self._setup_controls()
 
@@ -94,7 +101,7 @@ class SettingsDialog(QObject):
         all_settings = self._settings_type.settings().split(os.linesep)
         self._settings.update(Properties.read_properties(all_settings))
         self.ui.cmb_settings.addItems({
-            k: v for (k, v) in self._settings.items() if k not in self._current_settings
+            k: v for (k, v) in self._settings.items() if k not in self._forbidden_settings
         })
 
     def _change_setting(self, setting_name: str) -> None:
@@ -107,4 +114,4 @@ class SettingsDialog(QObject):
         setting_value = self.ui.le_value.text()
         self._settings_widget.set_item(self.ui.cmb_settings.currentText())
         self.ui.cmb_settings.removeItem(self.ui.cmb_settings.currentIndex())
-        self._current_settings.update({setting_name: setting_value})
+        self._forbidden_settings.update({setting_name: setting_value})
