@@ -14,13 +14,14 @@
 from typing import List, Tuple
 
 import avro.schema as schema_parser
+from PyQt5.QtWidgets import QLabel
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
+from fastavro.validation import validate as validate_schema
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QLabel
 
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
@@ -71,6 +72,10 @@ class AvroSchema(KafkaSchema):
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
         }
+
+    def validate(self, json_form: dict) -> bool:
+        validate_schema(json_form, self.get_content_dict(), raise_errors=True)
+        return True
 
     def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, INPUT_WIDGET]:
 

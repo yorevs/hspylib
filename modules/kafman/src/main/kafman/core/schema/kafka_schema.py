@@ -119,6 +119,10 @@ class KafkaSchema(ABC):
     def settings(self) -> dict:
         """Return the required schema settings"""
 
+    def validate(self, json_form: dict) -> bool:
+        """Validate the json form against the schema"""
+        pass
+
     def get_filepath(self) -> str:
         """Return the schema file path"""
         return self._filepath

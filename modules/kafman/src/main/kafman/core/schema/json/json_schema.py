@@ -67,5 +67,8 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._content_text, self.from_dict)
         }
 
+    def validate(self, json_form: dict) -> bool:
+        pass
+
     def _parse(self) -> None:
         pass

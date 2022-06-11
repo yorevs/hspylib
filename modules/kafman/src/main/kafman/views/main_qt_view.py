@@ -27,7 +27,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtWidgets import QFileDialog
 from confluent_kafka.cimpl import Consumer
-from fastavro.validation import validate as validate_schema
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, now, now_ms
 from hspylib.core.tools.preconditions import check_state
@@ -340,10 +339,10 @@ class MainQtView(QtView):
 
     def _validate_schema_form(self):
         """TODO"""
-        schema = self._schema().get_content_dict()
-        json_form = json.loads(self.ui.scr_schema_fields.values())
+        schema = self._schema()
         try:
-            validate_schema(json_form, schema, raise_errors=True)
+            json_form = json.loads(self.ui.scr_schema_fields.values())
+            schema.validate(json_form)
             self._display_text('Schema form is valid', StatusColor.green)
         except Exception as err:
             self._display_error(f'Schema form is not valid:: {err}')
