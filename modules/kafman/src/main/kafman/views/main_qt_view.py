@@ -56,7 +56,7 @@ from kafman.views.dialogs.filters_dialog import FiltersDialog
 from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 from kafman.views.dialogs.settings_dialog import SettingsDialog
 
-from src.main.kafman.__classpath__ import get_source, Classpath
+from kafman.__classpath__ import get_source, Classpath
 
 
 class MainQtView(QtView):
