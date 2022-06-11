@@ -66,16 +66,20 @@ task listDependencies(type: Task) {
 task pipFreeze(type: Exec) {
   group = 'Dependencies'
   description = 'Output user-site installed packages in requirements format'
-  workingDir sourceRoot
+  workingDir "$sourceRoot/main"
   commandLine rootProject.python, '-m', 'pip', 'freeze'
 }
 
 /* Gather python requirements for the module */
-task pipRequirements(type: Exec) {
+task pipRequirements(type: Task) {
   group = 'Dependencies'
   description = 'Using pipreqs to gather package requirements'
-  workingDir sourceRoot
-  commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force', '--mode', 'compat' , 'main'
+  doLast {
+    exec {
+      workingDir "$sourceRoot/main"
+      commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force', '--mode', 'compat' , '.'
+    }
+  }
 }
 
 /* Install all required python packages */
