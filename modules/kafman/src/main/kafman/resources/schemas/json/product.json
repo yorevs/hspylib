@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "https://example.com/product.schema.json",
   "title": "Product",
   "type": "object",
   "description": "A Confluent Kafka Product",

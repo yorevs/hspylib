@@ -7,6 +7,7 @@
 
 __all__ = [
   'json_schema', 
-  'json_type'
+  'json_type', 
+  'property'
 ]
 __version__ = '0.9.49'

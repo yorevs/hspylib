@@ -27,11 +27,13 @@ from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QFrame, QLabel, QWidget
+from PyQt5.QtWidgets import QLabel
 
 from kafman.core.exception.exceptions import InvalidSchemaError
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
+from kafman.core.schema.widget_utils import INPUT_WIDGET
+from kafman.views.promotions.form_pane import FormPane
 
 
 class KafkaSchema(ABC):
@@ -62,6 +64,23 @@ class KafkaSchema(ABC):
     def key(cls) -> str:
         """Generate a new schema key for registration"""
         return str(uuid4())
+
+    @staticmethod
+    def create_schema_form_row_widget(field: SchemaField) -> Tuple[QLabel, QLabel, INPUT_WIDGET]:
+        """Create a schema form row widget"""
+
+        check_not_none(field)
+        field_name = field.name.replace('_', ' ').title()
+        label = QLabel(f"{field_name}: ")
+        if field.required:
+            req_label = QLabel('*')
+            req_label.setStyleSheet('QLabel {color: #FF554D;}')
+        else:
+            req_label = QLabel(' ')
+        req_label.setToolTip(f"This field is {'required' if field.required else 'optional'}")
+        input_widget = field.create_input_widget()
+
+        return req_label, label, input_widget
 
     def __init__(
         self,
@@ -98,14 +117,10 @@ class KafkaSchema(ABC):
     def __str__(self):
         return self._attributes.name
 
-    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, QWidget]:
-        """Create a schema form row widget"""
-        pass
-
     def create_schema_form_widget(
         self,
         form_stack: HStackedWidget,
-        parent_pane: QFrame = None,
+        parent_pane: FormPane = None,
         form_name: str = None,
         fields: List[SchemaField] = None) -> int:
         """Create the stacked frame with the form widget"""

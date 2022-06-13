@@ -14,8 +14,9 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Optional
+from typing import List
 
+from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from PyQt5.QtWidgets import QWidget
 
 from kafman.core.schema.avro.avro_type import AvroType
@@ -42,8 +43,5 @@ class EnumField(SchemaField):
         self.symbols = symbols
 
     def create_input_widget(self) -> QWidget:
-        self.widget = WidgetUtils.get_widget_type(self.a_type)()
-        return WidgetUtils.setup_widget(self.widget, self.doc, self.symbols, default=self.default)
-
-    def get_value(self) -> Optional[dict]:
-        pass
+        self.widget: HComboBox = WidgetUtils.get_widget_type(self.a_type.value)()
+        return WidgetUtils.setup_combo_box(self.widget, self.symbols, self.doc, default=self.default)

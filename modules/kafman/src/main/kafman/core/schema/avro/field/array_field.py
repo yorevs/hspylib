@@ -14,7 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Optional
+from typing import List
 
 from PyQt5.QtWidgets import QWidget
 
@@ -42,8 +42,5 @@ class ArrayField(SchemaField):
         self.items = items
 
     def create_input_widget(self) -> QWidget:
-        self.widget = WidgetUtils.get_widget_type(self.a_type)()
+        self.widget = WidgetUtils.get_widget_type(self.a_type.value)()
         return WidgetUtils.setup_widget(self.widget, self.doc, self.items, default=self.default)
-
-    def get_value(self) -> Optional[dict]:
-        pass

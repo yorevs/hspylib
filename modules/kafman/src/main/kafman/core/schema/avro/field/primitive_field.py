@@ -14,7 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Optional
+from typing import Any
 
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
@@ -35,6 +35,3 @@ class PrimitiveField(SchemaField):
             p_type,
             default,
             required=required)
-
-    def get_value(self) -> Optional[dict]:
-        pass

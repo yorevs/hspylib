@@ -1,7 +1,5 @@
 include kafman/.version
 include kafman/welcome.txt
 recursive-include kafman/resources *
-recursive-include kafman/resources/log *
 recursive-include kafman/resources/forms *
 recursive-include kafman/resources/fonts *
-recursive-include kafman/resources/schemas *

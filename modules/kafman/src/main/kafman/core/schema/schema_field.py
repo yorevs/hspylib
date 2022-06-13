@@ -11,12 +11,13 @@
 
    Copyright 2022, HSPyLib team
 """
-from abc import ABC, abstractmethod
-from typing import Any, Optional
+from abc import ABC
+from typing import Any, Optional, Union
 
 from PyQt5.QtWidgets import QWidget
 
 from kafman.core.schema.avro.avro_type import AvroType
+from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.widget_utils import WidgetUtils
 
 
@@ -30,7 +31,7 @@ class SchemaField(ABC):
         self,
         name: str,
         doc: str,
-        a_type: AvroType,
+        a_type: Union[AvroType, JsonType],
         default: Any = None,
         required: bool = True):
 
@@ -47,19 +48,12 @@ class SchemaField(ABC):
             f"type={str(self.a_type)}, " \
             f"required={self.required}, "
 
-    @abstractmethod
-    def get_value(self) -> Optional[dict]:
-        """Return the value contained by the schema widget. This may vary depending on the QWidget class"""
-
-    def is_valid(self) -> bool:
-        """Whether the field is valid, based on it's values and required flag"""
-        return not self.required or self.get_value() is not None
-
     def create_input_widget(self) -> Optional[QWidget]:
-        widget_type = WidgetUtils.get_widget_type(self.a_type)
+        """TODO"""
+        widget_type = WidgetUtils.get_widget_type(self.a_type.value)
         if widget_type is not None:
             self.widget = widget_type()
             widget = WidgetUtils.setup_widget(self.widget, self.doc, default=self.default)
             return widget
-        else:
-            return None
+
+        return None

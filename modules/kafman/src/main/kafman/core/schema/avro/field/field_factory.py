@@ -45,7 +45,8 @@ class FieldFactory(ABC):
         else:
             complex_type = FieldFactory._get_union_type(field_type) if avro_type.is_union() else field_type
             if isinstance(complex_type, PrimitiveSchema):
-                schema_field = PrimitiveField(field_name, field_doc, complex_type.type, field_default, required)
+                a_type = AvroType.of_value(complex_type.type)
+                schema_field = PrimitiveField(field_name, field_doc, a_type, field_default, required)
             elif isinstance(complex_type, EnumSchema):
                 schema_field = EnumField(field_name, field_doc, complex_type.symbols, field_default, required)
             elif isinstance(complex_type, ArraySchema):
@@ -83,5 +84,5 @@ class FieldFactory(ABC):
         if isinstance(field.type, UnionSchema):
             has_null = next((sch for sch in field.type.schemas if sch.fullname == 'null'), None)
             return has_null is None
-        else:
-            return True
+
+        return True
