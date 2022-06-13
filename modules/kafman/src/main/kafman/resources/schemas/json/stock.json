@@ -33,14 +33,14 @@
       "description": "The unique ID that is used to track the message",
       "default": "",
       "examples": [
-        "12dsds-2ewwewew-wewqe"
+        "12-abcd-msg"
       ]
     },
     "nodeId": {
       "$id": "#/properties/nodeId",
       "type": "string",
       "title": "The store ID",
-      "description": "The node ID to which this stock belongs",
+      "description": "The store ID to which this stock belongs",
       "default": "",
       "examples": [
         "MyStore"

@@ -14,7 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Optional, Tuple
+from typing import Tuple
 
 from avro.schema import Field
 
@@ -37,6 +37,3 @@ class RecordField(SchemaField):
             required=required)
 
         self.fields = fields
-
-    def get_value(self) -> Optional[dict]:
-        pass

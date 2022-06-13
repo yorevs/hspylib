@@ -14,8 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Optional
-
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
 
@@ -36,6 +34,3 @@ class MapField(SchemaField):
             default, required=required)
 
         self.values = values
-
-    def get_value(self) -> Optional[dict]:
-        pass

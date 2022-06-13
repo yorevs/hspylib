@@ -11,10 +11,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import List, Tuple
+from typing import List
 
 import avro.schema as schema_parser
-from PyQt5.QtWidgets import QLabel
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from fastavro.validation import validate as validate_schema
@@ -30,7 +29,6 @@ from kafman.core.schema.avro.field.record_field import RecordField
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
-from kafman.core.schema.widget_utils import INPUT_WIDGET
 from kafman.views.promotions.form_pane import FormPane
 
 
@@ -77,26 +75,13 @@ class AvroSchema(KafkaSchema):
         validate_schema(json_form, self.get_content_dict(), raise_errors=True)
         return True
 
-    def create_schema_form_row_widget(self, field: SchemaField) -> Tuple[QLabel, QLabel, INPUT_WIDGET]:
-
-        field_name = field.name.replace('_', ' ').title()
-        label = QLabel(f"{field_name}: ")
-        if field.required:
-            req_label = QLabel('*')
-            req_label.setStyleSheet('QLabel {color: #FF554D;}')
-        else:
-            req_label = QLabel(' ')
-        req_label.setToolTip(f"This field is {'required' if field.required else 'optional'}")
-        input_widget = field.create_input_widget()
-
-        return req_label, label, input_widget
-
     def create_schema_form_widget(
         self,
         form_stack: HStackedWidget,
         parent_pane: FormPane = None,
         form_name: str = None,
         fields: List[SchemaField] = None) -> int:
+        """Create the stacked frame with the form widget"""
 
         form_fields = fields if fields is not None else self._attributes.fields
 
@@ -109,7 +94,7 @@ class AvroSchema(KafkaSchema):
 
         for row, field in enumerate(form_fields):
             check_not_none(field)
-            req_label, label, widget = self.create_schema_form_row_widget(field)
+            req_label, label, widget = KafkaSchema.create_schema_form_row_widget(field)
             if isinstance(field, RecordField):
                 record_fields = FieldFactory.create_schema_fields(field.fields)
                 child_index = self.create_schema_form_widget(form_stack, form_pane, field.name, record_fields)

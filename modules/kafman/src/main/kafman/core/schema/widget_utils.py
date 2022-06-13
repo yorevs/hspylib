@@ -15,7 +15,7 @@
 """
 
 from abc import ABC
-from typing import List, Type, TypeVar, Union
+from typing import List, TypeVar, Union
 
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
@@ -23,8 +23,6 @@ from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
-
-from kafman.core.schema.avro.avro_type import AvroType
 
 INPUT_WIDGET = TypeVar(
     'INPUT_WIDGET', QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget)
@@ -51,10 +49,8 @@ class WidgetUtils(ABC):
     }
 
     @staticmethod
-    def get_widget_type(field_type: Union[str, AvroType]) -> Type[QWidget]:
-        return WidgetUtils.QWIDGET_TYPE_MAP[field_type.value] \
-            if isinstance(field_type, AvroType) \
-            else WidgetUtils.QWIDGET_TYPE_MAP[field_type]
+    def get_widget_type(field_type: str) -> INPUT_WIDGET:
+        return WidgetUtils.QWIDGET_TYPE_MAP[field_type]
 
     @staticmethod
     def setup_widget(
@@ -111,9 +107,9 @@ class WidgetUtils(ABC):
     def setup_list(
         widget: HListWidget,
         tooltip: str = None,
-        default: str = None) -> QWidget:
+        all_items: List[str] = None) -> QWidget:
 
-        widget.addItems(default or [])
+        widget.addItems(all_items or [])
         widget.set_editable()
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)

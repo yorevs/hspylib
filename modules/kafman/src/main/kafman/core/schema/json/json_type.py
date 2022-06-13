@@ -20,16 +20,17 @@ from typing import Any
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class _JsonType(Enumeration):
+class JsonType(Enumeration):
     """TODO"""
 
     # @formatter:off
-    BOOLEAN         = 'boolean'
-    INTEGER         = 'integer'  # int|long
-    NUMBER          = 'number'   # float|double
     STRING          = 'string'   # string|bytes|enum|fixed
+    NUMBER          = 'number'   # float|double
+    INTEGER         = 'integer'  # int|long
     OBJECT          = 'object'   # record|map
     ARRAY           = 'array'    # array
+    BOOLEAN         = 'boolean'  # bool
+    ENUM            = 'enum'     # array or string enumeration
     # @formatter:on
 
     def empty_value(self) -> Any:
@@ -47,5 +48,9 @@ class _JsonType(Enumeration):
         else:
             return ''
 
+    def is_primitive(self) -> bool:
+        return self.value not in ['object', 'array']
+
     def is_object(self):
+        """TODO"""
         return self.value == 'object'

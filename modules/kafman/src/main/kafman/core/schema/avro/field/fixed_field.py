@@ -14,8 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Optional
-
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
 
@@ -32,6 +30,3 @@ class FixedField(SchemaField):
             doc,
             AvroType.FIXED,
             default=size)
-
-    def get_value(self) -> Optional[dict]:
-        pass
