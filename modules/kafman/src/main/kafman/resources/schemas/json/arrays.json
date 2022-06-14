@@ -1,0 +1,27 @@
+{
+  "$id": "https://example.com/arrays.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Arrays",
+  "description": "A representation of a person, company, organization, or place",
+  "type": "object",
+  "properties": {
+    "fruits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "vegetables": {
+      "type": "array",
+      "items": []
+    },
+    "desert": {
+      "type": "array",
+      "items": [
+        "chocolate",
+        "cup-cake",
+        "ice-cream"
+      ]
+    }
+  }
+}

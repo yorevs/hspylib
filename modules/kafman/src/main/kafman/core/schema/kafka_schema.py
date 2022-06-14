@@ -134,7 +134,7 @@ class KafkaSchema(ABC):
     def settings(self) -> dict:
         """Return the required schema settings"""
 
-    def validate(self, json_form: dict) -> bool:
+    def validate(self, json_form: dict) -> None:
         """Validate the json form against the schema"""
         pass
 
