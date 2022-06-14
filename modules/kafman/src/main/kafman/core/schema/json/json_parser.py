@@ -2,6 +2,7 @@ from abc import ABC
 from typing import List, Tuple
 
 from hspylib.core.tools.preconditions import check_and_get
+from jsonschema.validators import Draft202012Validator
 
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.json.property.property import Property
@@ -23,19 +24,19 @@ class JsonParser(ABC):
             self.type = None
 
     @staticmethod
-    def parse(json_dict: dict) -> 'JsonSchemaData':
+    def parse(schema_dict: dict) -> 'JsonSchemaData':
         """TODO"""
-
+        Draft202012Validator(schema=schema_dict, format_checker=None)
         schema = JsonParser.JsonSchemaData()
-        schema.id = check_and_get('$id', json_dict)
-        schema.schema = check_and_get('$schema', json_dict)
-        schema.title = check_and_get('title', json_dict)
-        schema.description = check_and_get('description', json_dict, False)
-        schema.required = check_and_get('required', json_dict, False, [])
-        schema.type = check_and_get('type', json_dict)
+        schema.id = check_and_get('$id', schema_dict)
+        schema.schema = check_and_get('$schema', schema_dict)
+        schema.title = check_and_get('title', schema_dict)
+        schema.description = check_and_get('description', schema_dict, False)
+        schema.required = check_and_get('required', schema_dict, False, [])
+        schema.type = check_and_get('type', schema_dict)
 
-        if 'object' == schema.type:
-            properties = check_and_get('properties', json_dict, default={})
+        if JsonType.OBJECT.value == schema.type:
+            properties = check_and_get('properties', schema_dict, default={})
             schema.properties = JsonParser._parse_properties(properties, schema.required)
 
         return schema
@@ -54,12 +55,14 @@ class JsonParser(ABC):
 
             p_properties = JsonParser._parse_properties(check_and_get('properties', props), required) \
                 if p_type == JsonType.OBJECT else None
-            p_symbols = check_and_get('enum', props['items'], False, []) \
+            p_items = check_and_get('items', props, False) \
                 if p_type == JsonType.ARRAY else None
 
             prop = Property(p_name, p_title, p_description, p_type, p_default, p_required)
             prop.all_properties = p_properties
-            prop.all_symbols = p_symbols
+            if p_items:
+                prop.set_items(p_items)
+
             schema_properties.append(prop)
 
         return tuple(schema_properties)

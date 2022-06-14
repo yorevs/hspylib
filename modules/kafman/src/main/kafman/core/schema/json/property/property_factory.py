@@ -6,6 +6,7 @@ from hspylib.core.tools.preconditions import check_not_none
 
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.json.property.array_property import ArrayProperty
+from kafman.core.schema.json.property.enum_property import EnumProperty
 from kafman.core.schema.json.property.object_property import ObjectProperty
 from kafman.core.schema.json.property.primitive_property import PrimitiveProperty
 from kafman.core.schema.json.property.property import Property
@@ -28,8 +29,12 @@ class PropertyFactory(ABC):
         if p_property.type.is_primitive():
             schema_field = PrimitiveProperty(prop_name, prop_doc, prop_type, prop_default, required)
         elif p_property.type == JsonType.ARRAY:
-            all_symbols = p_property.all_symbols
-            schema_field = ArrayProperty(prop_name, prop_doc, all_symbols, prop_default, required)
+            if hasattr(p_property.extras, 'a_items'):
+                schema_field = ArrayProperty(prop_name, prop_doc, p_property.extras.a_items, required)
+            elif hasattr(p_property.extras, 'enum'):
+                schema_field = EnumProperty(prop_name, prop_doc, p_property.extras.enum, prop_default, required)
+            else:
+                schema_field = ArrayProperty(prop_name, prop_doc, [], required)
         elif p_property.type == JsonType.OBJECT:
             properties = p_property.all_properties
             schema_field = ObjectProperty(prop_name, prop_doc, tuple(properties), required)

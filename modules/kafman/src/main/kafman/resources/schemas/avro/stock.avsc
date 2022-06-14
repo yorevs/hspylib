@@ -1,0 +1,50 @@
+{
+  "namespace": "example.com.stock",
+  "name": "Stock",
+  "type": "record",
+  "doc": "Payload contains required fields to publish a Stock",
+  "fields": [
+    {
+      "name": "source",
+      "type": [
+        "string",
+        "null"
+      ],
+      "doc": "Source from where the stock comes from"
+    },
+    {
+      "name": "timestamp",
+      "type": [
+        "string",
+        "null"
+      ],
+      "doc": "timestamp of publishing message."
+    },
+    {
+      "name": "market",
+      "type": {
+        "type": "enum",
+        "name": "Market",
+        "namespace": "example.com.market",
+        "doc": "Available Markets",
+        "symbols": [
+          "UNKNOWN",
+          "Brazil",
+          "USA",
+          "Europe",
+          "Asia"
+        ],
+        "default": "UNKNOWN"
+      },
+      "doc": "Market currently being processed"
+    },
+    {
+      "name": "sku",
+      "type": [
+        "string",
+        "null"
+      ],
+      "doc": "Sku of the product"
+    }
+  ]
+}

@@ -19,10 +19,11 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
+from jsonschema import validate as validate_schema
 
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
-from kafman.core.schema.json.property.json_parser import JsonParser
+from kafman.core.schema.json.json_parser import JsonParser
 from kafman.core.schema.json.property.object_property import ObjectProperty
 from kafman.core.schema.json.property.property_factory import PropertyFactory
 from kafman.core.schema.kafka_schema import KafkaSchema
@@ -73,8 +74,8 @@ class JsonSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._content_text, self.from_dict)
         }
 
-    def validate(self, json_form: dict) -> bool:
-        pass
+    def validate(self, json_form: dict) -> None:
+        validate_schema(json_form, self.get_content_dict())
 
     def create_schema_form_widget(
         self,

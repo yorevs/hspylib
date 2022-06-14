@@ -31,5 +31,7 @@
     QFont _font(family, 8);
     qApp->setFont(_font);'''
 2. Implement json schema type form builder
-   2.1. Implements $refs and fix array items {} vs [] and enum
+   2.1. Implement $refs
 3. Implement protobuf schema type form builder
+4. Implement avro schema type form builder
+   4.1. Fix array with items (example.avsc schema)

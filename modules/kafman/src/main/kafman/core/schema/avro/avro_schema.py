@@ -71,9 +71,8 @@ class AvroSchema(KafkaSchema):
             ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
         }
 
-    def validate(self, json_form: dict) -> bool:
+    def validate(self, json_form: dict) -> None:
         validate_schema(json_form, self.get_content_dict(), raise_errors=True)
-        return True
 
     def create_schema_form_widget(
         self,

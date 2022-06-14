@@ -15,11 +15,20 @@
       ]
     },
     {
-      "name": "favorite_color",
-      "type": [
-        "string",
-        "null"
-      ]
+      "name": "favorite_colors",
+      "type": {
+        "type": "array",
+        "items": {
+          "name": "color",
+          "type": "record",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        }
+      }
     }
   ]
 }

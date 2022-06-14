@@ -106,11 +106,12 @@ class WidgetUtils(ABC):
     @staticmethod
     def setup_list(
         widget: HListWidget,
-        tooltip: str = None,
-        all_items: List[str] = None) -> QWidget:
+        all_items: List[str] = None,
+        tooltip: str = None) -> QWidget:
 
-        widget.addItems(all_items or [])
         widget.set_editable()
+        widget.set_selectable()
+        list(map(widget.set_item, all_items or []))
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
