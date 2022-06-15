@@ -1,0 +1,14 @@
+[bumpver]
+current_version = "0.9.55"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "++version {old_version} -> {new_version}"
+commit = false
+tag = false
+push = false
+
+[bumpver.file_patterns]
+"bumpver.toml" = ['current_version = "{version}"']
+"build-info.properties" = ["app.version = {version}"]
+"gradle.properties" = ["app_version = '{version}'"]
+"src/main/kafman/__init__.py" = ["__version__ = '{version}'", ' v{version}']
+"src/main/kafman/.version" = ["{version}"]
