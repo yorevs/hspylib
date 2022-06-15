@@ -1,9 +1,20 @@
+plugins {
+  id 'idea'
+  id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.4"
+}
+
 idea {
-    module {
-        settings {
-            rootModuleType = 'PYTHON_MODULE'
-        }
+  module {
+    settings {
+      rootModuleType = 'PYTHON_MODULE'
     }
+    sourceDirs += file('src/main')
+    sourceDirs += file('src/demo')
+    testSourceDirs += file('src/test')
+    excludeDirs += file('src/main/build')
+    excludeDirs += file('src/main/dist')
+    excludeDirs += file('src/main/hspylib_hspylib.egg-info')
+  }
 }
 
 ext {
