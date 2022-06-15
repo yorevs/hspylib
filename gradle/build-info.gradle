@@ -112,3 +112,4 @@ task listProperties {
 
 build.dependsOn(updateVersion)
 build.finalizedBy(updateBuildInfo)
+buildOnly.finalizedBy(updateBuildInfo)

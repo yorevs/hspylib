@@ -41,4 +41,4 @@ apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
 
-pipRequirements.finalizedBy(copyReadme)
+requirements.finalizedBy(copyReadme)

@@ -1,0 +1,17 @@
+/*
+  Python dependencies file
+  Project: hspylib-firebase
+  Created: 15th Jun, 2022
+
+  !! Syntax for dependencies !!
+  package: <pkg_name>, version: <latest|versionNum>, space: <user|global>, mode: <gt|ge|eq|ne|compat|none>
+*/
+
+/* Module dependencies */
+
+package: hspylib, version: 0.11.76, space: global, mode: gt
+
+/* Application dependencies */
+
+package: requests, version: 2.28.0, space: user
+package: urllib3, version: 1.26.9, space: user

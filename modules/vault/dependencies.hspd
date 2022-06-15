@@ -1,0 +1,17 @@
+/*
+  Python dependencies file
+  Project: hspylib-vault
+  Created: 15th Jun, 2022
+
+  !! Syntax for dependencies !!
+  package: <pkg_name>, version: <latest|versionNum>, space: <user|global>, mode: <gt|ge|eq|ne|compat|none>
+*/
+
+/* Module dependencies */
+
+package: hspylib, version: 0.11.76, space: global, mode: gt
+
+/* Application dependencies */
+
+package: cryptocode, version: 0.1, space: user
+package: cryptography, version: 37.0.2, space: user

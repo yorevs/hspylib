@@ -36,3 +36,16 @@ ext {
   verbose = project.hasProperty('verbose') ? verbose : false
 }
 
+/* Generate a badge based on build */
+task installBuildTools {
+  group = 'Install'
+  description = 'Install hspylib build tools'
+  doLast {
+    def build_tools = ['setuptools', 'pipenv', 'bumpversion', 'pylint', 'twine', 'wheel']
+    build_tools.each { tool ->
+      exec {
+        commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', tool
+      }
+    }
+  }
+}

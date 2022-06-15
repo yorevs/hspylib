@@ -171,7 +171,6 @@ task installModule(type: Task) {
   group = 'Install'
   description = "Install module in editable mode (i.e. setuptools 'develop mode')"
   dependsOn syncPythonPackages
-  dependsOn pipRequirements
   finalizedBy cleanDist
   doLast {
     fileTree("$sourceRoot").matching {
@@ -194,7 +193,6 @@ task install(type: Task) {
   group = 'Install'
   description = "Install to the Python user install directory for your platform and upgrade all specified packages to the newest available version"
   dependsOn syncPythonPackages
-  dependsOn pipRequirements
   finalizedBy cleanDist
   doLast {
     fileTree("$sourceRoot").matching {
@@ -222,7 +220,7 @@ task uninstall(type: Task) {
         println "Uninstall $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', project.ext.app_name
+          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', '-q', project.ext.app_name
         }
       }
   }
