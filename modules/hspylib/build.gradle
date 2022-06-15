@@ -13,15 +13,13 @@ idea {
     testSourceDirs += file('src/test')
     excludeDirs += file('src/main/build')
     excludeDirs += file('src/main/dist')
-    excludeDirs += file('src/main/hspylib_hspylib.egg-info')
+    excludeDirs += file('src/main/hspylib.egg-info')
   }
 }
 
 ext {
   sourceRoot = "$rootDir/modules/$project.name/src"
   application = "$sourceRoot/main/__main__.py"
-  versionFile = "$sourceRoot/main/$project.name/.version"
-  requirementsFile = "$sourceRoot/main/requirements.txt"
   pythonPath = "$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
 }
 
