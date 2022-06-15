@@ -24,25 +24,6 @@ ext {
   pythonPath = "$sourceRoot/main:$sourceRoot/test"
 }
 
-task fixDependencies(type: Task) {
-  group = 'Dependencies'
-  description = 'Fix kafman dependencies'
-  doLast {
-    def contents = ''
-    def dep_file = new File(requirementsFile)
-    dep_file.eachLine { String line ->
-      if (line ==~ /^fastavro.*/)
-        contents += 'fastavro~=1.5.1\n'
-      else if (line ==~ /^confluent-kafka.*/)
-        contents += 'confluent-kafka~=1.8.2\n'
-      else contents += "$line\n"
-    }
-    contents += 'jsonschema~=4.6.0\n'
-    contents += 'avro-python3~=1.10.2\n'
-    dep_file.setText(contents)
-  }
-}
-
 apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/python.gradle"
 apply from: "$rootDir/gradle/build-info.gradle"
@@ -51,5 +32,3 @@ apply from: "$rootDir/gradle/docker.gradle"
 apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
-
-pipRequirements.finalizedBy(fixDependencies)

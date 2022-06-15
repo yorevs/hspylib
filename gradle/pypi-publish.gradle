@@ -28,8 +28,8 @@ String dirName(File file) {
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
-  dependsOn pipRequirements
   dependsOn changeVersion
+  dependsOn requirements
   doLast {
     fileTree("$sourceRoot").matching {
         include "**/setup.py"

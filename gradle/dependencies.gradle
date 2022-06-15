@@ -5,7 +5,11 @@
 */
 
 /* Dependencies files*/
-project.ext.depsFile = "$rootDir/dependencies.hspd"
+project.ext.depsFile = "$project.projectDir/dependencies.hspd"
+project.ext.reqsFile = "$project.projectDir/src/main/requirements.txt"
+
+/* Mode Map*/
+def modesMap = [lt: '<', le: '<=', eq: '==', ne: '!=', compat: '~=', gt: '>', ge: '>=', none: null]
 
 /* List of project dependencies*/
 project.ext.deps = []
@@ -16,32 +20,21 @@ void readDependencies() {
   def depsFile = new File(depsFile)
   depsFile.eachLine { line ->
     def dep = null
-    if (dep = line =~ /package: (.+), version: (latest|[0-9]+(\.[0-9]+){0,3}), space: (user|global)/) {
+    if (dep = line =~ /package: ([a-zA-Z0-9-_.]+), version: (latest|[0-9]+(\.[0-9]+){0,4}), space: (user|global), mode: (lt|le|eq|compat|ne|gt|ge|none)/) {
       dep.each {
-        if (it[1]) {
-          deps << [package: "${it[1]}", version: "${it[2]}", space: "${it[4]}"]
-        }
+        deps << [package: "${it[1]}", version: "${it[2]}", space: "${it[4]}", mode: "${it[5]}"]
       }
     }
-    else if (dep = line =~ /package: (.+), space: (user|global)/) {
+    else if (dep = line =~ /package: ([a-zA-Z0-9-_.]+), version: (latest|[0-9]+(\.[0-9]+){0,4}), space: (user|global)/) {
       dep.each {
-        if (it[1]) {
-          deps << [package: "${it[1]}", version: "latest", space: "${it[2]}"]
-        }
-      }
-    }
-    else if (dep = line =~ /package: (.+), version: (latest|[0-9]+(\.[0-9]+){0,3})/) {
-      dep.each {
-        if (it[1]) {
-          deps << [package: "${it[1]}", version: "${it[2]}", space: "user"]
-        }
+        deps << [package: "${it[1]}", version: "${it[2]}", space: "${it[4]}", mode: "compat"]
       }
     }
     else {
-      dep.each {
-        if (it[1]) {
-          deps << [package: "${it[1]}", version: "latest", space: "user"]
-        }
+      if ( line.startsWith('package: ') ) {
+        throw new GradleException("Invalid hspd syntax $line. Usage: "
+          + "package: <pkg_name>, version: <latest|versionNum>, "
+          + "space: <user|global>, [mode: <lt|le|eq|compat|ne|gt|ge|none>]")
       }
     }
   }
@@ -49,35 +42,34 @@ void readDependencies() {
 
 /* Tasks ------------------------------------------------------------------- */
 
+/* Gather all project requirements and generate a requirements file */
+task requirements(type: Task) {
+  group = 'Dependencies'
+  description = 'Gather all project requirements and generate a requirements file'
+  doLast {
+    readDependencies()
+    def requirements = new File(reqsFile)
+    requirements.setText("###### Requirements file for $project.name ######\n\n")
+    deps.each { dep ->
+      def mode = modesMap[dep.mode]
+      if ('latest' == dep.version) requirements.append("$dep.package>=$dep.version\n")
+      else {
+        if (mode != null) requirements.append("$dep.package$mode$dep.version\n")
+        else requirements.append("$dep.package\n")
+      }
+    }
+  }
+}
+
 /* List project dependencies */
 task listDependencies(type: Task) {
   group = 'Dependencies'
-  description = 'Output all project dependencies'
+  description = 'List project dependencies'
   doLast {
     println "\nListing dependencies from:\n\t${depsFile}\n"
     readDependencies()
     deps.each {
       println("Package: ${it.package}, Version: ${it.version}, Space: ${it.space}")
-    }
-  }
-}
-
-/* Gather python requirements for the module */
-task pipFreeze(type: Exec) {
-  group = 'Dependencies'
-  description = 'Output user-site installed packages in requirements format'
-  workingDir "$sourceRoot/main"
-  commandLine rootProject.python, '-m', 'pip', 'freeze'
-}
-
-/* Gather python requirements for the module */
-task pipRequirements(type: Task) {
-  group = 'Dependencies'
-  description = 'Using pipreqs to gather package requirements'
-  doLast {
-    exec {
-      workingDir "$sourceRoot/main"
-      commandLine rootProject.python, '-m', 'pipreqs.pipreqs', '--force', '--mode', 'compat' , '.'
     }
   }
 }
@@ -94,7 +86,7 @@ task installDependencies(type: Task) {
       commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
     }
     deps.each { dep ->
-      println "Installing Package: $dep.package  Version: $dep.version  Space: $dep.space"
+      println "\nInstalling Package: $dep.package  Version: $dep.version  Space: $dep.space"
       def args = [rootProject.python, '-m', 'pip', 'install']
       if (! verbose) args << '-q'
       if ('user' == dep.space) args << '--user'
