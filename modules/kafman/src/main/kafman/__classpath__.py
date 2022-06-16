@@ -52,11 +52,8 @@ class Classpath(metaclass=Singleton):
         for filename in os.listdir(directory):
             f = os.path.join(directory, filename)
             if os.path.isfile(f):
-                res_str += '    |-' + filename + os.linesep
+                res_str += '    |-' + str(filename) + os.linesep
         return res_str
-
-    def __init__(self):
-        pass
 
     def __str__(self):
         return dedent(f"""
@@ -68,13 +65,16 @@ class Classpath(metaclass=Singleton):
     def __repr__(self):
         return str(self)
 
-# Instantiate the classpath singleton
-Classpath()
 
 def get_resource(resource_path) -> Path:
     """TODO"""
     return Path(f'{Classpath.RESOURCE_DIR}/{resource_path}')
 
+
 def get_source(source_path) -> Path:
     """TODO"""
     return Path(f'{Classpath.SOURCE_ROOT}/{source_path}')
+
+
+# Instantiate the classpath singleton
+Classpath()
