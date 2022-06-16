@@ -120,7 +120,6 @@ class MainQtView(QtView):
 
     def _setup_ui(self) -> None:
         """Setup UI: Connect signals and Setup components"""
-        self.set_default_font(QFont("DroidSansMono Nerd Font", 14))
         self.window.setWindowTitle(f"Kafman v{self.VERSION}")
         self.window.resize(1024, 768)
         self._setup_general_controls()

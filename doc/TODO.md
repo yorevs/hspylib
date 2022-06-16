@@ -20,13 +20,8 @@
 
 ## HSPYLIB-KAFMAN
 
-1. Install Droid font with kafman pip install
-    '''int id = QFontDatabase::addApplicationFont(":/SMSicons/segoeui_0.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont _font(family, 8);
-    qApp->setFont(_font);'''
+1. Implement avro schema type form builder
+   4.1. Fix array with items (example.avsc schema)
 2. Implement json schema type form builder
    2.1. Implement $refs
-3. Implement protobuf schema type form builder
-4. Implement avro schema type form builder
-   4.1. Fix array with items (example.avsc schema)
+2. Implement protobuf schema type form builder
