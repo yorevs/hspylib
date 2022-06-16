@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-versioner v0.9.24
+# hspylib-versioner v0.9.25
 #
 # Package: main.versioner
 """Package initialization."""
@@ -12,4 +12,4 @@ __all__ = [
   'entity', 
   'enums'
 ]
-__version__ = '0.9.24'
+__version__ = '0.9.25'
