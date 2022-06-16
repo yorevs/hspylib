@@ -48,12 +48,11 @@ class FilterConditions(Enumeration):
 
     def matches(self, param_value: FILTER_VALUE, value: FILTER_VALUE) -> bool:
         """TODO"""
-        return self._has_type(value) \
-               and (
-                   eval(f'{quote(value)} {self.value[0]} {quote(param_value)}')
-                   if self.name in ['CONTAINS', 'DOES_NOT_CONTAIN']
-                   else eval(f'{param_value} {self.value[0]} {value}')
-               )
+        return self._has_type(value) and (
+            eval(f'{quote(value)} {self.value[0]} {quote(param_value)}')
+            if self.name in ['CONTAINS', 'DOES_NOT_CONTAIN']
+            else eval(f'{quote(param_value)} {self.value[0]} {quote(value)}')
+        )
 
     def _has_type(self, value: FILTER_VALUE) -> bool:
         """TODO"""
@@ -85,8 +84,7 @@ class ElementFilter:
         """TODO"""
         try:
             entry = element if isinstance(element, dict) else element.__dict__
-            return self.el_name in entry \
-                   and self.condition.matches(entry[self.el_name], self.el_value)
+            return self.el_name in entry and self.condition.matches(entry[self.el_name], self.el_value)
         except (NameError, TypeError, AttributeError):
             return False
 
@@ -120,16 +118,20 @@ class CollectionFilter:
 
         check_argument(not any(f.name == name for f in self._filters),
                        f'Filter {name} already exists!')
-        # Avoid applying the same filter
+        # Avoid applying the same filter conditions
         if not any(
-                f.el_name == el_name
-                and f.condition == condition
-                and f.el_value == el_value for f in self._filters):
+            f.el_name == el_name
+            and f.condition == condition
+            and f.el_value == el_value for f in self._filters):
             self._filters.add(ElementFilter(name, el_name, condition, el_value))
 
     def clear(self) -> None:
         """TODO"""
         self._filters.clear()
+
+    def size(self) -> int:
+        """TODO"""
+        return len(self._filters)
 
     def discard(self, name: str):
         """TODO"""
