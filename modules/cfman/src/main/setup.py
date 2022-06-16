@@ -30,8 +30,6 @@ VERSION = (HERE / "cfman/.version").read_text().strip()
 # The package requirements
 REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitlines()))
 
-print(f"Dependencies: {REQUIREMENTS}")
-
 # This call to setup() does all the work
 setuptools.setup(
     name='hspylib-cfman',
