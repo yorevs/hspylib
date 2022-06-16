@@ -47,6 +47,7 @@ task patchVersion(type: Task) {
   group = 'Versioning'
   description = 'Increment the build number for publishing (patch)'
   outputs.upToDateWhen { false }
+  finalizedBy syncPythonPackages
   doLast {
     println "Patching the build number"
     exec {
@@ -113,6 +114,5 @@ task listProperties {
   }
 }
 
-patchVersion.finalizedBy(syncPythonPackages)
 build.finalizedBy(updateBuildInfo)
 buildOnly.finalizedBy(updateBuildInfo)

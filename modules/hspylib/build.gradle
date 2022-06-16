@@ -32,6 +32,15 @@ apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
 
+task copyReadme(type: Copy) {
+  group = 'Publish'
+  description = "Copy README into main folder"
+  from(rootDir) {
+    include 'README.md'
+  }
+  into "$sourceRoot/main"
+}
+
 /* Update hspylib version in all subprojects */
 task updateSubprojectsVersion(type: Task) {
   group = 'Dependencies'
@@ -41,8 +50,15 @@ task updateSubprojectsVersion(type: Task) {
     project.file("$rootDir/modules").traverse(type: groovy.io.FileType.DIRECTORIES) { module ->
       def hspd = new File("${module}/dependencies.hspd")
       if (hspd.exists()) {
-        ant.replaceregexp(file: "$hspd", match:'^package: hspylib, version: ([0-9]+(\.[0-9]+){0,4}),', replace:"$app_ver", flags:'g', byline:true)
+        ant.replaceregexp(
+          file: "$hspd",
+          match: "hspylib, version: ([0-9]+(.[0-9]+){0,4}),",
+          replace: "hspylib, version: ${app_version},",
+          flags: "g", byline: true
+        )
       }
     }
   }
 }
+
+requirements.finalizedBy(copyReadme)
