@@ -34,13 +34,18 @@ print(f"Dependencies: {REQUIREMENTS}")
 setuptools.setup(
     name='hspylib',
     version=VERSION,
-    description='HomeSetup python library',
+    description='HomeSetup - Core python library',
     author='Hugo Saporetti Junior',
     author_email='yorevs@hotmail.com',
     long_description=README,
-    long_description_content_type="text/markdown",
-    url="https://github.com/yorevs/hspylib",
+    long_description_content_type='text/markdown',
+    url='https://github.com/yorevs/hspylib',
+    project_urls={
+        'GitHub': 'https://github.com/yorevs/hspylib',
+        'PyPi': 'https://pypi.org/project/hspylib/'
+    },
     license='MIT',
+    license_files='LICENSE.md',
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[
@@ -55,4 +60,7 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
     install_requires=REQUIREMENTS,
+    bugtrack_url='https://github.com/yorevs/hspylib/issues',
+    keywords='python,library,solid,patterns,development,integration,application,framework',
+    platforms='Darwin,Linux'
 )
