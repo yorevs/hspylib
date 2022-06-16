@@ -95,7 +95,7 @@ class Main(Application):
             self.firebase.setup()
         # Already handled above
         if op == 'setup':
-            pass
+            log.debug('Operation is setup but it was already handled')
         elif op == 'upload':
             self.firebase.upload(
                 self.getarg('db_alias'),
