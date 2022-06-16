@@ -4,7 +4,7 @@
     Created: 4th March, 2021
 */
 
-/* Dependencies files*/
+/* Project file definitions */
 project.ext.depsFile = "$project.projectDir/dependencies.hspd"
 project.ext.reqsFile = "$project.projectDir/src/main/requirements.txt"
 
@@ -77,14 +77,9 @@ task listDependencies(type: Task) {
 /* Install all required python packages */
 task installDependencies(type: Task) {
   group = 'Dependencies'
-  description = 'Install required python packages'
+  description = 'Install all required python packages'
   doLast {
-    println "Upgrading pip module to the latest "
     readDependencies()
-    exec {
-      commandLine rootProject.python, '-m', 'ensurepip', '-q', '--upgrade'
-      commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
-    }
     deps.each { dep ->
       println "\nInstalling Package: $dep.package  Version: $dep.version  Space: $dep.space"
       def args = [rootProject.python, '-m', 'pip', 'install']

@@ -1,3 +1,3 @@
 include firebase/welcome.txt
 include firebase/.version
-recursive-include firebase/resources *
+include firebase/resources/*.properties

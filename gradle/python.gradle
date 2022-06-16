@@ -5,12 +5,10 @@
 */
 
 ext {
-  pythonPath = project.hasProperty('pythonPath') ? pythonPath :
+  pythonPath = project.hasProperty('pythonPath') ?:
     "$sourceRoot:$sourceRoot/main:$sourceRoot/test"
-  requirementsFile = project.hasProperty('requirementsFile') ? requirementsFile :
-    "$rootProject.projectDir/src/main/requirements.txt"
-  failScore = project.hasProperty('failScore') ? failScore : 8.0
-  versionFile = project.hasProperty('versionFile') ? versionFile :
+  failScore = project.hasProperty('failScore') ?: 8.0
+  versionFile = project.hasProperty('versionFile') ?:
     "${sourceRoot}/main/${project.name}/.version"
 }
 

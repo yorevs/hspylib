@@ -13,9 +13,12 @@
 
 import java.text.SimpleDateFormat
 
+/* Project file definitions */
 project.ext.build_info_file = 'build-info.properties'
 
-task updateBuildInfo {
+/* Tasks ------------------------------------------------------------------- */
+
+task updateBuildInfo(type: Task) {
   group = 'Versioning'
   description = 'Update the build-info.properties file with current build and version numbers'
   outputs.upToDateWhen { false }
@@ -83,7 +86,7 @@ task updateMajor(type: Task) {
 }
 
 /* Check current program version */
-task version {
+task version(type: Task) {
   group = 'Versioning'
   description = 'Check current program version'
   outputs.upToDateWhen { false }
@@ -93,7 +96,7 @@ task version {
 }
 
 /* List all properties from properties.gradle */
-task listProperties {
+task listProperties(type: Task) {
   group = 'Versioning'
   description = 'List all properties from gradle.properties'
   outputs.upToDateWhen { false }

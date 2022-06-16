@@ -14,6 +14,7 @@ ext {
 
 
 /* Helper Functions -------------------------------------------------------- */
+
 Collection dirsByPattern(String baseDir, String pattern) {
   def paths = []
   fileTree(baseDir).visit { FileVisitDetails details ->
@@ -26,9 +27,12 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
+/* Tasks ------------------------------------------------------------------- */
+
+/* Copy LICENSE file into main folder */
 task copyLicense(type: Copy) {
   group = 'Publish'
-  description = "Copy LICENSE into main folder"
+  description = "Copy LICENSE file into main folder"
   from(rootDir) {
     include 'LICENSE.md'
   }
@@ -39,6 +43,7 @@ task copyLicense(type: Copy) {
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
+  dependsOn cleanDist
   dependsOn copyLicense
   dependsOn patchVersion
   dependsOn requirements
@@ -56,21 +61,21 @@ task dist(type: Task) {
     }
 }
 
-/* Check on the files created in dist */
+/* Check files created in dist folder */
 task checkDist(type: Task) {
   group = 'Publish'
-  description = 'Check on the files created in dist'
+  description = 'Check files created in dist folder'
   dependsOn dist
   doLast {
-    fileTree("$sourceRoot").matching {
+    fileTree(sourceRoot).matching {
         include "**/setup.py"
       }.each { File module ->
         def moduleDir = dirName(module)
-        def distDir = "$moduleDir/dist"
+        def distDir = "${moduleDir}/dist"
         println "Checking distribution files -> $distDir"
         exec {
-          workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'twine', 'check', "$distDir/*"
+          workingDir moduleDir
+          commandLine rootProject.python, '-m', 'twine', 'check', "${distDir}/*"
         }
     }
   }
@@ -90,23 +95,24 @@ task publish(type: Task) {
         include "**/setup.py"
       }.each { File module ->
         def moduleDir = dirName(module)
-        def distDir = "$moduleDir/dist"
+        def distDir = "${moduleDir}/dist"
         println '--'
-        println "|-version: $project.ext.app_version"
-        println "|-setup: $module"
-        println "|-url: $url"
-        println "|-user: $un"
-        println "|-dist: $distDir/*"
+        println "|-version: ${project.ext.app_version}"
+        println "|-setup: ${module}"
+        println "|-url: ${url}"
+        println "|-user: ${un}"
+        println "|-password: __token__"
+        println "|-dist: ${distDir}/*"
         println '--'
-        println "Publishing module to PyPi..."
+        println "Publishing module to PyPi => ${url}"
         exec {
-          workingDir "$moduleDir"
+          workingDir moduleDir
           commandLine rootProject.python, '-m', 'twine', 'upload',
             '--verbose',
-            '--repository-url', "$url",
-            '-u', "$un",
-            '-p', "$pw",
-            "$distDir/*"
+            '--repository-url', "${url}",
+            '-u', "${un}",
+            '-p', "${pw}",
+            "${distDir}/*"
         }
     }
   }
@@ -121,7 +127,7 @@ task pypiShow(type: Task) {
     def url = project.ext.pypiModuleUrl
     def outFile = "${tempDir}/${app_name}-info.json"
     exec {
-      commandLine 'curl', '-s', '-o', "${outFile}", '-O', url
+      commandLine 'curl', '-s', '-o', outFile, '-O', url
     }
     def json = new JsonSlurper().parseText(new File(outFile).getText())
     println("\n--------------------------------------------------------------------------------")

@@ -27,12 +27,12 @@ Collection filesByPattern(String baseDir, String pattern) {
 /* Docker Containers -------------------------------------------------------- */
 project.ext.containers = project.hasProperty('containers') ? containers : []
 
-/* Docker Tasks ------------------------------------------------------------- */
+/* Tasks ------------------------------------------------------------------- */
 
-/* Check is docker agent is running */
+/* Check if docker agent is running */
 task isDockerUp(type: Exec) {
   group = 'Docker'
-  description = 'Check is docker agent is running'
+  description = 'Check if docker agent is running'
   commandLine 'docker', 'ps'
   ignoreExitValue true
   standardOutput = NULL_OUTPUT_STREAM
@@ -46,10 +46,10 @@ task isDockerUp(type: Exec) {
   }
 }
 
-/* Find all available docker-compose.yml files from docker directory. */
+/* Find all available docker-compose.yml files from docker directory */
 task findContainers(type: Task) {
   group = 'Docker'
-  description = 'Test'
+  description = 'Find all available docker-compose.yml files from docker directory'
   doLast {
     def dockerDir = "${rootProject.projectDir}/docker/composes"
     def dockerFiles = filesByPattern("${dockerDir}", /.*docker-compose\.ya?ml$/)
@@ -59,10 +59,10 @@ task findContainers(type: Task) {
   }
 }
 
-/* List all available docker containers. */
+/* List all available docker containers */
 task listContainers(type: Task) {
   group = 'Docker'
-  description = 'Show all available docker containers'
+  description = 'List all available docker containers'
   dependsOn findContainers
   doLast {
     containers.each { c ->
@@ -71,10 +71,10 @@ task listContainers(type: Task) {
   }
 }
 
-/* Start all containers as daemons */
+/* Start all containers as detached daemons */
 task startAllContainers(type: Task) {
   group = 'Docker'
-  description = 'Start all containers as daemons (detached mode)'
+  description = 'Start all containers as detached daemons'
   dependsOn isDockerUp
   dependsOn listContainers
   doLast {
@@ -88,10 +88,10 @@ task startAllContainers(type: Task) {
   }
 }
 
-/* Stop and  remove all containers */
+/* Stop and remove all containers */
 task stopAllContainers(type: Task) {
   group = 'Docker'
-  description = 'Stop and remove all containers'
+  description = 'Stop and remove all containers '
   dependsOn isDockerUp
   dependsOn listContainers
   doLast {
