@@ -34,13 +34,18 @@ print(f"Dependencies: {REQUIREMENTS}")
 setuptools.setup(
     name='hspylib-versioner',
     version=VERSION,
-    description='HomeSetup versioner',
+    description='HomeSetup - Application Versioner',
     author='Hugo Saporetti Junior',
     author_email='yorevs@hotmail.com',
     long_description=README,
-    long_description_content_type="text/markdown",
-    url="https://github.com/yorevs/hspylib",
+    long_description_content_type='text/markdown',
+    url='https://github.com/yorevs/hspylib',
+    project_urls={
+        'GitHub': 'https://github.com/yorevs/hspylib',
+        'PyPi': 'https://pypi.org/project/hspylib-versioner/'
+    },
     license='MIT',
+    license_files='LICENSE.md',
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[
@@ -55,4 +60,7 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
     install_requires=REQUIREMENTS,
+    bugtrack_url='https://github.com/yorevs/hspylib/issues',
+    keywords='version,bumpversion,versioner,application',
+    platforms='Darwin,Linux'
 )
