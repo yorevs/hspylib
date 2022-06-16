@@ -68,8 +68,8 @@ task listDependencies(type: Task) {
   doLast {
     println "\nListing dependencies from:\n\t${depsFile}\n"
     readDependencies()
-    deps.each {
-      println("Package: ${it.package}, Version: ${it.version}, Space: ${it.space}")
+    deps.each { dep ->
+      println("Package: ${dep.package}, Version: ${dep.version}, Space: ${dep.space}, Mode: ${dep.mode}")
     }
   }
 }

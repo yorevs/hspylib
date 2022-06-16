@@ -54,13 +54,13 @@ defaultTasks 'clean', 'run'
 /* Used to created the __init__.py files { */
 def initTemplate = """# _*_ coding: utf-8 _*_
 #
-# $app_name v$app_version
+# $app_name v%version%
 #
 # Package: %package%
 \"\"\"Package initialization.\"\"\"
 
 __all__ = %modules%
-%version%
+__version__ = '%version%'
 """
 /* } */
 
@@ -156,11 +156,10 @@ task syncPythonPackages(type: Task) {
         }
         def ver_file = new File(versionFile)
         def cur_version = ver_file.getText().trim()
-        def version_string = "__version__ = \'$cur_version\'"
         initFile.write initTemplate
           .replaceAll("%package%", pkg)
           .replaceAll("%modules%", modules.sort().toString())
-          .replaceAll("%version%", version_string)
+          .replaceAll("%version%", cur_version)
           .replaceAll("\\[", "\\[\n  ")
           .replaceAll(", ", ", \n  ")
           .replaceAll("\\]", "\n]")
