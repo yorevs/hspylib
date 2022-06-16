@@ -14,15 +14,9 @@
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
 9. Fix appman after gradle changes.
 
-## HSPYLIB-FIREBASE
-
-1. Rename firebase to fireblaze
-2. Add a print when nothing was uploaded (??dir not found??)
-
 ## HSPYLIB-VAULT
 
-1. Rename vault to volt
-2. Add vault menu
+1. Add vault TUI
 
 ## HSPYLIB-KAFMAN
 

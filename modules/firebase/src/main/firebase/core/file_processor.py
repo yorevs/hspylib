@@ -22,7 +22,7 @@ from typing import List, Union
 
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
+from hspylib.core.tools.preconditions import check_argument, check_not_none
 from hspylib.modules.fetch.fetch import get, put
 from requests.exceptions import HTTPError
 
@@ -37,7 +37,7 @@ class FileProcessor(ABC):
         """Upload files to URL"""
         data = []
         for f_path in file_paths:
-            check_state(os.path.exists(f_path), f'Input file "{f_path}" does not exist')
+            check_argument(os.path.exists(f_path), f'Input file "{f_path}" does not exist')
             if os.path.isfile(f_path):
                 sysout(f'Uploading file "{f_path}" to Firebase ...')
                 f_entry = FileProcessor._read_and_encode(f_path)

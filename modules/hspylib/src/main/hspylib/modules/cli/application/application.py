@@ -24,7 +24,7 @@ from textwrap import dedent
 from typing import Optional, Union
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError
+from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, InvalidStateError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.preconditions import check_state
@@ -91,7 +91,7 @@ class Application(metaclass=Singleton):
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources')
         else:
-            pass  # AppConfigs will not be available
+            log.warning('Resource dir not found. AppConfigs will not be available!')
 
         # Initialize application logs
         self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"
@@ -99,9 +99,8 @@ class Application(metaclass=Singleton):
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
-        log.info('Run started %s', datetime.now())
+        log.info('Application %s started %s', self._app_name, datetime.now())
         try:
-
             atexit.register(self._cleanup)
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
@@ -109,9 +108,13 @@ class Application(metaclass=Singleton):
             log.debug(f'Command line arguments: {str(self._args)}')
         except (InvalidOptionError, InvalidArgumentError) as err:
             self.usage(exit_code=1, no_exit=True)
+            log.error('Run failed %s => %s', datetime.now(), err)
+            raise err  # Re-Raise the exception so upper level layers can catch
+        except InvalidStateError as err:
+            log.error('Execution failed %s => %s', datetime.now(), err)
             raise err  # Re-Raise the exception so upper level layers can catch
         finally:
-            log.info('Run finished %s', datetime.now())
+            log.info('Application %s finished %s', self._app_name,  datetime.now())
 
     def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
         """Display the usage message and exit with the specified http_code ( or zero as default )
