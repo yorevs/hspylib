@@ -9,4 +9,4 @@ __all__ = [
   'filters_dialog', 
   'settings_dialog'
 ]
-__version__ = '0.9.56'
+__version__ = '0.9.57'

@@ -9,4 +9,4 @@ __all__ = [
   'form_area', 
   'form_pane'
 ]
-__version__ = '0.9.56'
+__version__ = '0.9.57'

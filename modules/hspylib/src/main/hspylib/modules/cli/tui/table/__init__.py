@@ -8,4 +8,4 @@
 __all__ = [
   'table_renderer'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

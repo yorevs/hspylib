@@ -9,4 +9,4 @@ __all__ = [
   'mock_server', 
   'mock_server_handler'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

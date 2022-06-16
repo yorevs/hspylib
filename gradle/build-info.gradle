@@ -62,7 +62,7 @@ task version {
   description = 'Check current program version'
   outputs.upToDateWhen { false }
   doLast { task ->
-    println "Project: [$task.project.name] Version: $project.ext.app_version"
+    println "Module: [$task.project.name] Current Version: $project.ext.app_version"
   }
 }
 

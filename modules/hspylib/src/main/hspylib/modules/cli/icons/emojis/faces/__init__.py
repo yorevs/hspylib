@@ -8,4 +8,4 @@
 __all__ = [
   'face_smiling'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

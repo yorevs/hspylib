@@ -8,4 +8,4 @@
 __all__ = [
   'version_state'
 ]
-__version__ = '0.9.22'
+__version__ = '0.9.23'

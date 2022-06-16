@@ -10,4 +10,4 @@ __all__ = [
   'contact_validator', 
   'person_validator'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

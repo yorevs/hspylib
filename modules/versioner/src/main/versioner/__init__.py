@@ -12,4 +12,4 @@ __all__ = [
   'entity', 
   'enums'
 ]
-__version__ = '0.9.22'
+__version__ = '0.9.23'

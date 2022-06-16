@@ -8,4 +8,4 @@
 __all__ = [
   'test_application'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

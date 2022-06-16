@@ -9,4 +9,4 @@ __all__ = [
   'producer_config', 
   'producer_worker'
 ]
-__version__ = '0.9.56'
+__version__ = '0.9.57'

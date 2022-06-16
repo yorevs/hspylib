@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-cfman v0.9.30
+# hspylib-cfman v0.9.31
 #
 # Package: main.cfman.core
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'cf_endpoint', 
   'cf_manager'
 ]
-__version__ = '0.9.30'
+__version__ = '0.9.32'
