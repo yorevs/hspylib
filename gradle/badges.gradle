@@ -6,6 +6,8 @@
     See also: https://badgen.net/
 */
 
+/* Helper Functions -------------------------------------------------------- */
+
 /* Download and save the generated badge file */
 def badgeGen(subject, status, color, outDir="${project.projectDir}") {
   def url = "https://badgen.net/badge/$subject/$status/$color"
@@ -17,13 +19,15 @@ def badgeGen(subject, status, color, outDir="${project.projectDir}") {
     errorOutput = standardOutput
     ignoreExitValue = true
   }
-  println("Badge generated: $url => $outFile")
+  println("Badge ${subject} generated: status=${status}  ${url} => ${outFile}")
 }
 
+/* Tasks ------------------------------------------------------------------- */
+
 /* Generate a badge based on build */
-task generateBuildBadge {
+task generateBuildBadge(type: Task) {
   group = 'Verification'
-  description = 'Generate build badge'
+  description = 'Generate a badge based on build'
   outputs.upToDateWhen { false }
   doLast {
     def failure = tasks.build.state.failure
@@ -32,9 +36,9 @@ task generateBuildBadge {
 }
 
 /* Generate a badge based on all tests */
-task generateCheckBadge {
+task generateCheckBadge(type: Task) {
   group = 'Verification'
-  description = 'Generate tests badge'
+  description = 'Generate a badge based on all tests'
   outputs.upToDateWhen { false }
   doLast {
     def failure = tasks.check.state.failure

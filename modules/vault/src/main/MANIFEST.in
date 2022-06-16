@@ -1,4 +1,3 @@
 include vault/welcome.txt
 include vault/.version
-recursive-include vault/resources *
-recursive-include vault/resources/log *
+include vault/resources/application.properties

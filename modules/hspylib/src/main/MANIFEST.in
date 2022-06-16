@@ -1,4 +1,4 @@
 include hspylib/welcome.txt
 include hspylib/.version
-recursive-include hspylib/addons/appman/templates *
-recursive-include hspylib/core/crud/db/sql *
+include hspylib/addons/appman/templates/tpl-*.*
+include hspylib/core/crud/db/sql/*.sql

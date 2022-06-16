@@ -41,6 +41,12 @@ task installBuildTools {
   group = 'Install'
   description = 'Install hspylib build tools'
   doLast {
+    println "Upgrading pip module to the latest "
+    readDependencies()
+    exec {
+      commandLine rootProject.python, '-m', 'ensurepip', '-q', '--upgrade'
+      commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
+    }
     def build_tools = ['setuptools', 'pipenv', 'bumpver', 'pylint', 'twine', 'wheel']
     build_tools.each { tool ->
       exec {

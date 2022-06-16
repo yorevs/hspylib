@@ -56,12 +56,12 @@ String processPythonHeader(File file, String header_template) {
 }
 
 
-/* Docgen tasks */
+/* Tasks ------------------------------------------------------------------- */
 
-/* Synchronize python headers (doc strings) */
+/* Synchronize python file headers (doc strings) */
 task syncPythonHeaders(type: Task) {
   group = 'Documentation'
-  description = 'Synchronize all Python file headers'
+  description = 'Synchronize python file headers (doc strings)'
   doLast {
     def replaceHeaders = project.hasProperty("replaceHeaders")
     println "Synchronizing python headers replace: ${replaceHeaders}"

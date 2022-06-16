@@ -23,7 +23,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 # The version of the package
-VERSION = (HERE / "hspylib/.version").read_text()
+VERSION = (HERE / "hspylib/.version").read_text().strip()
 
 # The package requirements
 REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitlines()))
@@ -60,7 +60,6 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
     install_requires=REQUIREMENTS,
-    bugtrack_url='https://github.com/yorevs/hspylib/issues',
     keywords='python,library,solid,patterns,development,integration,application,framework',
     platforms='Darwin,Linux'
 )
