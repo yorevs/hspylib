@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.79
+# hspylib v0.11.80
 #
 # Package: demo
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'other', 
   'phonebook'
 ]
-__version__ = '0.11.79'
+__version__ = '0.11.80'
