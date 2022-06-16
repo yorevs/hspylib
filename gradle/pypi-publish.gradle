@@ -3,8 +3,10 @@
     Project: HSPyLib
     Created: 23rd April, 2021
 */
+import groovy.json.JsonSlurper
 
 ext {
+  pypiModuleUrl = "https://pypi.org/pypi/${app_name}/json"
   pypiRepoUrl = System.getenv("PYPI_REPOSITORY") ?: 'https://upload.pypi.org/legacy/'
   pypiUsername = System.getenv("PYPI_USERNAME") ?: System.getenv("USER")
   pypiPassword = System.getenv("PYPI_PASSWORD") ?: ''
@@ -97,5 +99,25 @@ task publish(type: Task) {
             "$distDir/*"
         }
     }
+  }
+}
+
+/* Show PyPi module details */
+task pypiShow(type: Task) {
+  group = 'Publish'
+  description = "Show PyPi module details"
+  doLast {
+    def tempDir = System.getenv("TEMP") ?: '/tmp'
+    def url = project.ext.pypiModuleUrl
+    def outFile = "${tempDir}/${app_name}-info.json"
+    exec {
+      commandLine 'curl', '-s', '-o', "${outFile}", '-O', url
+    }
+    def json = new JsonSlurper().parseText(new File(outFile).getText())
+    println("Summary: ${json.info.summary}")
+    println("Version: ${json.info.version}")
+    println("License: ${json.info.license}")
+    println("Python: ${json.info.requires_python}")
+    println("Dependencies: ${json.info.requires_dist}")
   }
 }

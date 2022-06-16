@@ -42,7 +42,6 @@ python.version = $pythonVersion
   }
 }
 
-
 /* Increment the build number for publishing (patch) */
 task patchVersion(type: Task) {
   group = 'Versioning'
@@ -52,6 +51,32 @@ task patchVersion(type: Task) {
     println "Patching the build number"
     exec {
       commandLine rootProject.python, '-m', 'bumpver', 'update', '--patch'
+    }
+  }
+}
+
+/* Increment the build number (minor) */
+task updateMinor(type: Task) {
+  group = 'Versioning'
+  description = 'Increment the build number (minor)'
+  outputs.upToDateWhen { false }
+  doLast {
+    println "Updating the minor number"
+    exec {
+      commandLine rootProject.python, '-m', 'bumpver', 'update', '--minor'
+    }
+  }
+}
+
+/* Increment the build number (major) */
+task updateMajor(type: Task) {
+  group = 'Versioning'
+  description = 'Increment the build number (major)'
+  outputs.upToDateWhen { false }
+  doLast {
+    println "Updating the major number"
+    exec {
+      commandLine rootProject.python, '-m', 'bumpver', 'update', '--major'
     }
   }
 }
