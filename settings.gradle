@@ -1,10 +1,9 @@
 rootProject.name = 'HsPyLib'
 
-include 'hspylib', 'firebase', 'vault', 'cfman', 'kafman', 'versioner'
+include 'hspylib', 'firebase', 'vault', 'cfman', 'kafman'
 
 project(':hspylib').projectDir = new File('modules/hspylib')
 project(':firebase').projectDir = new File('modules/firebase')
 project(':vault').projectDir = new File('modules/vault')
 project(':cfman').projectDir = new File('modules/cfman')
 project(':kafman').projectDir = new File('modules/kafman')
-project(':versioner').projectDir = new File('modules/versioner')
