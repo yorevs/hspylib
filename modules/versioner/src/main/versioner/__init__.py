@@ -1,14 +1,15 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-versioner v0.9.15
+# hspylib-versioner v0.9.22
 #
 # Package: main.versioner
 """Package initialization."""
 
 __all__ = [
+  '__classpath__', 
   '__main__', 
   'core', 
   'entity', 
   'enums'
 ]
-__version__ = '0.9.15'
+__version__ = '0.9.22'

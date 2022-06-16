@@ -3,6 +3,8 @@
     Project: HSPyLib
     Created: 4th March, 2021
 
+    This module uses python module bumpver: https://pypi.org/project/bumpver/
+
     Note: Following Semantic Versioning 2.0.0 => https://semver.org/
     - Increment the MAJOR version when making incompatible API changes
     - Increment the MINOR version when adding functionality in a backwards-compatible manner
@@ -86,6 +88,6 @@ task listProperties {
   }
 }
 
+patchVersion.finalizedBy(syncPythonPackages)
 build.finalizedBy(updateBuildInfo)
 buildOnly.finalizedBy(updateBuildInfo)
-patchVersion.finalizedBy(syncPythonPackages)

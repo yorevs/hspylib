@@ -10,6 +10,8 @@ ext {
   requirementsFile = project.hasProperty('requirementsFile') ? requirementsFile :
     "$rootProject.projectDir/src/main/requirements.txt"
   failScore = project.hasProperty('failScore') ? failScore : 8.0
+  versionFile = project.hasProperty('versionFile') ? versionFile :
+    "${sourceRoot}/main/${project.name}/.version"
 }
 
 /* Helper Functions -------------------------------------------------------- */
@@ -152,8 +154,9 @@ task syncPythonPackages(type: Task) {
             modules << "'${module.name.replaceAll("\\.py", "")}'"
           }
         }
-        def ver_file = new File("${initFile.getParentFile()}/.version")
-        def version_string = "__version__ = \'$app_version\'"
+        def ver_file = new File(versionFile)
+        def cur_version = ver_file.getText().trim()
+        def version_string = "__version__ = \'$cur_version\'"
         initFile.write initTemplate
           .replaceAll("%package%", pkg)
           .replaceAll("%modules%", modules.sort().toString())
