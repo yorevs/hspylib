@@ -11,3 +11,4 @@ push = false
 "build-info.properties" = ["app.version = {version}"]
 "gradle.properties" = ["app_version = '{version}'"]
 "src/main/kafman/.version" = ["{version}"]
+"src/main/README.md" = ["release/v{version}/gray"]

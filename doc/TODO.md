@@ -7,7 +7,7 @@
 3. Add a repository for Postgres db + tests.
 4. Include a form validator for minput.
 5. Improve tui -> extra with settings and remove parameters.
-6. Fix README.md images and finish the documentation.
+6. Update all README.md.
 7. Fix pypi deployment:
    1. https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
    2. https://packaging.python.org/en/latest/tutorials/packaging-projects/

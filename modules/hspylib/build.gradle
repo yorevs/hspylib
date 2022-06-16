@@ -61,5 +61,5 @@ task updateSubprojectsVersion(type: Task) {
   }
 }
 
-requirements.finalizedBy(copyReadme)
+copyLicense.finalizedBy(copyReadme)
 publish.finalizedBy(updateSubprojectsVersion)
