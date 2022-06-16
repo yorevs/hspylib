@@ -36,7 +36,7 @@ ext {
   verbose = project.hasProperty('verbose') ? verbose : false
 }
 
-/* Generate a badge based on build */
+/* Install hspylib build tools */
 task installBuildTools {
   group = 'Install'
   description = 'Install hspylib build tools'

@@ -26,10 +26,21 @@ String dirName(File file) {
   file.getParentFile().getPath()
 }
 
+task copyReadmeAndLicense(type: Copy) {
+  group = 'Publish'
+  description = "Copy README and LICENSE into main folder"
+  from(rootDir) {
+    include 'README.md'
+    include 'LICENSE.md'
+  }
+  into "$sourceRoot/main"
+}
+
 /* Generate PyPi distribution files */
 task dist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
+  dependsOn copyReadmeAndLicense
   dependsOn patchVersion
   dependsOn requirements
   doLast {
@@ -119,5 +130,6 @@ task pypiShow(type: Task) {
     println("License: ${json.info.license}")
     println("Python: ${json.info.requires_python}")
     println("Dependencies: ${json.info.requires_dist}")
+    println("Keywords: ${json.info.keywords}")
   }
 }

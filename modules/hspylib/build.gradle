@@ -23,13 +23,6 @@ ext {
   pythonPath = "$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
 }
 
-task copyReadme(type: Copy) {
-  group = 'Documentation'
-  description = "Copy README into main folder"
-  from "$rootDir/README.md"
-  into "$sourceRoot/main"
-}
-
 apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/python.gradle"
 apply from: "$rootDir/gradle/build-info.gradle"
@@ -39,4 +32,17 @@ apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/badges.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
 
-requirements.finalizedBy(copyReadme)
+/* Update hspylib version in all subprojects */
+task updateSubprojectsVersion(type: Task) {
+  group = 'Dependencies'
+  description = 'Update hspylib version in all subprojects'
+  doLast {
+    print(sourceRoot)
+    project.file("$rootDir/modules").traverse(type: groovy.io.FileType.DIRECTORIES) { module ->
+      def hspd = new File("${module}/dependencies.hspd")
+      if (hspd.exists()) {
+        ant.replaceregexp(file: "$hspd", match:'^package: hspylib, version: ([0-9]+(\.[0-9]+){0,4}),', replace:"$app_ver", flags:'g', byline:true)
+      }
+    }
+  }
+}
