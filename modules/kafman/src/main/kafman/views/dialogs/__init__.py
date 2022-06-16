@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.59
+# hspylib-kafman v0.9.60
 #
 # Package: main.kafman.views.dialogs
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'filters_dialog', 
   'settings_dialog'
 ]
-__version__ = '0.9.59'
+__version__ = '0.9.60'
