@@ -9,4 +9,4 @@ __all__ = [
   'blink_lcd_thread', 
   'main_qt_view'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

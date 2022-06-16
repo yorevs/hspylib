@@ -9,4 +9,4 @@ __all__ = [
   'file_entry', 
   'firebase_entry'
 ]
-__version__ = '0.9.49'
+__version__ = '0.9.50'

@@ -10,4 +10,4 @@ __all__ = [
   'dashboard_item', 
   'mdashboard'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

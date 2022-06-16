@@ -12,4 +12,4 @@ __all__ = [
   'webapp_icons', 
   'widget_icons'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

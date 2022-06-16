@@ -8,4 +8,4 @@
 __all__ = [
   'test_security'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

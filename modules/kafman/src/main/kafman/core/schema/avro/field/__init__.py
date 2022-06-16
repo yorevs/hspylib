@@ -14,4 +14,4 @@ __all__ = [
   'primitive_field', 
   'record_field'
 ]
-__version__ = '0.9.56'
+__version__ = '0.9.57'

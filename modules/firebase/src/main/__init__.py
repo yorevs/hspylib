@@ -8,4 +8,4 @@
 __all__ = [
   'firebase'
 ]
-__version__ = '0.9.49'
+__version__ = '0.9.50'

@@ -11,4 +11,4 @@ __all__ = [
   'stream_capturer', 
   'views'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

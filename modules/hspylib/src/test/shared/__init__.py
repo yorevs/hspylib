@@ -13,4 +13,4 @@ __all__ = [
   'firebase_repository_test', 
   'mysql_repository_test'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

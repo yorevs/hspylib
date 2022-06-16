@@ -9,4 +9,4 @@ __all__ = [
   'consumer_config', 
   'consumer_worker'
 ]
-__version__ = '0.9.56'
+__version__ = '0.9.57'

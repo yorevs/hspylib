@@ -8,4 +8,4 @@
 __all__ = [
   'mysql_repository'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'

@@ -11,4 +11,4 @@ __all__ = [
   'vault_repository', 
   'vault_service'
 ]
-__version__ = '0.9.29'
+__version__ = '0.9.30'

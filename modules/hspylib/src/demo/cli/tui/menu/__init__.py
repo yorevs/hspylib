@@ -12,4 +12,4 @@ __all__ = [
   'sub_menu_1', 
   'sub_menu_2'
 ]
-__version__ = '0.11.77'
+__version__ = '0.11.78'
