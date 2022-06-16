@@ -12,6 +12,7 @@
    1. https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
    2. https://packaging.python.org/en/latest/tutorials/packaging-projects/
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
+9. Fix appman after gradle changes.
 
 ## HSPYLIB-FIREBASE
 
