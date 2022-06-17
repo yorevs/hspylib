@@ -181,7 +181,7 @@ class TestCollectionFilter(unittest.TestCase):
     def test_should_not_allow_repeated_filter_conditions(self):
         self.f.apply_filter('f1', 'active', FilterConditions.IS, True)
         self.f.apply_filter('f2', 'active', FilterConditions.IS, True)
-        self.assertEquals(self.f.size(), 1)
+        self.assertEqual(self.f.size(), 1)
 
     def test_should_discard_filter(self):
         self.f.apply_filter('f1', 'active', FilterConditions.IS, True)

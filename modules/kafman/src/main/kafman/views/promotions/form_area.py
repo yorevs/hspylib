@@ -32,7 +32,7 @@ class FormArea(QScrollArea):
 
     @staticmethod
     def _is_not_empty(value: Union[INPUT_VALUE, dict]) -> bool:
-        if isinstance(value, list) or isinstance(value, dict):
+        if isinstance(value, (list, dict)):
             return True
         return str(value) != ''
 

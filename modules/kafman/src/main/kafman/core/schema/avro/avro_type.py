@@ -43,18 +43,21 @@ class AvroType(Enumeration):
 
     def empty_value(self) -> Any:
         """TODO"""
+
         if self.value == 'boolean':
-            return False
+            value = False
         elif self.value in ['int', 'long']:
-            return 0
+            value = 0
         elif self.value in ['float', 'double']:
-            return 0.0
+            value = 0.0
         elif self.value == 'bytes':
-            return b''
+            value = b''
         elif self.value == 'array':
-            return []
+            value = []
         else:
-            return ''
+            value = ''
+
+        return value
 
     def is_primitive(self):
         return self.value not in ['record', 'enum', 'array', 'map', 'union', 'fixed']

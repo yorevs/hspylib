@@ -35,18 +35,21 @@ class JsonType(Enumeration):
 
     def empty_value(self) -> Any:
         """TODO"""
+
         if self.value == 'boolean':
-            return False
+            value = False
         elif self.value == 'integer':
-            return 0
+            value = 0
         elif self.value == 'number':
-            return 0.0
+            value = 0.0
         elif self.value == 'object':
-            return defaultdict()
+            value = defaultdict()
         elif self.value == 'array':
-            return []
+            value = []
         else:
-            return ''
+            value = ''
+
+        return value
 
     def is_primitive(self) -> bool:
         return self.value not in ['object', 'array']

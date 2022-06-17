@@ -11,7 +11,7 @@ from kafman.core.schema.json.property.property import Property
 class JsonParser(ABC):
     """TODO"""
 
-    class JsonSchemaData:
+    class JsonSchemaData:  # pylint: disable=too-few-public-methods
         """TODO"""
 
         def __init__(self):

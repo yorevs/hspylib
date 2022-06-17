@@ -123,7 +123,7 @@ class FormPane(HFrame):
 
         fill_button = QPushButton(FormIcons.ARROW_RIGHT.value + " Fill")
         fill_button.clicked.connect(lambda: form_stack.slide_to_index(index))
-        WidgetUtils.setup_widget_commons(fill_button, f'Click to fill the form')
+        WidgetUtils.setup_widget_commons(fill_button, 'Click to fill the form')
         fill_button.setMaximumWidth(100)
         fill_button.setMinimumHeight(30)
         fill_button.setDefault(False)

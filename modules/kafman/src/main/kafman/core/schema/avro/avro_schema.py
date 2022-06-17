@@ -72,7 +72,7 @@ class AvroSchema(KafkaSchema):
         }
 
     def validate(self, json_form: dict) -> None:
-        validate_schema(json_form, self.get_content_dict(), raise_errors=True)
+        validate_schema(json_form, self.get_content_dict())
 
     def create_schema_form_widget(
         self,

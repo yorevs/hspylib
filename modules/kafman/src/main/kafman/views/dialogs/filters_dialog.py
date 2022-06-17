@@ -101,7 +101,7 @@ class FiltersDialog(QObject):
     def _sync_filters(self) -> None:
         """TODO"""
         self.ui.lst_filters.clear()
-        list(map(lambda f: self._add_filter(f), self.filters))
+        list(map(self._add_filter, self.filters))
 
     def _add_filter(self, f: ElementFilter) -> None:
         """TODO"""

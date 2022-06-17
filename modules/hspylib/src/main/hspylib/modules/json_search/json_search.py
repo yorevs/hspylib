@@ -95,7 +95,7 @@ class JsonSearch:
 
         return sub_selected_element
 
-    # pylint: disable=too-many-branches,too-many-locals,consider-using-f-string
+    # pylint: disable=too-many-branches,consider-using-f-string
     def select(
         self,
         root_element,

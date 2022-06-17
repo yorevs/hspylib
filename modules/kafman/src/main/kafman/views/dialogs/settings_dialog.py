@@ -17,6 +17,7 @@
 import os
 
 from hspylib.core.config.properties import Properties
+from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5 import uic
@@ -42,8 +43,8 @@ class SettingsDialog(QObject):
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = get_resource("producer-settings.properties").read_text()
-        CONSUMER_SETTINGS = get_resource("consumer-settings.properties").read_text()
+        PRODUCER_SETTINGS = get_resource("producer-settings.properties").read_text(encoding=Charset.UTF_8.value)
+        CONSUMER_SETTINGS = get_resource("consumer-settings.properties").read_text(encoding=Charset.UTF_8.value)
 
         # @formatter:off
         PRODUCER = 'PRODUCER', PRODUCER_SETTINGS

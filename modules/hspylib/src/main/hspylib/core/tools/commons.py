@@ -43,6 +43,7 @@ def _reset_logger():
     root = log.getLogger()
     if root.handlers:
         for handler in root.handlers:
+            handler.close()
             root.removeHandler(handler)
 
 

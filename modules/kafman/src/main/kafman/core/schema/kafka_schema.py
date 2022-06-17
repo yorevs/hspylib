@@ -112,7 +112,7 @@ class KafkaSchema(ABC):
         except (KeyError, TypeError, JSONDecodeError, SchemaParseException) as err:
             err_msg = f"Unable to initialize schema ({self._registry_url}) => {str(err)}"
             log.error(err_msg)
-            raise InvalidSchemaError(err_msg)
+            raise InvalidSchemaError(err_msg) from err
 
     def __str__(self):
         return self._attributes.name
@@ -124,7 +124,6 @@ class KafkaSchema(ABC):
         form_name: str = None,
         fields: List[SchemaField] = None) -> int:
         """Create the stacked frame with the form widget"""
-        pass
 
     @abstractmethod
     def _parse(self) -> None:
@@ -136,7 +135,6 @@ class KafkaSchema(ABC):
 
     def validate(self, json_form: dict) -> None:
         """Validate the json form against the schema"""
-        pass
 
     def get_filepath(self) -> str:
         """Return the schema file path"""

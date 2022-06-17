@@ -23,10 +23,8 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QFileDialog
 from confluent_kafka.cimpl import Consumer
+from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
 from hspylib.core.tools.commons import dirname, now, now_ms
 from hspylib.core.tools.preconditions import check_state
@@ -37,6 +35,11 @@ from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QFileDialog
+
+from kafman.__classpath__ import Classpath, get_source
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.consumer.consumer_worker import ConsumerWorker
@@ -52,15 +55,13 @@ from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
 from kafman.core.statistics_worker import StatisticsWorker
 from kafman.views.dialogs.filters_dialog import FiltersDialog
-from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 from kafman.views.dialogs.settings_dialog import SettingsDialog
-
-from kafman.__classpath__ import get_source, Classpath
+from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = get_source(".version").read_text()
+    VERSION = get_source(".version").read_text(encoding=Charset.UTF_8.value)
 
     SCHEMA_DIR = (Classpath.RESOURCE_DIR / "schema")
 
@@ -263,7 +264,7 @@ class MainQtView(QtView):
         if isinstance(schema, PlainSchema) or self.ui.stk_producer_edit.currentIndex() == StkProducerEdit.TEXT.value:
             text = self.ui.txt_producer.toPlainText()
             msgs = [text] if self._is_json(text) else text.split('\n')
-            return list(map(lambda x: strip_linebreaks(x), filter(None, msgs)))
+            return list(map(strip_linebreaks, filter(None, msgs)))
 
         return strip_extra_spaces(strip_linebreaks(self._form_to_message()))
 
@@ -291,7 +292,7 @@ class MainQtView(QtView):
             'Open file', self._last_used_dir or '.', "Select a message file (*.txt *.json *.csv)")
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0][0])
-            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text())
+            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text(encoding=Charset.UTF_8.value))
 
     def _save_message_file(self) -> None:
         file_tuple = QFileDialog.getSaveFileName(
@@ -299,7 +300,7 @@ class MainQtView(QtView):
             'Save file', self._last_used_dir or '.', "Save file as (*.*)")
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0])
-            with open(Path(file_tuple[0]), "w") as fd_file:
+            with open(Path(file_tuple[0]), "w", encoding=Charset.UTF_8.value) as fd_file:
                 fd_file.write(self.ui.txt_producer.toPlainText())
 
     def _form_to_message(self, validate: bool = True) -> str:
@@ -322,7 +323,7 @@ class MainQtView(QtView):
         text = text.replace("'", '"')
         if self._is_json(text):
             try:
-                formatted = json.dumps(json.loads(text), indent=2, sort_keys=False)
+                formatted = json.dumps(json.loads(text), indent=2)
                 self.ui.txt_producer.set_plain_text(formatted)
                 self.ui.tbtn_format_msg.setStyleSheet("QToolButton {color: #28C941;}")
                 self._display_text('The provided json is valid', StatusColor.green)
@@ -375,7 +376,7 @@ class MainQtView(QtView):
                         self._display_error(f"Unsupported schema: => {str(err)}")
                     except InvalidStateError as err:
                         self._display_error(f"Add schema failed: => {str(err)}")
-                        raise InvalidStateError(err)
+                        raise InvalidStateError(err) from err
 
     def _deselect_schema(self):
         """Deselect current selected serialization schema"""
@@ -387,7 +388,7 @@ class MainQtView(QtView):
         if schema_name:
             content = self._all_schemas[schema_name].get_content_dict()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
-            self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2, sort_keys=False))
+            self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2))
             if self._build_schema_layout():
                 self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
                 self.ui.tbtn_form_view.setEnabled(True)
@@ -417,7 +418,7 @@ class MainQtView(QtView):
             except AttributeError as err:
                 self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
                 self._display_error(f"Invalid schema {schema} was not loaded => {err}")
-                raise InvalidStateError(err)
+                raise InvalidStateError(err) from err
         return False
 
     def _cleanup_schema_layout(self) -> None:
@@ -571,7 +572,7 @@ class MainQtView(QtView):
         sel_model = table.selectionModel()
         if sel_model:
             index_list = sel_model.selectedIndexes()
-            offset_idx, header = next(
+            offset_idx, _ = next(
                 ((i, h) for i, h in enumerate(model.headers) if str(h).lower() == 'offset'), None)
             offset = -1
             for index in index_list:
