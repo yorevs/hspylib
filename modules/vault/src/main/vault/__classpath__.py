@@ -38,7 +38,7 @@ class Classpath(metaclass=Singleton):
     def _list_resources(cls, directory: Union[Path, str]) -> str:
         """TODO"""
         res_str = cls._list_files(directory)
-        for root, dirs, files in os.walk(directory):
+        for root, dirs, _ in os.walk(directory):
             for dirname in dirs:
                 res_str += '  |-' + dirname + os.linesep
                 res_str += cls._list_resources(os.path.join(root, dirname))

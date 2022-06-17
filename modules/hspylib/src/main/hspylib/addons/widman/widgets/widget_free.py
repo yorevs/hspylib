@@ -103,5 +103,4 @@ class WidgetFree(Widget):
 
             return True
 
-        else:
-            return False
+        return False

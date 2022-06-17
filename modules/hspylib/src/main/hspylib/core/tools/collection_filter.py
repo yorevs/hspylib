@@ -13,7 +13,6 @@
 
    Copyright 2022, HSPyLib team
 """
-
 from typing import get_args, List, Set, TypeVar, Union
 
 from hspylib.core.enums.enumeration import Enumeration
@@ -48,11 +47,12 @@ class FilterConditions(Enumeration):
 
     def matches(self, param_value: FILTER_VALUE, value: FILTER_VALUE) -> bool:
         """TODO"""
-        return self._has_type(value) and (
-            eval(f'{quote(value)} {self.value[0]} {quote(param_value)}')
-            if self.name in ['CONTAINS', 'DOES_NOT_CONTAIN']
-            else eval(f'{quote(param_value)} {self.value[0]} {quote(value)}')
-        )
+        operator = self.value[0]
+        if self.name in ['CONTAINS', 'DOES_NOT_CONTAIN']:
+            expression = f'{quote(value)} {operator} {quote(param_value)}'
+        else:
+            expression = f'{quote(param_value)} {operator} {quote(value)}'
+        return self._has_type(value) and eval(expression)  # pylint: disable=eval-used
 
     def _has_type(self, value: FILTER_VALUE) -> bool:
         """TODO"""

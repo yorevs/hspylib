@@ -106,7 +106,7 @@ class HTableView(QTableView):
             for act in self._custom_menu_actions:
                 check_not_none(act)
                 check_state(len(act) == 3, f'Invalid custom menu action: {act}')
-                check_argument(callable(act[1]), f'The action must be callable')
+                check_argument(callable(act[1]), 'The action must be callable')
                 if act[2]:
                     ctx_menu.addSeparator()
                 ctx_menu.addAction(act[0], act[1])

@@ -230,17 +230,17 @@ class Vault:
         unlocked_empty = not file_is_not_empty(unlocked_vault_file)
         if locked_empty and unlocked_empty:
             return
-        elif not locked_empty and unlocked_empty:
-            log.debug(f'Creating a vault backup before opening it => {backup_file}')
+        if not locked_empty and unlocked_empty:
+            log.debug('Creating a vault backup before opening it => %s', backup_file)
             shutil.copyfile(vault_file, backup_file)
         elif not unlocked_empty:
-            log.warning(f'Vault file was found open and will be removed => {vault_file}')
+            log.warning('Vault file was found open and will be removed => %s', vault_file)
             if os.path.exists(backup_file):
-                log.warning(f'Restoring last backup => {backup_file}')
+                log.warning('Restoring last backup => %s', backup_file)
                 shutil.copyfile(backup_file, vault_file)
                 safe_del_file(unlocked_vault_file)
             else:
-                log.warning(f'No backups found !')
+                log.warning('No backups found !')
                 raise VaultSecurityException(
-                    f'Unable to either restore or re-lock the vault file. Please manually backup your secrets '
-                    'and remove the unlocked file "{unlocked_vault_file}"')
+                    'Unable to either restore or re-lock the vault file. Please manually ' +
+                    f' backup your secrets and remove the unlocked file "{unlocked_vault_file}"')

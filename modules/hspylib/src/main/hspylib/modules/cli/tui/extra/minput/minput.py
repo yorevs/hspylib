@@ -68,9 +68,9 @@ class MenuInput:
         self.all_pos = [(0, 0) for _ in all_fields]
         self.cur_field = self.done = None
         self.cur_row = self.cur_col = self.tab_index = 0
-        self.max_label_length = max([len(field.label) for field in all_fields])
-        self.max_value_length = max([field.max_length for field in all_fields])
-        self.max_detail_length = max([MInputUtils.detail_len(field) for field in all_fields])
+        self.max_label_length = max(len(field.label) for field in all_fields)
+        self.max_value_length = max(field.max_length for field in all_fields)
+        self.max_detail_length = max(MInputUtils.detail_len(field) for field in all_fields)
         self.re_render = True
 
     def input(

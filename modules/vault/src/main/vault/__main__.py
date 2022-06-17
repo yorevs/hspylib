@@ -20,6 +20,7 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
+from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
@@ -33,7 +34,7 @@ class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
     VERSION_DIR = Classpath.SOURCE_ROOT
@@ -51,9 +52,7 @@ class Main(Application):
 
         self._with_chained_args('operation', 'the Vault operation to process') \
             .argument('list', 'list all entries matching the given filter criteria, if specified') \
-                .add_argument(
-                    'filter', "filter the listed vault entries by it's name",
-                    nargs='?', default=None) \
+                .add_argument('filter', "filter the listed vault entries by it's name", nargs='?') \
             .argument('get', 'get a vault entry') \
                 .add_argument('name', 'the name of the vault entry which identifies it') \
             .argument('del', 'delete an existing vault entry') \
@@ -61,33 +60,23 @@ class Main(Application):
             .argument('add', 'add a NEW UNIQUE vault entry') \
                 .add_argument('name', 'the name of the vault entry which identifies it') \
                 .add_argument('hint', 'applicable hints related to that vault entry') \
-                .add_argument(
-                    'password',
-                    'the password of the entry. If not provided, it will be prompted',
-                    nargs='?', default=None) \
+                .add_argument('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
             .argument('upd', 'update an existing vault entry') \
                 .add_argument('name', 'the name of the vault entry which identifies it') \
                 .add_argument('hint', 'applicable hints related to that vault entry') \
-                .add_argument(
-                    'password',
-                    'the password of the entry. If not provided, it will be prompted',
-                    nargs='?', default=None) \
+                .add_argument('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
-        log.info(dedent('''
-        {} v{}
+        log.info(dedent(f'''
+        {self._app_name} v{self._app_version}
 
         Settings ==============================
-                VAULT_USER: {}
-                VAULT_FILE: {}
-                STARTED: {}
-        ''').format(
-            self._app_name, self._app_version,
-            VaultConfig.INSTANCE.vault_user(),
-            VaultConfig.INSTANCE.vault_file(),
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                VAULT_USER: {VaultConfig.INSTANCE.vault_user()}
+                VAULT_FILE: {VaultConfig.INSTANCE.vault_file()}
+                STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        '''))
 
         signal.signal(signal.SIGINT, self._abort)
         signal.signal(signal.SIGTERM, self._abort)

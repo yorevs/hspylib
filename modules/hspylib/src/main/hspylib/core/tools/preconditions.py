@@ -85,9 +85,9 @@ def check_and_get(
 
     if content_dict and element_name in content_dict:
         return content_dict[element_name]
-    else:
-        if required:
-            raise InvalidArgumentError(
-                f'Precondition failed: Required attribute {element_name} was not found in the content dictionary')
+
+    if required:
+        raise InvalidArgumentError(
+            f'Precondition failed: Required attribute {element_name} was not found in the content dictionary')
 
     return default

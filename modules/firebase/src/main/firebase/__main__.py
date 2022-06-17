@@ -21,6 +21,7 @@ from datetime import datetime
 from textwrap import dedent
 
 import urllib3
+from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
@@ -36,7 +37,7 @@ class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
     VERSION_DIR = Classpath.SOURCE_ROOT

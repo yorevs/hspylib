@@ -105,7 +105,7 @@ class Application(metaclass=Singleton):
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
             self._main(*params, **kwargs)
-            log.debug(f'Command line arguments: {str(self._args)}')
+            log.debug('Command line arguments: %s', str(self._args))
         except (InvalidOptionError, InvalidArgumentError) as err:
             self.usage(exit_code=1, no_exit=True)
             log.error('Run failed %s => %s', datetime.now(), err)

@@ -25,7 +25,7 @@ class AppVersion:
     def load(filename: str = '.version', load_dir: str = os.getcwd()) -> 'AppVersion':
         filepath = f'{load_dir}/{filename}'
         if not os.path.exists(filepath):
-            log.warning(f'File "{filepath}" does not exist')
+            log.warning('File "%s" does not exist. Could not fetch application version', filepath)
             return AppVersion((0, 0, 0))
 
         return AppVersion(read_version(filepath))

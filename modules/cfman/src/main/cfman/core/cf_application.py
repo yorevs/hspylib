@@ -32,16 +32,16 @@ class CFApplication:
         if len(parts) == 6:
             return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(', '))
         # format: name | state | type:i/o | urls
-        elif len(parts) == 4:
-            mat = re.search("(\w+):(\d+/\d+)", parts[2])
+        if len(parts) == 4:
+            mat = re.search(r"(\w+):(\d+/\d+)", parts[2])
             if not mat:
                 raise InvalidArgumentError(f"Invalid application line: {app_line}")
             instances = mat.group(2)
             memory = '-'
             disk = '-'
             return CFApplication(parts[0], parts[1], instances, memory, disk, parts[3].split(', '))
-        else:
-            raise InvalidArgumentError(f"Invalid application line: {app_line}")
+
+        raise InvalidArgumentError(f"Invalid application line: {app_line}")
 
     def __init__(
         self,

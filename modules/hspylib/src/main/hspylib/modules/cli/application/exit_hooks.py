@@ -15,7 +15,7 @@
 import sys
 
 
-class ExitHooks(object):
+class ExitHooks:
     """TODO"""
 
     def __init__(self):
@@ -23,14 +23,14 @@ class ExitHooks(object):
         self.exit_code = None
         self.exception = None
 
-    def hook(self):
+    def hook(self) -> None:
         self._orig_exit = sys.exit
         sys.exit = self.exit
         sys.excepthook = self.exc_handler
 
-    def exit(self, code=0):
+    def exit(self, code=0) -> None:
         self.exit_code = code
         self._orig_exit(code)
 
-    def exc_handler(self, exc_type, exc, *args):
+    def exc_handler(self, exc_type, exc, *args) -> None:  # pylint: disable=unused-argument
         self.exception = exc

@@ -20,6 +20,7 @@ from hspylib.addons.appman.app_extension import AppExtension
 from hspylib.addons.appman.app_type import AppType
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.widman.widman import WidgetManager
+from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
@@ -29,7 +30,7 @@ class Main(Application):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
     VERSION_DIR = Classpath.SOURCE_ROOT

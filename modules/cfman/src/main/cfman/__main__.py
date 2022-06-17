@@ -19,6 +19,7 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
+from hspylib.core.enums.charset import Charset
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
@@ -32,7 +33,7 @@ class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text()
+    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
     VERSION_DIR = Classpath.SOURCE_ROOT
@@ -62,12 +63,12 @@ class Main(Application):
             self.getarg('username'), self.getarg('password'),
             self.getarg('endpoints') or os.getenv('HOME', os.getcwd()) + '/.cfman_endpoints.txt'
         )
-        log.info(dedent('''
-        {} v{}
+        log.info(dedent(f'''
+        {self._app_name} v{self._app_version}
 
         Settings ==============================
-                STARTED: {}
-        ''').format(self._app_name, self._app_version, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        '''))
         self._exec_application()
 
     def _exec_application(self) -> None:
