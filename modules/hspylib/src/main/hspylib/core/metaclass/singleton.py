@@ -21,6 +21,7 @@ from hspylib.core.tools.commons import syserr
 
 
 # pylint: disable=bad-mcs-classmethod-argument
+from hspylib.core.tools.preconditions import check_not_none
 
 
 class Singleton(type):
@@ -33,11 +34,11 @@ class Singleton(type):
         if not cls.has_instance(cls):
             try:
                 instance = super(Singleton, cls).__call__(*args, **kwargs)
-                assert instance is not None, f'Unable to create Singleton instance: {cls}'
+                check_not_none(instance, f'Unable to create Singleton instance: {cls}')
                 cls.INSTANCE = instance
                 cls._instances[cls] = instance
-                log.debug(f'Created a new Singleton instance: {cls.__module__}.{cls.__name__}')
-            except Exception as err:
+                log.debug('Created a new Singleton instance: %s.%s', cls.__module__, cls.__name__)
+            except Exception as err:  # pylint: disable=broad-except
                 log.error(traceback.format_exc())
                 syserr(traceback.format_exc())
                 print(err)
@@ -59,7 +60,7 @@ class Singleton(type):
         """TODO"""
         singleton_instances = Singleton.__getattribute__(mcs, '_instances')
         if clazz in singleton_instances:
-            log.warning(f'Deleted an existing Singleton instance: {mcs.__module__}.{mcs.__name__}')
+            log.warning('Deleted an existing Singleton instance: %s.%s', mcs.__module__, mcs.__name__)
             del mcs._instances[clazz]
             delattr(clazz, 'INSTANCE')
             del clazz

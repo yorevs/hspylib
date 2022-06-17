@@ -35,7 +35,7 @@ class AgentConfig(metaclass=Singleton):
         self.firebase_configs = None
         if file_is_not_empty(self.config_file()):
             self.load()
-            log.debug(f'Found and loaded a Firebase configuration: {self}')
+            log.debug('Found and loaded a Firebase configuration: %s', self)
 
     def __str__(self):
         return str(self.firebase_configs)

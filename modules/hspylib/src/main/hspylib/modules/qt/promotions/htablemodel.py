@@ -102,7 +102,7 @@ class HTableModel(QAbstractTableModel):
         self,
         name: str,
         el_name: str,
-        condition: 'FilterConditions',
+        condition: FilterConditions,
         el_value: Union[int, str, bool, float]) -> None:
         """TODO"""
         self.filters.apply_filter(name, el_name, condition, el_value)

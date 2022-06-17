@@ -45,7 +45,7 @@ class FileProcessor(ABC):
             else:
                 sysout(f'Uploading files from "{f_path}" to Firebase ...')
                 all_files = next(os.walk(f_path))[2]
-                log.debug('\nGlob: {} \nFiles: {}'.format(glob_exp, all_files))
+                log.debug('\nGlob: %s \nFiles: %s', glob_exp, all_files)
                 for file in all_files:
                     filename = os.path.join(f_path, file)
                     if os.path.isfile(filename) and fnmatch(file, glob_exp or '*.*'):

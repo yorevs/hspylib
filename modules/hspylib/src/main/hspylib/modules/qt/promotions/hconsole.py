@@ -101,8 +101,8 @@ class HConsole(QPlainTextEdit):
                 digits += 1
 
             return margin_left + char_width * digits
-        else:
-            return 0
+
+        return 0
 
     def highlight_current_line(self) -> None:
         """Highlight current line number if highlighting is enabled"""
@@ -116,7 +116,7 @@ class HConsole(QPlainTextEdit):
             selection.cursor.clearSelection()
             self.setExtraSelections([selection])
 
-    def update_line_number_area_width(self, new_block_count: int = 0) -> None:
+    def update_line_number_area_width(self, new_block_count: int = 0) -> None:  # pylint: disable=unused-argument
         """Update the line number area width"""
         self.setViewportMargins(self.line_number_area_width(), 0, 0, 0)
 

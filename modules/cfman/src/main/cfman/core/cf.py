@@ -101,7 +101,7 @@ class CloudFoundry(metaclass=Singleton):
         (variables, service bindings, buildpack, stack, etc.). This action will cause app downtime."""
         return self._exec(f"restage {kwargs['app']}")
 
-    def logs(self, **kwargs) -> None:  # pylint: disable=no-self-use
+    def logs(self, **kwargs) -> None:
         """Tail or show recent logs for an app"""
         Terminal.shell_poll(f"cf logs {kwargs['app']}")
 

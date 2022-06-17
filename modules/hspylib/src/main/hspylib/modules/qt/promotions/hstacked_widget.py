@@ -25,7 +25,7 @@ class HStackedWidget(QStackedWidget):
     """TODO"""
 
     def __init__(self, parent=None):
-        super(HStackedWidget, self).__init__(parent)
+        super().__init__(parent)
         self._slide_direction = Qt.Horizontal
         self._slide_speed = 500
         self._animation_type = QEasingCurve.OutCubic

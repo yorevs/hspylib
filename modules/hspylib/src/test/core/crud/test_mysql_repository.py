@@ -72,7 +72,7 @@ class TestMySqlRepository(unittest.TestCase):
     def test_should_insert_into_database(self):
         test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
-        result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
+        result_set = self.repository.find_all_columns(filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
         }))
         self.assertIsNotNone(result_set, "Result set is none")
@@ -85,7 +85,7 @@ class TestMySqlRepository(unittest.TestCase):
         self.repository.insert(test_entity)
         test_entity.comment = 'Updated My-Test Data'
         self.repository.update(test_entity)
-        result_set = self.repository.find_all(sql_filters=CaseInsensitiveDict({
+        result_set = self.repository.find_all_columns(filters=CaseInsensitiveDict({
             "UUID": '{}'.format(test_entity.uuid)
         }))
         self.assertIsNotNone(result_set, "Result set is none")
@@ -98,7 +98,7 @@ class TestMySqlRepository(unittest.TestCase):
         test_entity_2 = EntityTest(comment='My-Test Data 2')
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
-        result_set = self.repository.find_all()
+        result_set = self.repository.find_all_columns()
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
         self.assertEqual(2, len(result_set))
@@ -110,7 +110,7 @@ class TestMySqlRepository(unittest.TestCase):
         test_entity_2 = EntityTest(comment='My-Test Data 2')
         self.repository.insert(test_entity_1)
         self.repository.insert(test_entity_2)
-        result_set = self.repository.find_by_id(entity_id=str(test_entity_1.uuid))
+        result_set = self.repository.find_columns_by_id(entity_id=str(test_entity_1.uuid))
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity_1.uuid, result_set.uuid)
@@ -119,7 +119,7 @@ class TestMySqlRepository(unittest.TestCase):
     def test_should_select_columns_from_database(self):
         test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
-        result_set = self.repository.find_all(column_set=["UUID"])
+        result_set = self.repository.find_all_columns(column_set=["UUID"])
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
         self.assertEqual(1, len(result_set))
@@ -130,12 +130,12 @@ class TestMySqlRepository(unittest.TestCase):
     def test_should_delete_from_database(self):
         test_entity = EntityTest(comment='My-Test Data')
         self.repository.insert(test_entity)
-        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        result_set = self.repository.find_columns_by_id(entity_id=str(test_entity.uuid))
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, EntityTest)
         self.assertEqual(test_entity.uuid, result_set.uuid)
         self.repository.delete(test_entity)
-        result_set = self.repository.find_by_id(entity_id=str(test_entity.uuid))
+        result_set = self.repository.find_columns_by_id(entity_id=str(test_entity.uuid))
         self.assertIsNone(result_set, "Result set is not empty")
 
 

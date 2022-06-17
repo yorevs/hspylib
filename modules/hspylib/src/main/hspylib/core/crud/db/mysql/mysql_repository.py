@@ -46,7 +46,7 @@ class MySqlRepository(DBRepository):
     def connect(self) -> None:
         """TODO"""
         if not self.is_connected():
-            cache_key = self.__str__()
+            cache_key = str(self)
             if cache_key in self._connection_cache:
                 self._connector = self._connection_cache[cache_key]
                 self._cursor = self._connector.cursor()
@@ -72,7 +72,7 @@ class MySqlRepository(DBRepository):
     def disconnect(self) -> None:
         """TODO"""
         if self.is_connected():
-            cache_key = self.__str__()
+            cache_key = str(self)
             self._connector.close()
             del self._connector
             del self._connection_cache[cache_key]
@@ -114,15 +114,15 @@ class MySqlRepository(DBRepository):
         else:
             raise NotConnectedError('Not connected to database.')
 
-    def find_all(  # pylint: disable=arguments-differ
+    def find_all_columns(
         self,
         column_set: List[str] = None,
-        sql_filters: SqlFilter = None) -> Optional[list]:
+        filters: SqlFilter = None) -> Optional[List[CrudEntity]]:
         """TODO"""
 
         if self.is_connected():
             stm = self._sql_factory \
-                .select(column_set=column_set, filters=sql_filters) \
+                .select(column_set=column_set, filters=filters) \
                 .replace(':tableName', self.table_name())
             log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
@@ -131,7 +131,7 @@ class MySqlRepository(DBRepository):
 
         raise NotConnectedError('Not connected to database.')
 
-    def find_by_id(  # pylint: disable=arguments-differ
+    def find_columns_by_id(
         self,
         column_set: List[str] = None,
         entity_id: str = None) -> Optional[CrudEntity]:

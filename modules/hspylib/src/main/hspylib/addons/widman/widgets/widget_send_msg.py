@@ -92,9 +92,9 @@ class WidgetSendMsg(Widget):
 
         if args and not self._parse_args(args):
             return ExitCode.ERROR
-        elif not args and not self._read_args():
+        if not args and not self._read_args():
             return ExitCode.ERROR
-        elif not args and not self.args:
+        if not args and not self.args:
             return ExitCode.ERROR
 
         self.net_type = self.args.net_type or self.NET_TYPE_TCP

@@ -31,9 +31,7 @@ class TestMain(unittest.TestCase):
     def setUp(self):
         resource_dir = f'{TEST_DIR}/resources'
         os.environ['ACTIVE_PROFILE'] = "test"
-        self.configs = AppConfigs(
-            resource_dir=resource_dir, log_dir=resource_dir
-        )
+        self.configs = AppConfigs(resource_dir=resource_dir)
         self.assertIsNotNone(self.configs)
         self.assertIsNotNone(AppConfigs.INSTANCE)
         log.info(self.configs)

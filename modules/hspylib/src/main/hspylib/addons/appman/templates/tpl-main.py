@@ -39,6 +39,9 @@ class Main(Application):
     def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""
 
+    def _setup_arguments(self) -> None:
+        """Initialize application parameters and options"""
+
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""
         sysout(f'Hello {self._app_name}')
