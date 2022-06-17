@@ -36,4 +36,3 @@ class Property:
             self.extras.enum = check_and_get('enum', p_items, False, [])
         else:
             raise InvalidArgumentError(f'Invalid property \"items\" type: {type(p_items)}')
-        pass

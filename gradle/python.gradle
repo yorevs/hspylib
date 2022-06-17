@@ -249,7 +249,7 @@ task pylint(type: Task) {
   group = 'Verification'
   description = "Execute pylint against sourceRoot"
   doLast {
-    def pylintCfg = "${project.rootDir}/.pylintrc"
+    def pylintCfg = "${rootDir}/.pylintrc"
     assert new File(pylintCfg).exists()
     def testDir = "${sourceRoot}/main/${project.name}"
     def disabledChecks = "${pylint_disabled_checks.join(',')}"

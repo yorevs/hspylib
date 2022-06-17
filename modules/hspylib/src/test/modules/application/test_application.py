@@ -14,6 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 import argparse
+import os
 import sys
 import unittest
 
@@ -31,6 +32,7 @@ class TestApplication(unittest.TestCase):
 
     # TEST CASES ----------
     def setUp(self) -> None:
+        os.environ['ACTIVE_PROFILE'] = ''
         Singleton.del_instance(Application)
         Singleton.del_instance(AppConfigs)
         Singleton.del_instance(ApplicationTest)
@@ -50,8 +52,8 @@ class TestApplication(unittest.TestCase):
 
     # TC3 - Creating an application specifying source root directory
     def test_should_instantiate_configs(self):
-        rd = get_path(__file__)
-        Application('APP-TEST', APP_VERSION, resource_dir=f'{str(rd)}/resources')
+        cur_dir = get_path(__file__)
+        Application('APP-TEST', APP_VERSION, resource_dir=f'{str(cur_dir)}/resources')
         self.assertTrue(hasattr(AppConfigs, 'INSTANCE'))
 
     # TC4 - Check when passing defined options and arguments

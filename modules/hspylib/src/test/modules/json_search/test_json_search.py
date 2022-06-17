@@ -15,13 +15,16 @@
 """
 
 import json
+import os
 import sys
 import unittest
 from os import path
 
 from hspylib.modules.json_search.json_search import JsonSearch
 
-SAMPLE_FILE = "resources/json_search_sample.json"
+TEST_DIR = os.path.dirname(os.path.realpath(__file__))
+
+SAMPLE_FILE = f'{TEST_DIR}/resources/json_search_sample.json'
 
 
 class TestJsonSearch(unittest.TestCase):

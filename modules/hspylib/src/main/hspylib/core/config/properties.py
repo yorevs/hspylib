@@ -29,8 +29,6 @@ class Properties:
 
     _default_name = 'application'
     _default_extension = '.properties'
-    _profiled_format = '{}-{}{}'
-    _simple_format = '{}{}'
 
     @staticmethod
     def environ_name(property_name: str) -> str:
@@ -66,7 +64,7 @@ class Properties:
 
         self.filename = filename
         self.extension = extension
-        self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE')
+        self.profile = profile if profile else os.environ.get('ACTIVE_PROFILE', '')
         self.load_dir = load_dir if load_dir else f'{run_dir()}/resources'
         self.filepath = None
         self.properties = {}
@@ -129,12 +127,11 @@ class Properties:
     def _find_path(self) -> str:
         """Find the proper path for the properties file"""
         if self.profile:
-            filepath = self._profiled_format \
-                .format(self.filename, self.profile, self.extension)
+            filepath = f'{self.load_dir}/{self.filename}-{self.profile}{self.extension}'
         else:
-            filepath = self._simple_format \
-                .format(self.filename, self.extension)
-        return f'{self.load_dir}/{filepath}'
+            filepath = f'{self.load_dir}/{self.filename}{self.extension}'
+
+        return filepath
 
     def _parse(self) -> None:
         """Parse the properties file according to it's extension"""

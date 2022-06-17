@@ -16,7 +16,7 @@ from abc import ABC
 from typing import List
 
 
-class ProducerConfig(ABC):  # pylint: disable=too-few-public-methods
+class ProducerConfig(ABC):
     """Some of the confluence exposed producer properties"""
 
     BOOTSTRAP_SERVERS = 'bootstrap.servers'

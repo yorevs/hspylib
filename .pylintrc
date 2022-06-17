@@ -16,7 +16,8 @@ enable=useless-suppression
 disable=locally-disabled
 
 [DESIGN]
+min-public-methods=1
 max-attributes=15
 max-args=10
 max-statements=55
-min-public-methods=1
+max-locals=18
