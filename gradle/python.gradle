@@ -5,11 +5,9 @@
 */
 
 ext {
-  pythonPath = project.hasProperty('pythonPath') ?:
-    "$sourceRoot:$sourceRoot/main:$sourceRoot/test"
-  failScore = project.hasProperty('failScore') ?: 8.0
-  versionFile = project.hasProperty('versionFile') ?:
-    "${sourceRoot}/main/${project.name}/.version"
+  pythonPath = findProperty('pythonPath') ?: "${sourceRoot}/main:${sourceRoot}/test"
+  failScore = findProperty('failScore') ?: 8.0
+  versionFile = findProperty('versionFile') ?: "${sourceRoot}/main/${project.name}/.version"
 }
 
 /* Helper Functions -------------------------------------------------------- */
@@ -28,22 +26,21 @@ String dirName(File file) {
 
 /* Pylint disabled checks ------------------------------------------------- */
 project.ext.pylint_disabled_checks =
-  project.hasProperty('pylint_disabled_checks')
-    ? pylint_disabled_checks
-    : [
-        'C0103', // invalid-name
-        'C0114', // missing-module-docstring
-        'C0115', // missing-class-docstring
-        'C0116', // missing-function-docstring
-        'C0303', // trailing-whitespace
-        'C0411', // wrong-import-order
-        'E0603', // undefined-all-variable
-        'E1101', // no-member
-        'R0801', // duplicate-code
-        'W0511', // fixme
-        'W1113', // keyword-arg-before-vararg
-        'C0301', // line-too-long
-      ]
+  findProperty('pylint_disabled_checks') ?:
+    [
+      'C0103', // invalid-name
+      'C0114', // missing-module-docstring
+      'C0115', // missing-class-docstring
+      'C0116', // missing-function-docstring
+      'C0303', // trailing-whitespace
+      'C0411', // wrong-import-order
+      'E0603', // undefined-all-variable
+      'E1101', // no-member
+      'R0801', // duplicate-code
+      'W0511', // fixme
+      'W1113', // keyword-arg-before-vararg
+      'C0301', // line-too-long
+    ]
 
 defaultTasks 'clean', 'run'
 
@@ -240,7 +237,7 @@ task check(type: Task) {
         }
         exec {
           workingDir = dirName(file)
-          environment PYTHONPATH: "${pythonPath}"
+          environment PYTHONPATH: pythonPath
           commandLine rootProject.python, '-m', 'unittest', '-b', '-f', '-v' ,file.path
         }
       }

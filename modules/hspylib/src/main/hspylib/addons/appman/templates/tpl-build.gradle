@@ -23,7 +23,7 @@ ext {
   python = "python${pythonVersion}"
   pyrcc = "pyrcc3${pyrccVersion}"
   startTime = System.currentTimeMillis()
-  verbose = project.hasProperty('verbose') ? verbose : false
+  verbose = findProperty('verbose') ?: false
 }
 
 apply from: "gradle/dependencies.gradle"
