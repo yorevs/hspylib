@@ -19,6 +19,7 @@ import os
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, Qt
@@ -59,7 +60,8 @@ class SettingsDialog(QObject):
 
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)
-        assert ui_class is not None and base_class is not None
+        check_not_none(ui_class)
+        check_not_none(base_class)
         self.dialog, self.ui = base_class(parent), ui_class()
         self.ui.setupUi(self.dialog)
         self._settings = {}
