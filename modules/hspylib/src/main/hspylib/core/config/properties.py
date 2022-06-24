@@ -39,16 +39,18 @@ class Properties:
 
     @staticmethod
     def read_properties(all_lines: List[str]) -> dict:
+        """TODO"""
         return {
             p[0].strip(): p[1].strip() for p in [
                 p.split('=', 1) for p in list(
-                    filter(lambda l: re.match('[a-zA-Z0-9][._\\-a-zA-Z0-9]* *=.*', l), all_lines)
+                    filter(lambda l: re.match('[a-zA-Z\d][._\\-a-zA-Z\d]* *=.*', l), all_lines)
                 )
             ]
         }
 
     @staticmethod
     def read_cfg_or_ini(all_lines: List[str]):
+        """TODO"""
         string = os.linesep.join(all_lines)
         all_cfgs = {}
         cfg = ConfigParser()

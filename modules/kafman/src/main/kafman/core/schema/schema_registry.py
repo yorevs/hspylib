@@ -74,7 +74,7 @@ class SchemaRegistry:
     def fetch_server_info(self) -> None:
         """Fetch information about the selected schema registry server"""
         # Fetch server supported schema types
-        response = self._make_request(url=f"{self._url}/schemas/types")
+        response = self._make_request(url=f"{self._url}/schemas/types", expected_codes=[HttpCode.OK, HttpCode.NOT_FOUND])
         self._schema_types = response.body
         # Fetch current registered subjects
         response = self._make_request(url=f"{self._url}/subjects")
