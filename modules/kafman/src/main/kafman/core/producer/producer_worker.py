@@ -48,16 +48,11 @@ class ProducerWorker(QThread):
         self._schema = None
         self.start()
 
-    def start_producer(self, settings: dict, schema: KafkaSchema = PlainSchema()) -> None:
+    def start_producer(self, settings: dict, schema: KafkaSchema) -> None:
         """Start the producer"""
         if self._producer is None:
             self._schema = schema
-            producer_conf = {}
-            producer_conf.update(settings)
-            producer_conf.update(schema.settings())
-            self._producer = SerializingProducer(
-                {k: v for k, v in producer_conf.items() if not k.endswith('.deserializer')}
-            )
+            self._producer = SerializingProducer(settings)
             self._started = True
 
     def stop_producer(self) -> None:
@@ -70,6 +65,10 @@ class ProducerWorker(QThread):
             self._producer = None
             self._worker_thread = None
             self._schema = None
+
+    def schema(self) -> KafkaSchema:
+        """TODO"""
+        return self._schema
 
     def produce(self, topics: List[Any], messages: Union[str, List[str]]) -> None:
         """Create a worker thread to produce the messages to the specified topics."""

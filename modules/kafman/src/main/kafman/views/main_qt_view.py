@@ -19,6 +19,7 @@ import logging as log
 import os
 import re
 from collections import defaultdict
+from copy import deepcopy
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
@@ -70,7 +71,7 @@ class MainQtView(QtView):
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
 
     KAFKA_INTERNAL_TOPICS = (
-        '_confluent-', '_schemas', '__consumer_offsets', '__transaction_state'
+        '_confluent', '_schemas', '__consumer_offsets', '__transaction_state'
     )
 
     @staticmethod
@@ -166,7 +167,7 @@ class MainQtView(QtView):
         self.ui.tbtn_produce.setText(DashboardIcons.SEND.value)
         self.ui.tbtn_prod_clear_topics.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_prod_find_topics.setText(DashboardIcons.SEARCH.value)
-        self.ui.tbtn_prod_find_topics.clicked.connect(lambda: self._find_broker_topics(is_producer=True))
+        self.ui.tbtn_prod_find_topics.clicked.connect(lambda: self._fetch_broker_topics(is_producer=True))
         self.ui.tbtn_prod_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_prod_add_topics.clicked.connect(self._add_topic)
         self.ui.tbtn_prod_del_topics.setText(FormIcons.MINUS.value)
@@ -207,7 +208,7 @@ class MainQtView(QtView):
         self.ui.tbtn_cons_connect.setStyleSheet('QToolButton {color: #2380FA;}')
         self.ui.tbtn_cons_clear_topics.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_cons_find_topics.setText(DashboardIcons.SEARCH.value)
-        self.ui.tbtn_cons_find_topics.clicked.connect(lambda: self._find_broker_topics(is_producer=False))
+        self.ui.tbtn_cons_find_topics.clicked.connect(lambda: self._fetch_broker_topics(is_producer=False))
         self.ui.tbtn_cons_add_topics.setText(FormIcons.PLUS.value)
         self.ui.tbtn_cons_add_topics.clicked.connect(lambda: self._add_topic(is_producer=False))
         self.ui.tbtn_cons_del_topics.setText(FormIcons.MINUS.value)
@@ -255,8 +256,11 @@ class MainQtView(QtView):
 
     def _schema(self) -> KafkaSchema:
         """Return the selected serialization schema"""
-        sel_schema = self.ui.cmb_sel_schema.currentText()
-        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else PlainSchema()
+        schema = self._producer.schema() if self._is_producer() else self._consumer.schema()
+        if not schema:
+            sel_schema = self.ui.cmb_sel_schema.currentText()
+            schema = self._all_schemas[sel_schema] if sel_schema in self._all_schemas else PlainSchema()
+        return schema
 
     def _messages(self) -> Union[str, List[str]]:
         """Return the selected messages or build a json message from form"""
@@ -389,10 +393,7 @@ class MainQtView(QtView):
             content = self._all_schemas[schema_name].get_content_dict()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
             self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2))
-            if self._build_schema_layout():
-                self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
-                self.ui.tbtn_form_view.setEnabled(True)
-                self.ui.lbl_schema_fields.setText(f"{schema_name} Schema Fields")
+            self.ui.tbtn_form_view.setEnabled(True)
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.set_plain_text('')
@@ -402,19 +403,18 @@ class MainQtView(QtView):
 
     def _build_schema_layout(self) -> bool:
         """Build a form based on the selected schema using a grid layout"""
-        sel_schema = self.ui.cmb_sel_schema.currentText()
-        if sel_schema:
-            schema = self._all_schemas[sel_schema]
+        schema = self._producer.schema()
+        if schema:
             try:
-                if schema:
-                    self._cleanup_schema_layout()
-                    form_widget = HStackedWidget(self.ui.tab_widget)
-                    form_widget.currentChanged.connect(self._schema_form_changed)
-                    form_widget.installEventFilter(form_widget)
-                    schema.create_schema_form_widget(form_widget)
-                    self.ui.scr_schema_fields.setWidget(form_widget)
-                    self._schema_form_changed(0)
-                    return True
+                self._cleanup_schema_layout()
+                form_widget = HStackedWidget(self.ui.tab_widget)
+                form_widget.currentChanged.connect(self._schema_form_changed)
+                form_widget.installEventFilter(form_widget)
+                schema.create_schema_form_widget(form_widget)
+                self.ui.scr_schema_fields.setWidget(form_widget)
+                self._schema_form_changed(0)
+                self.ui.lbl_schema_fields.setText(f"{schema.get_schema_name()} Schema Fields")
+                return True
             except AttributeError as err:
                 self.ui.cmb_sel_schema.removeItem(self.ui.cmb_sel_schema.currentIndex())
                 self._display_error(f"Invalid schema {schema} was not loaded => {err}")
@@ -492,7 +492,7 @@ class MainQtView(QtView):
             else:
                 self._display_error(f"Setting {setting} is required")
 
-    def _find_broker_topics(self, is_producer: bool) -> None:
+    def _fetch_broker_topics(self, is_producer: bool) -> None:
         """Find all topics from broker"""
         config = {
             k: v for (k, v) in self._all_settings['consumer'].items() if k in ['bootstrap.servers', 'group.id']
@@ -585,21 +585,27 @@ class MainQtView(QtView):
     def _toggle_start_producer(self) -> None:
         """Start/Stop the producer."""
         started = self._producer.is_started()
-        settings = self._settings()
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
             self._producer.stop_producer()
             self._display_text("Production to kafka topics stopped", StatusColor.yellow)
         else:  # Start
             topics = self._topics(True)
-            if topics:
-                schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
-                self._producer.start_producer(settings, self._schema())
-                self._display_text(f"Started producing to topics {topics}{schema_name}", StatusColor.green)
-            else:
+            if not topics:
                 self._display_error('Must subscribe to at least one topic')
                 return
+            schema = self._schema()
+            settings = deepcopy(self._settings())
+            settings.update(schema.settings())
+            settings = {k: v for k, v in settings.items() if not k.endswith('.deserializer')}
+            schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
+            self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
+            self._producer.start_producer(settings, schema)
+            if self._build_schema_layout():
+                self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
+            self._display_text(f"Started producer. Topics: {topics}  Schema: {schema_name}", StatusColor.green)
+            log.info(f'Producer settings: {settings}')
+
         self.ui.tbtn_format_msg.setEnabled(not started)
         self.ui.tbtn_export_form.setEnabled(not started)
         self.ui.tbtn_validate_form.setEnabled(not started)
@@ -620,22 +626,26 @@ class MainQtView(QtView):
     def _toggle_start_consumer(self) -> None:
         """Start/Stop the consumer."""
         started = self._consumer.is_started()
-        settings = self._settings()
         if started:  # Stop
             self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
             self._consumer.stop_consumer()
             self._display_text("Consumption from kafka topics stopped", StatusColor.yellow)
         else:  # Start
             topics = self._topics(False)
-            if topics:
-                schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
-                self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
-                self._consumer.start_consumer(settings, self._schema())
-                self._consumer.consume(topics)
-                self._display_text(f"Started consuming from topics {topics}{schema_name}", StatusColor.green)
-            else:
+            if not topics:
                 self._display_error('Must subscribe to at least one topic')
                 return
+            schema = self._schema()
+            settings = deepcopy(self._settings())
+            settings.update(schema.settings())
+            settings = {k: v for k, v in settings.items() if not k.endswith('.serializer')}
+            schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
+            self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
+            self._consumer.start_consumer(settings, schema)
+            self._consumer.consume(topics)
+            self._display_text(f"Started consumer. Topics {topics}  Schema: {schema_name}", StatusColor.green)
+            log.info(f'Consumer settings: {settings}')
+
         self.ui.cmb_cons_topics.setEnabled(started)
         self.ui.tbtn_cons_add_topics.setEnabled(started)
         self.ui.tbtn_cons_del_topics.setEnabled(started)
