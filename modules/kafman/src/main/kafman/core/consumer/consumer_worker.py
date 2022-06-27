@@ -42,17 +42,14 @@ class ConsumerWorker(QThread):
         self._poll_interval = poll_interval
         self._consumer = None
         self._worker_thread = None
+        self._schema = None
         self.start()
 
-    def start_consumer(self, settings: dict, schema: KafkaSchema = PlainSchema()) -> None:
+    def start_consumer(self, settings: dict, schema: KafkaSchema) -> None:
         """Start the Kafka consumer agent"""
         if self._consumer is None:
-            consumer_conf = {}
-            consumer_conf.update(settings)
-            consumer_conf.update(schema.settings())
-            self._consumer = DeserializingConsumer(
-                {k: v for k, v in consumer_conf.items() if not k.endswith('.serializer')}
-            )
+            self._schema = schema
+            self._consumer = DeserializingConsumer(settings)
             self._started = True
 
     def stop_consumer(self) -> None:
@@ -62,6 +59,7 @@ class ConsumerWorker(QThread):
             del self._consumer
             self._consumer = None
             self._worker_thread = None
+            self._schema = None
 
     def consume(self, topics: List[str]) -> None:
         """Start the consumer thread"""
@@ -85,6 +83,10 @@ class ConsumerWorker(QThread):
         for tp in topic_partitions:
             tp.offset = offset + 1
             self._consumer.commit(offsets=topic_partitions, asynchronous=False)
+
+    def schema(self) -> KafkaSchema:
+        """TODO"""
+        return self._schema
 
     def _consume(self, topics: List[str]) -> None:
         """Consume messages from the selected Kafka topics"""
