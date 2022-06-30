@@ -32,13 +32,14 @@ from hspylib.core.tools.preconditions import check_state
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.fetch.fetch import is_reachable
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 from kafman.__classpath__ import Classpath, get_source
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
@@ -392,7 +393,7 @@ class MainQtView(QtView):
         if schema_name:
             content = self._all_schemas[schema_name].get_content_dict()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
-            self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=2))
+            self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=1))
             self.ui.tbtn_form_view.setEnabled(True)
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
@@ -592,12 +593,16 @@ class MainQtView(QtView):
         else:  # Start
             topics = self._topics(True)
             if not topics:
-                self._display_error('Must subscribe to at least one topic')
+                self._display_error('Must subscribe to at least one topic', pop_warn_box=True)
                 return
             schema = self._schema()
             settings = deepcopy(self._settings())
             settings.update(schema.settings())
             settings = {k: v for k, v in settings.items() if not k.endswith('.deserializer')}
+            brokers = settings[ProducerConfig.BOOTSTRAP_SERVERS]
+            if not is_reachable(brokers):
+                self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box=True)
+                return
             schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
             self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._producer.start_producer(settings, schema)
@@ -633,17 +638,21 @@ class MainQtView(QtView):
         else:  # Start
             topics = self._topics(False)
             if not topics:
-                self._display_error('Must subscribe to at least one topic')
+                self._display_error('Must subscribe to at least one topic', pop_warn_box=True)
                 return
             schema = self._schema()
             settings = deepcopy(self._settings())
             settings.update(schema.settings())
             settings = {k: v for k, v in settings.items() if not k.endswith('.serializer')}
+            brokers = settings[ProducerConfig.BOOTSTRAP_SERVERS]
+            if not is_reachable(brokers):
+                self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box=True)
+                return
             schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
             self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._consumer.start_consumer(settings, schema)
             self._consumer.consume(topics)
-            self._display_text(f"Started consumer. Topics {topics}  Schema: {schema_name}", StatusColor.green)
+            self._display_text(f"Started consumer. Topics {topics}  Schema: {schema_name}", StatusColor.green, )
             log.info(f'Consumer settings: {settings}')
 
         self.ui.cmb_cons_topics.setEnabled(started)
@@ -665,16 +674,24 @@ class MainQtView(QtView):
         except InvalidInputError as err:
             self._display_error(str(err))
 
-    def _display_error(self, message: str, add_console: bool = True) -> None:
+    def _display_error(self, message: str, console_print: bool = True, pop_warn_box: bool = False) -> None:
         """Display an error at the status bar (and console if required)"""
-        self._display_text(message, StatusColor.red, add_console)
 
-    def _display_text(self, message: str, color: QColor = None, add_console: bool = True) -> None:
+        self._display_text(message, StatusColor.red, console_print, log_it=False)
+        log.error(message)
+        if pop_warn_box:
+            QMessageBox.warning(self.ui.tab_widget, "Attention", message, QMessageBox.Ok)
+
+    def _display_text(
+        self, message: str, color: QColor = None, console_print: bool = True, log_it: bool = True) -> None:
         """Display a text at the status bar (and console if required)"""
+
         message = f"<font color='{color.name() if color else 'white'}'>{message}</font>"
         self.ui.lbl_status_text.setText(message)
-        if add_console:
+        if console_print:
             self._console_print(f"-> {message}", color)
+        if log_it:
+            log.info(message)
 
     def _update_stats(
         self,
