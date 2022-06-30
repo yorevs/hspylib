@@ -10,6 +10,7 @@
 6. Add a repository for SQLite db + tests.
 7. Add a repository for Postgres db + tests.
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
+9. Accept tuples on preconditions and is_reachable
 
 ## HSPYLIB-VAULT
 

@@ -20,7 +20,7 @@ from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
-from PyQt5.QtGui import QFont, QFontDatabase
+from PyQt5.QtGui import QFont, QFontDatabase, QIcon
 
 from kafman.__classpath__ import Classpath, get_resource, get_source
 from kafman.views.main_qt_view import MainQtView
@@ -38,6 +38,9 @@ class Main(Application):
     # Location of the UI font
     FONT_PATH = str(get_resource('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf'))
 
+    # Application icon
+    APP_ICON_PATH = str(get_resource('app-icon.png'))
+
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
@@ -46,6 +49,7 @@ class Main(Application):
         families = QFontDatabase.applicationFontFamilies(font_id)
         check_state(families is not None and len(families) == 1)
         self.qt_app.app.setFont(QFont(families[0], 14))
+        self.qt_app.app.setWindowIcon(QIcon(self.APP_ICON_PATH))
 
     def _setup_arguments(self) -> None:
         """passInitialize application parameters and options"""
