@@ -19,7 +19,7 @@ import sys
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
 from hspylib.modules.qt.views.qt_view import QtView
@@ -54,7 +54,7 @@ class Main(Application):
 
     def __init__(self, app_name: str):
         # Invoke the super constructor without source_dir parameter to skip creation of log and properties
-        version = AppVersion.load(load_dir=self.VERSION_DIR)
+        version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=RESOURCES_DIR)
         self.main_view = QtApplication(self.MainQtView)
 

@@ -15,8 +15,7 @@
 """
 
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
-
+from hspylib.modules.cli.application.version import Version
 
 class ApplicationTest(Application):
     """Versioner - Provides an engine to manage app versions."""
@@ -28,7 +27,7 @@ class ApplicationTest(Application):
     WELCOME = 'Welcome to test app'
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, AppVersion.load(), self.DESCRIPTION)
+        super().__init__(app_name, Version.load(), self.DESCRIPTION)
 
     def _setup_arguments(self) -> None:
         # @formatter:off

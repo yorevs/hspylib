@@ -15,7 +15,6 @@
 """
 from hspylib.core.exception.exceptions import HSBaseException
 
-
 class VaultCloseError(HSBaseException):
     """Raised when closing the vault"""
 

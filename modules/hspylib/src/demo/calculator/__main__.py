@@ -12,11 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
-import os
 import sys
 
 from calculator.ui.qt.views.main_qt_view import MainQtView
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
 
@@ -24,7 +23,7 @@ class Main(QtApplication):
     """QT Calculator main class"""
 
     def __init__(self, app_name: str):
-        version = AppVersion.load(load_dir=os.getcwd())
+        version = Version.load()
         super().__init__(MainQtView, app_name, version)
 
 

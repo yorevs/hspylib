@@ -24,7 +24,7 @@ import urllib3
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 
 from firebase.__classpath__ import _Classpath
 from firebase.core.firebase import Firebase
@@ -46,7 +46,7 @@ class Main(Application):
     RESOURCE_DIR = _Classpath.resource_dir()
 
     def __init__(self, app_name: str):
-        version = AppVersion.load(load_dir=self.VERSION_DIR)
+        version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
         self.firebase = Firebase()
 

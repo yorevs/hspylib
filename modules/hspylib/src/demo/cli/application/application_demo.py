@@ -17,7 +17,7 @@ import sys
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 
 APP_NAME = 'AppTest'
 
@@ -54,4 +54,4 @@ class Main(Application):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('AppTest', AppVersion.load(), DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])
+    Main('AppTest', Version.load(), DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])

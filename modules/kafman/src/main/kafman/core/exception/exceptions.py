@@ -16,7 +16,6 @@
 
 from hspylib.core.exception.exceptions import HSBaseException
 
-
 class InvalidSchemaError(HSBaseException):
     """Raised when an invalid schema is provided"""
 

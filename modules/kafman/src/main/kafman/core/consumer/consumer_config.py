@@ -15,7 +15,6 @@
 from abc import ABC
 from typing import List
 
-
 class ConsumerConfig(ABC):
     """Some of the confluence exposed consumer properties"""
 

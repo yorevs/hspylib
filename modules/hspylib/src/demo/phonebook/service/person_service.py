@@ -18,7 +18,6 @@ from hspylib.core.crud.crud_service import CrudService
 from hspylib.core.metaclass.singleton import Singleton
 from phonebook.repository.person_repository import PersonRepository
 
-
 class PersonService(CrudService, metaclass=Singleton):
 
     def __init__(self):

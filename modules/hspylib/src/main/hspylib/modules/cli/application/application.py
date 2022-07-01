@@ -32,7 +32,7 @@ from hspylib.modules.cli.application.argparse.arguments_builder import Arguments
 from hspylib.modules.cli.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder
 from hspylib.modules.cli.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.cli.application.exit_hooks import ExitHooks
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 
 
 class Application(metaclass=Singleton):
@@ -59,7 +59,7 @@ class Application(metaclass=Singleton):
     def __init__(
         self,
         name: str,
-        version: AppVersion,
+        version: Version,
         description: str = None,
         usage: str = None,
         epilog: str = None,

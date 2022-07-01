@@ -23,7 +23,7 @@ from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 
 
 class Main(Application):
@@ -36,7 +36,7 @@ class Main(Application):
     VERSION_DIR = _Classpath.source_root()
 
     def __init__(self, app_name: str):
-        version = AppVersion.load(load_dir=self.VERSION_DIR)
+        version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_arguments(self) -> None:

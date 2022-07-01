@@ -25,7 +25,6 @@ from phonebook.entity.validator.person_validator import PersonValidator
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
-
 class CreateView(metaclass=Singleton):
 
     def __init__(self):

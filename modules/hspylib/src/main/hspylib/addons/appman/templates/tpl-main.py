@@ -18,7 +18,7 @@ import sys
 
 from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 
 HERE = get_path(__file__)
 
@@ -33,7 +33,7 @@ class Main(Application):
     VERSION_DIR = str(HERE)
 
     def __init__(self, app_name: str):
-        version = AppVersion.load(load_dir=self.VERSION_DIR)
+        version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_parameters(self, *params, **kwargs) -> None:
