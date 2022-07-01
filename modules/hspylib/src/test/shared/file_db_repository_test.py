@@ -17,7 +17,6 @@
 from hspylib.core.crud.file.file_repository import FileRepository
 from shared.entity_test import EntityTest
 
-
 class FileDbRepositoryTest(FileRepository):
 
     def dict_to_entity(self, row: dict) -> EntityTest:

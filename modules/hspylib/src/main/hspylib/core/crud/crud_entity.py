@@ -18,7 +18,6 @@ from abc import ABC
 from typing import Tuple
 from uuid import UUID
 
-
 class CrudEntity(ABC):
     """TODO"""
 

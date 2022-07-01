@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib-kafman
+   @package: hspylib-kafman.main.kafman.core.schema.json.property
+      @file: property.py
+   @created: Fri, 1 Jul 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HSPyLib team
+"""
+
 from typing import Any, List, Union
 
 from hspylib.core.exception.exceptions import InvalidArgumentError

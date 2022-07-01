@@ -18,10 +18,10 @@ import traceback
 from typing import Type
 
 from hspylib.core.tools.commons import syserr
+from hspylib.core.tools.preconditions import check_not_none
 
 
 # pylint: disable=bad-mcs-classmethod-argument
-from hspylib.core.tools.preconditions import check_not_none
 
 
 class Singleton(type):

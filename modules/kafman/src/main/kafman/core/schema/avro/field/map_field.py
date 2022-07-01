@@ -17,7 +17,6 @@
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
 
-
 class MapField(SchemaField):
 
     def __init__(

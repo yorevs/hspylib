@@ -22,10 +22,10 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 from shared.application_test import ApplicationTest
 
-APP_VERSION = AppVersion((0, 1, 0))
+APP_VERSION = Version((0, 1, 0))
 
 
 class TestApplication(unittest.TestCase):

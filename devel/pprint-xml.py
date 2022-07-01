@@ -13,9 +13,9 @@
 
 # @verified versions: Python 2.7 and Python 3.7
 
-import sys
 import os
 import re
+import sys
 import xml.dom.minidom
 
 # This application name.

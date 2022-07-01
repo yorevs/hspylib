@@ -15,7 +15,6 @@
 from abc import ABC
 from typing import List
 
-
 class ProducerConfig(ABC):
     """Some of the confluence exposed producer properties"""
 

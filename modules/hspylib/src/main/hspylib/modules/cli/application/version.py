@@ -20,16 +20,16 @@ from typing import Tuple, Union
 from hspylib.core.tools.commons import read_version
 
 
-class AppVersion:
+class Version:
 
     @staticmethod
-    def load(filename: str = '.version', load_dir: Union[str, Path] = os.getcwd()) -> 'AppVersion':
+    def load(filename: str = '.version', load_dir: Union[str, Path] = os.getcwd()) -> 'Version':
         filepath = f'{str(load_dir)}/{filename}'
         if not os.path.exists(filepath):
             log.warning('File "%s" does not exist. Could not fetch application version', filepath)
-            return AppVersion((0, 0, 0))
+            return Version((0, 0, 0))
 
-        return AppVersion(read_version(filepath))
+        return Version(read_version(filepath))
 
     def __init__(self, version: Tuple[int, int, int]):
         self.version = version
@@ -40,3 +40,7 @@ class AppVersion:
 
     def __repr__(self):
         return str(self)
+
+    def version(self) -> str:
+        """TODO"""
+        return f'v{str(self)}'

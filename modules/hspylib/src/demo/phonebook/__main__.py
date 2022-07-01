@@ -17,7 +17,7 @@
 import sys
 
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 from hspylib.modules.cli.vt100.vt_utils import exit_app
@@ -30,7 +30,7 @@ class Main(Application):
     """TODO"""
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, AppVersion.load(), 'A simple CLI phonebook')
+        super().__init__(app_name, Version.load(), 'A simple CLI phonebook')
 
     def _setup_arguments(self) -> None:
         pass

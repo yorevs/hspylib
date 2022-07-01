@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QApplication
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.text_tools import capitalcase
 from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import AppVersion
+from hspylib.modules.cli.application.version import Version
 
 V = TypeVar('V', bound='QWidget')
 
@@ -33,7 +33,7 @@ class QtApplication(Application):
         self,
         main_view: V,
         name: str,
-        version: AppVersion,
+        version: Version,
         description: str = None,
         usage: str = None,
         epilog: str = None,

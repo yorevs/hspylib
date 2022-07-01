@@ -17,7 +17,6 @@ from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import eol, print_unicode
 
-
 class Awesome(Enumeration):
     """
         Font awesome codes

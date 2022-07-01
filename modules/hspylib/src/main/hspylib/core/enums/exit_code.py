@@ -16,7 +16,6 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 
-
 class ExitCode(Enumeration):
     """TODO"""
 
