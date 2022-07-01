@@ -12,30 +12,22 @@
 
    Copyright 2022, HSPyLib team
 """
-
+import os
 import sys
 
 from calculator.ui.qt.views.main_qt_view import MainQtView
-from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
-from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
 
 
-class Main(Application):
-    """TODO"""
-
-    def _setup_arguments(self) -> None:
-        pass
+class Main(QtApplication):
+    """QT Calculator main class"""
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, AppVersion.load(), 'A simple calculator using Qt')
-        self.main_view = QtApplication(MainQtView)
-
-    def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
-        exit_app(self.main_view.run())
+        version = AppVersion.load(load_dir=os.getcwd())
+        super().__init__(MainQtView, app_name, version)
 
 
 if __name__ == "__main__":
     # Application entry point
-    Main('HSPyLib Qt Calculator Demo').INSTANCE.run(sys.argv[1:])
+    Main('Qt_Calculator').INSTANCE.run(sys.argv[1:])

@@ -18,4 +18,8 @@ from hspylib.core.exception.exceptions import HSBaseException
 
 
 class InvalidSchemaError(HSBaseException):
-    """Raised when an entity is not found"""
+    """Raised when an invalid schema is provided"""
+
+
+class SchemaRegistryError(HSBaseException):
+    """Raised when schema registration or API access fails"""

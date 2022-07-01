@@ -26,7 +26,7 @@ from typing import List, Optional, Tuple, Union
 
 from confluent_kafka.cimpl import Consumer
 from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError, UnsupportedSchemaError
+from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
 from hspylib.core.tools.commons import dirname, now, now_ms
 from hspylib.core.tools.preconditions import check_state
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
@@ -41,10 +41,11 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
-from kafman.__classpath__ import Classpath, get_source
+from kafman.__classpath__ import _Classpath
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.consumer.consumer_worker import ConsumerWorker
+from kafman.core.exception.exceptions import InvalidSchemaError
 from kafman.core.kafka_message import KafkaMessage
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.producer.producer_worker import ProducerWorker
@@ -63,11 +64,11 @@ from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = get_source(".version").read_text(encoding=Charset.UTF_8.value)
+    VERSION = _Classpath.get_source(".version").read_text(encoding=Charset.UTF_8.value)
 
-    SCHEMA_DIR = (Classpath.RESOURCE_DIR / "schema")
+    SCHEMA_DIR = (_Classpath.resource_dir() / "schema")
 
-    FORMS_DIR = (Classpath.RESOURCE_DIR / "forms")
+    FORMS_DIR = (_Classpath.resource_dir() / "forms")
 
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
 
@@ -123,7 +124,6 @@ class MainQtView(QtView):
 
     def _setup_ui(self) -> None:
         """Setup UI: Connect signals and Setup components"""
-        self.window.setWindowTitle(f"Kafman v{self.VERSION}")
         self.window.resize(1024, 768)
         self._setup_general_controls()
         self._setup_producer_controls()
@@ -377,7 +377,7 @@ class MainQtView(QtView):
                         self.ui.cmb_registry_schema.set_item(schema.get_schema_name())
                         self.ui.cmb_sel_schema.setCurrentText(schema.get_schema_name())
                         self._display_text(f"Schema added: \"{str(schema)}\"")
-                    except UnsupportedSchemaError as err:
+                    except InvalidSchemaError as err:
                         self._display_error(f"Unsupported schema: => {str(err)}")
                     except InvalidStateError as err:
                         self._display_error(f"Add schema failed: => {str(err)}")

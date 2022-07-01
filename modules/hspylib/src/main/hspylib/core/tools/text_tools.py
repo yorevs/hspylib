@@ -48,24 +48,37 @@ def justified_right(string: str, width: int, fill: str = ' ') -> str:
 
 
 def uppercase(string: str) -> str:
-    """TODO"""
+    """ Return a copy of the string converted to upper case. """
     return string.upper()
 
 
 def lowercase(string: str) -> str:
-    """TODO"""
+    """ Return a copy of the string converted to lower case. """
     return string.lower()
 
 
-def camelcase(string: str, separator: str = '_|-') -> str:
-    """TODO"""
+def camelcase(string: str, separator: str = ' |-|_') -> str:
+    """ Return a copy of the string converted to camel case. """
     parts = re.split(rf'{separator}+', string)
     return '_'.join([p.capitalize() for p in parts])
 
 
-def snakecase(string: str) -> str:
-    """TODO"""
-    return string.strip().lower().replace(' ', '_').replace('-', '_')
+def snakecase(string: str, separator: str = ' |-|_') -> str:
+    """ Return a copy of the string converted to snake case. """
+    parts = re.split(rf'{separator}+', string)
+    return '_'.join([p for p in parts])
+
+
+def kebabcase(string: str, separator: str = ' |-|_') -> str:
+    """ Return a copy of the string converted to kebab case. """
+    parts = re.split(rf'{separator}+', string)
+    return '-'.join([p for p in parts])
+
+
+def capitalcase(string: str, separator: str = ' |-|_', join_with: str = '') -> str:
+    """ Return a copy of the string converted to capital case. """
+    parts = re.split(rf'{separator}+', string)
+    return join_with.join([p.capitalize() for p in parts])
 
 
 def cut(string: str, index: int, separator: str = ' ') -> str:

@@ -18,7 +18,6 @@ import logging as log
 import os
 import signal
 import sys
-from abc import abstractmethod
 from datetime import datetime
 from textwrap import dedent
 from typing import Optional, Union
@@ -28,11 +27,11 @@ from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptio
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.preconditions import check_state
-from hspylib.modules.cli.application.argument_parser import HSArgumentParser
-from hspylib.modules.cli.application.arguments_builder import ArgumentsBuilder
-from hspylib.modules.cli.application.chained_arguments_builder import ChainedArgumentsBuilder
+from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
+from hspylib.modules.cli.application.argparse.arguments_builder import ArgumentsBuilder
+from hspylib.modules.cli.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder
+from hspylib.modules.cli.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.cli.application.exit_hooks import ExitHooks
-from hspylib.modules.cli.application.options_builder import OptionsBuilder
 from hspylib.modules.cli.application.version import AppVersion
 
 
@@ -84,6 +83,7 @@ class Application(metaclass=Singleton):
         self._arg_parser.add_argument(
             '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
         self._args = {}
+        self._exit_code = 0
 
         # Initialize application configs
         if os.path.exists(f'{resource_dir}'):
@@ -104,8 +104,8 @@ class Application(metaclass=Singleton):
             atexit.register(self._cleanup)
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
-            self._main(*params, **kwargs)
             log.debug('Command line arguments: %s', str(self._args))
+            self._exit_code = self._main(*params, **kwargs)
         except (InvalidOptionError, InvalidArgumentError) as err:
             self.usage(exit_code=1, no_exit=True)
             log.error('Run failed %s => %s', datetime.now(), err)
@@ -115,6 +115,8 @@ class Application(metaclass=Singleton):
             raise err  # Re-Raise the exception so upper level layers can catch
         finally:
             log.info('Application %s finished %s', self._app_name,  datetime.now())
+            if 'no_exit' not in kwargs:
+                self.exit(self._exit_code)
 
     def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
         """Display the usage message and exit with the specified http_code ( or zero as default )
@@ -133,11 +135,10 @@ class Application(metaclass=Singleton):
         """Return the application name"""
         return self._app_name
 
-    def getarg(self, arg_name: str) -> Optional[Union[str, list]]:
+    def get_arg(self, arg_name: str) -> Optional[Union[str, list]]:
         """Get the argument value named by arg_name"""
         return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
 
-    @abstractmethod
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
 
@@ -152,7 +153,7 @@ class Application(metaclass=Singleton):
     def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
-    def _main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> int:
         """Execute the application's main statements"""
 
     def _cleanup(self) -> None:

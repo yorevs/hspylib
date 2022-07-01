@@ -26,13 +26,13 @@ from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
 
-from kafman.__classpath__ import get_resource
+from kafman.__classpath__ import _Classpath
 
 
 class SettingsDialog(QObject):
     """TODO"""
 
-    DIALOG_FORM = get_resource("forms/settings_dlg.ui")
+    DIALOG_FORM = _Classpath.get_resource("forms/settings_dlg.ui")
 
     # @formatter:off
     FORBIDDEN_SETTINGS = {
@@ -44,8 +44,10 @@ class SettingsDialog(QObject):
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = get_resource("producer-settings.properties").read_text(encoding=Charset.UTF_8.value)
-        CONSUMER_SETTINGS = get_resource("consumer-settings.properties").read_text(encoding=Charset.UTF_8.value)
+        PRODUCER_SETTINGS = _Classpath.get_resource("producer-settings.properties")\
+            .read_text(encoding=Charset.UTF_8.value)
+        CONSUMER_SETTINGS = _Classpath.get_resource("consumer-settings.properties")\
+            .read_text(encoding=Charset.UTF_8.value)
 
         # @formatter:off
         PRODUCER = 'PRODUCER', PRODUCER_SETTINGS
@@ -60,8 +62,7 @@ class SettingsDialog(QObject):
 
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)
-        check_not_none(ui_class)
-        check_not_none(base_class)
+        check_not_none((ui_class, base_class))
         self.dialog, self.ui = base_class(parent), ui_class()
         self.ui.setupUi(self.dialog)
         self._settings = {}

@@ -167,6 +167,7 @@ task syncPythonPackages(type: Task) {
 task installModule(type: Task) {
   group = 'Install'
   description = "Install module in editable mode (i.e. setuptools 'develop mode')"
+  dependsOn requirements
   doLast {
     fileTree("$sourceRoot").matching {
       include "**/setup.py"

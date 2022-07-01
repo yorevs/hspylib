@@ -103,7 +103,7 @@ class MenuInput:
         if ret_val == Keyboard.VK_ENTER:
             form_fields = self.FormFields
             for field in self.all_fields:
-                att_name = f"{prefix or ''}{snakecase(field.label)}"
+                att_name = f"{prefix or ''}{snakecase(field.label.lower())}"
                 setattr(form_fields, att_name, field.value)
             return form_fields
 

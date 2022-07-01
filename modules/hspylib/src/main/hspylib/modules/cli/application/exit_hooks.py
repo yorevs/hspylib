@@ -24,13 +24,16 @@ class ExitHooks:
         self.exception = None
 
     def hook(self) -> None:
+        """TODO"""
         self._orig_exit = sys.exit
         sys.exit = self.exit
         sys.excepthook = self.exc_handler
 
     def exit(self, code=0) -> None:
+        """TODO"""
         self.exit_code = code
         self._orig_exit(code)
 
     def exc_handler(self, exc_type, exc, *args) -> None:  # pylint: disable=unused-argument
+        """TODO"""
         self.exception = exc
