@@ -15,7 +15,7 @@
 """
 import sys
 
-from hspylib.__classpath__ import Classpath, get_source
+from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.app_extension import AppExtension
 from hspylib.addons.appman.app_type import AppType
 from hspylib.addons.appman.appman import AppManager
@@ -30,10 +30,10 @@ class Main(Application):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
-    VERSION_DIR = Classpath.SOURCE_ROOT
+    VERSION_DIR = _Classpath.source_root()
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
@@ -69,22 +69,23 @@ class Main(Application):
                 .add_argument('widget-args', "the widget's arguments (if applicable)", nargs='*') \
             # @formatter:on
 
-    def _main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> int:
         """Main entry point handler"""
         self._exec_application()
+        return 0
 
     def _exec_application(self) -> None:
         """Execute the application"""
-        app = self.getarg('application')
+        app = self.get_arg('application')
         if app == 'appman':
             addon = AppManager(self)
-            app_type = self.getarg('app-type')
+            app_type = self.get_arg('app-type')
             if app_type:
-                app_ext = self.getarg('app-ext')
+                app_ext = self.get_arg('app-ext')
                 addon.create(
-                    self.getarg('app-name'), AppType.of_value(app_type),
+                    self.get_arg('app-name'), AppType.of_value(app_type),
                     list(map(AppExtension.value_of, app_ext)),
-                    self.getarg('dest-dir') or run_dir())
+                        self.get_arg('dest-dir') or run_dir())
             else:
                 args = addon.prompt()
                 if args:
@@ -99,9 +100,9 @@ class Main(Application):
                         args.dest_dir or run_dir())
         elif app == 'widgets':
             addon = WidgetManager(self)
-            widget_name = self.getarg('widget-name')
+            widget_name = self.get_arg('widget-name')
             if widget_name:
-                widget_args = self.getarg('widget-args')
+                widget_args = self.get_arg('widget-args')
                 addon.execute(widget_name, widget_args)
             else:
                 addon.dashboard()

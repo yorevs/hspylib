@@ -23,7 +23,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-from cfman.__classpath__ import Classpath, get_source
+from cfman.__classpath__ import _Classpath
 from cfman.core.cf_manager import CFManager
 
 log.captureWarnings(True)
@@ -33,10 +33,10 @@ class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
-    VERSION_DIR = Classpath.SOURCE_ROOT
+    VERSION_DIR = _Classpath.source_root()
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
@@ -56,12 +56,12 @@ class Main(Application):
             'the file containing the CF API endpoint entries. If not provided, '
             '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
 
-    def _main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> int:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(
-            self.getarg('api'), self.getarg('org'), self.getarg('space'),
-            self.getarg('username'), self.getarg('password'),
-            self.getarg('endpoints') or os.getenv('HOME', os.getcwd()) + '/.cfman_endpoints.txt'
+            self.get_arg('api'), self.get_arg('org'), self.get_arg('space'),
+            self.get_arg('username'), self.get_arg('password'),
+            self.get_arg('endpoints') or os.getenv('HOME', os.getcwd()) + '/.cfman_endpoints.txt'
         )
         log.info(dedent(f'''
         {self._app_name} v{self._app_version}
@@ -70,6 +70,7 @@ class Main(Application):
                 STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         '''))
         self._exec_application()
+        return 0
 
     def _exec_application(self) -> None:
         """Execute the application"""

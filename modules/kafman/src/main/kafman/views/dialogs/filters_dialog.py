@@ -19,13 +19,14 @@ import string
 from typing import Optional, Union
 
 from hspylib.core.tools.collection_filter import CollectionFilter, ElementFilter, FilterConditions
+from hspylib.core.tools.preconditions import check_not_none
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
 
-from kafman.__classpath__ import get_resource
+from kafman.__classpath__ import _Classpath
 
 
 class FiltersDialog(QObject):
@@ -33,12 +34,12 @@ class FiltersDialog(QObject):
 
     filtersChanged = pyqtSignal(str)
 
-    DIALOG_FORM = get_resource("forms/filters_dlg.ui")
+    DIALOG_FORM = _Classpath.get_resource("forms/filters_dlg.ui")
 
     def __init__(self, parent: QWidget, filters: CollectionFilter):
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)
-        assert ui_class is not None and base_class is not None
+        check_not_none((ui_class, base_class))
         self.dialog, self.ui = base_class(parent), ui_class()
         self.ui.setupUi(self.dialog)
         self.filters = filters

@@ -37,7 +37,9 @@ class TestPreconditions(unittest.TestCase):
 
     def test_should_not_allow_none_reference(self):
         self.assertRaisesRegex(
-            TypeError, 'Precondition failed: Null reference', lambda: check_not_none(None))
+            TypeError, 'Precondition failed: <None> reference found', lambda: check_not_none(None))
+        self.assertRaisesRegex(
+            TypeError, 'Precondition failed: <None> reference found', lambda: check_not_none((10, None)))
 
     def test_should_allow_not_none_reference(self):
         self.assertTrue(check_not_none(True))

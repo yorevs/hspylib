@@ -60,39 +60,39 @@ class TestApplication(unittest.TestCase):
     def test_calling_an_app_with_correct_opts_and_args_should_not_raise_errors(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
-        app.run(params)
-        self.assertEqual('input.txt', app.getarg('input'))
-        self.assertEqual('output.txt', app.getarg('output'))
-        self.assertEqual('one', app.getarg('amount'))
-        self.assertEqual('donut', app.getarg('item'))
+        app.run(params, no_exit=True)
+        self.assertEqual('input.txt', app.get_arg('input'))
+        self.assertEqual('output.txt', app.get_arg('output'))
+        self.assertEqual('one', app.get_arg('amount'))
+        self.assertEqual('donut', app.get_arg('item'))
 
     # TC5 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_opts_should_raise_errors(self):
         app = ApplicationTest('APP-TEST')
         params = ['-g', 'input.txt', '-j', 'output.txt', 'one', 'donut']
-        self.assertRaises(argparse.ArgumentError, app.run, params)
+        self.assertRaises(argparse.ArgumentError, lambda : app.run(params, no_exit=True))
 
     # TC6 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_1(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'four', 'donut']
-        self.assertRaises(argparse.ArgumentError, app.run, params)
+        self.assertRaises(argparse.ArgumentError, lambda : app.run(params, no_exit=True))
 
     # TC7 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_2(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'pretzel']
-        self.assertRaises(argparse.ArgumentError, app.run, params)
+        self.assertRaises(argparse.ArgumentError, lambda : app.run(params, no_exit=True))
 
     # TC8 - Check options and arguments passed can be retrieved
     def test_should_be_able_to_retrieve_passed_args_and_opts(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
-        app.run(params)
-        self.assertEqual('input.txt', app.getarg('input'))
-        self.assertEqual('output.txt', app.getarg('output'))
-        self.assertEqual('one', app.getarg('amount'))
-        self.assertEqual('donut', app.getarg('item'))
+        app.run(params, no_exit=True)
+        self.assertEqual('input.txt', app.get_arg('input'))
+        self.assertEqual('output.txt', app.get_arg('output'))
+        self.assertEqual('one', app.get_arg('amount'))
+        self.assertEqual('donut', app.get_arg('item'))
 
 
 # Program entry point.

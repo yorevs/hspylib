@@ -44,9 +44,9 @@ class Main(Application):
         self._exec_application()
 
     def _exec_application(self) -> None:
-        if self.getarg('operation') == 'download':
+        if self.get_arg('operation') == 'download':
             print('Downloading')
-        elif self.getarg('operation') == 'upload':
+        elif self.get_arg('operation') == 'upload':
             print('Uploading')
 
         sysout(f'Done, running from {self._run_dir}')

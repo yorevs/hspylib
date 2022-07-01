@@ -59,12 +59,12 @@ class KeyboardInputError(HSBaseException):
     """Raised when an invalid keystroke input is provided"""
 
 
-class UnsupportedSchemaError(HSBaseException):
-    """Raised when an invalid schema is provided """
+class ResourceNotFoundError(HSBaseException):
+    """Raised when resource path is not found"""
 
 
-class SchemaRegistryError(HSBaseException):
-    """Raised when schema registration or API access fails"""
+class SourceNotFoundError(HSBaseException):
+    """Raised when source path is not found"""
 
 
 class InvalidInputError(Exception):

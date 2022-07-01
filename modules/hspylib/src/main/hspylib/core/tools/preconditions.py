@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Optional, Tuple, TypeVar
+from typing import Any, Optional, Tuple, TypeVar, Union
 
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidStateError
 
@@ -39,12 +39,16 @@ def check_state(expression: bool, error_message: str = None, *args) -> bool:
     return expression
 
 
-def check_not_none(reference: T, error_message: str = None, *args) -> T:
+def check_not_none(references: Union[T, Tuple[T]], error_message: str = None, *args) -> T:
     """Ensures that an object reference passed as a parameter to the calling method is not None."""
-    if reference is None:
+    if isinstance(references, Tuple):
+        if not all(ref is not None for ref in references):
+            raise TypeError(
+                error_message.format(*args) if error_message else 'Precondition failed: <None> reference found')
+    if references is None:
         raise TypeError(
-            error_message.format(*args) if error_message else 'Precondition failed: Null reference')
-    return reference
+            error_message.format(*args) if error_message else 'Precondition failed: <None> reference found')
+    return references
 
 
 def check_element_index(index: int, array: list, desc: str = None) -> int:

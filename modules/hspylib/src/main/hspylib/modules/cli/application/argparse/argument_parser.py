@@ -19,6 +19,7 @@ from argparse import ArgumentError, ArgumentParser
 
 
 class HSArgumentParser(ArgumentParser):
+    """TODO"""
 
     def _check_value(self, action, value):
         if action.choices is not None and value not in action.choices:

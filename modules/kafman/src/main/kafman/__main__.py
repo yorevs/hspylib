@@ -1,69 +1,41 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-   @project: HSPyLib
-   @package: hspylib.main.hspylib.addons.appman.templates
-      @file: tpl-main.py
-   @created: Tue, 1 Jun 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
-      @site: https://github.com/yorevs/hspylib
-   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2022, HSPyLib team
-"""
 import sys
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.preconditions import check_state
-from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
-from hspylib.modules.cli.vt100.vt_utils import exit_app
 from hspylib.modules.qt.qt_application import QtApplication
-from PyQt5.QtGui import QFont, QFontDatabase, QIcon
 
-from kafman.__classpath__ import Classpath, get_resource, get_source
+from kafman.__classpath__ import _Classpath
 from kafman.views.main_qt_view import MainQtView
 
 
-class Main(Application):
+class Main(QtApplication):
     """Kafman application main class"""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # Location of the .version file
-    VERSION_DIR = Classpath.SOURCE_ROOT
+    VERSION_DIR = _Classpath.source_root()
+
+    # Location of the resources dir
+    RESOURCE_DIR = _Classpath.resource_dir()
 
     # Location of the UI font
-    FONT_PATH = str(get_resource('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf'))
+    FONT_PATH = _Classpath.get_resource('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf')
 
     # Application icon
-    APP_ICON_PATH = str(get_resource('app-icon.png'))
+    APP_ICON_PATH = _Classpath.get_resource('app-icon.png')
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
-        super().__init__(app_name, version, self.DESCRIPTION.format(version))
-        self.qt_app = QtApplication(MainQtView)
-        font_id = QFontDatabase.addApplicationFont(self.FONT_PATH)
-        families = QFontDatabase.applicationFontFamilies(font_id)
-        check_state(families is not None and len(families) == 1)
-        self.qt_app.app.setFont(QFont(families[0], 14))
-        self.qt_app.app.setWindowIcon(QIcon(self.APP_ICON_PATH))
-        self.qt_app.app.setApplicationDisplayName(app_name.capitalize())
-        self.qt_app.app.setApplicationName(app_name)
-        self.qt_app.app.setApplicationVersion(str(version))
-        self.qt_app.app.setQuitOnLastWindowClosed(True)
-
-    def _setup_arguments(self) -> None:
-        """passInitialize application parameters and options"""
-
-    def _main(self, *params, **kwargs) -> None:
-        """Run the application with the command line arguments"""
-        exit_app(self.qt_app.run())
-
-    def _cleanup(self) -> None:
-        """Execute code cleanup before exiting"""
+        description = self.DESCRIPTION.format(version)
+        super().__init__(MainQtView, app_name, version, description, resource_dir=self.RESOURCE_DIR)
+        self.set_application_font(self.FONT_PATH)
+        self.set_application_icon(self.APP_ICON_PATH)
 
 
 if __name__ == "__main__":

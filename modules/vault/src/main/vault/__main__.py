@@ -67,7 +67,7 @@ class Main(Application):
                 .add_argument('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> int:
         """Run the application with the command line arguments"""
         log.info(dedent(f'''
         {self._app_name} v{self._app_version}
@@ -83,6 +83,7 @@ class Main(Application):
         signal.signal(signal.SIGABRT, self._abort)
 
         self._exec_application()
+        return 0
 
     def _cleanup(self) -> None:
         """TODO"""

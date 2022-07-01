@@ -12,6 +12,10 @@
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
 9. Accept tuples on preconditions and is_reachable
 
+## HSPYLIB-FIREBASE
+
+1. Add authorization
+
 ## HSPYLIB-VAULT
 
 1. Add vault TUI

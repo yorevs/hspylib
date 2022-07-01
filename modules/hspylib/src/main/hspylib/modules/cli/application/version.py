@@ -14,7 +14,8 @@
 """
 import logging as log
 import os
-from typing import Tuple
+from pathlib import Path
+from typing import Tuple, Union
 
 from hspylib.core.tools.commons import read_version
 
@@ -22,8 +23,8 @@ from hspylib.core.tools.commons import read_version
 class AppVersion:
 
     @staticmethod
-    def load(filename: str = '.version', load_dir: str = os.getcwd()) -> 'AppVersion':
-        filepath = f'{load_dir}/{filename}'
+    def load(filename: str = '.version', load_dir: Union[str, Path] = os.getcwd()) -> 'AppVersion':
+        filepath = f'{str(load_dir)}/{filename}'
         if not os.path.exists(filepath):
             log.warning('File "%s" does not exist. Could not fetch application version', filepath)
             return AppVersion((0, 0, 0))

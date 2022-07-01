@@ -13,9 +13,23 @@ idea {
     settings {
       rootModuleType = 'PYTHON_MODULE'
     }
+    excludeDirs += file('.idea')
+    excludeDirs += file('.gradle')
     excludeDirs += file('.vscode')
     excludeDirs += file('run-configs')
   }
+}
+
+configurations {
+    modules
+}
+
+dependencies {
+    project(':cfman')
+    project(':firebase')
+    project(':hspylib')
+    project(':kafman')
+    project(':vault')
 }
 
 subprojects {

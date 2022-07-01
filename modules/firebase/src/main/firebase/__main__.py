@@ -26,7 +26,7 @@ from hspylib.core.tools.commons import syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import AppVersion
 
-from firebase.__classpath__ import Classpath, get_source
+from firebase.__classpath__ import _Classpath
 from firebase.core.firebase import Firebase
 
 # Disable this warning because we are hitting our own database
@@ -37,13 +37,13 @@ class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
     # location of the .version file
-    VERSION_DIR = Classpath.SOURCE_ROOT
+    VERSION_DIR = _Classpath.source_root()
 
     # The resources folder
-    RESOURCE_DIR = Classpath.RESOURCE_DIR
+    RESOURCE_DIR = _Classpath.resource_dir()
 
     def __init__(self, app_name: str):
         version = AppVersion.load(load_dir=self.VERSION_DIR)
@@ -78,20 +78,19 @@ class Main(Application):
             .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> None:
+    def _main(self, *params, **kwargs) -> int:
         """Run the application with the command line arguments"""
-        log.info(dedent('''
-        {} v{}
+        log.info(dedent(f'''
+        {self._app_name} v{self._app_version}
         Settings ==============================
-                STARTED: {}
-        ''').format(
-            self._app_name, self._app_version,
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        '''))
         self._exec_application()
+        return 0
 
     def _exec_application(self) -> None:
         """Execute the specified firebase operation"""
-        op = self.getarg('operation')
+        op = self.get_arg('operation')
         if op == 'setup' or not self.firebase.is_configured():
             self.firebase.setup()
         # Already handled above
@@ -99,13 +98,13 @@ class Main(Application):
             log.debug('Operation is setup but it was already handled')
         elif op == 'upload':
             self.firebase.upload(
-                self.getarg('db_alias'),
-                self.getarg('files'),
-                self.getarg('glob'))
+                self.get_arg('db_alias'),
+                self.get_arg('files'),
+                self.get_arg('glob'))
         elif op == 'download':
             self.firebase.download(
-                self.getarg('db_alias'),
-                self.getarg('dest-dir')
+                self.get_arg('db_alias'),
+                self.get_arg('dest-dir')
             )
         else:
             syserr(f'### Unhandled operation: {op}')
