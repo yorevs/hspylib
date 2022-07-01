@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, TypeVar, Union
 
 import requests
 from requests import exceptions as ex
@@ -154,12 +154,15 @@ def patch(
 
 
 def is_reachable(
-    url: str,
+    urls: Union[str, tuple],
     timeout: Union[float, Tuple[float, float]] = 1) -> bool:
     """Check if the specified url is reachable"""
 
     try:
-        resp = fetch(url=url, method=HttpMethod.HEAD, timeout=timeout)
-        return HttpCode.OK.value <= resp.status_code.value < HttpCode.MULTIPLE_CHOICES.value
+        if isinstance(urls, Tuple):
+            return all(is_reachable(u) for u in urls)
+        else:
+            resp = fetch(url=urls, method=HttpMethod.HEAD, timeout=timeout)
+            return HttpCode.OK.value <= resp.status_code.value < HttpCode.MULTIPLE_CHOICES.value
     except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL):
         return False

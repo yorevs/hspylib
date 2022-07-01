@@ -34,7 +34,7 @@ class Main(QtApplication):
     VERSION_DIR = _Classpath.source_root()
 
     # Location of the resources dir
-    RESOURCE_DIR = _Classpath.resource_dir()
+    RESOURCE_DIR = str(_Classpath.resource_dir())
 
     # Location of the UI font
     FONT_PATH = _Classpath.get_resource('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf')

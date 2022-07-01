@@ -4,13 +4,12 @@
 
 1. Fix appman after gradle changes.
 2. Update all README.md.
-3. Check if execute SQLs, use params instead of values inside sql string.
+3. Include a form validator for minput.
 4. Improve TUI -> extra with settings and remove parameters.
-5. Include a form validator for minput.
+5. Check if execute SQLs, use params instead of values inside sql string.
 6. Add a repository for SQLite db + tests.
 7. Add a repository for Postgres db + tests.
 8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
-9. Accept tuples on preconditions and is_reachable
 
 ## HSPYLIB-FIREBASE
 
