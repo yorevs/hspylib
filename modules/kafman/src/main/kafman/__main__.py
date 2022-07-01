@@ -50,6 +50,10 @@ class Main(Application):
         check_state(families is not None and len(families) == 1)
         self.qt_app.app.setFont(QFont(families[0], 14))
         self.qt_app.app.setWindowIcon(QIcon(self.APP_ICON_PATH))
+        self.qt_app.app.setApplicationDisplayName(app_name.capitalize())
+        self.qt_app.app.setApplicationName(app_name)
+        self.qt_app.app.setApplicationVersion(str(version))
+        self.qt_app.app.setQuitOnLastWindowClosed(True)
 
     def _setup_arguments(self) -> None:
         """passInitialize application parameters and options"""

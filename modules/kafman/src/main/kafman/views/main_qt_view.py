@@ -137,7 +137,7 @@ class MainQtView(QtView):
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.lbl_status_text.set_elidable(True)
         self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
-        self.ui.tbtn_test_registry_url.clicked.connect(self._test_registry_url)
+        self.ui.tbtn_test_registry_url.clicked.connect(lambda: self._test_registry_url(pop_warn_box=True))
         self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_sel_schema.clicked.connect(self._add_schema)
         self.ui.tbtn_desel_schema.setText(FormIcons.CLEAR.value)
@@ -496,14 +496,19 @@ class MainQtView(QtView):
     def _fetch_broker_topics(self, is_producer: bool) -> None:
         """Find all topics from broker"""
         config = {
-            k: v for (k, v) in self._all_settings['consumer'].items() if k in ['bootstrap.servers', 'group.id']
+            k: v for (k, v) in self._all_settings['consumer'].items()
+            if k in [ConsumerConfig.BOOTSTRAP_SERVERS, ConsumerConfig.GROUP_ID]
         }
+        brokers = config[ConsumerConfig.BOOTSTRAP_SERVERS]
+        if not is_reachable(brokers):
+            self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box = True)
+            return
         consumer = Consumer(config)
         topics = [
             k for (k, v) in consumer.list_topics().topics.items()
-            if not k.startswith(self.KAFKA_INTERNAL_TOPICS) and not k.startswith(f"{config['group.id']}--")
+            if not k.startswith(self.KAFKA_INTERNAL_TOPICS) and not k.startswith(f"{config[ConsumerConfig.GROUP_ID]}--")
         ]
-        self._display_text(f"Retrieved {len(topics)} topics from broker: {config['bootstrap.servers']}")
+        self._display_text(f"Retrieved {len(topics)} topics from broker: {brokers}")
         consumer.close()
         for topic in topics:
             self._add_topic(topic, is_producer)
@@ -540,7 +545,7 @@ class MainQtView(QtView):
         self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
         self._registry.invalidate()
 
-    def _test_registry_url(self, skip_if_tested: bool = True) -> Optional[str]:
+    def _test_registry_url(self, skip_if_tested: bool = True, pop_warn_box: bool = False) -> Optional[str]:
         """Check is the provided schema registry url is valid or not"""
         url = self.ui.cmb_registry_url.currentText()
         if self._registry.is_valid() and skip_if_tested:
@@ -559,7 +564,7 @@ class MainQtView(QtView):
             else:
                 self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
-                self._display_error(f"Host {url} is unreachable")
+                self._display_error(f"Unable to connect to registry server: [{url}]", pop_warn_box=pop_warn_box)
         else:
             self.ui.tbtn_test_registry_url.setText(FormIcons.UNCHECK_CIRCLE.value)
             self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")

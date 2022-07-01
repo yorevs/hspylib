@@ -22,7 +22,6 @@ class ProducerConfig(ABC):
     BOOTSTRAP_SERVERS = 'bootstrap.servers'
     KEY_SERIALIZER = 'key.serializer'
     VALUE_SERIALIZER = 'value.serializer'
-    SCHEMA_REGISTRY_URL = 'schema.registry.url'
 
     @classmethod
     def required_settings(cls) -> List[str]:
