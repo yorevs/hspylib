@@ -76,7 +76,7 @@
         <number>7</number>
        </property>
        <item>
-        <widget class="QToolBox" name="tool_box">
+        <widget class="HToolBox" name="tool_box">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -389,8 +389,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>306</width>
-            <height>528</height>
+            <width>243</width>
+            <height>238</height>
            </rect>
           </property>
           <attribute name="label">
@@ -633,8 +633,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>306</width>
-            <height>528</height>
+            <width>165</width>
+            <height>74</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1550,8 +1550,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>662</width>
-                    <height>511</height>
+                    <width>100</width>
+                    <height>157</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">
@@ -1666,8 +1666,8 @@
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>558</width>
-                             <height>430</height>
+                             <width>98</width>
+                             <height>28</height>
                             </rect>
                            </property>
                           </widget>
@@ -2253,6 +2253,12 @@
    <class>FormArea</class>
    <extends>QScrollArea</extends>
    <header>kafman.views.promotions.form_area</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HToolBox</class>
+   <extends>QToolBox</extends>
+   <header>hspylib.modules.qt.promotions.htoolbox</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

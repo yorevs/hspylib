@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.83
+# hspylib v0.11.84
 #
 # Package: demo.phonebook.entity
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'Person', 
   'validator'
 ]
-__version__ = '0.11.83'
+__version__ = '0.11.84'
