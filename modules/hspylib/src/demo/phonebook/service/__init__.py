@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.83
+# hspylib v0.11.84
 #
 # Package: demo.phonebook.service
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'company_service', 
   'person_service'
 ]
-__version__ = '0.11.83'
+__version__ = '0.11.84'
