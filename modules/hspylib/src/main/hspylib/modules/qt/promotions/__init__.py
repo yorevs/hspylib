@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.86
+# hspylib v0.11.87
 #
 # Package: main.hspylib.modules.qt.promotions
 """Package initialization."""
@@ -16,4 +16,4 @@ __all__ = [
   'htableview', 
   'htoolbox'
 ]
-__version__ = '0.11.86'
+__version__ = '0.11.87'

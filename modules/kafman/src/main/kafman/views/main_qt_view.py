@@ -17,6 +17,7 @@ import atexit
 import json
 import logging as log
 import os
+import pprint
 import re
 from collections import defaultdict
 from copy import deepcopy
@@ -613,8 +614,8 @@ class MainQtView(QtView):
             self._producer.start_producer(settings, schema)
             if self._build_schema_layout():
                 self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
+            self._display_text(f'Producer settings: {pprint.pformat(settings, indent=2)}')
             self._display_text(f"Started producer. Topics: {topics}  Schema: {schema_name}", StatusColor.green)
-            log.info(f'Producer settings: {settings}')
 
         self.ui.tbtn_format_msg.setEnabled(not started)
         self.ui.tbtn_export_form.setEnabled(not started)
@@ -657,8 +658,8 @@ class MainQtView(QtView):
             self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._consumer.start_consumer(settings, schema)
             self._consumer.consume(topics)
+            self._display_text(f'Consumer settings: {pprint.pformat(settings, indent=2)}')
             self._display_text(f"Started consumer. Topics {topics}  Schema: {schema_name}", StatusColor.green, )
-            log.info(f'Consumer settings: {settings}')
 
         self.ui.cmb_cons_topics.setEnabled(started)
         self.ui.tbtn_cons_add_topics.setEnabled(started)

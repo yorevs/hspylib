@@ -1,12 +1,6 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class Addon(Enumeration):
-    """TODO"""
-    APPMAN = 'appman'
-    WIDGETS = 'widgets'
-
-
 class Extension(Enumeration):
     """TODO"""
     GRADLE = 'gradle'
