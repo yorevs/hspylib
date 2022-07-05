@@ -13,12 +13,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, List, Optional, Tuple, TypeVar, Union
+from typing import Any, List, Optional, Tuple, Union
 
 import requests
 from requests import exceptions as ex
 
-from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
@@ -162,7 +161,10 @@ def is_reachable(
         if isinstance(urls, Tuple):
             return all(is_reachable(u) for u in urls)
         else:
-            resp = fetch(url=urls, method=HttpMethod.HEAD, timeout=timeout)
-            return HttpCode.OK.value <= resp.status_code.value < HttpCode.MULTIPLE_CHOICES.value
-    except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL):
+            fetch(url=urls, method=HttpMethod.HEAD, timeout=timeout)
+            return True
+    except (ex.ConnectTimeout, ex.ReadTimeout, ex.InvalidURL) as err:
+        print(err)
         return False
+    except (ex.HTTPError, ex.ConnectionError):
+        return True

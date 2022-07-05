@@ -3,7 +3,6 @@
 ## HSPYLIB
 
 0. Safe formatting string
-1. Fix appman after gradle changes.
 2. Update all README.md.
 3. Include a form validator for minput.
 4. Improve TUI -> extra with settings and remove parameters.
@@ -23,7 +22,7 @@
 ## HSPYLIB-KAFMAN
 
 1. Implement avro schema type form builder
-   4.1. Fix array with items (example.avsc schema)
+   1.1. Fix array with items (example.avsc schema)
 2. Implement json schema type form builder
    2.1. Implement $refs
-2. Implement protobuf schema type form builder
+3. Implement protobuf schema type form builder

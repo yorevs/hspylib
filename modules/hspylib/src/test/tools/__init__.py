@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.86
+# hspylib v0.11.87
 #
 # Package: test.tools
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'test_collection_filter', 
   'test_preconditions'
 ]
-__version__ = '0.11.86'
+__version__ = '0.11.87'

@@ -17,9 +17,10 @@ import sys
 
 from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.appman import AppManager
-from hspylib.addons.appman.appman_enums import Addon, AppType, Extension
+from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.enums.charset import Charset
+from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
@@ -34,6 +35,11 @@ class Main(Application):
     # Location of the .version file
     VERSION_DIR = _Classpath.source_root()
 
+    class Addon(Enumeration):
+        """TODO"""
+        APPMAN = 'appman'
+        WIDGETS = 'widgets'
+
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
@@ -42,7 +48,7 @@ class Main(Application):
         """Initialize application parameters and options"""
         # @formatter:off
         self._with_chained_args('application', 'the HSPyLib application to run') \
-            .argument(Addon.APPMAN.value, 'app Application Manager: Create HSPyLib based python applications') \
+            .argument(self.Addon.APPMAN.value, 'app Application Manager: Create HSPyLib based python applications') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
@@ -61,7 +67,7 @@ class Main(Application):
                     '"gradle" is going to initialize you project with gradle (requires gradle). '
                     '"git" is going to initialize a git repository (requires git)',
                     nargs='*') \
-            .argument(Addon.WIDGETS.value, 'app Widgets Manager: Execute an HSPyLib widget') \
+            .argument(self.Addon.WIDGETS.value, 'app Widgets Manager: Execute an HSPyLib widget') \
                 .add_argument(
                     'widget-name',
                     'the name of the widget to be executed. If omitted, all available widgets will be '
@@ -78,7 +84,7 @@ class Main(Application):
     def _exec_application(self) -> None:
         """Execute the application"""
         app = self.get_arg('application')
-        if app == Addon.APPMAN.value:
+        if app == self.Addon.APPMAN.value:
             addon = AppManager(self)
             app_type = self.get_arg('app-type')
             if app_type:
@@ -99,7 +105,7 @@ class Main(Application):
                         args.app_name, AppType.of_value(args.app_type),
                         list(app_ext),
                         args.dest_dir or run_dir())
-        elif app == Addon.WIDGETS.value:
+        elif app == self.Addon.WIDGETS.value:
             addon = WidgetManager(self)
             widget_name = self.get_arg('widget-name')
             if widget_name:
