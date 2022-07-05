@@ -51,7 +51,7 @@ ext {
 }
 
 /* Install hspylib build tools */
-task installBuildTools {
+task installBuildTools(type: Task) {
   group = 'Install'
   description = 'Install hspylib build tools'
   doLast {
@@ -68,4 +68,23 @@ task installBuildTools {
       }
     }
   }
+}
+
+/* Run Configurations */
+task exportRunConfigurations(type: Copy) {
+  group = 'Idea'
+  description = "Export run configurations"
+  from("${rootDir}/.idea/runConfigurations") {
+    include '*.xml'
+  }
+  into "${rootDir}/run-configs/idea"
+}
+
+task importRunConfigurations(type: Copy) {
+  group = 'Idea'
+  description = "Import run configurations"
+  from("${rootDir}/run-configs/idea") {
+    include '*.xml'
+  }
+  into "${rootDir}/.idea/runConfigurations"
 }

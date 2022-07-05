@@ -48,8 +48,7 @@ class AppConfigs(metaclass=Singleton):
             self.DISPLAY_FORMAT.format(
                 str(run_dir()),
                 str(self._resource_dir),
-                str(self._app_properties).replace('\n', '\n   |-')
-                if len(self._app_properties) > 0 else ''
+                str(self._app_properties).replace('\n', '\n   |-') if len(self._app_properties) > 0 else ''
             ),
             '-=' * 40
         )

@@ -18,12 +18,14 @@ import logging as log
 import os
 import signal
 import sys
+import traceback
 from datetime import datetime
 from textwrap import dedent
 from typing import Optional, Union
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, InvalidStateError
+from hspylib.core.exception.exceptions import ApplicationError, InvalidArgumentError, InvalidOptionError, \
+    InvalidStateError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.preconditions import check_state
@@ -91,7 +93,7 @@ class Application(metaclass=Singleton):
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources')
         else:
-            log.warning('Resource dir not found. AppConfigs will not be available!')
+            log.warning(f'Resource dir \"{resource_dir or "<none>"}\" not found. AppConfigs will not be available!')
 
         # Initialize application logs
         self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"
@@ -113,6 +115,11 @@ class Application(metaclass=Singleton):
         except InvalidStateError as err:
             log.error('Execution failed %s => %s', datetime.now(), err)
             raise err  # Re-Raise the exception so upper level layers can catch
+        except Exception as err:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            traceback.print_exc(file=sys.stderr)
+            self._exit_code = exc_value
+            raise ApplicationError from err  # Re-Raise the exception so upper level layers can catch
         finally:
             log.info('Application %s finished %s', self._app_name,  datetime.now())
             if 'no_exit' not in kwargs:

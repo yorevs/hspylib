@@ -14,9 +14,11 @@
 """
 
 from enum import Enum
-from typing import Any, List
+from typing import Any, List, TypeVar
 
 from hspylib.core.tools.preconditions import check_not_none
+
+E = TypeVar('E', bound='Enumeration')
 
 
 class Enumeration(Enum):
@@ -33,21 +35,21 @@ class Enumeration(Enum):
         return list(map(lambda e: e.value, cls))
 
     @classmethod
-    def value_of(cls, name: str, ignore_case: bool = True) -> Any:
+    def value_of(cls, name: str, ignore_case: bool = True) -> E:
         """TODO"""
         if ignore_case:
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.name == name, list(cls)), None)
-        return check_not_none(found, "{} name is not a valid \"{}\"", name, cls.__name__)
+        return check_not_none(found, "\"{}\" name does not correspond to a valid \"{}\" enum", name, cls.__name__)
 
     @classmethod
-    def of_value(cls, value: Any, ignore_case: bool = False) -> Any:
+    def of_value(cls, value: Any, ignore_case: bool = False) -> E:
         if ignore_case:
             found = next(filter(lambda en: str(en.value).upper() == str(value).upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.value == value, list(cls)), None)
-        return check_not_none(found, "\"{}\" value does not correspond to a valid \"{}\"", value, cls.__name__)
+        return check_not_none(found, "\"{}\" value does not correspond to a valid \"{}\" enum", value, cls.__name__)
 
     def __str__(self):
         return str(self.value)
@@ -55,7 +57,7 @@ class Enumeration(Enum):
     def __repr__(self):
         return str(self)
 
-    def __eq__(self, other: 'Enumeration') -> bool:
+    def __eq__(self, other: E) -> bool:
         return (
             self.__class__.__qualname__ == other.__class__.__qualname__ and
             (other.name == self.name and self.value == other.value)
