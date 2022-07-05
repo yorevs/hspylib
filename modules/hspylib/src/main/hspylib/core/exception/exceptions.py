@@ -24,6 +24,10 @@ class HSBaseException(Exception):
         log.error(fmt_msg)
 
 
+class ApplicationError(HSBaseException):
+    """Raised when an entity is not found"""
+
+
 class EntityNotFoundError(HSBaseException):
     """Raised when an entity is not found"""
 

@@ -19,8 +19,7 @@ from typing import List
 
 import urllib3
 
-from hspylib.addons.appman.app_extension import AppExtension
-from hspylib.addons.appman.app_type import AppType
+from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
@@ -69,7 +68,7 @@ class AppManager(metaclass=Singleton):
         self._init_gradle_flag = False
         self._init_git_flag = False
 
-    def create(self, app_name: str, app_type: AppType, app_ext: List[AppExtension], dest_dir: str) -> None:
+    def create(self, app_name: str, app_type: AppType, app_ext: List[Extension], dest_dir: str) -> None:
         """Create the application based on the parameters"""
         sysout(f'Creating "{app_name}" at {dest_dir}')
         try:
@@ -88,13 +87,13 @@ class AppManager(metaclass=Singleton):
                 raise TypeError(f'Unsupported application type: {app_type}')
         except OSError as err:
             syserr(f'Could not create application "{app_name}"!\n  => {str(err)}')
-            self._parent_app.exit(ExitCode.FAILED)
+            self._parent_app.exit(ExitCode.FAILED.value)
 
         sysout(f"Successfully created the {app_type.value} {app_name}")
 
-    def prompt(self):
+    def prompt(self) -> MenuInput.FormFields:
         """When no input is provided, prompt the user for the info. """
-        # # @formatter:off
+        # @formatter:off
         form_fields = MenuInput.builder() \
             .field() \
                 .label('App Name') \
@@ -127,20 +126,30 @@ class AppManager(metaclass=Singleton):
         # @formatter:on
         return minput(form_fields)
 
-    def _create_app(self, app_name: str, extensions: List[AppExtension]) -> None:
+    def _create_app(self, app_name: str, extensions: List[Extension]) -> None:
         """Create a Simple HSPyLib application"""
         sysout(f'Application: {app_name}')
         self._create_base_app_struct(app_name)
-        self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main.py").read_text())
+        self._mkfile(
+            f'src/main/{self._app_name}/__main__.py',
+            (self.TEMPLATES / "main.py.tpl").read_text().replace('%APP_NAME%', self._app_name))
         self._apply_extensions(extensions, app_name)
 
-    def _create_qt_app(self, app_name: str, extensions: List[AppExtension]) -> None:
+    def _create_qt_app(self, app_name: str, extensions: List[Extension]) -> None:
         """Create an HSPyLib QT application"""
         sysout(f'QT Application: {app_name}')
         self._create_base_app_struct(app_name)
-        self._mkdir('src/main/resources/forms')
-        self._mkfile('src/main/resources/forms/main_qt_view.ui', (self.TEMPLATES / "tpl-main_qt_view.ui").read_text())
-        self._mkfile('src/main/__main__.py', (self.TEMPLATES / "tpl-main-qt.py").read_text())
+        self._mkdir(f'src/main/{self._app_name}/resources/forms')
+        self._mkfile(
+            f'src/main/{self._app_name}/resources/forms/main_qt_view.ui',
+            (self.TEMPLATES / "main_qt_view.ui.tpl").read_text())
+        self._mkdir(f'src/main/{self._app_name}/view')
+        self._mkfile(
+            f'src/main/{self._app_name}/view/main_qt_view.py',
+            (self.TEMPLATES / "main_qt_view.py.tpl").read_text().replace('%APP_NAME%', self._app_name))
+        self._mkfile(
+            f'src/main/{self._app_name}/__main__.py',
+            (self.TEMPLATES / "main_qt.py.tpl").read_text().replace('%APP_NAME%', self._app_name))
         self._apply_extensions(extensions, app_name)
 
     def _create_widget(self, app_name: str) -> None:
@@ -149,7 +158,7 @@ class AppManager(metaclass=Singleton):
         sysout(f'Widget: {widget_name}')
         self._mkfile(
             f"widget_{app_name.lower()}.py",
-            (self.TEMPLATES / "tpl-widget.py").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
+            (self.TEMPLATES / "widget.py.tpl").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
         )
 
     def _create_base_app_struct(self, app_name):
@@ -159,25 +168,26 @@ class AppManager(metaclass=Singleton):
         self._mkfile('MANIFEST.in')
         self._mkdir('src')
         self._mkdir('src/test')
-        self._mkfile('src/test/test_main.py', (self.TEMPLATES / "tpl-test_main.py").read_text())
+        self._mkfile('src/test/test_main.py', (self.TEMPLATES / "test_main.py.tpl").read_text())
         self._mkdir('src/test/resources')
         self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
-        self._mkdir('src/main')
-        self._mkfile('src/main/.version', INITIAL_REVISION)
-        self._mkfile('src/main/welcome.txt', WELCOME_MESSAGE)
-        self._mkdir('src/main/resources')
-        self._mkfile('src/main/resources/application.properties', '# Main application property file')
+        self._mkdir(f'src/main')
+        self._mkdir(f'src/main/{self._app_name}')
+        self._mkfile(f'src/main/{self._app_name}/__classpath__.py', (self.TEMPLATES / "classpath.py.tpl").read_text())
+        self._mkfile(f'src/main/{self._app_name}/.version', INITIAL_REVISION)
+        self._mkfile(f'src/main/{self._app_name}/welcome.txt', WELCOME_MESSAGE)
+        self._mkdir(f'src/main/{self._app_name}/resources')
+        self._mkfile(f'src/main/{self._app_name}/resources/application.properties', '# Main application property file')
         self._mkfile('.env', '# Type in here the environment variables your app requires')
-        self._mkfile('run.sh', (self.TEMPLATES / "tpl-run.sh").read_text())
-        os.chmod(f'{self._app_dir}/run.sh', 0o755)
+        self._mkfile('run.sh', (self.TEMPLATES / "run.sh.tpl").read_text().replace('%APP_NAME%', self._app_name))
 
-    def _apply_extensions(self, extensions: List[AppExtension], app_name: str):
+    def _apply_extensions(self, extensions: List[Extension], app_name: str):
         """Apply the selected extensions to the app"""
         result = True
-        if AppExtension.GRADLE in extensions:
+        if Extension.GRADLE in extensions:
             sysout('Applying gradle extensions')
             result = self._init_gradle(app_name)
-        if result and AppExtension.GIT in extensions:
+        if result and Extension.GIT in extensions:
             sysout('Initializing git repository')
             self._init_git()
 
@@ -212,27 +222,28 @@ class AppManager(metaclass=Singleton):
             sysout('Downloading gradle extensions ...')
             self._download_ext('badges.gradle')
             self._download_ext('build-info.gradle')
+            self._download_ext('dependencies.gradle')
+            self._download_ext('docgen.gradle')
             self._download_ext('docker.gradle')
-            self._download_ext('oracle.gradle')
             self._download_ext('pypi-publish.gradle')
             self._download_ext('python.gradle')
             sysout('Creating gradle files')
-            self._mkfile('gradle.properties', self.GRADLE_PROPS.format(
-                self._app_name, INITIAL_REVISION).strip())
             self._mkfile(
-                'build.gradle', (self.TEMPLATES / "tpl-build.gradle").read_text()
-                    .replace('%APP_NAME%', self._app_name))
-            self._mkfile('gradle/dependencies.gradle', (self.TEMPLATES / "tpl-dependencies.gradle").read_text())
+                'gradle.properties',
+                self.GRADLE_PROPS.format(self._app_name, INITIAL_REVISION).strip())
+            self._mkfile(
+                'build.gradle',
+                (self.TEMPLATES / "build.gradle.tpl").read_text().replace('%APP_NAME%', self._app_name))
+            self._mkfile('dependencies.hspd', (self.TEMPLATES / "dependencies.hspd.tpl").read_text())
             sysout('Building gradle project, please wait ...')
-            output, exit_code = Terminal.shell_exec(
-                './gradlew buildOnly', cwd=self._app_dir)
+            output, exit_code = Terminal.shell_exec('./gradlew buildOnly', cwd=self._app_dir)
             sysout(f'Gradle execution result: {output}')
 
         return exit_code == ExitCode.SUCCESS
 
     def _init_git(self) -> bool:
         """Initialize a git repository for the project"""
-        self._mkfile('.gitignore', (self.TEMPLATES / "tpl.gitignore").read_text())
+        self._mkfile('.gitignore', (self.TEMPLATES / "gitignore.tpl").read_text())
         sysout('Initializing git repository')
         output, exit_code = Terminal.shell_exec(
             'git init', cwd=self._app_dir)

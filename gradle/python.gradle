@@ -95,7 +95,7 @@ task compilePython(type: Task) {
   description = 'Compile all python files from sourceRoot'
   doLast {
     println "Compiling Python files from $project.name \n\t $sourceRoot"
-    fileTree("$sourceRoot").matching {
+    fileTree("${sourceRoot}").matching {
       include "**/*.py"
       exclude "**/__init__.py"
     }.each { File file ->

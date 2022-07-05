@@ -15,16 +15,19 @@
 import sys
 
 from calculator.ui.qt.views.main_qt_view import MainQtView
+from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
+
+HERE = str(get_path(__file__))
 
 class Main(QtApplication):
     """QT Calculator main class"""
 
     def __init__(self, app_name: str):
-        version = Version.load()
-        super().__init__(MainQtView, app_name, version)
+        version = Version.load(load_dir=HERE)
+        super().__init__(MainQtView, app_name, version, resource_dir=f'{HERE}/resources')
 
 
 if __name__ == "__main__":

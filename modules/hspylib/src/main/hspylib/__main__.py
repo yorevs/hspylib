@@ -16,9 +16,8 @@
 import sys
 
 from hspylib.__classpath__ import _Classpath
-from hspylib.addons.appman.app_extension import AppExtension
-from hspylib.addons.appman.app_type import AppType
 from hspylib.addons.appman.appman import AppManager
+from hspylib.addons.appman.appman_enums import Addon, AppType, Extension
 from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, syserr
@@ -32,7 +31,7 @@ class Main(Application):
     # The welcome message
     DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
-    # location of the .version file
+    # Location of the .version file
     VERSION_DIR = _Classpath.source_root()
 
     def __init__(self, app_name: str):
@@ -43,7 +42,7 @@ class Main(Application):
         """Initialize application parameters and options"""
         # @formatter:off
         self._with_chained_args('application', 'the HSPyLib application to run') \
-            .argument('appman', 'app Application Manager: Create HSPyLib based python applications') \
+            .argument(Addon.APPMAN.value, 'app Application Manager: Create HSPyLib based python applications') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
@@ -53,14 +52,16 @@ class Main(Application):
                     'the application name', nargs='?') \
                 .add_argument(
                     'app-type',
-                    'the application type. Appman is going to scaffold a basic app based on this type',
-                    choices=['app', 'qt-app', 'widget'], nargs='?') \
+                    'the application type. Appman is going to scaffold a basic application based on the app type',
+                    choices=[
+                        AppType.APP.value, AppType.QT_APP.value, AppType.WIDGET.value
+                    ], nargs='?') \
                 .add_argument(
                     'app-ext',
                     '"gradle" is going to initialize you project with gradle (requires gradle). '
                     '"git" is going to initialize a git repository (requires git)',
-                    choices=['git', 'gradle'], nargs='?') \
-            .argument('widgets', 'app Widgets Manager: Execute an HSPyLib widget') \
+                    nargs='*') \
+            .argument(Addon.WIDGETS.value, 'app Widgets Manager: Execute an HSPyLib widget') \
                 .add_argument(
                     'widget-name',
                     'the name of the widget to be executed. If omitted, all available widgets will be '
@@ -77,28 +78,28 @@ class Main(Application):
     def _exec_application(self) -> None:
         """Execute the application"""
         app = self.get_arg('application')
-        if app == 'appman':
+        if app == Addon.APPMAN.value:
             addon = AppManager(self)
             app_type = self.get_arg('app-type')
             if app_type:
                 app_ext = self.get_arg('app-ext')
                 addon.create(
                     self.get_arg('app-name'), AppType.of_value(app_type),
-                    list(map(AppExtension.value_of, app_ext)),
+                    list(map(Extension.value_of, app_ext)) if app_ext else [],
                         self.get_arg('dest-dir') or run_dir())
             else:
                 args = addon.prompt()
                 if args:
                     app_ext = []
                     if args.initialize_gradle:
-                        app_ext.append('gradle')
+                        app_ext.append(Extension.GRADLE)
                     if args.initialize_git:
-                        app_ext.append('git')
+                        app_ext.append(Extension.GIT)
                     addon.create(
                         args.app_name, AppType.of_value(args.app_type),
-                        list(map(AppExtension.value_of, app_ext)),
+                        list(app_ext),
                         args.dest_dir or run_dir())
-        elif app == 'widgets':
+        elif app == Addon.WIDGETS.value:
             addon = WidgetManager(self)
             widget_name = self.get_arg('widget-name')
             if widget_name:

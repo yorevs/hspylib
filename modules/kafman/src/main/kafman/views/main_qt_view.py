@@ -68,7 +68,7 @@ class MainQtView(QtView):
 
     SCHEMA_DIR = (_Classpath.resource_dir() / "schema")
 
-    FORMS_DIR = (_Classpath.resource_dir() / "forms")
+    FORMS_DIR = str(_Classpath.resource_dir() / "forms")
 
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
 

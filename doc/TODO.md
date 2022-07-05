@@ -2,6 +2,7 @@
 
 ## HSPYLIB
 
+0. Safe formatting string
 1. Fix appman after gradle changes.
 2. Update all README.md.
 3. Include a form validator for minput.

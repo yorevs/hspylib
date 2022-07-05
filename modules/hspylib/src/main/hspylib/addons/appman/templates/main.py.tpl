@@ -1,24 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-   TODO Purpose of the file
-   @project: HSPyLib
-   main.addons.appman.templates
-      @file: tpl-main.py
-   @created: Tue, 1 Jun 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
-      @site: https://github.com/yorevs/hspylib
-   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
-
-   Copyright 2022, HSPyLib team
-"""
-
 import sys
 
+from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
+
+from %APP_NAME%.__classpath__ import _Classpath
 
 HERE = get_path(__file__)
 
@@ -27,14 +17,17 @@ class Main(Application):
     """TODO"""
 
     # The welcome message
-    DESCRIPTION = (HERE / "welcome.txt").read_text()
+    DESCRIPTION = (HERE / "welcome.txt").read_text(encoding=Charset.UTF_8.value)
 
-    # location of the .version file
-    VERSION_DIR = str(HERE)
+    # Location of the .version file
+    VERSION_DIR = _Classpath.source_root()
+
+    # Location of the resource directory
+    RESOURCE_DIR = _Classpath.resource_dir()
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
-        super().__init__(app_name, version, self.DESCRIPTION.format(version))
+        super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
 
     def _setup_parameters(self, *params, **kwargs) -> None:
         """Initialize application parameters and options"""

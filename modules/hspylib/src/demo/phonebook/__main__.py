@@ -16,6 +16,7 @@
 
 import sys
 
+from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
@@ -26,20 +27,20 @@ from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
 
+HERE = str(get_path(__file__))
+
 class Main(Application):
     """TODO"""
 
     def __init__(self, app_name: str):
-        super().__init__(app_name, Version.load(), 'A simple CLI phonebook')
-
-    def _setup_arguments(self) -> None:
-        pass
+        version = Version.load(load_dir=HERE)
+        super().__init__(app_name, version, 'A simple CLI phonebook', resource_dir=f'{HERE}/resources')
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
         # @formatter:off
         main_menu = MenuFactory \
-            .create(menu_title='HSPYLIB Demo Phonebook') \
+            .create(menu_title=self._app_name) \
                 .with_option('Exit').on_trigger(lambda t: exit_app(0)) \
                 .with_option('Create').on_trigger(lambda x: create_menu) \
                 .with_option('Edit').on_trigger(lambda x: edit_menu) \
@@ -72,4 +73,4 @@ class Main(Application):
 # Application entry point
 if __name__ == "__main__":
     # Application entry point
-    Main('HSPyLib Phonebook Demo').INSTANCE.run(sys.argv[1:])
+    Main('HSPyLib Phonebook - Demo').INSTANCE.run(sys.argv[1:])
