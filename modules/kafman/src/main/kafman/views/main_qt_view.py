@@ -147,11 +147,10 @@ class MainQtView(QtView):
         self.ui.tbtn_del_schema.released.connect(self.ui.cmb_sel_schema.del_item)
         self.ui.cmb_registry_url.lineEdit().editingFinished.connect(self._invalidate_registry_url)
         self.ui.cmb_sel_schema.currentTextChanged.connect(self._change_schema)
-        self.ui.cmb_registry_url.lineEdit().setPlaceholderText("Type the registry url")
-        self.ui.tbtn_registry_delete.setText(FormIcons.DESELECT.value)
-        self.ui.tbtn_registry_delete.clicked.connect(self._deregister_subject)
+        self.ui.cmb_registry_url.lineEdit().setPlaceholderText("The registry server url")
         self.ui.tbtn_registry_refresh.setText(FormIcons.REFRESH.value)
         self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
+        self.ui.tbl_registry.add_custom_menu_action('Deregister subjects', self._deregister_subject, True)
         self.ui.txt_sel_schema.set_clearable(False)
         self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
 
@@ -344,7 +343,7 @@ class MainQtView(QtView):
         self.ui.tbtn_format_msg.setStyleSheet("QToolButton {}")
 
     def _validate_schema_form(self):
-        """TODO"""
+        """Validate current schema form against the loaded schema"""
         schema = self._schema()
         try:
             json_form = json.loads(self.ui.scr_schema_fields.values())
@@ -373,6 +372,7 @@ class MainQtView(QtView):
                 if registry_url:
                     try:
                         schema = SchemaFactory.create_schema(schema_file, registry_url)
+                        self._registry.register(schema.get_schema_name(), schema.get_content_text())
                         self._all_schemas[schema.get_schema_name()] = schema
                         self.ui.cmb_sel_schema.set_item(schema.get_schema_name())
                         self.ui.cmb_registry_schema.set_item(schema.get_schema_name())
@@ -557,11 +557,6 @@ class MainQtView(QtView):
                 self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #28C941;}")
                 self._display_text(f"Host {url} succeeded", StatusColor.green)
-                self._registry.fetch_server_info()
-                self._display_text(
-                    f"[Registry] Supported schema types: {self._registry.get_schema_types()}", StatusColor.purple)
-                self._display_text(
-                    f"[Registry] Existing subjects: {self._registry.get_subjects()}", StatusColor.purple)
             else:
                 self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
@@ -738,15 +733,20 @@ class MainQtView(QtView):
         self._console_print(text, StatusColor.orange)
         self._stats.report_consumed()
 
-    def _refresh_registry_subjects(self):
+    def _refresh_registry_subjects(self) -> None:
         """Refresh all schema registry server subjects"""
         if self._registry.is_valid():
             if not self.ui.tbl_registry.model():
                 HTableModel(self.ui.tbl_registry, RegistrySubject)
             else:
                 self.ui.tbl_registry.model().clear()
-            subjects = self._registry.fetch_subjects_info()
-            self.ui.tbl_registry.model().push_data(subjects)
+            schema_types, subjects = self._registry.fetch_server_info()
+            self._display_text(
+                f"[Registry] Supported schema types: {schema_types}", StatusColor.purple)
+            self._display_text(
+                f"[Registry] Existing subjects: {subjects}", StatusColor.purple)
+            versions = self._registry.fetch_subject_versions()
+            self.ui.tbl_registry.model().push_data(versions)
 
     def _deregister_subject(self):
         """Deregister the schema from the registry server"""

@@ -14,11 +14,12 @@
 
 import json
 import logging as log
-from typing import List, Optional
+from typing import List, Optional, Tuple, Dict, Any
 
 from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.preconditions import check_not_none, check_state
-from hspylib.modules.fetch.fetch import delete, get, is_reachable
+from hspylib.modules.fetch.fetch import is_reachable, fetch
 from hspylib.modules.fetch.http_response import HttpResponse
 from requests import exceptions as ex
 
@@ -64,15 +65,28 @@ class SchemaRegistry:
         """Return the subjects currently registered at the server"""
         return self._subjects
 
+    def register(self, subject: str, schema_content: str) -> None:
+        """Register a new version of a schema under the registry subject"""
+        # Invoke post subject
+        self._make_request(
+            url=f"{self._url}/subjects/{subject}/versions",
+            method=HttpMethod.POST,
+            headers=[{"Content-Type": "application/vnd.schemaregistry.v1+json"}],
+            body='{"schema": "' + schema_content.replace('"', '\\"') + '"}')
+        self._subjects.append(subject)
+
     def deregister(self, subjects: List[RegistrySubject]) -> None:
         """Deregister the list of subjects from the registry server"""
         for subject in subjects:
             # Invoke delete subject
-            _ = delete(url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}")
+            self._make_request(
+                url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}",
+                method=HttpMethod.DELETE)
             self._subjects.remove(subject.subject)
 
-    def fetch_server_info(self) -> None:
+    def fetch_server_info(self) -> Tuple[str, Optional[str]]:
         """Fetch information about the selected schema registry server"""
+
         # Fetch server supported schema types
         response = self._make_request(url=f"{self._url}/schemas/types", expected_codes=[HttpCode.OK, HttpCode.NOT_FOUND])
         self._schema_types = response.body
@@ -80,7 +94,9 @@ class SchemaRegistry:
         response = self._make_request(url=f"{self._url}/subjects")
         self._subjects = json.loads(response.body)
 
-    def fetch_subjects_info(self) -> List[RegistrySubject]:
+        return self._schema_types, self._subjects
+
+    def fetch_subject_versions(self) -> List[RegistrySubject]:
         """Fetch information about the schema registry existing subjects"""
         subjects = []
         if self._subjects:
@@ -105,14 +121,21 @@ class SchemaRegistry:
 
         return subjects
 
-    def _make_request(self, url: str, expected_codes: List[HttpCode] = None) -> HttpResponse:
+    def _make_request(
+        self,
+        url: str,
+        method: HttpMethod = HttpMethod.GET,
+        headers: List[Dict[str, str]] = None,
+        body: Optional[Any] = None,
+        expected_codes: List[HttpCode] = None) -> HttpResponse:
         """Make a request from the registry server"""
+
         if self._valid:
             try:
                 if not expected_codes:
                     expected_codes = [HttpCode.OK]
                 log.debug("Making request to: %s and expecting codes: %s", url, str(expected_codes))
-                response = get(url=url)
+                response = fetch(url=url, method=method, headers=headers, body=body)
                 check_not_none(response)
                 if response.status_code not in expected_codes:
                     raise SchemaRegistryError(

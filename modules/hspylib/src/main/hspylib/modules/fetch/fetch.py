@@ -13,10 +13,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union, Dict
 
 import requests
 from requests import exceptions as ex
+from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
@@ -26,7 +27,7 @@ from hspylib.modules.fetch.http_response import HttpResponse
 def fetch(
     url: str,
     method: HttpMethod = HttpMethod.GET,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     body: Optional[Any] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
@@ -43,13 +44,17 @@ def fetch(
     url = url if url and url.startswith("http") else f'http://{url}'
     if not silent:
         sysout(f"Fetching: "
-               f"method={method} table_headers={headers if headers else '[]'} "
+               f"method={method} headers={headers if headers else '[]'} "
                f"body={body if body else '{}'} url={url} ...")
+
+    all_headers = {}
+    if headers:
+        list(map(lambda e: all_headers.update(e), headers))
 
     response = requests.request(
         url=url,
         method=method.name,
-        headers=headers,
+        headers=all_headers,
         data=body,
         timeout=timeout,
         verify=False)
@@ -59,7 +64,7 @@ def fetch(
 
 def head(
     url: str,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """Do HEAD request and according to parameters."""
@@ -74,7 +79,7 @@ def head(
 
 def get(
     url: str,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """Do GET request and according to parameters."""
@@ -88,7 +93,7 @@ def get(
 
 def delete(
     url: str,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """Do DELETE request and according to parameters."""
@@ -104,7 +109,7 @@ def delete(
 def post(
     url: str,
     body=None,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """Do POST request and according to parameters."""
@@ -121,7 +126,7 @@ def post(
 def put(
     url: str,
     body=None,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """Do PUT request and according to parameters."""
@@ -138,7 +143,7 @@ def put(
 def patch(
     url: str,
     body=None,
-    headers: List[str] = None,
+    headers: List[Dict[str, str]] = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """Do PATCH request and according to parameters."""
