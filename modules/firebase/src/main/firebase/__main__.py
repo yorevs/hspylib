@@ -43,7 +43,7 @@ class Main(Application):
     VERSION_DIR = _Classpath.source_root()
 
     # The resources folder
-    RESOURCE_DIR = _Classpath.resource_dir()
+    RESOURCE_DIR = str(_Classpath.resource_dir())
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
