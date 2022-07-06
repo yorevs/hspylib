@@ -32,7 +32,7 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 class TestFetch(unittest.TestCase):
 
     def setUp(self):
-        resource_dir = '{}/resources'.format(TEST_DIR)
+        resource_dir = f'{TEST_DIR}/resources'
         os.environ['ACTIVE_PROFILE'] = "test"
         self.configs = AppConfigs(resource_dir=resource_dir)
         self.mock_server = MockServer('localhost', MockServer.RANDOM_PORT)
@@ -47,7 +47,7 @@ class TestFetch(unittest.TestCase):
         self.mock_server \
             .when_request(HttpMethod.GET, '/get') \
             .then_return(code=expected_code, body=expected_resp)
-        resp = get('localhost:{}/get'.format(self.mock_server.port))
+        resp = get(f'localhost:{self.mock_server.port}/get')
         self.assertEqual(expected_code, resp.status_code)
         self.assertIsNotNone(resp, "Response is none")
         self.assertEqual(expected_resp, resp.body)
@@ -57,7 +57,7 @@ class TestFetch(unittest.TestCase):
         self.mock_server \
             .when_request(HttpMethod.HEAD, '/head') \
             .then_return(code=expected_code)
-        resp = head('localhost:{}/head'.format(self.mock_server.port))
+        resp = head(f'localhost:{self.mock_server.port}/head')
         self.assertEqual(expected_code, resp.status_code)
         self.assertIsNotNone(resp, "Response is none")
 
@@ -67,7 +67,24 @@ class TestFetch(unittest.TestCase):
         self.mock_server \
             .when_request(HttpMethod.POST, '/post') \
             .then_return_with_received_body(code=expected_code)
-        resp = post('localhost:{}/post'.format(self.mock_server.port), expected_resp)
+        resp = post(f'localhost:{self.mock_server.port}/post', expected_resp)
+        self.assertEqual(expected_code, resp.status_code)
+        self.assertIsNotNone(resp, "Response is none")
+        self.assertEqual(expected_resp, resp.body)
+
+    def test_should_post_to_server_using_headers(self):
+        expected_code = HttpCode.CREATED
+        expected_resp = '{"name":"Mock Server"}'
+        self.mock_server \
+            .when_request(HttpMethod.POST, '/post') \
+            .then_return_with_received_body(code=expected_code)
+        resp = post(
+            f'localhost:{self.mock_server.port}/post',
+            expected_resp,
+            headers=[
+                {'content-type': 'text/plain'},
+                {'accept': '*/*'},
+            ])
         self.assertEqual(expected_code, resp.status_code)
         self.assertIsNotNone(resp, "Response is none")
         self.assertEqual(expected_resp, resp.body)
@@ -78,7 +95,7 @@ class TestFetch(unittest.TestCase):
         self.mock_server \
             .when_request(HttpMethod.PUT, '/put') \
             .then_return_with_received_body(code=expected_code)
-        resp = put('localhost:{}/put'.format(self.mock_server.port), expected_resp)
+        resp = put(f'localhost:{self.mock_server.port}/put', expected_resp)
         self.assertEqual(expected_code, resp.status_code)
         self.assertIsNotNone(resp, "Response is none")
         self.assertEqual(expected_resp, resp.body)
@@ -89,7 +106,7 @@ class TestFetch(unittest.TestCase):
         self.mock_server \
             .when_request(HttpMethod.PATCH, '/patch') \
             .then_return_with_received_body(code=expected_code)
-        resp = patch('localhost:{}/patch'.format(self.mock_server.port), expected_resp)
+        resp = patch(f'localhost:{self.mock_server.port}/patch', expected_resp)
         self.assertEqual(expected_code, resp.status_code)
         self.assertIsNotNone(resp, "Response is none")
         self.assertEqual(expected_resp, resp.body)
@@ -99,7 +116,7 @@ class TestFetch(unittest.TestCase):
         self.mock_server \
             .when_request(HttpMethod.DELETE, '/delete') \
             .then_return(code=expected_code)
-        resp = delete('localhost:{}/delete'.format(self.mock_server.port))
+        resp = delete(f'localhost:{self.mock_server.port}/delete')
         self.assertEqual(expected_code, resp.status_code)
         self.assertIsNotNone(resp, "Response is none")
         self.assertTrue(resp.body == '', "Response is not empty")
@@ -116,6 +133,8 @@ class TestFetch(unittest.TestCase):
 
     def test_should_be_reachable(self):
         self.assertTrue(is_reachable('example.com'))
+        self.assertTrue(is_reachable('http://example.com'))
+        self.assertTrue(is_reachable('https://example.com'))
 
     def test_should_not_be_reachable(self):
         self.assertFalse(is_reachable('example.com:9999'))

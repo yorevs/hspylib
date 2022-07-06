@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.87
+# hspylib v0.11.88
 #
 # Package: main.hspylib.core.crud.file
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'file_repository', 
   'file_storage'
 ]
-__version__ = '0.11.87'
+__version__ = '0.11.88'

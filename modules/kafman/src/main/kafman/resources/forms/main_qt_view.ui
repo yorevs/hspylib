@@ -389,8 +389,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>243</width>
-            <height>238</height>
+            <width>306</width>
+            <height>528</height>
            </rect>
           </property>
           <attribute name="label">
@@ -633,8 +633,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>165</width>
-            <height>74</height>
+            <width>306</width>
+            <height>528</height>
            </rect>
           </property>
           <attribute name="label">
@@ -887,7 +887,7 @@
           <enum>QTabWidget::Triangular</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tab_producer">
           <attribute name="title">
@@ -1550,8 +1550,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>100</width>
-                    <height>157</height>
+                    <width>662</width>
+                    <height>511</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">
@@ -1666,8 +1666,8 @@
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>98</width>
-                             <height>28</height>
+                             <width>558</width>
+                             <height>430</height>
                             </rect>
                            </property>
                           </widget>
@@ -2044,8 +2044,8 @@
            </property>
            <item>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="3">
-              <widget class="QToolButton" name="tbtn_registry_delete">
+             <item row="0" column="0">
+              <widget class="QToolButton" name="tbtn_registry_refresh">
                <property name="minimumSize">
                 <size>
                  <width>30</width>
@@ -2059,10 +2059,10 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Deregister selected schema</string>
+                <string>Refresh schema registry subjects</string>
                </property>
                <property name="text">
-                <string>-</string>
+                <string>C</string>
                </property>
                <property name="iconSize">
                 <size>
@@ -2095,34 +2095,6 @@
               <widget class="QLabel" name="label_10">
                <property name="text">
                 <string>Schema:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QToolButton" name="tbtn_registry_refresh">
-               <property name="minimumSize">
-                <size>
-                 <width>30</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>30</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Refresh schema registry subjects</string>
-               </property>
-               <property name="text">
-                <string>C</string>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>24</width>
-                 <height>24</height>
-                </size>
                </property>
               </widget>
              </item>
@@ -2296,7 +2268,6 @@
   <tabstop>txt_sel_schema</tabstop>
   <tabstop>tbtn_registry_refresh</tabstop>
   <tabstop>cmb_registry_schema</tabstop>
-  <tabstop>tbtn_registry_delete</tabstop>
   <tabstop>tbl_registry</tabstop>
   <tabstop>txt_producer</tabstop>
   <tabstop>txt_console</tabstop>

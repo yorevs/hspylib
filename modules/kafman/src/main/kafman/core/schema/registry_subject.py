@@ -11,6 +11,7 @@
 
    Copyright 2022, HSPyLib team
 """
+import json
 
 
 class RegistrySubject:
@@ -27,9 +28,14 @@ class RegistrySubject:
         self.subject = subject
         self.registry_id = registry_id
         self.version = version
-        self.schema = schema or {}
+        self.schema_dict = schema or {"type": "string"}
 
     def __str__(self):
         return f"type={self.schema_type}, subject={self.subject}, id={self.registry_id}, " \
-               f"version={self.version}  => {str(self.schema)}"
+               f"version={self.version}  => {str(self.schema_dict)}"
 
+    def __repr__(self):
+        return str(self)
+
+    def schema_content_json(self) -> str:
+        return '{"schema": ' + json.dumps(self.schema_dict, indent=1) + '}'
