@@ -96,19 +96,19 @@ class Main(Application):
 
     def _exec_application(self, ) -> None:
         """Execute the specified vault operation"""
-        op = self.getarg('operation')
+        op = self.get_arg('operation')
         try:
             if self.vault.open():
                 if op == 'add':
-                    self.vault.add(self.getarg('name'), self.getarg('hint'), self.getarg('password'))
+                    self.vault.add(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
                 elif op == 'get':
-                    self.vault.get(self.getarg('name'))
+                    self.vault.get(self.get_arg('name'))
                 elif op == 'del':
-                    self.vault.remove(self.getarg('name'))
+                    self.vault.remove(self.get_arg('name'))
                 elif op == 'upd':
-                    self.vault.update(self.getarg('name'), self.getarg('hint'), self.getarg('password'))
+                    self.vault.update(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
                 elif op == 'list':
-                    self.vault.list(self.getarg('filter'))
+                    self.vault.list(self.get_arg('filter'))
                 else:
                     syserr(f'### Invalid operation: {op}')
                     self.usage(1)
