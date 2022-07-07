@@ -1128,7 +1128,7 @@
            <item>
             <widget class="HStackedWidget" name="stk_producer_edit">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="page_txt_producer">
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1373,6 +1373,9 @@
                 <layout class="QGridLayout" name="gridLayout_11">
                  <item row="0" column="4">
                   <widget class="QToolButton" name="tbtn_text_view">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>30</width>
@@ -2007,13 +2010,13 @@
               <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderMinimumSectionSize">
-              <number>24</number>
+              <number>25</number>
              </attribute>
              <attribute name="verticalHeaderDefaultSectionSize">
-              <number>24</number>
+              <number>30</number>
              </attribute>
              <attribute name="verticalHeaderMinimumSectionSize">
-              <number>18</number>
+              <number>20</number>
              </attribute>
              <attribute name="verticalHeaderShowSortIndicator" stdset="0">
               <bool>false</bool>
@@ -2119,6 +2122,12 @@
              </property>
              <attribute name="horizontalHeaderCascadingSectionResizes">
               <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderMinimumSectionSize">
+              <number>25</number>
+             </attribute>
+             <attribute name="verticalHeaderMinimumSectionSize">
+              <number>20</number>
              </attribute>
             </widget>
            </item>
