@@ -57,6 +57,7 @@ from kafman.core.schema.plain_schema import PlainSchema
 from kafman.core.schema.registry_subject import RegistrySubject
 from kafman.core.schema.schema_factory import SchemaFactory
 from kafman.core.schema.schema_registry import SchemaRegistry
+from kafman.core.schema.schema_type import SchemaType
 from kafman.core.statistics_worker import StatisticsWorker
 from kafman.views.dialogs.filters_dialog import FiltersDialog
 from kafman.views.dialogs.settings_dialog import SettingsDialog
@@ -141,7 +142,7 @@ class MainQtView(QtView):
         self.ui.tbtn_test_registry_url.clicked.connect(lambda: self._test_registry_url(pop_warn_box=True))
         self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
         self.ui.tbtn_sel_schema.clicked.connect(self._add_schema)
-        self.ui.tbtn_desel_schema.setText(FormIcons.CLEAR.value)
+        self.ui.tbtn_desel_schema.setText(FormIcons.DESELECT.value)
         self.ui.tbtn_desel_schema.clicked.connect(self._deselect_schema)
         self.ui.tbtn_del_schema.setText(FormIcons.MINUS.value)
         self.ui.tbtn_del_schema.released.connect(self.ui.cmb_sel_schema.del_item)
@@ -152,7 +153,6 @@ class MainQtView(QtView):
         self.ui.tbtn_registry_refresh.clicked.connect(self._refresh_registry_subjects)
         self.ui.tbl_registry.add_custom_menu_action('Deregister subjects', self._deregister_subject, True)
         self.ui.txt_sel_schema.set_clearable(False)
-        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
 
     def _setup_producer_controls(self):
         """Setup producer components"""
@@ -186,6 +186,9 @@ class MainQtView(QtView):
         self.ui.tbtn_form_view.setText(DashboardIcons.FORM.value)
         self.ui.tbtn_form_view.clicked.connect(
             lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.FORM.value))
+        self.ui.tbtn_text_view.setText(DashboardIcons.CODE.value)
+        self.ui.tbtn_text_view.clicked.connect(
+            lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value))
         self.ui.tbtn_export_form.setText(DashboardIcons.EXPORT.value)
         self.ui.tbtn_export_form.clicked.connect(self._export_form)
         self.ui.tbtn_validate_form.setText(FormIcons.CHECK.value)
@@ -196,6 +199,8 @@ class MainQtView(QtView):
         self.ui.txt_producer.set_highlight_enable(True)
         self.ui.tbtn_prod_clear_on_send_txt.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_prod_clear_on_send_form.setText(FormIcons.CLEAR.value)
+        self.ui.stk_producer_edit.currentChanged.connect(self._build_schema_layout)
+        self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
 
     def _setup_consumer_controls(self):
         """Setup consumer components"""
@@ -222,9 +227,6 @@ class MainQtView(QtView):
         self.ui.lst_cons_settings.set_editable()
         self.ui.lst_cons_settings.itemChanged.connect(self._edit_setting)
         self.ui.le_cons_settings.editingFinished.connect(self._edit_setting)
-        self.ui.tbtn_text_view.setText(DashboardIcons.CODE.value)
-        self.ui.tbtn_text_view.clicked.connect(
-            lambda: self.ui.stk_producer_edit.slide_to_index(StkProducerEdit.TEXT.value))
         self.ui.tbl_consumer.add_custom_menu_action('Commit offset', self._commit_offset, True)
         HTableModel(self.ui.tbl_consumer, KafkaMessage)
         self.ui.lbl_cons_filters.setText(str(self.ui.tbl_consumer.filters()))
@@ -256,12 +258,16 @@ class MainQtView(QtView):
         return settings
 
     def _schema(self) -> KafkaSchema:
-        """Return the selected serialization schema"""
+        """Return the active serialization schema"""
         schema = self._producer.schema() if self._is_producer() else self._consumer.schema()
         if not schema:
-            sel_schema = self.ui.cmb_sel_schema.currentText()
-            schema = self._all_schemas[sel_schema] if sel_schema in self._all_schemas else PlainSchema()
+            schema = self._selected_schema()
         return schema
+
+    def _selected_schema(self):
+        """Return the selected schema"""
+        sel_schema = self.ui.cmb_sel_schema.currentText()
+        return self._all_schemas[sel_schema] if sel_schema in self._all_schemas else PlainSchema()
 
     def _messages(self) -> Union[str, List[str]]:
         """Return the selected messages or build a json message from form"""
@@ -395,18 +401,16 @@ class MainQtView(QtView):
             content = self._all_schemas[schema_name].get_content_dict()
             self.ui.tool_box.setCurrentIndex(StkTools.SCHEMAS.value)
             self.ui.txt_sel_schema.set_plain_text(json.dumps(content, indent=1))
-            self.ui.tbtn_form_view.setEnabled(True)
         else:
             self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
             self.ui.txt_sel_schema.set_plain_text('')
             self.ui.cmb_sel_schema.setCurrentIndex(-1)
-            self.ui.tbtn_form_view.setEnabled(False)
             self.ui.lbl_schema_fields.setText('Schema Fields')
 
     def _build_schema_layout(self) -> bool:
         """Build a form based on the selected schema using a grid layout"""
-        schema = self._producer.schema()
-        if schema:
+        schema = self._producer.schema() or self._selected_schema()
+        if schema and schema.get_schema_type() != SchemaType.PLAIN.value:
             try:
                 self._cleanup_schema_layout()
                 form_widget = HStackedWidget(self.ui.tab_widget)
@@ -502,7 +506,7 @@ class MainQtView(QtView):
         }
         brokers = config[ConsumerConfig.BOOTSTRAP_SERVERS]
         if not is_reachable(brokers):
-            self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box = True)
+            self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box=True)
             return
         consumer = Consumer(config)
         topics = [
@@ -591,6 +595,7 @@ class MainQtView(QtView):
             self.ui.tool_box.setCurrentIndex(StkTools.SETTINGS.value)
             self._producer.stop_producer()
             self._display_text("Production to kafka topics stopped", StatusColor.yellow)
+            self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.TEXT.value)
         else:  # Start
             topics = self._topics(True)
             if not topics:
@@ -607,21 +612,20 @@ class MainQtView(QtView):
             schema_name = f" using schema \"{str(self._schema())}\"" if self._schema() else ''
             self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._producer.start_producer(settings, schema)
-            if self._build_schema_layout():
-                self.ui.stk_producer_edit.setCurrentIndex(StkProducerEdit.FORM.value)
             self._display_text(f'Producer settings: {pprint.pformat(settings, indent=2)}')
             self._display_text(f"Started producer. Topics: {topics}  Schema: {schema_name}", StatusColor.green)
 
+        self.ui.scr_schema_fields.setEnabled(not started)
+        self.ui.cmb_prod_topics.setEnabled(started)
+        self.ui.txt_producer.setEnabled(not started)
         self.ui.tbtn_format_msg.setEnabled(not started)
         self.ui.tbtn_export_form.setEnabled(not started)
         self.ui.tbtn_validate_form.setEnabled(not started)
-        self.ui.scr_schema_fields.setEnabled(not started)
         self.ui.tbtn_produce.setEnabled(not started)
         self.ui.tbtn_prod_open_file.setEnabled(not started)
         self.ui.tbtn_prod_save_file.setEnabled(not started)
-        self.ui.txt_producer.setEnabled(not started)
-        self.ui.scr_schema_fields.setEnabled(not started)
-        self.ui.cmb_prod_topics.setEnabled(started)
+        self.ui.tbtn_text_view.setEnabled(not started)
+        self.ui.tbtn_form_view.setEnabled(not started)
         self.ui.tbtn_prod_add_topics.setEnabled(started)
         self.ui.tbtn_prod_del_topics.setEnabled(started)
         self.ui.tbtn_prod_clear_topics.setEnabled(started)
@@ -688,6 +692,7 @@ class MainQtView(QtView):
         """Display a text at the status bar (and console if required)"""
 
         message = f"<font color='{color.name() if color else 'white'}'>{message}</font>"
+        message.replace('\n', '<br/>')
         self.ui.lbl_status_text.setText(message)
         if console_print:
             self._console_print(f"-> {message}", color)

@@ -74,6 +74,7 @@ class SchemaRegistry:
             headers=[{"Content-Type": "application/vnd.schemaregistry.v1+json"}],
             body='{"schema": "' + schema_content.replace('"', '\\"') + '"}')
         self._subjects.append(subject)
+        log.debug('Schema subject successfully registered: %s', subject)
 
     def deregister(self, subjects: List[RegistrySubject]) -> None:
         """Deregister the list of subjects from the registry server"""
@@ -83,6 +84,7 @@ class SchemaRegistry:
                 url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}",
                 method=HttpMethod.DELETE)
             self._subjects.remove(subject.subject)
+        log.debug('Schema subject successfully deregistered: %s', str(subjects))
 
     def fetch_server_info(self) -> Tuple[str, Optional[str]]:
         """Fetch information about the selected schema registry server"""
