@@ -25,7 +25,7 @@ class WidgetEntry:
 
     def __init__(self, file: str, path: str):
         self.module = os.path.splitext(file)[0]
-        self.name = camelcase(self.module.replace(self.WIDGET_MODULE_PREFIX, ''))
+        self.name = camelcase(self.module.replace(self.WIDGET_MODULE_PREFIX, ''), upper=True)
         self.clazz = f"{self.WIDGET_CLASS_PREFIX}{self.name.replace('_', '')}"
         self.path = path
 

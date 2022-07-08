@@ -43,7 +43,7 @@ class WidgetManager(metaclass=Singleton):
         return \
             widget_1_name.lower() == widget_2_name.lower() \
             or widget_1_name == widget_2_name.capitalize() \
-            or widget_1_name == camelcase(widget_2_name) \
+            or widget_1_name == camelcase(widget_2_name, upper=True) \
             or widget_1_name.lower() == widget_2_name.lower().replace('_', '')
 
     def __init__(self, parent_app: Application):
@@ -56,7 +56,7 @@ class WidgetManager(metaclass=Singleton):
 
     def execute(self, widget_name: str, widget_args: List[str]) -> None:
         """Execute the specified widget"""
-        widget = self._find_widget(camelcase(widget_name))
+        widget = self._find_widget(camelcase(widget_name, upper=True))
         try:
             atexit.register(widget.cleanup)
             exit_code = widget.execute(widget_args)
