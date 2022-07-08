@@ -14,14 +14,24 @@
 """
 
 import sys
+from abc import ABC
 from typing import List, Optional
 
 from hspylib.core.tools.preconditions import check_argument
-from hspylib.core.tools.text_tools import fit_text, TextAlignment
+from hspylib.core.tools.text_tools import elide_text, justified_left, justified_center, justified_right
 
 
 class TableRenderer:
     """TODO"""
+
+    # pylint: disable=too-few-public-methods
+    class TextAlignment(ABC):
+        """
+        Table cell text justification helper.
+        """
+        LEFT = justified_left
+        CENTER = justified_center
+        RIGHT = justified_right
 
     def __init__(
         self,
@@ -33,11 +43,12 @@ class TableRenderer:
         :param table_data: table record set with the selected rows.
         :param table_caption: table caption to be displayed.
         """
+
         self.headers = table_headers
         self.rows = table_data if table_data else []
         self.caption = table_caption
-        self.header_alignment = TextAlignment.CENTER
-        self.cell_alignment = TextAlignment.LEFT
+        self.header_alignment = TableRenderer.TextAlignment.CENTER
+        self.cell_alignment = TableRenderer.TextAlignment.LEFT
         self.min_column_size = 6
         if self.rows:
             check_argument(
@@ -128,11 +139,11 @@ class TableRenderer:
 
     def _header_text(self, idx: int) -> str:
         """TODO"""
-        return fit_text(self.headers[idx], self._cell_size(idx))
+        return elide_text(self.headers[idx], self._cell_size(idx))
 
     def _cell_text(self, row: tuple, idx: int) -> str:
         """TODO"""
-        return fit_text(str(row[idx]), self._cell_size(idx))
+        return elide_text(str(row[idx]), self._cell_size(idx))
 
     def _cell_size(self, idx: int) -> int:
         """TODO"""
@@ -148,7 +159,7 @@ class TableRenderer:
 
         if self.caption:
             print(table_line, file=file)
-            print('| ' + fit_text(self.caption, len(table_line) - 4)
+            print('| ' + elide_text(self.caption, len(table_line) - 4)
                   .center(len(header_cols[0]) - 4, ' ') + ' |', file=file)
         print(table_line, file=file)
         print('\n'.join(header_cols), file=file)
