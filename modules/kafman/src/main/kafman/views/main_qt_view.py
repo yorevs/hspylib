@@ -46,7 +46,7 @@ from kafman.__classpath__ import _Classpath
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.consumer.consumer_worker import ConsumerWorker
-from kafman.core.exception.exceptions import InvalidSchemaError
+from kafman.core.exception.exceptions import InvalidSchemaError, SchemaRegistryError
 from kafman.core.kafka_message import KafkaMessage
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.producer.producer_worker import ProducerWorker
@@ -365,8 +365,9 @@ class MainQtView(QtView):
         self.ui.stk_settings.setCurrentIndex(index)
         self.ui.stk_statistics.setCurrentIndex(index)
 
-    def _add_schema(self, file_tuple: Tuple[str, str] = None) -> None:
+    def _add_schema(self, file_tuple: Tuple[str, str] = None) -> bool:
         """Select an serialization schema from the file picker dialog or from specified file"""
+        ret_val = False
         if not file_tuple:
             file_tuple = QFileDialog.getOpenFileNames(
                 self.ui.splitter_pane,
@@ -384,11 +385,14 @@ class MainQtView(QtView):
                         self.ui.cmb_registry_schema.set_item(schema.get_schema_name())
                         self.ui.cmb_sel_schema.setCurrentText(schema.get_schema_name())
                         self._display_text(f"Schema added: \"{str(schema)}\"")
+                        ret_val = True
                     except InvalidSchemaError as err:
                         self._display_error(f"Unsupported schema: => {str(err)}")
                     except InvalidStateError as err:
-                        self._display_error(f"Add schema failed: => {str(err)}")
-                        raise InvalidStateError(err) from err
+                        self._display_error(f"Unable to add schema: => {str(err)}")
+                    except SchemaRegistryError as err:
+                        self._display_error(f"Unable to register schema: => {str(err)}")
+        return ret_val
 
     def _deselect_schema(self):
         """Deselect current selected serialization schema"""

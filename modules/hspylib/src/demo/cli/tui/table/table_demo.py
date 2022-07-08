@@ -14,7 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.tools.text_tools import TextAlignment
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 if __name__ == '__main__':
     h = [
@@ -30,5 +29,6 @@ if __name__ == '__main__':
     ]
     tr = TableRenderer(h, data, 'TableRenderer example of usage')
     tr.adjust_sizes_by_largest_cell()
-    tr.set_cell_alignment(TextAlignment.CENTER)
+    tr.set_header_alignment(TableRenderer.TextAlignment.CENTER)
+    tr.set_cell_alignment(TableRenderer.TextAlignment.LEFT)
     tr.render()

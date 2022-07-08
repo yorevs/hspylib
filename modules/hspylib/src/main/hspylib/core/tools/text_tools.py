@@ -15,131 +15,121 @@
 import os
 import random
 import re
-import struct
-from abc import ABC
-from typing import Union
+from typing import Optional, Tuple, List, Any
 
-from hspylib.core.tools.commons import get_or_default, sysout
+from hspylib.core.tools.commons import get_or_default
 
 
-def fit_text(text: str, width: int) -> str:
-    """TODO"""
-    return text if len(text) <= width else text[0:width - 3] + '...'
+def elide_text(text: str, width: int, elide_with: str = '...') -> str:
+    """ Return a copy of the string eliding the text case the string is bigger than the specified length. """
+    return text if len(text) <= width else text[:width - len(elide_with)] + elide_with
 
 
-def rand_string(choices: str, length: int) -> str:
-    """TODO"""
-    return ''.join(random.choices(choices, k=length))
+def cut(text: str, field: int, separator: str = ' ') -> Tuple[Optional[str], tuple]:
+    """ Return a new string cut out from the given text. """
+    result = tuple(re.split(rf'{separator}+', text))
+    return get_or_default(result, field), result[:field]
 
 
-def justified_left(string: str, width: int, fill: str = ' ') -> str:
-    """TODO"""
-    return string.ljust(width, fill)
+def random_string(choices: List[str], length: int, weights: List[int] = None) -> str:
+    """ Return a new random string matching choices and length. """
+    return ''.join(random.choices(choices, weights or [1] * len(choices), k=length))
 
 
-def justified_center(string: str, width: int, fill: str = ' ') -> str:
-    """TODO"""
-    return string.center(width, fill)
+def justified_left(text: str, width: int, fill: str = ' ') -> str:
+    """ Return a copy of the string justified left. """
+    return text.ljust(width, fill)
 
 
-def justified_right(string: str, width: int, fill: str = ' ') -> str:
-    """TODO"""
-    return string.rjust(width, fill)
+def justified_center(text: str, width: int, fill: str = ' ') -> str:
+    """ Return a copy of the string justified center. """
+    return text.center(width, fill)
 
 
-def uppercase(string: str) -> str:
+def justified_right(text: str, width: int, fill: str = ' ') -> str:
+    """ Return a copy of the string justified right. """
+    return text.rjust(width, fill)
+
+
+def uppercase(text: str) -> str:
     """ Return a copy of the string converted to upper case. """
-    return string.upper()
+    return text.upper()
 
 
-def lowercase(string: str) -> str:
+def lowercase(text: str) -> str:
     """ Return a copy of the string converted to lower case. """
-    return string.lower()
+    return text.lower()
 
 
-def camelcase(string: str, separator: str = ' |-|_') -> str:
-    """ Return a copy of the string converted to camel case. """
-    parts = re.split(rf'{separator}+', string)
-    return '_'.join([p.capitalize() for p in parts])
+def camelcase(text: str, separator: str = ' |-|_', upper: bool = False) -> str:
+    """ Return a copy of the string converted to camel case.
+    Ref:https://en.wikipedia.org/wiki/Letter_case :: Camel case"""
+    s = re.sub(rf"({separator})+", " ", text).title().replace(" ", "")
+    fnc = getattr(s[0], 'lower' if not upper else 'upper')
+    return ''.join([fnc(), s[1:]])
 
 
-def snakecase(string: str, separator: str = ' |-|_') -> str:
-    """ Return a copy of the string converted to snake case. """
-    parts = re.split(rf'{separator}+', string)
-    return '_'.join([p for p in parts])
+def snakecase(text: str, separator: str = '-', screaming: bool = False) -> str:
+    """ Return a copy of the string converted to snake case.
+    Ref:https://en.wikipedia.org/wiki/Letter_case :: Snake case
+    """
+    s = re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', text.replace(separator, ' ')))
+    string = '_'.join(s.split())
+    fnc = getattr(string, 'lower' if not screaming else 'upper')
+    return fnc()
 
 
-def kebabcase(string: str, separator: str = ' |-|_') -> str:
-    """ Return a copy of the string converted to kebab case. """
-    parts = re.split(rf'{separator}+', string)
-    return '-'.join([p for p in parts])
+def kebabcase(text: str, separator: str = ' |-|_', train: bool = False) -> str:
+    """ Return a copy of the string converted to kebab case.
+    Ref:https://en.wikipedia.org/wiki/Letter_case :: Kebab case
+    """
+    s = re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', text.replace(separator, ' ')))
+    string = '-'.join(s.split())
+    fnc = getattr(string, 'lower' if not train else 'upper')
+    return fnc()
 
 
-def capitalcase(string: str, separator: str = ' |-|_', join_with: str = '') -> str:
-    """ Return a copy of the string converted to capital case. """
-    parts = re.split(rf'{separator}+', string)
-    return join_with.join([p.capitalize() for p in parts])
+def titlecase(text: str, separator: str = ' |-|_', skip_length: int = 0) -> str:
+    """ Return a copy of the string converted to title case.
+    Ref:https://en.wikipedia.org/wiki/Letter_case :: Title case
+    """
+    s = re.sub(rf"({separator})+", " ", text)
+    s = ' '.join([word.title() if len(word) > skip_length else word.lower() for word in s.split(' ')])
+    return s
 
 
-def cut(string: str, index: int, separator: str = ' ') -> str:
-    """TODO"""
-    result = tuple(re.split(rf'{separator}+', string))
-    return get_or_default(result, index)
+def strip_escapes(text: str) -> str:
+    """ Return a copy of the string stripping out all ansi escape 'ESC[' codes from it.
+    Ref:https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
+    """
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    return ansi_escape.sub('', text)
 
 
-def strip_escapes(string: str) -> str:
-    """TODO"""
-    return re.compile(r'\x1b[^m]*m').sub('', string)
-
-
-def strip_linebreaks(text: str, re_exp: str = '(\n|\r|\n\r)+') -> str:
-    """TODO"""
+def strip_linebreaks(text: str, re_exp: str = r'(\n|\r|\n\r)+') -> str:
+    """ Return a copy of the string stripping out all line breaks from it. """
     return re.sub(re.compile(rf'{re_exp}'), '', text)
 
 
-def strip_extra_spaces(text: str, re_exp: str = r'\s+') -> str:
-    """TODO"""
-    return re.sub(re.compile(rf'{re_exp}'), ' ', text)
+def strip_extra_spaces(text: str, re_exp: str = r'\s+', trim: bool = False) -> str:
+    """ Return a copy of the string stripping out all extra spaces 2+ from it. """
+    s = re.sub(re.compile(rf'{re_exp}'), ' ', text)
+    return s if not trim else s.strip()
 
 
-def print_unicode(uni_code: Union[str, int]) -> None:
-    """TODO"""
-    if isinstance(uni_code, str) and re.match(r"^[a-fA-F0-9]{1,4}$", uni_code):
-        hex_val = bytes.decode(struct.pack("!I", int(uni_code.zfill(4), 16)), 'utf_32_be')
-        sysout(hex_val, end='')
-    elif isinstance(uni_code, int):
-        hex_val = bytes.decode(struct.pack("!I", uni_code), 'utf_32_be')
-        sysout(hex_val, end='')
-    else:
-        raise TypeError(f'Invalid unicode: {uni_code}')
+def json_stringify(json_string: str) -> str:
+    """ Return a copy of the json string stripping any line breaks or formatting from it and also quoting any existing
+    double quotes. """
+    return strip_extra_spaces(strip_linebreaks(json_string)).replace('"', '\\"')
 
 
-def eol(current: int, split_len: int, hit_str: str = os.linesep, miss_str: str = ' ') -> str:
-    """Give the eol character according to the splitting length"""
-    return hit_str if current != 0 and current % split_len == 0 else miss_str
+def eol(current_index: int, split_len: int, line_sep: str = os.linesep, word_sep: str = ' ') -> str:
+    """Give the line separator character (hit) or an empty string (miss) according to the splitting length and
+    current index. """
+    return line_sep if (current_index + 1) % split_len == 0 else word_sep
 
 
-def quote(value: str) -> str:
-    """Quote or double quote a string according to the quote used and value type"""
-    return value if not isinstance(value, str) \
+def quote(value: Any) -> str:
+    """Quote or double quote the value according to the value type. """
+    return str(value) if not isinstance(value, str) \
         else f'"{value}"' if value.startswith('\'') and value.endswith('\'') else f"'{value}'"
-
-
-# pylint: disable=too-few-public-methods
-class TextAlignment(ABC):
-    """
-    Table cell text justification helper.
-    """
-    LEFT = justified_left
-    CENTER = justified_center
-    RIGHT = justified_right
-
-
-# pylint: disable=too-few-public-methods
-class TextCase(ABC):
-    """
-    Table cell text justification helper.
-    """
-    UPPER_CASE = uppercase
-    LOWER_CASE = lowercase
-    CAMEL_CASE = camelcase

@@ -17,7 +17,6 @@ from typing import Any, List, Optional, Tuple, Union, Dict
 
 import requests
 from requests import exceptions as ex
-from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
@@ -28,7 +27,7 @@ def fetch(
     url: str,
     method: HttpMethod = HttpMethod.GET,
     headers: List[Dict[str, str]] = None,
-    body: Optional[Any] = None,
+    body: Any = None,
     silent: bool = True,
     timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
     """ Do a request specified by method and according to parameters.
@@ -49,7 +48,7 @@ def fetch(
 
     all_headers = {}
     if headers:
-        list(map(lambda e: all_headers.update(e), headers))
+        list(map(all_headers.update, headers))
 
     response = requests.request(
         url=url,

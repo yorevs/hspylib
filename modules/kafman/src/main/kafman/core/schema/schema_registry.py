@@ -19,6 +19,7 @@ from typing import List, Optional, Tuple, Dict, Any
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.preconditions import check_not_none, check_state
+from hspylib.core.tools.text_tools import json_stringify
 from hspylib.modules.fetch.fetch import is_reachable, fetch
 from hspylib.modules.fetch.http_response import HttpResponse
 from requests import exceptions as ex
@@ -68,11 +69,12 @@ class SchemaRegistry:
     def register(self, subject: str, schema_content: str) -> None:
         """Register a new version of a schema under the registry subject"""
         # Invoke post subject
+        schema_payload = '{"schema": "' + json_stringify(schema_content) + '"}'
         self._make_request(
             url=f"{self._url}/subjects/{subject}/versions",
             method=HttpMethod.POST,
             headers=[{"Content-Type": "application/vnd.schemaregistry.v1+json"}],
-            body='{"schema": "' + schema_content.replace('"', '\\"') + '"}')
+            body=schema_payload)
         self._subjects.append(subject)
         log.debug('Schema subject successfully registered: %s', subject)
 
@@ -90,10 +92,12 @@ class SchemaRegistry:
         """Fetch information about the selected schema registry server"""
 
         # Fetch server supported schema types
-        response = self._make_request(url=f"{self._url}/schemas/types", expected_codes=[HttpCode.OK, HttpCode.NOT_FOUND])
+        response = self._make_request(
+            url=f"{self._url}/schemas/types", expected_codes=[HttpCode.OK, HttpCode.NOT_FOUND])
         self._schema_types = response.body
         # Fetch current registered subjects
-        response = self._make_request(url=f"{self._url}/subjects")
+        response = self._make_request(
+            url=f"{self._url}/subjects")
         self._subjects = json.loads(response.body)
 
         return self._schema_types, self._subjects

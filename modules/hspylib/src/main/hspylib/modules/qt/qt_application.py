@@ -20,7 +20,7 @@ from PyQt5.QtGui import QFont, QFontDatabase, QIcon
 from PyQt5.QtWidgets import QApplication
 
 from hspylib.core.tools.preconditions import check_argument, check_state
-from hspylib.core.tools.text_tools import capitalcase
+from hspylib.core.tools.text_tools import titlecase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 
@@ -41,7 +41,7 @@ class QtApplication(Application):
         log_dir: str = None):
 
         super().__init__(name, version, description, usage, epilog, resource_dir, log_dir)
-        app_title = capitalcase(name, join_with=' ')
+        app_title = titlecase(name)
         self.qapp = QApplication(sys.argv)
         self.main_view = main_view()
         self.main_view.window.setWindowTitle(f"{app_title} v{str(version)}")
