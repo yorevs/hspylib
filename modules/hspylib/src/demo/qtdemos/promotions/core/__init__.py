@@ -2,11 +2,10 @@
 #
 # hspylib v0.11.91
 #
-# Package: demo.qtdemos.promotions
+# Package: demo.qtdemos.promotions.core
 """Package initialization."""
 
 __all__ = [
-  'core', 
-  'views'
+  
 ]
 __version__ = '0.11.91'
