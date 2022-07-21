@@ -46,6 +46,7 @@ subprojects {
 ext {
   python = "python${pythonVersion}"
   pyrcc = "pyrcc${pyrccVersion}"
+  buildTools = "${buildTools}".split(",")
   startTime = System.currentTimeMillis()
   verbose = findProperty('verbose') ?: false
 }
@@ -56,13 +57,12 @@ task installBuildTools(type: Task) {
   description = 'Install hspylib build tools'
   doLast {
     println "Upgrading pip module to the latest "
-    readDependencies()
     exec {
       commandLine rootProject.python, '-m', 'ensurepip', '-q', '--upgrade'
       commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
     }
-    def build_tools = ['setuptools', 'pipenv', 'bumpver', 'pylint', 'twine', 'wheel']
-    build_tools.each { tool ->
+    println "Installing build tools: [\n\t ${rootProject.buildTools.join(',\n\t')}\n]"
+    rootProject.buildTools.each { tool ->
       exec {
         commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', tool
       }
@@ -87,4 +87,13 @@ task importRunConfigurations(type: Copy) {
     include '*.xml'
   }
   into "${rootDir}/.idea/runConfigurations"
+}
+
+task clearRunConfigurations(type: Delete) {
+  group = 'Idea'
+  description = "Delete all run configurations"
+  delete fileTree("${rootDir}/.idea/runConfigurations") {
+    include "**/*.xml"
+  }
+  followSymlinks = true
 }
