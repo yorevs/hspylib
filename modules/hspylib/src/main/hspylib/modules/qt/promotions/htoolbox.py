@@ -2,9 +2,10 @@ from functools import cached_property
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject, Qt, QVariantAnimation
+from PyQt5.QtWidgets import QToolBox
 
 
-class HToolBox(QtWidgets.QToolBox):
+class HToolBox(QToolBox):
     """Animated QToolBox
     Inspired by: https://stackoverflow.com/questions/70746992/animation-effect-in-a-qtoolbox-in-pyqt5-and-python"""
 
