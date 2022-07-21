@@ -14,13 +14,13 @@
 """
 import sys
 
-from calculator.ui.qt.views.main_qt_view import MainQtView
+from qtdemos.calculator.views.main_qt_view import MainQtView
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
-
 HERE = str(get_path(__file__))
+
 
 class Main(QtApplication):
     """QT Calculator main class"""
