@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.91
 #
-# Package: demo.calculator.enums
+# Package: demo.qtdemos.calculator.core
 """Package initialization."""
 
 __all__ = [

@@ -28,7 +28,12 @@
             }
           ]
         }
-      }
+      },
+      "default": [
+        "apple",
+        "banana",
+        "lemon"
+      ]
     }
   ]
 }
