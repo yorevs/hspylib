@@ -29,4 +29,5 @@ class MainQtView(QtView):
 
     def _setup_ui(self) -> None:
         """Connect signals and startup components"""
-        pass
+        self.ui.btn_next.clicked.connect(lambda : self.ui.stkHStackedWidget.slide_next())
+        self.ui.btn_prev.clicked.connect(lambda: self.ui.stkHStackedWidget.slide_previous())

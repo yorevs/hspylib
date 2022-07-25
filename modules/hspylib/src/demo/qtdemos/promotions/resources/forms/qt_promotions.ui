@@ -11,9 +11,184 @@
    </rect>
   </property>
   <property name="windowTitle">
+   <string>Qt HS Prom,otions Demo</string>
+  </property>
+  <property name="Qt HS Promotions Demo" stdset="0">
    <string>Dialog</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="HToolBox" name="toolBox">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>298</width>
+          <height>360</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Page 1</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="HLabel" name="lblHLabel_1">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="HComboBox" name="cmbHCOmboBox"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="HLabel" name="lblHLabel_2">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="leHLineEdit"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>298</width>
+          <height>360</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Page 2</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="HListWidget" name="lstHListWidget"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="HStackedWidget" name="stkHStackedWidget">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="page_a">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="HFrame" name="frHFrameTable">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="HTableView" name="tbtHTableView"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_next">
+              <property name="text">
+               <string>Next</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_b">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="HFrame" name="frHFrameEdit">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QPlainTextEdit" name="teHConsole"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_prev">
+              <property name="text">
+               <string>Prev</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="HLabel" name="lblStatusLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HTableView</class>
+   <extends>QTableView</extends>
+   <header>hspylib.modules.qt.promotions.htableview</header>
+  </customwidget>
+  <customwidget>
+   <class>HFrame</class>
+   <extends>QFrame</extends>
+   <header>hspylib.modules.qt.promotions.hframe</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HToolBox</class>
+   <extends>QToolBox</extends>
+   <header>hspylib.modules.qt.promotions.htoolbox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HLabel</class>
+   <extends>QLabel</extends>
+   <header>hspylib.modules.qt.promotions.hlabel</header>
+  </customwidget>
+  <customwidget>
+   <class>HListWidget</class>
+   <extends>QListWidget</extends>
+   <header>hspylib.modules.qt.promotions.hlistwidget</header>
+  </customwidget>
+  <customwidget>
+   <class>HComboBox</class>
+   <extends>QComboBox</extends>
+   <header>hspylib.modules.qt.promotions.hcombobox</header>
+  </customwidget>
+  <customwidget>
+   <class>HStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>hspylib.modules.qt.promotions.hstacked_widget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

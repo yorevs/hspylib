@@ -29,7 +29,7 @@ class HLabel(QLabel):
         super().__init__(parent)
         self._clickable = False
         self._elidable = False
-        self._content = self.text()
+        self._content = self.text() or "HLabel"
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
     def elidable(self):
