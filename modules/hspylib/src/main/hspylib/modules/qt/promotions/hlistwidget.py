@@ -15,7 +15,10 @@
 from typing import List, Optional, Union
 
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QMenu, QWidget
+
+from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
 
 
 class HListWidget(QListWidget):
@@ -33,6 +36,10 @@ class HListWidget(QListWidget):
         self.editable = False
         self.selectable = True
         self._items = []
+        self._custom_menu_actions = []
+        self._context_menu_enable = True
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.context_menu)
 
     def keyPressEvent(self, event) -> None:
         """TODO"""
@@ -47,6 +54,10 @@ class HListWidget(QListWidget):
         super().addItem(item)
         self._items.append(item)
 
+    def has_data(self) -> bool:
+        """TODO"""
+        return len(self._items) > 0
+
     def set_item(self, item: str, flags: Union[Qt.ItemFlags, Qt.ItemFlag] = None) -> None:
         """TODO"""
         if not self.findItems(item, Qt.MatchFixedString):
@@ -56,7 +67,7 @@ class HListWidget(QListWidget):
 
     def del_item(self, index: int) -> None:
         """TODO"""
-        if 0 < index < len(self._items):
+        if 0 <= index < len(self._items):
             item = self.takeItem(index)
             if item:
                 self._items.remove(self._items[index])
@@ -96,3 +107,23 @@ class HListWidget(QListWidget):
             else:
                 item.setFlags(self.unset_flag(flags, int(Qt.ItemIsSelectable)))
             self.selectable = selectable
+
+    def context_menu(self) -> None:
+        """Display the custom context menu"""
+        if self.has_data() and self._context_menu_enable:
+            ctx_menu = QMenu(self)
+            if self.editable:
+                ctx_menu.addAction('Add Item', lambda: self.set_item("<new_item>"))
+                ctx_menu.addAction('Delete Item', lambda: self.del_item(self.currentIndex().row()))
+                ctx_menu.addSeparator()
+                ctx_menu.addAction('Clear list', self.clear)
+
+            for act in self._custom_menu_actions:
+                check_not_none(act)
+                check_state(len(act) == 3, f'Invalid custom menu action: {act}')
+                check_argument(callable(act[1]), 'The action must be callable')
+                if act[2]:
+                    ctx_menu.addSeparator()
+                ctx_menu.addAction(act[0], act[1])
+
+            ctx_menu.exec_(QCursor.pos())

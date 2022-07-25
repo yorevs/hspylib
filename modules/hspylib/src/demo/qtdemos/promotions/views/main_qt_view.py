@@ -14,7 +14,9 @@
 """
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.views.qt_view import QtView
+from qtdemos.promotions.core.demo_table_row import DemoTableRow
 
 
 class MainQtView(QtView):
@@ -25,9 +27,22 @@ class MainQtView(QtView):
     def __init__(self):
         super().__init__(self.UI_FILE)
         self.configs = AppConfigs.INSTANCE
+        self.tbl_model = HTableModel(self.ui.tbl_htable_view, DemoTableRow)
         self._setup_ui()
 
     def _setup_ui(self) -> None:
         """Connect signals and startup components"""
-        self.ui.btn_next.clicked.connect(lambda : self.ui.stkHStackedWidget.slide_next())
-        self.ui.btn_prev.clicked.connect(lambda: self.ui.stkHStackedWidget.slide_previous())
+        self.ui.btn_next.clicked.connect(lambda : self.ui.stk_hstacked_widget.slide_next())
+        self.ui.btn_prev.clicked.connect(lambda: self.ui.stk_hstacked_widget.slide_previous())
+        self.ui.btn_submit.clicked.connect(self.submit)
+        self.ui.lst_hlist_widget.set_editable(True)
+
+    def submit(self):
+        """TODO"""
+        row = DemoTableRow()
+        row.color = self.ui.cmb_hcombo_box.currentText()
+        row.text = self.ui.le_hline_edit.text()
+        row.desc = self.ui.te_hconsole.toPlainText()
+        row.lst_items = self.ui.lst_hlist_widget.as_list()
+        self.tbl_model.push_data(row)
+        self.ui.lbl_status.setText(f'Record added: {str(row)}')

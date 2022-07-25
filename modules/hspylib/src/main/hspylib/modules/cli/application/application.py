@@ -71,7 +71,7 @@ class Application(metaclass=Singleton):
         signal.signal(signal.SIGINT, self.exit)
         signal.signal(signal.SIGTERM, self.exit)
 
-        self.exit_hooks = ExitHooks()
+        self.exit_hooks = ExitHooks(self._cleanup)
         self.exit_hooks.hook()
         self._run_dir = os.getcwd()
         self._app_name = name
