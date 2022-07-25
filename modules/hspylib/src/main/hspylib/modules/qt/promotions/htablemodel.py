@@ -14,7 +14,7 @@
 """
 
 import collections
-from typing import List, Tuple, Type, TypeVar, Union
+from typing import List, Optional, Tuple, Type, TypeVar, Union
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt, QVariant
 from PyQt5.QtGui import QPalette
@@ -51,8 +51,10 @@ class HTableModel(QAbstractTableModel):
     def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:  # pylint: disable=unused-argument
         """TODO"""
         if 0 <= row < len(self.table_data):
+            self.beginRemoveRows(QModelIndex(), row, row + 1)
             del self.table_data[row]
             self.layoutChanged.emit()
+            self.endRemoveRows()
             return True
         return False
 
@@ -98,6 +100,14 @@ class HTableModel(QAbstractTableModel):
         self.table_data = sorted(self.table_data, key=lambda x: getattr(x, keys[column]), reverse=bool(order))
         self.layoutChanged.emit()
 
+    def append(self, data: T):
+        """TODO"""
+        if data and not self.filters.should_filter(data):
+            self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount() + 1)
+            self.table_data.append(data)
+            self.endInsertRows()
+            self.layoutChanged.emit()
+
     def apply_filter(
         self,
         name: str,
@@ -130,11 +140,6 @@ class HTableModel(QAbstractTableModel):
                 self.append(data)
             self.layoutChanged.emit()
 
-    def append(self, data: T):
-        """TODO"""
-        if data and not self.filters.should_filter(data):
-            self.table_data.append(data)
-
     def clear(self):
         """TODO"""
         self.table_data.clear()
@@ -149,16 +154,19 @@ class HTableModel(QAbstractTableModel):
         self.table_data = self.filters.filter(list(self.table_data))
         self.layoutChanged.emit()
 
-    def selected_rows(self) -> Tuple[List[QModelIndex], List[T]]:
+    def selected_rows(self) -> Optional[Tuple[List[QModelIndex], List[T]]]:
         """TODO"""
-        model = self.parent.selectionModel()
-        rows = model.selectedRows() if model else []
-        return rows, [self.table_data[r.row()] for r in rows] if model else []
+        sel_model = self.parent.selectionModel()
+        if sel_model:
+            indexes = sel_model.selectedIndexes()
+            if indexes:
+                return indexes, [self.table_data[r.row()] for r in indexes] if sel_model else None
+        return None
 
     def remove_rows(self, rows: List[QModelIndex]):
         """TODO"""
-        rows.sort(reverse=True)  # Because we are using deque, we need to sort DESC to avoid deleting wrong indexes
-        for row in rows:
+        # Because we are using deque, we need to sort DESC to avoid deleting wrong indexes
+        for row in sorted(rows, reverse=True):
             self.removeRow(row.row())
 
     def _headers_by_entity(self) -> List[str]:

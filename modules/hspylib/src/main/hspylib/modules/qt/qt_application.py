@@ -53,7 +53,11 @@ class QtApplication(Application):
     def _main(self, *params, **kwargs) -> int:
         """Execute the application's main statements"""
         self.main_view.show()
-        return self.qapp.exec_()
+        a = self.qapp.exec_()
+        return 0
+
+    def _cleanup(self) -> None:
+        QApplication.exit()
 
     def set_application_font(self, font_path: Path) -> None:
         """TODO"""

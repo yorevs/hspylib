@@ -36,6 +36,7 @@ class HTableView(QTableView):
         self._deletable = True
         self._placeholder = placeholder or 'No data to display'
         self._custom_menu_actions = []
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.context_menu)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.horizontalHeader().setStretchLastSection(True)

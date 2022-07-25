@@ -29,7 +29,7 @@ class HLabel(QLabel):
         super().__init__(parent)
         self._clickable = False
         self._elidable = False
-        self._content = self.text() or "HLabel"
+        self._content = self.text()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
     def elidable(self):
@@ -49,21 +49,21 @@ class HLabel(QLabel):
             self.clicked.emit()
 
     def setText(self, text: str):
+        self._content = text
         if self._elidable:
             metrics = QFontMetrics(self.font())
             max_length = int(self.width() / metrics.maxWidth())
             doc = QTextDocument()
             doc.setHtml(text)
             plain_text = doc.toPlainText()
-            self._content = text
             if len(plain_text) > max_length:
                 self.elisionChanged.emit()
                 elided_last_line = metrics.elidedText(text, Qt.ElideRight, self.width())
                 super().setText(elided_last_line)
-                return
-
-        super().setText(text)
+        else:
+            super().setText(text)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
-        self.setText(self._content)
+        if self._content and self._content != self.text():
+            self.setText(self._content)
         super().resizeEvent(event)
