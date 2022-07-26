@@ -20,22 +20,21 @@ from PyQt5.QtGui import QColor, QCursor, QFont, QPainter, QPaintEvent, QPalette,
 from PyQt5.QtWidgets import QPlainTextEdit, QTextEdit, QWidget
 
 
-class _LineNumberArea(QWidget):
-    """TODO"""
-
-    def __init__(self, text_edit: QPlainTextEdit):
-        super().__init__(text_edit)
-        self._text_edit = text_edit
-
-    def sizeHint(self) -> QSize:
-        return QSize(self._text_edit.line_number_area_width(), 0)
-
-    def paintEvent(self, event: QPaintEvent) -> None:
-        self._text_edit.line_number_area_paint_event(event)
-
-
 class HConsole(QPlainTextEdit):
     """TODO"""
+
+    class _LineNumberArea(QWidget):
+        """TODO"""
+
+        def __init__(self, text_edit: 'HConsole'):
+            super().__init__(text_edit)
+            self._text_edit = text_edit
+
+        def sizeHint(self) -> QSize:
+            return QSize(self._text_edit.line_number_area_width(), 0)
+
+        def paintEvent(self, event: QPaintEvent) -> None:
+            self._text_edit.line_number_area_paint_event(event)
 
     def __init__(self, parent: Optional[QWidget], max_lines: int = 1000):
         super().__init__(parent)
@@ -53,7 +52,7 @@ class HConsole(QPlainTextEdit):
         self.customContextMenuRequested.connect(self._context_menu)
 
         # Create line numbers widget
-        self._line_number_area = _LineNumberArea(self)
+        self._line_number_area = self._LineNumberArea(self)
         self.document().blockCountChanged.connect(self.update_line_number_area_width)
         self.updateRequest.connect(self.update_line_number_area)
         self.cursorPositionChanged.connect(self.highlight_current_line)

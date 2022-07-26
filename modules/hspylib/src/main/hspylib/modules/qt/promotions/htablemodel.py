@@ -145,9 +145,9 @@ class HTableModel(QAbstractTableModel):
         self.table_data.clear()
         self.layoutChanged.emit()
 
-    def has_data(self) -> bool:
+    def is_empty(self) -> bool:
         """TODO"""
-        return len(self.table_data) > 0
+        return len(self.table_data) == 0
 
     def refresh_data(self) -> None:
         """TODO"""

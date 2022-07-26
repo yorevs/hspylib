@@ -14,8 +14,8 @@
 """
 from typing import List, Optional, Union
 
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QCursor
+from PyQt5.QtCore import pyqtSignal, QModelIndex, Qt
+from PyQt5.QtGui import QCursor, QKeyEvent
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QMenu, QWidget
 
 from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
@@ -40,11 +40,17 @@ class HListWidget(QListWidget):
         self._context_menu_enable = True
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.context_menu)
+        self.itemChanged.connect(self.item_changed)
 
-    def keyPressEvent(self, event) -> None:
-        """TODO"""
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         super().keyPressEvent(event)
         self.keyPressed.emit(event.key())
+
+    def item_changed(self, item: QListWidgetItem):
+        """TODO"""
+        existing = self.findItems(item.text(), Qt.MatchFixedString)
+        if len(existing) > 1:
+            self.del_item(item)
 
     def addItem(self, item: QListWidgetItem) -> None:
         """TODO"""
@@ -54,9 +60,9 @@ class HListWidget(QListWidget):
         super().addItem(item)
         self._items.append(item)
 
-    def has_data(self) -> bool:
+    def is_empty(self) -> bool:
         """TODO"""
-        return len(self._items) > 0
+        return len(self._items) == 0
 
     def set_item(self, item: str, flags: Union[Qt.ItemFlags, Qt.ItemFlag] = None) -> None:
         """TODO"""
@@ -65,12 +71,28 @@ class HListWidget(QListWidget):
             w_item.setFlags(flags or Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
             self.addItem(w_item)
 
-    def del_item(self, index: int) -> None:
+    def remove_item(self, row: int) -> None:
         """TODO"""
-        if 0 <= index < len(self._items):
-            item = self.takeItem(index)
-            if item:
-                self._items.remove(self._items[index])
+        item = self.takeItem(row)
+        if item:
+            self._items.remove(self._items[row])
+
+    def del_item(self, item_or_index: Union[int, QModelIndex, QListWidgetItem]) -> None:
+        """TODO"""
+        if isinstance(item_or_index, int):
+            if 0 <= item_or_index < len(self._items):
+                self.remove_item(item_or_index)
+        elif isinstance(item_or_index, QListWidgetItem):
+            index = self.indexFromItem(item_or_index)
+            if index:
+                self.remove_item(index.row())
+        elif isinstance(item_or_index, QModelIndex):
+            self.remove_item(item_or_index.row())
+
+    def clear(self) -> None:
+        """TODO"""
+        super().clear()
+        del self._items[:]
 
     def index_of(self, item: str) -> int:
         """TODO"""
@@ -110,13 +132,14 @@ class HListWidget(QListWidget):
 
     def context_menu(self) -> None:
         """Display the custom context menu"""
-        if self.has_data() and self._context_menu_enable:
+        if  self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self.editable:
                 ctx_menu.addAction('Add Item', lambda: self.set_item("<new_item>"))
-                ctx_menu.addAction('Delete Item', lambda: self.del_item(self.currentIndex().row()))
-                ctx_menu.addSeparator()
-                ctx_menu.addAction('Clear list', self.clear)
+                if not self.is_empty():
+                    ctx_menu.addAction('Delete Item', lambda: self.del_item(self.currentIndex().row()))
+                    ctx_menu.addSeparator()
+                    ctx_menu.addAction('Clear list', self.clear)
 
             for act in self._custom_menu_actions:
                 check_not_none(act)

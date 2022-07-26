@@ -58,6 +58,9 @@
              </property>
             </widget>
            </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="le_hline_edit"/>
+           </item>
            <item row="0" column="1">
             <widget class="HComboBox" name="cmb_hcombo_box">
              <item>
@@ -94,8 +97,18 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="le_hline_edit"/>
+           <item row="2" column="1">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -159,7 +172,11 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
-               <widget class="HTableView" name="tbl_htable_view"/>
+               <widget class="HTableView" name="tbl_htable_view">
+                <property name="wordWrap">
+                 <bool>false</bool>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="btn_next">
@@ -185,7 +202,11 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
-               <widget class="QPlainTextEdit" name="te_hconsole"/>
+               <widget class="HConsole" name="te_hconsole">
+                <property name="placeholderText">
+                 <string>Type the description</string>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="btn_prev">
@@ -228,6 +249,12 @@
          </property>
          <property name="text">
           <string>Submit</string>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -275,6 +302,11 @@
    <extends>QStackedWidget</extends>
    <header>hspylib.modules.qt.promotions.hstacked_widget</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HConsole</class>
+   <extends>QPlainTextEdit</extends>
+   <header>hspylib.modules.qt.promotions.hconsole</header>
   </customwidget>
  </customwidgets>
  <resources/>

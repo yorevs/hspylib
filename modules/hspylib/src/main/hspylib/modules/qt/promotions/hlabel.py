@@ -43,6 +43,7 @@ class HLabel(QLabel):
 
     def set_clickable(self, clickable: bool):
         self._clickable = clickable
+        self.setCursor(Qt.PointingHandCursor if clickable else Qt.ArrowCursor)
 
     def mousePressEvent(self, ev) -> None:  # pylint: disable=unused-argument
         if self._clickable:

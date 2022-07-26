@@ -90,11 +90,13 @@ class HTableView(QTableView):
 
     def delete(self) -> None:
         """Delete selected rows"""
-        self.model().remove_rows(self.model().selected_rows()[0])
+        rows = self.model().selected_rows()
+        if rows:
+            self.model().remove_rows(rows[0])
 
     def context_menu(self) -> None:
         """Display the custom context menu"""
-        if self.model().has_data() and self._context_menu_enable:
+        if not self.model().is_empty() and self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self._copyable:
                 ctx_menu.addAction('Copy Cells', self.copy)
