@@ -40,8 +40,7 @@ class Singleton(type):
                 log.debug('Created a new Singleton instance: %s.%s', cls.__module__, cls.__name__)
             except Exception as err:  # pylint: disable=broad-except
                 log.error(traceback.format_exc())
-                syserr(traceback.format_exc())
-                print(err)
+                raise err from err
 
         return cls._instances[cls]
 
