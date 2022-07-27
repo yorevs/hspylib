@@ -33,8 +33,8 @@ class HListWidget(QListWidget):
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        self.editable = False
-        self.selectable = True
+        self._editable = False
+        self._selectable = True
         self._items = []
         self._custom_menu_actions = []
         self._context_menu_enable = True
@@ -120,6 +120,10 @@ class HListWidget(QListWidget):
         """Returns the current item's text."""
         return self.currentItem().text()
 
+    def set_context_menu_enable(self, enabled: bool = True) -> None:
+        """Whether context menu is enabled or not"""
+        self._context_menu_enable = enabled
+
     def set_editable(self, editable: bool = True) -> None:
         """Set editable property."""
         for item in self._items:
@@ -128,7 +132,7 @@ class HListWidget(QListWidget):
                 item.setFlags(flags | Qt.ItemIsEditable)
             else:
                 item.setFlags(self.unset_flag(flags, int(Qt.ItemIsEditable)))
-            self.editable = editable
+        self._editable = editable
 
     def set_selectable(self, selectable: bool = True) -> None:
         """Set selectable property."""
@@ -138,13 +142,13 @@ class HListWidget(QListWidget):
                 item.setFlags(flags | Qt.ItemIsSelectable)
             else:
                 item.setFlags(self.unset_flag(flags, int(Qt.ItemIsSelectable)))
-            self.selectable = selectable
+        self._selectable = selectable
 
     def context_menu(self) -> None:
         """Display the custom context menu."""
         if self._context_menu_enable:
             ctx_menu = QMenu(self)
-            if self.editable:
+            if self._editable:
                 ctx_menu.addAction('Add Item', lambda: self.set_item("<new_item>"))
                 if not self.is_empty():
                     ctx_menu.addAction('Delete Item', lambda: self.del_item(self.currentIndex().row()))

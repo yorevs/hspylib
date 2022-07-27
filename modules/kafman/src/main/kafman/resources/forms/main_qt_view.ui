@@ -389,8 +389,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>306</width>
-            <height>528</height>
+            <width>243</width>
+            <height>238</height>
            </rect>
           </property>
           <attribute name="label">
@@ -633,8 +633,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>306</width>
-            <height>528</height>
+            <width>165</width>
+            <height>74</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1553,8 +1553,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>662</width>
-                    <height>511</height>
+                    <width>100</width>
+                    <height>157</height>
                    </rect>
                   </property>
                   <property name="sizePolicy">
@@ -1669,8 +1669,8 @@
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>558</width>
-                             <height>430</height>
+                             <width>98</width>
+                             <height>28</height>
                             </rect>
                            </property>
                           </widget>
@@ -2112,7 +2112,7 @@
               <string>Actual schema registry subjects</string>
              </property>
              <property name="selectionMode">
-              <enum>QAbstractItemView::MultiSelection</enum>
+              <enum>QAbstractItemView::ExtendedSelection</enum>
              </property>
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>

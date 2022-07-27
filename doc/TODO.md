@@ -22,7 +22,7 @@
 ## HSPYLIB-KAFMAN
 
 1. Implement avro schema type form builder
-   1.1. Fix array with items (example.avsc schema)
+   1.1. Fix array with records
 2. Implement json schema type form builder
    2.1. Implement $refs
 3. Implement protobuf schema type form builder

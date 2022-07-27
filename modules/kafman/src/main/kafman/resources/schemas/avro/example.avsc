@@ -20,20 +20,10 @@
         "type": "array",
         "items": {
           "name": "color",
-          "type": "record",
-          "fields": [
-            {
-              "name": "name",
-              "type": "string"
-            }
-          ]
+          "type": "string"
         }
       },
-      "default": [
-        "apple",
-        "banana",
-        "lemon"
-      ]
+      "default": []
     }
   ]
 }
