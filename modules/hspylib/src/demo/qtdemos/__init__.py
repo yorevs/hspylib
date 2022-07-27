@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.91
+# hspylib v0.11.92
 #
 # Package: demo.qtdemos
 """Package initialization."""
 
 __all__ = [
-  'calculator', 
-  'promotions'
+    'calculator',
+    'promotions'
 ]
-__version__ = '0.11.91'
+__version__ = '0.11.92'

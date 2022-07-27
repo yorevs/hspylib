@@ -15,6 +15,7 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 
+
 class ContentType(Enumeration):
     """TODO"""
 

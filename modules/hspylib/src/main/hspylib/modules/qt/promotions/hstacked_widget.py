@@ -37,50 +37,60 @@ class HStackedWidget(QStackedWidget):
         self._active = False
 
     def set_direction(self, direction) -> None:
+        """TODO"""
         self._slide_direction = direction
 
     def set_speed(self, speed) -> None:
+        """TODO"""
         self._slide_speed = speed
 
     def set_animation(self, animation_type) -> None:
+        """TODO"""
         self._animation_type = animation_type
 
     def set_wrap(self, wrap) -> None:
+        """TODO"""
         self._wrap = wrap
 
     def widgets(self) -> List[QWidget]:
+        """TODO"""
         return self._widgets
 
     def addWidget(self, widget: QWidget) -> int:
+        """TODO"""
         self._widgets.append(widget)
         return super().addWidget(widget)
 
     @pyqtSlot()
     def slide_previous(self) -> None:
+        """TODO"""
         now = self.currentIndex()
         if self._wrap or now > 0:
             self.slide_to_index(now - 1)
 
     @pyqtSlot()
     def slide_next(self) -> None:
+        """TODO"""
         now = self.currentIndex()
         if self._wrap or now < (self.count() - 1):
             self.slide_to_index(now + 1)
 
+    @pyqtSlot()
     def slide_to_index(self, idx: int) -> None:
+        """TODO"""
         if idx != 0:
             if idx > (self.count() - 1):
                 idx %= self.count()
             elif idx < 0:
                 idx = (idx + self.count()) % self.count()
-        self.slide_to_widget(self.widget(idx))
+        self._slide_to_widget(self.widget(idx))
 
-    def slide_to_widget(self, widget: QWidget) -> None:
+    def _slide_to_widget(self, widget: QWidget) -> None:
+        """TODO"""
         if self._active:
             return
 
         self._active = True
-
         idx = self.currentIndex()
         next_idx = self.indexOf(widget)
 
@@ -91,7 +101,7 @@ class HStackedWidget(QStackedWidget):
         offset_x, offset_y = self.frameRect().width(), self.frameRect().height()
         self.widget(next_idx).setGeometry(self.frameRect())
 
-        if not self._slide_direction == Qt.Horizontal:
+        if self._slide_direction == Qt.Vertical:
             if idx < next_idx:
                 offset_x, offset_y = 0, -offset_y
             else:
@@ -105,7 +115,6 @@ class HStackedWidget(QStackedWidget):
         pos_next = self.widget(next_idx).pos()
         pos_current = self.widget(idx).pos()
         self._pos_current = pos_current
-
         offset = QPoint(offset_x, offset_y)
         self.widget(next_idx).move(pos_next - offset)
         self.widget(next_idx).show()
@@ -133,6 +142,7 @@ class HStackedWidget(QStackedWidget):
 
     @pyqtSlot()
     def animation_done(self) -> None:
+        """TODO"""
         self.widget(self._cur_idx).hide()
         self.widget(self._cur_idx).move(self._pos_current)
         self._active = False

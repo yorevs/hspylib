@@ -28,22 +28,29 @@ class HLabel(QLabel):
     def __init__(self, parent: Optional[QWidget]):
         super().__init__(parent)
         self._clickable = False
-        self._elidable = False
+        self._elidable = True
+        self._dynamic_tooltip = False
         self._content = self.text()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
-    def elidable(self):
+    def elidable(self) -> bool:
         return self._elidable
 
-    def set_elidable(self, elidable: bool):
+    def set_elidable(self, elidable: bool) -> None:
         self._elidable = elidable
 
-    def clickable(self):
+    def clickable(self) -> bool:
         return self._clickable
 
-    def set_clickable(self, clickable: bool):
+    def set_clickable(self, clickable: bool) -> None:
         self._clickable = clickable
         self.setCursor(Qt.PointingHandCursor if clickable else Qt.ArrowCursor)
+
+    def dynamic_tooltip(self) -> bool:
+        return self._dynamic_tooltip
+
+    def set_dynamic_tooltip(self, dynamic_tooltip: bool) -> None:
+        self._dynamic_tooltip = dynamic_tooltip
 
     def mousePressEvent(self, ev) -> None:  # pylint: disable=unused-argument
         if self._clickable:
@@ -51,6 +58,8 @@ class HLabel(QLabel):
 
     def setText(self, text: str):
         self._content = text
+        if not self.toolTip() or self._dynamic_tooltip:
+            self.setToolTip(text)
         if self._elidable:
             metrics = QFontMetrics(self.font())
             max_length = int(self.width() / metrics.maxWidth())
@@ -61,8 +70,8 @@ class HLabel(QLabel):
                 self.elisionChanged.emit()
                 elided_last_line = metrics.elidedText(text, Qt.ElideRight, self.width())
                 super().setText(elided_last_line)
-        else:
-            super().setText(text)
+                return
+        super().setText(text)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
         if self._content and self._content != self.text():

@@ -39,7 +39,6 @@ class QtApplication(Application):
         epilog: str = None,
         resource_dir: str = None,
         log_dir: str = None):
-
         super().__init__(name, version, description, usage, epilog, resource_dir, log_dir)
         app_title = titlecase(name)
         self.qapp = QApplication(sys.argv)

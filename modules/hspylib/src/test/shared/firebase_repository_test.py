@@ -18,6 +18,7 @@ from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
 from shared.entity_test import EntityTest
 
+
 class FirebaseRepositoryTest(FirebaseRepository):
 
     def row_to_entity(self, row: dict) -> CrudEntity:

@@ -36,12 +36,10 @@ class QtView(ABC):
         """Load the ui form from the .ui file"""
 
         form_dir = load_dir if load_dir else f"{run_dir()}/resources/forms/"
-
         check_argument(
             os.path.exists(form_dir) and os.path.isdir(form_dir),
             "Load dir {} does not exist or is not a folder", form_dir)
         filepath = f"{form_dir}/{form_file}"
-
         check_state(
             os.path.exists(filepath) and os.path.isfile(filepath) and filepath.lower().endswith('.ui'),
             "Form file {} does not exist or it is not a valid UI form file", form_file)
@@ -51,7 +49,8 @@ class QtView(ABC):
     def __init__(self, ui_file: str = MAIN_QT_VIEW_UI, load_dir: str = None, parent: Optional[QWidget] = None):
         ui_clazz, window_clazz = self.load_form(ui_file, load_dir)
         # Must come after the initialization above
-        assert ui_clazz is not None and window_clazz is not None
+        check_state(ui_clazz is not None and window_clazz is not None,
+                    'Unable to initialize UI and Window objects')
         self.window, self.ui = window_clazz(), ui_clazz()
         self.ui.setupUi(self.window)
         self.parent = parent

@@ -14,10 +14,10 @@
 """
 import sys
 
-from qtdemos.calculator.views.main_qt_view import MainQtView
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
+from qtdemos.calculator.views.main_qt_view import MainQtView
 
 HERE = str(get_path(__file__))
 

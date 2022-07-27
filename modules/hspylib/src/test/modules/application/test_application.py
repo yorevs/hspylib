@@ -70,19 +70,19 @@ class TestApplication(unittest.TestCase):
     def test_calling_an_app_with_incorrect_opts_should_raise_errors(self):
         app = ApplicationTest('APP-TEST')
         params = ['-g', 'input.txt', '-j', 'output.txt', 'one', 'donut']
-        self.assertRaises(argparse.ArgumentError, lambda : app.run(params, no_exit=True))
+        self.assertRaises(argparse.ArgumentError, lambda: app.run(params, no_exit=True))
 
     # TC6 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_1(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'four', 'donut']
-        self.assertRaises(argparse.ArgumentError, lambda : app.run(params, no_exit=True))
+        self.assertRaises(argparse.ArgumentError, lambda: app.run(params, no_exit=True))
 
     # TC7 - Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_2(self):
         app = ApplicationTest('APP-TEST')
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'pretzel']
-        self.assertRaises(argparse.ArgumentError, lambda : app.run(params, no_exit=True))
+        self.assertRaises(argparse.ArgumentError, lambda: app.run(params, no_exit=True))
 
     # TC8 - Check options and arguments passed can be retrieved
     def test_should_be_able_to_retrieve_passed_args_and_opts(self):

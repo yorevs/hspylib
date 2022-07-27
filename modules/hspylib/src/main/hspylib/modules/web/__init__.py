@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.91
+# hspylib v0.11.92
 #
 # Package: main.hspylib.modules.web
 """Package initialization."""
 
 __all__ = [
-  'rest_utils', 
-  'soap_utils'
+    'rest_utils',
+    'soap_utils'
 ]
-__version__ = '0.11.91'
+__version__ = '0.11.92'

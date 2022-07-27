@@ -8,4 +8,8 @@ class DemoTableRow:
         self.lst_items: list = []
 
     def __str__(self):
-        return f'Color: {self.color}  Text: {self.text}  Desc: {self.desc}  Items: {",".join(self.lst_items)}'
+        return f'' \
+               f'{"Color: " + self.color if self.color else " "}' \
+               f'{"  Text: " + self.text if self.text else " "}' \
+               f'{"  Desc: " + self.desc if self.desc else " "}' \
+               f'{"  Items: " + ",".join(self.lst_items) if self.lst_items else " "}'

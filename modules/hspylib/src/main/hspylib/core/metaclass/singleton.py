@@ -17,7 +17,6 @@ import logging as log
 import traceback
 from typing import Type
 
-from hspylib.core.tools.commons import syserr
 from hspylib.core.tools.preconditions import check_not_none
 
 

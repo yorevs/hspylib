@@ -92,7 +92,7 @@ class Main(Application):
                 addon.create(
                     self.get_arg('app-name'), AppType.of_value(app_type),
                     list(map(Extension.value_of, app_ext)) if app_ext else [],
-                        self.get_arg('dest-dir') or run_dir())
+                    self.get_arg('dest-dir') or run_dir())
             else:
                 args = addon.prompt()
                 if args:

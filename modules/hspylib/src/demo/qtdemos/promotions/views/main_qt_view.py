@@ -32,17 +32,18 @@ class MainQtView(QtView):
 
     def _setup_ui(self) -> None:
         """Connect signals and startup components"""
-        self.ui.btn_next.clicked.connect(lambda : self.ui.stk_hstacked_widget.slide_next())
-        self.ui.btn_prev.clicked.connect(lambda: self.ui.stk_hstacked_widget.slide_previous())
+        self.ui.btn_next.clicked.connect(self.ui.stk_hstacked_widget.slide_next)
+        self.ui.btn_prev.clicked.connect(self.ui.stk_hstacked_widget.slide_previous)
         self.ui.btn_submit.clicked.connect(self.submit)
         self.ui.lst_hlist_widget.set_editable(True)
         self.ui.te_hconsole.set_highlight_enable(True)
         self.ui.te_hconsole.set_show_line_numbers(True)
         self.ui.te_hconsole.setReadOnly(False)
         self.ui.lbl_status.set_clickable(True)
+        self.ui.lbl_status.set_dynamic_tooltip(True)
         self.ui.lbl_status.clicked.connect(lambda: print('Clicked status: ' + self.ui.lbl_status.text()))
 
-    def submit(self):
+    def submit(self) -> None:
         """TODO"""
         row = DemoTableRow()
         row.color = self.ui.cmb_hcombo_box.currentText()
@@ -51,3 +52,4 @@ class MainQtView(QtView):
         row.lst_items = self.ui.lst_hlist_widget.as_list()
         self.tbl_model.push_data(row)
         self.ui.lbl_status.setText(f'Record added: {str(row)}')
+        self.ui.stk_hstacked_widget.slide_to_index(0)
