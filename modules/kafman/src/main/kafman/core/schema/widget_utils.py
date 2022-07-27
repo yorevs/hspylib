@@ -109,9 +109,10 @@ class WidgetUtils(ABC):
         tooltip: str = None,
         all_items: List[str] = None) -> QWidget:
 
+        list(map(widget.set_item, all_items or []))
         widget.set_editable()
         widget.set_selectable()
-        list(map(widget.set_item, all_items or []))
+        widget.set_context_menu_enable()
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 

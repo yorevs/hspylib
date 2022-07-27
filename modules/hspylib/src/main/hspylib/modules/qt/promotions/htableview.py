@@ -72,7 +72,6 @@ class HTableView(QTableView):
 
     def copy(self) -> None:
         """Copy selected cell into clipboard"""
-
         sel_model = self.selectionModel()
         if sel_model:
             index_list = sel_model.selectedIndexes()
@@ -90,13 +89,15 @@ class HTableView(QTableView):
 
     def delete(self) -> None:
         """Delete selected rows"""
-        rows = self.model().selected_rows()
-        if rows:
-            self.model().remove_rows(rows[0])
+        sel_model = self.selectionModel()
+        if sel_model:
+            sel_rows = sel_model.selectedRows()
+            if sel_rows:
+                self.model().remove_rows(sel_rows)
 
     def context_menu(self) -> None:
         """Display the custom context menu"""
-        if not self.model().is_empty() and self._context_menu_enable:
+        if not self.is_empty() and self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self._copyable:
                 ctx_menu.addAction('Copy Cells', self.copy)
@@ -135,3 +136,7 @@ class HTableView(QTableView):
     def set_deletable(self, deletable: bool = True) -> None:
         """Whether the widget is clearable or not"""
         self._deletable = deletable
+
+    def is_empty(self) -> bool:
+        """TODO"""
+        return not self.model() or self.model().is_empty()

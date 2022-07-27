@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.92
+# hspylib v0.11.95
 #
 # Package: main.hspylib.modules.fetch
 """Package initialization."""
 
 __all__ = [
-    'fetch',
-    'http_response'
+  'fetch', 
+  'http_response'
 ]
-__version__ = '0.11.92'
+__version__ = '0.11.95'

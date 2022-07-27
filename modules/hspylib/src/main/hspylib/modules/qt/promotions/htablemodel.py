@@ -14,7 +14,7 @@
 """
 
 import collections
-from typing import List, Optional, Tuple, Type, TypeVar, Union
+from typing import List, Type, TypeVar, Union, Tuple
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt, QVariant
 from PyQt5.QtGui import QPalette
@@ -154,15 +154,6 @@ class HTableModel(QAbstractTableModel):
         self.table_data = self.filters.filter(list(self.table_data))
         self.layoutChanged.emit()
 
-    def selected_rows(self) -> Optional[Tuple[List[QModelIndex], List[T]]]:
-        """TODO"""
-        sel_model = self.parent.selectionModel()
-        if sel_model:
-            indexes = sel_model.selectedIndexes()
-            if indexes:
-                return indexes, [self.table_data[r.row()] for r in indexes] if sel_model else None
-        return None
-
     def remove_rows(self, rows: List[QModelIndex]):
         """TODO"""
         # Because we are using deque, we need to sort DESC to avoid deleting wrong indexes
@@ -173,3 +164,11 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         attributes = class_attribute_names(self.clazz)
         return [str(x).capitalize() for x in attributes]
+
+    def selected_data(self) -> Tuple[List[QModelIndex], List[T]]:
+        """TODO"""
+        sel_model = self.parent.selectionModel()
+        if sel_model:
+            sel_indexes = sel_model.selectedIndexes()
+            sel_rows = set([idx.row() for idx in sel_indexes])
+            return sel_indexes, [self.table_data[row] for row in sel_rows]

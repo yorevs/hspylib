@@ -14,7 +14,7 @@
 
 import json
 import logging as log
-from typing import List, Optional, Tuple, Dict, Any
+from typing import List, Optional, Tuple, Dict, Any, Set
 
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
@@ -78,7 +78,7 @@ class SchemaRegistry:
         self._subjects.append(subject)
         log.debug('Schema subject successfully registered: %s', subject)
 
-    def deregister(self, subjects: List[RegistrySubject]) -> None:
+    def deregister(self, subjects: Set[RegistrySubject]) -> None:
         """Deregister the list of subjects from the registry server"""
         for subject in subjects:
             # Invoke delete subject
@@ -145,7 +145,8 @@ class SchemaRegistry:
                 check_not_none(response)
                 if response.status_code not in expected_codes:
                     raise SchemaRegistryError(
-                        f"Request failed. Expecting {str(expected_codes)} but was received: {response.status_code}")
+                        f"Request failed. Expecting {str(expected_codes)} but received: {response.status_code}" +
+                        f"\n\t=> {response.body}")
                 return response
             except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL) as err:
                 raise SchemaRegistryError(

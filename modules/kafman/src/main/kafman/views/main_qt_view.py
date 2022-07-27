@@ -138,6 +138,7 @@ class MainQtView(QtView):
         self.ui.tab_widget.currentChanged.connect(self._activate_tab)
         self.ui.lbl_status_text.setTextFormat(Qt.RichText)
         self.ui.lbl_status_text.set_elidable(True)
+        self.ui.lbl_status_text.set_dynamic_tooltip(True)
         self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
         self.ui.tbtn_test_registry_url.clicked.connect(lambda: self._test_registry_url(pop_warn_box=True))
         self.ui.tbtn_sel_schema.setText(DashboardIcons.FOLDER_OPEN.value)
@@ -761,8 +762,8 @@ class MainQtView(QtView):
         """Deregister the schema from the registry server"""
         model = self.ui.tbl_registry.model()
         if model:
-            indexes, subjects = self.ui.tbl_registry.model().selected_rows()
-            if indexes:
+            indexes, subjects = self.ui.tbl_registry.model().selected_data()
+            if subjects:
                 self._registry.deregister(subjects)
                 model.remove_rows(indexes)
                 self._display_text(
