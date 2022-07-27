@@ -27,28 +27,28 @@ TEST_DIR = dirname(__file__)
 
 class TestMain(unittest.TestCase):
 
-    # Setup tests
-    def setUp(self):
-        resource_dir = f'{TEST_DIR}/resources'
-        os.environ['ACTIVE_PROFILE'] = "test"
-        self.configs = AppConfigs(resource_dir=resource_dir)
-        self.assertIsNotNone(self.configs)
-        self.assertIsNotNone(AppConfigs.INSTANCE)
-        log.info(self.configs)
+  # Setup tests
+  def setUp(self):
+    resource_dir = f'{TEST_DIR}/resources'
+    os.environ['ACTIVE_PROFILE'] = "test"
+    self.configs = AppConfigs(resource_dir=resource_dir)
+    self.assertIsNotNone(self.configs)
+    self.assertIsNotNone(AppConfigs.INSTANCE)
+    log.info(self.configs)
 
-    # Teardown tests
-    def tearDown(self):
-        pass
+  # Teardown tests
+  def tearDown(self):
+    pass
 
-    # TEST CASES ----------
+  # TEST CASES ----------
 
-    def test_should_test_something(self):
-        pass
+  def test_should_test_something(self):
+    pass
 
 
 # Program entry point.
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestMain)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+  suite = unittest.TestLoader().loadTestsFromTestCase(TestMain)
+  unittest \
+    .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
+    .run(suite)

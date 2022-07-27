@@ -24,7 +24,7 @@ from textwrap import dedent
 from typing import Optional, Union
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import ApplicationError, InvalidArgumentError, InvalidOptionError, \
+from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, \
     InvalidStateError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import log_init, sysout
@@ -119,9 +119,9 @@ class Application(metaclass=Singleton):
             exc_type, exc_value, exc_traceback = sys.exc_info()
             traceback.print_exc(file=sys.stderr)
             self._exit_code = exc_value
-            raise ApplicationError from err  # Re-Raise the exception so upper level layers can catch
+            raise err  # Re-Raise the exception so upper level layers can catch
         finally:
-            log.info('Application %s finished %s', self._app_name,  datetime.now())
+            log.info('Application %s finished %s', self._app_name, datetime.now())
             if 'no_exit' not in kwargs:
                 self.exit(self._exit_code)
 

@@ -18,10 +18,10 @@ import logging as log
 
 from PyQt5.QtCore import Qt
 
-from qtdemos.calculator.core.calc_operations import CalcOperations
-from qtdemos.calculator.views.blink_lcd_thread import BlinkLcdThread
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.modules.qt.views.qt_view import QtView
+from qtdemos.calculator.core.calc_operations import CalcOperations
+from qtdemos.calculator.views.blink_lcd_thread import BlinkLcdThread
 
 
 class MainQtView(QtView):

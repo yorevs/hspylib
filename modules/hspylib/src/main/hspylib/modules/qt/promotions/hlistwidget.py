@@ -43,17 +43,18 @@ class HListWidget(QListWidget):
         self.itemChanged.connect(self.item_changed)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Handles and forwards the key press event in the list. """
         super().keyPressEvent(event)
         self.keyPressed.emit(event.key())
 
     def item_changed(self, item: QListWidgetItem):
-        """TODO"""
+        """Handles itemChanged event to avoid adding duplicates to the list. """
         existing = self.findItems(item.text(), Qt.MatchFixedString)
         if len(existing) > 1:
             self.del_item(item)
 
     def addItem(self, item: QListWidgetItem) -> None:
-        """TODO"""
+        """Adds the specified element to this list regardless if it is present or not. """
         prev = self.item(self.count() - 1)
         if prev:
             item.setFlags(prev.flags())
@@ -61,57 +62,66 @@ class HListWidget(QListWidget):
         self._items.append(item)
 
     def is_empty(self) -> bool:
-        """TODO"""
+        """Returns true if this list contains no elements. """
         return len(self._items) == 0
 
-    def set_item(self, item: str, flags: Union[Qt.ItemFlags, Qt.ItemFlag] = None) -> None:
-        """TODO"""
+    def set_item(self, item: Union[str, QListWidgetItem], flags: Union[Qt.ItemFlags, Qt.ItemFlag] = None) -> None:
+        """Adds the specified element to this list if it is not already present."""
         if not self.findItems(item, Qt.MatchFixedString):
-            w_item = QListWidgetItem(item)
-            w_item.setFlags(flags or Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
-            self.addItem(w_item)
+            if isinstance(item, str):
+                w_item = QListWidgetItem(item)
+                w_item.setFlags(flags or Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
+                self.addItem(w_item)
+            else:
+                item.setFlags(flags or Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled)
+                self.addItem(item)
 
-    def remove_item(self, row: int) -> None:
-        """TODO"""
+    def remove_item_at_index(self, row: int) -> Optional[QListWidgetItem]:
+        """Removes the element at the specified row from this list if it is present. """
         item = self.takeItem(row)
         if item:
             self._items.remove(self._items[row])
+        return item
 
-    def del_item(self, item_or_index: Union[int, QModelIndex, QListWidgetItem]) -> None:
-        """TODO"""
+    def del_item(self, item_or_index: Union[int, QModelIndex, QListWidgetItem]) -> Optional[QListWidgetItem]:
+        """Removes the specified element from this list if it is present."""
+        item = None
         if isinstance(item_or_index, int):
             if 0 <= item_or_index < len(self._items):
-                self.remove_item(item_or_index)
+                item = self.remove_item_at_index(item_or_index)
         elif isinstance(item_or_index, QListWidgetItem):
             index = self.indexFromItem(item_or_index)
             if index:
-                self.remove_item(index.row())
+                item = self.remove_item_at_index(index.row())
         elif isinstance(item_or_index, QModelIndex):
-            self.remove_item(item_or_index.row())
+            item = self.remove_item_at_index(item_or_index.row())
+
+        return item
 
     def clear(self) -> None:
-        """TODO"""
+        """Removes all of the elements from this list."""
         super().clear()
         del self._items[:]
 
-    def index_of(self, item: str) -> int:
-        """TODO"""
-        return next((obj for obj in self._items if obj == item), None)
-
-    def as_list(self) -> List[str]:
-        """TODO"""
-        return list(map(QListWidgetItem.text, self._items))
-
-    def text(self) -> str:
-        """TODO"""
-        return self.currentItem().text()
-
     def size(self) -> int:
-        """TODO"""
+        """Returns the number of elements in this list. """
         return self.count()
 
+    def index_of(self, item: str) -> int:
+        """Returns the index of the first occurrence of the specified element in this list,
+        or -1 if this list does not contain the element."""
+        return next((obj for obj in self._items if obj == item), -1)
+
+    def as_list(self) -> List[str]:
+        """Returns a list containing all items in this list as a string."""
+        return list(map(QListWidgetItem.text, self._items))
+
+    def current_text(self) -> str:
+        """Returns the current item's text."""
+        return self.currentItem().text()
+
     def set_editable(self, editable: bool = True) -> None:
-        """TODO"""
+        """Set editable property."""
         for item in self._items:
             flags = int(item.flags())
             if editable:
@@ -121,7 +131,7 @@ class HListWidget(QListWidget):
             self.editable = editable
 
     def set_selectable(self, selectable: bool = True) -> None:
-        """TODO"""
+        """Set selectable property."""
         for item in self._items:
             flags = int(item.flags())
             if selectable:
@@ -131,8 +141,8 @@ class HListWidget(QListWidget):
             self.selectable = selectable
 
     def context_menu(self) -> None:
-        """Display the custom context menu"""
-        if  self._context_menu_enable:
+        """Display the custom context menu."""
+        if self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self.editable:
                 ctx_menu.addAction('Add Item', lambda: self.set_item("<new_item>"))

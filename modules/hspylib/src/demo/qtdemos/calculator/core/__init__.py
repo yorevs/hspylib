@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.91
+# hspylib v0.11.92
 #
 # Package: demo.qtdemos.calculator.core
 """Package initialization."""
 
 __all__ = [
-  'calc_operations'
+    'calc_operations'
 ]
-__version__ = '0.11.91'
+__version__ = '0.11.92'

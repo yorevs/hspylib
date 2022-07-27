@@ -17,6 +17,7 @@
 import sys
 from argparse import ArgumentError, ArgumentParser
 
+
 class HSArgumentParser(ArgumentParser):
     """TODO"""
 

@@ -25,37 +25,37 @@ from hspylib.modules.cli.keyboard import Keyboard
 
 
 class Widget_WIDGET_NAME_(Widget):
-    """HSPyLib to do something"""
-    WIDGET_ICON = WidgetIcons.WIDGET
-    WIDGET_NAME = "_WIDGET_NAME_"
-    TOOLTIP = "TODO Widget tooltip"
-    USAGE = "Usage: _WIDGET_NAME_"
-    VERSION = (0, 1, 0)
+  """HSPyLib to do something"""
+  WIDGET_ICON = WidgetIcons.WIDGET
+  WIDGET_NAME = "_WIDGET_NAME_"
+  TOOLTIP = "TODO Widget tooltip"
+  USAGE = "Usage: _WIDGET_NAME_"
+  VERSION = (0, 1, 0)
 
-    def __init__(self):
-        super().__init__(
-            self.WIDGET_ICON,
-            self.WIDGET_NAME,
-            self.TOOLTIP,
-            self.USAGE,
-            self.VERSION)
-        self._exit_code = ExitCode.SUCCESS
+  def __init__(self):
+    super().__init__(
+      self.WIDGET_ICON,
+      self.WIDGET_NAME,
+      self.TOOLTIP,
+      self.USAGE,
+      self.VERSION)
+    self._exit_code = ExitCode.SUCCESS
 
-    def execute(self, args: List[str] = None) -> ExitCode:
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            done = False
-            while not done and not Keyboard.kbhit():
-                future = executor.submit(self._do_something)
-                done = not future.result()
-                sleep(0.5)
+  def execute(self, args: List[str] = None) -> ExitCode:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      done = False
+      while not done and not Keyboard.kbhit():
+        future = executor.submit(self._do_something)
+        done = not future.result()
+        sleep(0.5)
 
-        return self._exit_code
+    return self._exit_code
 
-    def cleanup(self) -> None:
-        # If your widget requires any cleanup procedures
-        pass
+  def cleanup(self) -> None:
+    # If your widget requires any cleanup procedures
+    pass
 
-    def _do_something(self) -> None:
-        sysout('')
-        sysout('My widget is running')
-        sysout('')
+  def _do_something(self) -> None:
+    sysout('')
+    sysout('My widget is running')
+    sysout('')

@@ -15,6 +15,7 @@
 
 from hspylib.modules.cli.vt100.terminal import Terminal
 
+
 class GitTools:
     """TODO"""
 

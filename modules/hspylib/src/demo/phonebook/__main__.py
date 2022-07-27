@@ -26,8 +26,8 @@ from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
-
 HERE = str(get_path(__file__))
+
 
 class Main(Application):
     """TODO"""
