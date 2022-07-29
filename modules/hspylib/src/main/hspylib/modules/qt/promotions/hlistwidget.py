@@ -39,7 +39,7 @@ class HListWidget(QListWidget):
         self._custom_menu_actions = []
         self._context_menu_enable = True
         self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.context_menu)
+        self.customContextMenuRequested.connect(self._context_menu)
         self.itemChanged.connect(self.item_changed)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
@@ -144,7 +144,7 @@ class HListWidget(QListWidget):
                 item.setFlags(self.unset_flag(flags, int(Qt.ItemIsSelectable)))
         self._selectable = selectable
 
-    def context_menu(self) -> None:
+    def _context_menu(self) -> None:
         """Display the custom context menu."""
         if self._context_menu_enable:
             ctx_menu = QMenu(self)
