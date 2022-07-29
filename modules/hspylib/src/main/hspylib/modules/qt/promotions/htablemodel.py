@@ -39,20 +39,20 @@ class HTableModel(QAbstractTableModel):
         max_rows: int = 500):
 
         QAbstractTableModel.__init__(self, parent)
-        self.parent = parent
-        self.clazz = clazz
-        self.table_data = collections.deque(maxlen=max_rows)
-        self.filters = CollectionFilter()
-        self.headers = headers or self._headers_by_entity()
-        self.cell_alignments = cell_alignments
-        self.parent.setModel(self)
+        self._parent = parent
+        self._clazz = clazz
+        self._data = collections.deque(maxlen=max_rows)
+        self._filters = CollectionFilter()
+        self._headers = headers or self._headers_by_entity()
+        self._cell_alignments = cell_alignments
+        self._parent.setModel(self)
         self.push_data(table_data or [])
 
     def removeRow(self, row: int, parent: QModelIndex = ...) -> bool:  # pylint: disable=unused-argument
         """TODO"""
-        if 0 <= row < len(self.table_data):
+        if 0 <= row < len(self._data):
             self.beginRemoveRows(QModelIndex(), row, row + 1)
-            del self.table_data[row]
+            del self._data[row]
             self.layoutChanged.emit()
             self.endRemoveRows()
             return True
@@ -61,14 +61,14 @@ class HTableModel(QAbstractTableModel):
     def data(self, index: QModelIndex, role: int = ...) -> QVariant:
         """TODO"""
         if role == Qt.DisplayRole:
-            row_dict = self.table_data[index.row()].__dict__
+            row_dict = self._data[index.row()].__dict__
             value = class_attribute_values(row_dict)[index.column()]
             ret_val = QVariant(str(value if value is not None else ''))
         elif role == Qt.TextAlignmentRole:
-            ret_val = QVariant(self.cell_alignments[index.column()]) \
-                if self.cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
+            ret_val = QVariant(self._cell_alignments[index.column()]) \
+                if self._cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
         elif role == Qt.BackgroundColorRole:
-            light_gray = self.parent.palette().color(QPalette.Window).lighter(100)
+            light_gray = self._parent.palette().color(QPalette.Window).lighter(100)
             ret_val = QVariant(light_gray if index.row() % 2 != 0 else '')
         else:
             ret_val = None
@@ -79,8 +79,8 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         ret_val = None
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            ret_val = QVariant(self.headers[section].upper()) \
-                if len(self.headers) >= section else QVariant('-')
+            ret_val = QVariant(self._headers[section].upper()) \
+                if len(self._headers) >= section else QVariant('-')
         elif orientation == Qt.Vertical and role == Qt.DisplayRole:
             ret_val = QVariant(str(section))
 
@@ -88,23 +88,23 @@ class HTableModel(QAbstractTableModel):
 
     def rowCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""
-        return len(self.table_data) if self.table_data else 0
+        return len(self._data) if self._data else 0
 
     def columnCount(self, parent: QModelIndex = ...) -> int:  # pylint: disable=unused-argument
         """TODO"""
-        return len(self.headers) if self.table_data else 0
+        return len(self._headers) if self._data else 0
 
     def sort(self, column: int, order: Qt.SortOrder = ...) -> None:
         """TODO"""
-        keys = class_attribute_names(self.clazz)
-        self.table_data = sorted(self.table_data, key=lambda x: getattr(x, keys[column]), reverse=bool(order))
+        keys = class_attribute_names(self._clazz)
+        self._data = sorted(self._data, key=lambda x: getattr(x, keys[column]), reverse=bool(order))
         self.layoutChanged.emit()
 
     def append(self, data: T):
         """TODO"""
-        if data and not self.filters.should_filter(data):
+        if data and not self._filters.should_filter(data):
             self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount() + 1)
-            self.table_data.append(data)
+            self._data.append(data)
             self.endInsertRows()
             self.layoutChanged.emit()
 
@@ -115,15 +115,15 @@ class HTableModel(QAbstractTableModel):
         condition: FilterConditions,
         el_value: Union[int, str, bool, float]) -> None:
         """TODO"""
-        self.filters.apply_filter(name, el_name, condition, el_value)
+        self._filters.apply_filter(name, el_name, condition, el_value)
 
     def filter(self) -> None:
         """TODO"""
-        self.table_data = self.filters.filter(list(self.table_data))
+        self._data = self._filters.filter(list(self._data))
 
     def row(self, index: QModelIndex) -> T:
         """TODO"""
-        return self.table_data[index.row()]
+        return self._data[index.row()]
 
     def column(self, index: QModelIndex) -> T:
         """TODO"""
@@ -142,16 +142,16 @@ class HTableModel(QAbstractTableModel):
 
     def clear(self):
         """TODO"""
-        self.table_data.clear()
+        self._data.clear()
         self.layoutChanged.emit()
 
     def is_empty(self) -> bool:
         """TODO"""
-        return len(self.table_data) == 0
+        return len(self._data) == 0
 
     def refresh_data(self) -> None:
         """TODO"""
-        self.table_data = self.filters.filter(list(self.table_data))
+        self._data = self._filters.filter(list(self._data))
         self.layoutChanged.emit()
 
     def remove_rows(self, rows: List[QModelIndex]):
@@ -162,13 +162,13 @@ class HTableModel(QAbstractTableModel):
 
     def _headers_by_entity(self) -> List[str]:
         """TODO"""
-        attributes = class_attribute_names(self.clazz)
+        attributes = class_attribute_names(self._clazz)
         return [str(x).capitalize() for x in attributes]
 
     def selected_data(self) -> Tuple[List[QModelIndex], List[T]]:
         """TODO"""
-        sel_model = self.parent.selectionModel()
+        sel_model = self._parent.selectionModel()
         if sel_model:
             sel_indexes = sel_model.selectedIndexes()
             sel_rows = set([idx.row() for idx in sel_indexes])
-            return sel_indexes, [self.table_data[row] for row in sel_rows]
+            return sel_indexes, [self._data[row] for row in sel_rows]

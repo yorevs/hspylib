@@ -15,7 +15,7 @@
 from typing import Optional
 
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QFontMetrics, QResizeEvent, QTextDocument
+from PyQt5.QtGui import QFontMetrics, QMouseEvent, QResizeEvent, QTextDocument
 from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget
 
 
@@ -52,7 +52,7 @@ class HLabel(QLabel):
     def set_dynamic_tooltip(self, dynamic_tooltip: bool) -> None:
         self._dynamic_tooltip = dynamic_tooltip
 
-    def mousePressEvent(self, ev) -> None:  # pylint: disable=unused-argument
+    def mousePressEvent(self, ev: QMouseEvent) -> None:  # pylint: disable=unused-argument
         if self._clickable:
             self.clicked.emit()
 
