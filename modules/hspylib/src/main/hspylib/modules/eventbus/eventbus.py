@@ -14,7 +14,6 @@
 """
 
 from typing import Any, Callable, List
-
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.eventbus.event import Event
 

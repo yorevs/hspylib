@@ -20,7 +20,6 @@ import re
 import sys
 from datetime import datetime, timedelta
 from typing import Any, List, Optional, Tuple, Type, Union
-
 from hspylib.core.tools.constants import DATE_TIME_FORMAT, TRUE_VALUES
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes

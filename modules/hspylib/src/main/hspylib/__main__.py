@@ -14,7 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 import sys
-
 from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.appman.appman_enums import AppType, Extension

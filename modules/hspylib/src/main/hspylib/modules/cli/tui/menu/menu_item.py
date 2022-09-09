@@ -15,7 +15,6 @@
 
 from abc import ABC, abstractmethod
 from typing import Optional
-
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.tui.menu.menu import Menu

@@ -17,7 +17,6 @@ import logging as log
 import os
 from textwrap import dedent
 from typing import Any, Optional
-
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir

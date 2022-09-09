@@ -20,7 +20,6 @@ import socket
 import threading
 from time import sleep
 from typing import List
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError

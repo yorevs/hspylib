@@ -15,7 +15,6 @@
 
 import signal
 from typing import Optional
-
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 

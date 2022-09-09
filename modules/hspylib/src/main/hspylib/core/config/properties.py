@@ -18,10 +18,9 @@ import os
 import re
 from configparser import ConfigParser
 from typing import List, Optional
-
 import yaml
-
 from hspylib.core.tools.commons import flatten_dict, run_dir, str_to_bool, touch_file
+
 
 
 class Properties:

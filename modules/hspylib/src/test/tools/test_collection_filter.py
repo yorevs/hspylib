@@ -17,7 +17,6 @@
 import collections
 import sys
 import unittest
-
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.tools.collection_filter import *
 

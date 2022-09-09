@@ -14,7 +14,6 @@
 """
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
-
 class WebappIcons(Awesome):
     """
         Dashboard UI icons.

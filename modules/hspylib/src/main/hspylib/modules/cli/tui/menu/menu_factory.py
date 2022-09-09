@@ -18,7 +18,6 @@ from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_entry import MenuEntry
 from hspylib.modules.cli.tui.menu.menu_option import MenuOption
 
-
 class MenuFactory(metaclass=Singleton):
     """TODO"""
 

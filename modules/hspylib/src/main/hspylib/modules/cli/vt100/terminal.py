@@ -19,7 +19,6 @@ import shlex
 import subprocess
 from abc import ABC
 from typing import Optional, Tuple
-
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import syserr
 

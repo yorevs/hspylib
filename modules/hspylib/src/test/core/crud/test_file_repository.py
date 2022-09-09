@@ -18,7 +18,6 @@ import logging as log
 import os
 import sys
 import unittest
-
 from hspylib.core.config.app_config import AppConfigs
 from shared.entity_test import EntityTest
 from shared.file_db_repository_test import FileDbRepositoryTest

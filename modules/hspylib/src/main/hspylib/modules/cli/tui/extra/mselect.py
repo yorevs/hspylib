@@ -15,7 +15,6 @@
 import re
 from abc import ABC
 from typing import List, Optional, TypeVar
-
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard

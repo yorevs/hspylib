@@ -15,7 +15,6 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 
-
 class HttpMethod(Enumeration):
     """TODO"""
 

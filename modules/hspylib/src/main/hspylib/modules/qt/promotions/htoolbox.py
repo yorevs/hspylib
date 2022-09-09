@@ -1,5 +1,20 @@
-from functools import cached_property
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+"""
+   TODO Purpose of the file
+   @project: hspylib
+   @package: hspylib.main.hspylib.modules.qt.promotions
+      @file: htoolbox.py
+   @created: Fri, 29 Jul 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HSPyLib team
+"""
+
+from functools import cached_property
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject, Qt, QVariantAnimation
 from PyQt5.QtWidgets import QToolBox

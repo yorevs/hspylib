@@ -14,7 +14,6 @@
 """
 
 from http import HTTPStatus as http_code
-
 from hspylib.core.enums.enumeration import Enumeration
 
 

@@ -15,7 +15,6 @@
 """
 
 from typing import List, Tuple
-
 from hspylib.core.tools.constants import RE_EMAIL_W3C
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator

@@ -32,3 +32,4 @@ class Event:
 
     def __getitem__(self, item: str):
         return self.kwargs[item]
+

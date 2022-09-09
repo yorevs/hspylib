@@ -16,7 +16,6 @@
 import re
 import typing
 
-
 class InputValidator:
     """TODO"""
 

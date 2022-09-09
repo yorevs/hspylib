@@ -16,16 +16,15 @@
 import logging as log
 import os
 from textwrap import dedent
-
 import cryptocode
 from requests.structures import CaseInsensitiveDict
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.modules.fetch.fetch import get
+
 
 
 class FirebaseConfig(metaclass=Singleton):

@@ -15,7 +15,6 @@
 """
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
-
 if __name__ == '__main__':
     # @formatter:off
     form_fields = MenuInput.builder() \
