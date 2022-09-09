@@ -16,7 +16,6 @@
 
 import os
 import unittest
-
 from hspylib.core.tools.commons import str_to_bool
 
 it_disabled = str_to_bool(os.environ.get('HSPYLIB_IT_DISABLED', 'True'))

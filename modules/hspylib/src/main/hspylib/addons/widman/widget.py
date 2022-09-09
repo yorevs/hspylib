@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   main.addons.widman
+   TODO Purpose of the file
+   @project: hspylib
+   @package: hspylib.main.hspylib.addons.widman
       @file: widget.py
-   @created: Thu, 20 May 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
-      @site: https://github.com/yorevs/hspylib
+   @created: Fri, 29 Jul 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
    Copyright 2022, HSPyLib team
@@ -15,7 +16,6 @@
 
 from abc import ABC, abstractmethod
 from typing import List, Tuple
-
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 

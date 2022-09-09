@@ -15,7 +15,6 @@
 """
 
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
-
 if __name__ == '__main__':
     h = [
         'String',

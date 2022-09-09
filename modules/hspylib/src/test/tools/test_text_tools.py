@@ -18,7 +18,6 @@ import string
 import sys
 import unittest
 from textwrap import dedent
-
 from hspylib.core.tools.text_tools import *
 
 

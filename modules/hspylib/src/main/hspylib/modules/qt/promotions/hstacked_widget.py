@@ -15,7 +15,6 @@
 """
 
 from typing import List
-
 from PyQt5.QtCore import pyqtSlot, QAbstractAnimation, QEasingCurve, QParallelAnimationGroup, QPoint, \
     QPropertyAnimation, Qt
 from PyQt5.QtWidgets import QStackedWidget, QWidget

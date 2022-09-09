@@ -1,15 +1,17 @@
-class DemoTableRow:
-    """TODO"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-    def __init__(self):
-        self.color: str = ''
-        self.text: str = ''
-        self.desc: str = ''
-        self.lst_items: list = []
+"""
+   TODO Purpose of the file
+   @project: hspylib
+   @package: hspylib.demo.qtdemos.promotions.core
+      @file: demo_table_row.py
+   @created: Fri, 29 Jul 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-    def __str__(self):
-        return f'' \
-               f'{"Color: " + self.color if self.color else " "}' \
-               f'{"  Text: " + self.text if self.text else " "}' \
-               f'{"  Desc: " + self.desc if self.desc else " "}' \
-               f'{"  Items: " + ",".join(self.lst_items) if self.lst_items else " "}'
+   Copyright 2022, HSPyLib team
+"""
+
+

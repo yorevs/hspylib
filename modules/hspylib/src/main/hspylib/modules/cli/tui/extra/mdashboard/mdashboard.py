@@ -14,7 +14,6 @@
 """
 
 from typing import List, Optional
-
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.preconditions import check_state
 from hspylib.modules.cli.keyboard import Keyboard

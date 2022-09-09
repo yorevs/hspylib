@@ -16,7 +16,6 @@
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_item import MenuItem
 from hspylib.modules.cli.vt100.vt_colors import VtColors
-
 MENU_TPL = """%ED2%%HOM%
 {}
 

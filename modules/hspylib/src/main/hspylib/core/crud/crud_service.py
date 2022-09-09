@@ -15,7 +15,6 @@
 
 from typing import Generic, List, Optional, TypeVar
 from uuid import UUID
-
 from hspylib.core.exception.exceptions import EntityNotFoundError
 
 E = TypeVar('E')

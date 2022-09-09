@@ -16,7 +16,6 @@ import logging as log
 import os
 from pathlib import Path
 from typing import Tuple, Union
-
 from hspylib.core.tools.commons import read_version
 
 

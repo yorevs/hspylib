@@ -15,7 +15,6 @@
 import re
 import time
 from typing import List, Optional
-
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import new_dynamic_object, syserr, sysout
 from hspylib.core.tools.text_tools import camelcase, snakecase

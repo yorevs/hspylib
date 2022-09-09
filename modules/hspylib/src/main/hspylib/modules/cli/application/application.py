@@ -22,7 +22,6 @@ import traceback
 from datetime import datetime
 from textwrap import dedent
 from typing import Optional, Union
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, \
     InvalidStateError
@@ -93,7 +92,7 @@ class Application(metaclass=Singleton):
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources')
         else:
-            log.warning(f'Resource dir \"{resource_dir or "<none>"}\" not found. AppConfigs will not be available!')
+            log.debug(f'Resource dir \"{resource_dir or "<none>"}\" not found. AppConfigs will not be available!')
 
         # Initialize application logs
         self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"

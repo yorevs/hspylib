@@ -15,7 +15,6 @@
 import sys
 import traceback
 from typing import Callable
-
 from hspylib.core.tools.commons import syserr
 
 

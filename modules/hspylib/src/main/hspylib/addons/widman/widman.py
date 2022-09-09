@@ -16,7 +16,6 @@ import atexit
 import os
 import sys
 from typing import List
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widget_entry import WidgetEntry
 from hspylib.core.enums.exit_code import ExitCode
@@ -60,7 +59,7 @@ class WidgetManager(metaclass=Singleton):
         try:
             atexit.register(widget.cleanup)
             exit_code = widget.execute(widget_args)
-            if exit_code != ExitCode.SUCCESS:
+            if exit_code in [ExitCode.ERROR, ExitCode.FAILED]:
                 raise WidgetExecutionError(f"Widget '{widget_name}' failed to execute. exit_code={exit_code}")
         except Exception as err:
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err

@@ -15,7 +15,6 @@
 """
 
 import sys
-
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version

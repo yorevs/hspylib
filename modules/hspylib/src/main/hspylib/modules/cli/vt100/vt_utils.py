@@ -20,7 +20,6 @@ import sys
 import termios
 import tty
 from typing import List, Optional, Tuple
-
 from hspylib.core.tools.commons import is_debugging, sysout
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_codes import vt_print

@@ -14,7 +14,6 @@
 """
 
 from requests.models import CaseInsensitiveDict, Response
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.content_type import ContentType
 from hspylib.core.enums.http_code import HttpCode

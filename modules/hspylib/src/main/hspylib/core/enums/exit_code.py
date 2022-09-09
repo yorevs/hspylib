@@ -31,6 +31,9 @@ class ExitCode(Enumeration):
     # Returned when something that was supposed to work and failed due to unexpected software behaviour
     FAILED  = 1
 
+    # Returned when something ran should be aborted. Generally due to usr cancellation
+    ABORTED = 2
+
     # @formatter:on
 
     def __str__(self):

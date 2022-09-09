@@ -15,7 +15,6 @@
 
 from abc import abstractmethod
 from typing import Tuple
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.crud_repository import CrudRepository

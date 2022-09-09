@@ -16,7 +16,6 @@
 
 import collections
 from typing import List
-
 from hspylib.core.tools.collection_filter import CollectionFilter, FilterConditions
 
 

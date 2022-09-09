@@ -15,7 +15,6 @@
 """
 import sys
 import unittest
-
 from hspylib.core.tools.preconditions import *
 
 

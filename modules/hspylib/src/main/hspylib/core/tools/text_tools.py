@@ -16,7 +16,6 @@ import os
 import random
 import re
 from typing import Optional, Tuple, List, Any
-
 from hspylib.core.tools.commons import get_or_default
 
 

@@ -16,9 +16,7 @@
 import os
 from textwrap import dedent
 from typing import List
-
 import urllib3
-
 from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.enums.http_code import HttpCode
@@ -31,6 +29,7 @@ from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
+
 
 HERE = get_path(__file__)
 

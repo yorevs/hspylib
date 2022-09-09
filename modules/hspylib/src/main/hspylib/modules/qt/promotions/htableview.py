@@ -14,15 +14,14 @@
 """
 import os
 from typing import Callable, Optional
-
 import pyperclip as clipboard
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QPainter, QPaintEvent
 from PyQt5.QtWidgets import QAbstractScrollArea, QHeaderView, QMenu, QTableView, QWidget
-
 from hspylib.core.tools.collection_filter import CollectionFilter
 from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_linebreaks
+
 
 
 class HTableView(QTableView):
