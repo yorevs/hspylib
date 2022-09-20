@@ -21,6 +21,7 @@ from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
+from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 
@@ -29,7 +30,7 @@ class Main(Application):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # Location of the .version file
     VERSION_DIR = _Classpath.source_root()
@@ -45,6 +46,7 @@ class Main(Application):
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
+
         # @formatter:off
         self._with_chained_args('application', 'the HSPyLib application to run') \
             .argument(self.Addon.APPMAN.value, 'app Application Manager: Create HSPyLib based python applications') \
@@ -72,16 +74,19 @@ class Main(Application):
                     'the name of the widget to be executed. If omitted, all available widgets will be '
                     'presented in a dashboard',
                     nargs='?') \
-                .add_argument('widget-args', "the widget's arguments (if applicable)", nargs='*') \
+                .add_argument(
+                    'widget-args', "the widget's arguments (if applicable)",
+                    nargs='*') \
             # @formatter:on
 
     def _main(self, *params, **kwargs) -> int:
         """Main entry point handler"""
-        self._exec_application()
+        self._run()
         return 0
 
-    def _exec_application(self) -> None:
+    def _run(self) -> None:
         """Execute the application"""
+
         app = self.get_arg('application')
         if app == self.Addon.APPMAN.value:
             addon = AppManager(self)
@@ -108,7 +113,7 @@ class Main(Application):
             addon = WidgetManager(self)
             widget_name = self.get_arg('widget-name')
             if widget_name:
-                widget_args = self.get_arg('widget-args')
+                widget_args = list(map(strip_linebreaks, self.get_arg('widget-args')))
                 addon.execute(widget_name, widget_args)
             else:
                 addon.dashboard()

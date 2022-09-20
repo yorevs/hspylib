@@ -16,7 +16,7 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 class Charset(Enumeration):
-    """TODO"""
+    """Enumeration to wrap all charset/encode types."""
 
     # @formatter:off
     ASCII           = 'ASCII'

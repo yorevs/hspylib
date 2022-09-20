@@ -38,7 +38,8 @@ class WidgetManager(metaclass=Singleton):
 
     @staticmethod
     def _name_matches(widget_1_name: str, widget_2_name: str) -> bool:
-        """Check if two names matches using defined name rules"""
+        """Check if two names matches using defined naming rules"""
+
         return \
             widget_1_name.lower() == widget_2_name.lower() \
             or widget_1_name == widget_2_name.capitalize() \
@@ -55,6 +56,7 @@ class WidgetManager(metaclass=Singleton):
 
     def execute(self, widget_name: str, widget_args: List[str]) -> None:
         """Execute the specified widget"""
+
         widget = self._find_widget(camelcase(widget_name, upper=True))
         try:
             atexit.register(widget.cleanup)
@@ -66,6 +68,7 @@ class WidgetManager(metaclass=Singleton):
 
     def dashboard(self) -> None:
         """Display all available widgets from the widget lookup paths"""
+
         items = []
         try:
             for widget_entry in self._widgets:
@@ -81,10 +84,11 @@ class WidgetManager(metaclass=Singleton):
     # pylint: disable=cell-var-from-loop
     def _load_widgets(self) -> int:
         """Search and load all widgets from the widget lookup paths"""
+
         for path in self._lookup_paths:
             for root, _, files in os.walk(path):
                 filtered = list(filter(
-                    lambda p: p.startswith(WidgetEntry.WIDGET_MODULE_PREFIX) and p.endswith('py'), files
+                    lambda p: p.startswith(WidgetEntry.MODULE_PREFIX) and p.endswith('py'), files
                 ))
                 widgets = list(map(lambda w: WidgetEntry(w, f"{root}/{w}"), filtered))
                 self._widgets.extend(widgets)
@@ -96,6 +100,7 @@ class WidgetManager(metaclass=Singleton):
         Find and return a widget specified by 'widget_name'. If no widget is found,
         then, an exception will be raised
         """
+
         widget_entry = next((w for w in self._widgets if self._name_matches(widget_name, w.name)), None)
         if not widget_entry:
             raise WidgetNotFoundError(

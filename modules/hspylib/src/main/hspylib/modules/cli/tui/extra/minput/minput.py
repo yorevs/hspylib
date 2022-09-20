@@ -16,7 +16,7 @@ import re
 import time
 from typing import List, Optional
 from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.commons import new_dynamic_object, syserr, sysout
+from hspylib.core.tools.commons import namespace, syserr, sysout
 from hspylib.core.tools.text_tools import camelcase, snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -56,7 +56,7 @@ class MenuInput:
     NAV_ICONS = '\u2191\u2193'
     NAV_FMT = "\n{}[Enter] Submit  [{}] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
-    FormFields = new_dynamic_object('FormFields')  # New type definition to return filled fields
+    FormFields = namespace('FormFields')  # New type definition to return filled fields
 
     @classmethod
     def builder(cls) -> FormBuilder:

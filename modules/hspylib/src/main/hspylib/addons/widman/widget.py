@@ -15,21 +15,23 @@
 """
 
 from abc import ABC, abstractmethod
+from textwrap import dedent
 from typing import List, Tuple
+
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):
-    """HSPyLib Widgets base class. All widgets must inherit from this class"""
+    """HSPyLib_Widman base class. All widgets must inherit from this class to properly work."""
 
-    _USAGE_FMT = """
-HSPyLib Widget: {} v{}
+    _USAGE_FMT = dedent("""
+    HSPyLib Widget: {} v{}
 
-{}
+    {}
 
-{}
-"""
+    {}
+    """)
 
     def __init__(
         self,
@@ -38,6 +40,7 @@ HSPyLib Widget: {} v{}
         tooltip: str,
         usage: str,
         version: Tuple[int, int, int]):
+
         self._icon = icon
         self._name = name
         self._tooltip = tooltip

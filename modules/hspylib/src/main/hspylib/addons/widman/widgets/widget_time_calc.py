@@ -28,11 +28,17 @@ from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 
 class WidgetTimeCalc(Widget):
     """HSPyLib Widget to calculate time based operations"""
+
     WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
     TOOLTIP = "Calculate time based operations."
     USAGE = "Usage: TimeCalc [+d|++decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
     VERSION = (0, 1, 0)
+
+    @staticmethod
+    def _decimal(time_raw: int = 0) -> int:
+        """ Convert a raw time into decimal """
+        return int(round(((time_raw / 60.00) * 100.00)))
 
     def __init__(self):
         super().__init__(
@@ -47,17 +53,18 @@ class WidgetTimeCalc(Widget):
         self.decimal = False
         self.args = None
 
-    def parse_args(self, args: List[str]) -> Optional[ExitCode]:
+    def _parse_args(self, args: List[str]) -> Optional[ExitCode]:
         """TODO"""
 
         if not args and not self._read_args():
-                return ExitCode.ABORTED
+            return ExitCode.ABORTED
         elif any(a in args for a in ['+h', '++help']):
             sysout(self.usage())
             return ExitCode.SUCCESS
         elif any(a in args for a in ['+v', '++version']):
             sysout(self.version())
             return ExitCode.SUCCESS
+
         if any(a in args for a in ['+d', '++decimal']):
             self.decimal = True
             args = args[1:]
@@ -70,7 +77,7 @@ class WidgetTimeCalc(Widget):
     def execute(self, args: List[str] = None) -> ExitCode:
         """TODO"""
 
-        ret_val = self.parse_args(args)
+        ret_val = self._parse_args(args)
 
         if ret_val is not None:
             return ret_val
@@ -81,13 +88,12 @@ class WidgetTimeCalc(Widget):
             elif re.match(r"^([0-9]{1,2}:?)+", tm):
                 try:
                     parts = [int(math.floor(float(s))) for s in tm.split(':')]
-                except ValueError:
-                    return ExitCode.ERROR
+                except ValueError as err:
+                    raise WidgetExecutionError(f"Unable to extract time parts from '{tm}'") from err
                 f_hours = parts[0] if len(parts) > 0 else 0
                 f_minutes = parts[1] if len(parts) > 1 else 0
                 f_secs = parts[2] if len(parts) > 2 else 0
                 tm_amount = ((f_hours * 60 + f_minutes) * 60 + f_secs)
-
                 if self.op == '+':
                     self.total_seconds += tm_amount
                 elif self.op == '-':
@@ -98,17 +104,12 @@ class WidgetTimeCalc(Widget):
         self.total_seconds, seconds = divmod(self.total_seconds, 60)
         hours, minutes = divmod(self.total_seconds, 60)
 
-        sysout('%HOM%%ED2%%MOD(0)%', end='')
         if self.decimal:
-            sysout(f"{hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
+            print(f"{hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
         else:
-            sysout(f"{hours:02d}:{self._decimal(minutes):02d}:{self._decimal(seconds):02d}")
+            print(f"{hours:02d}:{minutes:02d}:{seconds:02d}")
 
         return ExitCode.SUCCESS
-
-    def _decimal(self, time_raw: int = 0) -> int:
-        """ Convert a raw time into decimal """
-        return int(round(((time_raw / 60.00) * 100.00) if self.decimal else time_raw))
 
     def _read_args(self) -> bool:
         """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
@@ -134,5 +135,6 @@ class WidgetTimeCalc(Widget):
 
         result = minput(form_fields)
         self.args = [value for _, value in result.__dict__.items()] if result else []
+        sysout('%HOM%%ED2%%MOD(0)%', end='')
 
         return bool(result)

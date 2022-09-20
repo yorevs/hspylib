@@ -17,15 +17,15 @@ from hspylib.core.tools.text_tools import camelcase
 
 
 class WidgetEntry:
-    """Placeholder entry for a HSPyLib Widget and details about it"""
+    """Placeholder object for a HSPyLib::Widman Widget and details about it."""
 
-    WIDGET_MODULE_PREFIX = 'widget_'
-    WIDGET_CLASS_PREFIX = 'Widget'
+    MODULE_PREFIX = 'widget_'
+    CLASS_PREFIX = 'Widget'
 
     def __init__(self, file: str, path: str):
         self.module = os.path.splitext(file)[0]
-        self.name = camelcase(self.module.replace(self.WIDGET_MODULE_PREFIX, ''), upper=True)
-        self.clazz = f"{self.WIDGET_CLASS_PREFIX}{self.name.replace('_', '')}"
+        self.name = camelcase(self.module.replace(self.MODULE_PREFIX, ''), upper=True)
+        self.clazz = f"{self.CLASS_PREFIX}{self.name.replace('_', '')}"
         self.path = path
 
     def __str__(self):
