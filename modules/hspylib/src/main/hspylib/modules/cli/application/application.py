@@ -143,7 +143,9 @@ class Application(metaclass=Singleton):
 
     def get_arg(self, arg_name: str) -> Optional[Union[str, list]]:
         """Get the argument value named by arg_name"""
-        return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
+        return getattr(self._args, arg_name) \
+            if self._args and hasattr(self._args, arg_name) \
+            else None
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""

@@ -156,13 +156,12 @@ def class_attribute_values(instance: dict) -> Optional[Tuple]:
     return tuple(instance.values()) if instance else None
 
 
-def new_dynamic_object(type_name: str, inherited_type: Any = object):
+def namespace(type_name: str):
     """TODO
     :param: type_name: TODO
-    :param: inherited_type: TODO
     """
 
-    return type(type_name, (inherited_type,), {})()
+    return type(type_name, (object,), {})()
 
 
 def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
@@ -336,3 +335,8 @@ def build_url(url_or_part: str) -> str:
         return url_or_part
 
     return f"http://{url_or_part}"
+
+
+if __name__ == '__main__':
+    sysout('%RED%Hugo')
+    sysout('Saporetti')
