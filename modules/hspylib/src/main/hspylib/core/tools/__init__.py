@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.96
+# hspylib v0.11.97
 #
 # Package: main.hspylib.core.tools
 """Package initialization."""
@@ -12,6 +12,7 @@ __all__ = [
   'git_tools', 
   'preconditions', 
   'text_tools', 
-  'validator'
+  'validator', 
+  'zoned_datetime'
 ]
-__version__ = '0.11.96'
+__version__ = '0.11.97'
