@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Tuple, Type
 
-from hspylib.core.constants import DATE_TIME_FORMAT
+from hspylib.core.tools.zoned_datetime import DATETIME_FORMAT
 
 
 class Validator(ABC):
@@ -67,7 +67,7 @@ class Validator(ABC):
     @staticmethod
     def is_date(
         date_text: str,
-        fmt: str = DATE_TIME_FORMAT) -> bool:
+        fmt: str = DATETIME_FORMAT) -> bool:
 
         try:
             datetime.strptime(date_text, fmt)

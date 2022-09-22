@@ -15,13 +15,13 @@
    Copyright 2022, HSPyLib team
 """
 import os
-from datetime import datetime
 from textwrap import dedent
 from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 
 
@@ -74,7 +74,7 @@ class WidgetPunch(Widget):
             sysout(self.version())
             return ExitCode.SUCCESS
 
-        date_stamp = datetime.today().strftime('%d-%m-%Y')
+        date_stamp = now('%d-%m-%Y')
 
         # Create the punch file if it does not exist
         if not os.path.exists(self.HHS_PUNCH_FILE):
