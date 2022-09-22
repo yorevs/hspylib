@@ -16,10 +16,10 @@
 import logging as log
 import os
 import sys
-from datetime import datetime
 from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 
@@ -67,7 +67,7 @@ class Main(Application):
         {self._app_name} v{self._app_version}
 
         Settings ==============================
-                STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+                STARTED: {now("%Y-%m-%d %H:%M:%S")}
         '''))
         self._exec_application()
         return 0

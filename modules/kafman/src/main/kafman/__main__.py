@@ -14,9 +14,12 @@
    Copyright 2022, HSPyLib team
 """
 
+import logging as log
 import sys
+from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
@@ -48,6 +51,12 @@ class Main(QtApplication):
         super().__init__(MainQtView, app_name, version, description, resource_dir=self.RESOURCE_DIR)
         self.set_application_font(self.FONT_PATH)
         self.set_application_icon(self.APP_ICON_PATH)
+        log.info(dedent(f'''
+        {self._app_name} v{self._app_version}
+
+        Settings ==============================
+                STARTED: {now("%Y-%m-%d %H:%M:%S")}
+        '''))
 
 
 if __name__ == "__main__":

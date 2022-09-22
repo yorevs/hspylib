@@ -18,7 +18,7 @@ from datetime import datetime
 from uuid import UUID
 
 from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.tools.constants import DATE_TIME_FORMAT
+from hspylib.core.tools.zoned_datetime import now
 
 
 class VaultEntry(CrudEntity):
@@ -49,7 +49,7 @@ class VaultEntry(CrudEntity):
         self.name = name
         self.password = password
         self.hint = hint
-        self.modified = modified if modified else datetime.now().strftime(DATE_TIME_FORMAT)
+        self.modified = modified if modified else now()
 
     def __str__(self):
         return self._FILE_ENTRY_FORMAT.format(
