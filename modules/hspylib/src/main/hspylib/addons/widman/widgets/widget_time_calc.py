@@ -18,6 +18,7 @@
 import math
 import re
 from typing import List, Optional
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
@@ -54,7 +55,7 @@ class WidgetTimeCalc(Widget):
         self.args = None
 
     def _parse_args(self, args: List[str]) -> Optional[ExitCode]:
-        """TODO"""
+        """Parse command line arguments"""
 
         if not args and not self._read_args():
             return ExitCode.ABORTED

@@ -15,13 +15,14 @@
 import sys
 from pathlib import Path
 from typing import TypeVar
+
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon
 from PyQt5.QtWidgets import QApplication
+
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.text_tools import titlecase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
-
 
 V = TypeVar('V', bound='QWidget')
 

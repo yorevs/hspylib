@@ -13,6 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 from typing import Callable
+
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 

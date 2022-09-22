@@ -28,9 +28,10 @@ from typing import List, Optional, Tuple, Union
 from confluent_kafka.cimpl import Consumer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
-from hspylib.core.tools.commons import dirname, now, now_ms
+from hspylib.core.tools.commons import dirname
 from hspylib.core.tools.preconditions import check_state
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
+from hspylib.core.tools.zoned_datetime import now, now_ms
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.fetch.fetch import is_reachable
@@ -66,7 +67,7 @@ from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = _Classpath.get_source(".version").read_text(encoding=Charset.UTF_8.value)
+    VERSION = _Classpath.get_source(".version").read_text(encoding=str(Charset.UTF_8))
 
     SCHEMA_DIR = (_Classpath.resource_dir() / "schema")
 
@@ -304,7 +305,7 @@ class MainQtView(QtView):
             'Open file', self._last_used_dir or '.', "Select a message file (*.txt *.json *.csv)")
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0][0])
-            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text(encoding=Charset.UTF_8.value))
+            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text(encoding=str(Charset.UTF_8)))
 
     def _save_message_file(self) -> None:
         file_tuple = QFileDialog.getSaveFileName(
@@ -312,7 +313,7 @@ class MainQtView(QtView):
             'Save file', self._last_used_dir or '.', "Save file as (*.*)")
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0])
-            with open(Path(file_tuple[0]), "w", encoding=Charset.UTF_8.value) as fd_file:
+            with open(Path(file_tuple[0]), "w", encoding=str(Charset.UTF_8)) as fd_file:
                 fd_file.write(self.ui.txt_producer.toPlainText())
 
     def _form_to_message(self, validate: bool = True) -> str:

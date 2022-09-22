@@ -14,13 +14,14 @@
 """
 
 import collections
-from typing import List, Type, TypeVar, Union, Tuple
+from typing import List, Tuple, Type, TypeVar, Union
+
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt, QVariant
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QTableView
+
 from hspylib.core.tools.collection_filter import CollectionFilter, FilterConditions
 from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
-
 
 T = TypeVar('T')
 
@@ -171,3 +172,7 @@ class HTableModel(QAbstractTableModel):
             sel_indexes = sel_model.selectedIndexes()
             sel_rows = set([idx.row() for idx in sel_indexes])
             return sel_indexes, [self._data[row] for row in sel_rows]
+
+    def filters(self) -> CollectionFilter:
+        """TODO"""
+        return self._filters

@@ -16,7 +16,7 @@ import threading
 from time import sleep
 from typing import Any, List, Union
 
-from avro.errors import AvroTypeException
+from avro.io import AvroTypeException
 from confluent_kafka import SerializingProducer
 from confluent_kafka.cimpl import KafkaError, Message
 from confluent_kafka.error import ValueSerializationError
@@ -74,7 +74,7 @@ class ProducerWorker(QThread):
         if self._started and self._producer is not None:
             self._worker_thread = threading.Thread(target=self._produce, args=(topics, messages,))
             self._worker_thread.name = f"kafka-producer-worker-{hash(self)}"
-            self._worker_thread.setDaemon(True)
+            self._worker_thread.daemon = True
             self._worker_thread.start()
 
     def is_started(self) -> bool:

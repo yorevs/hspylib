@@ -294,4 +294,6 @@ tasks.register('build', Task) {
   dependsOn compile
   mustRunAfter compile
   dependsOn check
+  mustRunAfter check
+  finalizedBy requirements
 }

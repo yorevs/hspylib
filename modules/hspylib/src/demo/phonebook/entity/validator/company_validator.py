@@ -15,6 +15,7 @@
 """
 
 from typing import List, Tuple
+
 from hspylib.core.tools.constants import RE_SIMPLE_URL
 from hspylib.core.tools.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator

@@ -14,6 +14,7 @@
 """
 from argparse import ArgumentParser
 from typing import Any, Union
+
 from hspylib.modules.cli.application.parser_action import ParserAction
 
 

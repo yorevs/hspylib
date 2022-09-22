@@ -13,6 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 from typing import Any, TypeVar
+
 from hspylib.core.tools.commons import str_to_bool
 from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import camelcase

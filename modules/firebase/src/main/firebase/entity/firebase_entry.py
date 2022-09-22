@@ -15,10 +15,10 @@
 """
 
 import json
-from datetime import datetime
 from typing import List
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.zoned_datetime import now
 
 from firebase.entity.file_entry import FileEntry
 
@@ -35,7 +35,7 @@ class FirebaseEntry:
         self.last_update_user = last_update_user
         self.files = files if files else []
         self.str_encoding = str(encoding).lower()
-        self.last_modified = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        self.last_modified = now("%d/%m/%Y %H:%M:%S")
 
     def __str__(self):
         return json.dumps(self.__dict__)

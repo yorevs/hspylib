@@ -14,7 +14,8 @@
 
 from typing import Tuple
 
-from hspylib.core.tools.commons import new_dynamic_object, now_ms
+from hspylib.core.tools.commons import namespace
+from hspylib.core.tools.zoned_datetime import now_ms
 from PyQt5.QtCore import pyqtSignal, QThread
 
 
@@ -27,10 +28,10 @@ class StatisticsWorker(QThread):
         super().__init__()
         self.setObjectName('kafka-statistics')
         self._started_ts = now_ms()
-        self._consumed = new_dynamic_object('ConsumerStats')
+        self._consumed = namespace('ConsumerStats')
         self._consumed.total = 0
         self._consumed.in_a_tick = 0
-        self._produced = new_dynamic_object('ProducerStats')
+        self._produced = namespace('ProducerStats')
         self._produced.total = 0
         self._produced.in_a_tick = 0
         self._report_interval = report_interval

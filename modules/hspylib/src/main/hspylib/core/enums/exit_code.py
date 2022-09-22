@@ -41,3 +41,6 @@ class ExitCode(Enumeration):
             '\033[0;32m' if self.name == 'SUCCESS' else '\033[0;31m',
             self.name, self.value
         )
+
+    def __repr__(self):
+        return str(self)

@@ -16,7 +16,7 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 class HttpMethod(Enumeration):
-    """TODO"""
+    """Associates the name of a HTTP method with an enumeration"""
 
     # @formatter:off
     OPTIONS     = 'options'

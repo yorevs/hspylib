@@ -15,6 +15,7 @@
 """
 
 from uuid import UUID
+
 from hspylib.core.crud.crud_entity import CrudEntity
 
 

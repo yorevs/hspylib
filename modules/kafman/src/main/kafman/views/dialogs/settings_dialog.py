@@ -45,9 +45,9 @@ class SettingsDialog(QObject):
         """TODO"""
 
         PRODUCER_SETTINGS = _Classpath.get_resource("producer-settings.properties")\
-            .read_text(encoding=Charset.UTF_8.value)
+            .read_text(encoding=str(Charset.UTF_8))
         CONSUMER_SETTINGS = _Classpath.get_resource("consumer-settings.properties")\
-            .read_text(encoding=Charset.UTF_8.value)
+            .read_text(encoding=str(Charset.UTF_8))
 
         # @formatter:off
         PRODUCER = 'PRODUCER', PRODUCER_SETTINGS

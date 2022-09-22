@@ -14,6 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 import sys
+
 from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.appman.appman_enums import AppType, Extension
@@ -98,7 +99,7 @@ class Main(Application):
                     list(map(Extension.value_of, app_ext)) if app_ext else [],
                     self.get_arg('dest-dir') or run_dir())
             else:
-                args = addon.prompt()
+                args = addon._prompt()
                 if args:
                     app_ext = []
                     if args.initialize_gradle:

@@ -24,4 +24,4 @@ class FirebaseRepositoryTest(FirebaseRepository):
         return EntityTest(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])
 
     def database_name(self) -> str:
-        return 'hspylib'
+        return 'homesetup/hspylib-test'

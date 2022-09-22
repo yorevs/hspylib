@@ -15,6 +15,7 @@
 
 import re
 from abc import ABC
+
 from hspylib.core.tools.preconditions import check_argument
 
 

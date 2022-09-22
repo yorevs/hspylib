@@ -13,6 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 import os
+
 from hspylib.core.tools.text_tools import camelcase
 
 

@@ -13,7 +13,7 @@
 """
 from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import new_dynamic_object
+from hspylib.core.tools.commons import namespace
 
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
@@ -28,7 +28,7 @@ class PlainSchema(KafkaSchema):
 
     @classmethod
     def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:
-        return str(new_dynamic_object('PlainSchemaObject'))
+        return str(namespace('PlainSchemaObject'))
 
     def __init__(self, charset: Charset = Charset.UTF_8):
         super().__init__(SchemaType.PLAIN, charset=charset)

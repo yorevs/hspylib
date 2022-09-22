@@ -14,6 +14,7 @@
 """
 
 from typing import Any, Optional, Tuple, TypeVar, Union
+
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidStateError
 
 T = TypeVar('T')

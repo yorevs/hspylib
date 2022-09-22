@@ -16,6 +16,7 @@
 
 import sys
 import unittest
+
 from hspylib.core.tools.commons import safe_del_file
 from hspylib.modules.security.security import decode, decrypt, encode, encrypt
 

@@ -15,6 +15,7 @@
 """
 
 from typing import List
+
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton

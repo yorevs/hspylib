@@ -18,13 +18,15 @@ import os
 import re
 from configparser import ConfigParser
 from typing import List, Optional
+
 import yaml
+
 from hspylib.core.tools.commons import flatten_dict, run_dir, str_to_bool, touch_file
 
 
-
 class Properties:
-    """TODO"""
+    """The Properties class represents a persistent set of properties. Each key and its corresponding value in the
+    property list is a string."""
 
     _default_name = 'application'
     _default_extension = '.properties'
@@ -38,7 +40,7 @@ class Properties:
 
     @staticmethod
     def read_properties(all_lines: List[str]) -> dict:
-        """TODO"""
+        """Reads a property list (key and element pairs) from the input list."""
         return {
             p[0].strip(): p[1].strip() for p in [
                 p.split('=', 1) for p in list(
@@ -49,7 +51,7 @@ class Properties:
 
     @staticmethod
     def read_cfg_or_ini(all_lines: List[str]):
-        """TODO"""
+        """Reads a cfg or ini list (key and element pairs) from the input list."""
         string = os.linesep.join(all_lines)
         all_cfgs = {}
         cfg = ConfigParser()

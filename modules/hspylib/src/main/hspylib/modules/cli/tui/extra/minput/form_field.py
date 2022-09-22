@@ -14,6 +14,7 @@
 """
 
 from typing import Any
+
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
 from hspylib.modules.cli.tui.extra.minput.input_type import InputType

@@ -15,11 +15,12 @@
 
 import logging as log
 from typing import Optional
+
 from requests.structures import CaseInsensitiveDict
+
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.fetch import fetch
 from hspylib.modules.fetch.http_response import HttpResponse
-
 
 
 def rest_call(
