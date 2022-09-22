@@ -27,7 +27,8 @@ from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
-def require_terminal():
+def require_terminal() -> None:
+    """Require a terminal"""
     if not sys.stdin.isatty():
         raise Exception('This module requires a terminal (TTY)')
 

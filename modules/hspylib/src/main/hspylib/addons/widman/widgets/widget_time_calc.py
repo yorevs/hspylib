@@ -17,7 +17,7 @@
 
 import math
 import re
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
@@ -37,11 +37,40 @@ class WidgetTimeCalc(Widget):
     VERSION = (0, 1, 0)
 
     @staticmethod
-    def _decimal(time_raw: int = 0) -> int:
+    def decimal(time_raw: int = 0) -> int:
         """ Convert a raw time into decimal """
         return int(round(((time_raw / 60.00) * 100.00)))
 
-    def __init__(self):
+    @staticmethod
+    def calc_time(args: List[str]) -> Tuple[int, int, int]:
+        """TODO"""
+        op, total_seconds = '+', 0
+        for tm in args:
+            if not tm:
+                continue
+            elif re.match(r"[+-]", tm):
+                op = tm
+            elif re.match(r"^([0-9]{1,2}:?)+", tm):
+                try:
+                    parts = [int(math.floor(float(s))) for s in tm.split(':')]
+                except ValueError as err:
+                    raise WidgetExecutionError(f"Unable to extract time parts from '{tm}'") from err
+                f_hours = parts[0] if len(parts) > 0 else 0
+                f_minutes = parts[1] if len(parts) > 1 else 0
+                f_secs = parts[2] if len(parts) > 2 else 0
+                tm_amount = ((f_hours * 60 + f_minutes) * 60 + f_secs)
+                if op == '+':
+                    total_seconds += tm_amount
+                elif op == '-':
+                    total_seconds -= tm_amount
+            else:
+                raise WidgetExecutionError(f"Invalid time input: '{tm}'")
+        total_seconds, seconds = divmod(total_seconds, 60)
+        hours, minutes = divmod(abs(total_seconds), 60)
+
+        return hours if total_seconds > 0 else -1 * hours, minutes, seconds
+
+    def __init__(self) -> None:
         super().__init__(
             self.WIDGET_ICON,
             self.WIDGET_NAME,
@@ -49,10 +78,8 @@ class WidgetTimeCalc(Widget):
             self.USAGE,
             self.VERSION)
 
-        self.total_seconds = 0
-        self.op = '+'
         self.decimal = False
-        self.args = None
+        self._args = None
 
     def _parse_args(self, args: List[str]) -> Optional[ExitCode]:
         """Parse command line arguments"""
@@ -70,8 +97,8 @@ class WidgetTimeCalc(Widget):
             self.decimal = True
             args = args[1:]
 
-        if not self.args:
-            self.args = args
+        if not self._args:
+            self._args = args
 
         return None
 
@@ -83,30 +110,10 @@ class WidgetTimeCalc(Widget):
         if ret_val is not None:
             return ret_val
 
-        for tm in self.args:
-            if re.match(r"[+-]", tm):
-                self.op = tm
-            elif re.match(r"^([0-9]{1,2}:?)+", tm):
-                try:
-                    parts = [int(math.floor(float(s))) for s in tm.split(':')]
-                except ValueError as err:
-                    raise WidgetExecutionError(f"Unable to extract time parts from '{tm}'") from err
-                f_hours = parts[0] if len(parts) > 0 else 0
-                f_minutes = parts[1] if len(parts) > 1 else 0
-                f_secs = parts[2] if len(parts) > 2 else 0
-                tm_amount = ((f_hours * 60 + f_minutes) * 60 + f_secs)
-                if self.op == '+':
-                    self.total_seconds += tm_amount
-                elif self.op == '-':
-                    self.total_seconds -= tm_amount
-            else:
-                raise WidgetExecutionError(f"Invalid time input: '{tm}'")
-
-        self.total_seconds, seconds = divmod(self.total_seconds, 60)
-        hours, minutes = divmod(self.total_seconds, 60)
+        hours, minutes, seconds = self.calc_time(self._args)
 
         if self.decimal:
-            print(f"{hours:02d}.{self._decimal(minutes):02d}.{self._decimal(seconds):02d}")
+            print(f"{hours:02d}.{self.decimal(minutes):02d}.{self.decimal(seconds):02d}")
         else:
             print(f"{hours:02d}:{minutes:02d}:{seconds:02d}")
 
@@ -135,7 +142,7 @@ class WidgetTimeCalc(Widget):
         # @formatter:on
 
         result = minput(form_fields)
-        self.args = [value for _, value in result.__dict__.items()] if result else []
+        self._args = [value for _, value in result.__dict__.items()] if result else []
         sysout('%HOM%%ED2%%MOD(0)%', end='')
 
         return bool(result)

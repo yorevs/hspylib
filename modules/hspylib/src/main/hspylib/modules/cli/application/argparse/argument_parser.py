@@ -16,11 +16,13 @@
 
 import sys
 from argparse import ArgumentError, ArgumentParser
+from typing import Any
+
 
 class HSArgumentParser(ArgumentParser):
     """TODO"""
 
-    def _check_value(self, action, value):
+    def _check_value(self, action, value: Any):
         if action.choices is not None and value not in action.choices:
             msg = f"invalid choice: {value} (choose from [{', '.join(map(repr, action.choices))}])"
             raise ArgumentError(action, msg)

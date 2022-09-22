@@ -76,7 +76,7 @@ class WidgetSendMsg(Widget):
         self.interval = None
         self.threads = None
         self.message = None
-        self.args = None
+        self._args = None
         self.socket = None
         self.counter = 1
 
@@ -95,22 +95,22 @@ class WidgetSendMsg(Widget):
             return ExitCode.ERROR
         if not args and not self._read_args():
             return ExitCode.ERROR
-        if not args and not self.args:
+        if not args and not self._args:
             return ExitCode.ERROR
 
-        self.net_type = self.args.net_type or self.NET_TYPE_TCP
-        self.host = (self.args.address or '127.0.0.1', self.args.port or 12345)
-        self.packets = self.args.packets or 100
-        self.interval = self.args.interval or 1
-        self.threads = self.args.threads or 1
+        self.net_type = self._args.net_type or self.NET_TYPE_TCP
+        self.host = (self._args.address or '127.0.0.1', self._args.port or 12345)
+        self.packets = self._args.packets or 100
+        self.interval = self._args.interval or 1
+        self.threads = self._args.threads or 1
 
-        if self.args.message and os.path.isfile(self.args.message):
-            file_size = os.stat(self.args.message).st_size
-            sysout(f"Reading contents from file: {self.args.message} ({file_size}) [Bs] instead")
-            with open(self.args.message, 'r', encoding='utf-8') as f_msg:
+        if self._args.message and os.path.isfile(self._args.message):
+            file_size = os.stat(self._args.message).st_size
+            sysout(f"Reading contents from file: {self._args.message} ({file_size}) [Bs] instead")
+            with open(self._args.message, 'r', encoding='utf-8') as f_msg:
                 self.message = f_msg.read()
         else:
-            self.message = self.args.message or f"This is a {self.args.net_type} test %(count)"
+            self.message = self._args.message or f"This is a {self._args.net_type} test %(count)"
 
         self._start_send()
 
@@ -171,9 +171,9 @@ class WidgetSendMsg(Widget):
                 .build() \
             .build()
         # @formatter:on
-        self.args = minput(form_fields)
+        self._args = minput(form_fields)
 
-        return len(self.args.__dict__) > 1 if self.args else False
+        return len(self._args.__dict__) > 1 if self._args else False
 
     def _parse_args(self, args: List[str]):
         """When arguments are passed from the command line, parse them"""
@@ -201,9 +201,9 @@ class WidgetSendMsg(Widget):
         parser.add_argument(
             '+m', '++message', action='store', type=str, required=False,
             help='The message to be sent. If the message matches a filename, then the file contents sent instead')
-        self.args = parser.parse_args(args)
+        self._args = parser.parse_args(args)
 
-        return bool(self.args)
+        return bool(self._args)
 
     def _init_sockets(self) -> None:
         """Initialize sockets"""
