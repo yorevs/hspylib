@@ -15,8 +15,15 @@
 from datetime import datetime, timezone
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.constants import DATE_TIME_FORMAT
 
+
+# Date and time formats
+# @formatter:off
+ISO_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+DATETIME_FORMAT     = '%Y-%m-%d %H:%M:%S'
+DATE_FORMAT         = '%Y-%m-%d'
+TIME_FORMAT         = '%H:%M:%S'
+# @formatter:on
 
 class ZonedDatetime(Enumeration):
 
@@ -33,7 +40,7 @@ class ZonedDatetime(Enumeration):
 
         return now_dt
 
-    def now(self, date_time_fmt: str = DATE_TIME_FORMAT) -> str:
+    def now(self, date_time_fmt: str = DATETIME_FORMAT) -> str:
         """ Return a formatted datetime string
         Ref. https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
         """
@@ -46,7 +53,7 @@ class ZonedDatetime(Enumeration):
         return int(self.datetime().timestamp())
 
 
-def now(date_time_fmt: str = DATE_TIME_FORMAT) -> str:
+def now(date_time_fmt: str = DATETIME_FORMAT) -> str:
     return ZonedDatetime.LOCAL.now(date_time_fmt)
 
 def now_ms() -> int:
@@ -54,6 +61,7 @@ def now_ms() -> int:
 
 
 if __name__ == '__main__':
+    print(now(ISO_DATETIME_FORMAT))
     print(now())
     print(now_ms())
     print(ZonedDatetime.UTC.now())
