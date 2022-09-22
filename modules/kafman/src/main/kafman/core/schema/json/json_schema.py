@@ -17,7 +17,7 @@ from confluent_kafka.schema_registry.json_schema import JSONDeserializer, JSONSe
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
-from hspylib.core.tools.preconditions import check_not_none
+from hspylib.core.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from jsonschema import validate as validate_schema
 

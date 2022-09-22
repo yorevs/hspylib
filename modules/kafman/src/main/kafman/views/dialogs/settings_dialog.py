@@ -19,7 +19,7 @@ import os
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.preconditions import check_not_none
+from hspylib.core.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, Qt

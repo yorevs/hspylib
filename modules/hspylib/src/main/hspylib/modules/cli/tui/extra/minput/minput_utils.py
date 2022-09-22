@@ -17,7 +17,7 @@ from abc import ABC
 from typing import Any, Optional, Tuple
 
 from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.preconditions import check_argument
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 
 

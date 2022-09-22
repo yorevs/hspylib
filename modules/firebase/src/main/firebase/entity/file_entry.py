@@ -19,7 +19,7 @@ import logging as log
 import os
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.preconditions import check_state
+from hspylib.core.preconditions import check_state
 
 
 class FileEntry:

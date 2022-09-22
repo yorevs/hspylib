@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
-from hspylib.core.tools.preconditions import check_not_none, check_state
+from hspylib.core.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import json_stringify
 from hspylib.modules.fetch.fetch import fetch, is_reachable
 from hspylib.modules.fetch.http_response import HttpResponse

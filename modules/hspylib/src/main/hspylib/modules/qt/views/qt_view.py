@@ -21,7 +21,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
 
 from hspylib.core.tools.commons import run_dir
-from hspylib.core.tools.preconditions import check_argument, check_state
+from hspylib.core.preconditions import check_argument, check_state
 
 
 class QtView(ABC):

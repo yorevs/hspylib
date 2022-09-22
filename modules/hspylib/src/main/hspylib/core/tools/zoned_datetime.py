@@ -15,7 +15,7 @@
 from datetime import datetime, timezone
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.constants import DATE_TIME_FORMAT
+from hspylib.core.constants import DATE_TIME_FORMAT
 
 
 class ZonedDatetime(Enumeration):

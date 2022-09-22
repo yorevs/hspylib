@@ -16,7 +16,7 @@
 import re
 from abc import ABC
 
-from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.preconditions import check_argument
 
 
 class Vt100(ABC):

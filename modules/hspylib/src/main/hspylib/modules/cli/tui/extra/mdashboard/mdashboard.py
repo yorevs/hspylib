@@ -16,7 +16,7 @@
 from typing import List, Optional
 
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.preconditions import check_state
+from hspylib.core.preconditions import check_state
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem

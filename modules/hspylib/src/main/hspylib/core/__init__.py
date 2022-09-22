@@ -7,10 +7,12 @@
 
 __all__ = [
   'config', 
+  'constants', 
   'crud', 
   'enums', 
   'exception', 
   'metaclass', 
+  'preconditions', 
   'tools'
 ]
 __version__ = '0.11.100'

@@ -16,7 +16,7 @@
 from typing import get_args, List, Set, TypeVar, Union
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote
 
 T = TypeVar('T')

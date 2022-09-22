@@ -22,7 +22,7 @@ from typing import List, Union
 
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.preconditions import check_argument, check_not_none
+from hspylib.core.preconditions import check_argument, check_not_none
 from hspylib.modules.fetch.fetch import get, put
 from requests.exceptions import HTTPError
 

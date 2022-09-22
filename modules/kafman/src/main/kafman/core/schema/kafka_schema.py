@@ -24,7 +24,7 @@ from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import build_url, file_is_not_empty, namespace
-from hspylib.core.tools.preconditions import check_not_none, check_state
+from hspylib.core.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QLabel

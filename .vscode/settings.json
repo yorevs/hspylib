@@ -3,7 +3,9 @@
     ".gradle": true,
     ".vscode": true,
     "**/__pycache__": true,
-    "**/__pycache__.*": true
+    "**/__pycache__.*": true,
+    ".idea": true,
+    "run-configs": true
   },
   "python.linting.pylintEnabled": true
 }
