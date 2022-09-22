@@ -17,6 +17,7 @@ import logging as log
 import os
 from textwrap import dedent
 from typing import Any, Optional
+
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir
@@ -62,25 +63,25 @@ class AppConfigs(metaclass=Singleton):
         return len(self._app_properties)
 
     def resource_dir(self) -> Optional[str]:
-        """TODO"""
+        """Return the configured application resource dir"""
         return self._resource_dir
 
     def get(self, property_name: str) -> Optional[str]:
-        """TODO"""
+        """Get the value, as a string, of a property specified by property_name, otherwise None is returned"""
         env_value = os.environ.get(Properties.environ_name(property_name))
         return str(env_value) if env_value else self._app_properties.get(property_name)
 
     def get_int(self, property_name: str) -> Optional[int]:
-        """TODO"""
+        """Get the value, as an integer, of a property specified by property_name, otherwise None is returned"""
         env = os.environ.get(Properties.environ_name(property_name))
         return int(env) if env else self._app_properties.get_int(property_name)
 
     def get_float(self, property_name: str) -> Optional[float]:
-        """TODO"""
+        """Get the value, as a float, of a property specified by property_name, otherwise None is returned"""
         env = os.environ.get(Properties.environ_name(property_name))
         return float(env) if env else self._app_properties.get_float(property_name)
 
     def get_bool(self, property_name: str) -> Optional[bool]:
-        """TODO"""
+        """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
         env = os.environ.get(Properties.environ_name(property_name))
         return bool(env) if env else self._app_properties.get_bool(property_name)

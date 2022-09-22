@@ -26,18 +26,20 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
 
+from firebase.core.firebase_auth import FirebaseAuth
+
 
 class AgentConfig(metaclass=Singleton):
     """Holds the firebase agent configurations"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.app_configs = AppConfigs.INSTANCE
         self.firebase_configs = None
         if file_is_not_empty(self.config_file()):
             self.load()
             log.debug('Found and loaded a Firebase configuration: %s', self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.firebase_configs)
 
     def __repr__(self):
@@ -47,6 +49,7 @@ class AgentConfig(metaclass=Singleton):
         """Setup firebase from a dict configuration
         :param config_dict: Firebase configuration dictionary
         """
+        config_dict['UID'] = FirebaseAuth.authenticate(config_dict).uid
         self.firebase_configs = FirebaseConfig.of(config_dict)
         self.save()
 
@@ -61,7 +64,7 @@ class AgentConfig(metaclass=Singleton):
         sysout('-' * 31)
         config['PROJECT_ID'] = self.project_id()
         config['DATABASE'] = self.database()
-        config['USERNAME'] = self.username()
+        config['EMAIL'] = self.email()
         config['PASSPHRASE'] = self.passphrase()
         self.setup(config)
 
@@ -80,10 +83,10 @@ class AgentConfig(metaclass=Singleton):
         database = self.app_configs['hhs.firebase.database']
         return database if database else input('Please type you database Name: ')
 
-    def username(self) -> Optional[str]:
+    def email(self) -> Optional[str]:
         """Return the firebase username"""
-        user = self.app_configs['hhs.firebase.username']
-        return user if user else os.getenv('USER', getpass.getuser())
+        user = self.app_configs['hhs.firebase.email']
+        return user if user else os.getenv('USER', f"{getpass.getuser()}@gmail.com")
 
     def passphrase(self) -> Optional[str]:
         """Return the firebase user passphrase"""
@@ -101,6 +104,6 @@ class AgentConfig(metaclass=Singleton):
             f_config.write(str(self))
             sysout(f"Firebase configuration saved => {self.config_file()} !")
 
-    def _input_passphrase(self) -> bytes:
+    def _input_passphrase(self) -> str:
         passwd = getpass.getpass('Please type a password to encrypt your data: ')
-        return base64.b64encode(f'{self.username()}:{passwd}'.encode(str(Charset.UTF_8)))
+        return str(base64.b64encode(f"{self.email()}:{passwd}".encode(str(Charset.UTF_8))), str(Charset.UTF_8))

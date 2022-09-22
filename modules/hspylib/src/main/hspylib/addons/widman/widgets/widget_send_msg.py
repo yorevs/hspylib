@@ -18,8 +18,10 @@ import os
 import signal
 import socket
 import threading
+from textwrap import dedent
 from time import sleep
 from typing import List
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.exception.exceptions import WidgetExecutionError
@@ -42,22 +44,22 @@ class WidgetSendMsg(Widget):
     NET_TYPE_TCP = 'TCP'
 
     # Help message to be displayed by the application.
-    USAGE = f"""Usage: SendMsg [options]
+    USAGE = dedent(f"""Usage: SendMsg [options]
 
-  Options:
-    +n, ++net_type   <network_type>     : The network type to be used. Either udp or tcp ( default is tcp ).
-    +p, ++port       <port_num>         : The port number [1-65535] ( default is 12345).
-    +a, ++address    <host_address>     : The address of the datagram receiver ( default is 127.0.0.1 ).
-    +k, ++packets    <num_packets>      : The number of max datagrams to be send. If zero is specified, then the app
-                                          is going to send indefinitely ( default is 100 ).
-    +i, ++interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
-    +t, ++threads    <threads_num>      : Number of threads [1-{MAX_THREADS}] to be opened to send simultaneously
-                                          ( default is 1 ).
-    +m, ++message    <message/filename> : The message to be sent. If the message matches a filename, then the file
-                                          contents sent instead.
+      Options:
+        +n, ++net_type   <network_type>     : The network type to be used. Either udp or tcp ( default is tcp ).
+        +p, ++port       <port_num>         : The port number [1-65535] ( default is 12345).
+        +a, ++address    <host_address>     : The address of the datagram receiver ( default is 127.0.0.1 ).
+        +k, ++packets    <num_packets>      : The number of max datagrams to be send. If zero is specified, then the app
+                                              is going to send indefinitely ( default is 100 ).
+        +i, ++interval   <interval_MS>      : The interval in seconds between each datagram ( default is 1 Second ).
+        +t, ++threads    <threads_num>      : Number of threads [1-{MAX_THREADS}] to be opened to send simultaneously
+                                              ( default is 1 ).
+        +m, ++message    <message/filename> : The message to be sent. If the message matches a filename, then the file
+                                              contents sent instead.
 
-    E.g:. send-msg.py +n tcp +m "Hello" +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2
-"""
+        E.g:. send-msg.py +n tcp +m "Hello" +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2
+    """)
 
     def __init__(self):
         super().__init__(
@@ -226,7 +228,7 @@ class WidgetSendMsg(Widget):
 
         for thread_num in range(1, int(self.threads) + 1):
             tr = threading.Thread(target=self._send_packet, args=(thread_num,))
-            tr.setDaemon(True)
+            tr.daemon = True
             tr.start()
             sleep(thread_relief)
 

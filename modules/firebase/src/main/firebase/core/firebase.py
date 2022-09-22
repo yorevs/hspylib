@@ -19,15 +19,17 @@ import os
 from typing import List
 
 from hspylib.core.tools.preconditions import check_argument
+from requests.structures import CaseInsensitiveDict
 
 from firebase.core.agent_config import AgentConfig
 from firebase.core.file_processor import FileProcessor
+from firebase.core.firebase_auth import FirebaseAuth
 
 
 class Firebase:
     """Represents the firebase agent and it's functionalities"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.processor = FileProcessor()
         self.agent_config = AgentConfig()
 
@@ -41,6 +43,7 @@ class Firebase:
 
     def upload(self, db_alias: str, file_paths: List[str], glob_exp: str) -> bool:
         """Upload files to firebase"""
+        self._authenticate()
         url = self.agent_config.url(db_alias)
         check_argument(len(file_paths) > 0, "Unable to upload file_paths (zero size).")
         log.debug('Uploading files  alias=%s  files=%s', db_alias, ','.join(file_paths))
@@ -48,6 +51,7 @@ class Firebase:
 
     def download(self, db_alias: str, dest_dir: str) -> bool:
         """Download files from firebase specified by it's aliases"""
+        self._authenticate()
         url = self.agent_config.url(db_alias)
         log.debug('Downloading files  alias=%s  dest_dir=%s', db_alias, dest_dir)
         return self.processor.download_files(url, dest_dir or os.environ.get('HOME')) > 0
@@ -55,3 +59,8 @@ class Firebase:
     def is_configured(self) -> bool:
         """Checks whether firebase is properly configured or not"""
         return self.agent_config is not None and self.agent_config.firebase_configs is not None
+
+    def _authenticate(self) -> None:
+        """TODO"""
+        configs = self.agent_config.firebase_configs.as_dict()
+        FirebaseAuth.authenticate(configs)

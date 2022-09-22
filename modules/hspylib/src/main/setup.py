@@ -14,6 +14,7 @@
 """
 
 import pathlib
+
 import setuptools
 
 HERE = pathlib.Path(__file__).parent
@@ -47,15 +48,13 @@ setuptools.setup(
     include_package_data=True,
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Unix"
 
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.10',
     install_requires=REQUIREMENTS,
     keywords='python,library,solid,patterns,development,integration,application,framework',
     platforms='Darwin,Linux'

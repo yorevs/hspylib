@@ -16,6 +16,7 @@ import atexit
 import os
 import sys
 from typing import List
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widget_entry import WidgetEntry
 from hspylib.core.enums.exit_code import ExitCode

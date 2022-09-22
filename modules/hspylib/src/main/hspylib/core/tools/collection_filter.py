@@ -14,6 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 from typing import get_args, List, Set, TypeVar, Union
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote

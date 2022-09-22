@@ -34,7 +34,7 @@ class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # location of the .version file
     VERSION_DIR = Classpath.SOURCE_ROOT

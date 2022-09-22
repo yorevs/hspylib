@@ -14,6 +14,7 @@
 """
 
 from typing import Optional
+
 from PyQt5.QtCore import QRect, QSize, Qt
 from PyQt5.QtGui import QColor, QCursor, QFont, QPainter, QPaintEvent, QPalette, QResizeEvent, QTextCursor, QTextFormat
 from PyQt5.QtWidgets import QPlainTextEdit, QTextEdit, QWidget

@@ -17,13 +17,13 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 class Extension(Enumeration):
-    """TODO"""
+    """Appman available extensions"""
     GRADLE = 'gradle'
     GIT = 'git'
 
 
 class AppType(Enumeration):
-    """TODO"""
+    """Appman supported application types"""
     APP = 'app'
     QT_APP = 'qt-app'
     WIDGET = 'widget'

@@ -17,12 +17,12 @@
 import logging as log
 import os
 import sys
-from datetime import datetime
 from textwrap import dedent
 
 import urllib3
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
+from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 
@@ -37,7 +37,7 @@ class Main(Application):
     """Firebase Agent - Manage your firebase integration"""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.value)
+    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # location of the .version file
     VERSION_DIR = _Classpath.source_root()
@@ -83,7 +83,7 @@ class Main(Application):
         log.info(dedent(f'''
         {self._app_name} v{self._app_version}
         Settings ==============================
-                STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+                STARTED: {now("%Y-%m-%d %H:%M:%S")}
         '''))
         self._exec_application()
         return 0

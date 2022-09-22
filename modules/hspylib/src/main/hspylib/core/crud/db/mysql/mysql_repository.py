@@ -17,18 +17,19 @@ import logging as log
 import uuid
 from abc import abstractmethod
 from typing import List, Optional, Tuple
+
 import pymysql
 from pymysql.err import OperationalError, ProgrammingError
 from requests.structures import CaseInsensitiveDict as SqlFilter
+
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.db.db_repository import DBRepository
 from hspylib.core.crud.db.sql_factory import SqlFactory
 from hspylib.core.exception.exceptions import NotConnectedError
 
 
-
 class MySqlRepository(DBRepository):
-    """TODO"""
+    """Implementation of a data access layer for a MySql persistence store."""
 
     _connection_cache = {}
 
@@ -39,11 +40,11 @@ class MySqlRepository(DBRepository):
         self._sql_factory = SqlFactory()
 
     def is_connected(self) -> bool:
-        """TODO"""
+        """Whether connected or not to a MySql database."""
         return self._connector is not None
 
     def connect(self) -> None:
-        """TODO"""
+        """Attempts to connect to a MySql database."""
         if not self.is_connected():
             cache_key = str(self)
             if cache_key in self._connection_cache:
@@ -69,7 +70,7 @@ class MySqlRepository(DBRepository):
                     raise ConnectionError(f"Unable to connect to {db_url}") from err
 
     def disconnect(self) -> None:
-        """TODO"""
+        """Attempts to disconnect from a MySql database."""
         if self.is_connected():
             cache_key = str(self)
             self._connector.close()
@@ -77,10 +78,10 @@ class MySqlRepository(DBRepository):
             del self._connection_cache[cache_key]
             log.debug('Disconnected from %s', str(self))
         else:
-            raise NotConnectedError('Not connected to database.')
+            raise NotConnectedError('Not connected to a MySql database.')
 
     def insert(self, entity: CrudEntity) -> None:
-        """TODO"""
+        """Saves the given entity at the MySql store"""
         if self.is_connected():
             entity.uuid = entity.uuid if entity.uuid is not None else str(uuid.uuid4())
             stm = self._sql_factory \
@@ -89,10 +90,10 @@ class MySqlRepository(DBRepository):
             log.debug("Executing SQL statement: %s", stm)
             self.execute(stm, True)
         else:
-            raise NotConnectedError('Not connected to database.')
+            raise NotConnectedError('Not connected to a MySql database.')
 
     def update(self, entity: CrudEntity) -> None:
-        """TODO"""
+        """Updates the given entity at the MySql store"""
         if self.is_connected():
             stm = self._sql_factory \
                 .update(entity, filters=SqlFilter({"UUID": f'{entity.uuid}'})) \
@@ -100,10 +101,10 @@ class MySqlRepository(DBRepository):
             log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
         else:
-            raise NotConnectedError('Not connected to database.')
+            raise NotConnectedError('Not connected to a MySql database.')
 
     def delete(self, entity: CrudEntity) -> None:
-        """TODO"""
+        """Deletes the given entity at the MySql store"""
         if self.is_connected():
             stm = self._sql_factory \
                 .delete(filters=SqlFilter({"UUID": f'{entity.uuid}'})) \
@@ -111,7 +112,7 @@ class MySqlRepository(DBRepository):
             log.debug('Executing SQL statement: %s', stm)
             self.execute(stm, True)
         else:
-            raise NotConnectedError('Not connected to database.')
+            raise NotConnectedError('Not connected to a MySql database.')
 
     def find_all_columns(
         self,
@@ -128,7 +129,7 @@ class MySqlRepository(DBRepository):
             result = self._cursor.fetchall()
             return list(map(self.row_to_entity, result)) if result else None
 
-        raise NotConnectedError('Not connected to database.')
+        raise NotConnectedError('Not connected to a MySql database.')
 
     def find_columns_by_id(
         self,
@@ -149,7 +150,7 @@ class MySqlRepository(DBRepository):
                 return self.row_to_entity(result[0]) if len(result) > 0 else None
             return None
 
-        raise NotConnectedError('Not connected to database.')
+        raise NotConnectedError('Not connected to a MySql database.')
 
     def execute(self, sql_statement: str, auto_commit: bool, *params) -> None:
         """TODO"""
@@ -159,7 +160,7 @@ class MySqlRepository(DBRepository):
             if auto_commit:
                 self.commit()
         else:
-            raise NotConnectedError('Not connected to database.')
+            raise NotConnectedError('Not connected to a MySql database.')
 
     def commit(self) -> None:
         """TODO"""

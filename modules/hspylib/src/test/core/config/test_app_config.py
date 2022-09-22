@@ -18,6 +18,7 @@ import logging as log
 import os
 import sys
 import unittest
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.tools.commons import dirname
 

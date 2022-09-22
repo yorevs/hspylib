@@ -19,15 +19,16 @@ import os
 import signal
 import sys
 import traceback
-from datetime import datetime
 from textwrap import dedent
 from typing import Optional, Union
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, \
     InvalidStateError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.preconditions import check_state
+from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.cli.application.argparse.arguments_builder import ArgumentsBuilder
 from hspylib.modules.cli.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder
@@ -100,7 +101,8 @@ class Application(metaclass=Singleton):
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
-        log.info('Application %s started %s', self._app_name, datetime.now())
+        today = now()
+        log.info('Application %s started %s', self._app_name, today)
         try:
             atexit.register(self._cleanup)
             self._setup_arguments()
@@ -109,10 +111,10 @@ class Application(metaclass=Singleton):
             self._exit_code = self._main(*params, **kwargs)
         except (InvalidOptionError, InvalidArgumentError) as err:
             self.usage(exit_code=1, no_exit=True)
-            log.error('Run failed %s => %s', datetime.now(), err)
+            log.error('Run failed %s => %s', today, err)
             raise err  # Re-Raise the exception so upper level layers can catch
         except InvalidStateError as err:
-            log.error('Execution failed %s => %s', datetime.now(), err)
+            log.error('Execution failed %s => %s', today, err)
             raise err  # Re-Raise the exception so upper level layers can catch
         except Exception as err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -120,7 +122,7 @@ class Application(metaclass=Singleton):
             self._exit_code = exc_value
             raise err  # Re-Raise the exception so upper level layers can catch
         finally:
-            log.info('Application %s finished %s', self._app_name, datetime.now())
+            log.info('Application %s finished %s', self._app_name, today)
             if 'no_exit' not in kwargs:
                 self.exit(self._exit_code)
 

@@ -32,6 +32,7 @@ class WidgetIcons(Awesome):
     MUSIC = '\uFC6E'     # ﱯ
     SIGN = '\uFC7E'      # ﱿ
     SWORDS = '\uFC84'    # ﲅ
+    PUNCH = '\uF255'     # 
     # @formatter:on
 
 

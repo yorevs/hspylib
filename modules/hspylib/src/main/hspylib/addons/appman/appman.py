@@ -16,7 +16,9 @@
 import os
 from textwrap import dedent
 from typing import List
+
 import urllib3
+
 from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.enums.http_code import HttpCode
@@ -29,7 +31,6 @@ from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.vt100.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
-
 
 HERE = get_path(__file__)
 
@@ -60,37 +61,9 @@ class AppManager(metaclass=Singleton):
         siteUrl="<SiteUrl>")
     """)
 
-    def __init__(self, parent_app: Application):
-        self._parent_app = parent_app
-        self._app_name = None
-        self._app_dir = None
-        self._init_gradle_flag = False
-        self._init_git_flag = False
 
-    def create(self, app_name: str, app_type: AppType, app_ext: List[Extension], dest_dir: str) -> None:
-        """Create the application based on the parameters"""
-        sysout(f'Creating "{app_name}" at {dest_dir}')
-        try:
-            check_argument(os.path.exists(dest_dir), 'Destination not found: {}', dest_dir)
-            self._app_name = app_name
-            if app_type == AppType.APP:
-                self._app_dir = f'{dest_dir}/{app_name}'
-                self._create_app(app_name, app_ext)
-            elif app_type == AppType.WIDGET:
-                self._app_dir = f'{dest_dir}'
-                self._create_widget(app_name)
-            elif app_type == AppType.QT_APP:
-                self._app_dir = f'{dest_dir}/{app_name}'
-                self._create_qt_app(app_name, app_ext)
-            else:
-                raise TypeError(f'Unsupported application type: {app_type}')
-        except OSError as err:
-            syserr(f'Could not create application "{app_name}"!\n  => {str(err)}')
-            self._parent_app.exit(ExitCode.FAILED.value)
-
-        sysout(f"Successfully created the {app_type.value} {app_name}")
-
-    def prompt(self) -> MenuInput.FormFields:
+    @staticmethod
+    def _prompt() -> MenuInput.FormFields:
         """When no input is provided, prompt the user for the info. """
         # @formatter:off
         form_fields = MenuInput.builder() \
@@ -124,6 +97,36 @@ class AppManager(metaclass=Singleton):
             .build()
         # @formatter:on
         return minput(form_fields)
+
+    def __init__(self, parent_app: Application):
+        self._parent_app = parent_app
+        self._app_name = None
+        self._app_dir = None
+        self._init_gradle_flag = False
+        self._init_git_flag = False
+
+    def create(self, app_name: str, app_type: AppType, app_ext: List[Extension], dest_dir: str) -> None:
+        """Create the application based on the parameters"""
+        sysout(f'Creating "{app_name}" at {dest_dir}')
+        try:
+            check_argument(os.path.exists(dest_dir), 'Destination not found: {}', dest_dir)
+            self._app_name = app_name
+            if app_type == AppType.APP:
+                self._app_dir = f'{dest_dir}/{app_name}'
+                self._create_app(app_name, app_ext)
+            elif app_type == AppType.WIDGET:
+                self._app_dir = f'{dest_dir}'
+                self._create_widget(app_name)
+            elif app_type == AppType.QT_APP:
+                self._app_dir = f'{dest_dir}/{app_name}'
+                self._create_qt_app(app_name, app_ext)
+            else:
+                raise TypeError(f'Unsupported application type: {app_type}')
+        except OSError as err:
+            syserr(f'Could not create application "{app_name}"!\n  => {str(err)}')
+            self._parent_app.exit(ExitCode.FAILED.value)
+
+        sysout(f"Successfully created the {app_type.value} {app_name}")
 
     def _create_app(self, app_name: str, extensions: List[Extension]) -> None:
         """Create a Simple HSPyLib application"""

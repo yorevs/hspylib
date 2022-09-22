@@ -19,11 +19,11 @@ from json.decoder import JSONDecodeError
 from typing import List, Tuple
 from uuid import uuid4
 
-from avro.errors import SchemaParseException
+from avro.schema import SchemaParseException
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import build_url, file_is_not_empty, new_dynamic_object
+from hspylib.core.tools.commons import build_url, file_is_not_empty, namespace
 from hspylib.core.tools.preconditions import check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
@@ -90,11 +90,11 @@ class KafkaSchema(ABC):
         charset: Charset = Charset.UTF_8):
 
         self._schema_name = 'undefined'
-        self._schema_type = schema_type.value
+        self._schema_type = schema_type
         self._filepath = filepath
         self._registry_url = build_url(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
         self._charset = charset
-        self._attributes = new_dynamic_object('SchemaAttributes')
+        self._attributes = namespace('SchemaAttributes')
         self._json_template = defaultdict()
         self._form_stack = None
 
@@ -108,7 +108,7 @@ class KafkaSchema(ABC):
                 self._parse()
                 self._schema_conf = {'url': self._registry_url}
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
-                self._schema = Schema(self._content_text, self._schema_type)
+                self._schema = Schema(self._content_text, self._schema_type.name)
         except (KeyError, TypeError, JSONDecodeError, SchemaParseException) as err:
             err_msg = f"Unable to initialize schema ({self._registry_url}) => {str(err)}"
             log.error(err_msg)
@@ -142,7 +142,7 @@ class KafkaSchema(ABC):
 
     def get_schema_type(self) -> str:
         """Return the schema type"""
-        return self._schema_type
+        return self._schema_type.name
 
     def get_schema_name(self) -> str:
         """Return the schema name"""

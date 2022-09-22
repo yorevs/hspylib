@@ -13,85 +13,88 @@
    Copyright 2022, HSPyLib team
 """
 
-from http import HTTPStatus as http_code
+from http import HTTPStatus as httpCode
+
 from hspylib.core.enums.enumeration import Enumeration
 
 
 class HttpCode(Enumeration):
-    """TODO"""
+    """HTTP status code constants defined by the proposed HTTP/1.1 specification at http://www.ietf.org/rfc/rfc2068.txt.
+    Ref:http://www.cs.ait.ac.th/~on/O/oreilly/java-ent/servlet/appc_01.htm
+    """
 
     # @formatter:off
 
     # 1xx Informational Codes
-    CONTINUE                            = http_code.CONTINUE
-    SWITCHING_PROTOCOLS                 = http_code.SWITCHING_PROTOCOLS
-    PROCESSING                          = http_code.PROCESSING
-    EARLY_HINTS                         = http_code.EARLY_HINTS
+    CONTINUE                            = httpCode.CONTINUE
+    SWITCHING_PROTOCOLS                 = httpCode.SWITCHING_PROTOCOLS
+    PROCESSING                          = httpCode.PROCESSING
+    EARLY_HINTS                         = httpCode.EARLY_HINTS
 
     # 2xx Success Codes
-    OK                                  = http_code.OK
-    CREATED                             = http_code.CREATED
-    ACCEPTED                            = http_code.ACCEPTED
-    NON_AUTHORITATIVE_INFORMATION       = http_code.NON_AUTHORITATIVE_INFORMATION
-    NO_CONTENT                          = http_code.NO_CONTENT
-    RESET_CONTENT                       = http_code.RESET_CONTENT
-    PARTIAL_CONTENT                     = http_code.PARTIAL_CONTENT
-    MULTI_STATUS                        = http_code.MULTI_STATUS
-    ALREADY_REPORTED                    = http_code.ALREADY_REPORTED
-    IM_USED                             = http_code.IM_USED
+    OK                                  = httpCode.OK
+    CREATED                             = httpCode.CREATED
+    ACCEPTED                            = httpCode.ACCEPTED
+    NON_AUTHORITATIVE_INFORMATION       = httpCode.NON_AUTHORITATIVE_INFORMATION
+    NO_CONTENT                          = httpCode.NO_CONTENT
+    RESET_CONTENT                       = httpCode.RESET_CONTENT
+    PARTIAL_CONTENT                     = httpCode.PARTIAL_CONTENT
+    MULTI_STATUS                        = httpCode.MULTI_STATUS
+    ALREADY_REPORTED                    = httpCode.ALREADY_REPORTED
+    IM_USED                             = httpCode.IM_USED
 
     # 3xx Redirection Codes
-    MULTIPLE_CHOICES                    = http_code.MULTIPLE_CHOICES
-    MOVED_PERMANENTLY                   = http_code.MOVED_PERMANENTLY
-    FOUND                               = http_code.FOUND
-    SEE_OTHER                           = http_code.SEE_OTHER
-    NOT_MODIFIED                        = http_code.NOT_MODIFIED
-    USE_PROXY                           = http_code.USE_PROXY
-    TEMPORARY_REDIRECT                  = http_code.TEMPORARY_REDIRECT
-    PERMANENT_REDIRECT                  = http_code.PERMANENT_REDIRECT
+    MULTIPLE_CHOICES                    = httpCode.MULTIPLE_CHOICES
+    MOVED_PERMANENTLY                   = httpCode.MOVED_PERMANENTLY
+    FOUND                               = httpCode.FOUND
+    SEE_OTHER                           = httpCode.SEE_OTHER
+    NOT_MODIFIED                        = httpCode.NOT_MODIFIED
+    USE_PROXY                           = httpCode.USE_PROXY
+    TEMPORARY_REDIRECT                  = httpCode.TEMPORARY_REDIRECT
+    PERMANENT_REDIRECT                  = httpCode.PERMANENT_REDIRECT
 
     # 4xx Client Error Codes
-    BAD_REQUEST                         = http_code.BAD_REQUEST
-    UNAUTHORIZED                        = http_code.UNAUTHORIZED
-    PAYMENT_REQUIRED                    = http_code.PAYMENT_REQUIRED
-    FORBIDDEN                           = http_code.FORBIDDEN
-    NOT_FOUND                           = http_code.NOT_FOUND
-    METHOD_NOT_ALLOWED                  = http_code.METHOD_NOT_ALLOWED
-    NOT_ACCEPTABLE                      = http_code.NOT_ACCEPTABLE
-    PROXY_AUTHENTICATION_REQUIRED       = http_code.PROXY_AUTHENTICATION_REQUIRED
-    REQUEST_TIMEOUT                     = http_code.REQUEST_TIMEOUT
-    CONFLICT                            = http_code.CONFLICT
-    GONE                                = http_code.GONE
-    LENGTH_REQUIRED                     = http_code.LENGTH_REQUIRED
-    PRECONDITION_FAILED                 = http_code.PRECONDITION_FAILED
+    BAD_REQUEST                         = httpCode.BAD_REQUEST
+    UNAUTHORIZED                        = httpCode.UNAUTHORIZED
+    PAYMENT_REQUIRED                    = httpCode.PAYMENT_REQUIRED
+    FORBIDDEN                           = httpCode.FORBIDDEN
+    NOT_FOUND                           = httpCode.NOT_FOUND
+    METHOD_NOT_ALLOWED                  = httpCode.METHOD_NOT_ALLOWED
+    NOT_ACCEPTABLE                      = httpCode.NOT_ACCEPTABLE
+    PROXY_AUTHENTICATION_REQUIRED       = httpCode.PROXY_AUTHENTICATION_REQUIRED
+    REQUEST_TIMEOUT                     = httpCode.REQUEST_TIMEOUT
+    CONFLICT                            = httpCode.CONFLICT
+    GONE                                = httpCode.GONE
+    LENGTH_REQUIRED                     = httpCode.LENGTH_REQUIRED
+    PRECONDITION_FAILED                 = httpCode.PRECONDITION_FAILED
     PAYLOAD_TOO_LARGE                   = 413
-    REQUEST_URI_TOO_LONG                = http_code.REQUEST_URI_TOO_LONG
-    UNSUPPORTED_MEDIA_TYPE              = http_code.UNSUPPORTED_MEDIA_TYPE
-    REQUESTED_RANGE_NOT_SATISFIABLE     = http_code.REQUESTED_RANGE_NOT_SATISFIABLE
-    EXPECTATION_FAILED                  = http_code.EXPECTATION_FAILED
-    UNPROCESSABLE_ENTITY                = http_code.UNPROCESSABLE_ENTITY
-    LOCKED                              = http_code.LOCKED
-    FAILED_DEPENDENCY                   = http_code.FAILED_DEPENDENCY
-    UPGRADE_REQUIRED                    = http_code.UPGRADE_REQUIRED
-    PRECONDITION_REQUIRED               = http_code.PRECONDITION_REQUIRED
-    TOO_MANY_REQUESTS                   = http_code.TOO_MANY_REQUESTS
-    REQUEST_HEADER_FIELDS_TOO_LARGE     = http_code.REQUEST_HEADER_FIELDS_TOO_LARGE
+    REQUEST_URI_TOO_LONG                = httpCode.REQUEST_URI_TOO_LONG
+    UNSUPPORTED_MEDIA_TYPE              = httpCode.UNSUPPORTED_MEDIA_TYPE
+    REQUESTED_RANGE_NOT_SATISFIABLE     = httpCode.REQUESTED_RANGE_NOT_SATISFIABLE
+    EXPECTATION_FAILED                  = httpCode.EXPECTATION_FAILED
+    UNPROCESSABLE_ENTITY                = httpCode.UNPROCESSABLE_ENTITY
+    LOCKED                              = httpCode.LOCKED
+    FAILED_DEPENDENCY                   = httpCode.FAILED_DEPENDENCY
+    UPGRADE_REQUIRED                    = httpCode.UPGRADE_REQUIRED
+    PRECONDITION_REQUIRED               = httpCode.PRECONDITION_REQUIRED
+    TOO_MANY_REQUESTS                   = httpCode.TOO_MANY_REQUESTS
+    REQUEST_HEADER_FIELDS_TOO_LARGE     = httpCode.REQUEST_HEADER_FIELDS_TOO_LARGE
     CONNECTION_CLOSED_WITHOUT_RESPONSE  = 444
     UNAVAILABLE_FOR_LEGAL_REASONS       = 451
     CLIENT_CLOSED_REQUEST               = 499
 
     # 5xx Server Error
-    INTERNAL_SERVER_ERROR               = http_code.INTERNAL_SERVER_ERROR
-    NOT_IMPLEMENTED                     = http_code.NOT_IMPLEMENTED
-    BAD_GATEWAY                         = http_code.BAD_GATEWAY
-    SERVICE_UNAVAILABLE                 = http_code.SERVICE_UNAVAILABLE
-    GATEWAY_TIMEOUT                     = http_code.GATEWAY_TIMEOUT
-    HTTP_VERSION_NOT_SUPPORTED          = http_code.HTTP_VERSION_NOT_SUPPORTED
-    VARIANT_ALSO_NEGOTIATES             = http_code.VARIANT_ALSO_NEGOTIATES
-    INSUFFICIENT_STORAGE                = http_code.INSUFFICIENT_STORAGE
-    LOOP_DETECTED                       = http_code.LOOP_DETECTED
-    NOT_EXTENDED                        = http_code.NOT_EXTENDED
-    NETWORK_AUTHENTICATION_REQUIRED     = http_code.NETWORK_AUTHENTICATION_REQUIRED
+    INTERNAL_SERVER_ERROR               = httpCode.INTERNAL_SERVER_ERROR
+    NOT_IMPLEMENTED                     = httpCode.NOT_IMPLEMENTED
+    BAD_GATEWAY                         = httpCode.BAD_GATEWAY
+    SERVICE_UNAVAILABLE                 = httpCode.SERVICE_UNAVAILABLE
+    GATEWAY_TIMEOUT                     = httpCode.GATEWAY_TIMEOUT
+    HTTP_VERSION_NOT_SUPPORTED          = httpCode.HTTP_VERSION_NOT_SUPPORTED
+    VARIANT_ALSO_NEGOTIATES             = httpCode.VARIANT_ALSO_NEGOTIATES
+    INSUFFICIENT_STORAGE                = httpCode.INSUFFICIENT_STORAGE
+    LOOP_DETECTED                       = httpCode.LOOP_DETECTED
+    NOT_EXTENDED                        = httpCode.NOT_EXTENDED
+    NETWORK_AUTHENTICATION_REQUIRED     = httpCode.NETWORK_AUTHENTICATION_REQUIRED
     NETWORK_CONNECT_TIMEOUT_ERROR       = 599
 
     # @formatter:on

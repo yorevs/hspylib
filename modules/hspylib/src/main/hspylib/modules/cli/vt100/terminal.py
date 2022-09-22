@@ -19,12 +19,13 @@ import shlex
 import subprocess
 from abc import ABC
 from typing import Optional, Tuple
+
 from hspylib.core.enums.exit_code import ExitCode
 from hspylib.core.tools.commons import syserr
 
 
 class Terminal(ABC):
-    """TODO"""
+    """Utility class to provide execution of commands on a terminal"""
 
     @staticmethod
     def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitCode]:

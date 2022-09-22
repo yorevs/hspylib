@@ -18,9 +18,10 @@ import os
 import pathlib
 import re
 import sys
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any, List, Optional, Tuple, Type, Union
-from hspylib.core.tools.constants import DATE_TIME_FORMAT, TRUE_VALUES
+
+from hspylib.core.tools.constants import TRUE_VALUES
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
@@ -83,16 +84,6 @@ def is_debugging():
         if frame[1].endswith("pydevd.py"):
             return True
     return False
-
-
-def now() -> str:
-    """TODO"""
-    return datetime.now().strftime(DATE_TIME_FORMAT)
-
-
-def now_ms() -> int:
-    """TODO"""
-    return int(datetime.now().timestamp())
 
 
 def read_version(version_filepath: str = ".version") -> Tuple[int, int, int]:

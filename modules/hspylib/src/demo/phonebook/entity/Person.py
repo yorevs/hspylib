@@ -15,6 +15,7 @@
 """
 
 from uuid import UUID
+
 from phonebook.entity.Contact import Contact
 
 

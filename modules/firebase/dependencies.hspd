@@ -9,9 +9,10 @@
 
 /* Module dependencies */
 
-package: hspylib, version: 0.11.95, space: global, mode: gt
+package: hspylib, version: 0.11.99, space: global, mode: gt
 
 /* Application dependencies */
 
 package: requests, version: 2.28.0, space: user
 package: urllib3, version: 1.26.9, space: user
+package: firebase-admin, version: 5.3.0, space: user
