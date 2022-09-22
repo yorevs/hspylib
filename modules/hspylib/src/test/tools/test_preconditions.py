@@ -16,7 +16,7 @@
 import sys
 import unittest
 
-from hspylib.core.tools.preconditions import *
+from hspylib.core.preconditions import *
 
 
 class TestPreconditions(unittest.TestCase):

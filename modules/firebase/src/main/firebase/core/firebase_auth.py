@@ -22,7 +22,7 @@ from firebase_admin import auth, credentials
 from firebase_admin.auth import UserNotFoundError, UserRecord
 from firebase_admin.exceptions import FirebaseError
 from hspylib.core.tools.commons import syserr, sysout
-from hspylib.core.tools.preconditions import check_not_none
+from hspylib.core.preconditions import check_not_none
 from requests.structures import CaseInsensitiveDict
 
 from exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials

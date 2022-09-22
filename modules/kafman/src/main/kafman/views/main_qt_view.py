@@ -29,7 +29,7 @@ from confluent_kafka.cimpl import Consumer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
 from hspylib.core.tools.commons import dirname
-from hspylib.core.tools.preconditions import check_state
+from hspylib.core.preconditions import check_state
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.core.tools.zoned_datetime import now, now_ms
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons

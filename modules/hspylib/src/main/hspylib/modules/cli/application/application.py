@@ -27,7 +27,7 @@ from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptio
     InvalidStateError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import log_init, sysout
-from hspylib.core.tools.preconditions import check_state
+from hspylib.core.preconditions import check_state
 from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.cli.application.argparse.arguments_builder import ArgumentsBuilder

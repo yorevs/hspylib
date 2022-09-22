@@ -21,7 +21,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from hspylib.core.tools.preconditions import check_argument, check_state
+from hspylib.core.preconditions import check_argument, check_state
 
 # Please do not modify this
 

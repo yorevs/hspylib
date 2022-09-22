@@ -17,7 +17,7 @@ import sys
 from abc import ABC
 from typing import List, Optional
 
-from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right
 
 

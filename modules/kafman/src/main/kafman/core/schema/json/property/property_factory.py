@@ -18,7 +18,7 @@ from abc import ABC
 from typing import List, Tuple
 
 from hspylib.core.exception.exceptions import InvalidStateError
-from hspylib.core.tools.preconditions import check_not_none
+from hspylib.core.preconditions import check_not_none
 
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.json.property.array_property import ArrayProperty

@@ -21,7 +21,7 @@ from typing import Any, Optional
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import run_dir
-from hspylib.core.tools.preconditions import check_argument
+from hspylib.core.preconditions import check_argument
 
 
 class AppConfigs(metaclass=Singleton):

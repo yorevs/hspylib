@@ -15,7 +15,7 @@
 from enum import Enum
 from typing import Any, List, TypeVar
 
-from hspylib.core.tools.preconditions import check_not_none
+from hspylib.core.preconditions import check_not_none
 
 E = TypeVar('E', bound='Enumeration')
 

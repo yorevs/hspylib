@@ -20,7 +20,7 @@ from typing import Optional, Union
 
 from hspylib.core.exception.exceptions import ResourceNotFoundError, SourceNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.preconditions import check_state
+from hspylib.core.preconditions import check_state
 
 
 class Classpath(metaclass=Singleton):

@@ -18,7 +18,7 @@ from PyQt5.QtCore import pyqtSignal, QModelIndex, Qt
 from PyQt5.QtGui import QCursor, QKeyEvent
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QMenu, QWidget
 
-from hspylib.core.tools.preconditions import check_argument, check_not_none, check_state
+from hspylib.core.preconditions import check_argument, check_not_none, check_state
 
 
 class HListWidget(QListWidget):

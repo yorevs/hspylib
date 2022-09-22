@@ -21,7 +21,7 @@ from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.preconditions import check_argument, check_state
+from hspylib.core.preconditions import check_argument, check_state
 
 
 class SqlFactory(metaclass=Singleton):

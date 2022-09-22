@@ -15,7 +15,7 @@
 import os
 from abc import ABC
 
-from hspylib.core.tools.preconditions import check_not_none, check_state
+from hspylib.core.preconditions import check_not_none, check_state
 
 from kafman.core.schema.avro.avro_schema import AvroSchema
 from kafman.core.schema.json.json_schema import JsonSchema
