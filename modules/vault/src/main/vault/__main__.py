@@ -17,11 +17,11 @@
 import logging as log
 import signal
 import sys
-from datetime import datetime
 from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
+from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 
@@ -75,7 +75,7 @@ class Main(Application):
         Settings ==============================
                 VAULT_USER: {VaultConfig.INSTANCE.vault_user()}
                 VAULT_FILE: {VaultConfig.INSTANCE.vault_file()}
-                STARTED: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+                STARTED: {now("%Y-%m-%d %H:%M:%S")}
         '''))
 
         signal.signal(signal.SIGINT, self._abort)

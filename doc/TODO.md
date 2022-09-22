@@ -2,14 +2,13 @@
 
 ## HSPYLIB
 
-0. Safe formatting string
+1. Safe formatting string
 2. Update all README.md.
 3. Include a form validator for minput.
 4. Improve TUI -> extra with settings and remove parameters.
 5. Check if execute SQLs, use params instead of values inside sql string.
 6. Add a repository for SQLite db + tests.
 7. Add a repository for Postgres db + tests.
-8. Use virtual environments: https://www.geeksforgeeks.org/python-virtual-environment/
 
 ## HSPYLIB-FIREBASE
 
