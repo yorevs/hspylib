@@ -14,6 +14,8 @@
 """
 
 import logging as log
+import os
+import platform
 import select
 import shlex
 import subprocess
@@ -62,3 +64,14 @@ class Terminal(ABC):
         except subprocess.CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
             syserr(str(err))
+
+    @staticmethod
+    def open(filename: str):
+        """Open the specified file using the default editor."""
+        my_os = os.environ.get('HHS_MY_OS', platform.system())
+        if "Darwin" == my_os:
+            Terminal.shell_exec(f"open {filename}")
+        elif "Linux" == my_os:
+            Terminal.shell_exec(f"xdg-open {filename}")
+        else:
+            raise Exception(f"OS '{my_os}' is not supported")
