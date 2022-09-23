@@ -110,8 +110,8 @@ class WidgetPunch(Widget):
                 self._fn = self._edit_punches
             elif 'reset' == self._args.action:
                 self._fn = self._reset_punches
-            else:
-                self._punches = self._read_punches(self.HHS_PUNCH_FILE)
+        else:
+            self._punches = self._read_punches(self.HHS_PUNCH_FILE)
 
         self._fn()
 
