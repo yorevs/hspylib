@@ -186,6 +186,7 @@ task installModule(type: Task) {
 task install(type: Task) {
   group = 'Install'
   description = "Installs the python module into the system"
+  dependsOn requirements
   doLast {
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
