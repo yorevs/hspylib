@@ -79,7 +79,7 @@ class WidgetPunch(Widget):
         self._fn = self._do_the_punch
         self._args = None
         self._today = None
-        self._punches = None
+        self._punches = []
         self._total_hour = self._total_min = 0
         self._week_num = self.WEEK_STAMP
 
