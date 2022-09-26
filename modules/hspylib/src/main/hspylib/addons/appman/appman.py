@@ -63,7 +63,7 @@ class AppManager(metaclass=Singleton):
 
 
     @staticmethod
-    def _prompt() -> MenuInput.FormFields:
+    def prompt() -> MenuInput.FormFields:
         """When no input is provided, prompt the user for the info. """
         # @formatter:off
         form_fields = MenuInput.builder() \

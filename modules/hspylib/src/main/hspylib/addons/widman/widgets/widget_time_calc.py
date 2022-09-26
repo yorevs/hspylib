@@ -86,14 +86,14 @@ class WidgetTimeCalc(Widget):
 
         if not args and not self._read_args():
             return ExitCode.ABORTED
-        elif any(a in args for a in ['+h', '++help']):
+        elif args and any(a in args for a in ['+h', '++help']):
             sysout(self.usage())
             return ExitCode.SUCCESS
-        elif any(a in args for a in ['+v', '++version']):
+        elif args and any(a in args for a in ['+v', '++version']):
             sysout(self.version())
             return ExitCode.SUCCESS
 
-        if any(a in args for a in ['+d', '++decimal']):
+        if args and any(a in args for a in ['+d', '++decimal']):
             self.decimal = True
             args = args[1:]
 

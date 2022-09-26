@@ -99,7 +99,7 @@ class Main(Application):
                     list(map(Extension.value_of, app_ext)) if app_ext else [],
                     self.get_arg('dest-dir') or run_dir())
             else:
-                args = addon._prompt()
+                args = addon.prompt()
                 if args:
                     app_ext = []
                     if args.initialize_gradle:
