@@ -5,6 +5,9 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="HHS_VAULT_USER" value="test" />
+      <env name="HHS_VAULT_FILE" value="resources/sample.vault" />
+      <env name="HHS_VAULT_PASSPHRASE" value="12345" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/vault/src/main/vault" />
