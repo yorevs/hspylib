@@ -52,7 +52,7 @@ class Main(Application):
 
         self._with_chained_args('operation', 'the Vault operation to process') \
             .argument('list', 'list all entries matching the given filter criteria, if specified') \
-                .add_argument('filter', "filter the listed vault entries by it's name", nargs='?') \
+                .add_argument('filter', "filter the listed vault entries by it's name", nargs='*') \
             .argument('get', 'get a vault entry') \
                 .add_argument('name', 'the name of the vault entry which identifies it') \
             .argument('del', 'delete an existing vault entry') \

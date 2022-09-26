@@ -14,7 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-import re
 from typing import List, Optional
 
 from hspylib.core.crud.file.file_repository import FileRepository
@@ -25,7 +24,20 @@ from vault.entity.vault_entry import VaultEntry
 
 class VaultRepository(FileRepository):
 
-    def __init__(self):
+    @staticmethod
+    def dict_to_entity(row: dict) -> VaultEntry:
+        """Convert a dict into a vault entry
+        :param row:
+        """
+        return VaultEntry(
+            row['uuid'],
+            row['key'],
+            row['name'],
+            row['password'],
+            row['hint'],
+            row['modified'])
+
+    def __init__(self) -> None:
         self.db_file = VaultConfig.INSTANCE.unlocked_vault_file()
         super().__init__(self.db_file)
 
@@ -38,10 +50,9 @@ class VaultRepository(FileRepository):
         if data and filters:
             filtered = []
             for entry in data:
-                for key in entry.values():
-                    if re.search(filters, key, re.IGNORECASE):
-                        filtered.append(self.dict_to_entity(entry))
-                        break
+                if all(f.lower() in entry['key'].lower() for f in filters):
+                    filtered.append(self.dict_to_entity(entry))
+                pass
             return filtered
 
         return [self.dict_to_entity(entry) for entry in data]
@@ -56,15 +67,3 @@ class VaultRepository(FileRepository):
             return self.dict_to_entity(result) if result else None
 
         return None
-
-    def dict_to_entity(self, row: dict) -> VaultEntry:
-        """Convert a dict into a vault entry
-        :param row:
-        """
-        return VaultEntry(
-            row['uuid'],
-            row['key'],
-            row['name'],
-            row['password'],
-            row['hint'],
-            row['modified'])
