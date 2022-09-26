@@ -7,7 +7,7 @@
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name="HHS_VAULT_USER" value="test" />
       <env name="HHS_VAULT_FILE" value="resources/sample.vault" />
-      <env name="HHS_VAULT_PASSPHRASE" value="12345" />
+      <env name="HHS_VAULT_PASSPHRASE" value="MTIzNDU=" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/vault/src/main/vault" />
@@ -16,7 +16,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/vault/src/main/vault/__main__.py" />
-    <option name="PARAMETERS" value="add Test2 My-Test-Hint-2 123456" />
+    <option name="PARAMETERS" value="add Test2 My-Test-Hint-2 MTIzNDU=6" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

@@ -13,7 +13,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/main/hspylib/__main__.py" />
-    <option name="PARAMETERS" value="widgets sendmsg +n tcp +m &quot;Hello&quot; +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2" />
+    <option name="PARAMETERS" value="widgets sendmsg +n tcp +m &quot;Hello&quot; +p MTIzNDU= +a 0.0.0.0 +k 100 +i 500 +t 2" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />

@@ -40,7 +40,7 @@ class Vault:
     # Vault hash code
     _VAULT_HASHCODE = os.getenv('VAULT_HASHCODE', 'e4f362fd1e02df6bc9c684c9310e3550')
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.is_open = False
         self.passphrase = None
         self.configs = VaultConfig()
@@ -180,7 +180,6 @@ class Vault:
         passphrase = self.configs.passphrase()
         if passphrase:
             return f"{self.configs.vault_user()}:{base64.b64decode(passphrase).decode('utf-8')}"
-
         while not passphrase:
             passphrase = getpass.getpass("Enter passphrase:").strip()
             confirm = None
