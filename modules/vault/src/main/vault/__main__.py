@@ -15,6 +15,7 @@
 """
 
 import logging as log
+import os
 import signal
 import sys
 from textwrap import dedent
@@ -88,6 +89,9 @@ class Main(Application):
     def _cleanup(self) -> None:
         """TODO"""
         self.vault.close()
+        unlocked = self.vault.configs.unlocked_vault_file()
+        if os.path.exists(unlocked):
+            os.remove(unlocked)
 
     def _abort(self, signum=0, frame=None) -> None:
         """TODO"""
