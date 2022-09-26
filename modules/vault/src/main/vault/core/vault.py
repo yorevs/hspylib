@@ -23,12 +23,14 @@ import shutil
 import uuid
 
 import cryptocode
+import keyring
 from cryptography.fernet import InvalidToken
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decrypt, encrypt
 
 from vault.core.vault_config import VaultConfig
+from vault.core.vault_keyring_be import VaultKeyringBE
 from vault.core.vault_service import VaultService
 from vault.entity.vault_entry import VaultEntry
 from vault.exception.exceptions import VaultCloseError, VaultOpenError, VaultSecurityException
@@ -40,11 +42,15 @@ class Vault:
     # Vault hash code
     _VAULT_HASHCODE = os.getenv('VAULT_HASHCODE', 'e4f362fd1e02df6bc9c684c9310e3550')
 
+    # Vault keyring cache entry
+    _VAULT_SERVICE = 'VAULT_KEY_SERVICE'
+
     def __init__(self) -> None:
         self.is_open = False
         self.passphrase = None
         self.configs = VaultConfig()
         self.service = VaultService()
+        keyring.set_keyring(VaultKeyringBE())
 
     def __str__(self):
         data = set(self.service.list())
@@ -64,6 +70,7 @@ class Vault:
         except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
             log.error("Authentication failure => %s", err)
             MenuUtils.print_error('Authentication failure')
+            keyring.delete_password(self._VAULT_SERVICE, self.configs.vault_user())
             return False
         except Exception as err:
             raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}", err) from err
@@ -113,7 +120,7 @@ class Vault:
         if not entry:
             while not password:
                 password = getpass.getpass(f"Type the password for '{key}': ").strip()
-            entry = VaultEntry(uuid.uuid4(), key, key, self._get_password(password), hint)
+            entry = VaultEntry(uuid.uuid4(), key, key, self._encrypt_password(password), hint)
             self.service.save(entry)
             sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
         else:
@@ -131,7 +138,7 @@ class Vault:
         if entry:
             while not password:
                 password = getpass.getpass(f"Type a password for '{key}': ").strip()
-            upd_entry = VaultEntry(entry.uuid, key, key, self._get_password(password), hint)
+            upd_entry = VaultEntry(entry.uuid, key, key, self._encrypt_password(password), hint)
             self.service.save(upd_entry)
             sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
         else:
@@ -165,7 +172,7 @@ class Vault:
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault remove issued. User=%s", getpass.getuser())
 
-    def _get_password(self, password: str):
+    def _encrypt_password(self, password: str) -> str:
         return cryptocode.encrypt(password, self._VAULT_HASHCODE)
 
     def _read_passphrase(self) -> str:
@@ -181,7 +188,7 @@ class Vault:
         if passphrase:
             return f"{self.configs.vault_user()}:{base64.b64decode(passphrase).decode('utf-8')}"
         while not passphrase:
-            passphrase = getpass.getpass("Enter passphrase:").strip()
+            passphrase = self._getpass()
             confirm = None
             if passphrase and confirm_flag:
                 while not confirm:
@@ -243,3 +250,11 @@ class Vault:
                 raise VaultSecurityException(
                     'Unable to either restore or re-lock the vault file. Please manually ' +
                     f' backup your secrets and remove the unlocked file "{unlocked_vault_file}"')
+
+    def _getpass(self) -> str:
+        """TODO"""
+        passwd = keyring.get_password(self._VAULT_SERVICE, self.configs.vault_user())
+        if passwd is None:
+            passwd = getpass.getpass("Enter passphrase:").rstrip()
+            keyring.set_password(self._VAULT_SERVICE, self.configs.vault_user(), passwd)
+        return passwd
