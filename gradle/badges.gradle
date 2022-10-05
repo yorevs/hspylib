@@ -1,7 +1,5 @@
 /*
     Gradle build badge generation  extension
-    Project: HSPyLib
-    Created: 4th March, 2021
 
     See also: https://badgen.net/
 */
@@ -12,6 +10,7 @@
 def badgeGen(subject, status, color, outDir="${project.projectDir}") {
   def url = "https://badgen.net/badge/$subject/$status/$color"
   def outFile = "$outDir/${subject}-badge.svg"
+  delete("${outFile}")
   exec {
     executable "curl"
     args "--connect-timeout", 3, "$url", "--output", "$outFile"
@@ -24,17 +23,6 @@ def badgeGen(subject, status, color, outDir="${project.projectDir}") {
 
 /* Tasks ------------------------------------------------------------------- */
 
-/* Generate a badge based on build */
-task generateBuildBadge(type: Task) {
-  group = 'Verification'
-  description = 'Generate a badge based on build'
-  outputs.upToDateWhen { false }
-  doLast {
-    def failure = tasks.build.state.failure
-    badgeGen('build', failure ? 'failed' : 'success', failure ? 'red' : 'green')
-  }
-}
-
 /* Generate a badge based on all tests */
 task generateCheckBadge(type: Task) {
   group = 'Verification'
@@ -43,6 +31,18 @@ task generateCheckBadge(type: Task) {
   doLast {
     def failure = tasks.check.state.failure
     badgeGen('check', failure ? 'failed' : 'success', failure ? 'red' : 'green')
+  }
+}
+
+/* Generate a badge based on build */
+task generateBuildBadge(type: Task) {
+  group = 'Verification'
+  description = 'Generate a badge based on build'
+  dependsOn generateCheckBadge
+  outputs.upToDateWhen { false }
+  doLast {
+    def failure = tasks.build.state.failure
+    badgeGen('build', failure ? 'failed' : 'success', failure ? 'red' : 'green')
   }
 }
 
