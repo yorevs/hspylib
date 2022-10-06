@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+
+  astra-db:
+    image: cassandra:3.11.8
+    container_name: astra-db
+    hostname: astra-db
+    restart: on-failure
+    healthcheck:
+          test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+          interval: 30s
+          timeout: 10s
+          retries: 5
+    ports:
+      - "9042:9042"
+    mem_limit: 2G
+    environment:
+      - HEAP_NEWSIZE=128M
+      - MAX_HEAP_SIZE=1024M
+      - CASSANDRA_SEEDS=astra-db
+      - CASSANDRA_CLUSTER_NAME=esnet-cluster
+    volumes:
+      - ./data:/var/lib/cassandra
+    networks:
+      - esnet
+
+networks:
+  esnet:
