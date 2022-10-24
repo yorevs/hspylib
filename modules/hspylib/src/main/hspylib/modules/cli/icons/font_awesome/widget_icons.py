@@ -23,16 +23,16 @@ class WidgetIcons(Awesome):
     """
 
     # @formatter:off
-    WIDGET = '\uFC65'    # ﱥ
-    DATABASE = '\uFB19'  # ﬙
-    CLOCK = '\uF651'     # 
-    NETWORK = '\uF819'   # 
-    CHART_1 = '\uFC67'   # ﱨ
-    CHART_2 = '\uFC68'   # ﱩ
-    MUSIC = '\uFC6E'     # ﱯ
-    SIGN = '\uFC7E'      # ﱿ
-    SWORDS = '\uFC84'    # ﲅ
-    PUNCH = '\uF255'     # 
+    CHART_2 = '\uFC68'      # ﱩ
+    CHART_1 = '\uFC67'      # ﱨ
+    CLOCK = '\uF651'        # 
+    CHIP = '\uFB19'         # ﬙
+    MUSIC = '\uFC6E'        # ﱯ
+    NETWORK = '\uF819'      # 
+    PUNCH = '\uF255'        # 
+    SIGN = '\uFC7E'         # ﱿ
+    SWORDS = '\uFC84'       # ﲅ
+    WIDGET = '\uFC65'       # ﱥ
     # @formatter:on
 
 

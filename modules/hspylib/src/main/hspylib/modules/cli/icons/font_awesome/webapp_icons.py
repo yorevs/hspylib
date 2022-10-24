@@ -22,12 +22,24 @@ class WebappIcons(Awesome):
     """
 
     # @formatter:off
+    APPLE = '\uF534'            # 
+    AWS = '\uF375'              # 
+    CPLUSPLUS = '\uFB70'        # ﭱ
+    DOCKER = '\uF308'           # 
+    DROPBOX = '\uF6E2'          # 
+    GIT = '\uF813'              # 
     GITHUB = '\uF408'           # 
-    TWITTER = '\uF081'          # 
+    GOOGLE_DRIVE = '\uF3AA'     # 
     FACEBOOK = '\uF082'         # 
+    FIREBASE = '\uF1D0'         # 
+    IE = '\uF7FF'               # 
+    JAVA = '\uF4E4'             # 
     LINKED_IN = '\uF08C'        # 
+    PYTHON = '\uF81F'           # 
     STACK_OVERFLOW = '\uF9CB'   # 溜
-    DROPBOX = '\uFC29'          # ﰩ
+    TWITTER = '\uF081'          # 
+    VS_CODE = '\uFB0F'          # ﬏
+    WHATSAPP = '\uFAA2'         # 甆
     # @formatter:on
 
 

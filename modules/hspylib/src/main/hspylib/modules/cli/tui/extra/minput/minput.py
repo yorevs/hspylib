@@ -263,7 +263,7 @@ class MenuInput:
         set_enable_echo(False)
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + 12
         vt_print(f"%CUP({self.cur_row};{err_pos})%")
-        syserr(f"{FormIcons.ERROR}  {err_msg}", end='')
+        syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end='')
         time.sleep(max(2, int(len(err_msg) / 25)))
         set_enable_echo()
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")  # Remove the message after the timeout
