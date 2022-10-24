@@ -29,7 +29,7 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 
 class WidgetFree(Widget):
     """HSPyLib Widget to Report current system memory usage"""
-    WIDGET_ICON = WidgetIcons.DATABASE
+    WIDGET_ICON = WidgetIcons.CHIP
     WIDGET_NAME = "Free"
     TOOLTIP = "Report system memory usage."
     USAGE = "Usage: Free"

@@ -16,10 +16,7 @@
 from emoji.core import emojize
 
 from hspylib.core.enums.enumeration import Enumeration
-
-
-def emj_print(emoji_str: str) -> None:
-    print(emojize(emoji_str) + ' ', end='')
+from hspylib.core.tools.commons import sysout
 
 
 class Emoji(Enumeration):
@@ -28,6 +25,10 @@ class Emoji(Enumeration):
         Full list of emojis can be found here:
           - https://unicode.org/emoji/charts/emoji-list.html
     """
+
+    @staticmethod
+    def emj_print(emoji_str: str, end: str = '') -> None:
+        sysout(f"{emojize(emoji_str)} ", end=end)
 
     def __str__(self) -> str:
         return str(self.value)
