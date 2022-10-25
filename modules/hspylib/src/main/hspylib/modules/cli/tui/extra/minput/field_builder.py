@@ -14,9 +14,8 @@
 """
 from typing import Any, TypeVar
 
-from hspylib.core.tools.commons import str_to_bool
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.text_tools import camelcase
+from hspylib.core.tools.commons import str_to_bool
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
 from hspylib.modules.cli.tui.extra.minput.form_field import FormField
 from hspylib.modules.cli.tui.extra.minput.input_type import InputType
@@ -74,7 +73,7 @@ class FieldBuilder:
             _, mask = MInputUtils.unpack_masked(self.field.value)
             self.field.min_length = self.field.max_length = len(mask)
             self.validator(InputValidator.custom(mask.replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')))
-        self.field.label = camelcase(self.field.label) or 'Field'
+        self.field.label = self.field.label or 'Field'
         self.field.min_length = self.field.min_length or 1
         self.field.max_length = self.field.max_length or 30
         self.field.access_type = self.field.access_type or AccessType.READ_WRITE

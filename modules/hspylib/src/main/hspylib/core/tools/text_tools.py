@@ -117,6 +117,16 @@ def strip_extra_spaces(text: str, re_exp: str = r'\s+', trim: bool = False) -> s
     return s if not trim else s.strip()
 
 
+def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
+    """Split the string using the delimiter and filter using the specified regex filter
+    :param input_str: The string to be split
+    :param regex_filter: The regex to filter the string
+    :param delimiter: The delimiter according which to split the string
+    :return:
+    """
+    return list(filter(re.compile(regex_filter).search, input_str.split(delimiter)))
+
+
 def json_stringify(json_string: str) -> str:
     """ Return a copy of the json string stripping any line breaks or formatting from it and also quoting any existing
     double quotes. """

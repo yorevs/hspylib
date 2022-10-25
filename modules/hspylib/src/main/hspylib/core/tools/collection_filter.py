@@ -13,7 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import get_args, List, Set, TypeVar, Union
+from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
@@ -23,8 +23,8 @@ T = TypeVar('T')
 FILTER_VALUE = TypeVar('FILTER_VALUE', int, str, bool, float)
 
 
-class FilterConditions(Enumeration):
-    """TODO"""
+class FilterCondition(Enumeration):
+    """Collection filter conditions."""
 
     # @formatter:off
     LESS_THAN                   =      '<', Union[int, float]
@@ -46,28 +46,29 @@ class FilterConditions(Enumeration):
         return str(self)
 
     def matches(self, param_value: FILTER_VALUE, value: FILTER_VALUE) -> bool:
-        """TODO"""
+        """Whether this filter value matches the specified param."""
         operator = self.value[0]
         if self.name in ['CONTAINS', 'DOES_NOT_CONTAIN']:
             expression = f'{quote(value)} {operator} {quote(param_value)}'
         else:
             expression = f'{quote(param_value)} {operator} {quote(value)}'
-        return self._has_type(value) and eval(expression)  # pylint: disable=eval-used
+        return self._allow_type(value) and eval(expression)  # pylint: disable=eval-used
 
-    def _has_type(self, value: FILTER_VALUE) -> bool:
-        """TODO"""
+    def _allow_type(self, value: FILTER_VALUE) -> bool:
+        """Whether this filter condition allows the specified value type."""
         try:
             return isinstance(value, self.value[1])
         except TypeError:
             return isinstance(value, get_args(self.value[1]))
 
 
-class ElementFilter:
+class _ElementFilter:
+    """Represent a single filter condition."""
 
     def __init__(
         self, name: str,
         el_name: str,
-        condition: 'FilterConditions',
+        condition: 'FilterCondition',
         el_value: FILTER_VALUE):
         self.name = name
         self.el_name = el_name
@@ -80,80 +81,99 @@ class ElementFilter:
     def __repr__(self):
         return str(self)
 
+    def __key(self) -> Tuple[str, 'FilterCondition', FILTER_VALUE]:
+        return self.el_name, self.condition, self.el_value
+
+    def __hash__(self) -> int:
+        return hash(self.__key())
+
+    def __eq__(self, other: '_ElementFilter') -> bool:
+        if isinstance(other, self.__class__):
+            return self.__key() == other.__key()
+        return NotImplemented
+
     def matches(self, element: T) -> bool:
-        """TODO"""
+        """Whether this filter is True for the given element."""
+
         try:
-            entry = element if isinstance(element, dict) else element.__dict__
+            entry = None
+            if isinstance(element, dict):
+                entry = element
+            elif hasattr(element, '__dict__'):
+                entry = element.__dict__
+            elif isinstance(element, tuple):
+                entry = {k: v for k, v in element}
             return self.el_name in entry and self.condition.matches(entry[self.el_name], self.el_value)
         except (NameError, TypeError, AttributeError):
             return False
 
 
 class CollectionFilter:
-    """TODO"""
+    """A collection of filters to be applied to a given iterable."""
 
-    def __init__(self):
-        self._filters: Set[ElementFilter] = set()
+    def __init__(self) -> None:
+        self._filters: Set[_ElementFilter] = set()
 
-    def __str__(self):
+    def __str__(self) -> str:
         if len(self._filters) > 0:
-            return ' '.join([f"{'AND ' if i > 0 else ''}{str(f)}" for i, f in enumerate(self._filters)])
-
+            return ' '.join([
+                f"{'AND ' if i > 0 else ''}{str(f)}" for i, f in enumerate(self._filters)
+            ])
         return 'No filters applied'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def __iter__(self):
-        """Returns the Iterator object"""
+    def __iter__(self) -> Iterator:
         return self._filters.__iter__()
+
+    def __len__(self) -> int:
+        return len(self._filters)
 
     def apply_filter(
         self,
         name: str,
         el_name: str,
-        condition: 'FilterConditions',
+        condition: 'FilterCondition',
         el_value: Union[int, str, bool, float]) -> None:
-        """TODO"""
+        """Apply the specified filter."""
 
         check_argument(not any(f.name == name for f in self._filters),
                        f'Filter {name} already exists!')
-        # Avoid applying the same filter conditions
-        if not any(
-            f.el_name == el_name
-            and f.condition == condition
-            and f.el_value == el_value for f in self._filters):
-            self._filters.add(ElementFilter(name, el_name, condition, el_value))
+        f = _ElementFilter(name, el_name, condition, el_value)
+        self._filters.add(f)
 
     def clear(self) -> None:
-        """TODO"""
+        """Clear all filters."""
         self._filters.clear()
 
-    def size(self) -> int:
-        """TODO"""
-        return len(self._filters)
-
     def discard(self, name: str):
-        """TODO"""
+        """Discard the specified filter."""
         element = next((e for e in self._filters if e.name == name), None)
         self._filters.discard(element)
 
-    def filter(self, data: List[T]) -> List[T]:
-        """TODO"""
-        filtered: List[T] = []
+    def filter(self, data: Iterable[T]) -> Iterable[T]:
+        """Filter the collection."""
+        filtered: Iterable[T] = data.__class__.__call__()
         for element in data:
             if not self.should_filter(element):
-                filtered.append(element)
+                if hasattr(filtered, 'append'):
+                    filtered.append(element)
+                elif hasattr(filtered, 'add'):
+                    filtered.add(element)
         return filtered
 
-    def filter_inverse(self, data: List[T]) -> List[T]:
-        """TODO"""
-        filtered: List[T] = []
+    def filter_inverse(self, data: Iterable[T]) -> Iterable[T]:
+        """Inverse filter the collection."""
+        filtered: Iterable[T] = data.__class__.__call__()
         for element in data:
             if self.should_filter(element):
-                filtered.append(element)
+                if hasattr(filtered, 'append'):
+                    filtered.append(element)
+                elif hasattr(filtered, 'add'):
+                    filtered.add(element)
         return filtered
 
     def should_filter(self, data: T) -> bool:
-        """TODO"""
+        """Whether the specified data should be filtered, according to this filter collection."""
         return not all(f.matches(data) for f in self._filters)

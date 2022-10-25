@@ -9,6 +9,7 @@ __all__ = [
   'collection_filter', 
   'commons', 
   'git_tools', 
+  'namespace', 
   'text_tools', 
   'validator', 
   'zoned_datetime'

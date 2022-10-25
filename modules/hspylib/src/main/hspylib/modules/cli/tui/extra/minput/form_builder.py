@@ -21,8 +21,8 @@ from hspylib.modules.cli.tui.extra.minput.field_builder import FieldBuilder
 class FormBuilder:
     """TODO"""
 
-    def __init__(self):
-        self.fields = []
+    def __init__(self) -> None:
+        self.fields = list()
 
     def field(self) -> Any:
         return FieldBuilder(self)

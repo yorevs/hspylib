@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 from enum import Enum
-from typing import Any, List, TypeVar
+from typing import Any, List, Tuple, TypeVar
 
 from hspylib.core.preconditions import check_not_none
 
@@ -56,14 +56,13 @@ class Enumeration(Enum):
     def __repr__(self):
         return str(self)
 
-    def __eq__(self, other: E) -> bool:
-        return (
-            self.__class__.__qualname__ == other.__class__.__qualname__ and
-            (other.name == self.name and self.value == other.value)
-        )
+    def __key(self) -> Tuple[str, Any]:
+        return self.name, self.value
 
     def __hash__(self) -> int:
-        hash_code = 7
-        hash_code = 31 * hash_code + (0 if self.name is None else hash(self.name))
-        hash_code = 31 * hash_code + (0 if self.value is None else hash(self.value))
-        return hash_code
+        return hash(self.__key())
+
+    def __eq__(self, other: E) -> bool:
+        if isinstance(other, self.__class__):
+            return self.__key() == other.__key()
+        return NotImplemented

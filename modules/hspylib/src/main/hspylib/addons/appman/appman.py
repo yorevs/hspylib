@@ -20,11 +20,12 @@ from typing import List
 import urllib3
 
 from hspylib.addons.appman.appman_enums import AppType, Extension
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
@@ -63,7 +64,7 @@ class AppManager(metaclass=Singleton):
 
 
     @staticmethod
-    def prompt() -> MenuInput.FormFields:
+    def prompt() -> Namespace:
         """When no input is provided, prompt the user for the info. """
         # @formatter:off
         form_fields = MenuInput.builder() \
@@ -124,7 +125,7 @@ class AppManager(metaclass=Singleton):
                 raise TypeError(f'Unsupported application type: {app_type}')
         except OSError as err:
             syserr(f'Could not create application "{app_name}"!\n  => {str(err)}')
-            self._parent_app.exit(ExitCode.FAILED.value)
+            self._parent_app.exit(ExitStatus.FAILED.value)
 
         sysout(f"Successfully created the {app_type.value} {app_name}")
 
@@ -163,7 +164,7 @@ class AppManager(metaclass=Singleton):
             (self.TEMPLATES / "widget.py.tpl").read_text().replace('_WIDGET_NAME_', f"{widget_name}")
         )
 
-    def _create_base_app_struct(self, app_name):
+    def _create_base_app_struct(self, app_name: str) -> None:
         """Create HSPyLib application structure"""
         self._mkdir()
         self._mkfile('README.md', f'# {app_name}')
@@ -220,7 +221,7 @@ class AppManager(metaclass=Singleton):
         sysout(f'Gradle execution result: {exit_code}')
         sysout(output)
 
-        if exit_code == ExitCode.SUCCESS:
+        if exit_code == ExitStatus.SUCCESS:
             sysout('Downloading gradle extensions ...')
             self._download_ext('badges.gradle')
             self._download_ext('build-info.gradle')
@@ -241,7 +242,7 @@ class AppManager(metaclass=Singleton):
             output, exit_code = Terminal.shell_exec('./gradlew buildOnly', cwd=self._app_dir)
             sysout(f'Gradle execution result: {output}')
 
-        return exit_code == ExitCode.SUCCESS
+        return exit_code == ExitStatus.SUCCESS
 
     def _init_git(self) -> bool:
         """Initialize a git repository for the project"""
@@ -260,4 +261,4 @@ class AppManager(metaclass=Singleton):
             sysout(f'Git commit result: {exit_code}')
             sysout(output)
 
-        return exit_code == ExitCode.SUCCESS
+        return exit_code == ExitStatus.SUCCESS

@@ -17,6 +17,7 @@ from typing import List, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.core.preconditions import check_state
+from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
@@ -53,8 +54,8 @@ class MenuDashBoard:
         [' ', '┗', '━', ' ', ' ', '━', '┛', ' '],
     ]
 
-    NAV_ICONS = '\u2190\u2191\u2192\u2193'
-    NAV_FMT = "\n{}[Enter] Select  [{}] Navigate  [Tab] Next  [Esc] Quit %EL0%"
+    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.RIGHT, NavIcons.DOWN, NavIcons.LEFT)
+    NAV_BAR = f"[Enter] Select  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Esc] Quit %EL0%"
 
     @classmethod
     def builder(cls):
@@ -118,7 +119,7 @@ class MenuDashBoard:
             self._print_cell(idx, item, MenuDashBoard.CELL_TPL if self.tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
 
         sysout(f'%EL2%\r> %GREEN%{self.items[self.tab_index].tooltip}%NC%')
-        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS), end='')
+        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR}", end='')
         self.re_render = False
 
     def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:

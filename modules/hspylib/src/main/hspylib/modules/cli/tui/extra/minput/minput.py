@@ -16,10 +16,12 @@ import re
 import time
 from typing import List, Optional
 
-from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.commons import namespace, syserr, sysout
-from hspylib.core.tools.text_tools import camelcase, snakecase
+from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidInputError
+from hspylib.core.tools.commons import syserr, sysout
+from hspylib.core.tools.namespace import Namespace
+from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.extra.minput.form_builder import FormBuilder
 from hspylib.modules.cli.tui.extra.minput.form_field import FormField
@@ -36,7 +38,7 @@ def minput(
     title: str = 'Please fill all fields of the form fields below',
     prefix: str = None,
     title_color: VtColors = VtColors.ORANGE,
-    nav_color: VtColors = VtColors.YELLOW) -> Optional['MenuInput.FormFields']:
+    nav_color: VtColors = VtColors.YELLOW) -> Optional[Namespace]:
     """
     TODO
     :param form_fields:
@@ -53,11 +55,8 @@ class MenuInput:
     """TODO"""
 
     SELECTED_BG = '%MOD(44)%'
-
-    NAV_ICONS = '\u2191\u2193'
-    NAV_FMT = "\n{}[Enter] Submit  [{}] Navigate  [Tab] Next  [Space] Toggle  [Esc] Quit %EL0%"
-
-    FormFields = namespace('FormFields')  # New type definition to return filled fields
+    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
+    NAV_BAR = f"[Enter] Submit  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
     @classmethod
     def builder(cls) -> FormBuilder:
@@ -78,7 +77,7 @@ class MenuInput:
         title: str,
         prefix: str,
         title_color: VtColors,
-        nav_color: VtColors) -> Optional['MenuInput.FormFields']:
+        nav_color: VtColors) -> Optional[Namespace]:
         """TODO"""
 
         ret_val = Keyboard.VK_NONE
@@ -101,10 +100,10 @@ class MenuInput:
         restore_terminal()
 
         if ret_val == Keyboard.VK_ENTER:
-            form_fields = self.FormFields
+            form_fields = Namespace('FormFields')
             for field in self.all_fields:
                 att_name = f"{prefix or ''}{snakecase(field.label)}"
-                setattr(form_fields, att_name, field.value)
+                form_fields.set_attribute(att_name, field.value)
             return form_fields
 
         return None
@@ -118,10 +117,10 @@ class MenuInput:
 
             field_size = len(str(field.value))
             if self.tab_index == idx:
-                MInputUtils.mi_print(self.max_label_length, camelcase(field.label), MenuInput.SELECTED_BG)
+                MInputUtils.mi_print(self.max_label_length, field.label, MenuInput.SELECTED_BG)
                 self.cur_field = field
             else:
-                MInputUtils.mi_print(self.max_label_length, camelcase(field.label))
+                MInputUtils.mi_print(self.max_label_length, field.label)
 
             self._buffer_pos(field_size, idx)
 
@@ -146,7 +145,7 @@ class MenuInput:
             # Remaining/max characters
             self._render_details(field, field_size)
 
-        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS), end='')
+        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR}", end='')
         self.re_render = False
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:
@@ -200,19 +199,22 @@ class MenuInput:
                 else:
                     self._handle_input(keypress)
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
-                for idx, field in enumerate(self.all_fields):
+                invalid = next((field for field in self.all_fields if not field.validate(field.value)), None)
+                if invalid:
+                    keypress = None
+                    idx = self.all_fields.index(invalid)
                     self.cur_row = self.all_pos[idx][0]
-                    if not field.validate(field.value):
-                        keypress = None
-                        self._display_error(
-                            f"Field \"{camelcase(field.label)}\" is not valid => \"{field.validator}\" !")
-                        break
-                    if field.itype == InputType.MASKED:
-                        field.value = field.value.split('|')[0]
-                    elif field.itype == InputType.CHECKBOX:
-                        field.value = bool(field.value)
-                    elif field.itype == InputType.SELECT:
-                        _, field.value = MInputUtils.get_selected(field.value)
+                    self.tab_index = idx
+                    self._display_error("Form field is not valid: " + str(invalid))
+                else:
+                    for idx, field in enumerate(self.all_fields):
+                        if field.itype == InputType.MASKED:
+                            field.value = field.value.split('|')[0]
+                        elif field.itype == InputType.CHECKBOX:
+                            field.value = bool(field.value)
+                        elif field.itype == InputType.SELECT:
+                            _, field.value = MInputUtils.get_selected(field.value)
+                    return keypress
 
         self.re_render = True
         return keypress

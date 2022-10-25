@@ -19,7 +19,7 @@ from hspylib.core.tools.commons import get_path, run_dir
 class _Classpath(Classpath):
     """TODO"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             get_path(__file__),
             get_path(run_dir()),

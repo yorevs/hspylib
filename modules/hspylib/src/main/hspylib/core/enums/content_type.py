@@ -12,13 +12,17 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Tuple
 
+from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 
 class ContentType(Enumeration):
-    """TODO"""
+    """Enumeration to wrap all http content types. The 'Content-Type' representation header is used to indicate the
+    original media type of the resource (prior to any content encoding applied for sending)."""
 
     # @formatter:off
+
     APPLICATION_ATOM_XML                = 'application/atom+xml'
     APPLICATION_ECMASCRIPT              = 'application/ecmascript'
     APPLICATION_JSON                    = 'application/json'
@@ -73,4 +77,9 @@ class ContentType(Enumeration):
     TEXT_PLAIN                          = 'text/plain'
     TEXT_VCARD                          = 'text/vcard'
     TEXT_XML                            = 'text/xml'
+
     # @formatter:on
+
+    def as_header(self, encoding: Charset = Charset.UTF_8) -> Tuple[str, str]:
+        """Return this content type as an http header."""
+        return 'Content-Type', f"{self.value}; charset={str(encoding)}"

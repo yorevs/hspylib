@@ -13,12 +13,12 @@
 
    Copyright 2022, HSPyLib team
 """
-import concurrent
+from concurrent import futures
 from time import sleep
 from typing import List
 
 from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -39,10 +39,10 @@ class Widget_WIDGET_NAME_(Widget):
       self.TOOLTIP,
       self.USAGE,
       self.VERSION)
-    self._exit_code = ExitCode.SUCCESS
+    self._exit_code = ExitStatus.SUCCESS
 
-  def execute(self, args: List[str] = None) -> ExitCode:
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+  def execute(self, args: List[str] = None) -> ExitStatus:
+    with futures.ThreadPoolExecutor() as executor:
       done = False
       while not done and not Keyboard.kbhit():
         future = executor.submit(self._do_something)
@@ -56,6 +56,6 @@ class Widget_WIDGET_NAME_(Widget):
     pass
 
   def _do_something(self) -> None:
-    sysout('')
+    sysout(str(self))
     sysout('My widget is running')
     sysout('')

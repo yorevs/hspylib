@@ -15,6 +15,7 @@
 
 import re
 from enum import auto
+from typing import Callable, Optional
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
@@ -59,14 +60,25 @@ class VtCodes(Enumeration):
     # @formatter:on
 
     # For all mnemonics that take arguments we need to include in this map, so we can call it
-    __VT100_FNC_MAP__ = {
-        "MOD": Vt100.mode,
-        "CUP": Vt100.cursor_pos,
-        "CUU": Vt100.cursor_move_up,
-        "CUD": Vt100.cursor_move_down,
-        "CUF": Vt100.cursor_move_forward,
-        "CUB": Vt100.cursor_move_backward,
-    }
+
+    @staticmethod
+    def _vt100_fnc(command: str) -> Optional[Callable]:
+        """TODO"""
+        fnc = None
+        match command:
+            case "MOD":
+                fnc = Vt100.mode
+            case "CUP":
+                fnc = Vt100.cursor_pos
+            case "CUU":
+                fnc = Vt100.cursor_move_up
+            case "CUD":
+                fnc = Vt100.cursor_move_down
+            case "CUF":
+                fnc = Vt100.cursor_move_forward
+            case "CUB":
+                fnc = Vt100.cursor_move_backward
+        return fnc
 
     @classmethod
     def decode(cls, input_string: str) -> str:
@@ -76,17 +88,19 @@ class VtCodes(Enumeration):
             mnemonic = nextResult[0]
             if mnemonic in VtCodes.names():
                 args = nextResult[1][1:-1] if nextResult[1] else ''
+                # Command has args, so, we need to call the vt100 function
                 if args:
+                    fnc = VtCodes.value_of(mnemonic).__call__
                     input_string = input_string.replace(
-                        f'%{mnemonic + nextResult[1]}%', VtCodes.value_of(mnemonic)(args))
+                        f'%{mnemonic + nextResult[1]}%', fnc(args) if fnc else '')
                 else:
                     input_string = input_string.replace(
-                        f'%{mnemonic}%', VtCodes.value_of(mnemonic).value)
+                        f'%{mnemonic}%', str(VtCodes.value_of(mnemonic).value))
 
         return input_string
 
     def __call__(self, *args, **kwargs) -> str:
-        return VtCodes.__VT100_FNC_MAP__[self.name](args[0])
+        return VtCodes._vt100_fnc(self.name)(args[0])
 
     def __str__(self) -> str:
         return str(self.value)

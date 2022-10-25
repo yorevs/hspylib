@@ -8,9 +8,8 @@
 __all__ = [
   'charset', 
   'content_type', 
-  'database_type', 
   'enumeration', 
-  'exit_code', 
+  'exit_status', 
   'http_code', 
   'http_method'
 ]

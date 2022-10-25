@@ -23,7 +23,7 @@ from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
@@ -67,6 +67,21 @@ class WidgetPunch(Widget):
 
     MAX_PUNCHES = 7  # 7 week days
 
+    @staticmethod
+    def _daily_total(daily_punches: List[str], decimal: bool = False) -> str:
+        """Calculate the total time from the daily punches."""
+        # Up to 3 pairs of timestamps: morning, afternoon and evening
+        if (n := len(daily_punches)) > 0 and n % 2 == 0:
+            stamps = []
+            stamps += [daily_punches[1], '-', daily_punches[0], '+'] if n // 2 >= 1 else []  # Morning
+            stamps += [daily_punches[3], '-', daily_punches[2], '+'] if n // 2 >= 2 else []  # Afternoon
+            stamps += [daily_punches[5], '-', daily_punches[4]] if n // 2 >= 3 else []       # Evening
+            h, m, _ = WidgetTimeCalc.calc_time(stamps)
+            m = WidgetTimeCalc.to_decimal(m) if decimal else m
+            return f"{'%GREEN%'if h >= 8 else '%RED%'}{h:02d}{'.' if decimal else ':'}{m:02d}%NC%"
+        else:
+            return f"%RED%--{'.' if decimal else ':'}--%NC%"
+
     def __init__(self) -> None:
         super().__init__(
             self.WIDGET_ICON,
@@ -75,7 +90,7 @@ class WidgetPunch(Widget):
             self.USAGE,
             self.VERSION)
 
-        self._exit_code = ExitCode.SUCCESS
+        self._exit_code = ExitStatus.SUCCESS
         self._fn = self._do_the_punch
         self._args = None
         self._today = None
@@ -83,19 +98,17 @@ class WidgetPunch(Widget):
         self._total_hour = self._total_min = 0
         self._week_num = self.WEEK_STAMP
 
-    def execute(self, args: List[str] = None) -> ExitCode:
-
-        date_stamp = now('%d-%m-%Y')
+    def execute(self, args: List[str] = None) -> ExitStatus:
 
         # Create the current week punch file if it does not yet exist.
         if not os.path.exists(self.HHS_PUNCH_FILE):
             with open(self.HHS_PUNCH_FILE, 'w') as f_punch:
-                f_punch.write(f"{date_stamp} => ")
+                f_punch.write(f"{now('%d-%m-%Y')} => ")
 
         ret_val = self._parse_args(args)
 
         if not ret_val:
-            return ExitCode.ABORTED
+            return ExitStatus.ABORTED
 
         if self._args:
             if 'list' == self._args.action:
@@ -115,7 +128,7 @@ class WidgetPunch(Widget):
 
         self._fn()
 
-        return ExitCode.SUCCESS
+        return ExitStatus.SUCCESS
 
     def _parse_args(self, args: List[str]) -> bool:
         """Parse command line arguments"""
@@ -141,45 +154,29 @@ class WidgetPunch(Widget):
         return bool(self._args)
 
     def _read_punches(self, punch_file: str) -> List[str]:
-        """TODO"""
+        """Read all punches from the punch file."""
         if not os.path.exists(punch_file):
             sysout(f"%RED%Punch file '{punch_file}' not found !%NC%")
-            sys.exit(int(str(ExitCode.FAILED.value)))
+            sys.exit(int(str(ExitStatus.FAILED.value)))
         else:
             with open(punch_file, 'r') as f_punch:
                 all_punches = list(map(
-                    self._find_today, filter(lambda l: re.match(self.RE_PUNCH_LINE, l), f_punch.readlines())
+                    self._set_today, filter(lambda l: re.match(self.RE_PUNCH_LINE, l), f_punch.readlines())
                 ))
                 if len(all_punches) > self.MAX_PUNCHES:
                     sysout(f"%RED%Punch file contains more than {self.MAX_PUNCHES} punch lines !%NC%")
-                    sys.exit(int(str(ExitCode.FAILED.value)))
+                    sys.exit(int(str(ExitStatus.FAILED.value)))
                 return all_punches
 
     def _is_today(self, punch_line: str) -> bool:
-        """TODO"""
+        """Whether the punch line refer to today's date."""
         return bool(re.match(self.RE_TODAY_PUNCH_LINE, punch_line))
 
-    def _find_today(self, punch_line: str) -> str:
-        """TODO"""
+    def _set_today(self, punch_line: str) -> str:
+        """Set the today's date if the line represents today."""
         if not self._today and self._is_today(punch_line):
             self._today = punch_line
         return punch_line
-
-    def _daily_total(self, daily_punches: List[str], decimal: bool = False) -> str:
-        """TODO
-        :param decimal:
-        """
-        # Up to 3 pairs of timestamps: morning, afternoon and evening
-        if (n := len(daily_punches)) > 0 and n % 2 == 0:
-            stamps = []
-            stamps += [daily_punches[1], '-', daily_punches[0], '+'] if n // 2 >= 1 else []  # Morning
-            stamps += [daily_punches[3], '-', daily_punches[2], '+'] if n // 2 >= 2 else []  # Afternoon
-            stamps += [daily_punches[5], '-', daily_punches[4]] if n // 2 >= 3 else []       # Evening
-            h, m, _ = WidgetTimeCalc.calc_time(stamps)
-            m = WidgetTimeCalc.decimal(m) if decimal else m
-            return f"{'%GREEN%'if h >= 8 else '%RED%'}{h:02d}{'.' if decimal else ':'}{m:02d}%NC%"
-        else:
-            return f"%RED%--{'.' if decimal else ':'}--%NC%"
 
     def _do_the_punch(self) -> None:
         """!!DO THE PUNCH!!"""
@@ -198,7 +195,7 @@ class WidgetPunch(Widget):
         sysout(f"{re.sub(self.DATE_STAMP, '%GREEN%Today%NC%', self._today)} ")
 
     def _list_punches(self) -> None:
-        """TODO"""
+        """List all punches from the punch file."""
         total = 0, 0
         total_dec = 0, 0
         sysout(f"\n%WHITE%Week-{self._week_num:02d} Punches%NC%")
@@ -214,7 +211,7 @@ class WidgetPunch(Widget):
             if n > 0 and n % 2 == 0:
                 sysout(f" {padding} : Subtotal = {daily_total} -> {daily_total_dec}%NC%")
                 total = WidgetTimeCalc.calc_time([f"{total[0]}:{total[1]}", '+', daily_total[-9:-4]])
-                total_dec = total[0], WidgetTimeCalc.decimal(total[1])
+                total_dec = total[0], WidgetTimeCalc.to_decimal(total[1])
             else:
                 sysout(f"{daily_total}%NC%")
         sysout('-' * 82)
@@ -224,11 +221,11 @@ class WidgetPunch(Widget):
         sysout(f"%WHITE%Total: ({totals})  Balance: {balance}\n")
 
     def _edit_punches(self) -> None:
-        """TODO"""
+        """Open the default system editor to edit punches."""
         Terminal.open(self.HHS_PUNCH_FILE)
 
     def _reset_punches(self) -> None:
-        """TODO"""
+        """Rename the punch file as a weekly punch file and reset current punch file."""
         punch_dir = os.path.dirname(self.HHS_PUNCH_FILE)
         new_name = f"{punch_dir}/week-{self._week_num:02d}.punch"
         if os.path.exists(new_name):

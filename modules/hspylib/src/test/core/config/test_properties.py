@@ -82,7 +82,7 @@ class TestProperties(unittest.TestCase):
         expected_size = 6
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
-        for prop in properties.values():
+        for prop in properties.values:
             self.assertTrue(prop in expected_properties)
             del expected_properties[0]
         self.assertEqual(0, len(expected_properties))

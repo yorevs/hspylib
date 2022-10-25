@@ -76,4 +76,5 @@ class FormField:
         return False
 
     def validate(self, value: Any = None) -> bool:
-        return self.validator.validate(str(value) or str(self.value)) if self.validator else False
+        return self.validator.validate(str(value) or str(self.value)) \
+            if self.validator else False

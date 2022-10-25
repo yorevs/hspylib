@@ -4,7 +4,7 @@
 """
    @project: HSPyLib
    @package: main.modules.cli.icons.font_awesome
-      @file: webapp_icons.py
+      @file: app_icons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -14,9 +14,9 @@
 """
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
-class WebappIcons(Awesome):
+class AppIcons(Awesome):
     """
-        Dashboard UI icons.
+        Application icons.
         Codes can be found here:
         - https://fontawesome.com/cheatsheet?from=io
     """
@@ -44,4 +44,4 @@ class WebappIcons(Awesome):
 
 
 if __name__ == '__main__':
-    WebappIcons.demo_icons()
+    AppIcons.demo_icons()

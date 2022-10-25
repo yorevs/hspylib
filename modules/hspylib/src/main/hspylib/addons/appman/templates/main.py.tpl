@@ -3,14 +3,13 @@
 
 import sys
 
-from
+from %APP_NAME%.__classpath__ import _Classpath
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
-% APP_NAME %.__classpath__
-import _Classpath
+
 
 HERE = get_path(__file__)
 
@@ -25,7 +24,7 @@ class Main(Application):
   VERSION_DIR = _Classpath.source_root()
 
   # Location of the resource directory
-  RESOURCE_DIR = _Classpath.resource_dir()
+  RESOURCE_DIR = str(_Classpath.resource_dir())
 
   def __init__(self, app_name: str):
     version = Version.load(load_dir=self.VERSION_DIR)

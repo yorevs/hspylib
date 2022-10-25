@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="filter_demo" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo">
+  <configuration default="false" name="menu_dashboard_demo" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo" nameIsGenerated="true">
     <module name="HsPyLib.hspylib" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -7,15 +7,15 @@
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/demo/other" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/tui/extra" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/other/filter_demo.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/tui/extra/menu_dashboard_demo.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
-    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />
     <option name="REDIRECT_INPUT" value="false" />
     <option name="INPUT_FILE" value="" />

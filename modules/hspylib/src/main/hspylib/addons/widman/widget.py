@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from textwrap import dedent
 from typing import List, Tuple
 
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
@@ -48,7 +48,7 @@ class Widget(ABC):
         self._version = version
 
     @abstractmethod
-    def execute(self, args: List[str] = None) -> ExitCode:
+    def execute(self, args: List[str] = None) -> ExitStatus:
         """Execute the widget main flow"""
 
     def cleanup(self) -> None:

@@ -27,111 +27,111 @@ class Vt100(ABC):
     """
 
     # Esc<Sequence>
-    @classmethod
-    def escape(cls, seq: str) -> str:
+    @staticmethod
+    def escape(seq: str) -> str:
         """TODO"""
         return f"\033{seq}"
 
     # Esc[<Code>
-    @classmethod
-    def sequence(cls, code: str) -> str:
+    @staticmethod
+    def sequence(code: str) -> str:
         """TODO"""
-        return cls.escape(f"[{code}")
+        return Vt100.escape(f"[{code}")
 
     # Esc7
-    @classmethod
-    def save_cursor(cls) -> str:
+    @staticmethod
+    def save_cursor() -> str:
         """TODO"""
-        return cls.escape('7')
+        return Vt100.escape('7')
 
     # Esc8
-    @classmethod
-    def restore_cursor(cls) -> str:
+    @staticmethod
+    def restore_cursor() -> str:
         """TODO"""
-        return cls.escape('8')
+        return Vt100.escape('8')
 
     # Esc[c
-    @classmethod
-    def reset(cls) -> str:
+    @staticmethod
+    def reset() -> str:
         """TODO"""
-        return cls.sequence('c')
+        return Vt100.sequence('c')
 
     # Esc[?7<h/l>
-    @classmethod
-    def set_auto_wrap(cls, enabled: bool) -> str:
+    @staticmethod
+    def set_auto_wrap(enabled: bool) -> str:
         """TODO"""
-        return cls.sequence(f"?7{'h' if enabled else 'l'}")
+        return Vt100.sequence(f"?7{'h' if enabled else 'l'}")
 
     # Esc[?25<h/l>
-    @classmethod
-    def set_show_cursor(cls, enabled: bool) -> str:
+    @staticmethod
+    def set_show_cursor(enabled: bool) -> str:
         """TODO"""
-        return cls.sequence(f"?25{'h' if enabled else 'l'}")
+        return Vt100.sequence(f"?25{'h' if enabled else 'l'}")
 
     # Esc[<Modes...>m
-    @classmethod
-    def mode(cls, mod_seq: str) -> str:
+    @staticmethod
+    def mode(mod_seq: str) -> str:
         """TODO"""
-        check_argument(bool(re.match(r"[0-9]+(;[0-9]+){0,2}", mod_seq)), 'Invalid mode sequence')
-        return cls.sequence(f"{mod_seq}m")
+        check_argument(bool(re.match(r"[0-9]+(;[0-9]+){0,2}", mod_seq)), f"Invalid mode sequence: {mod_seq}")
+        return Vt100.sequence(f"{mod_seq}m")
 
     # Esc[<n>J
-    @classmethod
-    def clear_screen(cls, mod_cls: int = None) -> str:
+    @staticmethod
+    def clear_screen(mod_cls: int = None) -> str:
         """TODO"""
         if mod_cls is None:
-            return cls.sequence('J')
-
-        check_argument(mod_cls in [0, 1, 2], 'Invalid mode sequence')
-        return cls.sequence(f'{mod_cls}J')
+            return Vt100.sequence('J')
+        check_argument(mod_cls in [0, 1, 2], f"Invalid clear screen sequence: {mod_cls}")
+        return Vt100.sequence(f'{mod_cls}J')
 
     # Esc[<n>K
-    @classmethod
-    def clear_line(cls, mod_cls: int = None) -> str:
+    @staticmethod
+    def clear_line(mod_cls: int = None) -> str:
         """TODO"""
         if mod_cls is None:
-            return cls.sequence('K')
+            return Vt100.sequence('K')
 
-        check_argument(mod_cls in [0, 1, 2], 'Invalid mode sequence')
-        return cls.sequence(f'{mod_cls}K')
+        check_argument(mod_cls in [0, 1, 2], f"Invalid clea line sequence: {mod_cls}")
+        return Vt100.sequence(f'{mod_cls}K')
 
     # Esc[<v>;<h>H
-    @classmethod
-    def cursor_pos(cls, cup_seq: str = None) -> str:
+    @staticmethod
+    def cursor_pos(cup_seq: str = None) -> str:
         """TODO"""
         if cup_seq is None:
-            return cls.sequence('H')
+            return Vt100.sequence('H')
 
-        check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), 'Invalid position sequence')
-        return cls.sequence(f"{cup_seq}H")
+        check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), f"Invalid cursor position sequence: {cup_seq}")
+        return Vt100.sequence(f"{cup_seq}H")
 
     # Esc[<n><A/B/C/D>
-    @classmethod
-    def cursor_move(cls, amount: int, direction: str) -> str:
+    @staticmethod
+    def cursor_move(amount: int, direction: str) -> str:
         """TODO"""
-        check_argument(int(amount) >= 0 and direction in ['A', 'B', 'C', 'D'], 'Invalid direction or move amount')
-        return cls.sequence(f"{amount}{direction}")
+        check_argument(int(amount) >= 0 and direction in ['A', 'B', 'C', 'D'],
+                       f"Invalid direction={direction} or move amount={amount}")
+        return Vt100.sequence(f"{amount}{direction}")
 
     # Esc[<n>A
-    @classmethod
-    def cursor_move_up(cls, amount: int = None) -> str:
+    @staticmethod
+    def cursor_move_up(amount: int = None) -> str:
         """TODO"""
-        return cls.cursor_move(amount if amount else 0, 'A')
+        return Vt100.cursor_move(amount or 0, 'A')
 
     # Esc[<n>B
-    @classmethod
-    def cursor_move_down(cls, amount: int = None) -> str:
+    @staticmethod
+    def cursor_move_down(amount: int = None) -> str:
         """TODO"""
-        return cls.cursor_move(amount if amount else 0, 'B')
+        return Vt100.cursor_move(amount or 0, 'B')
 
     # Esc[<n>C
-    @classmethod
-    def cursor_move_forward(cls, amount: int = None) -> str:
+    @staticmethod
+    def cursor_move_forward(amount: int = None) -> str:
         """TODO"""
-        return cls.cursor_move(amount if amount else 0, 'C')
+        return Vt100.cursor_move(amount or 0, 'C')
 
     # Esc[<n>D
-    @classmethod
-    def cursor_move_backward(cls, amount: int = None) -> str:
+    @staticmethod
+    def cursor_move_backward(amount: int = None) -> str:
         """TODO"""
-        return cls.cursor_move(amount if amount else 0, 'D')
+        return Vt100.cursor_move(amount or 0, 'D')
