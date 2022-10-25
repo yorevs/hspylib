@@ -29,6 +29,13 @@ class Awesome(Enumeration):
     """
 
     @staticmethod
+    def compose(*values: 'Awesome') -> str:
+        result = ''
+        for v in values:
+            result += str(v.value)
+        return result
+
+    @staticmethod
     def print_unicode(uni_code: Union[str, int], end: str = '') -> None:
         """TODO"""
         if isinstance(uni_code, str) and re.match(r"^[a-fA-F0-9]{1,4}$", uni_code):
@@ -41,10 +48,10 @@ class Awesome(Enumeration):
             raise TypeError(f'Invalid unicode value: {uni_code}')
 
     @staticmethod
-    def demo_unicodes(split_columns: int = 16) -> None:
+    def demo_unicodes(split_columns: int = 16, fa_start: int = 0xF000, fa_end: int = 0xFD50) -> None:
         """TODO"""
-        fa_range = 0, 3399  # Font awesome range unicodes
-        st_base = [f'F{x:03X}' for x in range(*fa_range)]
+        fa_range = fa_start, fa_end  # Font awesome range unicodes
+        st_base = [f'{hex(x)[2:]}' for x in range(*fa_range)]
         for n, h in enumerate(st_base):
             Awesome.print_unicode(h)
             sysout(f'{h:04}', end=eol(n, split_columns))
@@ -53,7 +60,7 @@ class Awesome(Enumeration):
     def demo_icons(cls, split_columns: int = 16) -> None:
         """TODO"""
         for i, n in enumerate(cls.values()):
-            sysout(f'{n:02}', end=eol(i, split_columns))
+            sysout(f'{n:2}', end=eol(i, split_columns))
 
     def __str__(self) -> str:
         return str(self.value)
@@ -64,7 +71,3 @@ class Awesome(Enumeration):
     def placeholder(self) -> str:
         """TODO"""
         return f":{self.name}:"
-
-
-if __name__ == '__main__':
-    Awesome.demo_unicodes()

@@ -18,6 +18,7 @@ from typing import List, Optional, TypeVar
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
@@ -55,8 +56,8 @@ class MenuChoose(ABC):
     MARKED = FormIcons.MARKED
     UNMARKED = FormIcons.UNMARKED
 
-    NAV_ICONS = '\u2191\u2193'
-    NAV_FMT = "\n{}[Enter] Accept  [{}] Navigate  [Space] Mark  [I] Invert  [Q] Quit  [1..{}] Goto: %EL0%"
+    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
+    NAV_BAR = f"[Enter] Accept  [{NAV_ICONS}] Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..%TO%] Goto: %EL0%"
 
     def __init__(
         self,
@@ -82,7 +83,7 @@ class MenuChoose(ABC):
         nav_color: VtColors) -> Optional[List[T]]:
         """TODO"""
 
-        ret_val = Keyboard.VK_NONE
+        keypress = Keyboard.VK_NONE
         length = len(self.items)
 
         if length == 0:
@@ -91,18 +92,18 @@ class MenuChoose(ABC):
         prepare_render(title, title_color)
 
         # Wait for user interaction
-        while not self.done and ret_val not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done and keypress not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
             # Menu Renderization
             if self.re_render:
                 self._render(highlight_color, nav_color)
 
             # Navigation input
-            ret_val = self._nav_input()
+            keypress = self._nav_input()
 
         restore_terminal()
 
         return [op for idx, op in enumerate(self.items) if self.sel_options[idx]] \
-            if ret_val == Keyboard.VK_ENTER else None
+            if keypress == Keyboard.VK_ENTER else None
 
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
         """TODO"""
@@ -135,7 +136,7 @@ class MenuChoose(ABC):
             else:
                 break
 
-        sysout(self.NAV_FMT.format(nav_color.placeholder(), self.NAV_ICONS, str(length)), end='')
+        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
         self.re_render = False
 
     # pylint: disable=too-many-branches
@@ -153,14 +154,14 @@ class MenuChoose(ABC):
                 sysout(f"{keypress.value}", end='')
                 index_len = 1
                 while len(typed_index) < len(str(length)):
-                    numpress = Keyboard.read_keystroke()
-                    if not numpress:
+                    num_press = Keyboard.read_keystroke()
+                    if not num_press:
                         break
-                    if not re.match(r'^[0-9]*$', numpress.value):
+                    if not re.match(r'^[0-9]*$', num_press.value):
                         typed_index = None
                         break
-                    typed_index = f"{typed_index}{numpress.value if numpress else ''}"
-                    sysout(f"{numpress.value if numpress else ''}", end='')
+                    typed_index = f"{typed_index}{num_press.value if num_press else ''}"
+                    sysout(f"{num_press.value if num_press else ''}", end='')
                     index_len += 1
                 # Erase the index typed by the user
                 sysout(f"%CUB({index_len})%%EL0%", end='')
@@ -178,20 +179,32 @@ class MenuChoose(ABC):
             elif keypress in [Keyboard.VK_i, Keyboard.VK_I]:  # I -> Invert options
                 self.sel_options = [(0 if op == 1 else 1) for op in self.sel_options]
                 self.re_render = True
-            elif keypress == Keyboard.VK_UP:  # Cursor up
+            elif keypress == Keyboard.VK_UP:  # Cursor up or shift tab
                 if self.sel_index == self.show_from and self.show_from > 0:
                     self.show_from -= 1
                     self.show_to -= 1
                 if self.sel_index - 1 >= 0:
                     self.sel_index -= 1
                     self.re_render = True
-            elif keypress == Keyboard.VK_DOWN:  # Cursor down
+            elif keypress == Keyboard.VK_DOWN:  # Cursor down or tab
                 if self.sel_index + 1 == self.show_to and self.show_to < length:
                     self.show_from += 1
                     self.show_to += 1
                 if self.sel_index + 1 < length:
                     self.sel_index += 1
                     self.re_render = True
+            elif keypress == Keyboard.VK_TAB:
+                page_index = min(self.show_to + self.diff_index, length)
+                self.show_to = max(page_index, self.diff_index)
+                self.show_from = self.show_to - self.diff_index
+                self.sel_index = self.show_from
+                self.re_render = True
+            elif keypress == Keyboard.VK_SHIFT_TAB:
+                page_index = max(self.show_from - self.diff_index, 0)
+                self.show_from = min(page_index, self.diff_index)
+                self.show_to = self.show_from + self.diff_index
+                self.sel_index = self.show_from
+                self.re_render = True
             elif keypress == Keyboard.VK_ENTER:  # Enter
                 self.done = True
 

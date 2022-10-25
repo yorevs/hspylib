@@ -2,11 +2,10 @@
 #
 # hspylib v0.11.105
 #
-# Package: main.hspylib.modules.cli.icons.emojis
+# Package: test.core.metaclass
 """Package initialization."""
 
 __all__ = [
-  'emojis', 
-  'face_smiling'
+  'test_metaclass'
 ]
 __version__ = '0.11.105'

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="vt100_demo" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo" nameIsGenerated="true">
+  <configuration default="false" name="vt100_demo" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo">
     <module name="HsPyLib.hspylib" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -15,7 +15,7 @@
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/vt100/vt100_demo.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
-    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />
     <option name="REDIRECT_INPUT" value="false" />
     <option name="INPUT_FILE" value="" />

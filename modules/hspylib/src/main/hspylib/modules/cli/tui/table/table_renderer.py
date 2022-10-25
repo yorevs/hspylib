@@ -56,7 +56,7 @@ class TableRenderer:
                 'Headers and Columns must have the same size: {} vs {}',
                 len(min(self.rows, key=len)), len(self.headers))
         self.column_sizes = [max(self.min_column_size, len(header)) for header in self.headers]
-        self.indexes = range(0, len(self.column_sizes))
+        self.indexes = range(len(self.column_sizes))
 
     def set_header_alignment(self, alignment: TextAlignment) -> None:
         """
@@ -158,14 +158,14 @@ class TableRenderer:
         """TODO"""
 
         if self.caption:
-            print(table_line, file=file)
+            print(table_line.replace('+', '-'), file=file)
             print('| ' + elide_text(self.caption, len(table_line) - 4)
                   .center(len(header_cols[0]) - 4, ' ') + ' |', file=file)
-        print(table_line, file=file)
+        print(f"|{table_line[1:-1]}|", file=file)
         print('\n'.join(header_cols), file=file)
-        print(table_line, file=file)
+        print(f"|{table_line[1:-1]}|", file=file)
         print(
             '\n'.join(data_cols) if data_cols
             else '| ' + '<empty>'.center(len(table_line) - 4, ' ') + ' |', file=file
         )
-        print(table_line, file=file)
+        print(table_line.replace('+', '-'), file=file)

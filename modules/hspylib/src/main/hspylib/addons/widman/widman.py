@@ -19,7 +19,7 @@ from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widget_entry import WidgetEntry
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path
@@ -62,7 +62,7 @@ class WidgetManager(metaclass=Singleton):
         try:
             atexit.register(widget.cleanup)
             exit_code = widget.execute(widget_args)
-            if exit_code in [ExitCode.ERROR, ExitCode.FAILED]:
+            if exit_code in [ExitStatus.ERROR, ExitStatus.FAILED]:
                 raise WidgetExecutionError(f"Widget '{widget_name}' failed to execute. exit_code={exit_code}")
         except Exception as err:
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err

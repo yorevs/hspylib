@@ -8,6 +8,7 @@
 __all__ = [
   'config', 
   'crud', 
-  'enums'
+  'enums', 
+  'metaclass'
 ]
 __version__ = '0.11.105'

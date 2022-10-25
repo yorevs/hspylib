@@ -19,6 +19,7 @@ class Charset(Enumeration):
     """Enumeration to wrap all charset/encode types."""
 
     # @formatter:off
+
     ASCII           = 'ASCII'
     BIG5            = 'BIG5'
     BIG5HKSCS       = 'BIG5HKSCS'
@@ -113,4 +114,5 @@ class Charset(Enumeration):
     UTF_16_LE       = 'UTF-16-LE'
     UTF_7           = 'UTF-7'
     UTF_8           = 'UTF-8'
+
     # @formatter:on

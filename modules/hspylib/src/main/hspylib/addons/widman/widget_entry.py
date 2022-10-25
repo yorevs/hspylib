@@ -24,13 +24,29 @@ class WidgetEntry:
     CLASS_PREFIX = 'Widget'
 
     def __init__(self, file: str, path: str):
-        self.module = os.path.splitext(file)[0]
-        self.name = camelcase(self.module.replace(self.MODULE_PREFIX, ''), upper=True)
-        self.clazz = f"{self.CLASS_PREFIX}{self.name.replace('_', '')}"
-        self.path = path
+        self._module = os.path.splitext(file)[0]
+        self._name = camelcase(self.module.replace(self.MODULE_PREFIX, ''), upper=True)
+        self._clazz = f"{self.CLASS_PREFIX}{self.name.replace('_', '')}"
+        self._path = path
 
     def __str__(self):
         return f"{self.name}: {self.module}.{self.clazz} => {self.path}"
 
     def __repr__(self):
         return str(self)
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def module(self) -> str:
+        return self._module
+
+    @property
+    def clazz(self) -> str:
+        return self._clazz
+
+    @property
+    def path(self) -> str:
+        return self._path

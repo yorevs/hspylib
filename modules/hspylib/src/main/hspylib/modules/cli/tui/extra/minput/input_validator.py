@@ -31,7 +31,7 @@ class InputValidator:
         self._max_length = max_length
         self._pattern = pattern or self.RE_FMT_ANYTHING
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"r\"{self._pattern}\""
 
     def __repr__(self):
@@ -61,7 +61,7 @@ class InputValidator:
         regex = self._get_pattern()
         return re.search(regex, value) is not None
 
-    def _get_pattern(self):
+    def _get_pattern(self) -> str:
         return self._pattern \
             .replace('%min%', str(self._min_length or 1)) \
             .replace('%max%', str(self._max_length or 30))

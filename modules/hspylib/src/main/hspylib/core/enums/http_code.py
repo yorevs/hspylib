@@ -16,6 +16,7 @@
 from http import HTTPStatus as httpCode
 
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.text_tools import titlecase
 
 
 class HttpCode(Enumeration):
@@ -98,3 +99,10 @@ class HttpCode(Enumeration):
     NETWORK_CONNECT_TIMEOUT_ERROR       = 599
 
     # @formatter:on
+
+    def __str__(self) -> str:
+        return str(self.value)
+
+    def __repr__(self) -> str:
+        return f"({self.value}) {titlecase(self.name)}"
+

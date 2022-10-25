@@ -23,7 +23,7 @@ from time import sleep
 from typing import List
 
 from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
@@ -61,7 +61,7 @@ class WidgetSendMsg(Widget):
         E.g:. send-msg.py +n tcp +m "Hello" +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2
     """)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             self.WIDGET_ICON,
             self.WIDGET_NAME,
@@ -80,23 +80,23 @@ class WidgetSendMsg(Widget):
         self.socket = None
         self.counter = 1
 
-    def execute(self, args: List[str] = None) -> ExitCode:
+    def execute(self, args: List[str] = None) -> ExitStatus:
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
 
         if args and args[0] in ['-h', '--help']:
             sysout(self.usage())
-            return ExitCode.SUCCESS
+            return ExitStatus.SUCCESS
         if args and args[0] in ['-v', '--version']:
             sysout(self.version())
-            return ExitCode.SUCCESS
+            return ExitStatus.SUCCESS
 
         if args and not self._parse_args(args):
-            return ExitCode.ERROR
+            return ExitStatus.ERROR
         if not args and not self._read_args():
-            return ExitCode.ERROR
+            return ExitStatus.ERROR
         if not args and not self._args:
-            return ExitCode.ERROR
+            return ExitStatus.ERROR
 
         self.net_type = self._args.net_type or self.NET_TYPE_TCP
         self.host = (self._args.address or '127.0.0.1', self._args.port or 12345)
@@ -116,9 +116,10 @@ class WidgetSendMsg(Widget):
 
         MenuUtils.wait_enter()
 
-        return ExitCode.SUCCESS
+        return ExitStatus.SUCCESS
 
     def cleanup(self) -> None:
+        """Stops workers and close socket connection."""
         sysout('Terminating threads%NC%')
         self.is_alive = False
         if self.net_type == self.NET_TYPE_TCP:
@@ -171,7 +172,9 @@ class WidgetSendMsg(Widget):
                 .build() \
             .build()
         # @formatter:on
-        self._args = minput(form_fields)
+        result = minput(form_fields)
+        self._args = result.values if result else None
+        sysout('%HOM%%ED2%%MOD(0)%', end='')
 
         return len(self._args.__dict__) > 1 if self._args else False
 

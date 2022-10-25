@@ -16,7 +16,6 @@ from datetime import datetime, timezone
 
 from hspylib.core.enums.enumeration import Enumeration
 
-
 # Date and time formats
 # @formatter:off
 ISO_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
@@ -56,12 +55,6 @@ class ZonedDatetime(Enumeration):
 def now(date_time_fmt: str = DATETIME_FORMAT) -> str:
     return ZonedDatetime.LOCAL.now(date_time_fmt)
 
+
 def now_ms() -> int:
     return ZonedDatetime.LOCAL.now_ms()
-
-
-if __name__ == '__main__':
-    print(now(ISO_DATETIME_FORMAT))
-    print(now())
-    print(now_ms())
-    print(ZonedDatetime.UTC.now())

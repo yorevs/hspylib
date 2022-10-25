@@ -18,13 +18,13 @@ class Main(QtApplication):
   """TODO"""
 
   # The welcome message
-  DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
+  DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
   # Location of the .version file
-  VERSION_DIR = _Classpath.source_root()
+  VERSION_DIR = _Classpath._source_root()
 
   # Location of the resources dir
-  RESOURCE_DIR = str(_Classpath.resource_dir())
+  RESOURCE_DIR = str(_Classpath._resource_dir())
 
   def __init__(self, app_name: str):
     version = Version.load(load_dir=self.VERSION_DIR)

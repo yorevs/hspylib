@@ -20,6 +20,7 @@ import re
 import sys
 from datetime import timedelta
 from typing import Any, List, Optional, Tuple, Type, Union
+from urllib.parse import urlparse
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.tools.validator import Validator
@@ -37,33 +38,31 @@ LOG_FMT = '{} {} {} {}{} {} '.format(
 )
 
 
-def _reset_logger():
-    """TODO"""
-    # Remove handlers if there is any.
-    root = log.getLogger()
-    if root.handlers:
-        for handler in root.handlers:
-            handler.close()
-            root.removeHandler(handler)
-
-
 def log_init(
     log_file: str,
     create_new: bool = True,
     mode: str = 'a',
     level: int = log.DEBUG,
-    filename: str = LOG_FMT) -> bool:
-    """Initialize the system logger
-    :param log_file: TODO
-    :param create_new:  TODO
-    :param mode:  TODO
-    :param level:  TODO
-    :param filename:  TODO
+    filename: str = LOG_FMT,
+    rm_handlers: bool = True) -> bool:
+    """Initialize the system logger TODO
+    :param log_file:
+    :param create_new:
+    :param mode:
+    :param level:
+    :param filename:
+    :param rm_handlers:
     """
+
     # if someone tried to log something before log_init is called, Python creates a default handler that is going to
     # mess our logs.
-    _reset_logger()
-
+    # Remove handlers if there is any.
+    if rm_handlers:
+        root = log.getLogger()
+        if root.handlers:
+            for handler in root.handlers:
+                handler.close()
+                root.removeHandler(handler)
     create = bool(create_new or not os.path.exists(log_file))
     with open(log_file, 'w' if create else 'a', encoding="utf8"):
         os.utime(log_file, None)
@@ -78,7 +77,7 @@ def log_init(
     return os.path.exists(log_file)
 
 
-def is_debugging():
+def is_debugging() -> bool:
     """TODO"""
     for frame in inspect.stack():
         if frame[1].endswith("pydevd.py"):
@@ -133,7 +132,7 @@ def syserr(string: str, end: str = '\n') -> None:
 
 
 def class_attribute_names(clazz: Type) -> Optional[Tuple]:
-    """TODO
+    """Retrieve all attribute names of the class
     :param clazz: TODO
     """
     instance = clazz()
@@ -141,48 +140,10 @@ def class_attribute_names(clazz: Type) -> Optional[Tuple]:
 
 
 def class_attribute_values(instance: dict) -> Optional[Tuple]:
-    """TODO
+    """Retrieve all attribute values of the class
     :param instance: TODO
     """
     return tuple(instance.values()) if instance else None
-
-
-def namespace(type_name: str):
-    """TODO
-    :param: type_name: TODO
-    """
-
-    return type(type_name, (object,), {})()
-
-
-def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
-    """Split the string using the delimiter and filter using the specified regex filter
-    :param input_str: The string to be split
-    :param regex_filter: The regex to filter the string
-    :param delimiter: The delimiter according which to split the string
-    """
-    regex = re.compile(regex_filter)
-    result_list = list(filter(regex.search, input_str.split(delimiter)))
-
-    return result_list
-
-
-def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
-    """TODO
-    :param dictionary:
-    :param parent_key:
-    :param sep:
-    :return:
-    """
-    flat_dict = {}
-    for key, value in dictionary.items():
-        new_key = parent_key + sep + key if parent_key else key
-        if isinstance(value, dict):
-            flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
-        else:
-            flat_dict.update({new_key: value})
-
-    return flat_dict
 
 
 def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') -> Optional[Any]:
@@ -212,6 +173,24 @@ def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') ->
             # Skip if the element is a leaf
 
     return found, el
+
+
+def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
+    """TODO
+    :param dictionary: The dictionary to be flattened
+    :param parent_key: The parent key name
+    :param sep: The separator between keys
+    :return:
+    """
+    flat_dict = {}
+    for key, value in dictionary.items():
+        new_key = parent_key + sep + key if parent_key else key
+        if isinstance(value, dict):
+            flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
+        else:
+            flat_dict.update({new_key: value})
+
+    return flat_dict
 
 
 def get_or_default(options: Union[tuple, list], index: int, default_value=None) -> Optional[Any]:
@@ -318,16 +297,10 @@ def human_readable_time(time_microseconds: int) -> str:
     return str_line
 
 
-def build_url(url_or_part: str) -> str:
-    """TODO
-    :param url_or_part:
-    """
-    if re.match(r'https?://.*', url_or_part):
-        return url_or_part
+def build_url(base_url: str, scheme: str = 'http') -> str:
+    """TODO"""
+    p_url = urlparse(base_url)
+    if not p_url.scheme:
+        base_url = p_url._replace(scheme=scheme).geturl()
 
-    return f"http://{url_or_part}"
-
-
-if __name__ == '__main__':
-    sysout('%RED%Hugo')
-    sysout('Saporetti')
+    return base_url

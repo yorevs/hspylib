@@ -17,7 +17,7 @@
 
 # Commonly used constants
 
-TRUE_VALUES = ['true', 'on', 'yes', '1', 'y']
+TRUE_VALUES = ['true', 'on', 'yes', 'y', '1']
 
 # Regex expressions
 

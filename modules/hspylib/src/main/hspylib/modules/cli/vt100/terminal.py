@@ -22,7 +22,7 @@ import subprocess
 from abc import ABC
 from typing import Optional, Tuple
 
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 
 
@@ -30,22 +30,22 @@ class Terminal(ABC):
     """Utility class to provide execution of commands on a terminal"""
 
     @staticmethod
-    def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitCode]:
-        """TODO"""
+    def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
+        """Execute command with arguments and return it's run status."""
         try:
             log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             output = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
-            log.info("Execution result: %s", ExitCode.SUCCESS)
-            return output.strip() if output else None, ExitCode.SUCCESS
+            log.info("Execution result: %s", ExitStatus.SUCCESS)
+            return output.strip() if output else None, ExitStatus.SUCCESS
         except subprocess.CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
             syserr(str(err))
-            return None, ExitCode.FAILED
+            return None, ExitStatus.FAILED
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
-        """TODO"""
+        """Execute command with arguments and continuously poll it's output."""
         if 'stdout' in kwargs:
             del kwargs['stdout']  # Deleted since we use our own
         if 'stderr' in kwargs:

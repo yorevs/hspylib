@@ -20,7 +20,7 @@ from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.commons import run_dir, str_to_bool
 from hspylib.core.preconditions import check_argument
 
 
@@ -36,9 +36,10 @@ class AppConfigs(metaclass=Singleton):
     """)
 
     def __init__(self, resource_dir: str):
-        check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
+        check_argument(os.path.exists(resource_dir),
+                       "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
-        self._app_properties = Properties(load_dir=resource_dir)
+        self._properties = Properties(load_dir=resource_dir)
 
         log.info(self)
 
@@ -48,7 +49,7 @@ class AppConfigs(metaclass=Singleton):
             self.DISPLAY_FORMAT.format(
                 str(run_dir()),
                 str(self._resource_dir),
-                str(self._app_properties).replace('\n', '\n   |-') if len(self._app_properties) > 0 else ''
+                str(self._properties).replace('\n', '\n   |-') if self._properties.size > 0 else ''
             ),
             '-=' * 40
         )
@@ -60,28 +61,35 @@ class AppConfigs(metaclass=Singleton):
         return self.get(item)
 
     def __len__(self) -> int:
-        return len(self._app_properties)
+        return self.size
 
+    @property
     def resource_dir(self) -> Optional[str]:
         """Return the configured application resource dir"""
         return self._resource_dir
 
+    @property
+    def properties(self) -> Properties:
+        """Return the application properties"""
+        return self._properties
+
+    @property
+    def size(self) -> int:
+        """Return the application properties"""
+        return self._properties.size
+
     def get(self, property_name: str) -> Optional[str]:
         """Get the value, as a string, of a property specified by property_name, otherwise None is returned"""
-        env_value = os.environ.get(Properties.environ_name(property_name))
-        return str(env_value) if env_value else self._app_properties.get(property_name)
+        return self._properties.get(property_name)
 
     def get_int(self, property_name: str) -> Optional[int]:
         """Get the value, as an integer, of a property specified by property_name, otherwise None is returned"""
-        env = os.environ.get(Properties.environ_name(property_name))
-        return int(env) if env else self._app_properties.get_int(property_name)
+        return self._properties.get(property_name, val_type=int)
 
     def get_float(self, property_name: str) -> Optional[float]:
         """Get the value, as a float, of a property specified by property_name, otherwise None is returned"""
-        env = os.environ.get(Properties.environ_name(property_name))
-        return float(env) if env else self._app_properties.get_float(property_name)
+        return self._properties.get(property_name, val_type=float)
 
     def get_bool(self, property_name: str) -> Optional[bool]:
         """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
-        env = os.environ.get(Properties.environ_name(property_name))
-        return bool(env) if env else self._app_properties.get_bool(property_name)
+        return self._properties.get(property_name, val_type=str_to_bool)

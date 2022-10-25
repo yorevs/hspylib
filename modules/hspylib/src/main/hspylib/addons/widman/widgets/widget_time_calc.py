@@ -20,7 +20,7 @@ import re
 from typing import List, Optional, Tuple
 
 from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_code import ExitCode
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
@@ -37,13 +37,13 @@ class WidgetTimeCalc(Widget):
     VERSION = (0, 1, 0)
 
     @staticmethod
-    def decimal(time_raw: int = 0) -> int:
+    def to_decimal(time_raw: int = 0) -> int:
         """ Convert a raw time into decimal """
         return int(round(((time_raw / 60.00) * 100.00)))
 
     @staticmethod
     def calc_time(args: List[str]) -> Tuple[int, int, int]:
-        """TODO"""
+        """Calculate the time resulted from the specified operations."""
         op, total_seconds = '+', 0
         for tm in args:
             if not tm:
@@ -78,23 +78,23 @@ class WidgetTimeCalc(Widget):
             self.USAGE,
             self.VERSION)
 
-        self.decimal = False
+        self._decimal = False
         self._args = None
 
-    def _parse_args(self, args: List[str]) -> Optional[ExitCode]:
+    def _parse_args(self, args: List[str]) -> Optional[ExitStatus]:
         """Parse command line arguments"""
 
         if not args and not self._read_args():
-            return ExitCode.ABORTED
+            return ExitStatus.ABORTED
         elif args and any(a in args for a in ['+h', '++help']):
             sysout(self.usage())
-            return ExitCode.SUCCESS
+            return ExitStatus.SUCCESS
         elif args and any(a in args for a in ['+v', '++version']):
             sysout(self.version())
-            return ExitCode.SUCCESS
+            return ExitStatus.SUCCESS
 
         if args and any(a in args for a in ['+d', '++decimal']):
-            self.decimal = True
+            self._decimal = True
             args = args[1:]
 
         if not self._args:
@@ -102,8 +102,7 @@ class WidgetTimeCalc(Widget):
 
         return None
 
-    def execute(self, args: List[str] = None) -> ExitCode:
-        """TODO"""
+    def execute(self, args: List[str] = None) -> ExitStatus:
 
         ret_val = self._parse_args(args)
 
@@ -112,12 +111,12 @@ class WidgetTimeCalc(Widget):
 
         hours, minutes, seconds = self.calc_time(self._args)
 
-        if self.decimal:
-            print(f"{hours:02d}.{self.decimal(minutes):02d}.{self.decimal(seconds):02d}")
+        if self._decimal:
+            print(f"{hours:02d}.{self.to_decimal(minutes):02d}.{self.to_decimal(seconds):02d}")
         else:
             print(f"{hours:02d}:{minutes:02d}:{seconds:02d}")
 
-        return ExitCode.SUCCESS
+        return ExitStatus.SUCCESS
 
     def _read_args(self) -> bool:
         """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
@@ -142,7 +141,7 @@ class WidgetTimeCalc(Widget):
         # @formatter:on
 
         result = minput(form_fields)
-        self._args = [value for _, value in result.__dict__.items()] if result else []
+        self._args = result.values if result else None
         sysout('%HOM%%ED2%%MOD(0)%', end='')
 
         return bool(result)

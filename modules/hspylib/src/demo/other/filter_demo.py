@@ -17,7 +17,7 @@
 import collections
 from typing import List
 
-from hspylib.core.tools.collection_filter import CollectionFilter, FilterConditions
+from hspylib.core.tools.collection_filter import CollectionFilter, FilterCondition
 
 
 class Record:
@@ -68,10 +68,10 @@ if __name__ == '__main__':
     records = example2()
     deq = example3()
     f = CollectionFilter()
-    f.apply_filter('f1', 'score', FilterConditions.GREATER_THAN_OR_EQUALS_TO, 5.0)
-    f.apply_filter('f2', 'active', FilterConditions.IS, True)
-    f.apply_filter('f3', 'name', FilterConditions.CONTAINS, 'u')
-    f.apply_filter('f4', 'age', FilterConditions.LESS_THAN_OR_EQUALS_TO, 40)
+    f.apply_filter('f1', 'score', FilterCondition.GREATER_THAN_OR_EQUALS_TO, 5.0)
+    f.apply_filter('f2', 'active', FilterCondition.IS, True)
+    f.apply_filter('f3', 'name', FilterCondition.CONTAINS, 'u')
+    f.apply_filter('f4', 'age', FilterCondition.LESS_THAN_OR_EQUALS_TO, 40)
     print(f'\n### Using List[dict] => Filters({type(arr)}): {f}\n')
     print('\n'.join([str(e) for e in f.filter(arr)]))
     print(f'\n### Using List[Record] => Filters({type(records)}): {f}\n')
