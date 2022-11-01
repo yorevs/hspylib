@@ -15,8 +15,8 @@
 
 from typing import List, Optional
 
-from hspylib.core.tools.commons import sysout
 from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder

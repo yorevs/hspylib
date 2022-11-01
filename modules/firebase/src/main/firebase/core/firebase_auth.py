@@ -21,8 +21,8 @@ import firebase_admin
 from firebase_admin import auth, credentials
 from firebase_admin.auth import UserNotFoundError, UserRecord
 from firebase_admin.exceptions import FirebaseError
-from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.preconditions import check_not_none
+from hspylib.core.tools.commons import sysout
 from requests.structures import CaseInsensitiveDict
 
 from exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials
@@ -33,35 +33,31 @@ class FirebaseAuth(ABC):
     Ref: https://www.youtube.com/watch?v=esqNgnayVE8
     """
 
-    @classmethod
-    def _credentials(cls, config: CaseInsensitiveDict) -> credentials.Certificate:
+    @staticmethod
+    def _credentials(firebase_config: CaseInsensitiveDict) -> credentials.Certificate:
         """TODO"""
-        project_id = config['PROJECT_ID']
+        project_id = firebase_config['PROJECT_ID']
         certificate_file = os.environ.get("HOME", '~') + f"/.ssh/{project_id}-firebase-credentials.json"
-        check_not_none(config)
-
+        check_not_none(firebase_config)
         try:
             creds = credentials.Certificate(certificate_file)
         except (IOError, ValueError) as err:
             raise InvalidFirebaseCredentials('Invalid credentials provided') from err
-
         return creds
 
-    @classmethod
-    def authenticate(cls, config: CaseInsensitiveDict) -> Optional[UserRecord]:
+    @staticmethod
+    def authenticate(firebase_config: CaseInsensitiveDict) -> Optional[UserRecord]:
         """TODO"""
-        firebase_admin.initialize_app(cls._credentials(config))
-
+        firebase_admin.initialize_app(FirebaseAuth._credentials(firebase_config))
         try:
-            user = auth.get_user(config['UID'])
+            user = auth.get_user(firebase_config['UUID'])
             if user:
                 sysout('Firebase authentication succeeded')
                 return user
             else:
-                syserr('Failed to authenticate to Firebase')
-                return None
+                raise FirebaseAuthenticationError('Failed to authenticate to Firebase')
         except UserNotFoundError as err:
-            raise FirebaseAuthenticationError('Failed to authenticate to Firebase') from err
+            raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:
-            raise FirebaseException('An error occurred authenticating Firebase user') from err
+            raise FirebaseException(f"An error occurred authenticating Firebase user => {err}") from err
 

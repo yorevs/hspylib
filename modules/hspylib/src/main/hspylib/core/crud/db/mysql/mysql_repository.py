@@ -114,7 +114,7 @@ class MySqlRepository(DBRepository):
         else:
             raise NotConnectedError('Not connected to a MySql database.')
 
-    def find_all_columns(
+    def find_all(
         self,
         column_set: List[str] = None,
         filters: SqlFilter = None) -> Optional[List[CrudEntity]]:
@@ -131,7 +131,7 @@ class MySqlRepository(DBRepository):
 
         raise NotConnectedError('Not connected to a MySql database.')
 
-    def find_columns_by_id(
+    def find_by_id(
         self,
         column_set: List[str] = None,
         entity_id: str = None) -> Optional[CrudEntity]:

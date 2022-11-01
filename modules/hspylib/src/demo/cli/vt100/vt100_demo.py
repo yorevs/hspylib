@@ -16,6 +16,7 @@
 from time import sleep
 
 from hspylib.modules.cli.vt100.vt_codes import vt_print
+
 if __name__ == '__main__':
     vt_print('%CSV%Cursor saved', end='\n')
     sleep(1)

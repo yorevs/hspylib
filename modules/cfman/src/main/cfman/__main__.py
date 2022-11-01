@@ -33,7 +33,7 @@ class Main(Application):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # location of the .version file
     VERSION_DIR = _Classpath.source_root()

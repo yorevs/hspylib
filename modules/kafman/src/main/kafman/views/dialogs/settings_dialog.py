@@ -32,7 +32,7 @@ from kafman.__classpath__ import _Classpath
 class SettingsDialog(QObject):
     """TODO"""
 
-    DIALOG_FORM = _Classpath.get_resource("forms/settings_dlg.ui")
+    DIALOG_FORM = _Classpath.get_resource_path("forms/settings_dlg.ui")
 
     # @formatter:off
     FORBIDDEN_SETTINGS = {
@@ -44,9 +44,9 @@ class SettingsDialog(QObject):
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = _Classpath.get_resource("producer-settings.properties")\
+        PRODUCER_SETTINGS = _Classpath.get_resource_path("producer-settings.properties")\
             .read_text(encoding=str(Charset.UTF_8))
-        CONSUMER_SETTINGS = _Classpath.get_resource("consumer-settings.properties")\
+        CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties")\
             .read_text(encoding=str(Charset.UTF_8))
 
         # @formatter:off

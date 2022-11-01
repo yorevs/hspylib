@@ -89,9 +89,10 @@ class Properties:
         """Retrieve the amount of properties"""
         return len(self._properties)
 
-    def get(self, key: str, default_value: str = None, val_type: Type | Callable = str) -> Optional[Any]:
+    def get(self, key: str, value_type: Type | Callable = str, default_value: Optional[str] = None) -> Optional[Any]:
         try:
-            return val_type(self._get(key))
+            value = self._get(key)
+            return value_type(value) if value else None
         except TypeError:
             return default_value
 
@@ -112,7 +113,7 @@ class Properties:
 
     def _get(self, key: str, default_value: Any = None) -> Optional[Any]:
         """Get a property value as string or default_value if the property was not found"""
-        value = os.environ.get(self._environ_name(key))
+        value = os.environ.get(self._environ_name(key), None)
         if value:
             return value
         return self._properties[key] if key in self._properties else default_value

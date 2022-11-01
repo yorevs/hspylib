@@ -17,8 +17,8 @@
 from typing import Any, List, Union
 
 from hspylib.core.exception.exceptions import InvalidArgumentError
-from hspylib.core.tools.commons import namespace
 from hspylib.core.preconditions import check_and_get
+from hspylib.core.tools.namespace import Namespace
 
 from kafman.core.schema.json.json_type import JsonType
 
@@ -42,7 +42,7 @@ class Property:
         self.default = default
         self.required = required
         self.all_properties = None
-        self.extras = namespace('SchemaAttributes')
+        self.extras = Namespace('SchemaAttributes')
 
     def set_items(self, p_items: Union[List[str], dict]) -> None:
         """TODO"""

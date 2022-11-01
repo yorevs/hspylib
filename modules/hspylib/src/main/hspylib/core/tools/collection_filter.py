@@ -62,7 +62,7 @@ class FilterCondition(Enumeration):
             return isinstance(value, get_args(self.value[1]))
 
 
-class _ElementFilter:
+class ElementFilter:
     """Represent a single filter condition."""
 
     def __init__(
@@ -87,7 +87,7 @@ class _ElementFilter:
     def __hash__(self) -> int:
         return hash(self.__key())
 
-    def __eq__(self, other: '_ElementFilter') -> bool:
+    def __eq__(self, other: 'ElementFilter') -> bool:
         if isinstance(other, self.__class__):
             return self.__key() == other.__key()
         return NotImplemented
@@ -112,7 +112,7 @@ class CollectionFilter:
     """A collection of filters to be applied to a given iterable."""
 
     def __init__(self) -> None:
-        self._filters: Set[_ElementFilter] = set()
+        self._filters: Set[ElementFilter] = set()
 
     def __str__(self) -> str:
         if len(self._filters) > 0:
@@ -140,7 +140,7 @@ class CollectionFilter:
 
         check_argument(not any(f.name == name for f in self._filters),
                        f'Filter {name} already exists!')
-        f = _ElementFilter(name, el_name, condition, el_value)
+        f = ElementFilter(name, el_name, condition, el_value)
         self._filters.add(f)
 
     def clear(self) -> None:

@@ -31,7 +31,7 @@ class Main(QtApplication):
     """Kafman application main class"""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # Location of the .version file
     VERSION_DIR = _Classpath.source_root()
@@ -40,10 +40,10 @@ class Main(QtApplication):
     RESOURCE_DIR = str(_Classpath.resource_dir())
 
     # Location of the UI font
-    FONT_PATH = _Classpath.get_resource('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf')
+    FONT_PATH = _Classpath.get_resource_path('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf')
 
     # Application icon
-    APP_ICON_PATH = _Classpath.get_resource('app-icon.png')
+    APP_ICON_PATH = _Classpath.get_resource_path('app-icon.png')
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
