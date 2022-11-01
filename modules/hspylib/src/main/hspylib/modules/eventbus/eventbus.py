@@ -15,20 +15,37 @@
 
 from typing import Any, Callable, List
 
-from hspylib.core.tools.commons import syserr
+from hspylib.core.exception.exceptions import HSBaseException
+from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
 
 
+def subscribe(**kwargs) -> Callable:
+    """Subscribe to a given bus event."""
+
+    def inner(func) -> None:
+        check_argument(func.__code__.co_argcount >= 1, 'Subscriber callbacks require at least one parameter.')
+        missing = next((p for p in ['bus', 'event'] if p not in kwargs.keys()), None)
+        check_argument(missing is None, f"Missing required parameter: '{missing}: str'.")
+        EventBus.get(str(kwargs['bus'])).subscribe(str(kwargs['event']), func)
+
+    return inner
+
+
+def emit(bus_name: str, event_name: str, **kwargs) -> None:
+    EventBus.get(bus_name).emit(event_name, **kwargs)
+
+
 class EventBus:
-    """TODO"""
+    """Provide an eventbus pattern for events and subscribers."""
 
     _buses = {}
     _subscribers = {}
     _events: List[Event] = []
 
     @classmethod
-    def get(cls, bus_name: str) -> Any:
-        """TODO"""
+    def get(cls, bus_name: str) -> 'EventBus':
+        """Return the bus instance referred to the specified bus name."""
         if bus_name in cls._buses:
             return cls._buses[bus_name]
         bus_instance = EventBus(bus_name)
@@ -37,7 +54,7 @@ class EventBus:
 
     @classmethod
     def _get_subscriber(cls, bus_name: str, event_name: str) -> Any:
-        """TODO"""
+        """Return the subscriber of the referred bus name and event name."""
         cache_key = f'{bus_name}.{event_name}'
         if cache_key in cls._subscribers:
             return cls._subscribers[cache_key]
@@ -49,12 +66,12 @@ class EventBus:
         self.name = name
 
     def subscribe(self, event_name: str, cb_event_handler: Callable) -> None:
-        """TODO"""
+        """Subscribe to the specified event bus."""
         subscriber = self._get_subscriber(self.name, event_name)
         subscriber['callbacks'].append(cb_event_handler)
 
     def emit(self, event_name: str, **kwargs) -> None:
-        """TODO"""
+        """Emit an event to this bus."""
         self._events.append(Event(event_name, **kwargs))
         while len(self._events) > 0:
             event = self._events.pop()
@@ -64,5 +81,6 @@ class EventBus:
                 for callback in subscribers['callbacks']:
                     try:
                         callback(event)
-                    except TypeError as err:
-                        syserr(f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}")
+                    except Exception as err:
+                        raise HSBaseException(
+                            f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}")
