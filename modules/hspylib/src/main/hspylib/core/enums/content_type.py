@@ -17,6 +17,7 @@ from typing import Tuple
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 
+
 class ContentType(Enumeration):
     """Enumeration to wrap all http content types. The 'Content-Type' representation header is used to indicate the
     original media type of the resource (prior to any content encoding applied for sending)."""

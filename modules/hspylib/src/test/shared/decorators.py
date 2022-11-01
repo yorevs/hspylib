@@ -14,14 +14,22 @@
    Copyright 2022, HSPyLib team
 """
 
+import logging as log
 import os
 import unittest
 
 from hspylib.core.tools.commons import str_to_bool
 
-it_disabled = str_to_bool(os.environ.get('HSPYLIB_IT_DISABLED', 'True'))
 
-integration_test = unittest.skipIf(
-    it_disabled,
-    f'Disabled = {it_disabled} :integration tests because it needs docker container running'
-)
+def integration_test(cls: type):
+    """Enable/Disable HsPyLib integration tests"""
+
+    it_disabled = str_to_bool(os.environ.get('HSPYLIB_IT_DISABLED', 'True'))
+    if it_disabled:
+        log.warning('Skipping test: ', cls.__name__)
+        return unittest.skipIf(
+            it_disabled,
+            f'Disabled = {it_disabled} :integration tests because it needs real servers running'
+        )
+
+    return cls

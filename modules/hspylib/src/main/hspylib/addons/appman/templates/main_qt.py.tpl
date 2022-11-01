@@ -18,7 +18,7 @@ class Main(QtApplication):
   """TODO"""
 
   # The welcome message
-  DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
+  DESCRIPTION = _Classpath.get_source_path_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
   # Location of the .version file
   VERSION_DIR = _Classpath._source_root()

@@ -18,8 +18,8 @@ import random
 import string
 from typing import Optional, Union
 
-from hspylib.core.tools.collection_filter import CollectionFilter, ElementFilter, FilterConditions
 from hspylib.core.preconditions import check_not_none
+from hspylib.core.tools.collection_filter import CollectionFilter, ElementFilter, FilterCondition
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
@@ -34,7 +34,7 @@ class FiltersDialog(QObject):
 
     filtersChanged = pyqtSignal(str)
 
-    DIALOG_FORM = _Classpath.get_resource("forms/filters_dlg.ui")
+    DIALOG_FORM = _Classpath.get_resource_path("forms/filters_dlg.ui")
 
     def __init__(self, parent: QWidget, filters: CollectionFilter):
         super().__init__(parent)
@@ -42,8 +42,8 @@ class FiltersDialog(QObject):
         check_not_none((ui_class, base_class))
         self.dialog, self.ui = base_class(parent), ui_class()
         self.ui.setupUi(self.dialog)
-        self.filters = filters
-        self.lookup = {}
+        self._filters = filters
+        self._lookup = {}
         self._setup_controls()
 
     def _setup_controls(self) -> None:
@@ -83,49 +83,49 @@ class FiltersDialog(QObject):
         self.ui.cmb_filter_condition.clear()
         if el_name in ['timestamp', 'partition', 'offset']:
             self.ui.cmb_filter_condition.addItems([
-                str(FilterConditions.LESS_THAN), str(FilterConditions.LESS_THAN_OR_EQUALS_TO),
-                str(FilterConditions.GREATER_THAN), str(FilterConditions.GREATER_THAN_OR_EQUALS_TO),
-                str(FilterConditions.EQUALS_TO), str(FilterConditions.DIFFERENT_FROM)
+                str(FilterCondition.LESS_THAN), str(FilterCondition.LESS_THAN_OR_EQUALS_TO),
+                str(FilterCondition.GREATER_THAN), str(FilterCondition.GREATER_THAN_OR_EQUALS_TO),
+                str(FilterCondition.EQUALS_TO), str(FilterCondition.DIFFERENT_FROM)
             ])
         else:
             self.ui.cmb_filter_condition.addItems([
-                str(FilterConditions.EQUALS_TO), str(FilterConditions.DIFFERENT_FROM),
-                str(FilterConditions.CONTAINS), str(FilterConditions.DOES_NOT_CONTAIN)
+                str(FilterCondition.EQUALS_TO), str(FilterCondition.DIFFERENT_FROM),
+                str(FilterCondition.CONTAINS), str(FilterCondition.DOES_NOT_CONTAIN)
             ])
 
     def _clear_filters(self) -> None:
         """TODO"""
-        self.filters.clear()
+        self._filters.clear()
         self._sync_filters()
-        self.filtersChanged.emit(str(self.filters))
+        self.filtersChanged.emit(str(self._filters))
 
     def _sync_filters(self) -> None:
         """TODO"""
         self.ui.lst_filters.clear()
-        list(map(self._add_filter, self.filters))
+        list(map(self._add_filter, self._filters))
 
     def _add_filter(self, f: ElementFilter) -> None:
         """TODO"""
         self.ui.lst_filters.set_item(str(f))
-        self.lookup[str(f)] = f.name
+        self._lookup[str(f)] = f.name
 
     def _apply_filter(self) -> None:
         """TODO"""
         el_name = self.ui.cmb_filter_field.currentText()
         el_value = self._get_filter_value(el_name)
         if el_value:
-            condition = FilterConditions.value_of(self.ui.cmb_filter_condition.currentText().upper().replace(' ', '_'))
+            condition = FilterCondition.value_of(self.ui.cmb_filter_condition.currentText().upper().replace(' ', '_'))
             name = f"F:{el_name}:{''.join(random.choice(string.ascii_lowercase) for i in range(10))}"
-            self.filters.apply_filter(name, el_name, condition, el_value)
-            self.filtersChanged.emit(str(self.filters))
+            self._filters.apply_filter(name, el_name, condition, el_value)
+            self.filtersChanged.emit(str(self._filters))
             self.ui.le_filter_value.setText('')
 
     def _discard_filter(self) -> None:
         """TODO"""
         item = self.ui.lst_filters.currentItem()
         if item:
-            self.filters.discard(self.lookup[str(item.text())])
-            self.filtersChanged.emit(str(self.filters))
+            self._filters.discard(self._lookup[str(item.text())])
+            self.filtersChanged.emit(str(self._filters))
 
     def _get_filter_value(self, el_name: str) -> Optional[Union[str, int, float, bool]]:
         """TODO"""

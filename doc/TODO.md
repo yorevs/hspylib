@@ -4,15 +4,18 @@
 
 1. Safe formatting string
 2. Update all README.md.
-3. Include a form validator for minput.
-4. Improve TUI -> extra with settings and remove parameters.
-5. Check if execute SQLs, use params instead of values inside sql string.
-6. Add a repository for SQLite db + tests.
-7. Add a repository for Postgres db + tests.
+3. Improve TUI -> extra with settings and move parameters to kwargs.
+4. Check if execute SQLs, use params instead of values inside sql string.
+5. Add a repository for SQLite db + tests.
+6. Add a repository for Postgres db + tests.
+
+## HSPYLIB-CFMAN
+
+1. Cache dos apps
 
 ## HSPYLIB-FIREBASE
 
-1. Add authorization
+1. None
 
 ## HSPYLIB-VAULT
 

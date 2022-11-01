@@ -28,8 +28,8 @@ from typing import List, Optional, Tuple, Union
 from confluent_kafka.cimpl import Consumer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
-from hspylib.core.tools.commons import dirname
 from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import dirname
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.core.tools.zoned_datetime import now, now_ms
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
@@ -67,7 +67,7 @@ from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = _Classpath.get_source(".version").read_text(encoding=str(Charset.UTF_8))
+    VERSION = _Classpath.get_source_path(".version").read_text(encoding=str(Charset.UTF_8))
 
     SCHEMA_DIR = (_Classpath.resource_dir() / "schema")
 
@@ -281,19 +281,19 @@ class MainQtView(QtView):
 
         return strip_extra_spaces(strip_linebreaks(self._form_to_message()))
 
-    def _add_consumer_setting(self):
+    def _add_consumer_setting(self) -> None:
         settings_dlg = SettingsDialog(
             self.ui.splitter_pane, SettingsDialog.SettingsType.CONSUMER, self._settings(), self.ui.lst_cons_settings)
         settings_dlg.set_window_title("Add a consumer setting")
         settings_dlg.show()
 
-    def _add_producer_setting(self):
+    def _add_producer_setting(self) -> None:
         settings_dlg = SettingsDialog(
             self.ui.splitter_pane, SettingsDialog.SettingsType.PRODUCER, self._settings(), self.ui.lst_prod_settings)
         settings_dlg.set_window_title("Add a producer setting")
         settings_dlg.show()
 
-    def _add_consumer_filters(self):
+    def _add_consumer_filters(self) -> None:
         filters_dlg = FiltersDialog(self.ui.splitter_pane, self.ui.tbl_consumer.filters())
         filters_dlg.filtersChanged.connect(
             lambda s: self.ui.lbl_cons_filters.setText(f'Filters: {s}'))

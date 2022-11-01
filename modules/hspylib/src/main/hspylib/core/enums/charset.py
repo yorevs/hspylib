@@ -116,3 +116,7 @@ class Charset(Enumeration):
     UTF_8           = 'UTF-8'
 
     # @formatter:on
+
+    @property
+    def value(self) -> str:
+        return str(super().value)

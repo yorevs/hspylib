@@ -16,7 +16,6 @@ import inspect
 import logging as log
 import os
 import pathlib
-import re
 import sys
 from datetime import timedelta
 from typing import Any, List, Optional, Tuple, Type, Union

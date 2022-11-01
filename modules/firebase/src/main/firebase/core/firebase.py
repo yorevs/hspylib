@@ -19,7 +19,6 @@ import os
 from typing import List
 
 from hspylib.core.preconditions import check_argument
-from requests.structures import CaseInsensitiveDict
 
 from firebase.core.agent_config import AgentConfig
 from firebase.core.file_processor import FileProcessor

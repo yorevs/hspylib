@@ -26,6 +26,7 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
 
+from exception.exceptions import FirebaseAuthenticationError
 from firebase.core.firebase_auth import FirebaseAuth
 
 
@@ -35,8 +36,8 @@ class AgentConfig(metaclass=Singleton):
     def __init__(self) -> None:
         self.app_configs = AppConfigs.INSTANCE
         self.firebase_configs = None
-        if file_is_not_empty(self.config_file()):
-            self.load()
+        if file_is_not_empty(self.filename):
+            self._load()
             log.debug('Found and loaded a Firebase configuration: %s', self)
 
     def __str__(self) -> str:
@@ -49,61 +50,81 @@ class AgentConfig(metaclass=Singleton):
         """Setup firebase from a dict configuration
         :param config_dict: Firebase configuration dictionary
         """
-        config_dict['UID'] = FirebaseAuth.authenticate(config_dict).uid
-        self.firebase_configs = FirebaseConfig.of(config_dict)
-        self.save()
-
-    def load(self) -> None:
-        """Load configuration from file"""
-        self.firebase_configs = FirebaseConfig.of_file(self.config_file())
+        user = FirebaseAuth.authenticate(config_dict)
+        if user:
+            if user.uid != config_dict['UUID']:
+                raise FirebaseAuthenticationError(
+                    f"Provided UID: {config_dict['UUID']} is different from retrieved UID: {user.uid}")
+            config_dict['UUID'] = user.uid
+            self.firebase_configs = FirebaseConfig.of(config_dict)
+            self._save()
+        else:
+            raise
 
     def prompt(self) -> None:
-        """Create a new firebase configuration by prompting the user for information"""
+        """Create a new firebase configuration by prompting the user for information."""
         config = CaseInsensitiveDict()
         sysout("### Firebase setup")
         sysout('-' * 31)
-        config['PROJECT_ID'] = self.project_id()
-        config['DATABASE'] = self.database()
-        config['EMAIL'] = self.email()
-        config['PASSPHRASE'] = self.passphrase()
+        config['UUID'] = self.uuid
+        config['PROJECT_ID'] = self.project_id
+        config['DATABASE'] = self.database
+        config['EMAIL'] = self.email
+        config['PASSPHRASE'] = self.passphrase
         self.setup(config)
 
-    def config_file(self) -> str:
-        """Return the configuration file"""
+    @property
+    def filename(self) -> str:
+        """Return the configuration file."""
         file = self.app_configs['hhs.firebase.config.file']
         return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase"
 
+    @property
     def project_id(self) -> Optional[str]:
-        """Return the firebase project ID"""
-        project_id = self.app_configs['hhs.firebase.project.id']
-        return project_id if project_id else input('Please type you project ID: ')
+        """Return the firebase project ID."""
+        pid = self.app_configs['hhs.firebase.project.id']
+        return pid if pid else input('Please type your project ID: ')
 
-    def database(self) -> Optional[str]:
-        """Return the firebase project database name"""
-        database = self.app_configs['hhs.firebase.database']
-        return database if database else input('Please type you database Name: ')
+    @property
+    def uuid(self) -> Optional[str]:
+        """Return the firebase user ID."""
+        uid = self.app_configs['hhs.firebase.user.uid']
+        return uid if uid else input('Please type your user UID: ')
 
+    @property
     def email(self) -> Optional[str]:
-        """Return the firebase username"""
-        user = self.app_configs['hhs.firebase.email']
-        return user if user else os.getenv('USER', f"{getpass.getuser()}@gmail.com")
+        """Return the firebase username."""
+        em = self.app_configs['hhs.firebase.email']
+        return em if em else input('Please type your Email: ')
 
+    @property
+    def database(self) -> Optional[str]:
+        """Return the firebase project database name."""
+        database = self.app_configs['hhs.firebase.database']
+        return database if database else input('Please type your database Name: ')
+
+    @property
     def passphrase(self) -> Optional[str]:
-        """Return the firebase user passphrase"""
+        """Return the firebase user passphrase."""
         passphrase = self.app_configs['hhs.firebase.passphrase']
-        return passphrase if passphrase else self._input_passphrase()
+        return passphrase if passphrase else self._getpass()
 
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
         final_alias = db_alias.replace('.', '/')
         return self.firebase_configs.url(f'{final_alias}')
 
-    def save(self) -> None:
-        """Save current firebase configuration"""
-        with open(self.config_file(), 'w+', encoding='utf-8') as f_config:
-            f_config.write(str(self))
-            sysout(f"Firebase configuration saved => {self.config_file()} !")
+    def _load(self) -> None:
+        """Load configuration from file"""
+        self.firebase_configs = FirebaseConfig.of_file(self.filename)
 
-    def _input_passphrase(self) -> str:
+    def _save(self) -> None:
+        """Save current firebase configuration"""
+        with open(self.filename, 'w+', encoding='utf-8') as f_config:
+            f_config.write(str(self))
+            sysout(f"Firebase configuration saved => {self.filename} !")
+
+    def _getpass(self) -> str:
+        """TODO"""
         passwd = getpass.getpass('Please type a password to encrypt your data: ')
-        return str(base64.b64encode(f"{self.email()}:{passwd}".encode(str(Charset.UTF_8))), str(Charset.UTF_8))
+        return str(base64.b64encode(passwd.encode(Charset.UTF_8.value)), Charset.UTF_8.value)

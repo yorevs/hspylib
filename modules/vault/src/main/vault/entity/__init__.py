@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-vault v0.9.42
+# hspylib-vault v0.9.43
 #
 # Package: main.vault.entity
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'validator', 
   'vault_entry'
 ]
-__version__ = '0.9.42'
+__version__ = '0.9.43'

@@ -20,8 +20,8 @@ from typing import Any, Optional
 
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import run_dir, str_to_bool
 from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import run_dir, str_to_bool
 
 
 class AppConfigs(metaclass=Singleton):
@@ -43,7 +43,7 @@ class AppConfigs(metaclass=Singleton):
 
         log.info(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '\n{}{}{}'.format(
             '-=' * 40,
             self.DISPLAY_FORMAT.format(
@@ -84,12 +84,12 @@ class AppConfigs(metaclass=Singleton):
 
     def get_int(self, property_name: str) -> Optional[int]:
         """Get the value, as an integer, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, val_type=int)
+        return self._properties.get(property_name, value_type=int)
 
     def get_float(self, property_name: str) -> Optional[float]:
         """Get the value, as a float, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, val_type=float)
+        return self._properties.get(property_name, value_type=float)
 
     def get_bool(self, property_name: str) -> Optional[bool]:
         """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, val_type=str_to_bool)
+        return self._properties.get(property_name, value_type=str_to_bool)

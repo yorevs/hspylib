@@ -22,8 +22,8 @@ from hspylib.addons.widman.widget_entry import WidgetEntry
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import get_path
 from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import get_path
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem

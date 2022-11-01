@@ -22,6 +22,7 @@ import unittest
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
 from hspylib.modules.fetch.fetch import delete
 from shared.decorators import integration_test
 from shared.entity_test import EntityTest
@@ -34,12 +35,14 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 class TestClass(unittest.TestCase):
 
     # Setup tests
-    def setUp(self):
+    def setUp(self) -> None:
         resource_dir = '{}/resources'.format(TEST_DIR)
         os.environ['ACTIVE_PROFILE'] = "test"
         self.configs = AppConfigs(resource_dir=resource_dir)
         log.info(self.configs)
-        self.repository = FirebaseRepositoryTest()
+        fb_config = FirebaseConfig.of_file(os.environ.get('HHS_FIREBASE_CONFIG_FILE'))
+        fb_config.database = 'homesetup/hspylib-test'
+        self.repository = FirebaseRepositoryTest(fb_config)
 
     # Teardown tests
     def tearDown(self):

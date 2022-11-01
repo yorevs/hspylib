@@ -9,7 +9,7 @@
 
 /* Module dependencies */
 
-package: hspylib, version: 0.11.104, space: global, mode: gt
+package: hspylib, version: 0.11.109, space: global, mode: gt
 
 /* Application dependencies */
 

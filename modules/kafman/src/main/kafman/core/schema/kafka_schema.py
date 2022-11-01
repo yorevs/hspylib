@@ -23,8 +23,9 @@ from avro.schema import SchemaParseException
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import build_url, file_is_not_empty, namespace
 from hspylib.core.preconditions import check_not_none, check_state
+from hspylib.core.tools.commons import build_url, file_is_not_empty
+from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import QLabel
@@ -94,7 +95,7 @@ class KafkaSchema(ABC):
         self._filepath = filepath
         self._registry_url = build_url(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
         self._charset = charset
-        self._attributes = namespace('SchemaAttributes')
+        self._attributes = Namespace('SchemaAttributes')
         self._json_template = defaultdict()
         self._form_stack = None
 

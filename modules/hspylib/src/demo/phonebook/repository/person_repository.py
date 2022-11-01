@@ -22,7 +22,7 @@ class PersonRepository(FileRepository):
 
     def __init__(self):
         self.db_file = "{}/db/{}".format(
-            AppConfigs.INSTANCE.resource_dir(),
+            AppConfigs.INSTANCE.resource_dir,
             AppConfigs.INSTANCE["phonebook.persons.db.file"]
         )
         super().__init__(self.db_file)

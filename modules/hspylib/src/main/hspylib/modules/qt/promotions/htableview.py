@@ -20,8 +20,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QPainter, QPaintEvent
 from PyQt5.QtWidgets import QAbstractScrollArea, QHeaderView, QMenu, QTableView, QWidget
 
-from hspylib.core.tools.collection_filter import CollectionFilter
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
+from hspylib.core.tools.collection_filter import CollectionFilter
 from hspylib.core.tools.text_tools import strip_linebreaks
 
 
@@ -59,7 +59,7 @@ class HTableView(QTableView):
 
     def filters(self) -> Optional[CollectionFilter]:
         """TODO"""
-        return self.model().filters if self.model() else None
+        return self.model().filters() if self.model() else None
 
     def refresh(self) -> None:
         self.model().refresh_data()
