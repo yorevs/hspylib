@@ -32,7 +32,7 @@ def soap_call(
 
     all_headers = {} if not headers else headers
     all_headers.update({
-        "Content-Type": "text/xml",
+        "Content-Type": "application/xml",
         "Accept": "*/*"
     })
     log.info("Processing SOAP %s {method} -> %s \n%s", all_headers, url, data if data else '<None>')

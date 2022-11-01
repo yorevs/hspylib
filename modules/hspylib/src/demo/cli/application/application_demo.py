@@ -32,7 +32,7 @@ class Main(Application):
         # @formatter:off
         self._with_options()\
             .option('verbose', 'V', 'verbose', 'to be more verbose')
-        self._with_chained_args('operation', 'Upload/Download files from/to server')\
+        self._with_chained_args('operation', 'Upload/Download files from/to server') \
             .argument('download', 'download a file from server') \
                 .add_argument('url', 'the url of the file') \
             .argument('upload', 'upload a file to server') \
@@ -44,6 +44,7 @@ class Main(Application):
         self._exec_application()
 
     def _exec_application(self) -> None:
+        """Execute the application logic."""
         if self.get_arg('operation') == 'download':
             print('Downloading')
         elif self.get_arg('operation') == 'upload':

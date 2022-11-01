@@ -21,7 +21,7 @@ from hspylib.modules.eventbus.event import Event
 
 
 def subscribe(**kwargs) -> Callable:
-    """Subscribe to a given bus event."""
+    """Method decorator to subscribe to a given bus event."""
 
     def inner(func) -> None:
         check_argument(func.__code__.co_argcount >= 1, 'Subscriber callbacks require at least one parameter.')
@@ -33,6 +33,7 @@ def subscribe(**kwargs) -> Callable:
 
 
 def emit(bus_name: str, event_name: str, **kwargs) -> None:
+    """Emit an event to the specified bus."""
     EventBus.get(bus_name).emit(event_name, **kwargs)
 
 

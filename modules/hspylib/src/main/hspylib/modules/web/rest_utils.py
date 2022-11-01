@@ -32,7 +32,7 @@ def rest_call(
 
     all_headers = {} if not headers else headers
     all_headers.update({
-        "Content-Type": "text/json",
+        "Content-Type": "application/json",
         "Accept": "*/*"
     })
 
