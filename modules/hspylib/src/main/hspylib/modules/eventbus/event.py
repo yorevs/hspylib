@@ -13,23 +13,37 @@
    Copyright 2022, HSPyLib team
 """
 
+from hspylib.core.tools.namespace import Namespace
+
 
 class Event:
     """TODO"""
 
-    def __init__(self, _name_: str, **kwargs):
-        self.name = _name_
-        self.kwargs = kwargs
+    def __init__(self, event_name: str, **kwargs):
+        self._name = event_name
+        self._args = Namespace('EventArgs', kwargs)
 
-    def __str__(self):
-        return f"{self.name}: {str(self.kwargs)}"
+    def __str__(self) -> str:
+        return f"Event(name={self.name})"
 
     def __repr__(self):
         return str(self)
 
-    def __eq__(self, other: 'Event'):
-        return self.name == other.name and self.kwargs == other.kwargs
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other: 'Event') -> bool:
+        if isinstance(other, self.__class__):
+            return self.name == other.name
+        return NotImplemented
 
     def __getitem__(self, item: str):
-        return self.kwargs[item]
+        return getattr(self, item)
 
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def args(self) -> object:
+        return self._args
