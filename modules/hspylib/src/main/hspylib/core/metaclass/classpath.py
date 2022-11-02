@@ -27,6 +27,8 @@ from hspylib.core.preconditions import check_state
 class Classpath(metaclass=Singleton):
     """The classpath tells Python applications where to look in the filesystem for source and resource files."""
 
+    INSTANCE = None
+
     def __init__(
             self,
             source_root: Optional[Path] = None,

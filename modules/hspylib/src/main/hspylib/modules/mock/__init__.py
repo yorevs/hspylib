@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.115
+# hspylib v0.11.116
 #
 # Package: main.hspylib.modules.mock
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'mock_server', 
   'mock_server_handler'
 ]
-__version__ = '0.11.115'
+__version__ = '0.11.116'

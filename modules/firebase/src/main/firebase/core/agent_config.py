@@ -13,15 +13,12 @@
 
    Copyright 2022, HSPyLib team
 """
-import base64
-import getpass
 import logging as log
 import os
 from typing import Optional
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.crud.db.firebase.firebase_config import FirebaseConfig
-from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
@@ -45,6 +42,10 @@ class AgentConfig(metaclass=Singleton):
 
     def __repr__(self):
         return str(self)
+
+    @property
+    def hash_str(self) -> str:
+        return 'f6680e84-12c0-459c-8cf9-bd469def750d'
 
     def setup(self, config_dict: CaseInsensitiveDict) -> None:
         """Setup firebase from a dict configuration
@@ -70,7 +71,6 @@ class AgentConfig(metaclass=Singleton):
         config['PROJECT_ID'] = self.project_id
         config['DATABASE'] = self.database
         config['EMAIL'] = self.email
-        config['PASSPHRASE'] = self.passphrase
         self.setup(config)
 
     @property
@@ -103,12 +103,6 @@ class AgentConfig(metaclass=Singleton):
         database = self.app_configs['hhs.firebase.database']
         return database if database else input('Please type your database Name: ')
 
-    @property
-    def passphrase(self) -> Optional[str]:
-        """Return the firebase user passphrase."""
-        passphrase = self.app_configs['hhs.firebase.passphrase']
-        return passphrase if passphrase else self._getpass()
-
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
         final_alias = db_alias.replace('.', '/')
@@ -123,8 +117,3 @@ class AgentConfig(metaclass=Singleton):
         with open(self.filename, 'w+', encoding='utf-8') as f_config:
             f_config.write(str(self))
             sysout(f"Firebase configuration saved => {self.filename} !")
-
-    def _getpass(self) -> str:
-        """TODO"""
-        passwd = getpass.getpass('Please type a password to encrypt your data: ')
-        return str(base64.b64encode(passwd.encode(Charset.UTF_8.value)), Charset.UTF_8.value)
