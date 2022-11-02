@@ -17,6 +17,7 @@
 from hspylib.core.metaclass.classpath import Classpath
 from hspylib.core.tools.commons import get_path, run_dir
 
+
 class _Classpath(Classpath):
     """TODO"""
 
@@ -25,6 +26,7 @@ class _Classpath(Classpath):
             get_path(__file__),
             get_path(run_dir()),
             (get_path(__file__) / "resources"))
+
 
 # Instantiate the classpath singleton
 _Classpath()

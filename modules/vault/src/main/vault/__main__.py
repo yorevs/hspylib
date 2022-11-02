@@ -26,7 +26,7 @@ from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 
-from vault.__classpath__ import Classpath, get_source
+from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
 
@@ -35,13 +35,13 @@ class Main(Application):
     """HSPyLib Vault - Manage your secrets"""
 
     # The welcome message
-    DESCRIPTION = get_source("welcome.txt").read_text(encoding=str(Charset.UTF_8))
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # location of the .version file
-    VERSION_DIR = Classpath.SOURCE_ROOT
+    VERSION_DIR = _Classpath.source_root()
 
     # The resources folder
-    RESOURCE_DIR = Classpath.RESOURCE_DIR
+    RESOURCE_DIR = str(_Classpath.resource_dir())
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)

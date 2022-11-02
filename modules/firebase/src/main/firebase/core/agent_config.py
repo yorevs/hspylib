@@ -26,8 +26,8 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
 
-from exception.exceptions import FirebaseAuthenticationError
 from firebase.core.firebase_auth import FirebaseAuth
+from firebase.exception.exceptions import FirebaseAuthenticationError
 
 
 class AgentConfig(metaclass=Singleton):

@@ -103,7 +103,7 @@ class FirebaseConfig(metaclass=Singleton):
             self.project_id,
             self.email,
             self.database,
-            cryptocode.encrypt(self.passphrase, self._FIREBASE_HASHCODE)
+            '*' * max(8, len(self.passphrase or ''))
         )
 
     def decode_passphrase(self) -> None:
