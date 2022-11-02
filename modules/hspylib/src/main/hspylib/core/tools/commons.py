@@ -84,17 +84,6 @@ def is_debugging() -> bool:
     return False
 
 
-def read_version(version_filepath: str = ".version") -> Tuple[int, int, int]:
-    """Retrieve the version from the version file in the form: Tuple[major,minor,build]"""
-    try:
-        log.info("Reading version from %s", version_filepath)
-        with open(version_filepath, encoding="utf8") as fh_version:
-            ver = tuple(map(str.strip, fh_version.read().split('.')))
-            return ver if ver else (0, 0, 0)
-    except FileNotFoundError:
-        return 0, 0, 0
-
-
 def dirname(filepath: str) -> str:
     """Retrieve the directory of the specified filepath"""
     return os.path.dirname(os.path.realpath(filepath))

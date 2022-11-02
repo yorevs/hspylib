@@ -37,9 +37,11 @@ class Main(Application):
     VERSION_DIR = _Classpath.source_root()
 
     class Addon(Enumeration):
-        """TODO"""
-        APPMAN = 'appman'
+        """HsPyLib addon types."""
+        # @formatter:off
+        APPMAN  = 'appman'
         WIDGETS = 'widgets'
+        # @formatter:on
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
