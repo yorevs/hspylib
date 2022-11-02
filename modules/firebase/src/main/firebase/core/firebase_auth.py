@@ -37,10 +37,10 @@ class FirebaseAuth(ABC):
     def _credentials(firebase_config: CaseInsensitiveDict) -> credentials.Certificate:
         """TODO"""
         project_id = firebase_config['PROJECT_ID']
-        certificate_file = os.environ.get("HOME", '~') + f"/.ssh/{project_id}-firebase-credentials.json"
-        check_not_none(firebase_config)
+        certificate_file = os.environ.get("HHS_FIREBASE_CERT_FILE")
+        check_not_none(firebase_config, certificate_file, project_id)
         try:
-            creds = credentials.Certificate(certificate_file)
+            creds = credentials.Certificate(certificate_file.format(project_id=project_id))
         except (IOError, ValueError) as err:
             raise InvalidFirebaseCredentials('Invalid credentials provided') from err
         return creds

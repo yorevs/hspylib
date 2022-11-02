@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-firebase v0.9.66
+# hspylib-firebase v0.9.67
 #
 # Package: main.firebase.entity
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'file_entry', 
   'firebase_entry'
 ]
-__version__ = '0.9.66'
+__version__ = '0.9.67'

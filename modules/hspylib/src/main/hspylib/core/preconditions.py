@@ -39,7 +39,7 @@ def check_state(expression: bool, error_message: str = None, *args) -> bool:
     return expression
 
 
-def check_not_none(references: Union[T, Tuple[T]], error_message: str = None, *args) -> T:
+def check_not_none(references: T | Tuple[T], error_message: str = None, *args) -> T:
     """Ensures that an object reference passed as a parameter to the calling method is not None."""
     if isinstance(references, Tuple):
         if not all(ref is not None for ref in references):

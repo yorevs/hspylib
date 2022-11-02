@@ -16,7 +16,6 @@ import logging as log
 import os
 from textwrap import dedent
 
-import cryptocode
 from requests.structures import CaseInsensitiveDict
 
 from hspylib.core.config.app_config import AppConfigs
@@ -30,19 +29,16 @@ from hspylib.modules.fetch.fetch import get
 class FirebaseConfig(metaclass=Singleton):
     """Represents a Firebase project configuration"""
 
-    _FIREBASE_HASHCODE = '065577bcd5dde0d70d24fad7dec74a8b'
-
     CONFIG_FORMAT = dedent("""
     # Your Firebase configuration:
     # --------------------------
-    UUID={}
-    PROJECT_ID={}
-    EMAIL={}
-    DATABASE={}
-    PASSPHRASE={}
+    UUID={uuid}
+    PROJECT_ID={project_id}
+    EMAIL={email}
+    DATABASE={database}
     """)
 
-    REQUIRED_SETTINGS = ['UUID', 'PROJECT_ID', 'EMAIL', 'DATABASE', 'PASSPHRASE']
+    REQUIRED_SETTINGS = ['UUID', 'PROJECT_ID', 'EMAIL', 'DATABASE']
 
     @staticmethod
     def of(config_dict: CaseInsensitiveDict) -> 'FirebaseConfig':
@@ -55,8 +51,7 @@ class FirebaseConfig(metaclass=Singleton):
             config_dict['UUID'],
             config_dict['PROJECT_ID'],
             config_dict['EMAIL'],
-            config_dict['DATABASE'],
-            config_dict['PASSPHRASE'],
+            config_dict['DATABASE']
         )
 
     @staticmethod
@@ -81,37 +76,25 @@ class FirebaseConfig(metaclass=Singleton):
         uuid: str,
         project_id: str,
         database: str,
-        username: str,
-        passphrase: str):
+        username: str):
 
         self.current_state = None
         self.uuid = uuid if uuid else AppConfigs.INSTANCE['firebase.user.uid']
         self.project_id = project_id if project_id else AppConfigs.INSTANCE['firebase.project.id']
         self.email = username if username else AppConfigs.INSTANCE['firebase.email']
         self.database = database if database else AppConfigs.INSTANCE['firebase.database']
-        self.passphrase = passphrase if passphrase else AppConfigs.INSTANCE['firebase.passphrase']
         check_state(self.uuid, "User UID must be defined")
         check_state(self.project_id, "Project ID must be defined")
         check_state(self.email, "Email must be defined")
         check_state(self.database, "Database name must be defined")
-        check_state(self.passphrase, "Passphrase must be defined")
-        self.decode_passphrase()
 
     def __str__(self) -> str:
         return self.CONFIG_FORMAT.format(
-            self.uuid,
-            self.project_id,
-            self.email,
-            self.database,
-            '*' * max(8, len(self.passphrase or ''))
+            uuid=self.uuid,
+            project_id=self.project_id,
+            email=self.email,
+            database=self.database
         )
-
-    def decode_passphrase(self) -> None:
-        """Set a passphrase for the Firebase connection."""
-        check_state(
-            self.passphrase and len(self.passphrase) >= 8,
-            "Passphrase must be have least 8 characters size")
-        self.passphrase = cryptocode.decrypt(self.passphrase, self._FIREBASE_HASHCODE)
 
     def validate_config(self) -> bool:
         """Validate the current configuration"""
