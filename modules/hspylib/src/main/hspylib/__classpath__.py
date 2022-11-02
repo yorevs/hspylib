@@ -16,6 +16,7 @@
 from hspylib.core.metaclass.classpath import Classpath
 from hspylib.core.tools.commons import get_path, run_dir
 
+
 class _Classpath(Classpath):
     """TODO"""
 

@@ -25,7 +25,7 @@ from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import sysout
 from requests.structures import CaseInsensitiveDict
 
-from exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials
+from firebase.exception.exceptions import InvalidFirebaseCredentials, FirebaseAuthenticationError, FirebaseException
 
 
 class FirebaseAuth(ABC):
@@ -60,4 +60,3 @@ class FirebaseAuth(ABC):
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:
             raise FirebaseException(f"An error occurred authenticating Firebase user => {err}") from err
-

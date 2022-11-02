@@ -9,9 +9,9 @@
 
 /* Module dependencies */
 
-package: hspylib, version: 0.11.109, space: global, mode: gt
+package: hspylib, version: latest, space: global, mode: gt
 
 /* Application dependencies */
 
-package: cryptocode, version: 0.1, space: user
-package: cryptography, version: 37.0.2, space: user
+package: cryptocode, version: latest, space: user
+package: cryptography, version: latest, space: user

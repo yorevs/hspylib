@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.110
+# hspylib v0.11.115
 #
 # Package: main.hspylib.modules.cli.icons.font_awesome
 """Package initialization."""
@@ -13,4 +13,4 @@ __all__ = [
   'nav_icons', 
   'widget_icons'
 ]
-__version__ = '0.11.110'
+__version__ = '0.11.115'

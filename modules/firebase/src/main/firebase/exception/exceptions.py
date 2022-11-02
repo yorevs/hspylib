@@ -15,11 +15,14 @@
 """
 from hspylib.core.exception.exceptions import HSBaseException
 
+
 class FirebaseAuthenticationError(HSBaseException):
     """Raised when authenticate to Firebase"""
 
+
 class InvalidFirebaseCredentials(HSBaseException):
     """Raised when invalid credentials are provided to Firebase"""
+
 
 class FirebaseException(HSBaseException):
     """Raised when Firebase module raises an error"""

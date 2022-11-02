@@ -13,67 +13,20 @@
 
    Copyright 2022, HSPyLib team
 """
-import os
-from pathlib import Path
-from textwrap import dedent
-from typing import Union
 
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.metaclass.classpath import Classpath
 from hspylib.core.tools.commons import get_path, run_dir
 
 
-class Classpath(metaclass=Singleton):
+class _Classpath(Classpath):
     """TODO"""
 
-    # Location of the running dir
-    RUN_DIR = get_path(run_dir())
-
-    # Location of the source root
-    SOURCE_ROOT = get_path(__file__)
-
-    # Location of the resources directory
-    RESOURCE_DIR = (SOURCE_ROOT / "resources")
-
-    @classmethod
-    def _list_resources(cls, directory: Union[Path, str]) -> str:
-        """TODO"""
-        res_str = cls._list_files(directory)
-        for root, dirs, _ in os.walk(directory):
-            for dirname in dirs:
-                res_str += '  |-' + dirname + os.linesep
-                res_str += cls._list_resources(os.path.join(root, dirname))
-        return res_str
-
-    @classmethod
-    def _list_files(cls, directory: Union[Path, str]) -> str:
-        """TODO"""
-        res_str = ''
-        for filename in os.listdir(directory):
-            f = os.path.join(directory, filename)
-            if os.path.isfile(f):
-                res_str += '    |-' + str(filename) + os.linesep
-        return res_str
-
-    def __str__(self):
-        return dedent(f"""
-        |-run-dir: {self.RUN_DIR}
-        |-source-root: {self.SOURCE_ROOT}
-        |-resources: {self.RESOURCE_DIR}
-        """) + self._list_resources(self.RESOURCE_DIR)
-
-    def __repr__(self):
-        return str(self)
-
-
-def get_resource(resource_path) -> Path:
-    """TODO"""
-    return Path(f'{Classpath.RESOURCE_DIR}/{resource_path}')
-
-
-def get_source(source_path) -> Path:
-    """TODO"""
-    return Path(f'{Classpath.SOURCE_ROOT}/{source_path}')
+    def __init__(self):
+        super().__init__(
+            get_path(__file__),
+            get_path(run_dir()),
+            (get_path(__file__) / "resources"))
 
 
 # Instantiate the classpath singleton
-Classpath()
+_Classpath()
