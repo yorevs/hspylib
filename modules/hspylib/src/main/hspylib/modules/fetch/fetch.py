@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import requests
 from requests import exceptions as ex
@@ -29,7 +29,7 @@ def fetch(
     headers: List[Dict[str, str]] = None,
     body: Any = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """ Do a request specified by method and according to parameters.
     :param url: The url to make the request.
     :param method: The http method to be used [ GET, HEAD, POST, PUT, PATCH, DELETE ].
@@ -65,7 +65,7 @@ def head(
     url: str,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """Do HEAD request and according to parameters."""
 
     return fetch(
@@ -80,7 +80,7 @@ def get(
     url: str,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """Do GET request and according to parameters."""
 
     return fetch(
@@ -94,7 +94,7 @@ def delete(
     url: str,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """Do DELETE request and according to parameters."""
 
     return fetch(
@@ -110,7 +110,7 @@ def post(
     body=None,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """Do POST request and according to parameters."""
 
     return fetch(
@@ -127,7 +127,7 @@ def put(
     body=None,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """Do PUT request and according to parameters."""
 
     return fetch(
@@ -144,7 +144,7 @@ def patch(
     body=None,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> Optional[HttpResponse]:
+    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """Do PATCH request and according to parameters."""
 
     return fetch(

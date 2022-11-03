@@ -27,6 +27,8 @@ from hspylib.core.tools.commons import run_dir, str_to_bool
 class AppConfigs(metaclass=Singleton):
     """Holds all of the application configurations (properties)"""
 
+    INSTANCE = None
+
     DISPLAY_FORMAT = dedent("""
     AppConfigs
       |-Working dir = {}
@@ -35,12 +37,11 @@ class AppConfigs(metaclass=Singleton):
        \\-{}
     """)
 
-    def __init__(self, resource_dir: str):
+    def __init__(self, resource_dir: str, filename: Optional[str] = None, profile: Optional[str] = None):
         check_argument(os.path.exists(resource_dir),
                        "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
-        self._properties = Properties(load_dir=resource_dir)
-
+        self._properties = Properties(filename=filename, load_dir=resource_dir, profile=profile)
         log.info(self)
 
     def __str__(self) -> str:
@@ -84,12 +85,12 @@ class AppConfigs(metaclass=Singleton):
 
     def get_int(self, property_name: str) -> Optional[int]:
         """Get the value, as an integer, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, value_type=int)
+        return self._properties.get(property_name, prop_type=int)
 
     def get_float(self, property_name: str) -> Optional[float]:
         """Get the value, as a float, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, value_type=float)
+        return self._properties.get(property_name, prop_type=float)
 
     def get_bool(self, property_name: str) -> Optional[bool]:
         """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, value_type=str_to_bool)
+        return self._properties.get(property_name, prop_type=str_to_bool)

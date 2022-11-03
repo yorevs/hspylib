@@ -13,20 +13,24 @@
 
    Copyright 2022, HSPyLib team
 """
+from collections import namedtuple
+from typing import List, Tuple
 
-from uuid import UUID
+from hspylib.core.datasource.crud_entity import CrudEntity
+from hspylib.core.datasource.identity import Identity
 
-from phonebook.entity.Contact import Contact
 
+class Company(CrudEntity):
 
-class Company(Contact):
-    def __init__(
-        self,
-        uuid: UUID = None,
-        name: str = None,
-        phone: str = None,
-        website: str = None,
-        address: str = None,
-        complement: str = None):
-        super().__init__(uuid, name, phone, address, complement)
-        self.website = website
+    CompanyId = namedtuple('CompanyId', ['uuid'])
+
+    @staticmethod
+    def columns() -> List[str]:
+        return ["uuid", "cnpj", "name", "website", "phone", "address", "complement"]
+
+    @classmethod
+    def from_tuple(cls, values: Tuple) -> 'Company':
+        row = {k: v for k, v in zip(cls.columns(), values)}
+        return Company(
+            Identity(cls.CompanyId(row['uuid'])), **row,
+        )

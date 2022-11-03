@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   test.crud.resources
+   test.datasource.resources
       @file: firebase_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -14,14 +14,22 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.crud.crud_entity import CrudEntity
-from hspylib.core.crud.db.firebase.firebase_repository import FirebaseRepository
+from hspylib.core.datasource.firebase.firebase_repository import FirebaseRepository
+from hspylib.core.datasource.identity import Identity
 from shared.entity_test import EntityTest
 
-class FirebaseRepositoryTest(FirebaseRepository):
 
-    def row_to_entity(self, row: dict) -> CrudEntity:
-        return EntityTest(row['uuid'], row['comment'], row['lucky_number'], row['is_working'])
+class FirebaseRepositoryTest(FirebaseRepository[EntityTest]):
 
-    def database_name(self) -> str:
-        return 'homesetup/hspylib-test'
+    def table_name(self) -> str:
+        return 'hspylib-test.integration-test'
+
+    def to_entity_type(self, entity_dict: dict | tuple) -> EntityTest:
+        if isinstance(entity_dict, dict):
+            identity = Identity(EntityTest.EntityId(entity_dict['id']))
+            return EntityTest(identity, **entity_dict)
+
+        identity = Identity(EntityTest.EntityId(entity_dict[0]))
+        return EntityTest(
+            identity, id=entity_dict[0], comment=entity_dict[1], lucky_number=entity_dict[2], is_working=entity_dict[3]
+        )

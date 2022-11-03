@@ -13,7 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-
+from hspylib.core.datasource.identity import Identity
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
@@ -25,6 +25,7 @@ from phonebook.entity.validator.person_validator import PersonValidator
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
+
 class CreateView(metaclass=Singleton):
 
     def __init__(self):
@@ -33,8 +34,9 @@ class CreateView(metaclass=Singleton):
 
     def person(self) -> None:
         MenuUtils.title('CREATE PERSON')
-        person = Person()
+        person = Person(Identity.auto())
         try:
+            person.uuid = person.identity.value()
             person.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
             person.age = MenuUtils.prompt('Age', PersonValidator.validate_age)
             person.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)
@@ -51,9 +53,11 @@ class CreateView(metaclass=Singleton):
 
     def company(self) -> None:
         MenuUtils.title('CREATE COMPANY')
-        company = Company()
+        company = Company(Identity.auto())
         try:
+            company.uuid = company.identity.value()
             company.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
+            company.cnpj = MenuUtils.prompt('CNPJ', CompanyValidator.validate_cnpj)
             company.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)
             company.website = MenuUtils.prompt('WebSite', CompanyValidator.validate_website)
             company.address = MenuUtils.prompt(

@@ -7,7 +7,7 @@
 
 __all__ = [
   'config', 
-  'crud', 
+  'datasource', 
   'enums', 
   'metaclass'
 ]

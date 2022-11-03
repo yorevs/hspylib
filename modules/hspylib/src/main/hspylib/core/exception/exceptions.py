@@ -55,8 +55,12 @@ class InvalidOptionError(HSBaseException):
     """Raised when an invalid option is received by the application"""
 
 
-class NotConnectedError(HSBaseException):
-    """Raised when an attempt to execute without being connected but a connection is required"""
+class DatabaseConnectionError(HSBaseException):
+    """Raised when all connection attempts to the database exhausted"""
+
+
+class DatabaseError(HSBaseException):
+    """Raised when database failed to execute/create-session"""
 
 
 class WidgetNotFoundError(HSBaseException):

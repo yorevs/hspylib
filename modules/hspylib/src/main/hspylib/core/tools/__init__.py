@@ -8,6 +8,7 @@
 __all__ = [
   'collection_filter', 
   'commons', 
+  'dict_tools', 
   'git_tools', 
   'namespace', 
   'text_tools', 

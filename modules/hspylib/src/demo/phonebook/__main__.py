@@ -22,6 +22,7 @@ from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 from hspylib.modules.cli.vt100.vt_utils import exit_app
+from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
@@ -31,10 +32,10 @@ HERE = str(get_path(__file__))
 
 class Main(Application):
     """TODO"""
-
     def __init__(self, app_name: str):
         version = Version.load(load_dir=HERE)
-        super().__init__(app_name, version, 'A simple CLI phonebook', resource_dir=f'{HERE}/resources')
+        resource_dir = str(_Classpath.resource_dir())
+        super().__init__(app_name, version, 'A simple CLI phonebook', resource_dir=resource_dir)
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
@@ -62,7 +63,7 @@ class Main(Application):
             .create(parent_menu=main_menu, menu_title='Search contacts') \
                 .with_option('Back').on_trigger(lambda x: main_menu) \
                 .with_option('By name').on_trigger(lambda t: search_view.by_name()) \
-                .with_option('By uuid').on_trigger(lambda t: search_view.by_uuid()) \
+                .with_option('By uid').on_trigger(lambda t: search_view.by_uuid()) \
                 .with_option('List all').on_trigger(lambda t: search_view.list_all()) \
                 .build()
         # @formatter:on

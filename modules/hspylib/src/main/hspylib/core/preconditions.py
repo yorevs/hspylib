@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Optional, Tuple, TypeVar, Union
+from typing import Any, Optional, Tuple, TypeVar
 
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidStateError
 

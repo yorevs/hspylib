@@ -12,30 +12,27 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Any, List, Tuple, Iterator, Optional, Dict, TypeVar
+from typing import Any, List, Tuple, Iterator, Optional, Dict
 
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.dict_tools import merge_iterables
-
-A = TypeVar('A', bound=str)
-AV = TypeVar('AV', bound=Any)
 
 
 class Namespace:
 
     @staticmethod
-    def of(type_name: str, attributes: Dict[A, AV] | Tuple[Dict[A, AV]] | List[Dict[A, AV]]) -> 'Namespace':
+    def of(type_name: str, attributes: Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]) -> 'Namespace':
         check_not_none(attributes)
         self = Namespace(type_name)
         self += attributes if isinstance(attributes, dict) else merge_iterables(attributes)
         return self
 
-    def __init__(self, type_name: str, **kwargs) -> None:
+    def __init__(self, type_name: str = '', **kwargs) -> None:
         self.__name__ = type_name
         self._index = 0
         list(map(self.setattr, kwargs.keys(), kwargs.values()))
 
-    def __key(self) -> Tuple[AV]:
+    def __key(self) -> Tuple[Any]:
         return tuple(self.values)
 
     def __str__(self) -> str:
@@ -52,32 +49,32 @@ class Namespace:
             return self.__key() == other.__key()
         return NotImplemented
 
-    def __getitem__(self, attribute_name: str) -> AV:
+    def __getitem__(self, attribute_name: str) -> Any:
         return getattr(self, attribute_name)
 
     def __len__(self):
         return len(self.attributes)
 
-    def __iter__(self) -> Iterator[Tuple[A, AV]]:
+    def __iter__(self) -> Iterator[Tuple[str, Any]]:
         self._index = 0
         return self
 
-    def __next__(self) -> Tuple[A, AV]:
+    def __next__(self) -> Tuple[str, Any]:
         if self._index < len(self):
             item = self.at(self._index)
             self._index += 1
             return item
         raise StopIteration
 
-    def __contains__(self, attribute: A):
+    def __contains__(self, attribute: str):
         return hasattr(self, attribute)
 
-    def __iadd__(self, attribute: Dict[A, AV] | 'Namespace') -> 'Namespace':
+    def __iadd__(self, attribute: Dict[str, Any] | 'Namespace') -> 'Namespace':
         for a, av in attribute.items():
             self.setattr(a, av)
         return self
 
-    def __add__(self, other: Dict[A, AV] | 'Namespace') -> 'Namespace':
+    def __add__(self, other: Dict[str, Any] | 'Namespace') -> 'Namespace':
         self.__name__ += '.' + other.__name__
         return self.__iadd__(other)
 
@@ -87,16 +84,17 @@ class Namespace:
         setattr(self, name, value)
         return self
 
-    def at(self, index: int) -> Optional[Tuple[A, AV]]:
+    def at(self, index: int) -> Optional[Tuple[str, Any]]:
         return (self.attributes[index], self.values[index]) if index < len(self) else None
 
-    def items(self) -> Iterator[Tuple[A, AV]]:
+    def items(self) -> Iterator[Tuple[str, Any]]:
         return iter(self)
 
     @property
-    def attributes(self) -> List[A]:
-        return [a for a in list(filter(lambda av: not av.startswith(('_', '__')), vars(self)))]
+    def attributes(self) -> Tuple[str]:
+        attrs = list(filter(lambda name: self[name] is not None and not name.startswith(('_', '__')), vars(self)))
+        return tuple([a for a in attrs])
 
     @property
-    def values(self) -> List[AV]:
-        return [getattr(self, a) for a in self.attributes]
+    def values(self) -> Tuple[Any]:
+        return tuple(filter(lambda v: v is not None, [getattr(self, a) for a in self.attributes]))
