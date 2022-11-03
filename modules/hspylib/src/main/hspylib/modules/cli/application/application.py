@@ -40,6 +40,8 @@ from hspylib.modules.cli.application.version import Version
 class Application(metaclass=Singleton):
     """HSPyLib application framework"""
 
+    INSTANCE = None
+
     @staticmethod
     def exit(signum=0, frame=None, clear_screen: bool = False) -> None:
         """

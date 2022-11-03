@@ -14,20 +14,15 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Tuple
+from typing import Tuple
 
-from requests.structures import CaseInsensitiveDict
-
-from hspylib.core.crud.crud_entity import CrudEntity
 from hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
-from hspylib.core.tools.commons import get_or_default, str_to_bool
+from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.dict_tools import get_or_default
 from shared.entity_test import EntityTest
 
 
 class MysqlRepositoryTest(MySqlRepository):
-
-    def find_all(self, filters: CaseInsensitiveDict = None) -> List[CrudEntity]:
-        pass
 
     def row_to_entity(self, row: Tuple) -> EntityTest:
         return EntityTest(

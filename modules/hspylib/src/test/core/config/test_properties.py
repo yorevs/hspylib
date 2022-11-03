@@ -34,12 +34,13 @@ class TestProperties(unittest.TestCase):
         os.environ['ACTIVE_PROFILE'] = ''
 
     # TEST CASES ----------
+
     def test_should_load_properties_using_defaults(self):
         expected_size = 6
         properties = Properties()
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
-        log.info(properties)
+        log.debug(properties)
 
     def test_should_load_properties_using_custom_attributes(self):
         expected_size = 6

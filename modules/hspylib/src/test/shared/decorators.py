@@ -26,7 +26,7 @@ def integration_test(cls: type):
 
     it_disabled = str_to_bool(os.environ.get('HSPYLIB_IT_DISABLED', 'True'))
     if it_disabled:
-        log.warning('Skipping test: ', cls.__name__)
+        log.debug('Skipping test: ', cls.__name__)
         return unittest.skipIf(
             it_disabled,
             f'Disabled = {it_disabled} :integration tests because it needs real servers running'

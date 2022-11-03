@@ -17,7 +17,7 @@ import random
 import re
 from typing import Any, List, Optional, Tuple
 
-from hspylib.core.tools.commons import get_or_default
+from hspylib.core.tools.dict_tools import get_or_default
 
 
 def elide_text(text: str, width: int, elide_with: str = '...') -> str:

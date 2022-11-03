@@ -18,10 +18,11 @@ import os
 import pathlib
 import sys
 from datetime import timedelta
-from typing import Any, List, Optional, Tuple, Type, Union
+from typing import Optional, Tuple, Type, Set
 from urllib.parse import urlparse
 
 from hspylib.core.constants import TRUE_VALUES
+from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
@@ -44,7 +45,7 @@ def log_init(
     level: int = log.DEBUG,
     filename: str = LOG_FMT,
     rm_handlers: bool = True) -> bool:
-    """Initialize the system logger TODO
+    """Initialize the system logger
     :param log_file:
     :param create_new:
     :param mode:
@@ -54,8 +55,7 @@ def log_init(
     """
 
     # if someone tried to log something before log_init is called, Python creates a default handler that is going to
-    # mess our logs.
-    # Remove handlers if there is any.
+    # mess our logs. Remove handlers if there is any.
     if rm_handlers:
         root = log.getLogger()
         if root.handlers:
@@ -77,7 +77,7 @@ def log_init(
 
 
 def is_debugging() -> bool:
-    """TODO"""
+    """Whether the program is running under debug mode."""
     for frame in inspect.stack():
         if frame[1].endswith("pydevd.py"):
             return True
@@ -121,130 +121,62 @@ def syserr(string: str, end: str = '\n') -> None:
 
 def class_attribute_names(clazz: Type) -> Optional[Tuple]:
     """Retrieve all attribute names of the class
-    :param clazz: TODO
+    :param clazz: The class to retrieve the attribute names
     """
-    instance = clazz()
-    return tuple(vars(instance).keys()) if clazz else None
+    return tuple(vars(clazz()).keys()) if clazz else None
 
 
 def class_attribute_values(instance: dict) -> Optional[Tuple]:
     """Retrieve all attribute values of the class
-    :param instance: TODO
+    :param instance: The class to retrieve the attribute values
     """
     return tuple(instance.values()) if instance else None
 
 
-def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') -> Optional[Any]:
-    """
-    TODO
-    :param root_element:
-    :param search_path:
-    :param parent_key:
-    :param sep:
-    :return:
-    """
-    found = search_path == parent_key
-    el = None
-    if not found and isinstance(root_element, dict):
-        for key, value in root_element.items():
-            if found:
-                break
-            el_path = parent_key + sep + key if parent_key else key
-            if search_path == el_path:
-                found, el = True, value
-                break
-            if isinstance(value, dict):
-                found, el = search_dict(value, search_path, el_path, sep=sep)
-            elif isinstance(value, list):
-                for next_val in value:
-                    found, el = search_dict(next_val, search_path, el_path, sep=sep)
-            # Skip if the element is a leaf
-
-    return found, el
-
-
-def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
-    """TODO
-    :param dictionary: The dictionary to be flattened
-    :param parent_key: The parent key name
-    :param sep: The separator between keys
-    :return:
-    """
-    flat_dict = {}
-    for key, value in dictionary.items():
-        new_key = parent_key + sep + key if parent_key else key
-        if isinstance(value, dict):
-            flat_dict.update(flatten_dict(value, new_key, sep=sep).items())
-        else:
-            flat_dict.update({new_key: value})
-
-    return flat_dict
-
-
-def get_or_default(options: Union[tuple, list], index: int, default_value=None) -> Optional[Any]:
-    """Retrieve an item from the options list or default_value if index is out of range
-    :param options: The available list of options
-    :param index: The index of the item
-    :param default_value: The default value if the index is out of range
-    """
-    return options[index] if index < len(options) else default_value
-
-
-def get_by_key_or_default(options: dict, key: str, default_value=None) -> Optional[Any]:
-    """Retrieve an item from the options list or default_value if key was not found
-    :param options: The available list of options
-    :param key: The key of the item
-    :param default_value: The default value if the index is not found
-    """
-    return options[key] if key in options else default_value
-
-
-def str_to_bool(string: str, true_values: List[str] = None) -> bool:
+def str_to_bool(string: str, true_values: Set[str] = None) -> bool:
     """Convert a string to boolean
     :param string: The string to be converted
     :param true_values: The list of strings that will become True value
     """
-    if string is None:
-        return False
-    if true_values is None:
-        true_values = TRUE_VALUES
-    return string.lower() in true_values if string else False
+    return string is not None and string.lower() in (true_values or TRUE_VALUES)
 
 
 def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
-    """TODO
-    :param filename:
-    :param on_not_found_except:
+    """Delete the file specified by filename. If the file is not found, raises an exception if on_not_found_except is
+    True; otherwise return False.
+    :param filename: the name of the file to be checked
+    :param on_not_found_except: boolean parameter to raise an exception if the file is not found.
     """
     if os.path.exists(filename):
         os.remove(filename)
-        return True
+    else:
+        if on_not_found_except:
+            raise FileNotFoundError(f'File was not found on the system: {filename}')
+        else:
+            return False
 
-    if on_not_found_except:
-        raise FileNotFoundError(f'File was not found on the system: {filename}')
-
-    return False
+    return True
 
 
 def file_is_not_empty(filename: str) -> bool:
-    """TODO
-    :param filename:
+    """Check whether the file is empty or not.
+    :param filename: the name of the file to be modified. If the file does not exist; return False
     """
     return os.path.exists(filename) and os.stat(filename).st_size > 0
 
 
-def touch_file(filename: str, encoding: str = 'utf-8') -> None:
-    """TODO
-    :param filename:
-    :param encoding:
+def touch_file(filename: str, encoding: str = Charset.UTF_8.value) -> None:
+    """Change file modification time
+    :param filename: the name of the file to be modified
+    :param encoding: the file encoding
     """
     with open(filename, 'a', encoding=encoding):
         os.utime(filename, None)
 
 
 def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
-    """TODO
-    :param size_in_bytes:
+    """Return a Human readable bytes and unit
+    :param size_in_bytes: the size to be formatted
     """
 
     byte_size = float(size_in_bytes)
@@ -270,8 +202,8 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
 
 
 def human_readable_time(time_microseconds: int) -> str:
-    """TODO
-    :param time_microseconds:
+    """Return a Human readable formatted time
+    :param time_microseconds: the time to be formatted
     """
     delta = timedelta(microseconds=time_microseconds)
     total_seconds = delta.seconds
@@ -280,9 +212,7 @@ def human_readable_time(time_microseconds: int) -> str:
     hours = total_seconds / 3600
     microseconds = delta.microseconds
     # Using format: HH:MM:SS.uuuuuu
-    str_line = f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
-
-    return str_line
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
 
 
 def build_url(base_url: str, scheme: str = 'http') -> str:
