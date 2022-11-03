@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Optional
 
 from requests.models import CaseInsensitiveDict, Response
 
@@ -31,18 +32,18 @@ class HttpResponse:
             HttpMethod[response.request.method],
             response.url,
             HttpCode(response.status_code),
-            response.text,
             response.headers,
-            Charset(str(response.encoding).upper()) if response.encoding else None,
+            response.text,
+            Charset.of_value(response.encoding.upper()) if response.encoding else Charset.UTF_8,
         )
 
     def __init__(
         self,
         method: HttpMethod,
         url: str,
-        status_code: HttpCode = None,
-        body: str = None,
+        status_code: HttpCode,
         headers: CaseInsensitiveDict = None,
+        body: Optional[str] = None,
         encoding: Charset = Charset.UTF_8,
         content_type=ContentType.APPLICATION_JSON):
         self.method = method

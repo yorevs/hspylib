@@ -10,6 +10,7 @@
 /* Application dependencies */
 
 package: requests, version: latest, space: user
+package: retry, version: latest, space: user
 package: urllib3, version: latest, space: user
 package: cryptocode, version: latest, space: user
 package: cryptography, version: latest, space: user

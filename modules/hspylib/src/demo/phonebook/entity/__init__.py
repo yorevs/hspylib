@@ -7,7 +7,6 @@
 
 __all__ = [
   'Company', 
-  'Contact', 
   'Person', 
   'validator'
 ]

@@ -14,24 +14,25 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Tuple
+from typing import List, Tuple, TypeVar, Union
 
 from hspylib.core.constants import RE_COMMON_2_30_NAME, RE_PHONE_NUMBER
-from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
-from phonebook.entity.Contact import Contact
+from phonebook.entity.Company import Company
+from phonebook.entity.Person import Person
+
+Contact = TypeVar('Contact', bound=Union[Person, Company])
 
 
 class ContactValidator(Validator):
 
     def __call__(self, *contacts: Contact, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
-        check_argument(len(contacts) == 1, f"Exactly one contact can be validated at a time. Given: {len(contacts)}")
-        check_state(isinstance(contacts[0], Contact), "Only Contact can be validated")
-        self.assert_valid(errors, self.validate_name(contacts[0].name))
-        self.assert_valid(errors, self.validate_phone(contacts[0].phone))
-        self.assert_valid(errors, self.validate_address(contacts[0].address))
-        self.assert_valid(errors, self.validate_complement(contacts[0].complement))
+        for contact in contacts:
+            self.assert_valid(errors, self.validate_name(contact.name))
+            self.assert_valid(errors, self.validate_phone(contact.phone))
+            self.assert_valid(errors, self.validate_address(contact.address))
+            self.assert_valid(errors, self.validate_complement(contact.complement))
 
         return len(errors) == 0, errors
 

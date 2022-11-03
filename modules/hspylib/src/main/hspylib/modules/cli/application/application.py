@@ -28,6 +28,7 @@ from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptio
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import log_init, sysout
+from hspylib.core.tools.text_tools import camelcase
 from hspylib.core.tools.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.cli.application.argparse.arguments_builder import ArgumentsBuilder
@@ -98,7 +99,7 @@ class Application(metaclass=Singleton):
             log.debug(f'Resource dir \"{resource_dir or "<none>"}\" not found. AppConfigs will not be available!')
 
         # Initialize application logs
-        self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{name}.log"
+        self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
         check_state(log_init(self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
 
     def run(self, *params, **kwargs) -> None:

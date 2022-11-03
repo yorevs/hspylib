@@ -13,26 +13,18 @@
 
    Copyright 2022, HSPyLib team
 """
-
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.crud.file.file_repository import FileRepository
+from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
+from hspylib.core.datasource.sqlite.sqlite_repository import SQLiteRepository
 from phonebook.entity.Person import Person
 
-class PersonRepository(FileRepository):
 
-    def __init__(self):
-        self.db_file = "{}/db/{}".format(
-            AppConfigs.INSTANCE.resource_dir,
-            AppConfigs.INSTANCE["phonebook.persons.db.file"]
-        )
-        super().__init__(self.db_file)
+class PersonRepository(SQLiteRepository[Person]):
 
-    def dict_to_entity(self, row: dict) -> Person:
-        return Person(
-            row['uuid'],
-            row['name'],
-            row['age'],
-            row['phone'],
-            row['email'],
-            row['address'],
-            row['complement'])
+    def __init__(self, config: SQLiteConfiguration):
+        super().__init__(config)
+
+    def table_name(self) -> str:
+        return 'PERSONS'
+
+    def to_entity_type(self, entity_dict: dict | tuple) -> Person:
+        return Person.from_tuple(entity_dict)

@@ -14,12 +14,16 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.crud.crud_service import CrudService
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.datasource.crud_service import CrudService
+from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
+from phonebook.__classpath__ import _Classpath
+from phonebook.entity.Person import Person
 from phonebook.repository.person_repository import PersonRepository
 
-class PersonService(CrudService, metaclass=Singleton):
+
+class PersonService(CrudService[Person]):
 
     def __init__(self):
-        self.repository = PersonRepository()
-        super().__init__(self.repository)
+        cfg = SQLiteConfiguration(str(_Classpath.resource_dir()))
+        repository = PersonRepository(cfg)
+        super().__init__(repository)

@@ -28,52 +28,62 @@ from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 # pylint: disable=consider-using-f-string
-LOG_FMT = '{} {} {} {}{} {} '.format(
+FILE_LOG_FMT = '{}\t{} {} {} {} {} '.format(
     '%(asctime)s',
-    '[%(threadName)-10.10s]',
     '%(levelname)-5.5s',
     '%(filename)s::',
+    '%(message)s',
+    '%(funcName)s(@Line:%(lineno)d) -',
+    '%(threadName)-12.12s',
+)
+
+CONSOLE_LOG_FMT = '{}\t{} {} {} {} '.format(
+    '%(levelname)-5.5s',
+    '%(message)s',
     '%(funcName)s(@Line:%(lineno)d)',
-    '%(message)s'
+    '%(asctime)s -',
+    '%(threadName)-12.12s'
 )
 
 
 def log_init(
-    log_file: str,
-    create_new: bool = True,
-    mode: str = 'a',
+    filename: Optional[str] = None,
+    filemode: str = 'a',
     level: int = log.DEBUG,
-    filename: str = LOG_FMT,
-    rm_handlers: bool = True) -> bool:
-    """Initialize the system logger
-    :param log_file:
-    :param create_new:
-    :param mode:
-    :param level:
-    :param filename:
-    :param rm_handlers:
-    """
+    log_format: str = FILE_LOG_FMT,
+    clear_handlers: bool = True,
+    console_enable: bool = False,
+    file_enable: bool = True) -> bool:
+    """Initialize the system logger"""
+
+    if file_enable and not os.path.exists(filename):
+        touch_file(filename)
 
     # if someone tried to log something before log_init is called, Python creates a default handler that is going to
     # mess our logs. Remove handlers if there is any.
-    if rm_handlers:
-        root = log.getLogger()
+    root, handlers = log.getLogger(), set()
+
+    if clear_handlers:
         if root.handlers:
             for handler in root.handlers:
                 handler.close()
                 root.removeHandler(handler)
-    create = bool(create_new or not os.path.exists(log_file))
-    with open(log_file, 'w' if create else 'a', encoding="utf8"):
-        os.utime(log_file, None)
-        log.basicConfig(
-            filename=log_file,
-            format=filename,
-            level=level,
-            filemode=mode)
-        log.info(
-            "Logger init. filename=%s level=%s mode=%s append=%s", os.path.basename(log_file), level, mode, not create)
 
-    return os.path.exists(log_file)
+    if file_enable:
+        file_formatter = log.Formatter(log_format)
+        file_handler = log.FileHandler(filename=filename, mode=filemode)
+        file_handler.setFormatter(file_formatter)
+        handlers.add(file_handler)
+
+    if console_enable:
+        console_formatter = log.Formatter(CONSOLE_LOG_FMT, "%Y-%m-%d %H:%M:%S")
+        console_handler = log.StreamHandler(sys.stdout)
+        console_handler.setFormatter(console_formatter)
+        handlers.add(console_handler)
+
+    log.basicConfig(level=level, handlers=handlers)
+
+    return (os.path.exists(filename or '') and file_enable) or console_enable
 
 
 def is_debugging() -> bool:

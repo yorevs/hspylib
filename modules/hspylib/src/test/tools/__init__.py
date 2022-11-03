@@ -7,6 +7,8 @@
 
 __all__ = [
   'test_collection_filter', 
+  'test_commons', 
+  'test_namespace', 
   'test_preconditions', 
   'test_text_tools'
 ]

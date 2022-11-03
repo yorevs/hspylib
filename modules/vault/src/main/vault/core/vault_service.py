@@ -16,7 +16,7 @@
 
 from typing import Optional
 
-from hspylib.core.crud.crud_service import CrudService
+from hspylib.core.datasource.crud_service import CrudService
 from hspylib.core.metaclass.singleton import Singleton
 
 from vault.core.vault_repository import VaultRepository

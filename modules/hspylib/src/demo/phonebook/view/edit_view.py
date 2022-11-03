@@ -13,7 +13,6 @@
 
    Copyright 2022, HSPyLib team
 """
-
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
@@ -23,6 +22,7 @@ from phonebook.entity.validator.person_validator import PersonValidator
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
+
 class EditView(metaclass=Singleton):
 
     def __init__(self):
@@ -31,7 +31,7 @@ class EditView(metaclass=Singleton):
 
     def person(self) -> None:
         MenuUtils.title('EDIT PERSON')
-        uuid = MenuUtils.prompt('Enter uuid')
+        uuid = MenuUtils.prompt('Enter uid')
         found = self.person_service.get(uuid)
         if not found:
             MenuUtils.print_error("Person does not exist", uuid)
@@ -53,7 +53,7 @@ class EditView(metaclass=Singleton):
 
     def company(self) -> None:
         MenuUtils.title('EDIT COMPANY')
-        uuid = MenuUtils.prompt('Enter uuid')
+        uuid = MenuUtils.prompt('Enter uid')
         found = self.company_service.get(uuid)
         if not found:
             MenuUtils.print_error("Company does not exist", uuid)

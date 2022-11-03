@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   test.crud.resources
+   test.datasource.resources
       @file: mysql_repository_test.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,23 +13,22 @@
 
    Copyright 2022, HSPyLib team
 """
-
-from typing import Tuple
-
-from hspylib.core.crud.db.mysql.mysql_repository import MySqlRepository
-from hspylib.core.tools.commons import str_to_bool
-from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.core.datasource.identity import Identity
+from hspylib.core.datasource.mysql.mysql_repository import MySqlRepository
 from shared.entity_test import EntityTest
 
 
 class MysqlRepositoryTest(MySqlRepository):
 
-    def row_to_entity(self, row: Tuple) -> EntityTest:
-        return EntityTest(
-            get_or_default(row, 0),
-            get_or_default(row, 1),
-            get_or_default(row, 2),
-            str_to_bool(get_or_default(row, 3)))
-
     def table_name(self) -> str:
-        return 'TEST'
+        return 'ENTITY_TEST'
+
+    def to_entity_type(self, entity_dict: dict | tuple) -> EntityTest:
+        if isinstance(entity_dict, dict):
+            identity = Identity(EntityTest.EntityId(entity_dict['id']))
+            return EntityTest(identity, **entity_dict)
+
+        identity = Identity(EntityTest.EntityId(entity_dict[0]))
+        return EntityTest(
+            identity, id=entity_dict[0], comment=entity_dict[1], lucky_number=entity_dict[2], is_working=entity_dict[3]
+        )

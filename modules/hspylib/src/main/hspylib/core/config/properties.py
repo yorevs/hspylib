@@ -32,10 +32,10 @@ class Properties:
     property list is a string."""
 
     _default_name = 'application'
-    _default_extension = '.properties'
+    _default_ext = '.properties'
 
     @staticmethod
-    def _environ_name(property_name: str) -> str:
+    def environ_name(property_name: str) -> str:
         """Retrieve the environment name of the specified property name
         :param property_name: the name of the property using space, dot or dash notations
         """
@@ -63,10 +63,9 @@ class Properties:
             all_cfgs.update(dict(cfg.items(section)))
         return all_cfgs
 
-    def __init__(self, filename: str = None, profile: str = None, load_dir: str = None):
-
+    def __init__(self, filename: Optional[str] = None, profile: Optional[str] = None, load_dir: Optional[str] = None):
         self._filename, self._extension = os.path.splitext(
-            filename if filename else f'{self._default_name}{self._default_extension}')
+            filename if filename else f'{self._default_name}{self._default_ext}')
         self._profile = profile if profile else os.environ.get('ACTIVE_PROFILE', '')
         self._properties = defaultdict()
         self._load(load_dir or f'{run_dir()}/resources')
@@ -90,12 +89,15 @@ class Properties:
         """Retrieve the amount of properties"""
         return len(self._properties)
 
-    def get(self, key: str, value_type: Type | Callable = str, default_value: Optional[str] = None) -> Optional[Any]:
+    def get(self, prop_name: str, prop_type: Type | Callable = str, default: Optional[str] = None) -> Optional[Any]:
+        """Retrieve a property specified by property and cast to the proper type. If the property is not found,
+        return the default value."""
         try:
-            value = self._get(key)
-            return value_type(value) if value else None
+            value = self._get(prop_name)
+            return prop_type(value) if value else None
         except TypeError:
-            return default_value
+            log.warning(f"Unable to cast property '{prop_name}' into '{prop_type}'")
+            return default
 
     @property
     def values(self) -> List[Any]:
@@ -114,7 +116,7 @@ class Properties:
 
     def _get(self, key: str, default_value: Any = None) -> Optional[Any]:
         """Get a property value as string or default_value if the property was not found"""
-        value = os.environ.get(self._environ_name(key), None)
+        value = os.environ.get(self.environ_name(key), None)
         if value:
             return value
         return self._properties[key] if key in self._properties else default_value
@@ -152,5 +154,5 @@ class Properties:
             elif ext in ['.yml', '.yaml']:
                 self._properties.update(flatten_dict(yaml.safe_load(fh_props)))
             else:
-                raise NotImplementedError(f'Extension {ext} is not supported')
-        log.info('Successfully loaded %d properties from:\n\t=>%s', len(self._properties), filepath)
+                raise NotImplementedError(f"Extension {ext} is not supported")
+        log.debug('Successfully loaded %d properties from: %s', len(self._properties), filepath)

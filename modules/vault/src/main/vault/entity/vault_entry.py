@@ -17,7 +17,7 @@ import re
 from datetime import datetime
 from uuid import UUID
 
-from hspylib.core.crud.crud_entity import CrudEntity
+from hspylib.core.datasource.crud_entity import CrudEntity
 from hspylib.core.tools.zoned_datetime import now
 
 
