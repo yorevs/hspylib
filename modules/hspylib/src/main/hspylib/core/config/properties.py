@@ -23,7 +23,8 @@ from typing import Any, Callable, Iterator, List, Optional, Type
 import yaml
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import flatten_dict, run_dir, touch_file
+from hspylib.core.tools.commons import run_dir, touch_file
+from hspylib.core.tools.dict_tools import flatten_dict
 
 
 class Properties:
@@ -46,7 +47,7 @@ class Properties:
         return {
             p[0].strip(): p[1].strip() for p in [
                 p.split('=', 1) for p in list(
-                    filter(lambda l: re.match('[a-zA-Z\d][._\\-a-zA-Z\d]* *=.*', l), all_lines)
+                    filter(lambda l: re.match(r'[a-zA-Z]([.\\-]|\w)* *= *.+', l), all_lines)
                 )
             ]
         }

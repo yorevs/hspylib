@@ -12,24 +12,37 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Any, Iterable, List, Tuple
+from typing import Any, List, Tuple, Iterator, Optional, Dict, TypeVar
+
+from hspylib.core.preconditions import check_not_none
+from hspylib.core.tools.dict_tools import merge_iterables
+
+A = TypeVar('A', bound=str)
+AV = TypeVar('AV', bound=Any)
 
 
 class Namespace:
 
-    def __init__(self, type_name: str, *args, **kwargs) -> None:
+    @staticmethod
+    def of(type_name: str, attributes: Dict[A, AV] | Tuple[Dict[A, AV]] | List[Dict[A, AV]]) -> 'Namespace':
+        check_not_none(attributes)
+        self = Namespace(type_name)
+        self += attributes if isinstance(attributes, dict) else merge_iterables(attributes)
+        return self
+
+    def __init__(self, type_name: str, **kwargs) -> None:
         self.__name__ = type_name
-        list(map(self.set_attributes, filter(lambda a: isinstance(a, dict), args)))
-        list(map(self.set_attribute, kwargs.keys(), kwargs.values()))
+        self._index = 0
+        list(map(self.setattr, kwargs.keys(), kwargs.values()))
+
+    def __key(self) -> Tuple[AV]:
+        return tuple(self.values)
 
     def __str__(self) -> str:
-        return f"{self.__name__}({', '.join([f'{a}={v}' for a, v in zip(self.attributes, self.values)])})"
+        return f"{self.__name__}({', '.join([f'{a}={av}' for a, av in zip(self.attributes, self.values)])})"
 
     def __repr__(self) -> str:
         return str(self)
-
-    def __key(self) -> Tuple:
-        return tuple(self.values)
 
     def __hash__(self) -> int:
         return hash(self.__key())
@@ -39,36 +52,51 @@ class Namespace:
             return self.__key() == other.__key()
         return NotImplemented
 
-    def __getitem__(self, attribute_name: str):
+    def __getitem__(self, attribute_name: str) -> AV:
         return getattr(self, attribute_name)
 
-    def __iter__(self) -> Iterable:
-        return iter([{k: v} for k, v in zip(self.attributes, self.values)])
+    def __len__(self):
+        return len(self.attributes)
 
-    def __next__(self):
-        return next(self.__iter__())
+    def __iter__(self) -> Iterator[Tuple[A, AV]]:
+        self._index = 0
+        return self
+
+    def __next__(self) -> Tuple[A, AV]:
+        if self._index < len(self):
+            item = self.at(self._index)
+            self._index += 1
+            return item
+        raise StopIteration
+
+    def __contains__(self, attribute: A):
+        return hasattr(self, attribute)
+
+    def __iadd__(self, attribute: Dict[A, AV] | 'Namespace') -> 'Namespace':
+        for a, av in attribute.items():
+            self.setattr(a, av)
+        return self
+
+    def __add__(self, other: Dict[A, AV] | 'Namespace') -> 'Namespace':
+        self.__name__ += '.' + other.__name__
+        return self.__iadd__(other)
+
+    def setattr(self, name: str, value: Any) -> 'Namespace':
+        if name.startswith(('_', '__')):
+            raise NameError("Attribute names can't start with '_' or '__'")
+        setattr(self, name, value)
+        return self
+
+    def at(self, index: int) -> Optional[Tuple[A, AV]]:
+        return (self.attributes[index], self.values[index]) if index < len(self) else None
+
+    def items(self) -> Iterator[Tuple[A, AV]]:
+        return iter(self)
 
     @property
-    def dict(self):
-        return {k: self[k] for k in self.attributes}
+    def attributes(self) -> List[A]:
+        return [a for a in list(filter(lambda av: not av.startswith(('_', '__')), vars(self)))]
 
     @property
-    def attributes(self) -> List[str]:
-        return [a for a in list(filter(lambda v: not v.startswith(('_', '__')), vars(self)))]
-
-    @property
-    def values(self) -> List[Any]:
+    def values(self) -> List[AV]:
         return [getattr(self, a) for a in self.attributes]
-
-    def set_attributes(self, attributes: dict) -> 'Namespace':
-        for k, v in attributes.items():
-            self.set_attribute(k, v)
-        return self
-
-    def set_attribute(self, attribute_name: str, attribute_value: Any) -> 'Namespace':
-        setattr(self, attribute_name, attribute_value)
-        return self
-
-    def get_attribute(self, attribute_name: str) -> 'Namespace':
-        getattr(self, attribute_name)
-        return self

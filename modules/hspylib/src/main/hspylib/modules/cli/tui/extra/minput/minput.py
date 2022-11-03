@@ -103,7 +103,7 @@ class MenuInput:
             form_fields = Namespace('FormFields')
             for field in self.all_fields:
                 att_name = f"{prefix or ''}{snakecase(field.label)}"
-                form_fields.set_attribute(att_name, field.value)
+                form_fields.setattr(att_name, field.value)
             return form_fields
 
         return None
