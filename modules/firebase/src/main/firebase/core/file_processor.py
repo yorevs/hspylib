@@ -22,7 +22,7 @@ from typing import List, Union
 
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import syserr, sysout
 from hspylib.modules.fetch.fetch import get, put
 from requests.exceptions import HTTPError
 
@@ -37,21 +37,23 @@ class FileProcessor(ABC):
         """Upload files to URL"""
         data = []
         for f_path in file_paths:
-            check_argument(os.path.exists(f_path), f'Input file "{f_path}" does not exist')
-            if os.path.isfile(f_path):
-                sysout(f'Uploading file "{f_path}" to Firebase ...')
-                f_entry = FileProcessor._read_and_encode(f_path)
-                data.append(f_entry)
+            if os.path.exists(f_path):
+                if os.path.isfile(f_path):
+                    sysout(f'Uploading file "{f_path}" to Firebase ...')
+                    f_entry = FileProcessor._read_and_encode(f_path)
+                    data.append(f_entry)
+                else:
+                    sysout(f'Uploading files from "{f_path}" to Firebase ...')
+                    all_files = next(os.walk(f_path))[2]
+                    log.debug('\nGlob: %s \nFiles: %s', glob_exp, all_files)
+                    for file in all_files:
+                        filename = os.path.join(f_path, file)
+                        if os.path.isfile(filename) and fnmatch(file, glob_exp or '*.*'):
+                            f_entry = FileProcessor._read_and_encode(filename)
+                            data.append(f_entry)
             else:
-                sysout(f'Uploading files from "{f_path}" to Firebase ...')
-                all_files = next(os.walk(f_path))[2]
-                log.debug('\nGlob: %s \nFiles: %s', glob_exp, all_files)
-                for file in all_files:
-                    filename = os.path.join(f_path, file)
-                    if os.path.isfile(filename) and fnmatch(file, glob_exp or '*.*'):
-                        f_entry = FileProcessor._read_and_encode(filename)
-                        data.append(f_entry)
-        if data and len(data) > 0:
+                syserr(f'Input file "{f_path}" does not exist')
+        if data:
             payload = FileProcessor._to_json(data)
             response = put(url, payload)
             check_not_none(response)

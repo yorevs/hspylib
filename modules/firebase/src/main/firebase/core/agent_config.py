@@ -18,7 +18,7 @@ import os
 from typing import Optional
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.datasource.db.firebase.firebase_config import FirebaseConfig
+from hspylib.core.datasource.firebase.firebase_configuration import FirebaseConfiguration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
@@ -57,7 +57,7 @@ class AgentConfig(metaclass=Singleton):
                 raise FirebaseAuthenticationError(
                     f"Provided UID: {config_dict['UUID']} is different from retrieved UID: {user.uid}")
             config_dict['UUID'] = user.uid
-            self.firebase_configs = FirebaseConfig.of(config_dict)
+            self.firebase_configs = FirebaseConfiguration.of(config_dict)
             self._save()
         else:
             raise
@@ -106,11 +106,11 @@ class AgentConfig(metaclass=Singleton):
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
         final_alias = db_alias.replace('.', '/')
-        return self.firebase_configs.url(f'{final_alias}')
+        return self.firebase_configs.url(final_alias)
 
     def _load(self) -> None:
         """Load configuration from file"""
-        self.firebase_configs = FirebaseConfig.of_file(self.filename)
+        self.firebase_configs = FirebaseConfiguration.of_file(self.filename)
 
     def _save(self) -> None:
         """Save current firebase configuration"""
