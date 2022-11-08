@@ -21,6 +21,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
+from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument, check_state
 
 # Please do not modify this
@@ -28,24 +29,38 @@ from hspylib.core.preconditions import check_argument, check_state
 DEFAULT_HS_SALT = 'HsPyLib'
 
 
-def encode(in_file, out_file, encoding: str = 'utf-8') -> int:
+def encode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_8.value) -> int:
     """Encode file into base64
     :param in_file: The file to be encoded
     :param out_file: The resulting encoded file
+    :param binary: The file mode text/binary
     :param encoding: The text encoding
     """
-    with open(in_file, 'r', encoding=encoding) as f_in_file:
+    if binary:
+        with open(in_file, 'rb') as f_in_file:
+            with open(out_file, 'wb') as f_out_file:
+                data = base64.b64encode(f_in_file.read())
+                return f_out_file.write(data)
+
+    with open(in_file, 'r') as f_in_file:
         with open(out_file, 'w', encoding=encoding) as f_out_file:
             data = base64.b64encode(str.encode(f_in_file.read()))
             return f_out_file.write(str(data, encoding=encoding))
 
 
-def decode(in_file, out_file, encoding: str = 'utf-8') -> int:
+def decode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_8.value) -> int:
     """Decode file from base64
     :param in_file: The file to be decoded
     :param out_file: The resulting decoded file
+    :param binary: The file mode text/binary
     :param encoding: The text encoding
     """
+    if binary:
+        with open(in_file, 'rb') as f_in_file:
+            with open(out_file, 'wb') as f_out_file:
+                data = base64.b64decode(f_in_file.read())
+                return f_out_file.write(data)
+
     with open(in_file, 'r', encoding=encoding) as f_in_file:
         with open(out_file, 'w', encoding=encoding) as f_out_file:
             data = base64.b64decode(f_in_file.read())

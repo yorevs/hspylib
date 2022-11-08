@@ -13,7 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-
+from textwrap import dedent
 from typing import Optional
 
 from hspylib.core.datasource.crud_service import CrudService
@@ -34,3 +34,18 @@ class VaultService(CrudService[VaultEntry]):
         :param key: The vault key to find
         """
         return self.repository.find_by_key(key)
+
+    def create_vault_db(self) -> None:
+        self.repository.execute(dedent("""
+        CREATE TABLE IF NOT EXISTS "VAULT_ENTRIES"
+        (
+            uuid         TEXT       not null,
+            key          TEXT       not null,
+            name         TEXT       not null,
+            password     TEXT       not null,
+            hint         TEXT       not null,
+            modified     TEXT       not null,
+
+            CONSTRAINT ID_pk PRIMARY KEY (uuid)
+        )
+        """))
