@@ -14,35 +14,40 @@
    Copyright 2022, HSPyLib team
 """
 
-import getpass
-import os
-
-from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
 
 
-class VaultConfig(AppConfigs):
+class VaultConfig(SQLiteConfiguration):
     """Holds the vault configurations"""
 
     INSTANCE = None
 
+    def __init__(self, resource_dir: str):
+        super().__init__(resource_dir)
+        self._vault_user = self['hhs.vault.user']
+        self._passphrase = self['hhs.vault.passphrase']
+        self._vault_file = self['hhs.vault.file']
+
     @property
     def vault_user(self) -> str:
         """Return the vault user"""
-        user = self['hhs.vault.user']
-        return user if user else os.getenv('USER', getpass.getuser())
+        return self._vault_user
 
     @property
     def passphrase(self) -> str:
         """Return the vault user passphrase"""
-        return self['hhs.vault.passphrase']
+        return self._passphrase
 
     @property
     def vault_file(self) -> str:
-        """Return the locked vault filename"""
-        file = self['hhs.vault.file']
-        return file if file else f"{os.getenv('HOME', os.getcwd())}/.vault"
+        """Return the locked vault database filename"""
+        return self._vault_file
+
+    @property
+    def db_file(self) -> str:
+        return self.unlocked_vault_file
 
     @property
     def unlocked_vault_file(self) -> str:
-        """Return the unlocked vault filename"""
-        return f"{self.vault_file}.unlocked"
+        """Return the locked vault database filename"""
+        return f"{self._vault_file}.unlocked"

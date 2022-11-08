@@ -14,16 +14,29 @@
    Copyright 2022, HSPyLib team
 """
 import re
-from datetime import datetime
+from collections import namedtuple
 from textwrap import dedent
-from uuid import UUID
+from typing import List
 
 from hspylib.core.datasource.crud_entity import CrudEntity
+from hspylib.core.datasource.identity import Identity
 from hspylib.core.tools.zoned_datetime import now
 
 
 class VaultEntry(CrudEntity):
     """Represents a vault entity"""
+
+    VaultId = namedtuple('VaultId', ['uuid'])
+
+    @staticmethod
+    def columns() -> List[str]:
+        return ['uuid', 'name', 'password', 'hint', 'modified']
+
+    @classmethod
+    def from_tuple(cls, values: tuple) -> 'VaultEntry':
+        return VaultEntry(
+            Identity(cls.VaultId(values[0])), **{k: v for k, v in zip(cls.columns(), values)},
+        )
 
     # Vault entry format to be displayed when listing
     _DISPLAY_FORMAT = dedent("""
@@ -34,21 +47,14 @@ class VaultEntry(CrudEntity):
         Modified: %GREEN%{}%NC%
     """)
 
-    def __init__(
-        self,
-        uuid: UUID,
-        key: str,
-        name: str,
-        password: str,
-        hint: str,
-        modified: datetime = None):
-        super().__init__()
-        self.uuid = uuid
-        self.key = key
-        self.name = name
-        self.password = password
-        self.hint = hint
-        self.modified = modified if modified else now()
+    def __init__(self, entity_id: Identity, **kwargs):
+        self.id = None  # Will be filled later
+        super().__init__(entity_id)
+        self.key = kwargs['key']
+        self.name = kwargs['name']
+        self.password = kwargs['password']
+        self.hint = kwargs['hint']
+        self.modified = kwargs['modified'] if 'modified' in kwargs else now()
 
     def __str__(self) -> str:
         return str(self.as_dict())
