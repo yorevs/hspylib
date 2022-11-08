@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.116
+# hspylib v0.11.117
 #
 # Package: main.hspylib.modules.cli.tui.menu
 """Package initialization."""
@@ -14,4 +14,4 @@ __all__ = [
   'menu_ui', 
   'menu_utils'
 ]
-__version__ = '0.11.116'
+__version__ = '0.11.117'

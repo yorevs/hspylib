@@ -89,6 +89,7 @@ class FirebaseConfiguration(AppConfigs):
         profile: Optional[str] = None):
 
         super().__init__(resource_dir, filename, profile)
+        self._valid = None
         self._base_url = self['datasource.base.url']
         self._scheme = self['datasource.scheme'] or 'https'
         self._hostname = self['datasource.hostname'] or 'firebaseio.com'
@@ -97,7 +98,6 @@ class FirebaseConfiguration(AppConfigs):
         self._project_id = project_id or self['firebase.project.id']
         self._email = email or self['firebase.email']
         self._database = database or self['firebase.database']
-        self._valid = None
 
     def __str__(self) -> str:
         return '' if not hasattr(self, '_uid') else self.CONFIG_FORMAT.format(
@@ -154,7 +154,3 @@ class FirebaseConfiguration(AppConfigs):
         """Return the url for an element at the Firebase webapp."""
         final_alias_url = db_alias.replace(' ', '%20').replace('.', '/')
         return f'{self.base_url}/{final_alias_url}'
-
-    def as_dict(self) -> CaseInsensitiveDict:
-        """TODO"""
-        return CaseInsensitiveDict(self.__dict__)

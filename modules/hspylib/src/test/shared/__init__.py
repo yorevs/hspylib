@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.116
+# hspylib v0.11.117
 #
 # Package: test.shared
 """Package initialization."""
@@ -12,4 +12,4 @@ __all__ = [
   'mysql_repository_test', 
   'sqlite_db_repository_test'
 ]
-__version__ = '0.11.116'
+__version__ = '0.11.117'

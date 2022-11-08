@@ -46,7 +46,7 @@ class Main(Application):
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
-        self.vault = Vault()
+        self.vault = Vault(self.RESOURCE_DIR)
 
     def _setup_arguments(self) -> None:
         # @formatter:off
@@ -74,8 +74,8 @@ class Main(Application):
         {self._app_name} v{self._app_version}
 
         Settings ==============================
-                VAULT_USER: {VaultConfig.INSTANCE.vault_user()}
-                VAULT_FILE: {VaultConfig.INSTANCE.vault_file()}
+                VAULT_USER: {VaultConfig.INSTANCE.vault_user}
+                VAULT_FILE: {VaultConfig.INSTANCE.vault_file}
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
         '''))
 
@@ -89,7 +89,7 @@ class Main(Application):
     def _cleanup(self) -> None:
         """TODO"""
         self.vault.close()
-        unlocked = self.vault.configs.unlocked_vault_file()
+        unlocked = self.vault.configs.unlocked_vault_file
         if os.path.exists(unlocked):
             os.remove(unlocked)
 

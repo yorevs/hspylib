@@ -33,12 +33,15 @@ class CrudService(Generic[T], metaclass=Singleton):
     def repository(self) -> CrudRepository:
         return self._repository
 
+    def list(self, filters: Namespace = None) -> List[T]:
+        return self.repository.find_all(filters=filters)
+
+    def remove(self, entity: T) -> None:
+        self.repository.delete(entity)
+
     def get(self, identity: Identity) -> Optional[T]:
         return self.repository.find_by_id(identity)
 
     def save(self, entity: T) -> None:
         self.repository.save(entity)
-
-    def list(self, filters: Namespace = None) -> List[T]:
-        return self.repository.find_all(filters=filters)
 

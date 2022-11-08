@@ -15,6 +15,7 @@
 """
 import re
 from datetime import datetime
+from textwrap import dedent
 from uuid import UUID
 
 from hspylib.core.datasource.crud_entity import CrudEntity
@@ -25,16 +26,13 @@ class VaultEntry(CrudEntity):
     """Represents a vault entity"""
 
     # Vault entry format to be displayed when listing
-    _DISPLAY_FORMAT = """
-[%BLUE%{}%NC%]:
-        Name: %GREEN%{}%NC%
-    Password: %GREEN%{}%NC%
-        Hint: %GREEN%{}%NC%
-    Modified: %GREEN%{}%NC%
-"""
-
-    # Vault file entry format
-    _FILE_ENTRY_FORMAT = "{}|{}|{}|{}\n"
+    _DISPLAY_FORMAT = dedent("""
+    [%BLUE%{}%NC%]:
+            Name: %GREEN%{}%NC%
+        Password: %GREEN%{}%NC%
+            Hint: %GREEN%{}%NC%
+        Modified: %GREEN%{}%NC%
+    """)
 
     def __init__(
         self,
@@ -44,18 +42,18 @@ class VaultEntry(CrudEntity):
         password: str,
         hint: str,
         modified: datetime = None):
-        super().__init__(uuid)
+        super().__init__()
+        self.uuid = uuid
         self.key = key
         self.name = name
         self.password = password
         self.hint = hint
         self.modified = modified if modified else now()
 
-    def __str__(self):
-        return self._FILE_ENTRY_FORMAT.format(
-            self.key, self.name, self.password, self.hint, self.modified)
+    def __str__(self) -> str:
+        return str(self.as_dict())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
     def to_string(self, show_password: bool = False, show_hint: bool = False) -> str:

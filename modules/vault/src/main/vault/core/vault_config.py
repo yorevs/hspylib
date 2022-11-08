@@ -18,29 +18,31 @@ import getpass
 import os
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.metaclass.singleton import Singleton
 
 
-class VaultConfig(metaclass=Singleton):
+class VaultConfig(AppConfigs):
     """Holds the vault configurations"""
 
-    def __init__(self):
-        self.configs = AppConfigs.INSTANCE
+    INSTANCE = None
 
+    @property
     def vault_user(self) -> str:
         """Return the vault user"""
-        user = self.configs['hhs.vault.user']
+        user = self['hhs.vault.user']
         return user if user else os.getenv('USER', getpass.getuser())
 
+    @property
     def passphrase(self) -> str:
         """Return the vault user passphrase"""
-        return self.configs['hhs.vault.passphrase']
+        return self['hhs.vault.passphrase']
 
+    @property
     def vault_file(self) -> str:
         """Return the locked vault filename"""
-        file = self.configs['hhs.vault.file']
+        file = self['hhs.vault.file']
         return file if file else f"{os.getenv('HOME', os.getcwd())}/.vault"
 
+    @property
     def unlocked_vault_file(self) -> str:
         """Return the unlocked vault filename"""
-        return f"{self.vault_file()}.unlocked"
+        return f"{self.vault_file}.unlocked"

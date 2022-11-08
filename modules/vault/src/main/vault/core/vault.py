@@ -45,11 +45,11 @@ class Vault:
     # Vault keyring cache entry
     _VAULT_SERVICE = 'VAULT_KEY_SERVICE'
 
-    def __init__(self) -> None:
+    def __init__(self,  resource_dir: str) -> None:
         self.is_open = False
         self.passphrase = None
-        self.configs = VaultConfig()
-        self.service = VaultService()
+        self.configs = VaultConfig(resource_dir)
+        self.service = VaultService(self.configs)
         keyring.set_keyring(VaultKeyringBE())
 
     def __str__(self):
@@ -70,10 +70,10 @@ class Vault:
         except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
             log.error("Authentication failure => %s", err)
             MenuUtils.print_error('Authentication failure')
-            keyring.delete_password(self._VAULT_SERVICE, self.configs.vault_user())
+            keyring.delete_password(self._VAULT_SERVICE, self.configs.vault_user)
             return False
         except Exception as err:
-            raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file()}", err) from err
+            raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file}", err) from err
 
         return True
 
@@ -88,7 +88,7 @@ class Vault:
             MenuUtils.print_error('Authentication failure')
             return False
         except Exception as err:
-            raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file()}", err) from err
+            raise VaultCloseError(f"Unable to close Vault file => {self.configs.vault_file}", err) from err
 
         return True
 
@@ -177,16 +177,16 @@ class Vault:
 
     def _read_passphrase(self) -> str:
         """Retrieve and read the vault passphrase"""
-        if os.path.exists(self.configs.vault_file()):
+        if os.path.exists(self.configs.vault_file):
             confirm_flag = False
         else:
-            sysout(f"%ORANGE%### Your Vault '{self.configs.vault_file()}' file is empty.")
+            sysout(f"%ORANGE%### Your Vault '{self.configs.vault_file}' file is empty.")
             sysout("%ORANGE%>>> Enter the new passphrase for this Vault")
             confirm_flag = True
-            touch_file(self.configs.vault_file())
-        passphrase = self.configs.passphrase()
+            touch_file(self.configs.vault_file)
+        passphrase = self.configs.passphrase
         if passphrase:
-            return f"{self.configs.vault_user()}:{base64.b64decode(passphrase).decode('utf-8')}"
+            return f"{self.configs.vault_user}:{base64.b64decode(passphrase).decode('utf-8')}"
         while not passphrase:
             passphrase = self._getpass()
             confirm = None
@@ -195,42 +195,42 @@ class Vault:
                     confirm = getpass.getpass("Repeat passphrase:").strip()
                 if confirm != passphrase:
                     syserr("### Passphrase and confirmation mismatch")
-                    safe_del_file(self.configs.vault_file())
+                    safe_del_file(self.configs.vault_file)
                 else:
                     sysout("%GREEN%Passphrase successfully stored")
-                    log.debug("Vault passphrase created for user=%s", self.configs.vault_user())
+                    log.debug("Vault passphrase created for user=%s", self.configs.vault_user)
                     self.is_open = True
-        return f"{self.configs.vault_user()}:{passphrase}"
+        return f"{self.configs.vault_user}:{passphrase}"
 
     def _lock_vault(self) -> None:
         """Encrypt the vault file"""
-        if file_is_not_empty(self.configs.unlocked_vault_file()):
+        if file_is_not_empty(self.configs.unlocked_vault_file):
             encrypt(
-                self.configs.unlocked_vault_file(),
-                self.configs.vault_file(),
+                self.configs.unlocked_vault_file,
+                self.configs.vault_file,
                 self.passphrase)
             log.debug("Vault file is encrypted")
         else:
-            os.rename(self.configs.unlocked_vault_file(), self.configs.vault_file())
+            os.rename(self.configs.unlocked_vault_file, self.configs.vault_file)
         self.is_open = False
-        safe_del_file(self.configs.unlocked_vault_file())
+        safe_del_file(self.configs.unlocked_vault_file)
 
     def _unlock_vault(self) -> None:
         """Decrypt the vault file"""
-        if file_is_not_empty(self.configs.vault_file()):
+        if file_is_not_empty(self.configs.vault_file):
             decrypt(
-                self.configs.vault_file(),
-                self.configs.unlocked_vault_file(),
+                self.configs.vault_file,
+                self.configs.unlocked_vault_file,
                 self.passphrase, )
             log.debug("Vault file is decrypted")
         else:
-            os.rename(self.configs.vault_file(), self.configs.unlocked_vault_file())
+            os.rename(self.configs.vault_file, self.configs.unlocked_vault_file)
         self.is_open = True
-        safe_del_file(self.configs.vault_file())
+        safe_del_file(self.configs.vault_file)
 
     def _check_backup(self) -> None:
-        vault_file = self.configs.vault_file()
-        unlocked_vault_file = self.configs.unlocked_vault_file()
+        vault_file = self.configs.vault_file
+        unlocked_vault_file = self.configs.unlocked_vault_file
         backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/.{os.path.basename(vault_file)}.bak"
         locked_empty = not file_is_not_empty(vault_file)
         unlocked_empty = not file_is_not_empty(unlocked_vault_file)
@@ -253,8 +253,8 @@ class Vault:
 
     def _getpass(self) -> str:
         """TODO"""
-        passwd = keyring.get_password(self._VAULT_SERVICE, self.configs.vault_user())
+        passwd = keyring.get_password(self._VAULT_SERVICE, self.configs.vault_user)
         if passwd is None:
             passwd = getpass.getpass("Enter passphrase:").rstrip()
-            keyring.set_password(self._VAULT_SERVICE, self.configs.vault_user(), passwd)
+            keyring.set_password(self._VAULT_SERVICE, self.configs.vault_user, passwd)
         return passwd

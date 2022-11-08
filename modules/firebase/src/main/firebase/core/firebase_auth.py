@@ -23,9 +23,8 @@ from firebase_admin.auth import UserNotFoundError, UserRecord
 from firebase_admin.exceptions import FirebaseError
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import sysout
-from requests.structures import CaseInsensitiveDict
 
-from firebase.exception.exceptions import InvalidFirebaseCredentials, FirebaseAuthenticationError, FirebaseException
+from firebase.exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials
 
 
 class FirebaseAuth(ABC):
@@ -34,23 +33,25 @@ class FirebaseAuth(ABC):
     """
 
     @staticmethod
-    def _credentials(firebase_config: CaseInsensitiveDict) -> credentials.Certificate:
+    def _credentials(project_id: str) -> credentials.Certificate:
         """TODO"""
-        project_id = firebase_config['PROJECT_ID']
+
         certificate_file = os.environ.get("HHS_FIREBASE_CERT_FILE")
-        check_not_none(firebase_config, certificate_file, project_id)
+        check_not_none(certificate_file, project_id)
         try:
             creds = credentials.Certificate(certificate_file.format(project_id=project_id))
         except (IOError, ValueError) as err:
             raise InvalidFirebaseCredentials('Invalid credentials provided') from err
+
         return creds
 
     @staticmethod
-    def authenticate(firebase_config: CaseInsensitiveDict) -> Optional[UserRecord]:
+    def authenticate(project_id: str, uuid: str) -> Optional[UserRecord]:
         """TODO"""
-        firebase_admin.initialize_app(FirebaseAuth._credentials(firebase_config))
+
+        firebase_admin.initialize_app(FirebaseAuth._credentials(project_id))
         try:
-            user = auth.get_user(firebase_config['UUID'])
+            user = auth.get_user(uuid)
             if user:
                 sysout('Firebase authentication succeeded')
                 return user

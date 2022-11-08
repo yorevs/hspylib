@@ -43,15 +43,15 @@ class Firebase:
     def upload(self, db_alias: str, file_paths: List[str], glob_exp: str) -> bool:
         """Upload files to firebase"""
         self._authenticate()
-        url = self.agent_config.url(db_alias)
+        url = f"{self.agent_config.url(db_alias)}.json"
         check_argument(len(file_paths) > 0, "Unable to upload file_paths (zero size).")
-        log.debug('Uploading files  alias=%s  files=%s', db_alias, ','.join(file_paths))
+        log.debug('Uploading files  alias=%s  files=[%s]', db_alias, ','.join(file_paths))
         return self.processor.upload_files(url, file_paths, glob_exp) > 0
 
     def download(self, db_alias: str, dest_dir: str) -> bool:
         """Download files from firebase specified by it's aliases"""
         self._authenticate()
-        url = self.agent_config.url(db_alias)
+        url = f"{self.agent_config.url(db_alias)}.json"
         log.debug('Downloading files  alias=%s  dest_dir=%s', db_alias, dest_dir)
         return self.processor.download_files(url, dest_dir or os.environ.get('HOME')) > 0
 
@@ -61,5 +61,5 @@ class Firebase:
 
     def _authenticate(self) -> None:
         """TODO"""
-        configs = self.agent_config.firebase_configs.as_dict()
-        FirebaseAuth.authenticate(configs)
+        configs = self.agent_config.firebase_configs
+        FirebaseAuth.authenticate(configs.project_id, configs.uid)

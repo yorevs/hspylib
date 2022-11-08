@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.116
+# hspylib v0.11.117
 #
 # Package: main.hspylib.core.exception
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
   'exceptions'
 ]
-__version__ = '0.11.116'
+__version__ = '0.11.117'

@@ -1,4 +1,3 @@
 include hspylib/welcome.txt
 include hspylib/.version
 include hspylib/addons/appman/templates/*.tpl
-include hspylib/core/crud/db/sql/*.sql
