@@ -1,7 +1,9 @@
 /*
     Gradle Python extension
-    Project: HSPyLib
+
     Created: 1st July, 2020
+    License: MIT - Please refer to <https://opensource.org/licenses/MIT>
+    Copyright 2022, HSPyLib team
 */
 
 ext {
