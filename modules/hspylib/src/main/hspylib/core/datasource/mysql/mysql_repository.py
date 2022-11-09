@@ -116,8 +116,8 @@ class MySqlRepository(DBRepository[T]):
         limit: int = 500, offset: int = 0) -> List[T]:
 
         fields = '*' if not fields else ', '.join(fields)
-        clauses = filter(None, [f for f in filters.values]) if filters else None
-        sql = f"SELECT {fields} FROM {self.table_name()} {'WHERE ' + ' AND '.join(clauses) if clauses else ''} " \
+        clauses = list(filter(None, [f for f in filters.values])) if filters else None
+        sql = f"SELECT {fields} FROM {self.table_name()} {('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
               f"LIMIT {limit} OFFSET {offset}"
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))

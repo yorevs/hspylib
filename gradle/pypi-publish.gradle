@@ -1,8 +1,11 @@
 /*
     Gradle PyPi publisher extension
-    Project: HSPyLib
+
     Created: 23rd April, 2021
+    License: MIT - Please refer to <https://opensource.org/licenses/MIT>
+    Copyright 2022, HSPyLib team
 */
+
 import groovy.json.JsonSlurper
 
 ext {

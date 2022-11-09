@@ -1,7 +1,10 @@
 /*
     Gradle build badge generation  extension
-
     See also: https://badgen.net/
+
+    Created: 4th March, 2021
+    License: MIT - Please refer to <https://opensource.org/licenses/MIT>
+    Copyright 2022, HSPyLib team
 */
 
 /* Helper Functions -------------------------------------------------------- */
