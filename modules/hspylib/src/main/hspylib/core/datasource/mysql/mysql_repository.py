@@ -14,7 +14,7 @@
 """
 import contextlib
 import logging as log
-from typing import Tuple, Optional, Iterable, List, Set, TypeVar
+from typing import Iterable, List, Optional, Set, Tuple, TypeVar
 
 import pymysql
 from pymysql import Connection, Error
@@ -95,13 +95,13 @@ class MySqlRepository(DBRepository[T]):
               f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
-    def save(self, entity: T, exclude_update: Iterable[str] = None) -> None:
+    def save(self, entity: T, exclude_update: Optional[Iterable[str]] = None) -> None:
         sql = f"INSERT INTO " \
               f"{self.table_name()} ({entity.as_columns()}) VALUES {entity.values} AS new " \
               f"ON DUPLICATE KEY UPDATE {entity.as_column_set(prefix='new.', exclude=exclude_update)}"
         self.execute(sql)
 
-    def save_all(self, entities: List[T], exclude_update: Iterable[str] = None) -> None:
+    def save_all(self, entities: List[T], exclude_update: Optional[Iterable[str]] = None) -> None:
         values, s = [], entities[0]
         list(map(lambda e: values.append(str(e.values)), entities))
         sql = f"INSERT INTO " \
@@ -111,27 +111,36 @@ class MySqlRepository(DBRepository[T]):
 
     def find_all(
         self,
-        fields: Set[str] = None,
+        fields: Optional[Set[str]] = None,
         filters: Namespace = None,
+        order_bys: Optional[List[str]] = None,
         limit: int = 500, offset: int = 0) -> List[T]:
 
         fields = '*' if not fields else ', '.join(fields)
         clauses = list(filter(None, [f for f in filters.values])) if filters else None
-        sql = f"SELECT {fields} FROM {self.table_name()} {('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
+        orders = list(filter(None, order_bys)) if filters else None
+        sql = f"SELECT {fields} FROM {self.table_name()} " \
+              f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
+              f"{'ORDER BY ' + ', '.join(orders)} " \
               f"LIMIT {limit} OFFSET {offset}"
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))
 
-    def find_by_id(self, entity_id: Identity, fields: Set[str] = None) -> Optional[T]:
+    def find_by_id(
+        self,
+        entity_id: Identity,
+        fields: Optional[Set[str]] = None) -> Optional[T]:
+
         fields = '*' if not fields else ', '.join(fields)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"SELECT {fields} FROM {self.table_name()} WHERE " + ' AND '.join(clauses)
+        sql = f"SELECT {fields} FROM {self.table_name()} " \
+              f"WHERE {' AND '.join(clauses)}"
         result = next((e for e in self.execute(sql)[1]), None)
 
         return self.to_entity_type(result) if result else None
 
     def exists_by_id(self, entity_id: Identity) -> bool:
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"SELECT EXISTS(SELECT 1 FROM {self.table_name()} WHERE " + ' AND '.join(clauses) + ")"
+        sql = f"SELECT EXISTS(SELECT 1 FROM {self.table_name()} WHERE {' AND '.join(clauses)})"
 
         return self.execute(sql)[1][0][0] > 0

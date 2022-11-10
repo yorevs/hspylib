@@ -23,7 +23,7 @@ from phonebook.repository.person_repository import PersonRepository
 
 class PersonService(CrudService[Person]):
 
-    def __init__(self):
+    def __init__(self) -> None:
         cfg = SQLiteConfiguration(str(_Classpath.resource_dir()))
         repository = PersonRepository(cfg)
         super().__init__(repository)

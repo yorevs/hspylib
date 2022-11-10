@@ -31,7 +31,7 @@ class VaultRepository(SQLiteRepository[VaultEntry]):
     def find_by_key(self, key: str, fields: Set[str] = None) -> Optional[VaultEntry]:
         fields = '*' if not fields else ', '.join(fields)
         clause = f"key = {quote(key)}"
-        sql = f"SELECT {fields} FROM {self.table_name()} WHERE " + clause
+        sql = f"SELECT {fields} FROM {self.table_name()} WHERE {clause} ORDER BY key"
         result = next((e for e in self.execute(sql)[1]), None)
 
         return self.to_entity_type(result) if result else None
@@ -41,12 +41,9 @@ class VaultRepository(SQLiteRepository[VaultEntry]):
 
     def to_entity_type(self, entity_dict: dict | tuple) -> VaultEntry:
         if isinstance(entity_dict, dict):
-            identity = Identity(VaultEntry.VaultId(entity_dict['uuid']))
-            return VaultEntry(identity, **entity_dict)
-
-        identity = Identity(VaultEntry.VaultId(entity_dict[0]))
+            return VaultEntry(Identity(VaultEntry.VaultId(entity_dict['uuid'])), **entity_dict)
         return VaultEntry(
-            identity,
+            Identity(VaultEntry.VaultId(entity_dict[0])),
             uuid=entity_dict[0],
             key=entity_dict[1],
             name=entity_dict[2],

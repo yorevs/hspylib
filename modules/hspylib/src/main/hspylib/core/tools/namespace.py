@@ -12,7 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Any, List, Tuple, Iterator, Optional, Dict
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.dict_tools import merge_iterables

@@ -14,7 +14,7 @@
 """
 import json
 from abc import abstractmethod
-from typing import Iterable, List, Optional, Set, Generic, TypeVar
+from typing import Generic, Iterable, List, Optional, Set, TypeVar
 
 from hspylib.core.datasource.crud_entity import CrudEntity
 from hspylib.core.datasource.identity import Identity
@@ -49,23 +49,27 @@ class CrudRepository(Generic[T], metaclass=Singleton):
         """TODO"""
 
     @abstractmethod
-    def save(self, entity: T, exclude_update: Iterable[str] = None) -> None:
+    def save(self, entity: T, exclude_update: Optional[Iterable[str]] = None) -> None:
         """TODO"""
 
     @abstractmethod
-    def save_all(self, entities: List[T], exclude_update: Iterable[str] = None) -> None:
+    def save_all(self, entities: List[T], exclude_update: Optional[Iterable[str]] = None) -> None:
         """TODO"""
 
     @abstractmethod
     def find_all(
         self,
-        fields: Set[str] = None,
-        filters: Namespace = None,
+        fields: Optional[Set[str]] = None,
+        filters: Optional[Namespace] = None,
+        order_bys: Optional[List[str]] = None,
         limit: int = 500, offset: int = 0) -> List[T]:
         """TODO"""
 
     @abstractmethod
-    def find_by_id(self, entity_id: Identity, fields: Set[str] = None) -> Optional[T]:
+    def find_by_id(
+        self,
+        entity_id: Identity,
+        fields: Optional[Set[str]] = None) -> Optional[T]:
         """TODO"""
 
     def exists_by_id(self, entity_id: Identity) -> bool:
@@ -75,7 +79,7 @@ class CrudRepository(Generic[T], metaclass=Singleton):
     def to_entity_type(self, entity_dict: dict | tuple) -> T:
         """TODO"""
 
-    def to_entity_list(self, json_string: str, filters: Namespace = None) -> List[T]:
+    def to_entity_list(self, json_string: str, filters: Optional[Namespace] = None) -> List[T]:
         """Return filtered entries from the json_string as a list"""
         ret_list = []
         for value in json.loads(json_string).values():

@@ -28,7 +28,6 @@ import keyring
 from cryptography.fernet import InvalidToken
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
-from hspylib.core.tools.namespace import Namespace
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decode, decrypt, encode, encrypt
 
@@ -99,12 +98,11 @@ class Vault:
         """List all vault entries filtered by filter_expr
         :param filter_expr: The filter expression
         """
-        filters = ' and '.join([f"key like '%{f}%' and hint like '%{f}%'" for f in filter_expr])
-        data = self.service.list(Namespace('Filters', by_key_and_hint=filters))
+        data = self.service.list_by_key(filter_expr)
         if len(data) > 0:
             sysout("%YELLOW%{} {}%NC%".format(
                 f"\n-=- Listing all ({len(data)}) vault entries ",
-                f"matching \'{filter_expr}\' -=-\n" if filter_expr else "-=-\n"))
+                f"matching \'{filter_expr}\' -=-" if filter_expr else "-=-"))
             for entry in data:
                 sysout(entry.to_string())
         else:
@@ -184,29 +182,32 @@ class Vault:
 
     def _read_passphrase(self) -> str:
         """Retrieve and read the vault passphrase"""
+
+        passphrase = None
+
         if file_is_not_empty(self.configs.vault_file):
-            confirm_flag = False
+            confirm_passphrase = False
+            if self.configs.passphrase:
+                return f"{self.configs.vault_user}:{base64.b64decode(self.configs.passphrase).decode('utf-8')}"
         else:
+            self._create_vault_file()
             sysout(f"%ORANGE%### Your Vault '{self.configs.vault_file}' file is empty.")
             sysout("%ORANGE%>>> Enter the new passphrase for this Vault")
-            confirm_flag = True
-            self._create_vault_file()
-        passphrase = self.configs.passphrase
-        if passphrase:
-            return f"{self.configs.vault_user}:{base64.b64decode(passphrase).decode('utf-8')}"
+            confirm_passphrase = True
+
         while not passphrase:
-            passphrase = self._getpass(confirm_flag)
-            confirm = None
-            if passphrase and confirm_flag:
-                while not confirm:
+            passphrase = self._getpass(confirm_passphrase)
+            if passphrase and confirm_passphrase:
+                confirm = None
+                while not confirm or confirm != passphrase:
                     confirm = getpass.getpass("Repeat passphrase:").strip()
-                if confirm != passphrase:
-                    syserr("### Passphrase and confirmation mismatch")
-                    safe_del_file(self.configs.vault_file)
-                else:
-                    sysout("%GREEN%Passphrase successfully stored")
-                    log.debug("Vault passphrase created for user=%s", self.configs.vault_user)
-                    self.is_open = True
+                    if confirm != passphrase:
+                        syserr("### Passphrase and confirmation mismatch")
+                        safe_del_file(self.configs.vault_file)
+                sysout("%GREEN%Passphrase successfully stored")
+                log.debug("Vault passphrase created for user=%s", self.configs.vault_user)
+                self.is_open = True
+
         return f"{self.configs.vault_user}:{passphrase}"
 
     def _lock_vault(self) -> None:
@@ -259,9 +260,9 @@ class Vault:
                     'Unable to either restore or re-lock the vault file. Please manually ' +
                     f' backup your secrets and remove the unlocked file "{unlocked_vault_file}"')
 
-    def _getpass(self, cache_disable: bool) -> str:
+    def _getpass(self, skip_cache: bool) -> str:
         """Prompt for the user password or retrieved the cached one."""
-        passwd = keyring.get_password(self._VAULT_SERVICE, self.configs.vault_user) if not cache_disable else None
+        passwd = keyring.get_password(self._VAULT_SERVICE, self.configs.vault_user) if not skip_cache else None
         if passwd is None:
             passwd = getpass.getpass("Enter passphrase:").rstrip()
             keyring.set_password(self._VAULT_SERVICE, self.configs.vault_user, passwd)
@@ -269,5 +270,5 @@ class Vault:
 
     def _create_vault_file(self) -> None:
         """TODO"""
-        touch_file(self.configs.db_file)
+        touch_file(self.configs.vault_file)
         self.service.create_vault_db()

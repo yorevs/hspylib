@@ -18,7 +18,7 @@ import os
 import pathlib
 import sys
 from datetime import timedelta
-from typing import Optional, Tuple, Type, Set
+from typing import Optional, Set, Tuple, Type
 from urllib.parse import urlparse
 
 from hspylib.core.constants import TRUE_VALUES
