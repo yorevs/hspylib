@@ -18,6 +18,7 @@ import logging as log
 import os
 import sys
 import unittest
+from unittest import skip
 
 from hspylib.core.datasource.firebase.firebase_configuration import FirebaseConfiguration
 from hspylib.core.datasource.identity import Identity
@@ -41,9 +42,8 @@ class TestClass(unittest.TestCase):
         cls.repository = FirebaseRepositoryTest(config)
 
     # Teardown tests
-    @classmethod
-    def tearDownClass(cls) -> None:
-        delete(f"{cls.repository.config.base_url}/hspylib-test/integration-test.json")
+    def tearDown(self) -> None:
+        delete(f"{self.repository.config.base_url}/hspylib-test/integration-test.json")
 
     # TEST CASES ----------
 
@@ -67,8 +67,7 @@ class TestClass(unittest.TestCase):
     def test_should_select_all_from_firebase(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
-        self.repository.save(test_entity_1)
-        self.repository.save(test_entity_2)
+        self.repository.save_all([test_entity_1, test_entity_2])
         result_set = self.repository.find_all()
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
@@ -78,8 +77,7 @@ class TestClass(unittest.TestCase):
     def test_should_select_one_from_firebase(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
-        self.repository.save(test_entity_1)
-        self.repository.save(test_entity_2)
+        self.repository.save_all([test_entity_1, test_entity_2])
         result_one = self.repository.find_by_id(test_entity_1.identity)
         self.assertIsNotNone(result_one, "Result set is none")
         self.assertIsInstance(result_one, EntityTest)
@@ -99,6 +97,21 @@ class TestClass(unittest.TestCase):
         self.repository.delete(test_entity)
         result_set = self.repository.find_by_id(test_entity.identity)
         self.assertIsNone(result_set, "Result set is not empty")
+
+
+    @skip('filtering and orde bys are not yet implemented for firebase')
+    def test_should_select_using_order_by(self) -> None:
+        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
+        test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)
+        test_entity_4 = EntityTest(Identity.auto(), comment='My-Fest Data-4', lucky_number=20, is_working=False)
+        expected_list = [test_entity_4, test_entity_3, test_entity_2, test_entity_1]
+        self.repository.save_all(expected_list)
+        result_set = self.repository.find_all(order_bys=['lucky_number'])
+        self.assertEqual(expected_list[0], result_set[0])
+        self.assertEqual(expected_list[1], result_set[1])
+        self.assertEqual(expected_list[2], result_set[2])
+        self.assertEqual(expected_list[3], result_set[3])
 
 
 # Program entry point.

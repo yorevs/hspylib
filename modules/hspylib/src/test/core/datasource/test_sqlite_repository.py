@@ -26,7 +26,7 @@ from hspylib.core.tools.commons import log_init
 from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
 from shared.entity_test import EntityTest
-from shared.sqlite_db_repository_test import SQLiteRepositoryTest
+from shared.sqlite_repository_test import SQLiteRepositoryTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -79,8 +79,7 @@ class TestClass(unittest.TestCase):
     def test_should_select_all_from_sqlite(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
-        self.repository.save(test_entity_1)
-        self.repository.save(test_entity_2)
+        self.repository.save_all([test_entity_1, test_entity_2])
         result_set = self.repository.find_all()
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
@@ -90,8 +89,7 @@ class TestClass(unittest.TestCase):
     def test_should_select_one_from_sqlite(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
-        self.repository.save(test_entity_1)
-        self.repository.save(test_entity_2)
+        self.repository.save_all([test_entity_1, test_entity_2])
         result_one = self.repository.find_by_id(test_entity_1.identity)
         self.assertIsNotNone(result_one, "Result set is none")
         self.assertIsInstance(result_one, EntityTest)
@@ -111,6 +109,25 @@ class TestClass(unittest.TestCase):
         self.repository.delete(test_entity)
         result_set = self.repository.find_by_id(test_entity.identity)
         self.assertIsNone(result_set, "Result set is not empty")
+
+    def test_should_select_using_filters(self) -> None:
+        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
+        test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)
+        test_entity_4 = EntityTest(Identity.auto(), comment='My-Fest Data-4', lucky_number=20, is_working=False)
+        expected_list = [test_entity_1, test_entity_2, test_entity_3, test_entity_4]
+        self.repository.save_all(expected_list)
+        result_set = self.repository.find_all()
+        self.assertCountEqual(expected_list, result_set)
+        expected_list = [test_entity_1, test_entity_4]
+        result_set = self.repository.find_all(filters=Namespace(by_comment="comment like '%est%'"))
+        self.assertCountEqual(expected_list, result_set)
+        result_set = self.repository.find_all(order_bys=['lucky_number'])
+        expected_list = [test_entity_4, test_entity_3, test_entity_2, test_entity_1]
+        self.assertEqual(expected_list[0], result_set[0])
+        self.assertEqual(expected_list[1], result_set[1])
+        self.assertEqual(expected_list[2], result_set[2])
+        self.assertEqual(expected_list[3], result_set[3])
 
 
 # Program entry point.

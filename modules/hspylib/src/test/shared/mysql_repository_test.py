@@ -15,6 +15,7 @@
 """
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.datasource.mysql.mysql_repository import MySqlRepository
+from hspylib.core.tools.dict_tools import get_or_default
 from shared.entity_test import EntityTest
 
 
@@ -30,5 +31,9 @@ class MysqlRepositoryTest(MySqlRepository):
 
         identity = Identity(EntityTest.EntityId(entity_dict[0]))
         return EntityTest(
-            identity, id=entity_dict[0], comment=entity_dict[1], lucky_number=entity_dict[2], is_working=entity_dict[3]
+            identity,
+            id=get_or_default(entity_dict, 0),
+            comment=get_or_default(entity_dict, 1),
+            lucky_number=get_or_default(entity_dict, 2),
+            is_working=get_or_default(entity_dict, 3)
         )

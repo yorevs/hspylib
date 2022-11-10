@@ -31,7 +31,7 @@ from hspylib.core.tools.text_tools import quote
 T = TypeVar('T', bound=CrudEntity)
 
 
-class MySqlRepository(DBRepository[T]):
+class MySqlRepository(DBRepository[T, DBConfiguration]):
     """Implementation of a data access layer for a MySql persistence store."""
 
     def __init__(self, config: DBConfiguration):
@@ -112,16 +112,16 @@ class MySqlRepository(DBRepository[T]):
     def find_all(
         self,
         fields: Optional[Set[str]] = None,
-        filters: Namespace = None,
+        filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
         limit: int = 500, offset: int = 0) -> List[T]:
 
         fields = '*' if not fields else ', '.join(fields)
         clauses = list(filter(None, [f for f in filters.values])) if filters else None
-        orders = list(filter(None, order_bys)) if filters else None
+        orders = list(filter(None, order_bys)) if order_bys else None
         sql = f"SELECT {fields} FROM {self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
-              f"{'ORDER BY ' + ', '.join(orders)} " \
+              f"{('ORDER BY ' + ', '.join(orders)) if orders else ''} " \
               f"LIMIT {limit} OFFSET {offset}"
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))

@@ -37,7 +37,7 @@ class TestClass(unittest.TestCase):
 
     # Setup tests
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         log_init(file_enable=False, console_enable=True)
         resource_dir = '{}/resources'.format(TEST_DIR)
         config = DBConfiguration(resource_dir, profile="test")
@@ -78,22 +78,20 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity.is_working, result_one.is_working)
 
     # Test selecting all rows from the database.
-    def test_should_select_all_from_mysql(self):
+    def test_should_select_all_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
-        self.repository.save(test_entity_1)
-        self.repository.save(test_entity_2)
+        self.repository.save_all([test_entity_1, test_entity_2])
         result_set = self.repository.find_all()
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
 
     # Test selecting a single rows from the database.
-    def test_should_select_one_from_mysql(self):
+    def test_should_select_one_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
-        self.repository.save(test_entity_1)
-        self.repository.save(test_entity_2)
+        self.repository.save_all([test_entity_1, test_entity_2])
         result_one = self.repository.find_by_id(test_entity_1.identity)
         self.assertIsNotNone(result_one, "Result set is none")
         self.assertIsInstance(result_one, EntityTest)
@@ -103,7 +101,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity_1.is_working, result_one.is_working)
 
     # Test deleting one row from the database.
-    def test_should_delete_from_mysql(self):
+    def test_should_delete_from_mysql(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
         result_set = self.repository.find_by_id(test_entity.identity)
@@ -114,6 +112,24 @@ class TestClass(unittest.TestCase):
         result_set = self.repository.find_by_id(test_entity.identity)
         self.assertIsNone(result_set, "Result set is not empty")
 
+    def test_should_select_using_filters(self) -> None:
+        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
+        test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)
+        test_entity_4 = EntityTest(Identity.auto(), comment='My-Fest Data-4', lucky_number=20, is_working=False)
+        expected_list = [test_entity_1, test_entity_2, test_entity_3, test_entity_4]
+        self.repository.save_all(expected_list)
+        result_set = self.repository.find_all()
+        self.assertCountEqual(expected_list, result_set)
+        expected_list = [test_entity_1, test_entity_4]
+        result_set = self.repository.find_all(filters=Namespace(by_comment="comment like '%est%'"))
+        self.assertCountEqual(expected_list, result_set)
+        result_set = self.repository.find_all(order_bys=['lucky_number'])
+        expected_list = [test_entity_4, test_entity_3, test_entity_2, test_entity_1]
+        self.assertEqual(expected_list[0], result_set[0])
+        self.assertEqual(expected_list[1], result_set[1])
+        self.assertEqual(expected_list[2], result_set[2])
+        self.assertEqual(expected_list[3], result_set[3])
 
 # Program entry point.
 if __name__ == '__main__':
