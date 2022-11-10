@@ -14,7 +14,7 @@
 """
 import contextlib
 from abc import abstractmethod
-from typing import Any, Iterable, Optional, Tuple, TypeVar
+from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
 
 from retry import retry
 
@@ -26,13 +26,14 @@ Connection = TypeVar('Connection', bound=Any)
 Cursor = TypeVar('Cursor', bound=Any)
 Session = TypeVar('Session', bound=Any)
 ResultSet = TypeVar('ResultSet', bound=Iterable)
-T = TypeVar('T', bound=CrudEntity)
+E = TypeVar('E', bound=CrudEntity)
+C = TypeVar('C', bound=DBConfiguration)
 
 
-class DBRepository(CrudRepository[T]):
+class DBRepository(Generic[E, C], CrudRepository[E]):
     """TODO"""
 
-    def __init__(self, config: DBConfiguration):
+    def __init__(self, config: C):
         super().__init__()
         self._config = config
 
@@ -43,7 +44,7 @@ class DBRepository(CrudRepository[T]):
         return str(self)
 
     @property
-    def config(self) -> DBConfiguration:
+    def config(self) -> C:
         return self._config
 
     @property

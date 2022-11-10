@@ -109,12 +109,15 @@ class FirebaseRepository(CrudRepository[T]):
 
     def find_all(
         self,
-        fields: Set[str] = None,
-        filters: Namespace = None,
+        fields: Optional[Set[str]] = None,
+        filters: Optional[Namespace] = None,
+        order_bys: Optional[List[str]] = None,
         limit: int = 500, offset: int = 0) -> List[T]:
         """Return filtered entries from the Firebase store"""
 
-        url = f'{self._config.url(self.table_name())}.json?orderBy="$key"'
+        # orders = "orderBy=" + (','.join([f'"{o}"' for o in order_bys]) if order_bys else '"$key"')
+        # limits = f"startAt={offset}&endAt={offset + limit}"
+        url = f'{self._config.url(self.table_name())}.json'
         log.debug('Fetching firebase entries: \n\t|-From %s', url)
         response = get(url)
         check_not_none(response, "Response is none")
@@ -122,7 +125,7 @@ class FirebaseRepository(CrudRepository[T]):
             raise HTTPError(f'{response.status_code} - Unable to get from={url}')
 
         if response.body and response.body != 'null':
-            return self.to_entity_list(response.body, filters)
+            return self.to_entity_list(response.body, filters)[offset:offset + limit]
 
         return []
 
