@@ -25,3 +25,7 @@ class VaultOpenError(HSBaseException):
 
 class VaultSecurityException(HSBaseException):
     """Raised when something unexpected happened to vault file"""
+
+
+class VaultExecutionException(HSBaseException):
+    """Raised when something unexpected happened to vault execution"""

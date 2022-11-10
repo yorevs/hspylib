@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-vault v0.9.51
+# hspylib-vault v0.9.54
 #
 # Package: main.vault.core
 """Package initialization."""
@@ -12,4 +12,4 @@ __all__ = [
   'vault_repository', 
   'vault_service'
 ]
-__version__ = '0.9.51'
+__version__ = '0.9.54'

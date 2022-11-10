@@ -45,10 +45,10 @@ class Vault:
     _VAULT_HASHCODE = os.getenv('VAULT_HASHCODE', 'e4f362fd1e02df6bc9c684c9310e3550')
 
     # Vault keyring cache entry
-    _VAULT_SERVICE = 'VAULT_KEY_SERVICE'
+    _VAULT_CACHE_NAME = 'VAULT_KEY_SERVICE'
 
     def __init__(self,  resource_dir: str) -> None:
-        self.is_open = False
+        self._is_open = False
         self.passphrase = None
         self.configs = VaultConfig(resource_dir)
         self.service = VaultService(self.configs)
@@ -64,15 +64,15 @@ class Vault:
     def open(self) -> bool:
         """Open and read the Vault file"""
         try:
-            self._check_backup()
+            self._sanity_check()
             self.passphrase = self._read_passphrase()
-            if not self.is_open:
+            if not self._is_open:
                 self._unlock_vault()
                 log.debug("Vault open and unlocked")
         except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
             log.error("Authentication failure => %s", err)
             MenuUtils.print_error('Authentication failure')
-            keyring.delete_password(self._VAULT_SERVICE, self.configs.vault_user)
+            keyring.delete_password(self._VAULT_CACHE_NAME, self.configs.vault_user)
             return False
         except Exception as err:
             raise VaultOpenError(f"Unable to open Vault file => {self.configs.vault_file}", err) from err
@@ -82,7 +82,7 @@ class Vault:
     def close(self) -> bool:
         """Close the Vault file and cleanup temporary file_paths"""
         try:
-            if self.is_open:
+            if self._is_open:
                 self._lock_vault()
                 log.debug("Vault closed and locked")
         except (UnicodeDecodeError, InvalidToken) as err:
@@ -182,11 +182,8 @@ class Vault:
 
     def _read_passphrase(self) -> str:
         """Retrieve and read the vault passphrase"""
-
-        passphrase = None
-
+        passphrase, confirm_passphrase = None, False
         if file_is_not_empty(self.configs.vault_file):
-            confirm_passphrase = False
             if self.configs.passphrase:
                 return f"{self.configs.vault_user}:{base64.b64decode(self.configs.passphrase).decode('utf-8')}"
         else:
@@ -194,24 +191,23 @@ class Vault:
             sysout(f"%ORANGE%### Your Vault '{self.configs.vault_file}' file is empty.")
             sysout("%ORANGE%>>> Enter the new passphrase for this Vault")
             confirm_passphrase = True
-
         while not passphrase:
             passphrase = self._getpass(confirm_passphrase)
             if passphrase and confirm_passphrase:
-                confirm = None
-                while not confirm or confirm != passphrase:
-                    confirm = getpass.getpass("Repeat passphrase:").strip()
-                    if confirm != passphrase:
+                passphrase_confirm = None
+                while not passphrase_confirm or passphrase_confirm != passphrase:
+                    passphrase_confirm = getpass.getpass("Repeat passphrase:").strip()
+                    if passphrase_confirm != passphrase:
                         syserr("### Passphrase and confirmation mismatch")
                         safe_del_file(self.configs.vault_file)
                 sysout("%GREEN%Passphrase successfully stored")
                 log.debug("Vault passphrase created for user=%s", self.configs.vault_user)
-                self.is_open = True
+                self._is_open = True
 
         return f"{self.configs.vault_user}:{passphrase}"
 
     def _lock_vault(self) -> None:
-        """Encrypt the vault file"""
+        """Encode and Encrypt the vault file"""
         if file_is_not_empty(self.configs.unlocked_vault_file):
             encoded = f"{self.configs.unlocked_vault_file}-encoded"
             encode(self.configs.unlocked_vault_file, encoded, binary=True)
@@ -220,11 +216,11 @@ class Vault:
             log.debug("Vault file is encrypted")
         else:
             os.rename(self.configs.unlocked_vault_file, self.configs.vault_file)
-        self.is_open = False
+        self._is_open = False
         safe_del_file(self.configs.unlocked_vault_file)
 
     def _unlock_vault(self) -> None:
-        """Decrypt the vault file"""
+        """Decrypt and Decode the vault file"""
         if file_is_not_empty(self.configs.vault_file):
             encoded = f"{self.configs.unlocked_vault_file}-encoded"
             decrypt(self.configs.vault_file, encoded, self.passphrase)
@@ -233,42 +229,40 @@ class Vault:
             log.debug("Vault file is decrypted")
         else:
             os.rename(self.configs.vault_file, self.configs.unlocked_vault_file)
-        self.is_open = True
+        self._is_open = True
         safe_del_file(self.configs.vault_file)
 
-    def _check_backup(self) -> None:
+    def _sanity_check(self) -> None:
         """Check existing vault backups and apply a rollback if required."""
         vault_file = self.configs.vault_file
         unlocked_vault_file = self.configs.unlocked_vault_file
         backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/.{os.path.basename(vault_file)}.bak"
         locked_empty = not file_is_not_empty(vault_file)
         unlocked_empty = not file_is_not_empty(unlocked_vault_file)
-        if locked_empty and unlocked_empty:
-            return
-        if not locked_empty and unlocked_empty:
-            log.debug('Creating a vault backup before opening it => %s', backup_file)
-            shutil.copyfile(vault_file, backup_file)
-        elif not unlocked_empty:
-            log.warning('Vault file was found open and will be removed => %s', vault_file)
-            if os.path.exists(backup_file):
-                log.warning('Restoring last backup => %s', backup_file)
-                shutil.copyfile(backup_file, vault_file)
-                safe_del_file(unlocked_vault_file)
+        if not locked_empty or not unlocked_empty:
+            if not locked_empty and unlocked_empty:
+                log.debug('Creating a vault backup before opening it => %s', backup_file)
+                shutil.copyfile(vault_file, backup_file)
             else:
-                log.warning('No backups found !')
-                raise VaultSecurityException(
-                    'Unable to either restore or re-lock the vault file. Please manually ' +
-                    f' backup your secrets and remove the unlocked file "{unlocked_vault_file}"')
+                log.warning('Vault file was found open and will be removed => %s', vault_file)
+                if os.path.exists(backup_file):
+                    log.warning('Restoring last backup => %s', backup_file)
+                    shutil.copyfile(backup_file, vault_file)
+                    safe_del_file(unlocked_vault_file)
+                else:
+                    log.warning('No backups found !')
+                    raise VaultSecurityException(
+                        'Unable to either restore or re-lock the vault file. Please manually ' +
+                        f' backup your secrets and remove the unlocked file "{unlocked_vault_file}"')
 
     def _getpass(self, skip_cache: bool) -> str:
         """Prompt for the user password or retrieved the cached one."""
-        passwd = keyring.get_password(self._VAULT_SERVICE, self.configs.vault_user) if not skip_cache else None
-        if passwd is None:
+        if skip_cache or (passwd := keyring.get_password(self._VAULT_CACHE_NAME, self.configs.vault_user)) is None:
             passwd = getpass.getpass("Enter passphrase:").rstrip()
-            keyring.set_password(self._VAULT_SERVICE, self.configs.vault_user, passwd)
+            keyring.set_password(self._VAULT_CACHE_NAME, self.configs.vault_user, passwd)
         return passwd
 
     def _create_vault_file(self) -> None:
-        """TODO"""
+        """Create the vault SQLite DB file."""
         touch_file(self.configs.vault_file)
         self.service.create_vault_db()
