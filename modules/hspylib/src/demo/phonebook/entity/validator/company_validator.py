@@ -16,7 +16,7 @@
 
 from typing import List, Tuple
 
-from hspylib.core.constants import RE_URL, RE_CNPJ
+from hspylib.core.constants import RE_CNPJ, RE_URL
 from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Company import Company

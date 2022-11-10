@@ -14,7 +14,7 @@
 """
 import contextlib
 from abc import abstractmethod
-from typing import Tuple, Any, TypeVar, Optional, Iterable
+from typing import Any, Iterable, Optional, Tuple, TypeVar
 
 from retry import retry
 

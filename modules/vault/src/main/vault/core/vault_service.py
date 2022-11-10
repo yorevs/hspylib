@@ -14,16 +14,17 @@
    Copyright 2022, HSPyLib team
 """
 from textwrap import dedent
-from typing import Optional
+from typing import List, Optional
 
 from hspylib.core.datasource.crud_service import CrudService
+from hspylib.core.tools.namespace import Namespace
 
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_repository import VaultRepository
 from vault.entity.vault_entry import VaultEntry
 
 
-class VaultService(CrudService[VaultEntry]):
+class VaultService(CrudService[VaultRepository, VaultEntry]):
     """Provides a CRUD service for the Vault application"""
 
     def __init__(self, vault_config: VaultConfig):
@@ -34,6 +35,10 @@ class VaultService(CrudService[VaultEntry]):
         :param key: The vault key to find
         """
         return self.repository.find_by_key(key)
+
+    def list_by_key(self, filter_expr: List[str] = None) -> List[VaultEntry]:
+        filters = ' or '.join([f"key like '%{f}%'" for f in filter_expr])
+        return self.list(Namespace('Filters', by_key_like=filters), ['key', 'modified'])
 
     def create_vault_db(self) -> None:
         self.repository.execute(dedent("""
@@ -46,6 +51,7 @@ class VaultService(CrudService[VaultEntry]):
             hint         TEXT       not null,
             modified     TEXT       not null,
 
-            CONSTRAINT ID_pk PRIMARY KEY (uuid)
+            CONSTRAINT UUID_pk PRIMARY KEY (uuid),
+            CONSTRAINT KEY_uk UNIQUE (key)
         )
         """))

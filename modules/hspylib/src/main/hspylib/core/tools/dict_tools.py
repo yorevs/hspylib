@@ -12,7 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import List, Dict, Tuple, Optional, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 
 def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') -> Optional[Any]:

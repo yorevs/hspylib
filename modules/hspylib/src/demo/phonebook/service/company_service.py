@@ -23,7 +23,7 @@ from phonebook.repository.company_repository import CompanyRepository
 
 class CompanyService(CrudService[Company]):
 
-    def __init__(self):
+    def __init__(self) -> None:
         cfg = SQLiteConfiguration(str(_Classpath.resource_dir()))
         repository = CompanyRepository(cfg)
         super().__init__(repository)
