@@ -29,6 +29,7 @@ from hspylib.modules.cli.application.version import Version
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
+from vault.exception.exceptions import VaultExecutionException
 
 
 class Main(Application):
@@ -50,7 +51,6 @@ class Main(Application):
 
     def _setup_arguments(self) -> None:
         # @formatter:off
-
         self._with_chained_args('operation', 'the Vault operation to process') \
             .argument('list', 'list all entries matching the given filter criteria, if specified') \
                 .add_argument('filter', "filter the listed vault entries by it's name", nargs='*') \
@@ -77,30 +77,31 @@ class Main(Application):
                 VAULT_USER: {VaultConfig.INSTANCE.vault_user}
                 VAULT_FILE: {VaultConfig.INSTANCE.vault_file}
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
+        =======================================\n
         '''))
 
         signal.signal(signal.SIGINT, self._abort)
         signal.signal(signal.SIGTERM, self._abort)
         signal.signal(signal.SIGABRT, self._abort)
+        signal.signal(signal.SIGHUP, self._abort)
 
-        self._exec_application()
-        return 0
+        return self._exec_application()
 
     def _cleanup(self) -> None:
-        """TODO"""
+        """Close and lock the vault"""
         self.vault.close()
         unlocked = self.vault.configs.unlocked_vault_file
         if os.path.exists(unlocked):
             os.remove(unlocked)
 
     def _abort(self, signum=0, frame=None) -> None:
-        """TODO"""
+        """Securely abort the execution of vault"""
         self._cleanup()
         self.exit(signum, frame)
 
-    def _exec_application(self, ) -> None:
+    def _exec_application(self, ) -> int:
         """Execute the specified vault operation"""
-        op = self.get_arg('operation')
+        ret_val, op = 0, self.get_arg('operation')
         try:
             if self.vault.open():
                 if op == 'add':
@@ -114,10 +115,15 @@ class Main(Application):
                 elif op == 'list':
                     self.vault.list(self.get_arg('filter'))
                 else:
+                    ret_val = 1
                     syserr(f'### Invalid operation: {op}')
                     self.usage(1)
+        except Exception as err:
+            raise VaultExecutionException(f"Failed to execute Vault => {err}") from err
         finally:
             self.vault.close()
+
+        return ret_val
 
 
 if __name__ == "__main__":
