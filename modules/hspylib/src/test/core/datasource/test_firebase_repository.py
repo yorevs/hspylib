@@ -18,13 +18,11 @@ import logging as log
 import os
 import sys
 import unittest
-from unittest import skip
 
 from hspylib.core.datasource.firebase.firebase_configuration import FirebaseConfiguration
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.decorator.decorators import integration_test
 from hspylib.core.tools.commons import log_init
-from hspylib.core.tools.namespace import Namespace
 from hspylib.modules.fetch.fetch import delete
 from shared.entity_test import EntityTest
 from shared.firebase_repository_test import FirebaseRepositoryTest
@@ -42,7 +40,11 @@ class TestClass(unittest.TestCase):
         cls.repository = FirebaseRepositoryTest(config)
 
     # Teardown tests
-    def tearDown(self) -> None:
+    @classmethod
+    def tearDownClass(cls) -> None:
+        delete(f"{cls.repository.config.base_url}/hspylib-test/integration-test.json")
+
+    def setUp(self) -> None:
         delete(f"{self.repository.config.base_url}/hspylib-test/integration-test.json")
 
     # TEST CASES ----------
@@ -53,11 +55,9 @@ class TestClass(unittest.TestCase):
         self.repository.save(test_entity)
         test_entity.comment = 'Updated My-Test Data'
         self.repository.save(test_entity)
-        result_set = self.repository.find_all(filters=Namespace(id=test_entity.id))
-        self.assertIsNotNone(result_set, "Result set is none")
-        self.assertIsInstance(result_set, list)
-        self.assertEqual(1, len(result_set))
-        result_one = result_set[0]
+        result_one = self.repository.find_by_id(test_entity.identity)
+        self.assertIsNotNone(result_one, "Result set is none")
+        self.assertIsInstance(result_one, EntityTest)
         self.assertEqual(test_entity.id, result_one.id)
         self.assertEqual(test_entity.comment, result_one.comment)
         self.assertEqual(test_entity.lucky_number, result_one.lucky_number)
@@ -99,19 +99,27 @@ class TestClass(unittest.TestCase):
         self.assertIsNone(result_set, "Result set is not empty")
 
 
-    @skip('filtering and orde bys are not yet implemented for firebase')
-    def test_should_select_using_order_by(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
+    # Test selecting from firebase using filters
+    def test_should_select_using_filters(self) -> None:
+        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=10, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=20, is_working=False)
         test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)
-        test_entity_4 = EntityTest(Identity.auto(), comment='My-Fest Data-4', lucky_number=20, is_working=False)
-        expected_list = [test_entity_4, test_entity_3, test_entity_2, test_entity_1]
+        test_entity_4 = EntityTest(Identity.auto(), comment='My-Fest Data-4', lucky_number=40, is_working=False)
+        test_entity_5 = EntityTest(Identity.auto(), comment='My-Best Data-5', lucky_number=50, is_working=True)
+        expected_list = [test_entity_5, test_entity_4, test_entity_3, test_entity_2, test_entity_1]
         self.repository.save_all(expected_list)
-        result_set = self.repository.find_all(order_bys=['lucky_number'])
-        self.assertEqual(expected_list[0], result_set[0])
-        self.assertEqual(expected_list[1], result_set[1])
-        self.assertEqual(expected_list[2], result_set[2])
-        self.assertEqual(expected_list[3], result_set[3])
+        expected_list = [test_entity_4, test_entity_3, test_entity_2]
+        result_set = self.repository.find_all(order_by=['lucky_number'], start_at=20, limit_to_first=3)
+        self.assertCountEqual(expected_list, result_set)
+        expected_list = [test_entity_5, test_entity_4, test_entity_3]
+        result_set = self.repository.find_all(order_by=['lucky_number'], start_at=20, limit_to_last=3)
+        self.assertCountEqual(expected_list, result_set)
+        expected_list = [test_entity_1, test_entity_3, test_entity_5]
+        result_set = self.repository.find_all(order_by=['is_working'], equal_to=True)
+        self.assertCountEqual(expected_list, result_set)
+        expected_list = [test_entity_3, test_entity_4]
+        result_set = self.repository.find_all(order_by=['lucky_number'], start_at=30, end_at=40)
+        self.assertCountEqual(expected_list, result_set)
 
 
 # Program entry point.

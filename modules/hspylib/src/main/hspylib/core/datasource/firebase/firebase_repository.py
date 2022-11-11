@@ -16,24 +16,44 @@
 import json
 import logging as log
 from abc import abstractmethod
-from typing import Iterable, List, Optional, Set, TypeVar
+from typing import Any, Generic, List, Optional, TypeVar
 
 from requests.exceptions import HTTPError
 
 from hspylib.core.datasource.crud_entity import CrudEntity
-from hspylib.core.datasource.crud_repository import CrudRepository
 from hspylib.core.datasource.firebase.firebase_configuration import FirebaseConfiguration
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.namespace import Namespace
 from hspylib.modules.fetch.fetch import delete, get, put
+from hspylib.modules.fetch.http_response import HttpResponse
 
 T = TypeVar('T', bound=CrudEntity)
 
 
-class FirebaseRepository(CrudRepository[T]):
-    """Implementation of a data access layer for a Firebase persistence store."""
+class FirebaseRepository(Generic[T]):
+    """Implementation of a data access layer for a Firebase persistence store.
+    API   Ref.: https://firebase.google.com/docs/reference/rest/database
+    Auth  Ref.: https://firebase.google.com/docs/database/rest/auth#python
+    Order Ref:. https://firebase.google.com/docs/database/rest/retrieve-data#section-rest-ordered-data
+    """
+
+    @staticmethod
+    def _assert_response(response: HttpResponse, message: str) -> HttpResponse:
+        check_not_none(response, "Response is none")
+        if response.status_code not in [HttpCode.OK, HttpCode.ACCEPTED, HttpCode.CREATED]:
+            raise HTTPError(f"{response.status_code} => {message}")
+        return response
+
+    @staticmethod
+    def quote(value: Any) -> str:
+        """Quote or double quote the value according to the value type. """
+        if isinstance(value, bool):
+            return f'{str(value).lower()}'
+        elif isinstance(value, int | float):
+            return str(value)
+        else:
+            return f'"{value}"' if value.startswith('\'') and value.endswith('\'') else f"'{value}'"
 
     def __init__(self, config: FirebaseConfiguration):
         self._payload = None
@@ -42,8 +62,13 @@ class FirebaseRepository(CrudRepository[T]):
     def __str__(self) -> str:
         return str(self._config) + f"TABLE_NAME={self.table_name() or ''}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
+
+    @property
+    def logname(self) -> str:
+        """TODO"""
+        return self.__class__.__name__.split('_')[0]
 
     @property
     def config(self) -> FirebaseConfiguration:
@@ -79,10 +104,7 @@ class FirebaseRepository(CrudRepository[T]):
         ids = '.'.join(entity_id.values)
         url = f'{self._config.url(self.table_name())}/{ids}.json'
         log.debug('Deleting firebase entry: \n\t|-Id=%s\n\t|-From %s', entity_id, url)
-        response = delete(url)
-        check_not_none(response, "Response is none")
-        if response.status_code != HttpCode.OK:
-            raise HTTPError(f'{response.status_code} - Unable to delete from={url}')
+        self._assert_response(delete(url), f'Unable to delete from={url}')
 
     def delete_all(self, entities: List[T]) -> None:
         """Delete from Firebase all entries provided.
@@ -90,18 +112,15 @@ class FirebaseRepository(CrudRepository[T]):
         """
         list(map(self.delete, entities))
 
-    def save(self, entity: T, exclude_update: Iterable[str] = None) -> None:
+    def save(self, entity: T) -> None:
         """Saves the given entity at the Firebase store"""
         ids = '.'.join(entity.identity.values)
         url = f'{self._config.url(self.table_name())}/{ids}.json'
         payload = entity.as_json()
         log.debug("Saving firebase entry: \n\t|-%s \n\t|-Into %s", entity, url)
-        response = put(url, payload)
-        check_not_none(response, "Response is none")
-        if response.status_code not in [HttpCode.OK, HttpCode.ACCEPTED]:
-            raise HTTPError(f'{response.status_code} - Unable to put into={url} with json_string={payload}')
+        self._assert_response(put(url, payload), f"Unable to put into={url} with json_string={payload}")
 
-    def save_all(self, entities: List[T], exclude_update: Iterable[str] = None) -> None:
+    def save_all(self, entities: List[T]) -> None:
         """Save from Firebase all entries provided.
         TODO Check if there is a better ways of doing it.
         """
@@ -109,35 +128,35 @@ class FirebaseRepository(CrudRepository[T]):
 
     def find_all(
         self,
-        fields: Optional[Set[str]] = None,
-        filters: Optional[Namespace] = None,
-        order_bys: Optional[List[str]] = None,
-        limit: int = 500, offset: int = 0) -> List[T]:
+        order_by: Optional[List[str]] = None,
+        limit_to_first: Optional[int] = None,
+        limit_to_last: Optional[int] = None,
+        start_at: Optional[int | str] = None,
+        end_at: Optional[int | str] = None,
+        equal_to: Optional[int | str] = None) -> List[T]:
         """Return filtered entries from the Firebase store"""
 
-        # orders = "orderBy=" + (','.join([f'"{o}"' for o in order_bys]) if order_bys else '"$key"')
-        # limits = f"startAt={offset}&endAt={offset + limit}"
-        url = f'{self._config.url(self.table_name())}.json'
+        f_order_by = "orderBy=" + (','.join([f'"{o}"' for o in order_by]) if order_by else '"$key"')
+        f_start_at = f"&startAt={self.quote(start_at)}" if start_at else ''
+        f_end_at = f"&endAt={self.quote(end_at)}" if end_at else ''
+        f_equal_to = f"&equalTo={self.quote(equal_to)}" if equal_to else ''
+        f_limit_first = f"&limitToFirst={limit_to_first}" if limit_to_first else ''
+        f_limit_last = f"&limitToLast={limit_to_last}" if limit_to_last else ''
+        url = f'{self._config.url(self.table_name())}.json?' \
+              f'{f_order_by}{f_start_at}{f_end_at}{f_equal_to}{f_limit_first}{f_limit_last}'
         log.debug('Fetching firebase entries: \n\t|-From %s', url)
-        response = get(url)
-        check_not_none(response, "Response is none")
-        if response.status_code != HttpCode.OK:
-            raise HTTPError(f'{response.status_code} - Unable to get from={url}')
-
+        response = self._assert_response(get(url), f"Unable to get from={url}")
         if response.body and response.body != 'null':
-            return self.to_entity_list(response.body, filters)[offset:offset + limit]
+            return self.to_entity_list(response.body)
 
         return []
 
-    def find_by_id(self, entity_id: Identity, fields: Set[str] = None) -> Optional[T]:
+    def find_by_id(self, entity_id: Identity) -> Optional[T]:
         """Return the entry specified by ID from the Firebase store, None if no such entry is found."""
         ids = '.'.join(entity_id.values)
         url = f'{self._config.url(self.table_name())}/{ids}.json'
         log.debug('Fetching firebase entry: \n\t|-Id=%s\n\t|-From %s', entity_id, url)
-        response = get(url)
-        check_not_none(response, "Response is null")
-        if response.status_code != HttpCode.OK:
-            raise HTTPError(f'{response.status_code} - Unable to get from={url}')
+        response = self._assert_response(get(url), f"Unable to get from={url}")
         if response.body and response.body != 'null':
             return self.to_entity_type(json.loads(response.body))
 
@@ -150,5 +169,17 @@ class FirebaseRepository(CrudRepository[T]):
         return self.find_by_id(entity_id) is not None
 
     @abstractmethod
+    def to_entity_type(self, entity_dict: dict | tuple) -> T:
+        """TODO"""
+
+    @abstractmethod
     def table_name(self) -> str:
         """TODO"""
+
+    def to_entity_list(self, json_string: str) -> List[T]:
+        """Return filtered entries from the json_string as a list"""
+        if json_string and (entities := json.loads(json_string)):
+            ret_list = []
+            list(map(lambda v: ret_list.append(self.to_entity_type(v)), entities.values()))
+            return ret_list
+        return []

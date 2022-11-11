@@ -10,6 +10,7 @@ __all__ = [
   'test_commons', 
   'test_namespace', 
   'test_preconditions', 
-  'test_text_tools'
+  'test_text_tools', 
+  'test_ttl_keyring_be'
 ]
 __version__ = '0.11.121'
