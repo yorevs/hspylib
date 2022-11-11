@@ -8,7 +8,6 @@
 __all__ = [
   'vault', 
   'vault_config', 
-  'vault_keyring_be', 
   'vault_repository', 
   'vault_service'
 ]

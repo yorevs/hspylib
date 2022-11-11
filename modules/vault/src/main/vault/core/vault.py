@@ -30,9 +30,9 @@ from hspylib.core.datasource.identity import Identity
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import decode, decrypt, encode, encrypt
+from hspylib.core.tools.ttl_keyring_be import TTLKeyringBE
 
 from vault.core.vault_config import VaultConfig
-from vault.core.vault_keyring_be import VaultKeyringBE
 from vault.core.vault_service import VaultService
 from vault.entity.vault_entry import VaultEntry
 from vault.exception.exceptions import VaultCloseError, VaultOpenError, VaultSecurityException
@@ -52,7 +52,7 @@ class Vault:
         self.passphrase = None
         self.configs = VaultConfig(resource_dir)
         self.service = VaultService(self.configs)
-        keyring.set_keyring(VaultKeyringBE())
+        keyring.set_keyring(TTLKeyringBE())
 
     def __str__(self):
         data = set(self.service.list())
