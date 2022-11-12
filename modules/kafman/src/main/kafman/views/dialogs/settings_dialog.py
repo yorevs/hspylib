@@ -44,9 +44,9 @@ class SettingsDialog(QObject):
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = _Classpath.get_resource_path("producer-settings.properties")\
+        PRODUCER_SETTINGS = _Classpath.get_resource_path("producer-settings.properties") \
             .read_text(encoding=str(Charset.UTF_8))
-        CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties")\
+        CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties") \
             .read_text(encoding=str(Charset.UTF_8))
 
         # @formatter:off
@@ -58,7 +58,7 @@ class SettingsDialog(QObject):
             return self.value[1]
 
     def __init__(
-            self, parent: QWidget, settings_type: 'SettingsType', current_settings: dict, settings_widget: HListWidget):
+        self, parent: QWidget, settings_type: 'SettingsType', current_settings: dict, settings_widget: HListWidget):
 
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)

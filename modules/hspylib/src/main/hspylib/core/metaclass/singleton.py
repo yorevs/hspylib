@@ -36,7 +36,7 @@ class Singleton(Type):
             try:
                 instance = super(Singleton, self).__call__(*args, **kwargs)
                 check_not_none(instance, f'Unable to create Singleton instance: {self}')
-                setattr(self, 'INSTANCE',  instance)
+                setattr(self, 'INSTANCE', instance)
                 Singleton._instances[self.__name__] = instance
                 log.debug('Created a new Singleton instance: %s.%s', self.__module__, self.__name__)
             except Exception as err:  # pylint: disable=broad-except

@@ -60,7 +60,7 @@ class TestClass(unittest.TestCase):
     # TEST CASES ----------
 
     # Test updating a single object from firebase.
-    def test_should_update_sqlite(self) -> None:
+    def test_should_update_sqlite_database(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
         test_entity.comment = 'Updated My-Test Data'
@@ -110,7 +110,7 @@ class TestClass(unittest.TestCase):
         result_set = self.repository.find_by_id(test_entity.identity)
         self.assertIsNone(result_set, "Result set is not empty")
 
-    def test_should_select_using_filters(self) -> None:
+    def test_should_select_using_filters_from_sqlite(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
         test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)

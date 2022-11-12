@@ -17,6 +17,7 @@
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
 
+
 class FixedField(SchemaField):
 
     def __init__(

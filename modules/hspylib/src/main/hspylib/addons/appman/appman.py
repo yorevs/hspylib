@@ -62,7 +62,6 @@ class AppManager(metaclass=Singleton):
         siteUrl="<SiteUrl>")
     """)
 
-
     @staticmethod
     def prompt() -> Namespace:
         """When no input is provided, prompt the user for the info. """

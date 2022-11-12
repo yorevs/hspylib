@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'calculator', 
-  'promotions'
+    'calculator',
+    'promotions'
 ]
 __version__ = '0.11.121'

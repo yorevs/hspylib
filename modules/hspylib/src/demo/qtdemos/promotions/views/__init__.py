@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'main_qt_view'
+    'main_qt_view'
 ]
 __version__ = '0.11.121'

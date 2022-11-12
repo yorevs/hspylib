@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'charset', 
-  'content_type', 
-  'enumeration', 
-  'exit_status', 
-  'http_code', 
-  'http_method'
+    'charset',
+    'content_type',
+    'enumeration',
+    'exit_status',
+    'http_code',
+    'http_method'
 ]
 __version__ = '0.11.121'

@@ -47,7 +47,7 @@ class Vault:
     # Vault keyring cache entry
     _VAULT_CACHE_NAME = 'VAULT_KEY_SERVICE'
 
-    def __init__(self,  resource_dir: str) -> None:
+    def __init__(self, resource_dir: str) -> None:
         self._is_open = False
         self.passphrase = None
         self.configs = VaultConfig(resource_dir)

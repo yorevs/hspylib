@@ -118,7 +118,7 @@ class TableRenderer:
         :param file: a file-like object (stream); defaults to the current sys.stdout.
         :return: None
         """
-        header_cols, data_cols= self._join_header_columns(), self._join_data_columns()
+        header_cols, data_cols = self._join_header_columns(), self._join_data_columns()
         table_borders = '+' + ''.join((('-' * (self.column_sizes[idx] + 2) + '+') for idx in self.indexes))
         self._print_table(table_borders, header_cols, data_cols, file)
 

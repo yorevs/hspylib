@@ -65,7 +65,7 @@ class TestClass(unittest.TestCase):
     # TEST CASES ----------
 
     # Test updating a single row from the database.
-    def test_should_update_database(self):
+    def test_should_update_postgres_database(self):
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
         test_entity.comment = 'Updated My-Test Data'
@@ -81,7 +81,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity.is_working, result_one.is_working)
 
     # Test selecting all rows from the database.
-    def test_should_select_all_from_mysql(self) -> None:
+    def test_should_select_all_from_postgres(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
         self.repository.save_all([test_entity_1, test_entity_2])
@@ -91,7 +91,7 @@ class TestClass(unittest.TestCase):
         self.assertCountEqual(expected_list, result_set)
 
     # Test selecting a single rows from the database.
-    def test_should_select_one_from_mysql(self) -> None:
+    def test_should_select_one_from_postgres(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
         self.repository.save_all([test_entity_1, test_entity_2])
@@ -104,7 +104,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity_1.is_working, result_one.is_working)
 
     # Test deleting one row from the database.
-    def test_should_delete_from_mysql(self) -> None:
+    def test_should_delete_from_postgres(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
         result_set = self.repository.find_by_id(test_entity.identity)
@@ -115,7 +115,7 @@ class TestClass(unittest.TestCase):
         result_set = self.repository.find_by_id(test_entity.identity)
         self.assertIsNone(result_set, "Result set is not empty")
 
-    def test_should_select_using_filters(self) -> None:
+    def test_should_select_using_filters_from_postgres(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
         test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)
@@ -133,6 +133,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(expected_list[1], result_set[1])
         self.assertEqual(expected_list[2], result_set[2])
         self.assertEqual(expected_list[3], result_set[3])
+
 
 # Program entry point.
 if __name__ == '__main__':

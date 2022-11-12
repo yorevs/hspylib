@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'test_cassandra_repository', 
-  'test_firebase_repository', 
-  'test_mysql_repository', 
-  'test_postgres_repository', 
-  'test_sqlite_repository'
+    'test_cassandra_repository',
+    'test_firebase_repository',
+    'test_mysql_repository',
+    'test_postgres_repository',
+    'test_sqlite_repository'
 ]
 __version__ = '0.11.121'

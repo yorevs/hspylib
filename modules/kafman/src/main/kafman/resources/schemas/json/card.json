@@ -1,10 +1,13 @@
 {
   "$id": "https://example.com/card.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title":  "Card",
+  "title": "Card",
   "description": "A representation of a person, company, organization, or place",
   "type": "object",
-  "required": [ "familyName", "givenName" ],
+  "required": [
+    "familyName",
+    "givenName"
+  ],
   "properties": {
     "fn": {
       "description": "Formatted Name",
@@ -62,8 +65,12 @@
         }
       }
     },
-    "adr": { "$ref": "https://example.com/address.schema.json" },
-    "geo": { "$ref": "https://example.com/geographical-location.schema.json" },
+    "adr": {
+      "$ref": "https://example.com/address.schema.json"
+    },
+    "geo": {
+      "$ref": "https://example.com/geographical-location.schema.json"
+    },
     "tz": {
       "type": "string"
     },

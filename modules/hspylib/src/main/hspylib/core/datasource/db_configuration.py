@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: main.crud.db
+   @Package: main.hspylib.core.datasource
       @file: db_configuration.py
    @created: Thu, 03 Nov 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -25,7 +25,6 @@ class DBConfiguration(AppConfigs):
         resource_dir: str,
         filename: Optional[str] = None,
         profile: Optional[str] = None):
-
         super().__init__(resource_dir, filename, profile)
         self._hostname = self['datasource.hostname']
         self._port = self.get_int('datasource.port')

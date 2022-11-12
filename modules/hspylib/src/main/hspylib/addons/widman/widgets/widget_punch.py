@@ -55,11 +55,11 @@ class WidgetPunch(Widget):
 
     HHS_PUNCH_FILE = os.getenv('HHS_PUNCH_FILE', f"-{HHS_DIR}/.punches")
 
-    DATE_STAMP=now('%a %d-%m-%Y')
+    DATE_STAMP = now('%a %d-%m-%Y')
 
-    TIME_STAMP=now('%H:%M')
+    TIME_STAMP = now('%H:%M')
 
-    WEEK_STAMP=int(now('%V'))
+    WEEK_STAMP = int(now('%V'))
 
     RE_TODAY_PUNCH_LINE = rf"({DATE_STAMP}).*"
 
@@ -75,10 +75,10 @@ class WidgetPunch(Widget):
             stamps = []
             stamps += [daily_punches[1], '-', daily_punches[0], '+'] if n // 2 >= 1 else []  # Morning
             stamps += [daily_punches[3], '-', daily_punches[2], '+'] if n // 2 >= 2 else []  # Afternoon
-            stamps += [daily_punches[5], '-', daily_punches[4]] if n // 2 >= 3 else []       # Evening
+            stamps += [daily_punches[5], '-', daily_punches[4]] if n // 2 >= 3 else []  # Evening
             h, m, _ = WidgetTimeCalc.calc_time(stamps)
             m = WidgetTimeCalc.to_decimal(m) if decimal else m
-            return f"{'%GREEN%'if h >= 8 else '%RED%'}{h:02d}{'.' if decimal else ':'}{m:02d}%NC%"
+            return f"{'%GREEN%' if h >= 8 else '%RED%'}{h:02d}{'.' if decimal else ':'}{m:02d}%NC%"
         else:
             return f"%RED%--{'.' if decimal else ':'}--%NC%"
 
@@ -202,12 +202,12 @@ class WidgetPunch(Widget):
         sysout('-' * 82)
         for punch_line in self._punches:
             daily_punches = punch_line[17:].strip().split()
-            n = len (daily_punches)
+            n = len(daily_punches)
             padding = '.' * (35 if n == 0 else (36 - n * 6))
             line_color = '%BLUE%' if self._is_today(punch_line) else ''
             sysout(f"{line_color}{punch_line[:17]} {' '.join(daily_punches) + (' ' if n % 2 != 0 else '')}", end='')
             daily_total = self._daily_total(daily_punches)
-            daily_total_dec = self._daily_total(daily_punches, decimal = True)
+            daily_total_dec = self._daily_total(daily_punches, decimal=True)
             if n > 0 and n % 2 == 0:
                 sysout(f" {padding} : Subtotal = {daily_total} -> {daily_total_dec}%NC%")
                 total = WidgetTimeCalc.calc_time([f"{total[0]}:{total[1]}", '+', daily_total[-9:-4]])

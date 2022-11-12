@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'appman', 
-  'widman'
+    'appman',
+    'widman'
 ]
 __version__ = '0.11.121'

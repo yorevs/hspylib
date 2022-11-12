@@ -27,9 +27,17 @@
       "type": "string"
     }
   },
-  "required": [ "locality", "region", "country-name" ],
+  "required": [
+    "locality",
+    "region",
+    "country-name"
+  ],
   "dependentRequired": {
-    "post-office-box": [ "street-address" ],
-    "extended-address": [ "street-address" ]
+    "post-office-box": [
+      "street-address"
+    ],
+    "extended-address": [
+      "street-address"
+    ]
   }
 }

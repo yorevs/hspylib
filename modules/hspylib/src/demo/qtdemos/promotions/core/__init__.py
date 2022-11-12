@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'demo_table_row'
+    'demo_table_row'
 ]
 __version__ = '0.11.121'

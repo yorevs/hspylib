@@ -16,6 +16,7 @@
 
 from hspylib.core.exception.exceptions import HSBaseException
 
+
 class CFConnectionError(HSBaseException):
     """Raised when failed to connect to CloudFoundry"""
 

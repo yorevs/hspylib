@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'extra', 
-  'menu', 
-  'table'
+    'extra',
+    'menu',
+    'table'
 ]
 __version__ = '0.11.121'

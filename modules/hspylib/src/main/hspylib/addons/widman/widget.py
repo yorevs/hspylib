@@ -40,7 +40,6 @@ class Widget(ABC):
         tooltip: str,
         usage: str,
         version: Tuple[int, int, int]):
-
         self._icon = icon
         self._name = name
         self._tooltip = tooltip
