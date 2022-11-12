@@ -41,6 +41,7 @@ class TestTextTools(unittest.TestCase):
         done = now_ms()
         self.assertEqual(now + t + 1, done, 'Time elapsed should be almost equal')
 
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTextTools)
     unittest \

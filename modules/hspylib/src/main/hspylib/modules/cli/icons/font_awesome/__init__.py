@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'app_icons', 
-  'awesome', 
-  'dashboard_icons', 
-  'form_icons', 
-  'nav_icons', 
-  'widget_icons'
+    'app_icons',
+    'awesome',
+    'dashboard_icons',
+    'form_icons',
+    'nav_icons',
+    'widget_icons'
 ]
 __version__ = '0.11.121'

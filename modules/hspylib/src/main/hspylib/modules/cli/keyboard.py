@@ -132,5 +132,6 @@ class Keyboard(Enumeration):
         """TODO"""
         return all(ch in string.punctuation for ch in str(self.value))
 
+
 if __name__ == '__main__':
     print('Press', Keyboard.kbhit())

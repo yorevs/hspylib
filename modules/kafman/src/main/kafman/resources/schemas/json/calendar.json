@@ -1,10 +1,13 @@
 {
   "$id": "https://example.com/calendar.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title":  "Calendar",
+  "title": "Calendar",
   "description": "A representation of an event",
   "type": "object",
-  "required": [ "dtstart", "summary" ],
+  "required": [
+    "dtstart",
+    "summary"
+  ],
   "properties": {
     "dtstart": {
       "type": "string",

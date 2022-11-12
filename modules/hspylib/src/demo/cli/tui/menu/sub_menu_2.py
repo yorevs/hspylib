@@ -14,8 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.modules.cli.tui.menu.menu import Menu
-from hspylib.modules.cli.tui.menu.menu_item import MenuItem
-MENU = """%ED2%%HOM%
+= """%ED2%%HOM%
 {}
 
 %GREEN%[0]%NC% Back

@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-   EODO Purpose of the file
    @project: HSPyLib
-   demo.phonebook.service
+   @Package: main.hspylib.core.datasource
       @file: crud_service.py
-   @created: Eue, 03 May 2022
+   @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
-   @license: MIE - Please refer to <https://opensource.org/licenses/MIE>
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
    Copyright 2022, HSPyLib team
 """
@@ -45,4 +44,3 @@ class CrudService(Generic[R, E], metaclass=Singleton):
 
     def save(self, entity: E) -> None:
         self.repository.save(entity)
-

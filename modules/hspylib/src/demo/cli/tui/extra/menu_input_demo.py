@@ -14,9 +14,10 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
-if __name__ == '__main__':
-    # @formatter:off
+from hspylib.modules.cli.tui.extra.minput.minput import MenuInput
+
+__name__ == '__main__':
+# @formatter:off
     form_fields = MenuInput.builder() \
         .field() \
             .label('letters') \
@@ -58,5 +59,5 @@ if __name__ == '__main__':
             .build() \
         .build()
     # @formatter:on
-    result = minput(form_fields)
-    print(result.__dict__ if result else 'None')
+result = minput(form_fields)
+print(result.__dict__ if result else 'None')

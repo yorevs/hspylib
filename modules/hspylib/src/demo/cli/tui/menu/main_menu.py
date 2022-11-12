@@ -17,8 +17,7 @@ from cli.tui.menu.sub_menu_1 import SubMenu1
 from cli.tui.menu.sub_menu_2 import SubMenu2
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_item import MenuItem
-from hspylib.modules.cli.vt100.vt_utils import exit_app
-MENU = """%ED2%%HOM%
+= """%ED2%%HOM%
 {}
 
 %GREEN%[0]%NC% Exit

@@ -18,6 +18,7 @@ from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.views.qt_view import QtView
 from qtdemos.promotions.core.demo_table_row import DemoTableRow
 
+
 class MainQtView(QtView):
     """TODO"""
 

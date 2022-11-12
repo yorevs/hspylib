@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'application', 
-  'argparse', 
-  'exit_hooks', 
-  'parser_action', 
-  'version'
+    'application',
+    'argparse',
+    'exit_hooks',
+    'parser_action',
+    'version'
 ]
 __version__ = '0.11.121'

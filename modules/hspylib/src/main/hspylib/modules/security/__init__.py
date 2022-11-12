@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'security'
+    'security'
 ]
 __version__ = '0.11.121'

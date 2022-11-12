@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'cli', 
-  'other', 
-  'phonebook', 
-  'qtdemos'
+    'cli',
+    'other',
+    'phonebook',
+    'qtdemos'
 ]
 __version__ = '0.11.121'

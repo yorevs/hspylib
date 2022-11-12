@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: main.hspylib.core.datasource
+   @Package: main.hspylib.core.datasource.postgres
       @file: postgres_repository.py
    @created: Sat, 12 Nov 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'test_mock_server'
+    'test_mock_server'
 ]
 __version__ = '0.11.121'

@@ -16,7 +16,6 @@
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.datasource.sqlite.sqlite_repository import SQLiteRepository
 from hspylib.core.tools.dict_tools import get_or_default
-
 from shared.entity_test import EntityTest
 
 

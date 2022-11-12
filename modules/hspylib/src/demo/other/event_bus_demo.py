@@ -20,9 +20,11 @@ from hspylib.modules.eventbus import eventbus
 def door_open(ev) -> None:
     print('EVENT:', ev, 'NAME:', ev.name, 'KNOCKS:', ev.args.knock, 'ALERT:', ev.args.alert)
 
+
 @eventbus.subscribe(bus='oni-bus', event='door-close')
 def door_close(ev) -> None:
     print('EVENT:', ev, 'NAME:', ev.name, 'KNOCKS:', ev.args.knock, 'ALERT:', ev.args.alert)
+
 
 if __name__ == '__main__':
     eventbus.emit('oni-bus', 'door-open', knock=3, alert=False)

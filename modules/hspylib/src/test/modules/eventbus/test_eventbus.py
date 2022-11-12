@@ -68,19 +68,23 @@ class TestEventBus(unittest.TestCase):
     def test_should_subscribe_and_invoke_callback_using_decorator(self) -> None:
         method1 = MagicMock()
         method2 = MagicMock()
+
         @subscribe(bus='test-bus1', event='test-event-Z')
         def method_1(ev) -> None:
             self.assertEqual('test', ev.args.name)
             self.assertEqual(1, ev.args.status)
             method1()
+
         @subscribe(bus='test-bus1', event='test-event-Z')
         def method_2(ev) -> None:
             self.assertEqual('test', ev.args.name)
             self.assertEqual(1, ev.args.status)
             method2()
+
         emit('test-bus1', 'test-event-Z', name='test', status=1)
         self.assertTrue(method1.called, "Callback 'method1' was not invoked")
         self.assertTrue(method2.called, "Callback 'method2' was not invoked")
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestEventBus)

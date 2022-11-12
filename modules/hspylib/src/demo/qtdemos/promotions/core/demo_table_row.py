@@ -13,5 +13,3 @@
 
    Copyright 2022, HSPyLib team
 """
-
-

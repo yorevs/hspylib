@@ -27,4 +27,3 @@ class CompanyService(CrudService[Company]):
         cfg = DBConfiguration(str(_Classpath.resource_dir()))
         repository = CompanyRepository(cfg)
         super().__init__(repository)
-

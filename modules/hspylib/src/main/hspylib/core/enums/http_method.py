@@ -15,6 +15,7 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 
+
 class HttpMethod(Enumeration):
     """Associates the name of a HTTP method with an enumeration."""
 

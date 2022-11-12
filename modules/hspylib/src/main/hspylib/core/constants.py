@@ -48,9 +48,9 @@ TLD_RE = (
     r"\."  # dot
     r"(?!-)"  # can't start with a dash
     r"(?:[a-z" + UL + "-]{2,63}"  # domain label
-    r"|xn--[a-z0-9]{1,59})"  # or punycode label
-    r"(?<!-)"  # can't end with a dash
-    r"\.?"  # may have a trailing dot
+                      r"|xn--[a-z0-9]{1,59})"  # or punycode label
+                      r"(?<!-)"  # can't end with a dash
+                      r"\.?"  # may have a trailing dot
 )
 
 RE_CNPJ = r'^(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2})$'
@@ -61,7 +61,7 @@ RE_URL = (
     r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
     r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
     r"(?:" + RE_IPV4 + "|" + RE_IPV6 + "|" + RE_HOST + ")"
-    r"(?::[0-9]{1,5})?"  # port
-    r"(?:[/?#][^\s]*)?"  # resource path
-    r"\Z"
+                                                       r"(?::[0-9]{1,5})?"  # port
+                                                       r"(?:[/?#][^\s]*)?"  # resource path
+                                                       r"\Z"
 )

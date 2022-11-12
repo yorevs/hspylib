@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'vt100_demo'
+    'vt100_demo'
 ]
 __version__ = '0.11.121'

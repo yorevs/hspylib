@@ -30,10 +30,10 @@ class Classpath(metaclass=Singleton):
     INSTANCE = None
 
     def __init__(
-            self,
-            source_root: Optional[Path] = None,
-            run_dir: Optional[Path] = None,
-            resource_dir: Optional[Path] = None):
+        self,
+        source_root: Optional[Path] = None,
+        run_dir: Optional[Path] = None,
+        resource_dir: Optional[Path] = None):
 
         if source_root:
             check_state(source_root.exists(), "source_root must exist")

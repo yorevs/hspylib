@@ -29,7 +29,7 @@ class TTLKeyringBE(ChainerBackend):
 
     priority = 1
 
-    def __init__(self, ttl_minutes: int = 15, ttl_seconds = 0) -> None:
+    def __init__(self, ttl_minutes: int = 15, ttl_seconds=0) -> None:
         super().__init__()
         self._ttl_minutes = ttl_minutes
         self._ttl_seconds = ttl_seconds

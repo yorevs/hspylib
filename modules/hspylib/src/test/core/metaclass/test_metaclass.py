@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib
+   @package: hspylib.test.core.metaclass
+      @file: test_metaclass.py
+   @created: Sat, 12 Nov 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HSPyLib team
+"""
+
 import sys
 import unittest
 
@@ -32,7 +48,6 @@ class TestClass(unittest.TestCase):
         with self.assertRaises(HSBaseException) as cm:
             TestClass.MessySingleton()
         self.assertEqual(expected_msg, str(cm.exception)[:lm])
-
 
 
 # Program entry point.

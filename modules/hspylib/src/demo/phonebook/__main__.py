@@ -32,6 +32,7 @@ HERE = str(get_path(__file__))
 
 class Main(Application):
     """TODO"""
+
     def __init__(self, app_name: str):
         version = Version.load(load_dir=HERE)
         resource_dir = str(_Classpath.resource_dir())

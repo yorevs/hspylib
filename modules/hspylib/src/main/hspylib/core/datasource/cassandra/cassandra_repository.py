@@ -3,8 +3,8 @@
 
 """
    @project: HSPyLib
-   @Package: main.hspylib.core.datasource
-      @file: postgres_repository.py
+   @Package: main.hspylib.core.datasource.cassandra
+      @file: cassandra_repository.py
    @created: Sat, 12 Nov 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -62,12 +62,12 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
             log.info(f"{self.logname} Using Astra Security Bundle: {self.secure_bundle_path}")
             cloud_config = {'secure_connect_bundle': self.secure_bundle_path}
             cursor = Cluster(protocol_version=self.protocol_version, auth_provider=auth_provider,
-                              cloud=cloud_config)
+                             cloud=cloud_config)
         else:
             log.info(f"{self.logname} Attempt to connect to Astra: "
                      f"{self.username}@{self.hostname}:{self.port}/{self.database}")
             cursor = Cluster(protocol_version=self.protocol_version, auth_provider=auth_provider,
-                              contact_points=[self.hostname], port=self.port)
+                             contact_points=[self.hostname], port=self.port)
         session = cursor.connect()
         cursor.connect_timeout = self.connect_timeout
         session.default_timeout = self.default_timeout

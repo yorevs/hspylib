@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'Company', 
-  'Person', 
-  'validator'
+    'Company',
+    'Person',
+    'validator'
 ]
 __version__ = '0.11.121'

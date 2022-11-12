@@ -14,6 +14,7 @@
 """
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
+
 class NavIcons(Awesome):
     """
         Navigation icons.

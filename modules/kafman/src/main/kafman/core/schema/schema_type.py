@@ -14,6 +14,7 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 
+
 class SchemaType(Enumeration):
     """TODO"""
 

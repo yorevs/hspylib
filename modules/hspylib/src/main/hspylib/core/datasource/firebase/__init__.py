@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'firebase_configuration', 
-  'firebase_repository'
+    'firebase_configuration',
+    'firebase_repository'
 ]
 __version__ = '0.11.121'

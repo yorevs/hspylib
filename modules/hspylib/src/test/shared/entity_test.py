@@ -45,6 +45,7 @@ class EntityTest(CrudEntity):
     def __str__(self) -> str:
         return f"id={self.id} comment={self.comment} lucky_number={self.lucky_number} working={self.is_working}"
 
+
 if __name__ == '__main__':
     t1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
     t2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)

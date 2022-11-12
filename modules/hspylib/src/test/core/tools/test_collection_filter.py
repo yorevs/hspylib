@@ -41,6 +41,7 @@ def get_deque() -> collections.deque:
     list(map(deq.append, get_dict()))
     return deq
 
+
 def get_set() -> Set[tuple]:
     zet = set()
     list(map(lambda v: zet.add(tuple(v.items())), get_dict()))

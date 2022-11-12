@@ -105,4 +105,3 @@ class HttpCode(Enumeration):
 
     def __repr__(self) -> str:
         return f"({self.value}) {titlecase(self.name)}"
-
