@@ -3,8 +3,8 @@
 
 """
    @project: HSPyLib
-   @Package: main.crud.file
-      @file: file_repository.py
+   @Package: main.hspylib.core.datasource
+      @file: sqlite_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -16,7 +16,7 @@ import contextlib
 import logging as log
 import sqlite3
 from sqlite3 import Error
-from typing import Iterable, List, Optional, Set, Tuple, TypeVar
+from typing import List, Optional, Set, Tuple, TypeVar
 
 from hspylib.core.datasource.crud_entity import CrudEntity
 from hspylib.core.datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
@@ -72,7 +72,7 @@ class SQLiteRepository(DBRepository[T, SQLiteConfiguration]):
                           f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
                           f"\t|-Statement: {sql_statement}")
                 rows = dbs.execute(sql_statement, **kwargs).fetchall()
-                return len(rows), rows
+                return dbs.rowcount, rows
             except (sqlite3.ProgrammingError, sqlite3.OperationalError) as err:
                 raise DatabaseError(f"Unable to execute statement => {sql_statement}") from err
 
@@ -95,18 +95,22 @@ class SQLiteRepository(DBRepository[T, SQLiteConfiguration]):
               f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
-    def save(self, entity: T, exclude_update: Optional[Iterable[str]] = None) -> None:
+    def save(self, entity: T, exclude_update: Optional[Set[str]] = None) -> None:
+        columns, ids = entity.as_columns(), set(entity.identity.attributes)
+        excluded = (exclude_update or set()).union(ids)
         sql = f"INSERT INTO " \
-              f"{self.table_name()} ({entity.as_columns()}) VALUES {entity.values} " \
-              f"ON CONFLICT DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=exclude_update)}"
+              f"{self.table_name()} ({columns}) VALUES {entity.values} " \
+              f"ON CONFLICT DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=excluded)}"
         self.execute(sql)
 
-    def save_all(self, entities: List[T], exclude_update: Optional[Iterable[str]] = None) -> None:
-        values, s = [], entities[0]
+    def save_all(self, entities: List[T], exclude_update: Optional[Set[str]] = None) -> None:
+        values, sample = [], entities[0]
+        columns, ids = sample.as_columns(), set(sample.identity.attributes)
+        excluded = (exclude_update or set()).union(ids)
         list(map(lambda e: values.append(str(e.values)), entities))
         sql = f"INSERT INTO " \
-              f"{self.table_name()} ({s.as_columns()}) VALUES {', '.join(values)} " \
-              f"ON CONFLICT DO UPDATE SET {s.as_column_set(prefix='EXCLUDED.', exclude=exclude_update)}"
+              f"{self.table_name()} ({columns}) VALUES {', '.join(values)} " \
+              f"ON CONFLICT DO UPDATE SET {sample.as_column_set(prefix='EXCLUDED.', exclude=excluded)}"
         self.execute(sql)
 
     def find_all(

@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    test.datasource
-      @file: mysql_repository_test.py
+      @file: test_mysql_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -38,6 +38,9 @@ class TestClass(unittest.TestCase):
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:
+        os.environ['DATASOURCE_PORT'] = '3306'
+        os.environ['DATASOURCE_USERNAME'] = 'mysql'
+        os.environ['DATASOURCE_PASSWORD'] = 'mysql'
         log_init(file_enable=False, console_enable=True)
         resource_dir = '{}/resources'.format(TEST_DIR)
         config = DBConfiguration(resource_dir, profile="test")
@@ -64,9 +67,9 @@ class TestClass(unittest.TestCase):
     # Test updating a single row from the database.
     def test_should_update_database(self):
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        self.repository.save(test_entity, exclude_update=['id'])
+        self.repository.save(test_entity, exclude_update={'id'})
         test_entity.comment = 'Updated My-Test Data'
-        self.repository.save(test_entity, exclude_update=['id'])
+        self.repository.save(test_entity, exclude_update={'id'})
         result_set = self.repository.find_all(filters=Namespace(by_id=f"id = {quote(test_entity.id)}"))
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
