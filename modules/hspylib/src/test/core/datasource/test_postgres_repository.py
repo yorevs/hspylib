@@ -5,7 +5,7 @@
    TODO Purpose of the file
    @project: HSPyLib
    test.datasource
-      @file: test_sqlite_repository.py
+      @file: test_postgres_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -20,34 +20,39 @@ import sys
 import unittest
 from textwrap import dedent
 
+from hspylib.core.datasource.db_configuration import DBConfiguration
 from hspylib.core.datasource.identity import Identity
-from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
+from hspylib.core.decorator.decorators import integration_test
 from hspylib.core.tools.commons import log_init
 from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
 from shared.entity_test import EntityTest
-from shared.sqlite_repository_test import SQLiteRepositoryTest
+from shared.postgres_repository_test import PostgresRepositoryTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
+@integration_test
 class TestClass(unittest.TestCase):
 
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:
+        os.environ['DATASOURCE_PORT'] = '5432'
+        os.environ['DATASOURCE_USERNAME'] = 'postgres'
+        os.environ['DATASOURCE_PASSWORD'] = 'postgres'
         log_init(file_enable=False, console_enable=True)
         resource_dir = '{}/resources'.format(TEST_DIR)
-        config = SQLiteConfiguration(resource_dir, profile="test")
+        config = DBConfiguration(resource_dir, profile="test")
         log.info(config)
-        repository = SQLiteRepositoryTest(config)
+        repository = PostgresRepositoryTest(config)
         repository.execute(dedent("""
-        CREATE TABLE IF NOT EXISTS "ENTITY_TEST"
+        CREATE TABLE IF NOT EXISTS ENTITY_TEST
         (
-            id           TEXT       not null,
-            comment      TEXT       not null,
-            lucky_number INTEGER    not null,
-            is_working   TEXT       not null,
+            id           varchar(36)    not null,
+            comment      varchar(128)   not null,
+            lucky_number int            not null,
+            is_working   varchar(5)     not null,
 
             CONSTRAINT ID_pk PRIMARY KEY (id)
         )
@@ -55,12 +60,12 @@ class TestClass(unittest.TestCase):
         cls.repository = repository
 
     def setUp(self) -> None:
-        self.repository.execute('DELETE FROM ENTITY_TEST')
+        self.repository.execute('TRUNCATE TABLE ENTITY_TEST')
 
     # TEST CASES ----------
 
-    # Test updating a single object from firebase.
-    def test_should_update_sqlite(self) -> None:
+    # Test updating a single row from the database.
+    def test_should_update_database(self):
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity, exclude_update={'id'})
         test_entity.comment = 'Updated My-Test Data'
@@ -75,8 +80,8 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity.lucky_number, result_one.lucky_number)
         self.assertEqual(test_entity.is_working, result_one.is_working)
 
-    # Test selecting all objects from firebase.
-    def test_should_select_all_from_sqlite(self) -> None:
+    # Test selecting all rows from the database.
+    def test_should_select_all_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
         self.repository.save_all([test_entity_1, test_entity_2])
@@ -85,8 +90,8 @@ class TestClass(unittest.TestCase):
         self.assertIsInstance(result_set, list)
         self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
 
-    # Test selecting a single object from firebase.
-    def test_should_select_one_from_sqlite(self) -> None:
+    # Test selecting a single rows from the database.
+    def test_should_select_one_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
         self.repository.save_all([test_entity_1, test_entity_2])
@@ -98,8 +103,8 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity_1.lucky_number, result_one.lucky_number)
         self.assertEqual(test_entity_1.is_working, result_one.is_working)
 
-    # Test deleting one object from firebase.
-    def test_should_delete_from_sqlite(self) -> None:
+    # Test deleting one row from the database.
+    def test_should_delete_from_mysql(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
         result_set = self.repository.find_by_id(test_entity.identity)
@@ -128,7 +133,6 @@ class TestClass(unittest.TestCase):
         self.assertEqual(expected_list[1], result_set[1])
         self.assertEqual(expected_list[2], result_set[2])
         self.assertEqual(expected_list[3], result_set[3])
-
 
 # Program entry point.
 if __name__ == '__main__':

@@ -12,7 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 
 def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') -> Optional[Any]:
@@ -62,11 +62,19 @@ def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
     return flat_dict
 
 
-def merge_iterables(list_of_dicts: List[Dict] | Tuple[Dict]) -> dict:
+def merge(list_of_dicts: List[Dict] | Tuple[Dict]) -> dict:
     """Merge a list of iterables of dicts into a single dictionary.
     :param list_of_dicts: The list of iterables to be merged
     """
     return {a: av for d in list_of_dicts for a, av in d.items()}
+
+
+def intersect(left_dict: Iterable, right_dict: Iterable) -> Iterable:
+    """Intersect two iterables of dicts into a single dictionary.
+    :param left_dict: the left side dictionary
+    :param right_dict: the right side dictionary
+    """
+    return type(left_dict)([value for value in left_dict if value in right_dict])
 
 
 def get_or_default(options: tuple | list, index: int, default_value=None) -> Optional[Any]:

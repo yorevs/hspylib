@@ -15,7 +15,7 @@
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.dict_tools import merge_iterables
+from hspylib.core.tools.dict_tools import merge
 
 
 class Namespace:
@@ -24,7 +24,7 @@ class Namespace:
     def of(type_name: str, attributes: Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]) -> 'Namespace':
         check_not_none(attributes)
         self = Namespace(type_name)
-        self += attributes if isinstance(attributes, dict) else merge_iterables(attributes)
+        self += attributes if isinstance(attributes, dict) else merge(attributes)
         return self
 
     def __init__(self, type_name: str = '', **kwargs) -> None:
