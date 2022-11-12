@@ -95,3 +95,36 @@ task installDependencies(type: Task) {
     }
   }
 }
+
+/* Freeze dependencies to current installed versions. */
+task freezeDependencies(type: Task) {
+  group = 'Dependencies'
+  description = 'Freeze dependencies to current installed versions'
+  doLast {
+    readDependencies()
+    def output = new ByteArrayOutputStream()
+    exec {
+      commandLine rootProject.python, '-m', 'pip', 'freeze'
+      standardOutput = output;
+    }
+    def allDeps = [:]
+    output.toString().split('\n').each { line ->
+      def dep = null
+      if (dep = line =~ /([a-zA-Z0-9-_.]+)==([0-9]+(\.[0-9]+){0,4})/) {
+        dep.each {
+          allDeps["${it[1]}"] = "${it[2]}"
+        }
+      }
+      else if (dep = line =~ /([a-zA-Z0-9-_.]+) @ (file:\/{2,3}.+)/) {
+        dep.each {
+          println("Local dependency link -> $line.")
+          allDeps["${it[1]}"] = "latest"
+        }
+      }
+    }
+    println("\nFreezing [$project.name] Dependencies\n")
+    deps.each { dep ->
+      println("package: ${dep.package}, version: " + allDeps["${dep.package}"] + ", ${dep.space}: global, mode: ${dep.mode}")
+    }
+  }
+}
