@@ -19,6 +19,7 @@ from typing import List
 from hspylib.core.datasource.crud_entity import CrudEntity
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.text_tools import snakecase
 
 
 class EntityTest(CrudEntity):
@@ -45,9 +46,17 @@ class EntityTest(CrudEntity):
     def __str__(self) -> str:
         return f"id={self.id} comment={self.comment} lucky_number={self.lucky_number} working={self.is_working}"
 
+    def key(self) -> str:
+        return snakecase(self.__class__.__name__, screaming=True) + '_' + \
+             self.identity.as_column_set() \
+            .replace(' ', '') \
+            .replace('=', '_') \
+            .upper()
+
 
 if __name__ == '__main__':
     t1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
     t2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
     print(t1, t1.values)
     print(t2, t2.values)
+    print(t1.key(), t2.key())
