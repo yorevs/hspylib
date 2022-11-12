@@ -97,24 +97,22 @@ class PostgresRepository(DBRepository[T, DBConfiguration]):
               f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
-    def save(self, entity: T, exclude_update: Optional[Set[str]] = None) -> None:
+    def save(self, entity: T) -> None:
         columns, ids = entity.as_columns(), set(entity.identity.attributes)
-        excluded = (exclude_update or set()).union(ids)
         sql = f"INSERT INTO " \
               f"{self.table_name()} ({columns}) VALUES {entity.values} " \
               f"ON CONFLICT ({','.join(ids)}) " \
-              f"DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=excluded)}"
+              f"DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=ids)}"
         self.execute(sql)
 
-    def save_all(self, entities: List[T], exclude_update: Optional[Set[str]] = None) -> None:
+    def save_all(self, entities: List[T]) -> None:
         values, sample = [], entities[0]
         columns, ids = sample.as_columns(), set(sample.identity.attributes)
-        excluded = (exclude_update or set()).union(ids)
         list(map(lambda e: values.append(str(e.values)), entities))
         sql = f"INSERT INTO " \
               f"{self.table_name()} ({columns}) VALUES {', '.join(values)} " \
               f"ON CONFLICT ({','.join(ids)}) " \
-              f"DO UPDATE SET {sample.as_column_set(prefix='EXCLUDED.', exclude=excluded)}"
+              f"DO UPDATE SET {sample.as_column_set(prefix='EXCLUDED.', exclude=ids)}"
         self.execute(sql)
 
     def find_all(

@@ -9,6 +9,7 @@ __all__ = [
   'config', 
   'datasource', 
   'enums', 
-  'metaclass'
+  'metaclass', 
+  'tools'
 ]
 __version__ = '0.11.121'

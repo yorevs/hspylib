@@ -20,8 +20,8 @@ import sys
 import unittest
 from textwrap import dedent
 
+from hspylib.core.datasource.db_configuration import DBConfiguration
 from hspylib.core.datasource.identity import Identity
-from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
 from hspylib.core.tools.commons import log_init
 from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
@@ -38,7 +38,7 @@ class TestClass(unittest.TestCase):
     def setUpClass(cls) -> None:
         log_init(file_enable=False, console_enable=True)
         resource_dir = '{}/resources'.format(TEST_DIR)
-        config = SQLiteConfiguration(resource_dir, profile="test")
+        config = DBConfiguration(resource_dir, profile="test")
         log.info(config)
         repository = SQLiteRepositoryTest(config)
         repository.execute(dedent("""
@@ -62,9 +62,9 @@ class TestClass(unittest.TestCase):
     # Test updating a single object from firebase.
     def test_should_update_sqlite(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        self.repository.save(test_entity, exclude_update={'id'})
+        self.repository.save(test_entity)
         test_entity.comment = 'Updated My-Test Data'
-        self.repository.save(test_entity, exclude_update={'id'})
+        self.repository.save(test_entity)
         result_set = self.repository.find_all(filters=Namespace(by_id=f"id = {quote(test_entity.id)}"))
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
@@ -82,8 +82,8 @@ class TestClass(unittest.TestCase):
         self.repository.save_all([test_entity_1, test_entity_2])
         result_set = self.repository.find_all()
         self.assertIsNotNone(result_set, "Result set is none")
-        self.assertIsInstance(result_set, list)
-        self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
+        expected_list = [test_entity_1, test_entity_2]
+        self.assertCountEqual(expected_list, result_set)
 
     # Test selecting a single object from firebase.
     def test_should_select_one_from_sqlite(self) -> None:

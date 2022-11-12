@@ -34,6 +34,7 @@ class TestClass(unittest.TestCase):
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:
+        os.environ['DATASOURCE_PORT'] = '443'
         log_init(file_enable=False, console_enable=True)
         config = FirebaseConfiguration.of_file(os.environ.get('HHS_FIREBASE_CONFIG_FILE'))
         log.info(config)

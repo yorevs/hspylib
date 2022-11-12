@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
+  'cassandra', 
   'crud_entity', 
   'crud_repository', 
   'crud_service', 
@@ -14,6 +15,7 @@ __all__ = [
   'firebase', 
   'identity', 
   'mysql', 
+  'postgres', 
   'sqlite'
 ]
 __version__ = '0.11.121'
