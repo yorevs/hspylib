@@ -64,7 +64,7 @@ class TestClass(unittest.TestCase):
 
     # TEST CASES ----------
 
-    # Test updating a single row from the database.
+    # Test updating a single row from mysql.
     def test_should_update_mysql_database(self):
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
@@ -80,7 +80,7 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity.lucky_number, result_one.lucky_number)
         self.assertEqual(test_entity.is_working, result_one.is_working)
 
-    # Test selecting all rows from the database.
+    # Test selecting all rows from mysql.
     def test_should_select_all_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
@@ -90,7 +90,7 @@ class TestClass(unittest.TestCase):
         expected_list = [test_entity_1, test_entity_2]
         self.assertCountEqual(expected_list, result_set)
 
-    # Test selecting a single rows from the database.
+    # Test selecting a single row from mysql.
     def test_should_select_one_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
@@ -103,18 +103,19 @@ class TestClass(unittest.TestCase):
         self.assertEqual(test_entity_1.lucky_number, result_one.lucky_number)
         self.assertEqual(test_entity_1.is_working, result_one.is_working)
 
-    # Test deleting one row from the database.
+    # Test deleting one row from mysql.
     def test_should_delete_from_mysql(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
-        result_set = self.repository.find_by_id(test_entity.identity)
-        self.assertIsNotNone(result_set, "Result set is none")
-        self.assertIsInstance(result_set, EntityTest)
-        self.assertEqual(test_entity.id, result_set.id)
+        result_one = self.repository.find_by_id(test_entity.identity)
+        self.assertIsNotNone(result_one, "Result set is none")
+        self.assertIsInstance(result_one, EntityTest)
+        self.assertEqual(test_entity.id, result_one.id)
         self.repository.delete(test_entity)
-        result_set = self.repository.find_by_id(test_entity.identity)
-        self.assertIsNone(result_set, "Result set is not empty")
+        result_one = self.repository.find_by_id(test_entity.identity)
+        self.assertIsNone(result_one, "Result set is not empty")
 
+    # Test selecting from mysql using filters
     def test_should_select_using_filters_from_mysql(self) -> None:
         test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)

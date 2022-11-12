@@ -91,13 +91,13 @@ class TestClass(unittest.TestCase):
     def test_should_delete_from_firebase(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
         self.repository.save(test_entity)
-        result_set = self.repository.find_by_id(test_entity.identity)
-        self.assertIsNotNone(result_set, "Result set is none")
-        self.assertIsInstance(result_set, EntityTest)
-        self.assertEqual(test_entity.id, result_set.id)
+        result_one = self.repository.find_by_id(test_entity.identity)
+        self.assertIsNotNone(result_one, "Result set is none")
+        self.assertIsInstance(result_one, EntityTest)
+        self.assertEqual(test_entity.id, result_one.id)
         self.repository.delete(test_entity)
-        result_set = self.repository.find_by_id(test_entity.identity)
-        self.assertIsNone(result_set, "Result set is not empty")
+        result_one = self.repository.find_by_id(test_entity.identity)
+        self.assertIsNone(result_one, "Result set is not empty")
 
     # Test selecting from firebase using filters
     def test_should_select_using_filters_from_firebase(self) -> None:
