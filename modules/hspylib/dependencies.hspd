@@ -9,6 +9,8 @@
 
 /* Application dependencies */
 
+package: cassandra-driver, version: latest, space: user
+package: psycopg2, version: latest, space: user
 package: requests, version: latest, space: user
 package: retry, version: latest, space: user
 package: urllib3, version: latest, space: user

@@ -14,7 +14,7 @@
 """
 import json
 from abc import abstractmethod
-from typing import Generic, Iterable, List, Optional, Set, TypeVar
+from typing import Generic, List, Optional, Set, TypeVar
 
 from hspylib.core.datasource.crud_entity import CrudEntity
 from hspylib.core.datasource.identity import Identity
@@ -49,11 +49,11 @@ class CrudRepository(Generic[T], metaclass=Singleton):
         """TODO"""
 
     @abstractmethod
-    def save(self, entity: T, exclude_update: Optional[Iterable[str]] = None) -> None:
+    def save(self, entity: T) -> None:
         """TODO"""
 
     @abstractmethod
-    def save_all(self, entities: List[T], exclude_update: Optional[Iterable[str]] = None) -> None:
+    def save_all(self, entities: List[T]) -> None:
         """TODO"""
 
     @abstractmethod

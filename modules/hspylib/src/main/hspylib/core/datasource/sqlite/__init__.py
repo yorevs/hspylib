@@ -6,7 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'sqlite_configuration', 
   'sqlite_repository'
 ]
 __version__ = '0.11.121'

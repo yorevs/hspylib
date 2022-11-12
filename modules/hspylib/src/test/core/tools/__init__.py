@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.121
 #
-# Package: test.tools
+# Package: test.core.tools
 """Package initialization."""
 
 __all__ = [

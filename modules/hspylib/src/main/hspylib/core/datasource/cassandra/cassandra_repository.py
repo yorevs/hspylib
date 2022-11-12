@@ -4,8 +4,8 @@
 """
    @project: HSPyLib
    @Package: main.hspylib.core.datasource
-      @file: mysql_repository.py
-   @created: Tue, 4 May 2021
+      @file: postgres_repository.py
+   @created: Sat, 12 Nov 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -16,14 +16,14 @@ import contextlib
 import logging as log
 from typing import List, Optional, Set, Tuple, TypeVar
 
-import pymysql
-from pymysql import Connection, Error
-from pymysql.cursors import Cursor
+from cassandra import UnresolvableContactPoints
+from cassandra.auth import PlainTextAuthProvider
+from cassandra.cluster import Cluster, NoHostAvailable
 from retry import retry
 
+from hspylib.core.datasource.cassandra.cassandra_configuration import CassandraConfiguration
 from hspylib.core.datasource.crud_entity import CrudEntity
-from hspylib.core.datasource.db_configuration import DBConfiguration
-from hspylib.core.datasource.db_repository import DBRepository, ResultSet, Session
+from hspylib.core.datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from hspylib.core.datasource.identity import Identity
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
 from hspylib.core.tools.namespace import Namespace
@@ -32,22 +32,46 @@ from hspylib.core.tools.text_tools import quote
 T = TypeVar('T', bound=CrudEntity)
 
 
-class MySqlRepository(DBRepository[T, DBConfiguration]):
-    """Implementation of a data access layer for a MySql persistence store."""
+class CassandraRepository(DBRepository[T, CassandraConfiguration]):
+    """Implementation of a data access layer for a cassandra persistence store."""
 
-    def __init__(self, config: DBConfiguration):
+    def __init__(self, config: CassandraConfiguration):
         super().__init__(config)
+
+    @property
+    def secure_bundle_path(self) -> str:
+        return self._config.secure_bundle_path
+
+    @property
+    def protocol_version(self) -> int:
+        return self._config.protocol_version
+
+    @property
+    def connect_timeout(self) -> int:
+        return self._config.connect_timeout
+
+    @property
+    def default_timeout(self) -> int:
+        return self._config.default_timeout
 
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
         log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
-        conn = pymysql.connect(
-            host=self.hostname,
-            user=self.username,
-            port=self.port,
-            password=self.password,
-            database=self.database)
-        return conn, conn.cursor()
+        auth_provider = PlainTextAuthProvider(username=self.username, password=self.password)
+        if self.secure_bundle_path:
+            log.info(f"{self.logname} Using Astra Security Bundle: {self.secure_bundle_path}")
+            cloud_config = {'secure_connect_bundle': self.secure_bundle_path}
+            cursor = Cluster(protocol_version=self.protocol_version, auth_provider=auth_provider,
+                              cloud=cloud_config)
+        else:
+            log.info(f"{self.logname} Attempt to connect to Astra: "
+                     f"{self.username}@{self.hostname}:{self.port}/{self.database}")
+            cursor = Cluster(protocol_version=self.protocol_version, auth_provider=auth_provider,
+                              contact_points=[self.hostname], port=self.port)
+        session = cursor.connect()
+        cursor.connect_timeout = self.connect_timeout
+        session.default_timeout = self.default_timeout
+        return cursor, session
 
     @contextlib.contextmanager
     def _session(self) -> Session:
@@ -56,13 +80,12 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
             conn, dbs = self._create_session()
             log.debug(f"{self.logname} Successfully connected to database: {self.info} [ssid={hash(dbs)}]")
             yield dbs
-        except Error as err:
+        except (UnresolvableContactPoints, NoHostAvailable) as err:
             raise DatabaseConnectionError(f"Unable to open/execute-on database session => {err}") from err
         finally:
             if conn:
-                log.debug(f"{self.logname} Closing connection [ssid={hash(dbs)}]")
-                conn.commit()
-                conn.close()
+                log.debug(f"{self.logname} Shutting down connection [ssid={hash(dbs)}]")
+                conn.shutdown()
 
     def execute(self, sql_statement: str, **kwargs) -> Tuple[int, Optional[ResultSet]]:
         """TODO"""
@@ -72,10 +95,11 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
                 log.debug(f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
                           f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
                           f"\t|-Statement: {sql_statement}")
-                if (rows_affected := dbs.execute(sql_statement, **kwargs) or 0) > 0:
-                    list(map(rows.append, dbs))
-                return rows_affected, rows
-            except (pymysql.err.ProgrammingError, pymysql.err.OperationalError) as err:
+                rs = dbs.execute(sql_statement, **kwargs)
+                if rs.current_rows:
+                    list(map(rows.append, rs.current_rows))
+                return len(rs.current_rows), rows
+            except Exception as err:
                 raise DatabaseError(f"Unable to execute statement => {sql_statement}") from err
 
     def count(self) -> int:
@@ -87,30 +111,31 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
 
     def delete_by_id(self, entity_id: Identity) -> None:
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"DELETE FROM {self.table_name()} WHERE " + ' AND '.join(clauses)
+        sql = f"DELETE FROM {self.database}.{self.table_name()} WHERE " + ' AND '.join(clauses)
         self.execute(sql)
 
     def delete_all(self, entities: List[T]) -> None:
         values, s = [], entities[0]
         list(map(lambda e: values.append(str(e.values)), entities))
-        sql = f"DELETE FROM " \
-              f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
+        sql = f"DELETE FROM {self.database}.{self.table_name()} " \
+              f"WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
     def save(self, entity: T) -> None:
         columns, ids = entity.as_columns(), set(entity.identity.attributes)
-        sql = f"INSERT INTO " \
-              f"{self.table_name()} ({columns}) VALUES {entity.values} AS new " \
-              f"ON DUPLICATE KEY UPDATE {entity.as_column_set(prefix='new.', exclude=ids)}"
+        sql = f"INSERT INTO {self.database}.{self.table_name()} " \
+              f"({columns}) VALUES {entity.values} "
         self.execute(sql)
 
     def save_all(self, entities: List[T]) -> None:
-        values, sample = [], entities[0]
+        values, sample, inserts = [], entities[0], []
         columns, ids = sample.as_columns(), set(sample.identity.attributes)
         list(map(lambda e: values.append(str(e.values)), entities))
-        sql = f"INSERT INTO " \
-              f"{self.table_name()} ({columns}) VALUES {', '.join(values)} AS new " \
-              f"ON DUPLICATE KEY UPDATE {sample.as_column_set(prefix='new.', exclude=ids)}"
+        list(map(lambda v: inserts.append(
+            f"INSERT INTO {self.database}.{self.table_name()} ({columns}) VALUES {v} "), values))
+        sql = f"BEGIN BATCH " \
+              f"{'; '.join(inserts)} " \
+              f"APPLY BATCH;"
         self.execute(sql)
 
     def find_all(
@@ -122,11 +147,11 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
 
         fields = '*' if not fields else ', '.join(fields)
         clauses = list(filter(None, [f for f in filters.values])) if filters else None
-        orders = list(filter(None, order_bys)) if order_bys else None
-        sql = f"SELECT {fields} FROM {self.table_name()} " \
+        orders = list(filter(None, order_bys)) if order_bys and clauses else None  # Order by require filters
+        sql = f"SELECT {fields} FROM {self.database}.{self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
               f"{('ORDER BY ' + ', '.join(orders)) if orders else ''} " \
-              f"LIMIT {limit} OFFSET {offset}"
+              f"LIMIT {limit}"
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))
 
@@ -137,7 +162,7 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
 
         fields = '*' if not fields else ', '.join(fields)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"SELECT {fields} FROM {self.table_name()} " \
+        sql = f"SELECT {fields} FROM {self.database}.{self.table_name()} " \
               f"WHERE {' AND '.join(clauses)}"
         result = next((e for e in self.execute(sql)[1]), None)
 

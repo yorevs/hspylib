@@ -67,9 +67,9 @@ class TestClass(unittest.TestCase):
     # Test updating a single row from the database.
     def test_should_update_database(self):
         test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        self.repository.save(test_entity, exclude_update={'id'})
+        self.repository.save(test_entity)
         test_entity.comment = 'Updated My-Test Data'
-        self.repository.save(test_entity, exclude_update={'id'})
+        self.repository.save(test_entity)
         result_set = self.repository.find_all(filters=Namespace(by_id=f"id = {quote(test_entity.id)}"))
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertIsInstance(result_set, list)
@@ -87,8 +87,8 @@ class TestClass(unittest.TestCase):
         self.repository.save_all([test_entity_1, test_entity_2])
         result_set = self.repository.find_all()
         self.assertIsNotNone(result_set, "Result set is none")
-        self.assertIsInstance(result_set, list)
-        self.assertTrue(all(elem in result_set for elem in [test_entity_1, test_entity_2]))
+        expected_list = [test_entity_1, test_entity_2]
+        self.assertCountEqual(expected_list, result_set)
 
     # Test selecting a single rows from the database.
     def test_should_select_one_from_mysql(self) -> None:

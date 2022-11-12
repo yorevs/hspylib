@@ -19,9 +19,9 @@ from sqlite3 import Error
 from typing import List, Optional, Set, Tuple, TypeVar
 
 from hspylib.core.datasource.crud_entity import CrudEntity
+from hspylib.core.datasource.db_configuration import DBConfiguration
 from hspylib.core.datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from hspylib.core.datasource.identity import Identity
-from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
 from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
@@ -29,23 +29,23 @@ from hspylib.core.tools.text_tools import quote
 T = TypeVar('T', bound=CrudEntity)
 
 
-class SQLiteRepository(DBRepository[T, SQLiteConfiguration]):
+class SQLiteRepository(DBRepository[T, DBConfiguration]):
     """Implementation of a data access layer for a SQLite persistence store."""
 
-    def __init__(self, config: SQLiteConfiguration):
+    def __init__(self, config: DBConfiguration):
         super().__init__(config)
 
     @property
-    def db_file(self) -> str:
-        return self._config.db_file
+    def database(self) -> str:
+        return self._config.database
 
     @property
     def info(self) -> str:
-        return f"{self.db_file}"
+        return f"{self.database}"
 
     def _create_session(self) -> Tuple[Connection, Cursor]:
         log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
-        conn = sqlite3.connect(self.db_file)
+        conn = sqlite3.connect(self.database)
         return conn, conn.cursor()
 
     @contextlib.contextmanager
@@ -54,13 +54,13 @@ class SQLiteRepository(DBRepository[T, SQLiteConfiguration]):
         conn, dbs = None, None
         try:
             conn, dbs = self._create_session()
-            log.debug(f"{self.logname} Successfully connected to database: {self.info} [{self.db_file}]")
+            log.debug(f"{self.logname} Successfully connected to database: {self.info} [{self.database}]")
             yield dbs
         except Error as err:
             raise DatabaseConnectionError(f"Unable to open/execute-on database session => {err}") from err
         finally:
             if conn:
-                log.debug(f"{self.logname} Closing connection [ssid={self.db_file}]")
+                log.debug(f"{self.logname} Closing connection [ssid={self.database}]")
                 conn.commit()
                 conn.close()
 
@@ -95,22 +95,20 @@ class SQLiteRepository(DBRepository[T, SQLiteConfiguration]):
               f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
-    def save(self, entity: T, exclude_update: Optional[Set[str]] = None) -> None:
+    def save(self, entity: T) -> None:
         columns, ids = entity.as_columns(), set(entity.identity.attributes)
-        excluded = (exclude_update or set()).union(ids)
         sql = f"INSERT INTO " \
               f"{self.table_name()} ({columns}) VALUES {entity.values} " \
-              f"ON CONFLICT DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=excluded)}"
+              f"ON CONFLICT DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=ids)}"
         self.execute(sql)
 
-    def save_all(self, entities: List[T], exclude_update: Optional[Set[str]] = None) -> None:
+    def save_all(self, entities: List[T]) -> None:
         values, sample = [], entities[0]
         columns, ids = sample.as_columns(), set(sample.identity.attributes)
-        excluded = (exclude_update or set()).union(ids)
         list(map(lambda e: values.append(str(e.values)), entities))
         sql = f"INSERT INTO " \
               f"{self.table_name()} ({columns}) VALUES {', '.join(values)} " \
-              f"ON CONFLICT DO UPDATE SET {sample.as_column_set(prefix='EXCLUDED.', exclude=excluded)}"
+              f"ON CONFLICT DO UPDATE SET {sample.as_column_set(prefix='EXCLUDED.', exclude=ids)}"
         self.execute(sql)
 
     def find_all(

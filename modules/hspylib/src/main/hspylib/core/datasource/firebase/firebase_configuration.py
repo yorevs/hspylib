@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: main.crud.db.firebase
+   @Package: main.hspylib.core.datasource
       @file: firebase_configuration.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -28,7 +28,7 @@ from hspylib.modules.fetch.fetch import get
 
 
 class FirebaseConfiguration(AppConfigs):
-    """Represents a Firebase project configuration"""
+    """Represents a Firebase datasource configuration"""
 
     CONFIG_FORMAT = dedent("""
     # Your Firebase configuration:

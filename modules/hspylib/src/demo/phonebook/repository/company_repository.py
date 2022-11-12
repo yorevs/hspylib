@@ -13,14 +13,14 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
+from hspylib.core.datasource.db_configuration import DBConfiguration
 from hspylib.core.datasource.sqlite.sqlite_repository import SQLiteRepository
 from phonebook.entity.Company import Company
 
 
 class CompanyRepository(SQLiteRepository[Company]):
 
-    def __init__(self, config: SQLiteConfiguration):
+    def __init__(self, config: DBConfiguration):
         super().__init__(config)
 
     def table_name(self) -> str:

@@ -2,12 +2,11 @@
 #
 # hspylib v0.11.121
 #
-# Package: test
+# Package: main.hspylib.core.datasource.cassandra
 """Package initialization."""
 
 __all__ = [
-  'core', 
-  'modules', 
-  'shared'
+  'cassandra_configuration', 
+  'cassandra_repository'
 ]
 __version__ = '0.11.121'

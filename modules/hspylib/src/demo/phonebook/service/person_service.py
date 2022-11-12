@@ -15,7 +15,7 @@
 """
 
 from hspylib.core.datasource.crud_service import CrudService
-from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
+from hspylib.core.datasource.db_configuration import DBConfiguration
 from phonebook.__classpath__ import _Classpath
 from phonebook.entity.Person import Person
 from phonebook.repository.person_repository import PersonRepository
@@ -24,6 +24,6 @@ from phonebook.repository.person_repository import PersonRepository
 class PersonService(CrudService[Person]):
 
     def __init__(self) -> None:
-        cfg = SQLiteConfiguration(str(_Classpath.resource_dir()))
+        cfg = DBConfiguration(str(_Classpath.resource_dir()))
         repository = PersonRepository(cfg)
         super().__init__(repository)
