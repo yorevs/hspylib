@@ -3,7 +3,7 @@
 ## Your mature python application
 
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
-[![Release](https://badgen.net/badge/release/v0.11.121/gray)](CHANGELOG.md#unreleased)
+[![Release](https://badgen.net/badge/release/v0.11.123/gray)](CHANGELOG.md#unreleased)
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/yorevs/hspylib)
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     print(str(sel))
 ```
 
-![MenuSelect](doc/images/mselect.png "MenuSelect")
+![MenuSelect](doc/images/screenshots/mselect.png "MenuSelect")
 
 A menu choose example:
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     print(str(sel))
 ```
 
-![MenuChoose](doc/images/mchoose.png "MenuChoose")
+![MenuChoose](doc/images/screenshots/mchoose.png "MenuChoose")
 
 A Dashboard example:
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
   result = mdashboard(dashboard_items, 4)
 ```
 
-![MenuDashboard](doc/images/mdashboard.png "MenuDashboard")
+![MenuDashboard](doc/images/screenshots/mdashboard.png "MenuDashboard")
 
 A form input example
 
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     print(result.__dict__)
 ```
 
-![MenuInput](doc/images/minput.png "MenuInput")
+![MenuInput](doc/images/screenshots/minput.png "MenuInput")
 
 And many other cool features like repositories, Qt and CRUD helpers, etc...
 

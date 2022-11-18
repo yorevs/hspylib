@@ -13,21 +13,22 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 
-__name__ == '__main__':
-h = [
-    'String',
-    'Number',
-    'Boolean',
-    'That`s a big Integer Column Header'
-]
-data = [
-    ('One', 1, True, 2),
-    ('Two', 2, False, 3),
-    ('Three, four and five', 3, True, 3),
-]
-tr = TableRenderer(h, data, 'TableRenderer example of usage')
-tr.adjust_sizes_by_largest_cell()
-tr.set_header_alignment(TableRenderer.TextAlignment.CENTER)
-tr.set_cell_alignment(TableRenderer.TextAlignment.LEFT)
-tr.render()
+if __name__ == '__main__':
+    h = [
+        'String',
+        'Number',
+        'Boolean',
+        'That`s a big Integer Column Header'
+    ]
+    data = [
+        ('One', 1, True, 2),
+        ('Two', 2, False, 3),
+        ('Three, four and five', 3, True, 3),
+    ]
+    tr = TableRenderer(h, data, 'TableRenderer example of usage')
+    tr.adjust_sizes_by_largest_cell()
+    tr.set_header_alignment(TableRenderer.TextAlignment.CENTER)
+    tr.set_cell_alignment(TableRenderer.TextAlignment.LEFT)
+    tr.render()

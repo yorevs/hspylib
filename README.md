@@ -41,7 +41,7 @@ if __name__ == '__main__':
     print(str(sel))
 ```
 
-![MenuSelect](doc/images/mselect.png "MenuSelect")
+![MenuSelect](doc/images/screenshots/mselect.png "MenuSelect")
 
 A menu choose example:
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     print(str(sel))
 ```
 
-![MenuChoose](doc/images/mchoose.png "MenuChoose")
+![MenuChoose](doc/images/screenshots/mchoose.png "MenuChoose")
 
 A Dashboard example:
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
   result = mdashboard(dashboard_items, 4)
 ```
 
-![MenuDashboard](doc/images/mdashboard.png "MenuDashboard")
+![MenuDashboard](doc/images/screenshots/mdashboard.png "MenuDashboard")
 
 A form input example
 
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     print(result.__dict__)
 ```
 
-![MenuInput](doc/images/minput.png "MenuInput")
+![MenuInput](doc/images/screenshots/minput.png "MenuInput")
 
 And many other cool features like repositories, Qt and CRUD helpers, etc...
 

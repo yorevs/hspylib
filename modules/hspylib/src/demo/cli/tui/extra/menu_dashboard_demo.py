@@ -15,9 +15,9 @@
 """
 
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
-from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
+from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard, MenuDashBoard
 
-__name__ == '__main__':
+if __name__ == '__main__':
 # @formatter:off
     dashboard_items = MenuDashBoard.builder() \
         .item() \

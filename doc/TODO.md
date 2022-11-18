@@ -5,9 +5,6 @@
 1. Safe formatting string
 2. Update all README.md.
 3. Improve TUI -> extra with settings and move parameters to kwargs.
-4. Check if execute SQLs, use params instead of values inside sql string.
-5. Add a repository for SQLite db + tests.
-6. Add a repository for Postgres db + tests.
 
 ## HSPYLIB-CFMAN
 
