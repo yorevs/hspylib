@@ -13,8 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.modules.cli.tui.menu.menu import Menu
-= """%ED2%%HOM%
+from hspylib.modules.cli.tui.menu.menu import Menu= """%ED2%%HOM%
 {}
 
 %GREEN%[0]%NC% Back

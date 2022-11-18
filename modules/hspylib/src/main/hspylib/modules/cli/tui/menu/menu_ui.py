@@ -36,10 +36,10 @@ class MenuUi:
         while not self.done:
             if self.current:
                 self.next = self.current.execute()
-                if self.next is None:
-                    self.done = True
-                else:
+                if self.next:
                     self.change_menu(self.next)
+                else:
+                    self.done = True
             else:
                 self.done = True
 

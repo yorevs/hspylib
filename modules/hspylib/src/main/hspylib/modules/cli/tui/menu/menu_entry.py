@@ -15,7 +15,9 @@
 
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_item import MenuItem
-= """%ED2%%HOM%
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+
+MENU_TPL = """%ED2%%HOM%
 {}
 
 {}
@@ -29,7 +31,10 @@ class MenuEntry(MenuItem):
         super().__init__(parent, title)
         title_len = round(len(title) / 2) + 2
         self.menu_data = MENU_TPL.format(
-            f"{color.placeholder()}{'-=' * title_len}\n  {self.title}\n{'-=' * title_len}",
+            f"{color.placeholder()}"
+            f"{'-=' * title_len}\n  "
+            f"{self.title}\n"
+            f"{'-=' * title_len}",
             '\n'.join([str(value) for key, value in items.items()])
         )
         self.options = range(0, len(items))

@@ -8,10 +8,10 @@ services:
     hostname: astra-db
     restart: on-failure
     healthcheck:
-          test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
-          interval: 30s
-          timeout: 10s
-          retries: 5
+      test: [ "CMD-SHELL", "[ $$(nodetool statusgossip) = running ]" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     ports:
       - "9042:9042"
     mem_limit: 2G

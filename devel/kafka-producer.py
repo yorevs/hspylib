@@ -9,12 +9,14 @@ settings = {
     'bootstrap.servers': 'localhost:9092'
 }
 
+
 def acked(err, msg):
     if err is not None:
         print("Failed to deliver message: {0}: {1}"
               .format(msg.value(), err.str()))
     else:
         print("Message produced: {0}".format(msg.value()))
+
 
 if __name__ == '__main__':
     topics = ['foobar']
@@ -30,4 +32,3 @@ if __name__ == '__main__':
         pass
 
     p.flush(30)
-

@@ -48,10 +48,10 @@ class EntityTest(CrudEntity):
 
     def key(self) -> str:
         return snakecase(self.__class__.__name__, screaming=True) + '_' + \
-             self.identity.as_column_set() \
-            .replace(' ', '') \
-            .replace('=', '_') \
-            .upper()
+               self.identity.as_column_set() \
+                   .replace(' ', '') \
+                   .replace('=', '_') \
+                   .upper()
 
 
 if __name__ == '__main__':

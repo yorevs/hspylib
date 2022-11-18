@@ -38,7 +38,7 @@ class SearchView(metaclass=Singleton):
     def by_name(self) -> None:
         MenuUtils.title('SEARCH BY NAME')
         try:
-            filters = Namespace(name=MenuUtils.prompt('Person or Company name'))
+            filters = Namespace(name=f"name='{MenuUtils.prompt('Person or Company name')}'")
             all_persons = self.person_service.list(filters=filters)
             all_companies = self.company_service.list(filters=filters)
             self.display_contacts(all_persons, all_companies)
@@ -48,7 +48,7 @@ class SearchView(metaclass=Singleton):
     def by_uuid(self) -> None:
         MenuUtils.title('SEARCH BY UUID')
         try:
-            filters = Namespace(uuid=MenuUtils.prompt('Person or Company uuid'))
+            filters = Namespace(uuid=f"uuid='{MenuUtils.prompt('Person or Company uuid')}'")
             all_persons = self.person_service.list(filters=filters)
             all_companies = self.company_service.list(filters=filters)
             self.display_contacts(all_persons, all_companies)
