@@ -1,16 +1,16 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.121
+# hspylib v0.11.123
 #
 # Package: demo.phonebook
 """Package initialization."""
 
 __all__ = [
-    '__classpath__',
-    '__main__',
-    'entity',
-    'repository',
-    'service',
-    'view'
+  '__classpath__', 
+  '__main__', 
+  'entity', 
+  'repository', 
+  'service', 
+  'view'
 ]
-__version__ = '0.11.121'
+__version__ = '0.11.123'

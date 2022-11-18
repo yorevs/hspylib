@@ -13,3 +13,8 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.modules.qt.promotions.htableview import HTableView
+
+
+class DemoTableRow(HTableView):
+    pass

@@ -50,17 +50,17 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
 
     @contextlib.contextmanager
     def _session(self) -> Session:
-        log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
+        log.debug(f"{self.logname} Attempt to connect to database: {self.database}")
         conn, dbs = None, None
         try:
             conn, dbs = self._create_session()
-            log.debug(f"{self.logname} Successfully connected to database: {self.info} [{self.database}]")
+            log.debug(f"{self.logname} Successfully connected to database: {self.info} [ssid={hash(dbs)}]")
             yield dbs
         except Error as err:
-            raise DatabaseConnectionError(f"Unable to open/execute-on database session => {err}") from err
+            raise DatabaseConnectionError(f"Unable to open/execute-on database: {self.database} => {err}") from err
         finally:
             if conn:
-                log.debug(f"{self.logname} Closing connection [ssid={self.database}]")
+                log.debug(f"{self.logname} Closing connection [ssid={hash(dbs)}]")
                 conn.commit()
                 conn.close()
 
