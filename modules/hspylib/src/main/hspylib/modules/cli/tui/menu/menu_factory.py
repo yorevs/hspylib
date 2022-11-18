@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Optional
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.tui.menu.menu import Menu
@@ -25,20 +26,29 @@ class MenuFactory(metaclass=Singleton):
     class MenuBuilder:
         """TODO"""
 
-        def __init__(self, parent_menu: Menu = None, menu_title: str = None):
+        def __init__(
+            self,
+            parent_menu: Optional[Menu] = None,
+            menu_title: str = ''):
+
             self.parent_menu = parent_menu
             self.menu_title = menu_title
             self.menu_options = {}
 
-        def with_option(self, option_text: str) -> MenuOption:
-            option_index = len(self.menu_options)
-            option = MenuOption(self, option_index, option_text)
-            self.menu_options[str(option_index)] = option
+        def with_option(self, text: str) -> MenuOption:
+            """TODO"""
+            index = len(self.menu_options)
+            option = MenuOption(self, index, text)
+            self.menu_options[str(index)] = option
             return option
 
         def build(self) -> Menu:
+            """TODO"""
             return MenuEntry(self.parent_menu, self.menu_options, self.menu_title)
 
     @staticmethod
-    def create(parent_menu: Menu = None, menu_title: str = None) -> MenuBuilder:
+    def create(
+        parent_menu: Optional[Menu] = None,
+        menu_title: str = '') -> MenuBuilder:
+
         return MenuFactory.MenuBuilder(parent_menu, menu_title)

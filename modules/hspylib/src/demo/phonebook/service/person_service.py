@@ -21,7 +21,7 @@ from phonebook.entity.Person import Person
 from phonebook.repository.person_repository import PersonRepository
 
 
-class PersonService(CrudService[Person]):
+class PersonService(CrudService[PersonRepository, Person]):
 
     def __init__(self) -> None:
         cfg = DBConfiguration(str(_Classpath.resource_dir()))

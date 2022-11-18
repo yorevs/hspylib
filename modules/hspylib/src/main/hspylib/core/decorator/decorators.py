@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   test.shared
+   @package: main.hspylib.core.decorator
       @file: decorators.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,7 +19,7 @@ import os
 import unittest
 from datetime import datetime, timedelta
 from math import ceil
-from typing import Callable
+from typing import Any, Callable
 
 from hspylib.core.tools.commons import str_to_bool
 
@@ -42,13 +42,14 @@ def temporized(func: Callable):
     """Log the time spent on the Callable invocation."""
 
     def timedelta_to_str(delta: timedelta) -> str:
-        """TODO"""
+        """Convert timedelta object into string"""
         parts = str(delta).split(':')
         h, m, s = parts[0], parts[1], parts[2][:-7]
         ms = int(ceil(int(parts[2][-6:]) / 1000))
         return f"{h:02s}[h] {m:02s}[m] {s:02s}[s] {ms:02d}[ms]"
 
-    def wrapper(*args):
+    def wrapper(*args) -> Any:
+        """Execute the callable and return"""
         start = datetime.now()
         ret = func(*args)
         log.debug(f"@@@ [{func.__name__}] Time elapsed\t{timedelta_to_str(datetime.now() - start)}")

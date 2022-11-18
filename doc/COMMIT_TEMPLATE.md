@@ -1,24 +1,24 @@
 Added features:
 
-  [Aa]dded <commit-message> [branch_name:{@author}]
+[Aa]dded <commit-message> [branch_name:{@author}]
 
 Changed code:
 
-  [Cc]hanged <commit-message> [branch_name:{@author}]
+[Cc]hanged <commit-message> [branch_name:{@author}]
 
 Deprecated code:
 
-  [Dd]eprecated <commit-message> [branch_name:{@author}]
+[Dd]eprecated <commit-message> [branch_name:{@author}]
 
 Removed code:
 
-  [Rr]emoved <commit-message> [branch_name:{@author}]
+[Rr]emoved <commit-message> [branch_name:{@author}]
 
 Bugfixes:
 
-  [Ff]ixed <commit-message> [branch_name:{@author}]
+[Ff]ixed <commit-message> [branch_name:{@author}]
 
 Security issues:
 
-  [Ss]ecurity <commit-message> [branch_name:{@author}]
+[Ss]ecurity <commit-message> [branch_name:{@author}]
 

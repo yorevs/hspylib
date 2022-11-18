@@ -28,6 +28,7 @@ from shared.redis_repository_test import RedisRepositoryTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
+
 @integration_test
 class TestClass(unittest.TestCase):
 
@@ -105,6 +106,7 @@ class TestClass(unittest.TestCase):
         expected_keys = [test_entity_1.key(), test_entity_2.key()]
         result_set = self.repository.keys('ENTITY_TEST_ID_*')
         self.assertCountEqual(expected_keys, result_set)
+
 
 # Program entry point.
 if __name__ == '__main__':

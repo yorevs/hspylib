@@ -52,4 +52,3 @@ class RedisConfiguration(AppConfigs):
     @property
     def ssl(self) -> bool:
         return self._ssl
-

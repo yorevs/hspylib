@@ -30,6 +30,7 @@ from hspylib.core.preconditions import check_not_none
 
 T = TypeVar('T', bound=CrudEntity)
 
+
 class RedisRepository(Generic[T]):
     """Implementation of a data access layer for a postgres persistence store.
     Ref.: https://github.com/redis/redis-py
@@ -81,7 +82,6 @@ class RedisRepository(Generic[T]):
             password=self.password)
         log.debug(f"{self.logname} Connection info: {conn.config_get('databases')}")
         return conn, conn.pipeline()
-
 
     @contextlib.contextmanager
     def pipeline(self) -> Pipeline:

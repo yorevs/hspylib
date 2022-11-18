@@ -16,7 +16,6 @@
 
 import sys
 
-from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
@@ -27,45 +26,58 @@ from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
-HERE = str(get_path(__file__))
-
 
 class Main(Application):
     """TODO"""
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=HERE)
-        resource_dir = str(_Classpath.resource_dir())
-        super().__init__(app_name, version, 'A simple CLI phonebook', resource_dir=resource_dir)
+        version = Version.load(load_dir=_Classpath.run_dir())
+        super().__init__(
+            app_name, version, 'A Simple CLI phonebook',
+            resource_dir=str(_Classpath.resource_dir()))
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
         # @formatter:off
         main_menu = MenuFactory \
             .create(menu_title=self._app_name) \
-                .with_option('Exit').on_trigger(lambda t: exit_app(0)) \
-                .with_option('Create').on_trigger(lambda x: create_menu) \
-                .with_option('Edit').on_trigger(lambda x: edit_menu) \
-                .with_option('Search').on_trigger(lambda x: search_menu) \
+                .with_option('Exit')\
+                    .on_trigger(lambda t: exit_app(0)) \
+                .with_option('Create')\
+                    .on_trigger(lambda x: create_menu) \
+                .with_option('Edit')\
+                    .on_trigger(lambda x: edit_menu) \
+                .with_option('Search')\
+                    .on_trigger(lambda x: search_menu) \
                 .build()
         create_menu = MenuFactory \
             .create(parent_menu=main_menu, menu_title='Create new contact') \
-                .with_option('Back').on_trigger(lambda x: main_menu) \
-                .with_option('Person').on_trigger(lambda t: create_view.person()) \
-                .with_option('Company').on_trigger(lambda t: create_view.company()) \
+                .with_option('Back')\
+                    .on_trigger(lambda x: main_menu) \
+                .with_option('Person')\
+                    .on_trigger(lambda t: create_view.person()) \
+                .with_option('Company')\
+                    .on_trigger(lambda t: create_view.company()) \
                 .build()
         edit_menu = MenuFactory \
             .create(parent_menu=main_menu, menu_title='Edit contact') \
-                .with_option('Back').on_trigger(lambda x: main_menu) \
-                .with_option('Person').on_trigger(lambda t: edit_view.person()) \
-                .with_option('Company').on_trigger(lambda t: edit_view.company()) \
+                .with_option('Back')\
+                    .on_trigger(lambda x: main_menu) \
+                .with_option('Person')\
+                    .on_trigger(lambda t: edit_view.person()) \
+                .with_option('Company')\
+                    .on_trigger(lambda t: edit_view.company()) \
                 .build()
         search_menu = MenuFactory \
             .create(parent_menu=main_menu, menu_title='Search contacts') \
-                .with_option('Back').on_trigger(lambda x: main_menu) \
-                .with_option('By name').on_trigger(lambda t: search_view.by_name()) \
-                .with_option('By uid').on_trigger(lambda t: search_view.by_uuid()) \
-                .with_option('List all').on_trigger(lambda t: search_view.list_all()) \
+                .with_option('Back')\
+                    .on_trigger(lambda x: main_menu) \
+                .with_option('By name')\
+                    .on_trigger(lambda t: search_view.by_name()) \
+                .with_option('By uid')\
+                    .on_trigger(lambda t: search_view.by_uuid()) \
+                .with_option('List all')\
+                    .on_trigger(lambda t: search_view.list_all()) \
                 .build()
         # @formatter:on
         mm = MenuUi(main_menu)

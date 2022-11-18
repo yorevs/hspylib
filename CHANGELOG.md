@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 [Semantic Versioning][semver].
 
 [kac]: https://keepachangelog.com/en/1.0.0/
+
 [semver]: https://semver.org/
 
 ## Unreleased
@@ -60,7 +61,8 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 * Improved return types
 * Reformat code + sync usage messages with sample.
 * Change docgen to avoid replacing existing headers
-* Removed ui package, creating cli under modules. Creating add-ins for main hspylib app. Moving some other files into a proper place
+* Removed ui package, creating cli under modules. Creating add-ins for main hspylib app. Moving some other files into a
+  proper place
 
 ### Fixed
 
@@ -135,7 +137,7 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 * Added font awesome.
 * Added minput.
 * Added mchoose.
-* Added mselect. 
+* Added mselect.
 * Added keyboard.
 * Added emojis.
 * Added vt100 package and files.
@@ -145,7 +147,9 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 * Added vt100 colors.
 * Added validators and company repo for phonebook demo.
 * Added gradle task to find packages.
+
 + Added phonebook demo.
+
 * Added hspylib demos.
 * Added tests for file db.
 * Added dynamic menus capacity.
@@ -169,7 +173,7 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 * Moved credentials from gradle file to environment variable.
 * Moved TODO into doc folder.
 * Improved library installation for publishing.
-* Moved requirements per project and subproject. 
+* Moved requirements per project and subproject.
 * Moved VERSION to .version per project and subproject
 * Removed app_endpoints.txt
 * Updated apps to use the new app FW.
