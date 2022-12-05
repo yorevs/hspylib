@@ -52,8 +52,7 @@ class QtApplication(Application):
     def _main(self, *params, **kwargs) -> int:
         """Execute the application's main statements"""
         self.main_view.show()
-        a = self.qapp.exec_()
-        return 0
+        return self.qapp.exec_()
 
     def _cleanup(self) -> None:
         QApplication.exit()

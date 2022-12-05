@@ -65,7 +65,7 @@ class ConsumerWorker(QThread):
         if self._started:
             self._worker_thread = threading.Thread(target=self._consume, args=(topics,))
             self._worker_thread.name = f"kafka-consumer-worker-{hash(self)}"
-            self._worker_thread.setDaemon(True)
+            self._worker_thread.daemon = True
             self._worker_thread.start()
 
     def is_started(self) -> bool:

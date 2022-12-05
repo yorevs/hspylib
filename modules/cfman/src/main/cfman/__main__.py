@@ -36,7 +36,7 @@ class Main(Application):
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # location of the .version file
-    VERSION_DIR = _Classpath.source_root()
+    VERSION_DIR = _Classpath.source_path()
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)

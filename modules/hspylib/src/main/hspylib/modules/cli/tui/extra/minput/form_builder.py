@@ -22,7 +22,7 @@ class FormBuilder:
     """TODO"""
 
     def __init__(self) -> None:
-        self.fields = list()
+        self.fields = []
 
     def field(self) -> Any:
         return FieldBuilder(self)

@@ -139,7 +139,7 @@ class MenuChoose(ABC):
         sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
         self.re_render = False
 
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,too-many-statements
     def _nav_input(self) -> chr:
         """TODO"""
 

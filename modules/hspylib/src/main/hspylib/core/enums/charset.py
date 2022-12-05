@@ -119,5 +119,5 @@ class Charset(Enumeration):
     # @formatter:on
 
     @property
-    def value(self) -> str:
+    def val(self) -> str:
         return str(super().value)

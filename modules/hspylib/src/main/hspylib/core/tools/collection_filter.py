@@ -81,15 +81,15 @@ class ElementFilter:
     def __repr__(self):
         return str(self)
 
-    def __key(self) -> Tuple[str, 'FilterCondition', FILTER_VALUE]:
+    def key(self) -> Tuple[str, 'FilterCondition', FILTER_VALUE]:
         return self.el_name, self.condition, self.el_value
 
     def __hash__(self) -> int:
-        return hash(self.__key())
+        return hash(self.key())
 
     def __eq__(self, other: 'ElementFilter') -> bool:
         if isinstance(other, self.__class__):
-            return self.__key() == other.__key()
+            return self.key() == other.key()
         return NotImplemented
 
     def matches(self, element: T) -> bool:
@@ -102,7 +102,7 @@ class ElementFilter:
             elif hasattr(element, '__dict__'):
                 entry = element.__dict__
             elif isinstance(element, tuple):
-                entry = {k: v for k, v in element}
+                entry = dict(element)
             return self.el_name in entry and self.condition.matches(entry[self.el_name], self.el_value)
         except (NameError, TypeError, AttributeError):
             return False
@@ -154,7 +154,7 @@ class CollectionFilter:
 
     def filter(self, data: Iterable[T]) -> Iterable[T]:
         """Filter the collection."""
-        filtered: Iterable[T] = data.__class__.__call__()
+        filtered: Iterable[T] = data.__class__()
         for element in data:
             if not self.should_filter(element):
                 if hasattr(filtered, 'append'):
@@ -165,7 +165,7 @@ class CollectionFilter:
 
     def filter_inverse(self, data: Iterable[T]) -> Iterable[T]:
         """Inverse filter the collection."""
-        filtered: Iterable[T] = data.__class__.__call__()
+        filtered: Iterable[T] = data.__class__()
         for element in data:
             if self.should_filter(element):
                 if hasattr(filtered, 'append'):

@@ -18,15 +18,15 @@ import logging as log
 from abc import abstractmethod
 from typing import Any, Generic, List, Optional, TypeVar
 
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.preconditions import check_not_none
+from hspylib.modules.fetch.fetch import delete, get, put
+from hspylib.modules.fetch.http_response import HttpResponse
 from requests.exceptions import HTTPError
 
 from datasource.crud_entity import CrudEntity
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
 from datasource.identity import Identity
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.preconditions import check_not_none
-from hspylib.modules.fetch.fetch import delete, get, put
-from hspylib.modules.fetch.http_response import HttpResponse
 
 T = TypeVar('T', bound=CrudEntity)
 
@@ -50,10 +50,10 @@ class FirebaseRepository(Generic[T]):
         """Quote or double quote the value according to the value type. """
         if isinstance(value, bool):
             return f'{str(value).lower()}'
-        elif isinstance(value, int | float):
+        if isinstance(value, int | float):
             return str(value)
-        else:
-            return f'"{value}"' if value.startswith('\'') and value.endswith('\'') else f"'{value}'"
+
+        return f'"{value}"' if value.startswith('\'') and value.endswith('\'') else f"'{value}'"
 
     def __init__(self, config: FirebaseConfiguration):
         self._payload = None
@@ -68,7 +68,7 @@ class FirebaseRepository(Generic[T]):
     @property
     def logname(self) -> str:
         """TODO"""
-        return self.__class__.__name__.split('_')[0]
+        return self.__class__.__name__.split('_', maxsplit=1)[0]
 
     @property
     def config(self) -> FirebaseConfiguration:

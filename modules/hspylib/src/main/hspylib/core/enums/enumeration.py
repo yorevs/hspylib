@@ -56,13 +56,13 @@ class Enumeration(Enum):
     def __repr__(self):
         return str(self)
 
-    def __key(self) -> Tuple[str, Any]:
+    def key(self) -> Tuple[str, Any]:
         return self.name, self.value
 
     def __hash__(self) -> int:
-        return hash(self.__key())
+        return hash(self.key())
 
     def __eq__(self, other: E) -> bool:
         if isinstance(other, self.__class__):
-            return self.__key() == other.__key()
+            return self.key() == other.key()
         return NotImplemented

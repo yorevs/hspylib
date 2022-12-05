@@ -73,6 +73,7 @@ class HToolBox(QToolBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._pages = []
+        self._targetSize = None
 
     @cached_property
     def animation(self):
@@ -103,8 +104,9 @@ class HToolBox(QToolBox):
                 self._pages[index].finalize()
             super().setCurrentIndex(index)
             return
-        elif self.animation.state():
+        if self.animation.state():
             return
+
         self._oldPage = self._pages[self.currentIndex()]
         self._oldPage.begin_hide(self.layout().spacing())
         self._newPage = self._pages[index]
@@ -162,7 +164,7 @@ class HToolBox(QToolBox):
         if not self.count():
             self._targetSize = 0
             return
-        left, top, right, bottom = self.getContentsMargins()
+        _, top, _, bottom = self.getContentsMargins()
         base_height = (self._pages[0].button.sizeHint().height() + self.layout().spacing())
         self._targetSize = self.height() - top - bottom - base_height * self.count()
 

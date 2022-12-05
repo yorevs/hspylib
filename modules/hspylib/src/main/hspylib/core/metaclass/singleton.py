@@ -23,23 +23,24 @@ from hspylib.core.preconditions import check_not_none
 SINGLETON = TypeVar('SINGLETON', bound=Union[Type, 'Singleton'])
 
 
-# pylint: disable=bad-mcs-classmethod-argument
 class Singleton(Type):
     """Singleton pattern is a software design pattern that restricts the instantiation of a class to a singular
     instance. This metaclass enables a class to be singleton."""
 
     _instances = {}
 
+
+    # pylint: disable=bad-mcs-method-argument
     def __call__(self, *args, **kwargs):
         """Invoke the class constructor or return the instance if it exists."""
         if not Singleton.has_instance(self):
             try:
-                instance = super(Singleton, self).__call__(*args, **kwargs)
+                instance = super().__call__(*args, **kwargs)
                 check_not_none(instance, f'Unable to create Singleton instance: {self}')
                 setattr(self, 'INSTANCE', instance)
                 Singleton._instances[self.__name__] = instance
                 log.debug('Created a new Singleton instance: %s.%s', self.__module__, self.__name__)
-            except Exception as err:  # pylint: disable=broad-except
+            except Exception as err:
                 raise HSBaseException(f"Failed to create singleton instance: '{self.__name__}'", err) from err
         return Singleton._instances[self.__name__]
 
@@ -51,7 +52,7 @@ class Singleton(Type):
     @classmethod
     def del_instance(cls, clazz: SINGLETON) -> None:
         """Deletes the singleton instance. This method should be used only for testing purposes."""
-        if any(m in sys.modules.keys() for m in ['unittest', 'pytest']):
+        if any(m in sys.modules for m in ['unittest', 'pytest']):
             if Singleton.has_instance(clazz):
                 log.warning('Deleted an existing Singleton instance: %s.%s', cls.__module__, cls.__name__)
                 del cls._instances[clazz.__name__]

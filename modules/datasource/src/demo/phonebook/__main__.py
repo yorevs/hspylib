@@ -32,10 +32,10 @@ class Main(Application):
     """TODO"""
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=_Classpath.run_dir())
+        version = Version.load(load_dir=_Classpath.run_path())
         super().__init__(
             app_name, version, 'A Simple CLI phonebook',
-            resource_dir=str(_Classpath.resource_dir()))
+            resource_dir=str(_Classpath.resource_path()))
 
     def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()

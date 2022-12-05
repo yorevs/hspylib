@@ -18,13 +18,14 @@ import sqlite3
 from sqlite3 import Error
 from typing import List, Optional, Set, Tuple, TypeVar
 
+from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from hspylib.core.tools.namespace import Namespace
+from hspylib.core.tools.text_tools import quote
+
 from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from datasource.identity import Identity
-from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.tools.namespace import Namespace
-from hspylib.core.tools.text_tools import quote
 
 T = TypeVar('T', bound=CrudEntity)
 
@@ -44,23 +45,23 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
         return f"{self.database}"
 
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
+        log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         conn = sqlite3.connect(self.database)
         return conn, conn.cursor()
 
     @contextlib.contextmanager
     def _session(self) -> Session:
-        log.debug(f"{self.logname} Attempt to connect to database: {self.database}")
+        log.debug("%s Attempt to connect to database: %s", self.logname, self.database)
         conn, dbs = None, None
         try:
             conn, dbs = self._create_session()
-            log.debug(f"{self.logname} Successfully connected to database: {self.info} [ssid={hash(dbs)}]")
+            log.debug("%s Successfully connected to database: %s [ssid=%d]", self.logname, self.info, hash(dbs))
             yield dbs
         except Error as err:
             raise DatabaseConnectionError(f"Unable to open/execute-on database: {self.database} => {err}") from err
         finally:
             if conn:
-                log.debug(f"{self.logname} Closing connection [ssid={hash(dbs)}]")
+                log.debug("%s Closing connection [ssid=%d]", self.logname, hash(dbs))
                 conn.commit()
                 conn.close()
 
@@ -119,7 +120,7 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
         limit: int = 500, offset: int = 0) -> List[T]:
 
         fields = '*' if not fields else ', '.join(fields)
-        clauses = list(filter(None, [f for f in filters.values])) if filters else None
+        clauses = list(filters.values) if filters else None
         orders = list(filter(None, order_bys)) if order_bys else None
         sql = f"SELECT {fields} FROM {self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \

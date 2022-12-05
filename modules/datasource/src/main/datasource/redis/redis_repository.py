@@ -18,15 +18,15 @@ from abc import abstractmethod
 from typing import Generic, List, Optional, Tuple, TypeVar
 
 import redis
+from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
 
 from datasource.crud_entity import CrudEntity
 from datasource.db_repository import Connection, Cursor
 from datasource.redis.redis_configuration import RedisConfiguration
-from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.preconditions import check_not_none
 
 T = TypeVar('T', bound=CrudEntity)
 
@@ -49,7 +49,7 @@ class RedisRepository(Generic[T]):
     @property
     def logname(self) -> str:
         """TODO"""
-        return self.__class__.__name__.split('_')[0]
+        return self.__class__.__name__.split('_', maxsplit=1)[0]
 
     @property
     def hostname(self) -> str:
@@ -74,27 +74,27 @@ class RedisRepository(Generic[T]):
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
         """TODO"""
-        log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
+        log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         conn = redis.Redis(
             ssl=self.ssl,
             host=self.hostname,
             port=self.port,
             password=self.password)
-        log.debug(f"{self.logname} Connection info: {conn.config_get('databases')}")
+        log.debug("%s Connection info: %s", self.logname, conn.config_get('databases'))
         return conn, conn.pipeline()
 
     @contextlib.contextmanager
     def pipeline(self) -> Pipeline:
         """TODO"""
-        conn, pipe = None, None
+        pipe = None
         try:
-            conn, pipe = self._create_session()
-            log.debug(f"{self.logname} Successfully connected to database: {str(self)} [ssid={hash(pipe)}]")
+            _, pipe = self._create_session()
+            log.debug("%s Successfully connected to database: %s [ssid=%d]", self.logname, str(self), hash(pipe))
             yield pipe
         except redis.exceptions.ConnectionError as err:
             raise DatabaseConnectionError(f"Unable to open/execute-on database session => {err}") from err
         except redis.exceptions.ResponseError as err:
-            log.error(f"{self.logname} Pipeline failed with: {err}")
+            log.error("%s Pipeline failed with: %s", self.logname, err)
         except Exception as err:
             raise DatabaseError(f"{self.logname} Unable to execute pipeline -> {err}") from err
         finally:
@@ -107,8 +107,7 @@ class RedisRepository(Generic[T]):
         with self.pipeline() as pipe:
             pipe.delete(*keys)
             ret_val = pipe.execute() or []
-            log.debug(f"{self.logname} "
-                      f"Executed a pipelined 'DEL' command and returned: {ret_val}")
+            log.debug("%s Executed a pipelined 'DEL' command and returned: %s", self.logname, ret_val)
             return ret_val[0] or 0
 
     def get(self, *keys: str) -> List[T]:
@@ -121,8 +120,8 @@ class RedisRepository(Generic[T]):
             ret_val = list(filter(None, pipe.execute()))
             if ret_val:
                 list(map(lambda e: result.append(self.to_entity_type(e)), ret_val[0]))
-            log.debug(f"{self.logname} "
-                      f"Executed '{count}' pipelined 'GET' command(s) and returned {len(result)} entries")
+            log.debug("%s Executed '%s' pipelined 'GET' command(s) and returned %d entries",
+                      self.logname, count, len(result))
             return result
 
     def get_one(self, key: str) -> Optional[T]:
@@ -131,8 +130,7 @@ class RedisRepository(Generic[T]):
         with self.pipeline() as pipe:
             pipe.get(key)
             ret_val = list(filter(None, pipe.execute()))
-            log.debug(f"{self.logname} "
-                      f"Executed a pipelined 'GET' command and returned: {ret_val}")
+            log.debug("%s Executed a pipelined 'GET' command and returned: %s", self.logname, ret_val)
             return self.to_entity_type(ret_val[0]) if ret_val else None
 
     def set(self, *entities: T) -> None:
@@ -142,25 +140,22 @@ class RedisRepository(Generic[T]):
             list(map(lambda e: pipe.set(self.build_key(e), str(e.as_dict())), entities))
             count = len(pipe)
             pipe.execute()
-            log.debug(f"{self.logname} "
-                      f"Executed '{count}' pipelined 'SET' command(s)")
+            log.debug("%s Executed '%d' pipelined 'SET' command(s)", self.logname, count)
 
     def flush_all(self) -> None:
         """TODO"""
         with self.pipeline() as pipe:
             pipe.flushall()
             pipe.execute()
-            log.debug(f"{self.logname} "
-                      f"Executed a FLUSHALL command")
+            log.debug("%s Executed a FLUSHALL command", self.logname)
 
     def keys(self, pattern: str) -> List[str]:
         """TODO"""
         with self.pipeline() as pipe:
             pipe.keys(pattern)
             ret_val = list(filter(None, pipe.execute()))
-            result = list(map(lambda k: str(k, Charset.UTF_8.value), ret_val[0])) if ret_val else []
-            log.debug(f"{self.logname} "
-                      f"Executed a KEYS command and returned: {len(ret_val)} entries")
+            result = list(map(lambda k: str(k, Charset.UTF_8.val), ret_val[0])) if ret_val else []
+            log.debug("%s Executed a KEYS command and returned: %d entries", self.logname, len(ret_val))
             return result
 
     @abstractmethod

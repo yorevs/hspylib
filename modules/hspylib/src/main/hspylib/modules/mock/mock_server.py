@@ -56,7 +56,7 @@ class MockServer(HTTPServer):
             encoding: Charset = Charset.UTF_8,
             content_type=ContentType.APPLICATION_JSON):
 
-            super().__init__(method, url, status_code, body, headers, encoding, content_type)
+            super().__init__(method, url, status_code, headers, body, encoding, content_type)
             self.parent = parent
             self.received_body = False
 

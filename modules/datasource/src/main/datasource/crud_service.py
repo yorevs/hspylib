@@ -14,11 +14,12 @@
 """
 from typing import Generic, List, Optional, TypeVar
 
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.namespace import Namespace
+
 from datasource.crud_entity import CrudEntity
 from datasource.crud_repository import CrudRepository
 from datasource.identity import Identity
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.namespace import Namespace
 
 E = TypeVar('E', bound=CrudEntity)
 R = TypeVar('R', bound=CrudRepository)

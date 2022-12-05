@@ -17,14 +17,13 @@ from os.path import basename
 from textwrap import dedent
 from typing import Optional
 
-from requests.structures import CaseInsensitiveDict
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from hspylib.core.tools.commons import dirname
 from hspylib.modules.fetch.fetch import get
+from requests.structures import CaseInsensitiveDict
 
 
 class FirebaseConfiguration(AppConfigs):

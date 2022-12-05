@@ -27,6 +27,7 @@ from hspylib.modules.cli.vt100.vt_utils import require_terminal
 require_terminal()
 
 
+# pylint: disable=multiple-statements
 class Keyboard(Enumeration):
     """Provides keyboard interaction with the terminal."""
 

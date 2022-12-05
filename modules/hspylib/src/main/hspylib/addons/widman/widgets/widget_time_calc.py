@@ -48,7 +48,7 @@ class WidgetTimeCalc(Widget):
         for tm in args:
             if not tm:
                 continue
-            elif re.match(r"[+-]", tm):
+            if re.match(r"[+-]", tm):
                 op = tm
             elif re.match(r"^([0-9]{1,2}:?)+", tm):
                 try:
@@ -86,10 +86,10 @@ class WidgetTimeCalc(Widget):
 
         if not args and not self._read_args():
             return ExitStatus.ABORTED
-        elif args and any(a in args for a in ['+h', '++help']):
+        if args and any(a in args for a in ['+h', '++help']):
             sysout(self.usage())
             return ExitStatus.SUCCESS
-        elif args and any(a in args for a in ['+v', '++version']):
+        if args and any(a in args for a in ['+v', '++version']):
             sysout(self.version())
             return ExitStatus.SUCCESS
 

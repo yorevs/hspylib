@@ -166,9 +166,8 @@ def is_reachable(
     try:
         if isinstance(urls, Tuple):
             return all(is_reachable(u) for u in urls)
-        else:
-            fetch(url=urls, method=HttpMethod.HEAD, timeout=timeout)
-            return True
+        fetch(url=urls, method=HttpMethod.HEAD, timeout=timeout)
+        return True
     except (ex.ConnectTimeout, ex.ReadTimeout, ex.InvalidURL) as err:
         print(err)
         return False

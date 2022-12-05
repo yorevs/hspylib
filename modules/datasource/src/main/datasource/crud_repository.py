@@ -16,10 +16,11 @@ import json
 from abc import abstractmethod
 from typing import Generic, List, Optional, Set, TypeVar
 
-from datasource.crud_entity import CrudEntity
-from datasource.identity import Identity
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.namespace import Namespace
+
+from datasource.crud_entity import CrudEntity
+from datasource.identity import Identity
 
 T = TypeVar('T', bound=CrudEntity)
 
@@ -30,7 +31,7 @@ class CrudRepository(Generic[T], metaclass=Singleton):
     @property
     def logname(self) -> str:
         """TODO"""
-        return self.__class__.__name__.split('_')[0]
+        return self.__class__.__name__.split('_', maxsplit=1)[0]
 
     @abstractmethod
     def count(self) -> int:

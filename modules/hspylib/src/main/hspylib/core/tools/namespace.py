@@ -32,7 +32,7 @@ class Namespace:
         self._index = 0
         list(map(self.setattr, kwargs.keys(), kwargs.values()))
 
-    def __key(self) -> Tuple[Any]:
+    def key(self) -> Tuple[Any]:
         return tuple(self.values)
 
     def __str__(self) -> str:
@@ -42,17 +42,17 @@ class Namespace:
         return str(self)
 
     def __hash__(self) -> int:
-        return hash(self.__key())
+        return hash(self.key())
 
     def __eq__(self, other: 'Namespace') -> bool:
         if isinstance(other, self.__class__):
-            return self.__key() == other.__key()
+            return self.key() == other.key()
         return NotImplemented
 
     def __getitem__(self, attribute_name: str) -> Any:
         return getattr(self, attribute_name)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.attributes)
 
     def __iter__(self) -> Iterator[Tuple[str, Any]]:
@@ -93,7 +93,7 @@ class Namespace:
     @property
     def attributes(self) -> Tuple[str]:
         attrs = list(filter(lambda name: self[name] is not None and not name.startswith(('_', '__')), vars(self)))
-        return tuple([a for a in attrs])
+        return tuple(a for a in attrs)
 
     @property
     def values(self) -> Tuple[Any]:
