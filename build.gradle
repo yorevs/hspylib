@@ -27,6 +27,7 @@ configurations {
 
 dependencies {
     project(':cfman')
+    project(':datasource')
     project(':firebase')
     project(':hspylib')
     project(':kafman')

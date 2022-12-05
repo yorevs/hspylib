@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: hspylib
-   @package: hspylib.main.hspylib.core.tools
+   @package: hspylib.hspylib.core.tools
       @file: collection_filter.py
    @created: Wed, 8 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

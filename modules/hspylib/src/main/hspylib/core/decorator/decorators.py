@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   @package: main.hspylib.core.decorator
+   @package: hspylib.core.decorator
       @file: decorators.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

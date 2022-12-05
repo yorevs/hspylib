@@ -7,7 +7,7 @@
       <env name="HSPYLIB_IT_DISABLED" value="False" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/test/core/datasource" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/datasource/src/test/datasource" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />

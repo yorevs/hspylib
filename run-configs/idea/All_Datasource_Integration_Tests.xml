@@ -7,13 +7,13 @@
       <env name="HSPYLIB_IT_DISABLED" value="False" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/test/core/datasource" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/datasource/src/test/datasource" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
-    <option name="_new_target" value="&quot;$PROJECT_DIR$/modules/hspylib/src/test/core/datasource&quot;" />
+    <option name="_new_target" value="&quot;datasource&quot;" />
     <option name="_new_targetType" value="&quot;PATH&quot;" />
     <method v="2" />
   </configuration>

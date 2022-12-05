@@ -5,7 +5,16 @@
     "**/__pycache__": true,
     "**/__pycache__.*": true,
     ".idea": true,
-    "run-configs": true
+    "run-configs": true,
+    "modules/hspylib/src/main/__pycache__": true,
+    "modules/hspylib/src/main/build": true,
+    "modules/hspylib/src/main/hspylib.egg-info": true,
+    "modules/hspylib/src/main/dist": true,
+    "**/*.egg-info": true,
+    "**/dist": true,
+    "**/dist.*": true,
+    "**/build": true,
+    "**/build.*": true
   },
   "python.linting.pylintEnabled": true
 }

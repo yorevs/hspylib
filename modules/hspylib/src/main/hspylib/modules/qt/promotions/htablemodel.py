@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: hspylib.main.hspylib.modules.qt.promotions
+   @package: hspylib.hspylib.modules.qt.promotions
       @file: htablemodel.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
