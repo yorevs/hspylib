@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.84
+# hspylib-kafman v0.9.85
 #
 # Package: main.kafman.core.exception
 """Package initialization."""
 
 __all__ = [
-    'exceptions'
+  'exceptions'
 ]
-__version__ = '0.9.84'
+__version__ = '0.9.85'

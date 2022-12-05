@@ -9,8 +9,6 @@
 
 /* Application dependencies */
 
-package: cassandra-driver, version: latest, space: user
-package: psycopg2, version: latest, space: user
 package: requests, version: latest, space: user
 package: retry, version: latest, space: user
 package: urllib3, version: latest, space: user
@@ -18,7 +16,6 @@ package: cryptocode, version: latest, space: user
 package: cryptography, version: latest, space: user
 package: emoji, version: latest, space: user
 package: getkey, version: latest, space: user
-package: PyMySQL, version: latest, space: user
 package: pyparsing, version: latest, space: user
 package: pyperclip, version: latest, space: user
 package: PyQt5, version: latest, space: user

@@ -17,12 +17,14 @@ from typing import Any, Dict, List, Tuple, Union
 
 import requests
 from requests import exceptions as ex
+from retry import retry
 
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
 
 
+@retry(tries=3, delay=1, backoff=3, max_delay=30, jitter=0.75)
 def fetch(
     url: str,
     method: HttpMethod = HttpMethod.GET,
@@ -32,7 +34,7 @@ def fetch(
     timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
     """ Do a request specified by method and according to parameters.
     :param url: The url to make the request.
-    :param method: The http method to be used [ GET, HEAD, POST, PUT, PATCH, DELETE ].
+    :param method: The http method to be used [ GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS ].
     :param headers: The http request headers.
     :param body: The http request body (payload).
     :param silent: Omits all informational messages.

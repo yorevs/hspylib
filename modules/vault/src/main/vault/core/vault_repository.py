@@ -15,8 +15,8 @@
 """
 from typing import Optional, Set
 
-from hspylib.core.datasource.identity import Identity
-from hspylib.core.datasource.sqlite.sqlite_repository import SQLiteRepository
+from datasource.identity import Identity
+from datasource.sqlite.sqlite_repository import SQLiteRepository
 from hspylib.core.tools.text_tools import quote
 
 from vault.entity.vault_entry import VaultEntry
@@ -25,8 +25,8 @@ from vault.entity.vault_entry import VaultEntry
 class VaultRepository(SQLiteRepository[VaultEntry]):
 
     @property
-    def db_file(self) -> str:
-        return self._config.db_file
+    def database(self) -> str:
+        return self._config.database
 
     def find_by_key(self, key: str, fields: Set[str] = None) -> Optional[VaultEntry]:
         fields = '*' if not fields else ', '.join(fields)

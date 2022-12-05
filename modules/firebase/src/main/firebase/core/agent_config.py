@@ -18,7 +18,7 @@ import os
 from typing import Optional
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.datasource.firebase.firebase_configuration import FirebaseConfiguration
+from datasource.firebase.firebase_configuration import FirebaseConfiguration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict

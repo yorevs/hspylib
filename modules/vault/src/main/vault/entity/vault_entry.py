@@ -18,8 +18,8 @@ from collections import namedtuple
 from textwrap import dedent
 from typing import List
 
-from hspylib.core.datasource.crud_entity import CrudEntity
-from hspylib.core.datasource.identity import Identity
+from datasource.crud_entity import CrudEntity
+from datasource.identity import Identity
 from hspylib.core.tools.zoned_datetime import now
 
 

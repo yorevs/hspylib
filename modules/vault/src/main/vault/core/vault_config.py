@@ -13,11 +13,10 @@
 
    Copyright 2022, HSPyLib team
 """
+from datasource.db_configuration import DBConfiguration
 
-from hspylib.core.datasource.sqlite.sqlite_configuration import SQLiteConfiguration
 
-
-class VaultConfig(SQLiteConfiguration):
+class VaultConfig(DBConfiguration):
     """Holds the vault configurations"""
 
     INSTANCE = None
@@ -39,13 +38,13 @@ class VaultConfig(SQLiteConfiguration):
         return self._passphrase
 
     @property
+    def database(self) -> str:
+        return self.unlocked_vault_file
+
+    @property
     def vault_file(self) -> str:
         """Return the locked vault database filename"""
         return self._vault_file
-
-    @property
-    def db_file(self) -> str:
-        return self.unlocked_vault_file
 
     @property
     def unlocked_vault_file(self) -> str:

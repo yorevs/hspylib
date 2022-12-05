@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: hspylib
-   @package: hspylib.main.hspylib.modules.qt.promotions
+   @package: hspylib.hspylib.modules.qt.promotions
       @file: htoolbox.py
    @created: Fri, 29 Jul 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

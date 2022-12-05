@@ -26,7 +26,7 @@ from typing import List
 import cryptocode
 import keyring
 from cryptography.fernet import InvalidToken
-from hspylib.core.datasource.identity import Identity
+from datasource.identity import Identity
 from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
 from hspylib.core.tools.ttl_keyring_be import TTLKeyringBE
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
