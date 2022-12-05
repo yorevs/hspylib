@@ -28,7 +28,7 @@ from phonebook.service.person_service import PersonService
 
 class CreateView(metaclass=Singleton):
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
@@ -36,7 +36,7 @@ class CreateView(metaclass=Singleton):
         MenuUtils.title('CREATE PERSON')
         person = Person(Identity.auto())
         try:
-            person.uuid = person.identity.value()
+            person.uuid = person.identity.values
             person.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
             person.age = MenuUtils.prompt('Age', PersonValidator.validate_age)
             person.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)
@@ -55,7 +55,7 @@ class CreateView(metaclass=Singleton):
         MenuUtils.title('CREATE COMPANY')
         company = Company(Identity.auto())
         try:
-            company.uuid = company.identity.value()
+            company.uuid = company.identity.values
             company.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
             company.cnpj = MenuUtils.prompt('CNPJ', CompanyValidator.validate_cnpj)
             company.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)

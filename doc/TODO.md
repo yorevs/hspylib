@@ -4,7 +4,9 @@
 
 1. Safe formatting string
 2. Update all README.md.
-3. Improve TUI -> extra with settings and move parameters to kwargs.
+3. Improve TUI
+    3.1. -> improve the menu framework with icons and mselect/mchoose
+    3.2. -> extra with settings and move parameters to kwargs.
 
 ## HSPYLIB-CFMAN
 
@@ -17,6 +19,7 @@
 ## HSPYLIB-VAULT
 
 1. Add vault TUI
+2. Improve the open/close by using context lib with...
 
 ## HSPYLIB-KAFMAN
 

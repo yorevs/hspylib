@@ -29,7 +29,7 @@ from hspylib.modules.cli.application.version import Version
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
-from vault.exception.exceptions import VaultExecutionException
+from vault.exception.exceptions import VaultOpenError
 
 
 class Main(Application):
@@ -102,26 +102,23 @@ class Main(Application):
     def _exec_application(self, ) -> int:
         """Execute the specified vault operation"""
         ret_val, op = 0, self.get_arg('operation')
-        try:
-            if self.vault.open():
-                if op == 'add':
-                    self.vault.add(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
-                elif op == 'get':
-                    self.vault.get(self.get_arg('name'))
-                elif op == 'del':
-                    self.vault.remove(self.get_arg('name'))
-                elif op == 'upd':
-                    self.vault.update(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
-                elif op == 'list':
-                    self.vault.list(self.get_arg('filter'))
-                else:
-                    ret_val = 1
-                    syserr(f'### Invalid operation: {op}')
-                    self.usage(1)
-        except Exception as err:
-            raise VaultExecutionException(f"Failed to execute Vault => {err}") from err
-        finally:
-            self.vault.close()
+        with self.vault.open() as unlocked:
+            if not unlocked:
+                raise VaultOpenError("Unable to open/unlock vault")
+            if op == 'add':
+                self.vault.add(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
+            elif op == 'get':
+                self.vault.get(self.get_arg('name'))
+            elif op == 'del':
+                self.vault.remove(self.get_arg('name'))
+            elif op == 'upd':
+                self.vault.update(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
+            elif op == 'list':
+                self.vault.list(self.get_arg('filter'))
+            else:
+                ret_val = 1
+                syserr(f'### Invalid operation: {op}')
+                self.usage(1)
 
         return ret_val
 
