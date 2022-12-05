@@ -25,7 +25,7 @@ from phonebook.service.person_service import PersonService
 
 class EditView(metaclass=Singleton):
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
