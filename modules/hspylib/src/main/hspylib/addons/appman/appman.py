@@ -173,7 +173,7 @@ class AppManager(metaclass=Singleton):
         self._mkfile('src/test/test_main.py', (self.TEMPLATES / "test_main.py.tpl").read_text())
         self._mkdir('src/test/resources')
         self._mkfile('src/test/resources/application-test.properties', '# Main test application property file')
-        self._mkdir(f'src/main')
+        self._mkdir('src/main')
         self._mkdir(f'src/main/{self._app_name}')
         self._mkfile(f'src/main/{self._app_name}/__classpath__.py', (self.TEMPLATES / "classpath.py.tpl").read_text())
         self._mkfile(f'src/main/{self._app_name}/.version', INITIAL_REVISION)

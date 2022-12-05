@@ -19,15 +19,15 @@ from typing import List, Optional, Set, Tuple, TypeVar
 from cassandra import UnresolvableContactPoints
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster, NoHostAvailable
+from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from hspylib.core.tools.namespace import Namespace
+from hspylib.core.tools.text_tools import quote
 from retry import retry
 
 from datasource.cassandra.cassandra_configuration import CassandraConfiguration
 from datasource.crud_entity import CrudEntity
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from datasource.identity import Identity
-from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.tools.namespace import Namespace
-from hspylib.core.tools.text_tools import quote
 
 T = TypeVar('T', bound=CrudEntity)
 
@@ -56,10 +56,10 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
 
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
+        log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         auth_provider = PlainTextAuthProvider(username=self.username, password=self.password)
         if self.secure_bundle_path:
-            log.info(f"{self.logname} Using Astra Security Bundle: {self.secure_bundle_path}")
+            log.info("%s Using Astra Security Bundle: %s", self.logname, self.secure_bundle_path)
             cloud_config = {'secure_connect_bundle': self.secure_bundle_path}
             cursor = Cluster(protocol_version=self.protocol_version, auth_provider=auth_provider,
                              cloud=cloud_config)
@@ -78,13 +78,13 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
         conn, dbs = None, None
         try:
             conn, dbs = self._create_session()
-            log.debug(f"{self.logname} Successfully connected to database: {self.info} [ssid={hash(dbs)}]")
+            log.debug("%s Successfully connected to database: %s [ssid=%d]", self.logname, self.info, hash(dbs))
             yield dbs
         except (UnresolvableContactPoints, NoHostAvailable) as err:
             raise DatabaseConnectionError(f"Unable to open/execute-on database session => {err}") from err
         finally:
             if conn:
-                log.debug(f"{self.logname} Shutting down connection [ssid={hash(dbs)}]")
+                log.debug("%s Shutting down connection [ssid=%d]", self.logname, hash(dbs))
                 conn.shutdown()
 
     def execute(self, sql_statement: str, **kwargs) -> Tuple[int, Optional[ResultSet]]:
@@ -122,14 +122,14 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
         self.execute(sql)
 
     def save(self, entity: T) -> None:
-        columns, ids = entity.as_columns(), set(entity.identity.attributes)
+        columns, _ = entity.as_columns(), set(entity.identity.attributes)
         sql = f"INSERT INTO {self.database}.{self.table_name()} " \
               f"({columns}) VALUES {entity.values} "
         self.execute(sql)
 
     def save_all(self, entities: List[T]) -> None:
         values, sample, inserts = [], entities[0], []
-        columns, ids = sample.as_columns(), set(sample.identity.attributes)
+        columns, _ = sample.as_columns(), set(sample.identity.attributes)
         list(map(lambda e: values.append(str(e.values)), entities))
         list(map(lambda v: inserts.append(
             f"INSERT INTO {self.database}.{self.table_name()} ({columns}) VALUES {v} "), values))
@@ -146,7 +146,7 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
         limit: int = 500, offset: int = 0) -> List[T]:
 
         fields = '*' if not fields else ', '.join(fields)
-        clauses = list(filter(None, [f for f in filters.values])) if filters else None
+        clauses = list(filters.values) if filters else None
         orders = list(filter(None, order_bys)) if order_bys and clauses else None  # Order by require filters
         sql = f"SELECT {fields} FROM {self.database}.{self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \

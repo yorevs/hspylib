@@ -22,10 +22,10 @@ class Main(Application):
   DESCRIPTION = (HERE / "welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
   # Location of the .version file
-  VERSION_DIR = _Classpath.source_root()
+  VERSION_DIR = _Classpath.source_path()
 
   # Location of the resource directory
-  RESOURCE_DIR = str(_Classpath.resource_dir())
+  RESOURCE_DIR = str(_Classpath.resource_path())
 
   def __init__(self, app_name: str):
     version = Version.load(load_dir=self.VERSION_DIR)
@@ -37,7 +37,7 @@ class Main(Application):
   def _setup_arguments(self) -> None:
     """Initialize application parameters and options"""
 
-  def _main(self, *params, **kwargs) -> None:
+  def _main(self, *params, **kwargs) -> int:
     """Run the application with the command line arguments"""
     sysout(f'Hello {self._app_name}')
 

@@ -17,6 +17,9 @@ import logging as log
 from typing import List, Optional, Set, Tuple, TypeVar
 
 import pymysql
+from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from hspylib.core.tools.namespace import Namespace
+from hspylib.core.tools.text_tools import quote
 from pymysql import Connection, Error
 from pymysql.cursors import Cursor
 from retry import retry
@@ -25,9 +28,6 @@ from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import DBRepository, ResultSet, Session
 from datasource.identity import Identity
-from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.tools.namespace import Namespace
-from hspylib.core.tools.text_tools import quote
 
 T = TypeVar('T', bound=CrudEntity)
 
@@ -40,7 +40,7 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
 
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        log.debug(f"{self.logname} Attempt to connect to database: {str(self)}")
+        log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         conn = pymysql.connect(
             host=self.hostname,
             user=self.username,
@@ -54,13 +54,13 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
         conn, dbs = None, None
         try:
             conn, dbs = self._create_session()
-            log.debug(f"{self.logname} Successfully connected to database: {self.info} [ssid={hash(dbs)}]")
+            log.debug("%s Successfully connected to database: %s [ssid=%d]", self.logname, self.info, hash(dbs))
             yield dbs
         except Error as err:
             raise DatabaseConnectionError(f"Unable to open/execute-on database session => {err}") from err
         finally:
             if conn:
-                log.debug(f"{self.logname} Closing connection [ssid={hash(dbs)}]")
+                log.debug("%s Closing connection [ssid=%d]", self.logname, hash(dbs))
                 conn.commit()
                 conn.close()
 
@@ -121,7 +121,7 @@ class MySqlRepository(DBRepository[T, DBConfiguration]):
         limit: int = 500, offset: int = 0) -> List[T]:
 
         fields = '*' if not fields else ', '.join(fields)
-        clauses = list(filter(None, [f for f in filters.values])) if filters else None
+        clauses = list(filters.values) if filters else None
         orders = list(filter(None, order_bys)) if order_bys else None
         sql = f"SELECT {fields} FROM {self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \

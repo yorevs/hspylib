@@ -37,33 +37,33 @@ class TTLKeyringBE(ChainerBackend):
     def get_pws(self, service_name: str, username: str) -> str:
         return super().get_password(service_name, username)
 
-    def set_password(self, service_name: str, username: str, password: str) -> None:
+    def set_password(self, service: str, username: str, password: str) -> None:
         """Set password for the username of the service."""
         try:
-            check_not_none(service_name, username, password)
+            check_not_none(service, username, password)
             expires_sec = now_ms() + ((self._ttl_minutes * 60) + self._ttl_seconds)
-            passwd_obj = {'sn': service_name, 'un': username, 'pw': password, 'ttl': expires_sec}
-            super().set_password(service_name, username, json.dumps(passwd_obj))
+            passwd_obj = {'sn': service, 'un': username, 'pw': password, 'ttl': expires_sec}
+            super().set_password(service, username, json.dumps(passwd_obj))
         except PasswordSetError:
             pass  # it does not matter if the password set failed.
 
-    def get_password(self, service_name: str, username: str) -> Optional[str]:
+    def get_password(self, service: str, username: str) -> Optional[str]:
         """Get password of the username for the service."""
-        check_not_none(service_name, username)
-        if passwd_str := self.get_pws(service_name, username):
+        check_not_none(service, username)
+        if passwd_str := self.get_pws(service, username):
             passwd_obj = json.loads(passwd_str)
             dt_object = datetime.fromtimestamp(passwd_obj['ttl'])
             if now_ms() - dt_object.timestamp() > 0:
-                keyring.delete_password(service_name, username)
+                keyring.delete_password(service, username)
             else:
                 return passwd_obj['pw']
 
         return None
 
-    def delete_password(self, service_name: str, username: str) -> None:
+    def delete_password(self, service: str, username: str) -> None:
         """Delete the password for the username of the service."""
-        check_not_none(service_name, username)
+        check_not_none(service, username)
         try:
-            super().delete_password(service_name, username)
+            super().delete_password(service, username)
         except PasswordDeleteError:
             pass  # it does not matter if the password does not exist.

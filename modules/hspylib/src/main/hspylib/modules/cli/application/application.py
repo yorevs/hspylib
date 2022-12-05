@@ -96,7 +96,7 @@ class Application(metaclass=Singleton):
         elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
             self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources')
         else:
-            log.debug(f'Resource dir \"{resource_dir or "<none>"}\" not found. AppConfigs will not be available!')
+            log.debug('Resource dir \"%s\" not found. AppConfigs will not be available!', resource_dir or "<none>")
 
         # Initialize application logs
         self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
@@ -120,7 +120,7 @@ class Application(metaclass=Singleton):
             log.error('Execution failed %s => %s', today, err)
             raise err  # Re-Raise the exception so upper level layers can catch
         except Exception as err:
-            exc_type, exc_value, exc_traceback = sys.exc_info()
+            _, exc_value, _ = sys.exc_info()
             traceback.print_exc(file=sys.stderr)
             self._exit_code = exc_value
             raise err  # Re-Raise the exception so upper level layers can catch
@@ -166,8 +166,10 @@ class Application(metaclass=Singleton):
     def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
+    # pylint: disable=unused-argument
     def _main(self, *params, **kwargs) -> int:
         """Execute the application's main statements"""
+        return 0
 
     def _cleanup(self) -> None:
         """Execute http_code cleanup before exiting"""

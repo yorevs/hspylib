@@ -29,7 +29,7 @@ from hspylib.core.preconditions import check_argument, check_state
 DEFAULT_HS_SALT = 'HsPyLib'
 
 
-def encode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_8.value) -> int:
+def encode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_8.val) -> int:
     """Encode file into base64
     :param in_file: The file to be encoded
     :param out_file: The resulting encoded file
@@ -42,13 +42,13 @@ def encode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_
                 data = base64.b64encode(f_in_file.read())
                 return f_out_file.write(data)
 
-    with open(in_file, 'r') as f_in_file:
+    with open(in_file, 'r', encoding=Charset.UTF_8.val) as f_in_file:
         with open(out_file, 'w', encoding=encoding) as f_out_file:
             data = base64.b64encode(str.encode(f_in_file.read()))
             return f_out_file.write(str(data, encoding=encoding))
 
 
-def decode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_8.value) -> int:
+def decode(in_file, out_file, binary: bool = False, encoding: str = Charset.UTF_8.val) -> int:
     """Decode file from base64
     :param in_file: The file to be decoded
     :param out_file: The resulting decoded file

@@ -15,9 +15,10 @@
 """
 import ast
 
+from hspylib.core.enums.charset import Charset
+
 from datasource.identity import Identity
 from datasource.redis.redis_repository import RedisRepository
-from hspylib.core.enums.charset import Charset
 from shared.entity_test import EntityTest
 
 
@@ -30,7 +31,7 @@ class RedisRepositoryTest(RedisRepository[EntityTest]):
         return entity.key()
 
     def to_entity_type(self, entity_string: bytes) -> EntityTest:
-        entity_dict = ast.literal_eval(str(entity_string, encoding=Charset.UTF_8.value))
+        entity_dict = ast.literal_eval(str(entity_string, encoding=Charset.UTF_8.val))
         identity = Identity(EntityTest.EntityId(entity_dict['id']))
         return EntityTest(
             identity,

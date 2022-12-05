@@ -55,8 +55,7 @@ class FirebaseAuth(ABC):
             if user:
                 sysout('Firebase authentication succeeded')
                 return user
-            else:
-                raise FirebaseAuthenticationError('Failed to authenticate to Firebase')
+            raise FirebaseAuthenticationError('Failed to authenticate to Firebase')
         except UserNotFoundError as err:
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:

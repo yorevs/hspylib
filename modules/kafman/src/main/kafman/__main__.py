@@ -34,10 +34,10 @@ class Main(QtApplication):
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # Location of the .version file
-    VERSION_DIR = _Classpath.source_root()
+    VERSION_DIR = _Classpath.source_path()
 
     # Location of the resources dir
-    RESOURCE_DIR = str(_Classpath.resource_dir())
+    RESOURCE_DIR = str(_Classpath.resource_path())
 
     # Location of the UI font
     FONT_PATH = _Classpath.get_resource_path('fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf')

@@ -29,7 +29,7 @@ def integration_test(cls: type):
 
     it_disabled = str_to_bool(os.environ.get('HSPYLIB_IT_DISABLED', 'True'))
     if it_disabled:
-        log.debug('Skipping test: ', cls.__name__)
+        log.debug('Skipping test: %s', cls.__name__)
         return unittest.skipIf(
             it_disabled,
             f'Disabled = {it_disabled} :integration tests because it needs real servers running'
@@ -52,7 +52,7 @@ def temporized(func: Callable):
         """Execute the callable and return"""
         start = datetime.now()
         ret = func(*args)
-        log.debug(f"@@@ [{func.__name__}] Time elapsed\t{timedelta_to_str(datetime.now() - start)}")
+        log.debug("@@@ [%s] Time elapsed\t%s", func.__name__, timedelta_to_str(datetime.now() - start))
         return ret
 
     return wrapper

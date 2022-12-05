@@ -15,12 +15,12 @@
 """
 import logging as log
 import os
-from typing import Optional
+from typing import Any, Optional
 
-from hspylib.core.config.app_config import AppConfigs
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import file_is_not_empty, sysout
+from hspylib.core.tools.commons import dirname, file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
 
 from firebase.core.firebase_auth import FirebaseAuth
@@ -38,40 +38,50 @@ class AgentConfig(metaclass=Singleton):
             log.debug('Found and loaded a Firebase configuration: %s', self)
 
     def __str__(self) -> str:
-        return str(self.firebase_configs)
+        return str(self.firebase_configs or '')
 
     def __repr__(self):
         return str(self)
+
+    def __getitem__(self, item) -> Any:
+        return self.app_configs[item]  # python: disable=unsubscriptable-object
 
     @property
     def hash_str(self) -> str:
         return 'f6680e84-12c0-459c-8cf9-bd469def750d'
 
-    def setup(self, config_dict: CaseInsensitiveDict) -> None:
+    def setup(
+        self,
+        resource_dir: str,
+        filename: str,
+        config_dict: CaseInsensitiveDict) -> None:
         """Setup firebase from a dict configuration
+        :param filename:
+        :param resource_dir:
         :param config_dict: Firebase configuration dictionary
         """
-        user = FirebaseAuth.authenticate(config_dict)
+
+        user = FirebaseAuth.authenticate(config_dict['PROJECT_ID'], config_dict['UUID'])
         if user:
             if user.uid != config_dict['UUID']:
                 raise FirebaseAuthenticationError(
                     f"Provided UID: {config_dict['UUID']} is different from retrieved UID: {user.uid}")
             config_dict['UUID'] = user.uid
-            self.firebase_configs = FirebaseConfiguration.of(config_dict)
+            self.firebase_configs = FirebaseConfiguration.of(resource_dir, filename, config_dict)
             self._save()
         else:
-            raise
+            raise FirebaseAuthenticationError("Unable to authenticate to Firebase (user is None)")
 
     def prompt(self) -> None:
         """Create a new firebase configuration by prompting the user for information."""
         config = CaseInsensitiveDict()
         sysout("### Firebase setup")
-        sysout('-' * 31)
+        sysout('-=' * 15)
         config['UUID'] = self.uuid
         config['PROJECT_ID'] = self.project_id
         config['DATABASE'] = self.database
         config['EMAIL'] = self.email
-        self.setup(config)
+        self.setup(dirname(self.filename), self.filename, config)
 
     @property
     def filename(self) -> str:

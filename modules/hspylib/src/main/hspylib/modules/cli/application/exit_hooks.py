@@ -42,7 +42,7 @@ class ExitHooks:
 
     def exception_handler(
         self, exc_type: TypeError, exc: BaseException,
-        tb: traceback) -> None:  # pylint: disable=unused-argument
+        tb: traceback) -> None:
         """TODO"""
         self._exception = exc
         self._traceback = tb

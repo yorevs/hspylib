@@ -19,7 +19,6 @@
 ## HSPYLIB-VAULT
 
 1. Add vault TUI
-2. Improve the open/close by using context lib with...
 
 ## HSPYLIB-KAFMAN
 

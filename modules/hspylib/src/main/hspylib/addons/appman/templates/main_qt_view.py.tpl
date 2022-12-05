@@ -8,7 +8,7 @@ class MainQtView(QtView):
     """Main application view"""
     VERSION = _Classpath.get_source_path(".version").read_text(encoding=str(Charset.UTF_8))
 
-    FORMS_DIR = str(_Classpath.resource_dir() / "forms")
+    FORMS_DIR = str(_Classpath.resource_path() / "forms")
 
     def __init__(self):
         # Must come after the initialization above

@@ -69,9 +69,9 @@ class MainQtView(QtView):
     """Main application view"""
     VERSION = _Classpath.get_source_path(".version").read_text(encoding=str(Charset.UTF_8))
 
-    SCHEMA_DIR = (_Classpath.resource_dir() / "schema")
+    SCHEMA_DIR = (_Classpath.resource_path() / "schema")
 
-    FORMS_DIR = str(_Classpath.resource_dir() / "forms")
+    FORMS_DIR = str(_Classpath.resource_path() / "forms")
 
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
 
@@ -357,7 +357,7 @@ class MainQtView(QtView):
             json_form = json.loads(self.ui.scr_schema_fields.values())
             schema.validate(json_form)
             self._display_text('Schema form is valid', StatusColor.green)
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             self._display_error(f'Schema form is not valid:: {err}')
 
     def _activate_tab(self, index: int = None) -> None:

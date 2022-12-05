@@ -34,7 +34,7 @@ class Main(Application):
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
 
     # Location of the .version file
-    VERSION_DIR = _Classpath.source_root()
+    VERSION_DIR = _Classpath.source_path()
 
     class Addon(Enumeration):
         """HsPyLib addon types."""

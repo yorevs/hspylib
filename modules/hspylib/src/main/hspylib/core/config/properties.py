@@ -96,7 +96,7 @@ class Properties:
             value = self._get(prop_name)
             return prop_type(value) if value else None
         except TypeError:
-            log.warning(f"Unable to cast property '{prop_name}' into '{prop_type}'")
+            log.warning("Unable to cast property '%s' into '%s'", prop_name, prop_type)
             return default
 
     @property

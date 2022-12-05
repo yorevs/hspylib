@@ -25,7 +25,7 @@ def subscribe(**kwargs) -> Callable:
 
     def inner(func) -> None:
         check_argument(func.__code__.co_argcount >= 1, 'Subscriber callbacks require at least one parameter.')
-        missing = next((p for p in ['bus', 'event'] if p not in kwargs.keys()), None)
+        missing = next((p for p in ['bus', 'event'] if p not in kwargs), None)
         check_argument(missing is None, f"Missing required parameter: '{missing}: str'.")
         EventBus.get(str(kwargs['bus'])).subscribe(str(kwargs['event']), func)
 
@@ -84,4 +84,4 @@ class EventBus:
                         callback(event)
                     except Exception as err:
                         raise HSBaseException(
-                            f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}")
+                            f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}") from err

@@ -38,7 +38,7 @@ class Version:
         """Retrieve the version from the version file in the form: [major.minor.build] ."""
         try:
             log.debug("Reading version from %s", filepath)
-            with open(filepath, encoding=Charset.UTF_8.value) as fh_version:
+            with open(filepath, encoding=Charset.UTF_8.val) as fh_version:
                 ver = tuple(map(int, map(str.strip, fh_version.read().split('.'))))
                 return ver if ver and re.search(r'(\d+, \d+, \d+)', str(ver)) else (-1, -1, -1)
         except FileNotFoundError:

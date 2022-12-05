@@ -170,8 +170,9 @@ class HTableModel(QAbstractTableModel):
         sel_model = self._parent.selectionModel()
         if sel_model:
             sel_indexes = sel_model.selectedIndexes()
-            sel_rows = set([idx.row() for idx in sel_indexes])
+            sel_rows = {[idx.row() for idx in sel_indexes]}
             return sel_indexes, [self._data[row] for row in sel_rows]
+        return [], []
 
     def filters(self) -> CollectionFilter:
         """TODO"""

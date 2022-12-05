@@ -23,6 +23,7 @@ from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
+from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.zoned_datetime import now
@@ -79,8 +80,8 @@ class WidgetPunch(Widget):
             h, m, _ = WidgetTimeCalc.calc_time(stamps)
             m = WidgetTimeCalc.to_decimal(m) if decimal else m
             return f"{'%GREEN%' if h >= 8 else '%RED%'}{h:02d}{'.' if decimal else ':'}{m:02d}%NC%"
-        else:
-            return f"%RED%--{'.' if decimal else ':'}--%NC%"
+
+        return f"%RED%--{'.' if decimal else ':'}--%NC%"
 
     def __init__(self) -> None:
         super().__init__(
@@ -102,7 +103,7 @@ class WidgetPunch(Widget):
 
         # Create the current week punch file if it does not yet exist.
         if not os.path.exists(self.HHS_PUNCH_FILE):
-            with open(self.HHS_PUNCH_FILE, 'w') as f_punch:
+            with open(self.HHS_PUNCH_FILE, 'w', encoding=Charset.UTF_8.val) as f_punch:
                 f_punch.write(f"{now('%d-%m-%Y')} => ")
 
         ret_val = self._parse_args(args)
@@ -159,7 +160,7 @@ class WidgetPunch(Widget):
             sysout(f"%RED%Punch file '{punch_file}' not found !%NC%")
             sys.exit(int(str(ExitStatus.FAILED.value)))
         else:
-            with open(punch_file, 'r') as f_punch:
+            with open(punch_file, 'r', encoding=Charset.UTF_8.val) as f_punch:
                 all_punches = list(map(
                     self._set_today, filter(lambda l: re.match(self.RE_PUNCH_LINE, l), f_punch.readlines())
                 ))
@@ -180,7 +181,7 @@ class WidgetPunch(Widget):
 
     def _do_the_punch(self) -> None:
         """!!DO THE PUNCH!!"""
-        with open(self.HHS_PUNCH_FILE, 'w') as f_punch:
+        with open(self.HHS_PUNCH_FILE, 'w', encoding=Charset.UTF_8.val) as f_punch:
             if not self._today:  # Write the first punch of the day
                 self._today = f"{self.DATE_STAMP} => {self.TIME_STAMP}"
                 self._punches.append(self._today)

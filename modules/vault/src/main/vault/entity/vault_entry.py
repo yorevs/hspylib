@@ -35,7 +35,7 @@ class VaultEntry(CrudEntity):
     @classmethod
     def from_tuple(cls, values: tuple) -> 'VaultEntry':
         return VaultEntry(
-            Identity(cls.VaultId(values[0])), **{k: v for k, v in zip(cls.columns(), values)},
+            Identity(cls.VaultId(values[0])), **dict(zip(cls.columns(), values)),
         )
 
     # Vault entry format to be displayed when listing
