@@ -13,13 +13,33 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 
 ### Added
 
+### Changed
+
+### Fixed
+
+---
+
+## v0.11.126 - 2022-12-06
+
+### Added
+
 * Added missing docs for public release.
+* Added a new project datasource that was removed from the core library.
+* Firebase security check.
 
 ### Changed
 
-* Updated publication docs
+* Upgraded to gradle 7.4.2
+* Vault now uses SQLite database instead of a simple file.
+* Kafman accept schemas.
+* Moved all applications to the new arguments framework.
+* Updated publication docs.
 * Refactoring to match a final package structure.
-* Improved versioner to be used in future versions of hspylib (replace bumpversion).
+* Discontinued submodule versioner since bumpver already does what we need.
+
+### Fixed
+
+* Various bugfixes
 
 ---
 
