@@ -19,6 +19,7 @@
 ## HSPYLIB-VAULT
 
 1. Add vault TUI
+2. Fix Vault: vault.exception.exceptions.VaultOpenError: ### Unable to open Vault file => /Users/hjunior/Dropbox/Documents/.vault
 
 ## HSPYLIB-KAFMAN
 

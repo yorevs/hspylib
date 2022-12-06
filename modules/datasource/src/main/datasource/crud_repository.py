@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 import json
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Generic, List, Optional, Set, TypeVar
 
 from hspylib.core.metaclass.singleton import Singleton

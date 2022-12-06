@@ -5,7 +5,7 @@
    @project: HSPyLib
    @Package: datasource.sqlite
       @file: sqlite_repository.py
-   @created: Tue, 4 May 2021
+   @created: Eue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -16,7 +16,7 @@ import contextlib
 import logging as log
 import sqlite3
 from sqlite3 import Error
-from typing import List, Optional, Set, Tuple, TypeVar
+from typing import Generic, List, Optional, Set, Tuple, TypeVar
 
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
 from hspylib.core.tools.namespace import Namespace
@@ -27,10 +27,10 @@ from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from datasource.identity import Identity
 
-T = TypeVar('T', bound=CrudEntity)
+E = TypeVar('E', bound=CrudEntity)
 
 
-class SQLiteRepository(DBRepository[T, DBConfiguration]):
+class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration]):
     """Implementation of a data access layer for a SQLite persistence store."""
 
     def __init__(self, config: DBConfiguration):
@@ -81,7 +81,7 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
         sql = f"SELECT COUNT(*) FROM {self.table_name()}"
         return int(self.execute(sql)[1][0][0])
 
-    def delete(self, entity: T) -> None:
+    def delete(self, entity: E) -> None:
         self.delete_by_id(entity.identity)
 
     def delete_by_id(self, entity_id: Identity) -> None:
@@ -89,21 +89,21 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
         sql = f"DELETE FROM {self.table_name()} WHERE " + ' AND '.join(clauses)
         self.execute(sql)
 
-    def delete_all(self, entities: List[T]) -> None:
+    def delete_all(self, entities: List[E]) -> None:
         values, s = [], entities[0]
         list(map(lambda e: values.append(str(e.values)), entities))
         sql = f"DELETE FROM " \
               f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
-    def save(self, entity: T) -> None:
+    def save(self, entity: E) -> None:
         columns, ids = entity.as_columns(), set(entity.identity.attributes)
         sql = f"INSERT INTO " \
               f"{self.table_name()} ({columns}) VALUES {entity.values} " \
               f"ON CONFLICT DO UPDATE SET {entity.as_column_set(prefix='EXCLUDED.', exclude=ids)}"
         self.execute(sql)
 
-    def save_all(self, entities: List[T]) -> None:
+    def save_all(self, entities: List[E]) -> None:
         values, sample = [], entities[0]
         columns, ids = sample.as_columns(), set(sample.identity.attributes)
         list(map(lambda e: values.append(str(e.values)), entities))
@@ -117,10 +117,10 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
         fields: Optional[Set[str]] = None,
         filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
-        limit: int = 500, offset: int = 0) -> List[T]:
+        limit: int = 500, offset: int = 0) -> List[E]:
 
         fields = '*' if not fields else ', '.join(fields)
-        clauses = list(filters.values) if filters else None
+        clauses = list(filter(None, filters.values)) if filters else None
         orders = list(filter(None, order_bys)) if order_bys else None
         sql = f"SELECT {fields} FROM {self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
@@ -132,7 +132,7 @@ class SQLiteRepository(DBRepository[T, DBConfiguration]):
     def find_by_id(
         self,
         entity_id: Identity,
-        fields: Optional[Set[str]] = None) -> Optional[T]:
+        fields: Optional[Set[str]] = None) -> Optional[E]:
 
         fields = '*' if not fields else ', '.join(fields)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]

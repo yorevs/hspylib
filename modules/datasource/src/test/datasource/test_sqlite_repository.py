@@ -20,6 +20,7 @@ import sys
 import unittest
 from textwrap import dedent
 
+from hspylib.core.decorator.decorators import integration_test
 from hspylib.core.tools.commons import log_init
 from hspylib.core.tools.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
@@ -32,6 +33,7 @@ from shared.sqlite_repository_test import SQLiteRepositoryTest
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
+@integration_test
 class TestClass(unittest.TestCase):
 
     # Setup tests

@@ -22,10 +22,13 @@ from datasource.crud_entity import CrudEntity
 from datasource.crud_repository import CrudRepository
 from datasource.db_configuration import DBConfiguration
 
+# Stereotypes
 Connection = TypeVar('Connection', bound=Any)
 Cursor = TypeVar('Cursor', bound=Any)
 Session = TypeVar('Session', bound=Any)
 ResultSet = TypeVar('ResultSet', bound=Iterable)
+
+# Generics
 E = TypeVar('E', bound=CrudEntity)
 C = TypeVar('C', bound=DBConfiguration)
 

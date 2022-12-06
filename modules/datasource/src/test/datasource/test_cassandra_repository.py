@@ -35,6 +35,11 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 @integration_test
 class TestClass(unittest.TestCase):
+    """
+    Docker command:
+    $ docker run --rm -d --name some-astradb -p 9042:9042 -p 7000:7000
+        -e CASSANDRA_BROADCAST_ADDRESS=0.0.0.0 cassandra:latest
+    """
 
     # Setup tests
     @classmethod

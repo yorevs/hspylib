@@ -35,6 +35,13 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 @integration_test
 class TestClass(unittest.TestCase):
+    """
+    Docker command:
+    $ docker run --rm -d --name some-postgres -p 5432:5432
+        -e POSTGRES_PASSWORD=postgres
+        -e POSTGRES_USER=postgres
+        -e POSTGRES_DB=hspylib postgres:latest
+    """
 
     # Setup tests
     @classmethod
