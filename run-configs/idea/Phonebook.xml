@@ -1,18 +1,18 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Phonebook" type="PythonConfigurationType" factoryName="Python" folderName="Datasource">
-    <module name="HsPyLib.hspylib" />
+    <module name="HsPyLib.datasource" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/demo/phonebook" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/datasource/src/demo/phonebook" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/phonebook/__main__.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/datasource/src/demo/phonebook/__main__.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />

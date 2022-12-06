@@ -19,6 +19,7 @@ from abc import abstractmethod
 from typing import Any, Generic, List, Optional, TypeVar
 
 from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.fetch.fetch import delete, get, put
 from hspylib.modules.fetch.http_response import HttpResponse
@@ -28,10 +29,10 @@ from datasource.crud_entity import CrudEntity
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
 from datasource.identity import Identity
 
-T = TypeVar('T', bound=CrudEntity)
+E = TypeVar('E', bound=CrudEntity)
 
 
-class FirebaseRepository(Generic[T]):
+class FirebaseRepository(Generic[E], metaclass=Singleton):
     """Implementation of a data access layer for a Firebase persistence store.
     API   Ref.: https://firebase.google.com/docs/reference/rest/database
     Auth  Ref.: https://firebase.google.com/docs/database/rest/auth#python
@@ -95,7 +96,7 @@ class FirebaseRepository(Generic[T]):
         """Return the database name."""
         return self._config.database
 
-    def delete(self, entity: T) -> None:
+    def delete(self, entity: E) -> None:
         """Deletes the given entity from the Firebase store"""
         self.delete_by_id(entity.identity)
 
@@ -106,13 +107,13 @@ class FirebaseRepository(Generic[T]):
         log.debug('Deleting firebase entry: \n\t|-Id=%s\n\t|-From %s', entity_id, url)
         self._assert_response(delete(url), f'Unable to delete from={url}')
 
-    def delete_all(self, entities: List[T]) -> None:
+    def delete_all(self, entities: List[E]) -> None:
         """Delete from Firebase all entries provided.
         TODO Check if there is a better ways of doing it.
         """
         list(map(self.delete, entities))
 
-    def save(self, entity: T) -> None:
+    def save(self, entity: E) -> None:
         """Saves the given entity at the Firebase store"""
         ids = '.'.join(entity.identity.values)
         url = f'{self._config.url(self.table_name())}/{ids}.json'
@@ -120,7 +121,7 @@ class FirebaseRepository(Generic[T]):
         log.debug("Saving firebase entry: \n\t|-%s \n\t|-Into %s", entity, url)
         self._assert_response(put(url, payload), f"Unable to put into={url} with json_string={payload}")
 
-    def save_all(self, entities: List[T]) -> None:
+    def save_all(self, entities: List[E]) -> None:
         """Save from Firebase all entries provided.
         TODO Check if there is a better ways of doing it.
         """
@@ -133,7 +134,7 @@ class FirebaseRepository(Generic[T]):
         limit_to_last: Optional[int] = None,
         start_at: Optional[int | str] = None,
         end_at: Optional[int | str] = None,
-        equal_to: Optional[int | str] = None) -> List[T]:
+        equal_to: Optional[int | str] = None) -> List[E]:
         """Return filtered entries from the Firebase store"""
 
         f_order_by = "orderBy=" + (','.join([f'"{o}"' for o in order_by]) if order_by else '"$key"')
@@ -151,7 +152,7 @@ class FirebaseRepository(Generic[T]):
 
         return []
 
-    def find_by_id(self, entity_id: Identity) -> Optional[T]:
+    def find_by_id(self, entity_id: Identity) -> Optional[E]:
         """Return the entry specified by ID from the Firebase store, None if no such entry is found."""
         ids = '.'.join(entity_id.values)
         url = f'{self._config.url(self.table_name())}/{ids}.json'
@@ -169,14 +170,14 @@ class FirebaseRepository(Generic[T]):
         return self.find_by_id(entity_id) is not None
 
     @abstractmethod
-    def to_entity_type(self, entity_dict: dict | tuple) -> T:
+    def to_entity_type(self, entity_dict: dict | tuple) -> E:
         """TODO"""
 
     @abstractmethod
     def table_name(self) -> str:
         """TODO"""
 
-    def to_entity_list(self, json_string: str) -> List[T]:
+    def to_entity_list(self, json_string: str) -> List[E]:
         """Return filtered entries from the json_string as a list"""
         if json_string and (entities := json.loads(json_string)):
             ret_list = []

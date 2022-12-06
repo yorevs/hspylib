@@ -32,6 +32,11 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 @integration_test
 class TestClass(unittest.TestCase):
+    """
+    Docker command:
+    $ docker run --rm -d --name some-redis -p 6379:6379
+        -e REDIS_ARGS="--requirepass password" redis/redis-stack-server:latest
+    """
 
     # Setup tests
     @classmethod

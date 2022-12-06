@@ -14,7 +14,7 @@
 """
 import contextlib
 import logging as log
-from typing import List, Optional, Set, Tuple, TypeVar
+from typing import Generic, List, Optional, Set, Tuple, TypeVar
 
 from cassandra import UnresolvableContactPoints
 from cassandra.auth import PlainTextAuthProvider
@@ -29,10 +29,10 @@ from datasource.crud_entity import CrudEntity
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from datasource.identity import Identity
 
-T = TypeVar('T', bound=CrudEntity)
+E = TypeVar('E', bound=CrudEntity)
 
 
-class CassandraRepository(DBRepository[T, CassandraConfiguration]):
+class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration]):
     """Implementation of a data access layer for a cassandra persistence store."""
 
     def __init__(self, config: CassandraConfiguration):
@@ -114,20 +114,20 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
         sql = f"DELETE FROM {self.database}.{self.table_name()} WHERE " + ' AND '.join(clauses)
         self.execute(sql)
 
-    def delete_all(self, entities: List[T]) -> None:
+    def delete_all(self, entities: List[E]) -> None:
         values, s = [], entities[0]
         list(map(lambda e: values.append(str(e.values)), entities))
         sql = f"DELETE FROM {self.database}.{self.table_name()} " \
               f"WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
-    def save(self, entity: T) -> None:
+    def save(self, entity: E) -> None:
         columns, _ = entity.as_columns(), set(entity.identity.attributes)
         sql = f"INSERT INTO {self.database}.{self.table_name()} " \
               f"({columns}) VALUES {entity.values} "
         self.execute(sql)
 
-    def save_all(self, entities: List[T]) -> None:
+    def save_all(self, entities: List[E]) -> None:
         values, sample, inserts = [], entities[0], []
         columns, _ = sample.as_columns(), set(sample.identity.attributes)
         list(map(lambda e: values.append(str(e.values)), entities))
@@ -143,10 +143,10 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
         fields: Optional[Set[str]] = None,
         filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
-        limit: int = 500, offset: int = 0) -> List[T]:
+        limit: int = 500, offset: int = 0) -> List[E]:
 
         fields = '*' if not fields else ', '.join(fields)
-        clauses = list(filters.values) if filters else None
+        clauses = list(filter(None, filters.values)) if filters else None
         orders = list(filter(None, order_bys)) if order_bys and clauses else None  # Order by require filters
         sql = f"SELECT {fields} FROM {self.database}.{self.table_name()} " \
               f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
@@ -158,7 +158,7 @@ class CassandraRepository(DBRepository[T, CassandraConfiguration]):
     def find_by_id(
         self,
         entity_id: Identity,
-        fields: Optional[Set[str]] = None) -> Optional[T]:
+        fields: Optional[Set[str]] = None) -> Optional[E]:
 
         fields = '*' if not fields else ', '.join(fields)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]

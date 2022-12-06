@@ -20,6 +20,7 @@ from typing import Generic, List, Optional, Tuple, TypeVar
 import redis
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
@@ -28,10 +29,10 @@ from datasource.crud_entity import CrudEntity
 from datasource.db_repository import Connection, Cursor
 from datasource.redis.redis_configuration import RedisConfiguration
 
-T = TypeVar('T', bound=CrudEntity)
+E = TypeVar('E', bound=CrudEntity)
 
 
-class RedisRepository(Generic[T]):
+class RedisRepository(Generic[E], metaclass=Singleton):
     """Implementation of a data access layer for a postgres persistence store.
     Ref.: https://github.com/redis/redis-py
     Ref.: https://docs.redis.com/latest/rs/references/client_references/client_python/
@@ -110,7 +111,7 @@ class RedisRepository(Generic[T]):
             log.debug("%s Executed a pipelined 'DEL' command and returned: %s", self.logname, ret_val)
             return ret_val[0] or 0
 
-    def get(self, *keys: str) -> List[T]:
+    def get(self, *keys: str) -> List[E]:
         """TODO"""
         check_not_none(keys)
         with self.pipeline() as pipe:
@@ -124,7 +125,7 @@ class RedisRepository(Generic[T]):
                       self.logname, count, len(result))
             return result
 
-    def get_one(self, key: str) -> Optional[T]:
+    def get_one(self, key: str) -> Optional[E]:
         """TODO"""
         check_not_none(key)
         with self.pipeline() as pipe:
@@ -133,7 +134,7 @@ class RedisRepository(Generic[T]):
             log.debug("%s Executed a pipelined 'GET' command and returned: %s", self.logname, ret_val)
             return self.to_entity_type(ret_val[0]) if ret_val else None
 
-    def set(self, *entities: T) -> None:
+    def set(self, *entities: E) -> None:
         """TODO"""
         check_not_none(entities)
         with self.pipeline() as pipe:
@@ -159,9 +160,9 @@ class RedisRepository(Generic[T]):
             return result
 
     @abstractmethod
-    def build_key(self, entity: T) -> str:
+    def build_key(self, entity: E) -> str:
         """TODO"""
 
     @abstractmethod
-    def to_entity_type(self, entity_string: bytes) -> T:
+    def to_entity_type(self, entity_string: bytes) -> E:
         """TODO"""

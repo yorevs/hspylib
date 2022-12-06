@@ -35,6 +35,14 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 @integration_test
 class TestClass(unittest.TestCase):
+    """
+    Docker command:
+    $ docker run --rm -d --name some-mysql -p 3306:3306
+        -e MYSQL_ROOT_PASSWORD=admin
+        -e MYSQL_USER=mysql
+        -e MYSQL_PASSWORD=mysql
+        -e MYSQL_DATABASE=hspylib mysql:latest
+    """
 
     # Setup tests
     @classmethod
