@@ -10,7 +10,7 @@
 
 ## HSPYLIB-CFMAN
 
-1. Cache dos apps
+1. Cache apps
 
 ## HSPYLIB-FIREBASE
 
@@ -19,7 +19,6 @@
 ## HSPYLIB-VAULT
 
 1. Add vault TUI
-2. Fix Vault: vault.exception.exceptions.VaultOpenError: ### Unable to open Vault file => /Users/hjunior/Dropbox/Documents/.vault
 
 ## HSPYLIB-KAFMAN
 

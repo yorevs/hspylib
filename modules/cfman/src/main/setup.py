@@ -34,7 +34,7 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 setuptools.setup(
     name='hspylib-cfman',
     version=VERSION,
-    description='HomeSetup - CloudFoundry manager',
+    description='HSPyLib - CloudFoundry manager',
     author='Hugo Saporetti Junior',
     author_email='yorevs@hotmail.com',
     long_description=README,
@@ -50,15 +50,13 @@ setuptools.setup(
     include_package_data=True,
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Unix"
 
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.10',
     install_requires=REQUIREMENTS,
     keywords='pivotal,pcf,cloudfoundry,manager,application',
     platforms='Darwin,Linux'

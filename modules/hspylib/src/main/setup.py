@@ -32,7 +32,7 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 setuptools.setup(
     name='hspylib',
     version=VERSION,
-    description='HomeSetup - Core python library',
+    description='HSPyLib - Core python library',
     author='Hugo Saporetti Junior',
     author_email='yorevs@hotmail.com',
     long_description=README,
