@@ -161,6 +161,13 @@ class TestTextTools(unittest.TestCase):
         expected_text = 'ls\r\nexamplefile.zip\r\n'
         self.assertEqual(expected_text, stripped_text)
 
+    def test_should_ensure_eol(self):
+        text = 'this is a test'
+        text = ensure_eol(text)
+        self.assertTrue(text.endswith(os.linesep))
+        text = ensure_eol(text)
+        self.assertFalse(text.endswith(os.linesep * 2))
+
     def test_should_strip_line_breaks(self):
         text = '\nThis \ris just \n\ra simple\ttest'
         stripped_text = strip_linebreaks(text)

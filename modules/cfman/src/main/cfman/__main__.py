@@ -51,17 +51,17 @@ class Main(Application):
             .option('space', 's', 'space', 'the space to connect to (Target organization space)', nargs='?') \
             .option('username', 'u', 'username', 'the PCF username', nargs='?') \
             .option('password', 'p', 'password', 'the PCF password', nargs='?') \
-            .option(
-            'endpoints', 'f', 'endpoints',
-            'the file containing the CF API endpoint entries. If not provided, '
-            '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
+            .option('refresh', 'r', 'refresh', 'avoiding using cached apps', nargs='?') \
+            .option('endpoints', 'f', 'endpoints',
+                    'the file containing the CF API endpoint entries. If not provided, '
+                    '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
 
     def _main(self, *params, **kwargs) -> int:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(
             self.get_arg('api'), self.get_arg('org'), self.get_arg('space'),
-            self.get_arg('username'), self.get_arg('password'),
-            self.get_arg('endpoints') or os.getenv('HOME', os.getcwd()) + '/.cfman_endpoints.txt'
+            self.get_arg('username'), self.get_arg('password'), self.get_arg('refresh'),
+            self.get_arg('endpoints') or f"{os.getenv('HOME', os.getcwd())}/.cfman_endpoints.txt"
         )
         log.info(dedent(f'''
         {self._app_name} v{self._app_version}

@@ -151,7 +151,7 @@ def str_to_bool(string: str, true_values: Set[str] = None) -> bool:
     return string is not None and string.lower() in (true_values or TRUE_VALUES)
 
 
-def safe_del_file(filename: str, on_not_found_except: bool = False) -> bool:
+def safe_delete_file(filename: str, on_not_found_except: bool = False) -> bool:
     """Delete the file specified by filename. If the file is not found, raises an exception if on_not_found_except is
     True; otherwise return False.
     :param filename: the name of the file to be checked

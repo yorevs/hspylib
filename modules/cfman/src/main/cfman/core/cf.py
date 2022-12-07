@@ -14,7 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List
+from typing import List, Optional
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -23,7 +23,7 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 class CloudFoundry(metaclass=Singleton):
     """Cloud Foundry command line tool python wrapper"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.connected = False
         self.targeted = {'org': None, 'space': None, 'targeted': False}
         self.last_result = None
@@ -68,19 +68,19 @@ class CloudFoundry(metaclass=Singleton):
 
     # Space management
     def spaces(self) -> List[str]:
-        """List all spaces in an org"""
+        """List all spaces from organization"""
         all_spaces = self._exec('spaces').split('\n')
         return all_spaces[3:] if all_spaces and 'FAILED' not in str(all_spaces) else None
 
     # Org management
     def orgs(self) -> List[str]:
-        """List all orgs"""
+        """List all organizations"""
         all_orgs = self._exec('orgs').split('\n')
         return all_orgs[3:] if all_orgs and 'FAILED' not in str(all_orgs) else None
 
     # Application lifecycle:
     def apps(self) -> List[str]:
-        """List all apps in the target space"""
+        """List all applications from targeted space"""
         all_apps = self._exec('apps').split('\n')
         return all_apps[4:] if all_apps and 'FAILED' not in str(all_apps) else None
 
@@ -103,8 +103,12 @@ class CloudFoundry(metaclass=Singleton):
 
     def logs(self, **kwargs) -> None:
         """Tail or show recent logs for an app"""
-        Terminal.shell_poll(f"cf logs {kwargs['app']}")
+        return self._exec(f"logs {kwargs['app']} {'--recent' if kwargs['recent'] else ''}")
 
-    def _exec(self, cmd_line: str) -> str:
+    def _exec(self, cmd_line: str, pool: bool = False) -> Optional[str]:
+        """TODO"""
+        if pool:
+            Terminal.shell_poll(f"cf {cmd_line}")
+            return None
         self.last_result, self.last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")
         return self.last_result

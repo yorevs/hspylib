@@ -18,7 +18,8 @@ from time import sleep
 from typing import List, Optional
 
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
+from hspylib.core.tools.commons import file_is_not_empty, str_to_bool, syserr, sysout
+from hspylib.modules.cache.ttl_cache import TTLCache
 from hspylib.modules.cli.tui.extra.mchoose import mchoose
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.extra.mselect import mselect
@@ -58,15 +59,17 @@ class CFManager:
         """Checks whether the action is callable or not"""
         return action.lower() not in ['status', 'target']
 
-    def __init__(self, api: str, org: str, space: str, username: str, password: str, cf_endpoints: str):
+    def __init__(self, api: str, org: str, space: str, username: str, password: str, refresh: str, cf_endpoints: str):
         assert file_is_not_empty(cf_endpoints), \
             f'CF Endpoints file {cf_endpoints} is empty or does not exist !'
         self._cf = CloudFoundry()
+        self._cache = TTLCache()
         self._api = api
         self._org = org
         self._space = space
         self._username = username
         self._password = password
+        self._refresh = str_to_bool(refresh or 'false')
         self._cf_endpoints_file = cf_endpoints
         self._cf_apps = None
         self._done = False
@@ -95,17 +98,18 @@ class CFManager:
 
         self._loop_actions()
 
-    def _get_apps(self, refresh: bool = False) -> List[CFApplication]:
+    def _get_apps(self) -> List[CFApplication]:
         """Retrieve all cf applications under the target/org"""
-        if refresh or not self._cf_apps:
-            sysout(f'%GREEN%Retrieving applications from space: "{self._space}"...')
+        sysout(f'%GREEN%Retrieving applications from space: "{self._space}"...')
+        if self._refresh or not (apps := self._cache.read(f'cf-apps-{self._space}')):
             apps = self._cf.apps()
-            apps = list(map(CFApplication.of, apps if apps else []))
-            if not apps:
-                if "OK" not in self._cf.last_result:
-                    raise CFExecutionError(f'Unable to retrieve applications: => {self._cf.last_result}')
-                sysout('%YELLOW%No apps found')
-            self._cf_apps = apps
+            self._cache.save(f'cf-apps-{self._space}', apps)
+        cf_apps = list(map(CFApplication.of, apps if apps else []))
+        if not cf_apps:
+            if "OK" not in self._cf.last_result:
+                raise CFExecutionError(f'Unable to retrieve applications: => {self._cf.last_result}')
+            sysout(f'%YELLOW%No apps found for space {self._space}')
+        self._cf_apps = cf_apps
 
         return self._cf_apps
 
@@ -176,7 +180,9 @@ class CFManager:
         """Set the active space"""
         if not self._space:
             sysout('%YELLOW%Checking space...')
-            spaces = self._cf.spaces()
+            if self._refresh or not (spaces := self._cache.read(f'cf-spaces-{self._org}')):
+                spaces = self._cf.spaces()
+                self._cache.save(f'cf-spaces-{self._org}', spaces)
             if not spaces:
                 raise CFExecutionError(f'Unable to retrieve spaces: => {self._cf.last_result}')
             self._space = mselect(spaces, title='Please select a space')
@@ -233,9 +239,9 @@ class CFManager:
 
                     MenuUtils.wait_enter()
 
-    def _display_app_status(self):
+    def _display_app_status(self) -> None:
         """Display select apps status"""
-        apps = self._get_apps(refresh=True)
+        apps = self._get_apps()
         if len(apps) > 0:
             # pylint: disable=consider-using-f-string
             sysout("%WHITE%{}  {}  {}  {}  {}  {}".format(
