@@ -16,6 +16,7 @@ import contextlib
 from abc import abstractmethod
 from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
 
+from hspylib.core.metaclass.singleton import AbstractSingleton
 from retry import retry
 
 from datasource.crud_entity import CrudEntity
@@ -33,7 +34,7 @@ E = TypeVar('E', bound=CrudEntity)
 C = TypeVar('C', bound=DBConfiguration)
 
 
-class DBRepository(Generic[E, C], CrudRepository[E]):
+class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton):
     """TODO"""
 
     def __init__(self, config: C):

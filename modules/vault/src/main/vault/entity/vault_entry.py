@@ -20,7 +20,7 @@ from typing import List
 
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
-from hspylib.core.tools.zoned_datetime import now
+from hspylib.core.zoned_datetime import now
 
 
 class VaultEntry(CrudEntity):

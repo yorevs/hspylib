@@ -25,7 +25,7 @@ from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import get_path, syserr, sysout
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator

@@ -18,7 +18,8 @@ from typing import Generic, List, Optional, Set, Tuple, TypeVar
 
 import psycopg2
 from hspylib.core.exception.exceptions import DatabaseConnectionError
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
 from psycopg2 import DatabaseError, OperationalError, ProgrammingError
 from retry import retry
@@ -31,7 +32,7 @@ from datasource.identity import Identity
 E = TypeVar('E', bound=CrudEntity)
 
 
-class PostgresRepository(Generic[E], DBRepository[E, DBConfiguration]):
+class PostgresRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a postgres persistence store."""
 
     def __init__(self, config: DBConfiguration):

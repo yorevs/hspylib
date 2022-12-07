@@ -18,7 +18,7 @@ import json
 from typing import List
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.zoned_datetime import now
+from hspylib.core.zoned_datetime import now
 
 from firebase.entity.file_entry import FileEntry
 

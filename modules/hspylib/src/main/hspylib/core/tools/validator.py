@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Tuple, Type
 
-from hspylib.core.tools.zoned_datetime import DATETIME_FORMAT
+from hspylib.core.zoned_datetime import DATETIME_FORMAT
 
 
 class Validator(ABC):

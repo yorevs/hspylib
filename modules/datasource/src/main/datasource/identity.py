@@ -19,8 +19,8 @@ from collections import namedtuple
 from typing import Tuple, Type, Union
 from uuid import UUID, uuid4
 
+from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.namespace import Namespace
 
 IDENTITY = Union[Tuple, int, str, UUID]
 

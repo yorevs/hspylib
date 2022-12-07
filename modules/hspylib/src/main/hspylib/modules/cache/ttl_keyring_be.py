@@ -22,7 +22,7 @@ from keyring.backends.chainer import ChainerBackend
 from keyring.errors import PasswordDeleteError, PasswordSetError
 
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.zoned_datetime import now_ms
+from hspylib.core.zoned_datetime import now_ms
 from hspylib.modules.security.security import b64_decode, b64_encode
 
 

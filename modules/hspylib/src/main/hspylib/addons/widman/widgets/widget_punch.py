@@ -26,7 +26,7 @@ from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.zoned_datetime import now
+from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.vt100.terminal import Terminal

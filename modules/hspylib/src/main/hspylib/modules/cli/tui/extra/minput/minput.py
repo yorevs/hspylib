@@ -18,7 +18,7 @@ from typing import List, Optional
 
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.commons import syserr, sysout
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons

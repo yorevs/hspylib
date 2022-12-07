@@ -19,7 +19,7 @@ from abc import abstractmethod
 from typing import Any, Generic, List, Optional, TypeVar
 
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.fetch.fetch import delete, get, put
 from hspylib.modules.fetch.http_response import HttpResponse
@@ -32,7 +32,7 @@ from datasource.identity import Identity
 E = TypeVar('E', bound=CrudEntity)
 
 
-class FirebaseRepository(Generic[E], metaclass=Singleton):
+class FirebaseRepository(Generic[E], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a Firebase persistence store.
     API   Ref.: https://firebase.google.com/docs/reference/rest/database
     Auth  Ref.: https://firebase.google.com/docs/database/rest/auth#python
