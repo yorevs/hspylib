@@ -16,9 +16,10 @@
 
 import sys
 import unittest
+from abc import abstractmethod
 
 from hspylib.core.exception.exceptions import HSBaseException
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.metaclass.singleton import AbstractSingleton, Singleton
 
 
 class TestClass(unittest.TestCase):
@@ -30,9 +31,19 @@ class TestClass(unittest.TestCase):
         def __init__(self):
             raise Exception("Test exception")
 
+    class AbstractSingletonClass(metaclass=AbstractSingleton):
+        @abstractmethod
+        def do_it(self) -> int:
+            """Abstract method"""
+
+    class ConcreteSingletonClass(AbstractSingletonClass):
+        def do_it(self) -> int:
+            print('Done')
+            return 1
+
     # TEST CASES ----------
 
-    # TC1 - Test singletons are the same instance.
+    # Test singletons are the same instance.
     def test_singleton_should_be_singleton(self) -> None:
         self.assertFalse(Singleton.has_instance(TestClass.SingletonClass))
         instance_1 = TestClass.SingletonClass()
@@ -41,13 +52,23 @@ class TestClass(unittest.TestCase):
         self.assertEqual(instance_1, instance_2)
         self.assertEqual(hash(instance_1), hash(instance_2))
 
-    # TC2 - Test raised exceptions are properly wrapped into HSBaseException
+    # Test raised exceptions are properly wrapped into HSBaseException
     def test_singleton_creation_with_error_should_re_raise_wrapped_exception(self) -> None:
         expected_msg = "### Failed to create singleton instance: 'MessySingleton'"
         lm = len(expected_msg)
         with self.assertRaises(HSBaseException) as cm:
             TestClass.MessySingleton()
         self.assertEqual(expected_msg, str(cm.exception)[:lm])
+
+    def test_should_not_allow_instantiate_abstract_singleton(self) -> None:
+        expected_msg = "Can't instantiate abstract class AbstractSingletonClass with abstract method do_it"
+        with self.assertRaises(TypeError) as cm:
+            TestClass.AbstractSingletonClass()
+        self.assertEqual(expected_msg, str(cm.exception))
+
+    def test_should_allow_instantiate_concrete_singleton(self) -> None:
+        t = TestClass.ConcreteSingletonClass()
+        self.assertEqual(1, t.do_it())
 
 
 # Program entry point.

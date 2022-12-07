@@ -110,6 +110,8 @@ class Main(Application):
             syserr(f'### Unhandled operation: {op}')
             self.usage(1)
 
+    def _cleanup(self) -> None:
+        pass
 
 if __name__ == "__main__":
     # Application entry point

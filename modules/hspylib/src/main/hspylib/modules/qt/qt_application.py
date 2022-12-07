@@ -57,6 +57,9 @@ class QtApplication(Application):
     def _cleanup(self) -> None:
         QApplication.exit()
 
+    def _setup_arguments(self) -> None:
+        pass
+
     def set_application_font(self, font_path: Path) -> None:
         """TODO"""
         check_argument(font_path.exists(), f'Could not find font at: {str(font_path)}')

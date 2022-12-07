@@ -16,42 +16,67 @@ import logging as log
 import os
 import re
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Union
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument
 
 
 class Version:
+    """
+    Ref.: https://semver.org/
+    """
+
+    @staticmethod
+    def initial() -> 'Version':
+        return Version(0, 1, 0)
+
+    @staticmethod
+    def unversioned() -> 'Version':
+        return Version(-1, -1, -1)
 
     @staticmethod
     def load(filename: str = '.version', load_dir: Union[str, Path] = os.getcwd()) -> 'Version':
-        """Load a version from file in the form: [major.minor.build] ."""
+        """Load a version from file."""
         filepath = f'{str(load_dir)}/{filename}'
         if not os.path.exists(filepath):
-            log.warning('File "%s" does not exist. Could not fetch application version', filepath)
-            return Version((-1, -1, -1))
-
-        return Version(Version.read(filepath))
+            log.warning('File "%s" does not exist. Could not fetch application version from %s', filepath)
+            return Version.unversioned()
+        return Version._read(filepath)
 
     @staticmethod
-    def read(filepath: str = ".version") -> Tuple[int, int, int]:
-        """Retrieve the version from the version file in the form: [major.minor.build] ."""
-        try:
-            log.debug("Reading version from %s", filepath)
-            with open(filepath, encoding=Charset.UTF_8.val) as fh_version:
-                ver = tuple(map(int, map(str.strip, fh_version.read().split('.'))))
-                return ver if ver and re.search(r'(\d+, \d+, \d+)', str(ver)) else (-1, -1, -1)
-        except FileNotFoundError:
-            return -1, -1, -1
+    def _read(filepath: str = ".version") -> 'Version':
+        """Retrieve the version from the version file."""
+        log.debug("Reading version from %s", filepath)
+        with open(filepath, encoding=Charset.UTF_8.val) as fh_version:
+            ver_str = fh_version.read().strip()
+            if mat := re.search(r'v?((\d+)\.(\d+)\.(\d+)(.*))', ver_str):
+                delimiters = re.findall(r'[-_ ]', ver_str)
+                extras = re.split(r'[-_ ]', ver_str)[1:]
+                ext = list(map(lambda t: ''.join(t), zip(delimiters, extras)))
+                return Version(mat.group(2), mat.group(3), mat.group(4), *ext)
+            return Version.unversioned()
 
-    def __init__(self, version: Tuple[int, int, int]):
-        self._version = version
-        self._version_string = '.'.join(map(str, version))
 
-    def __str__(self):
+    def __init__(self, *args) -> None:
+        """ Application version. Additional labels for pre-release and build metadata are available as extensions
+        to the MAJOR.MINOR.PATCH format:
+            - MAJOR version when you make incompatible API changes
+            - MINOR version when you add functionality in a backwards compatible manner
+            - PATCH version when you make backwards compatible bug fixes
+        :param version: The version number according to the following: MAJOR.MINOR.PATCH
+        """
+        check_argument(args and len(args) >= 3, "Version must have at least MAJOR.MINOR.PATCH numbers")
+        self._major = args[0]
+        self._minor = args[1]
+        self._patch = args[2]
+        self._ext = ''.join(args[3:])
+        self._version_string = f"{'.'.join(map(str, args[:3]))}{self._ext}"
+
+    def __str__(self) -> str:
         return self._version_string
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
     @property

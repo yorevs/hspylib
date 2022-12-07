@@ -124,6 +124,8 @@ class Main(Application):
             syserr(f'### Invalid application: {app}')
             self.usage(1)
 
+    def _cleanup(self) -> None:
+        pass
 
 # Application entry point
 if __name__ == "__main__":

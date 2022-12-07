@@ -59,6 +59,7 @@ class Main(QtApplication):
         '''))
 
 
+
 if __name__ == "__main__":
     # Application entry point
     Main('kafman').INSTANCE.run(sys.argv[1:])

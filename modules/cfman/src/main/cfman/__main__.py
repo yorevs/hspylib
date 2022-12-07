@@ -76,6 +76,8 @@ class Main(Application):
         """Execute the application"""
         self.cfman.run()
 
+    def _cleanup(self) -> None:
+        pass
 
 if __name__ == "__main__":
     # Application entry point

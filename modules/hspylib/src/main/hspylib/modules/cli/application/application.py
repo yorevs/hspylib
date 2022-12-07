@@ -19,13 +19,14 @@ import os
 import signal
 import sys
 import traceback
+from abc import abstractmethod
 from textwrap import dedent
 from typing import Optional, Union
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, \
     InvalidStateError
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.text_tools import camelcase
@@ -38,7 +39,7 @@ from hspylib.modules.cli.application.exit_hooks import ExitHooks
 from hspylib.modules.cli.application.version import Version
 
 
-class Application(metaclass=Singleton):
+class Application(metaclass=AbstractSingleton):
     """HSPyLib application framework"""
 
     INSTANCE = None
@@ -152,9 +153,6 @@ class Application(metaclass=Singleton):
             if self._args and hasattr(self._args, arg_name) \
             else None
 
-    def _setup_arguments(self) -> None:
-        """Initialize application parameters and options"""
-
     def _with_options(self) -> 'OptionsBuilder':
         """TODO"""
         return OptionsBuilder(self._arg_parser)
@@ -166,10 +164,14 @@ class Application(metaclass=Singleton):
     def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
-    # pylint: disable=unused-argument
+    @abstractmethod
+    def _setup_arguments(self) -> None:
+        """Initialize application parameters and options"""
+
+    @abstractmethod
     def _main(self, *params, **kwargs) -> int:
         """Execute the application's main statements"""
-        return 0
 
+    @abstractmethod
     def _cleanup(self) -> None:
         """Execute http_code cleanup before exiting"""
