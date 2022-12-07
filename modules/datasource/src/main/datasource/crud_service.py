@@ -15,7 +15,7 @@
 from abc import ABC
 from typing import Generic, List, Optional, TypeVar
 
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.namespace import Namespace
 
 from datasource.crud_entity import CrudEntity
 from datasource.crud_repository import CrudRepository

@@ -15,7 +15,8 @@
 
 import logging as log
 import sys
-from typing import Type, TypeVar, Union
+from abc import ABCMeta
+from typing import Any, Type, TypeVar, Union
 
 from hspylib.core.exception.exceptions import HSBaseException
 from hspylib.core.preconditions import check_not_none
@@ -29,9 +30,8 @@ class Singleton(Type):
 
     _instances = {}
 
-
     # pylint: disable=bad-mcs-method-argument
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Any:
         """Invoke the class constructor or return the instance if it exists."""
         if not Singleton.has_instance(self):
             try:
@@ -62,3 +62,10 @@ class Singleton(Type):
                 raise TypeError(f"Instance not found: '{clazz.__name__}'")
         else:
             raise TypeError("This method is only available for testing purposes (cleanup).")
+
+
+class AbstractSingleton(Singleton, ABCMeta):
+    """This metaclass mixes Singleton and Abstract class."""
+    def __call__(cls, *args, **kwargs) -> Any:
+        super(ABCMeta, cls).__call__(*args, **kwargs)
+        return super(Singleton, cls).__call__(*args, **kwargs)

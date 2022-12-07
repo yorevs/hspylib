@@ -20,7 +20,7 @@ from typing import Generic, List, Optional, Tuple, TypeVar
 import redis
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
@@ -32,7 +32,7 @@ from datasource.redis.redis_configuration import RedisConfiguration
 E = TypeVar('E', bound=CrudEntity)
 
 
-class RedisRepository(Generic[E], metaclass=Singleton):
+class RedisRepository(Generic[E], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a postgres persistence store.
     Ref.: https://github.com/redis/redis-py
     Ref.: https://docs.redis.com/latest/rs/references/client_references/client_python/

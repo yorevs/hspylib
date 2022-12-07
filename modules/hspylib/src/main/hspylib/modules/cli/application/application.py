@@ -29,7 +29,7 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.text_tools import camelcase
-from hspylib.core.tools.zoned_datetime import now
+from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.cli.application.argparse.arguments_builder import ArgumentsBuilder
 from hspylib.modules.cli.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder

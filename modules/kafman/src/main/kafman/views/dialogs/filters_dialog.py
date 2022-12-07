@@ -19,7 +19,7 @@ import string
 from typing import Optional, Union
 
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.collection_filter import CollectionFilter, ElementFilter, FilterCondition
+from hspylib.core.collection_filter import CollectionFilter, ElementFilter, FilterCondition
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, QObject, Qt

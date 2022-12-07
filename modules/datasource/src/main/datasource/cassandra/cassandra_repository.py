@@ -20,7 +20,8 @@ from cassandra import UnresolvableContactPoints
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster, NoHostAvailable
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
 from retry import retry
 
@@ -32,7 +33,7 @@ from datasource.identity import Identity
 E = TypeVar('E', bound=CrudEntity)
 
 
-class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration]):
+class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a cassandra persistence store."""
 
     def __init__(self, config: CassandraConfiguration):

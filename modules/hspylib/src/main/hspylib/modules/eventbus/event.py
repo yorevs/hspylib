@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.namespace import Namespace
 
 
 class Event:
@@ -21,7 +21,7 @@ class Event:
 
     def __init__(self, event_name: str, **kwargs):
         self._name = event_name
-        self._args = Namespace('EventArgs', **kwargs)
+        self._args = Namespace('EventArgs', True, **kwargs)
 
     def __str__(self) -> str:
         return f"Event(name={self.name})"

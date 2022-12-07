@@ -31,7 +31,7 @@ from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateErr
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import dirname
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
-from hspylib.core.tools.zoned_datetime import now, now_ms
+from hspylib.core.zoned_datetime import now, now_ms
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.fetch.fetch import is_reachable

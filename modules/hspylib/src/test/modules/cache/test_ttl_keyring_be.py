@@ -20,7 +20,7 @@ from time import sleep
 import keyring
 
 from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
-from hspylib.core.tools.zoned_datetime import now_ms
+from hspylib.core.zoned_datetime import now_ms
 
 
 class TestTextTools(unittest.TestCase):

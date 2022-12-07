@@ -14,8 +14,8 @@
 
 from typing import Tuple
 
-from hspylib.core.tools.namespace import Namespace
-from hspylib.core.tools.zoned_datetime import now_ms
+from hspylib.core.namespace import Namespace
+from hspylib.core.zoned_datetime import now_ms
 from PyQt5.QtCore import pyqtSignal, QThread
 
 

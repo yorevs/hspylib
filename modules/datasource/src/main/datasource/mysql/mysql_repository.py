@@ -18,7 +18,8 @@ from typing import Generic, List, Optional, Set, Tuple, TypeVar
 
 import pymysql
 from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
 from pymysql import Connection, Error
 from pymysql.cursors import Cursor
@@ -32,7 +33,7 @@ from datasource.identity import Identity
 E = TypeVar('E', bound=CrudEntity)
 
 
-class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration]):
+class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a MySql persistence store."""
 
     def __init__(self, config: DBConfiguration):

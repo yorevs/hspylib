@@ -17,7 +17,7 @@ from textwrap import dedent
 from typing import List, Optional
 
 from datasource.crud_service import CrudService
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.namespace import Namespace
 
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_repository import VaultRepository

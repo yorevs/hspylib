@@ -13,11 +13,11 @@
    Copyright 2022, HSPyLib team
 """
 import json
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Generic, List, Optional, Set, TypeVar
 
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.namespace import Namespace
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
 
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
@@ -25,7 +25,7 @@ from datasource.identity import Identity
 T = TypeVar('T', bound=CrudEntity)
 
 
-class CrudRepository(Generic[T], metaclass=Singleton):
+class CrudRepository(Generic[T], metaclass=AbstractSingleton):
     """Interface for generic CRUD operations on a repository for a specific type."""
 
     @property

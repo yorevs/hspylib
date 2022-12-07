@@ -17,20 +17,24 @@ from typing import Any, Dict, Iterator, List, Optional, Tuple
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.dict_tools import merge
 
+ATTRIBUTE_TYPES = Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]
+
 
 class Namespace:
 
     @staticmethod
-    def of(type_name: str, attributes: Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]) -> 'Namespace':
+    def of(type_name: str, attributes: ATTRIBUTE_TYPES, final: bool = False) -> 'Namespace':
         check_not_none(attributes)
-        self = Namespace(type_name)
+        self = Namespace(type_name, final)
         self += attributes if isinstance(attributes, dict) else merge(attributes)
         return self
 
-    def __init__(self, type_name: str = '', **kwargs) -> None:
-        self.__name__ = type_name
+    def __init__(self, type_name: str = None, final: bool = False, **kwargs) -> None:
+        self.__name__ = type_name or self.__class__.__name__
+        self._final = None
         self._index = 0
         list(map(self.setattr, kwargs.keys(), kwargs.values()))
+        self._final = final
 
     def key(self) -> Tuple[Any]:
         return tuple(self.values)
@@ -79,10 +83,15 @@ class Namespace:
         return self.__iadd__(other)
 
     def setattr(self, name: str, value: Any) -> 'Namespace':
-        if name.startswith(('_', '__')):
+        if self._final and not hasattr(self, name):
+            raise ValueError(f"{self.__name__} Namespace is final")
+        if name.startswith(('_', '__')) or name.endswith(('_', '__')):
             raise NameError("Attribute names can't start with '_' or '__'")
         setattr(self, name, value)
         return self
+
+    def hasattr(self, name: str) -> bool:
+        return hasattr(self, name)
 
     def at(self, index: int) -> Optional[Tuple[str, Any]]:
         return (self.attributes[index], self.values[index]) if index < len(self) else None
@@ -92,9 +101,17 @@ class Namespace:
 
     @property
     def attributes(self) -> Tuple[str]:
-        attrs = list(filter(lambda name: self[name] is not None and not name.startswith(('_', '__')), vars(self)))
-        return tuple(a for a in attrs)
+        return tuple(
+            a for a in
+            filter(lambda name:
+                   self[name] is not None
+                   and not name.startswith(('_', '__'))
+                   and not name.endswith(('_', '__')),
+                   vars(self)))
 
     @property
     def values(self) -> Tuple[Any]:
-        return tuple(filter(lambda v: v is not None, [getattr(self, a) for a in self.attributes]))
+        return tuple(
+            filter(lambda val:
+                   val is not None,
+                   [getattr(self, a) for a in self.attributes]))

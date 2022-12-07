@@ -17,8 +17,8 @@ import json
 from typing import Iterable, Optional
 from uuid import UUID
 
+from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.namespace import Namespace
 
 from datasource.identity import Identity
 

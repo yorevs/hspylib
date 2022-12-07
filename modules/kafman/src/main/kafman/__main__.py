@@ -19,7 +19,7 @@ import sys
 from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.zoned_datetime import now
+from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
