@@ -2,14 +2,10 @@
 #
 # hspylib v0.11.129
 #
-# Package: main.hspylib.core.tools
+# Package: test.modules.cli
 """Package initialization."""
 
 __all__ = [
-  'commons', 
-  'dict_tools', 
-  'git_tools', 
-  'text_tools', 
-  'validator'
+  'application'
 ]
 __version__ = '0.11.129'

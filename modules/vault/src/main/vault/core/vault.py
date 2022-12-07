@@ -28,10 +28,10 @@ import cryptocode
 import keyring
 from cryptography.fernet import InvalidToken
 from datasource.identity import Identity
-from hspylib.core.tools.commons import file_is_not_empty, safe_del_file, syserr, sysout, touch_file
+from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
 from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-from hspylib.modules.security.security import decode, decrypt, encode, encrypt
+from hspylib.modules.security.security import decode_file, decrypt_file, encode_file, encrypt_file
 
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_service import VaultService
@@ -208,7 +208,7 @@ class Vault:
                     passphrase_confirm = getpass.getpass("Repeat passphrase:").strip()
                     if passphrase_confirm != passphrase:
                         syserr("### Passphrase and confirmation mismatch")
-                        safe_del_file(self._configs.vault_file)
+                        safe_delete_file(self._configs.vault_file)
                 sysout("%GREEN%Passphrase successfully stored")
                 log.debug("Vault passphrase created for user=%s", self._configs.vault_user)
                 self._is_unlocked = True
@@ -219,27 +219,27 @@ class Vault:
         """Encode and Encrypt the vault file"""
         if file_is_not_empty(self._configs.unlocked_vault_file):
             encoded = f"{self._configs.unlocked_vault_file}-encoded"
-            encode(self._configs.unlocked_vault_file, encoded, binary=True)
-            encrypt(encoded, self._configs.vault_file, self._passphrase)
-            safe_del_file(encoded)
+            encode_file(self._configs.unlocked_vault_file, encoded, binary=True)
+            encrypt_file(encoded, self._configs.vault_file, self._passphrase)
+            safe_delete_file(encoded)
             log.debug("Vault file is encrypted")
         else:
             os.rename(self._configs.unlocked_vault_file, self._configs.vault_file)
         self._is_unlocked = False
-        safe_del_file(self._configs.unlocked_vault_file)
+        safe_delete_file(self._configs.unlocked_vault_file)
 
     def _unlock_vault(self) -> None:
         """Decrypt and Decode the vault file"""
         if file_is_not_empty(self._configs.vault_file):
             encoded = f"{self._configs.unlocked_vault_file}-encoded"
-            decrypt(self._configs.vault_file, encoded, self._passphrase)
-            decode(encoded, self._configs.unlocked_vault_file, binary=True)
-            safe_del_file(encoded)
+            decrypt_file(self._configs.vault_file, encoded, self._passphrase)
+            decode_file(encoded, self._configs.unlocked_vault_file, binary=True)
+            safe_delete_file(encoded)
             log.debug("Vault file is decrypted")
         else:
             os.rename(self._configs.vault_file, self._configs.unlocked_vault_file)
         self._is_unlocked = True
-        safe_del_file(self._configs.vault_file)
+        safe_delete_file(self._configs.vault_file)
 
     def _sanity_check(self) -> None:
         """Check existing vault backups and apply a rollback if required."""
@@ -257,7 +257,7 @@ class Vault:
                 if os.path.exists(backup_file):
                     log.warning('Restoring last backup => %s', backup_file)
                     shutil.copyfile(backup_file, vault_file)
-                    safe_del_file(unlocked_vault_file)
+                    safe_delete_file(unlocked_vault_file)
                 else:
                     log.warning('No backups found !')
                     raise VaultSecurityException(

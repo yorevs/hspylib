@@ -67,5 +67,4 @@ class Singleton(Type):
 class AbstractSingleton(Singleton, ABCMeta):
     """This metaclass mixes Singleton and Abstract class."""
     def __call__(cls, *args, **kwargs) -> Any:
-        super(ABCMeta, cls).__call__(*args, **kwargs)
-        return super(Singleton, cls).__call__(*args, **kwargs)
+        return super().__call__(*args, **kwargs)

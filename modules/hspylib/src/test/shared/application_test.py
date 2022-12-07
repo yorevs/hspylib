@@ -27,8 +27,8 @@ class ApplicationTest(Application):
     # The welcome message
     WELCOME = 'Welcome to test app'
 
-    def __init__(self, app_name: str):
-        super().__init__(app_name, Version.load(), self.DESCRIPTION)
+    def __init__(self) -> None:
+        super().__init__('AppTest', Version.load(), self.DESCRIPTION)
 
     def _setup_arguments(self) -> None:
         # @formatter:off
@@ -46,3 +46,7 @@ class ApplicationTest(Application):
 
     def _exec_application(self) -> None:
         """Execute the application"""
+        pass
+
+    def _cleanup(self) -> None:
+        pass

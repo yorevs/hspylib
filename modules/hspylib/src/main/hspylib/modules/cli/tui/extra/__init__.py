@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.128
+# hspylib v0.11.129
 #
 # Package: main.hspylib.modules.cli.tui.extra
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'minput', 
   'mselect'
 ]
-__version__ = '0.11.128'
+__version__ = '0.11.129'
