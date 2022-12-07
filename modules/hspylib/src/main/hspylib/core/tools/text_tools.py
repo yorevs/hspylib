@@ -117,7 +117,7 @@ def strip_extra_spaces(text: str, re_exp: str = r'\s+', trim: bool = False) -> s
     return s if not trim else s.strip()
 
 
-def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = '\n') -> List[str]:
+def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = os.linesep) -> List[str]:
     """Split the string using the delimiter and filter using the specified regex filter
     :param input_str: The string to be split
     :param regex_filter: The regex to filter the string
@@ -138,6 +138,8 @@ def eol(current_index: int, split_len: int, line_sep: str = os.linesep, word_sep
     current index. """
     return line_sep if (current_index + 1) % split_len == 0 else word_sep
 
+def ensure_eol(string) -> str:
+    return string if string.endswith(os.linesep) else string + os.linesep
 
 def quote(value: Any) -> str:
     """Quote or double quote the value according to the value type. """

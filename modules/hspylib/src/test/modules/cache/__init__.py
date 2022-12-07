@@ -2,13 +2,10 @@
 #
 # hspylib v0.11.127
 #
-# Package: main.hspylib.modules.cli.tui.extra
+# Package: test.modules.cache
 """Package initialization."""
 
 __all__ = [
-  'mchoose', 
-  'mdashboard', 
-  'minput', 
-  'mselect'
+  'test_ttl_keyring_be'
 ]
 __version__ = '0.11.127'

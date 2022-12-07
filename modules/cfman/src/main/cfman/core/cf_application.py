@@ -50,7 +50,8 @@ class CFApplication:
         instances: str,
         memory: str,
         disk: str,
-        urls: List[str]):
+        urls: List[str]) -> None:
+
         self.name = name
         self.state = state
         self.instances = instances
@@ -59,14 +60,14 @@ class CFApplication:
         self.urls = urls
         self.max_name_length = max(self.max_name_length, len(self.name))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
     # pylint: disable=consider-using-f-string
-    def print_status(self):
+    def print_status(self) -> None:
         """TODO"""
         sysout("%CYAN%{}  %{}%{:5}  %NC%{:10}  {:4}  {:4}  {}".format(
             self.name.ljust(self.max_name_length),
