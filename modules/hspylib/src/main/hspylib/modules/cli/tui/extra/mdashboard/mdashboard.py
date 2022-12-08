@@ -119,7 +119,7 @@ class MenuDashBoard:
             self._print_cell(idx, item, MenuDashBoard.CELL_TPL if self.tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
 
         sysout(f'%EL2%\r> %GREEN%{self.items[self.tab_index].tooltip}%NC%')
-        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end='')
         self.re_render = False
 
     def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:

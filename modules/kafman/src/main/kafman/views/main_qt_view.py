@@ -67,7 +67,7 @@ from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = _Classpath.get_source_path(".version").read_text(encoding=str(Charset.UTF_8))
+    VERSION = _Classpath.get_source_path(".version").read_text(encoding=Charset.UTF_8.val)
 
     SCHEMA_DIR = (_Classpath.resource_path() / "schema")
 
@@ -305,7 +305,7 @@ class MainQtView(QtView):
             'Open file', self._last_used_dir or '.', "Select a message file (*.txt *.json *.csv)")
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0][0])
-            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text(encoding=str(Charset.UTF_8)))
+            self.ui.txt_producer.set_plain_text(Path(file_tuple[0][0]).read_text(encoding=Charset.UTF_8.val))
 
     def _save_message_file(self) -> None:
         file_tuple = QFileDialog.getSaveFileName(
@@ -313,7 +313,7 @@ class MainQtView(QtView):
             'Save file', self._last_used_dir or '.', "Save file as (*.*)")
         if file_tuple and file_tuple[0]:
             self._last_used_dir = dirname(file_tuple[0])
-            with open(Path(file_tuple[0]), "w", encoding=str(Charset.UTF_8)) as fd_file:
+            with open(Path(file_tuple[0]), "w", encoding=Charset.UTF_8.val) as fd_file:
                 fd_file.write(self.ui.txt_producer.toPlainText())
 
     def _form_to_message(self, validate: bool = True) -> str:

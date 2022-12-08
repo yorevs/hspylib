@@ -19,7 +19,7 @@ class Main(Application):
   """TODO"""
 
   # The welcome message
-  DESCRIPTION = (HERE / "welcome.txt").read_text(encoding=str(Charset.UTF_8))
+  DESCRIPTION = (HERE / "welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
   # Location of the .version file
   VERSION_DIR = _Classpath.source_path()

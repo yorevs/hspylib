@@ -21,21 +21,21 @@ E = TypeVar('E', bound='Enumeration')
 
 
 class Enumeration(Enum):
-    """TODO"""
+    """Extended enumeration type"""
 
     @classmethod
     def names(cls) -> List[str]:
-        """TODO"""
+        """Return all enumeration names"""
         return list(map(lambda e: e.name, cls))
 
     @classmethod
     def values(cls) -> List[Any]:
-        """TODO"""
+        """Return all enumeration values"""
         return list(map(lambda e: e.value, cls))
 
     @classmethod
     def value_of(cls, name: str, ignore_case: bool = True) -> E:
-        """TODO"""
+        """Create an enumeration provided it's matching name."""
         if ignore_case:
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:
@@ -54,15 +54,16 @@ class Enumeration(Enum):
         return str(self.value)
 
     def __repr__(self):
-        return str(self)
-
-    def key(self) -> Tuple[str, Any]:
-        return self.name, self.value
+        return self.name
 
     def __hash__(self) -> int:
-        return hash(self.key())
+        return hash(self.key)
 
     def __eq__(self, other: E) -> bool:
         if isinstance(other, self.__class__):
-            return self.key() == other.key()
+            return self.key == other.key
         return NotImplemented
+
+    @property
+    def key(self) -> Tuple[str, Any]:
+        return self.name, self.value

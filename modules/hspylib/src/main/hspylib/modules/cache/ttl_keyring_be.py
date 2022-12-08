@@ -25,12 +25,14 @@ from hspylib.core.preconditions import check_not_none
 from hspylib.core.zoned_datetime import now_ms
 from hspylib.modules.security.security import b64_decode, b64_encode
 
+PWD_EXPIRED_CB = Callable[[str], None]
+
 
 class TTLKeyringBE(ChainerBackend):
 
     priority = 1
 
-    def __init__(self, ttl_minutes: int = 15, ttl_seconds: int = 0, cb_expired: Callable = None) -> None:
+    def __init__(self, ttl_minutes: int = 15, ttl_seconds: int = 0, cb_expired: PWD_EXPIRED_CB = None) -> None:
         super().__init__()
         self._ttl = ttl_minutes, ttl_seconds
         self._cb_expired = cb_expired

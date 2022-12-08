@@ -12,50 +12,44 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Callable, List, Optional
+from typing import List, Optional
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import CB_ON_TRIGGER, DashboardItem
 
 
 class DashboardBuilder:
-    """TODO"""
+    """Dashboard builder"""
 
     @staticmethod
     class DashboardItemBuilder:
-        """TODO"""
+        """Dashboard item builder"""
 
         def __init__(self, parent: 'DashboardBuilder'):
-            self.parent = parent
-            self.item = DashboardItem()
+            self._parent = parent
+            self._item = DashboardItem()
 
         def icon(self, icon: Awesome) -> 'DashboardBuilder.DashboardItemBuilder':
-            """TODO"""
-            self.item.icon = icon
+            self._item.icon = icon
             return self
 
         def tooltip(self, tooltip: str) -> 'DashboardBuilder.DashboardItemBuilder':
-            """TODO"""
-            self.item.tooltip = tooltip
+            self._item.tooltip = tooltip
             return self
 
-        def on_trigger(self, on_trigger: Callable) -> Optional['DashboardBuilder.DashboardItemBuilder']:
-            """TODO"""
-            self.item.on_trigger = on_trigger
+        def on_trigger(self, on_trigger: CB_ON_TRIGGER) -> Optional['DashboardBuilder.DashboardItemBuilder']:
+            self._item.on_trigger = on_trigger
             return self
 
         def build(self) -> 'DashboardBuilder':
-            """TODO"""
-            self.parent.items.append(self.item)
-            return self.parent
+            self._parent.items.append(self._item)
+            return self._parent
 
     def __init__(self):
         self.items = []
 
     def item(self) -> DashboardItemBuilder:
-        """TODO"""
         return DashboardBuilder.DashboardItemBuilder(self)
 
     def build(self) -> List[DashboardItem]:
-        """TODO"""
         return self.items

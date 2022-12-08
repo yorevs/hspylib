@@ -117,20 +117,20 @@ def strip_extra_spaces(text: str, re_exp: str = r'\s+', trim: bool = False) -> s
     return s if not trim else s.strip()
 
 
-def split_and_filter(input_str: str, regex_filter: str = '.*', delimiter: str = os.linesep) -> List[str]:
+def split_and_filter(text: str, regex_filter: str = '.*', delimiter: str = os.linesep) -> List[str]:
     """Split the string using the delimiter and filter using the specified regex filter
-    :param input_str: The string to be split
+    :param text: The string to be split
     :param regex_filter: The regex to filter the string
     :param delimiter: The delimiter according which to split the string
     :return:
     """
-    return list(filter(re.compile(regex_filter).search, input_str.split(delimiter)))
+    return list(filter(re.compile(regex_filter).search, text.split(delimiter)))
 
 
-def json_stringify(json_string: str) -> str:
-    """ Return a copy of the json string stripping any line breaks or formatting from it and also quoting any existing
+def json_stringify(json_text: str) -> str:
+    """ Return a copy of the json text stripping any line breaks or formatting from it and also quoting any existing
     double quotes. """
-    return strip_extra_spaces(strip_linebreaks(json_string)).replace('"', '\\"')
+    return strip_extra_spaces(strip_linebreaks(json_text)).replace('"', '\\"')
 
 
 def eol(current_index: int, split_len: int, line_sep: str = os.linesep, word_sep: str = ' ') -> str:
@@ -138,8 +138,13 @@ def eol(current_index: int, split_len: int, line_sep: str = os.linesep, word_sep
     current index. """
     return line_sep if (current_index + 1) % split_len == 0 else word_sep
 
-def ensure_eol(string) -> str:
-    return string if string.endswith(os.linesep) else string + os.linesep
+def ensure_endswith(string: str, end_str: str) -> str:
+    """Ensure the string ends with the given end string"""
+    return string if string.endswith(end_str) else string + end_str
+
+def ensure_startswith(string: str, start_str: str) -> str:
+    """Ensure the string starts with the given start string"""
+    return string if string.startswith(start_str) else start_str + string
 
 def quote(value: Any) -> str:
     """Quote or double quote the value according to the value type. """

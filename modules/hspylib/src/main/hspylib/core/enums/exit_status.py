@@ -15,6 +15,7 @@
 """
 
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 class ExitStatus(Enumeration):
@@ -32,10 +33,10 @@ class ExitStatus(Enumeration):
     SUCCESS =  0
 
     # Returned when something that was supposed to work and failed due to unexpected software behaviour
-    FAILED  =  1
+    FAILED  =  62
 
     # Returned when something ran should be aborted. Generally due to usr cancellation
-    ABORTED =  2
+    ABORTED =  63
 
     # @formatter:on
 
@@ -43,7 +44,5 @@ class ExitStatus(Enumeration):
         return self.name
 
     def __repr__(self):
-        return "{}{}({})".format(
-            '\033[0;32m' if self.name == 'SUCCESS' else '\033[0;31m',
-            self.name, self.value
-        )
+        color = VtColors.GREEN.code if self == ExitStatus.SUCCESS else VtColors.RED.code
+        return f"{color}{self.name}({self.value})"

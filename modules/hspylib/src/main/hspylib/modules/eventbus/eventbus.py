@@ -13,23 +13,25 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Callable, List
+from typing import Any, Callable, Dict, List
 
 from hspylib.core.exception.exceptions import HSBaseException
 from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
 
+EVENT_CALLBACK = Callable[[Event], None]
+
 
 def subscribe(**kwargs) -> Callable:
     """Method decorator to subscribe to a given bus event."""
 
-    def inner(func) -> None:
+    def subscribe_closure(func) -> None:
         check_argument(func.__code__.co_argcount >= 1, 'Subscriber callbacks require at least one parameter.')
         missing = next((p for p in ['bus', 'event'] if p not in kwargs), None)
         check_argument(missing is None, f"Missing required parameter: '{missing}: str'.")
         EventBus.get(str(kwargs['bus'])).subscribe(str(kwargs['event']), func)
 
-    return inner
+    return subscribe_closure
 
 
 def emit(bus_name: str, event_name: str, **kwargs) -> None:
@@ -40,8 +42,8 @@ def emit(bus_name: str, event_name: str, **kwargs) -> None:
 class EventBus:
     """Provide an eventbus pattern for events and subscribers."""
 
-    _buses = {}
-    _subscribers = {}
+    _buses: Dict[str, Any] = {}
+    _subscribers: Dict[str, Any] = {}
     _events: List[Event] = []
 
     @classmethod
@@ -64,9 +66,13 @@ class EventBus:
         return subscriber
 
     def __init__(self, name: str):
-        self.name = name
+        self._name = name
 
-    def subscribe(self, event_name: str, cb_event_handler: Callable) -> None:
+    @property
+    def name(self) -> str:
+        return self._name
+
+    def subscribe(self, event_name: str, cb_event_handler: EVENT_CALLBACK) -> None:
         """Subscribe to the specified event bus."""
         subscriber = self._get_subscriber(self.name, event_name)
         subscriber['callbacks'].append(cb_event_handler)

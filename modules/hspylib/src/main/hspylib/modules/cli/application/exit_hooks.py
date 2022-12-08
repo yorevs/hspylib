@@ -18,11 +18,12 @@ from typing import Callable
 
 from hspylib.core.tools.commons import syserr
 
+EXIT_CB = Callable[[], None]
 
 class ExitHooks:
     """TODO"""
 
-    def __init__(self, cleanup: Callable = None):
+    def __init__(self, cleanup: EXIT_CB = None):
         self._orig_exit = None
         self._exit_code = None
         self._exception = None
@@ -33,19 +34,19 @@ class ExitHooks:
         """TODO"""
         self._orig_exit = sys.exit
         sys.exit = self.exit
-        sys.excepthook = self.exception_handler
+        sys.excepthook = self.exception_hook
 
     def exit(self, code=0) -> None:
         """TODO"""
         self._exit_code = code
         self._orig_exit(code)
 
-    def exception_handler(
-        self, exc_type: TypeError, exc: BaseException,
+    def exception_hook(
+        self, exc_type: TypeError | None, exc: BaseException | None,
         tb: traceback) -> None:
         """TODO"""
-        self._exception = exc
-        self._traceback = tb
+
+        self._exception, self._traceback = exc, tb
         tb = "\t".join(traceback.format_exception(exc_type, exc, self._traceback))
         syserr(tb)
         if self._cleanup:

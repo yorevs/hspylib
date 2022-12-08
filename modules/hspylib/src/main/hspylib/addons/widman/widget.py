@@ -16,9 +16,10 @@
 
 from abc import ABC, abstractmethod
 from textwrap import dedent
-from typing import List, Tuple
+from typing import List
 
 from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
@@ -39,7 +40,7 @@ class Widget(ABC):
         name: str,
         tooltip: str,
         usage: str,
-        version: Tuple[int, int, int]):
+        version: Version):
         self._icon = icon
         self._name = name
         self._tooltip = tooltip

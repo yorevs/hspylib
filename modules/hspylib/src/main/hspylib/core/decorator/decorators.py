@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    @package: hspylib.core.decorator
       @file: decorators.py
@@ -48,11 +47,13 @@ def temporized(func: Callable):
         ms = int(ceil(int(parts[2][-6:]) / 1000))
         return f"{h:02s}[h] {m:02s}[m] {s:02s}[s] {ms:02d}[ms]"
 
-    def wrapper(*args) -> Any:
+    def temporized_closure(*args) -> Any:
         """Execute the callable and return"""
         start = datetime.now()
         ret = func(*args)
-        log.debug("@@@ [%s] Time elapsed\t%s", func.__name__, timedelta_to_str(datetime.now() - start))
+        log.debug(
+            "@@@ [%s] Time elapsed\t%s",
+            func.__name__, timedelta_to_str(datetime.now() - start))
         return ret
 
-    return wrapper
+    return temporized_closure

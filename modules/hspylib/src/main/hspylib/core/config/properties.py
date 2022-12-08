@@ -26,13 +26,15 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, touch_file
 from hspylib.core.tools.dict_tools import flatten_dict
 
+CONVERSION_FN = Type | Callable[[Any], Any]
+
 
 class Properties:
     """The Properties class represents a persistent set of properties. Each key and its corresponding value in the
     property list is a string."""
 
-    _default_name = 'application'
-    _default_ext = '.properties'
+    _default_name: str = 'application'
+    _default_ext: str = '.properties'
 
     @staticmethod
     def environ_name(property_name: str) -> str:
@@ -63,7 +65,11 @@ class Properties:
             all_cfgs.update(dict(cfg.items(section)))
         return all_cfgs
 
-    def __init__(self, filename: Optional[str] = None, profile: Optional[str] = None, load_dir: Optional[str] = None):
+    def __init__(
+        self, filename: str = None,
+        profile: str | None = None,
+        load_dir: str | None = None) -> None:
+
         self._filename, self._extension = os.path.splitext(
             filename if filename else f'{self._default_name}{self._default_ext}')
         self._profile = profile if profile else os.environ.get('ACTIVE_PROFILE', '')
@@ -89,14 +95,18 @@ class Properties:
         """Retrieve the amount of properties"""
         return len(self._properties)
 
-    def get(self, prop_name: str, prop_type: Type | Callable = str, default: Optional[str] = None) -> Optional[Any]:
+    def get(
+        self, prop_name: str,
+        cb_to_type: CONVERSION_FN = str,
+        default: Any | None = None) -> Optional[Any]:
         """Retrieve a property specified by property and cast to the proper type. If the property is not found,
         return the default value."""
+
         try:
             value = self._get(prop_name)
-            return prop_type(value) if value else None
+            return cb_to_type(value) if value else None
         except TypeError:
-            log.warning("Unable to cast property '%s' into '%s'", prop_name, prop_type)
+            log.warning("Unable to convert property '%s' into '%s'", prop_name, cb_to_type)
             return default
 
     @property
@@ -114,12 +124,11 @@ class Properties:
         """Retrieve the amount of properties actually store."""
         return len(self._properties)
 
-    def _get(self, key: str, default_value: Any = None) -> Optional[Any]:
+    def _get(self, key: str, default: Any = None) -> Optional[Any]:
         """Get a property value as string or default_value if the property was not found"""
-        value = os.environ.get(self.environ_name(key), None)
-        if value:
+        if value := os.environ.get(self.environ_name(key), None):
             return value
-        return self._properties[key] if key in self._properties else default_value
+        return self._properties[key] if key in self._properties else default
 
     def _load(self, load_dir: str) -> None:
         """Read all properties from the file"""
@@ -132,27 +141,23 @@ class Properties:
 
     def _build_path(self, load_dir: str) -> str:
         """Find the proper path for the properties file"""
-        if self._profile:
-            filepath = f'{load_dir}/{self._filename}-{self._profile}{self._extension}'
-        else:
-            filepath = f'{load_dir}/{self._filename}{self._extension}'
-
-        return filepath
+        return f"{load_dir}/{self._filename}{'-' + self._profile if self._profile else ''}{self._extension}"
 
     def _parse(self, filepath: str) -> None:
         """Parse the properties file according to it's extension"""
         if not os.path.isfile(filepath):
             touch_file(filepath)
         ext = self._extension.lower()
-        with open(filepath, encoding=str(Charset.UTF_8)) as fh_props:
+        with open(filepath, encoding=Charset.UTF_8.val) as fh_props:
             if ext in ['.ini', '.cfg']:
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
-                self._properties.update(self._read_cfg_or_ini(all_lines))
+                all_properties = self._read_cfg_or_ini(all_lines)
             elif ext == '.properties':
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
-                self._properties.update(self._read_properties(all_lines))
+                all_properties = self._read_properties(all_lines)
             elif ext in ['.yml', '.yaml']:
-                self._properties.update(flatten_dict(yaml.safe_load(fh_props)))
+                all_properties = flatten_dict(yaml.safe_load(fh_props))
             else:
                 raise NotImplementedError(f"Extension {ext} is not supported")
+            self._properties.update(all_properties)
         log.debug('Successfully loaded %d properties from: %s', len(self._properties), filepath)

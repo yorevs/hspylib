@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="vault - no-params" type="PythonConfigurationType" factoryName="Python" folderName="Vault">
+  <configuration default="false" name="vault - list Prod" type="PythonConfigurationType" factoryName="Python" folderName="Vault">
     <module name="HsPyLib.vault" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />

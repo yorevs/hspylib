@@ -31,7 +31,7 @@ class Main(QtApplication):
     """Kafman application main class"""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=str(Charset.UTF_8))
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
     VERSION_DIR = _Classpath.source_path()

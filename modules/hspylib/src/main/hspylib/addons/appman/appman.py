@@ -20,14 +20,16 @@ from typing import List
 import urllib3
 
 from hspylib.addons.appman.appman_enums import AppType, Extension
+from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import get_path, syserr, sysout
-from hspylib.core.namespace import Namespace
-from hspylib.core.tools.text_tools import camelcase
+from hspylib.core.tools.text_tools import camelcase, ensure_endswith
 from hspylib.modules.cli.application.application import Application
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -35,12 +37,9 @@ from hspylib.modules.fetch.fetch import get
 
 HERE = get_path(__file__)
 
-INITIAL_REVISION = '0.1.0'
+INITIAL_REVISION = Version.initial()
 
 WELCOME_MESSAGE = f'My Application v{INITIAL_REVISION}'
-
-# Disable this warning because we trust our project repo
-urllib3.disable_warnings()
 
 
 class AppManager(metaclass=Singleton):
@@ -98,7 +97,7 @@ class AppManager(metaclass=Singleton):
         # @formatter:on
         return minput(form_fields)
 
-    def __init__(self, parent_app: Application):
+    def __init__(self, parent_app: Application) -> None:
         self._parent_app = parent_app
         self._app_name = None
         self._app_dir = None
@@ -176,7 +175,7 @@ class AppManager(metaclass=Singleton):
         self._mkdir('src/main')
         self._mkdir(f'src/main/{self._app_name}')
         self._mkfile(f'src/main/{self._app_name}/__classpath__.py', (self.TEMPLATES / "classpath.py.tpl").read_text())
-        self._mkfile(f'src/main/{self._app_name}/.version', INITIAL_REVISION)
+        self._mkfile(f'src/main/{self._app_name}/.version', str(INITIAL_REVISION))
         self._mkfile(f'src/main/{self._app_name}/welcome.txt', WELCOME_MESSAGE)
         self._mkdir(f'src/main/{self._app_name}/resources')
         self._mkfile(f'src/main/{self._app_name}/resources/application.properties', '# Main application property file')
@@ -203,13 +202,14 @@ class AppManager(metaclass=Singleton):
         """Create a file from the destination path with the specified contents"""
         file_path = f"{self._app_dir}/{filename}"
         sysout(f'  |- {file_path}')
-        with open(f'{file_path}', 'w', encoding='utf-8') as fh:
-            fh.write(contents)
+        with open(f'{file_path}', 'w', encoding=Charset.UTF_8.val) as fh:
+            fh.write(ensure_endswith(contents, os.linesep))
 
     def _download_ext(self, extension: str) -> None:
         """Download a gradle extension from the HSPyLib repository"""
+        urllib3.disable_warnings()  # Disable this warning because we trust our project repo
         resp = get(f'https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}')
-        check_argument(resp.status_code == HttpCode.OK, 'Unable to download {}', extension)
+        check_argument(resp.status_code == HttpCode.OK, "Unable to download extension: '{}'", extension)
         self._mkfile(f'gradle/{extension}', resp.body)
 
     def _init_gradle(self, app_name: str) -> bool:

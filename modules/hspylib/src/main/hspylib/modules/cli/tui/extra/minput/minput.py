@@ -17,8 +17,8 @@ import time
 from typing import List, Optional
 
 from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.namespace import Namespace
+from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -145,7 +145,7 @@ class MenuInput:
             # Remaining/max characters
             self._render_details(field, field_size)
 
-        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end='')
         self.re_render = False
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:

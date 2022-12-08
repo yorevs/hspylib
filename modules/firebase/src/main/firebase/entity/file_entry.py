@@ -68,11 +68,11 @@ class FileEntry:
     def encode(self) -> 'FileEntry':
         """B64 Encode this file's data"""
         self.data = str(
-            base64.urlsafe_b64encode(self.data.encode(str(Charset.UTF_8))), encoding=str(Charset.UTF_8))
+            base64.urlsafe_b64encode(self.data.encode(Charset.UTF_8.val)), encoding=Charset.UTF_8.val)
         return self
 
     def decode(self) -> 'FileEntry':
         """B64 Decode this file's data"""
         self.data = str(
-            base64.urlsafe_b64decode(self.data), encoding=str(Charset.UTF_8))
+            base64.urlsafe_b64decode(self.data), encoding=Charset.UTF_8.val)
         return self
