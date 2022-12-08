@@ -27,6 +27,7 @@ from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
@@ -35,16 +36,17 @@ from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 
 class WidgetSendMsg(Widget):
     """HSPyLib Widget to send TCP/UDP messages (multi-threaded)"""
-    WIDGET_ICON = WidgetIcons.NETWORK
-    WIDGET_NAME = "SendMsg"
-    TOOLTIP = "IP Message Sender. Sends TCP/UDP messages (multi-threaded)"
-    VERSION = (0, 3, 0)
+
     MAX_THREADS = 1000
     NET_TYPE_UDP = 'UDP'
     NET_TYPE_TCP = 'TCP'
 
-    # Help message to be displayed by the application.
-    USAGE = dedent(f"""Usage: SendMsg [options]
+    # @formatter:off
+    WIDGET_ICON = WidgetIcons.NETWORK
+    WIDGET_NAME = "SendMsg"
+    VERSION     = Version(0, 3, 0)
+    TOOLTIP     = "Multi-Threaded IP Message Sender. Sends TCP/UDP messages"
+    USAGE       = dedent(f"""Usage: SendMsg [options]
 
       Options:
         +n, ++net_type   <network_type>     : The network type to be used. Either udp or tcp ( default is tcp ).
@@ -60,6 +62,7 @@ class WidgetSendMsg(Widget):
 
         E.g:. send-msg.py +n tcp +m "Hello" +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2
     """)
+    # @formatter:on
 
     def __init__(self) -> None:
         super().__init__(

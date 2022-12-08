@@ -115,7 +115,7 @@ class MenuSelect(ABC):
 
                 # Print the selector if the index is currently selected
                 if idx == self.sel_index:
-                    vt_print(highlight_color.code())
+                    vt_print(highlight_color.code)
                     selector = self.SELECTED
 
                 fmt = "  {:>" + str(len(str(length))) + "}{:>" + str(1 + len(str(selector))) + "} {}"
@@ -127,7 +127,7 @@ class MenuSelect(ABC):
             else:
                 break
 
-        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
         self.re_render = False
 
     # pylint: disable=too-many-branches

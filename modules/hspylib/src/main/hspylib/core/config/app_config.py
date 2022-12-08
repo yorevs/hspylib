@@ -31,13 +31,13 @@ class AppConfigs(metaclass=Singleton):
 
     DISPLAY_FORMAT = dedent("""
     AppConfigs
-      |-Working dir = {}
-      |-Resources dir = {}
+      |-Run-dir = {}
+      |-Resources-dir = {}
       |-Properties:
        \\-{}
     """)
 
-    def __init__(self, resource_dir: str, filename: Optional[str] = None, profile: Optional[str] = None):
+    def __init__(self, resource_dir: str, filename: str | None = None, profile: str | None = None):
         check_argument(os.path.exists(resource_dir),
                        "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
@@ -50,7 +50,8 @@ class AppConfigs(metaclass=Singleton):
             self.DISPLAY_FORMAT.format(
                 str(run_dir()),
                 str(self._resource_dir),
-                str(self._properties).replace('\n', '\n   |-') if self._properties.size > 0 else ''
+                str(self._properties).replace(
+                    os.linesep, f"{os.linesep}   |-") if self._properties.size > 0 else ''
             ),
             '-=' * 40
         )
@@ -58,7 +59,7 @@ class AppConfigs(metaclass=Singleton):
     def __repr__(self):
         return str(self)
 
-    def __getitem__(self, item: str) -> Any:
+    def __getitem__(self, item: str) -> Optional[str]:
         return self.get(item)
 
     def __len__(self) -> int:
@@ -79,18 +80,18 @@ class AppConfigs(metaclass=Singleton):
         """Return the application properties"""
         return self._properties.size
 
-    def get(self, property_name: str) -> Optional[str]:
+    def get(self, property_name: str) -> Optional[Any]:
         """Get the value, as a string, of a property specified by property_name, otherwise None is returned"""
         return self._properties.get(property_name)
 
     def get_int(self, property_name: str) -> Optional[int]:
         """Get the value, as an integer, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, prop_type=int)
+        return self._properties.get(property_name, cb_to_type=int)
 
     def get_float(self, property_name: str) -> Optional[float]:
         """Get the value, as a float, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, prop_type=float)
+        return self._properties.get(property_name, cb_to_type=float)
 
     def get_bool(self, property_name: str) -> Optional[bool]:
         """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, prop_type=str_to_bool)
+        return self._properties.get(property_name, cb_to_type=str_to_bool)

@@ -105,10 +105,12 @@ class VtCodes(Enumeration):
     def __str__(self) -> str:
         return str(self.value)
 
+    @property
     def code(self) -> str:
         """Decode the string into a VT_CODE enum"""
         return str(self)
 
+    @property
     def placeholder(self) -> str:
         """Decode the string into a VT_CODE enum"""
         return f"%{self.name}%"

@@ -12,9 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Callable
+from typing import Callable, Optional
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+
+CB_ON_TRIGGER = Callable[[], None]
 
 
 class DashboardItem:
@@ -24,7 +26,8 @@ class DashboardItem:
         self,
         icon: Awesome = None,
         tooltip: str = None,
-        on_trigger: Callable = None):
+        on_trigger: Optional[CB_ON_TRIGGER] = None):
+
         self.icon = icon
         self.tooltip = tooltip
         self.on_trigger = on_trigger

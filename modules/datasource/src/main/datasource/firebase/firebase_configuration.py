@@ -61,11 +61,11 @@ class FirebaseConfiguration(AppConfigs):
         )
 
     @staticmethod
-    def of_file(filename: str, encoding: str = str(Charset.UTF_8)) -> 'FirebaseConfiguration':
+    def of_file(filename: str, encoding: str = Charset.UTF_8.val) -> 'FirebaseConfiguration':
         """Create a Firebase config from a config file."""
         check_argument(os.path.exists(filename), f"Config file does not exist: {filename}")
 
-        with open(filename, encoding=encoding or str(Charset.UTF_8)) as f_config:
+        with open(filename, encoding=encoding or Charset.UTF_8.val) as f_config:
             cfg = CaseInsensitiveDict()
             for line in f_config:
                 line = line.strip()

@@ -47,7 +47,7 @@ CONSOLE_LOG_FMT = '{}\t{} {} {} {} '.format(
 
 
 def log_init(
-    filename: Optional[str] = None,
+    filename: str = '',
     filemode: str = 'a',
     level: int = log.DEBUG,
     log_format: str = FILE_LOG_FMT,
@@ -55,9 +55,6 @@ def log_init(
     console_enable: bool = False,
     file_enable: bool = True) -> bool:
     """Initialize the system logger"""
-
-    if file_enable and not os.path.exists(filename):
-        touch_file(filename)
 
     # if someone tried to log something before log_init is called, Python creates a default handler that is going to
     # mess our logs. Remove handlers if there is any.
@@ -69,13 +66,14 @@ def log_init(
                 handler.close()
                 root.removeHandler(handler)
 
-    if file_enable:
+    if file_enable and os.path.exists(filename):
+        touch_file(filename)
         file_formatter = log.Formatter(log_format)
         file_handler = log.FileHandler(filename=filename, mode=filemode)
         file_handler.setFormatter(file_formatter)
         handlers.add(file_handler)
 
-    if console_enable:
+    if console_enable or (file_enable and not os.path.exists(filename)):
         console_formatter = log.Formatter(CONSOLE_LOG_FMT, "%Y-%m-%d %H:%M:%S")
         console_handler = log.StreamHandler(sys.stdout)
         console_handler.setFormatter(console_formatter)

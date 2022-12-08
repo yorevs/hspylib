@@ -37,7 +37,6 @@ def screen_size() -> Optional[List[str]]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
         return os.popen('stty size').read().split()
-
     return None
 
 
@@ -57,14 +56,13 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
                 buf += sys.stdin.read(1)
                 if buf[-1] == "R":
                     break
-        finally:
-            termios.tcsetattr(stdin, termios.TCSANOW, attrs)
-        try:
             matches = re.match(r"^\x1b\[(\d*);(\d*)R", buf)
             groups = matches.groups()
+            return int(groups[0]), int(groups[1])
         except AttributeError:
             return None
-        return int(groups[0]), int(groups[1])
+        finally:
+            termios.tcsetattr(stdin, termios.TCSANOW, attrs)
 
     return None
 
@@ -125,5 +123,5 @@ def prepare_render(render_msg: str = '', render_color: VtColors = VtColors.ORANG
     signal.signal(signal.SIGHUP, exit_app)
     set_auto_wrap(False)
     set_show_cursor(False)
-    sysout(f"%ED2%%HOM%{render_color.placeholder()}{render_msg}%HOM%%CUD(1)%%ED0%")
+    sysout(f"%ED2%%HOM%{render_color.placeholder}{render_msg}%HOM%%CUD(1)%%ED0%")
     save_cursor()

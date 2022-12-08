@@ -121,7 +121,7 @@ class MenuChoose(ABC):
 
                 # Print the selector if the index is current
                 if idx == self.sel_index:
-                    vt_print(highlight_color.code())
+                    vt_print(highlight_color.code)
                     selector = self.SELECTED
 
                 # Print the marked or unmarked option
@@ -136,7 +136,7 @@ class MenuChoose(ABC):
             else:
                 break
 
-        sysout(f"\n{nav_color.placeholder()}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
         self.re_render = False
 
     # pylint: disable=too-many-branches,too-many-statements

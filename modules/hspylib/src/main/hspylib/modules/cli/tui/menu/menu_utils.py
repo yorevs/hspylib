@@ -15,12 +15,14 @@
 
 import time
 from abc import ABC
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Tuple
 
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_colors import VtColors
+
+VALIDATION_FNC = Callable[[Any], Tuple[bool ,str]]
 
 
 class MenuUtils(ABC):
@@ -45,7 +47,7 @@ class MenuUtils(ABC):
         color: VtColors = VtColors.YELLOW) -> None:
         """TODO"""
 
-        sysout(f"{color.placeholder()}### Warn: {message} \"{argument or ''}\"")
+        sysout(f"{color.placeholder}### Warn: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
         sysout('%CUU(2)%%ED0%', end='')
 
@@ -66,7 +68,9 @@ class MenuUtils(ABC):
         while not valid:
             try:
                 colorized = VtColors.colorize(
-                    f"{color.placeholder()}{prompt_msg}{f'[{default_value}]' if default_value else ''}{end}{VtColors.NC.placeholder()}"
+                    f"{color.placeholder}{prompt_msg}"
+                    f"{f'[{default_value}]' if default_value else ''}"
+                    f"{end}{VtColors.NC.placeholder}"
                 )
                 input_data = input(colorized)
                 if not validator:
@@ -100,4 +104,4 @@ class MenuUtils(ABC):
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
         """TODO"""
-        sysout(f"%ED2%%HOM%\n{color.placeholder()}{title_str}\n")
+        sysout(f"%ED2%%HOM%\n{color.placeholder}{title_str}\n")

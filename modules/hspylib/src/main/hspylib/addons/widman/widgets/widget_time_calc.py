@@ -23,6 +23,7 @@ from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 
@@ -30,11 +31,13 @@ from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 class WidgetTimeCalc(Widget):
     """HSPyLib Widget to calculate time based operations"""
 
+    # @formatter:off
     WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
-    TOOLTIP = "Calculate time based operations."
-    USAGE = "Usage: TimeCalc [+d|++decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
-    VERSION = (0, 1, 0)
+    VERSION     = Version(0, 1, 0)
+    TOOLTIP     = "Calculate time based operations."
+    USAGE       = "Usage: TimeCalc [+d|++decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
+    # @formatter:on
 
     @staticmethod
     def to_decimal(time_raw: int = 0) -> int:

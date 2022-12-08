@@ -19,8 +19,8 @@ import sys
 import unittest
 from typing import List
 
-from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.collection_filter import *
+from hspylib.core.exception.exceptions import InvalidArgumentError
 
 
 def get_dict() -> List[dict]:

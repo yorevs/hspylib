@@ -84,6 +84,11 @@ class Main(Application):
         mm = MenuUi(main_menu)
         mm.show()
 
+    def _setup_arguments(self) -> None:
+        pass
+
+    def _cleanup(self) -> None:
+        pass
 
 # Application entry point
 if __name__ == "__main__":

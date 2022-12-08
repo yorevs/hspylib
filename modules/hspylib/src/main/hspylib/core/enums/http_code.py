@@ -17,6 +17,7 @@ from http import HTTPStatus as httpCode
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.text_tools import titlecase
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 class HttpCode(Enumeration):
@@ -104,4 +105,28 @@ class HttpCode(Enumeration):
         return str(self.value)
 
     def __repr__(self) -> str:
-        return f"({self.value}) {titlecase(self.name)}"
+        if self.is_2xx():
+            color = VtColors.GREEN.code
+        elif self.is_3xx():
+            color = VtColors.YELLOW.code
+        elif self.is_4xx() or self.is_5xx():
+            color = VtColors.RED.code
+        else:
+            color = VtColors.WHITE.code
+
+        return f"{color}({self.value}) {titlecase(self.name)}"
+
+    def is_1xx(self) -> bool:
+        return 100 <= int(str(self.value)) < 200
+
+    def is_2xx(self) -> bool:
+        return 200 <= int(str(self.value)) < 300
+
+    def is_3xx(self) -> bool:
+        return 300 <= int(str(self.value)) < 400
+
+    def is_4xx(self) -> bool:
+        return 400 <= int(str(self.value)) < 500
+
+    def is_5xx(self) -> bool:
+        return 500 <= int(str(self.value)) < 600

@@ -28,6 +28,7 @@ from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.vt100.terminal import Terminal
 
@@ -35,10 +36,12 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 class WidgetPunch(Widget):
     """HSPyLib Widget to Report current system memory usage"""
 
+    # @formatter:off
     WIDGET_ICON = WidgetIcons.PUNCH
     WIDGET_NAME = "Punch"
-    TOOLTIP = "!!! PUNCH THE CLOCK !!!"
-    USAGE = dedent("""
+    VERSION     = Version(0, 1, 0)
+    TOOLTIP     = "!!! PUNCH THE CLOCK !!!"
+    USAGE       = dedent("""
     "Usage: ${FUNCNAME[0]} [options] <args>"
 
       Options: '
@@ -50,7 +53,7 @@ class WidgetPunch(Widget):
       Notes: '
         When no arguments are provided it will !!PUNCH THE CLOCK!!.'
     """)
-    VERSION = (0, 1, 0)
+    # @formatter:on
 
     HHS_DIR = os.getenv('HHS_PUNCH_FILE', os.getenv('HOME', './'))
 

@@ -31,7 +31,7 @@ class MenuEntry(MenuItem):
         super().__init__(parent, title)
         title_len = round(len(title) / 2) + 2
         self.menu_data = MENU_TPL.format(
-            f"{color.placeholder()}"
+            f"{color.placeholder}"
             f"{'-=' * title_len}\n  "
             f"{self.title}\n"
             f"{'-=' * title_len}",

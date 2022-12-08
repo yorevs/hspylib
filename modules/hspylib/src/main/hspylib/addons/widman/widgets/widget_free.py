@@ -23,6 +23,7 @@ from typing import List
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import human_readable_bytes, sysout
+from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.terminal import Terminal
@@ -30,11 +31,14 @@ from hspylib.modules.cli.vt100.terminal import Terminal
 
 class WidgetFree(Widget):
     """HSPyLib Widget to Report current system memory usage"""
+
+    # @formatter:off
     WIDGET_ICON = WidgetIcons.CHIP
     WIDGET_NAME = "Free"
-    TOOLTIP = "Report system memory usage."
-    USAGE = "Usage: Free"
-    VERSION = (0, 2, 0)
+    VERSION     = Version(0, 2, 0)
+    TOOLTIP     = "Report system memory usage."
+    USAGE       = "Usage: Free"
+    # @formatter:on
 
     def __init__(self) -> None:
         super().__init__(

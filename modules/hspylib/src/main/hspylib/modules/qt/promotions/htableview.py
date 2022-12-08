@@ -20,13 +20,15 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QPainter, QPaintEvent
 from PyQt5.QtWidgets import QAbstractScrollArea, QHeaderView, QMenu, QTableView, QWidget
 
-from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from hspylib.core.collection_filter import CollectionFilter
+from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from hspylib.core.tools.text_tools import strip_linebreaks
+
+CB_ACTION = Callable[[], None]
 
 
 class HTableView(QTableView):
-    """TODO"""
+    """Promoted QTableView widget."""
 
     def __init__(self, parent: Optional[QWidget], placeholder: Optional[str] = None):
         super().__init__(parent)
@@ -44,7 +46,6 @@ class HTableView(QTableView):
         self.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
 
     def paintEvent(self, event: QPaintEvent) -> None:
-        """TODO"""
         super().paintEvent(event)
         if self.model() is not None and self.model().rowCount() > 0:
             return
@@ -58,10 +59,11 @@ class HTableView(QTableView):
         painter.restore()
 
     def filters(self) -> Optional[CollectionFilter]:
-        """TODO"""
+        """Return current data filters"""
         return self.model().filters() if self.model() else None
 
     def refresh(self) -> None:
+        """Synchronize view and model data"""
         self.model().refresh_data()
 
     def clear(self):
@@ -107,19 +109,19 @@ class HTableView(QTableView):
                 ctx_menu.addSeparator()
                 ctx_menu.addAction('Clear table', self.clear)
 
-            for act in self._custom_menu_actions:
-                check_not_none(act)
-                check_state(len(act) == 3, f'Invalid custom menu action: {act}')
-                check_argument(callable(act[1]), 'The action must be callable')
-                if act[2]:
+            for action in self._custom_menu_actions:
+                check_not_none(action)
+                check_state(len(action) == 3, f'Invalid custom menu action: {action}')
+                check_argument(callable(action[1]), 'The action must be callable')
+                if action[2]:
                     ctx_menu.addSeparator()
-                ctx_menu.addAction(act[0], act[1])
+                ctx_menu.addAction(action[0], action[1])
 
             ctx_menu.exec_(QCursor.pos())
 
-    def add_custom_menu_action(self, item_text: str, action: Callable, add_separator: bool) -> None:
-        action = (item_text, action, add_separator)
-        self._custom_menu_actions.append(action)
+    def add_custom_menu_action(self, item_text: str, action: CB_ACTION, add_separator: bool) -> None:
+        """Add a custom menu action item"""
+        self._custom_menu_actions.append((item_text, action, add_separator))
 
     def set_context_menu_enable(self, enabled: bool = True) -> None:
         """Whether context menu is enabled or not"""
@@ -138,5 +140,5 @@ class HTableView(QTableView):
         self._deletable = deletable
 
     def is_empty(self) -> bool:
-        """TODO"""
+        """Whether the table view view has data or not"""
         return not self.model() or self.model().is_empty()

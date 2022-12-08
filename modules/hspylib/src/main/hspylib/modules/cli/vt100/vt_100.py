@@ -79,7 +79,7 @@ class Vt100(ABC):
     @staticmethod
     def clear_screen(mod_cls: int = None) -> str:
         """TODO"""
-        if mod_cls is None:
+        if not mod_cls:
             return Vt100.sequence('J')
         check_argument(mod_cls in [0, 1, 2], f"Invalid clear screen sequence: {mod_cls}")
         return Vt100.sequence(f'{mod_cls}J')
@@ -88,9 +88,8 @@ class Vt100(ABC):
     @staticmethod
     def clear_line(mod_cls: int = None) -> str:
         """TODO"""
-        if mod_cls is None:
+        if not mod_cls:
             return Vt100.sequence('K')
-
         check_argument(mod_cls in [0, 1, 2], f"Invalid clea line sequence: {mod_cls}")
         return Vt100.sequence(f'{mod_cls}K')
 
@@ -98,9 +97,8 @@ class Vt100(ABC):
     @staticmethod
     def cursor_pos(cup_seq: str = None) -> str:
         """TODO"""
-        if cup_seq is None:
+        if not cup_seq:
             return Vt100.sequence('H')
-
         check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), f"Invalid cursor position sequence: {cup_seq}")
         return Vt100.sequence(f"{cup_seq}H")
 
