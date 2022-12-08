@@ -42,9 +42,10 @@ class TestTextTools(unittest.TestCase):
         sleep(t - 1)
         self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD NOT be None')
         sleep(2)
-        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD have expired')
         done = now_ms()
-        self.assertEqual(1 + now + t, done, 'Time elapsed SHOULD be equal')
+        expected = 1 + now + t
+        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD have expired')
+        self.assertEqual(expected, done, 'Time elapsed SHOULD be equal')
 
 
 if __name__ == '__main__':

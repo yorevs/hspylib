@@ -20,6 +20,7 @@ import signal
 import sys
 from textwrap import dedent
 
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
@@ -68,7 +69,7 @@ class Main(Application):
                 .add_argument('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> int:
+    def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""
         log.info(dedent(f'''
         {self._app_name} v{self._app_version}
@@ -99,7 +100,7 @@ class Main(Application):
         self._cleanup()
         self.exit(signum, frame)
 
-    def _exec_application(self, ) -> int:
+    def _exec_application(self, ) -> ExitStatus:
         """Execute the specified vault operation"""
         ret_val, op = 0, self.get_arg('operation')
         with self.vault.open() as unlocked:
@@ -118,9 +119,9 @@ class Main(Application):
             else:
                 ret_val = 1
                 syserr(f'### Invalid operation: {op}')
-                self.usage(1)
+                self.usage(ExitStatus.FAILED)
 
-        return ret_val
+        return ExitStatus.of(ret_val)
 
 
 if __name__ == "__main__":

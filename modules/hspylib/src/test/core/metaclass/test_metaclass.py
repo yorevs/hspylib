@@ -62,9 +62,9 @@ class TestClass(unittest.TestCase):
 
     def test_should_not_allow_instantiate_abstract_singleton(self) -> None:
         expected_msg = "Can't instantiate abstract class AbstractSingletonClass with abstract method do_it"
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(HSBaseException) as cm:
             TestClass.AbstractSingletonClass()
-        self.assertEqual(expected_msg, str(cm.exception))
+        self.assertIn(expected_msg, str(cm.exception))
 
     def test_should_allow_instantiate_concrete_singleton(self) -> None:
         t = TestClass.ConcreteSingletonClass()

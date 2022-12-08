@@ -21,11 +21,11 @@ import sys
 import traceback
 from abc import abstractmethod
 from textwrap import dedent
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidOptionError, \
-    InvalidStateError
+from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import log_init, sysout
@@ -40,12 +40,12 @@ from hspylib.modules.cli.application.version import Version
 
 
 class Application(metaclass=AbstractSingleton):
-    """HSPyLib application framework"""
+    """HSPyLib application framework. This is the base class for the HSPyLib applications."""
 
     INSTANCE = None
 
     @staticmethod
-    def exit(signum=0, frame=None, clear_screen: bool = False) -> None:
+    def exit(signum: int = 0, frame: Any = None, clear_screen: bool = False) -> None:
         """
         Handle interruptions to shutdown gracefully
         :param signum: The signal number or the exit http_code
@@ -54,13 +54,13 @@ class Application(metaclass=AbstractSingleton):
         """
         if frame is not None:
             log.warning('Signal handler hooked signum=%d frame=%s', signum, frame)
-            exit_code = 3
+            exit_status = ExitStatus.ABORTED
         else:
-            log.info('Exit handler called')
-            exit_code = signum
+            log.warning('Exit handler called signum=%d', signum)
+            exit_status = ExitStatus.of(signum)
         if clear_screen:
             sysout('%ED2%%HOM%')
-        sys.exit(exit_code)
+        sys.exit(exit_status.value)
 
     def __init__(
         self,
@@ -72,8 +72,8 @@ class Application(metaclass=AbstractSingleton):
         resource_dir: str = None,
         log_dir: str = None):
 
-        signal.signal(signal.SIGINT, self.exit)
-        signal.signal(signal.SIGTERM, self.exit)
+        signal.signal(signal.SIGINT, Application.exit)
+        signal.signal(signal.SIGTERM, Application.exit)
 
         self.exit_hooks = ExitHooks(self._cleanup)
         self.exit_hooks.hook()
@@ -89,7 +89,7 @@ class Application(metaclass=AbstractSingleton):
         self._arg_parser.add_argument(
             '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
         self._args = {}
-        self._exit_code = 0
+        self._exit_code = ExitStatus.SUCCESS
 
         # Initialize application configs
         if os.path.exists(f'{resource_dir}'):
@@ -108,36 +108,37 @@ class Application(metaclass=AbstractSingleton):
         today = now()
         log.info('Application %s started %s', self._app_name, today)
         try:
+            # Perform application cleanup after execution
             atexit.register(self._cleanup)
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
             log.debug('Command line arguments: %s', str(self._args))
-            self._exit_code = self._main(*params, **kwargs)
-        except (InvalidOptionError, InvalidArgumentError) as err:
-            self.usage(exit_code=1, no_exit=True)
-            log.error('Run failed %s => %s', today, err)
-            raise err  # Re-Raise the exception so upper level layers can catch
-        except InvalidStateError as err:
-            log.error('Execution failed %s => %s', today, err)
-            raise err  # Re-Raise the exception so upper level layers can catch
+            self._exit_code = ExitStatus.of(self._main(*params, **kwargs))
+        except argparse.ArgumentError as err:
+            log.error('Application failed to execute %s => %s', today, err)
+            self.usage(no_exit=True)
+            raise ApplicationError(f"Application failed to execute => {err}") from err
         except Exception as err:
-            _, exc_value, _ = sys.exc_info()
+            log.error('Application execution failed %s => %s', today, err)
             traceback.print_exc(file=sys.stderr)
-            self._exit_code = exc_value
-            raise err  # Re-Raise the exception so upper level layers can catch
+            # Re-Raise the exception so upper level layers can catch
+            raise ApplicationError(f"Application execution failed => {err}") from err
         finally:
+            _, ec, _ = sys.exc_info()
+            self._exit_code = ExitStatus.of(ec)
             log.info('Application %s finished %s', self._app_name, today)
             if 'no_exit' not in kwargs:
-                self.exit(self._exit_code)
+                Application.exit(self._exit_code.val)
 
-    def usage(self, exit_code: int = 0, no_exit: bool = False) -> None:
+    def usage(self, exit_code: ExitStatus = ExitStatus.SUCCESS, no_exit: bool = False) -> None:
         """Display the usage message and exit with the specified http_code ( or zero as default )
         :param no_exit: Do no exit the application on usage call
         :param exit_code: The exit http_code
         """
-        self._arg_parser.print_help(sys.stderr if exit_code != 0 else sys.stdout)
+        self._exit_code = exit_code
+        self._arg_parser.print_help(sys.stderr if self._exit_code != ExitStatus.SUCCESS else sys.stdout)
         if not no_exit:
-            self.exit(exit_code)
+            Application.exit(self._exit_code.val)
 
     def version(self) -> str:
         """Return the application version"""
@@ -162,6 +163,7 @@ class Application(metaclass=AbstractSingleton):
         return ArgumentsBuilder(self._arg_parser)
 
     def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':
+        """TODO"""
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
     @abstractmethod
@@ -169,7 +171,7 @@ class Application(metaclass=AbstractSingleton):
         """Initialize application parameters and options"""
 
     @abstractmethod
-    def _main(self, *params, **kwargs) -> int:
+    def _main(self, *params, **kwargs) -> ExitStatus:
         """Execute the application's main statements"""
 
     @abstractmethod

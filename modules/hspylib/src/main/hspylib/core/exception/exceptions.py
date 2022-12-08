@@ -34,33 +34,11 @@ class HSBaseException(Exception):
 
 
 class ApplicationError(HSBaseException):
-    """Raised when an entity is not found"""
-
-
-class EntityNotFoundError(HSBaseException):
-    """Raised when an entity is not found"""
+    """Raised when the application filed to execute is not found"""
 
 
 class InputAbortedError(HSBaseException):
     """Raised when an input method is aborted"""
-
-
-class ProgrammingError(HSBaseException):
-    """Exception raised for programming errors, e.g. table not found
-    or already exists, syntax error in the SQL statement, wrong number
-    of parameters specified, etc."""
-
-
-class InvalidOptionError(HSBaseException):
-    """Raised when an invalid option is received by the application"""
-
-
-class DatabaseConnectionError(HSBaseException):
-    """Raised when all connection attempts to the database exhausted"""
-
-
-class DatabaseError(HSBaseException):
-    """Raised when database failed to execute/create-session"""
 
 
 class WidgetNotFoundError(HSBaseException):
@@ -81,6 +59,10 @@ class ResourceNotFoundError(HSBaseException):
 
 class SourceNotFoundError(HSBaseException):
     """Raised when source path is not found"""
+
+
+class InvalidOptionError(HSBaseException):
+    """Raised when an invalid option is received by the application"""
 
 
 class InvalidInputError(Exception):

@@ -59,9 +59,9 @@ class Singleton(Type):
                 delattr(clazz, 'INSTANCE')
                 del clazz
             else:
-                raise TypeError(f"Instance not found: '{clazz.__name__}'")
+                raise HSBaseException(f"Failed to delete singleton instance: '{clazz.__name__}' was not found")
         else:
-            raise TypeError("This method is only available for testing purposes (cleanup).")
+            raise HSBaseException("This method is only available for testing purposes (cleanup).")
 
 
 class AbstractSingleton(Singleton, ABCMeta):

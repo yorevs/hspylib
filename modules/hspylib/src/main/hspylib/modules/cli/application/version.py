@@ -40,7 +40,7 @@ class Version:
         """Load a version from file."""
         filepath = f'{str(load_dir)}/{filename}'
         if not os.path.exists(filepath):
-            log.warning('File "%s" does not exist. Could not fetch application version from %s', filepath)
+            log.warning('File "%s" does not exist. Could not fetch application version from %s', filepath, load_dir)
             return Version.unversioned()
         return Version._read(filepath)
 
