@@ -13,7 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 from argparse import ArgumentParser
-from typing import Any, Union
+from typing import Any
 
 from hspylib.modules.cli.application.parser_action import ParserAction
 
@@ -32,7 +32,7 @@ class OptionsBuilder:
         help_string: str = None,
         choices: list = None,
         required: bool = False,
-        nargs: Union[str, int] = None,
+        nargs: str | int = None,
         default: Any = None) -> 'OptionsBuilder':
         """TODO"""
 

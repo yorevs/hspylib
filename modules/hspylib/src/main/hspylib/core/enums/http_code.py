@@ -114,7 +114,7 @@ class HttpCode(Enumeration):
         else:
             color = VtColors.WHITE.code
 
-        return f"{color}({self.value}) {titlecase(self.name)}"
+        return f"{color}({self.value}) {titlecase(self.name)}{VtColors.NC.code}"
 
     def is_1xx(self) -> bool:
         return 100 <= int(str(self.value)) < 200

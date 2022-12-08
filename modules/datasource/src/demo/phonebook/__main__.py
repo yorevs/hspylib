@@ -16,6 +16,7 @@
 
 import sys
 
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
@@ -37,7 +38,7 @@ class Main(Application):
             app_name, version, 'A Simple CLI phonebook',
             resource_dir=str(_Classpath.resource_path()))
 
-    def _main(self, *args, **kwargs) -> None:  # pylint: disable=unused-argument
+    def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
         # @formatter:off
         main_menu = MenuFactory \
@@ -83,6 +84,7 @@ class Main(Application):
         # @formatter:on
         mm = MenuUi(main_menu)
         mm.show()
+        return ExitStatus.SUCCESS
 
     def _setup_arguments(self) -> None:
         pass

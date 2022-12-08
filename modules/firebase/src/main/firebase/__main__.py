@@ -20,6 +20,8 @@ import sys
 from textwrap import dedent
 
 import urllib3
+
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
@@ -78,17 +80,16 @@ class Main(Application):
             .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> int:
+    def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""
         log.info(dedent(f'''
         {self._app_name} v{self._app_version}
         Settings ==============================
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
         '''))
-        self._exec_application()
-        return 0
+        return self._exec_application()
 
-    def _exec_application(self) -> None:
+    def _exec_application(self) -> ExitStatus:
         """Execute the specified firebase operation"""
         op = self.get_arg('operation')
         if op == 'setup' or not self.firebase.is_configured():
@@ -108,7 +109,8 @@ class Main(Application):
             )
         else:
             syserr(f'### Unhandled operation: {op}')
-            self.usage(1)
+            self.usage(ExitStatus.FAILED)
+        return ExitStatus.SUCCESS
 
     def _cleanup(self) -> None:
         pass

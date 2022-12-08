@@ -15,6 +15,7 @@
 """
 import sys
 
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
@@ -40,18 +41,22 @@ class Main(Application):
                 .add_argument('url', 'the url of the file') \
         # @formatter:on
 
-    def _main(self, *params, **kwargs) -> None:
-        self._exec_application()
+    def _main(self, *params, **kwargs) -> ExitStatus:
+        return self._exec_application()
 
-    def _exec_application(self) -> None:
+    def _exec_application(self) -> ExitStatus:
         """Execute the application logic."""
         if self.get_arg('operation') == 'download':
             print('Downloading')
         elif self.get_arg('operation') == 'upload':
             print('Uploading')
 
-        sysout(f'Done, running from {self._run_dir}')
+        status = ExitStatus.SUCCESS
+        sysout(f'{repr(status)}, running from {self._run_dir}')
+        return status
 
+    def _cleanup(self) -> None:
+        pass
 
 if __name__ == "__main__":
     # Application entry point

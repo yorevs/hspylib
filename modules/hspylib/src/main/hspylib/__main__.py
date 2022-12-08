@@ -19,6 +19,7 @@ from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.addons.widman.widman import WidgetManager
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
@@ -82,12 +83,11 @@ class Main(Application):
                     nargs='*') \
             # @formatter:on
 
-    def _main(self, *params, **kwargs) -> int:
+    def _main(self, *params, **kwargs) -> ExitStatus:
         """Main entry point handler"""
-        self._run()
-        return 0
+        return self._exec_application()
 
-    def _run(self) -> None:
+    def _exec_application(self) -> ExitStatus:
         """Execute the application"""
 
         app = self.get_arg('application')
@@ -122,7 +122,8 @@ class Main(Application):
                 addon.dashboard()
         else:
             syserr(f'### Invalid application: {app}')
-            self.usage(1)
+            self.usage(ExitStatus.FAILED)
+        return ExitStatus.SUCCESS
 
     def _cleanup(self) -> None:
         pass

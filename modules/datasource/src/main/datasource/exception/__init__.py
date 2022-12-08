@@ -2,10 +2,10 @@
 #
 # hspylib-datasource v0.9.13
 #
-# Package: main.datasource.sqlite
+# Package: main.datasource.exception
 """Package initialization."""
 
 __all__ = [
-  'sqlite_repository'
+  'exceptions'
 ]
 __version__ = '0.9.13'

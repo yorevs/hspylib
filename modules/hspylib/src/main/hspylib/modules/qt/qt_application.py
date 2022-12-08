@@ -19,6 +19,7 @@ from typing import TypeVar
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon
 from PyQt5.QtWidgets import QApplication
 
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.text_tools import titlecase
 from hspylib.modules.cli.application.application import Application
@@ -49,10 +50,10 @@ class QtApplication(Application):
         self.qapp.setApplicationVersion(str(version))
         self.qapp.setQuitOnLastWindowClosed(True)
 
-    def _main(self, *params, **kwargs) -> int:
+    def _main(self, *params, **kwargs) -> ExitStatus:
         """Execute the application's main statements"""
         self.main_view.show()
-        return self.qapp.exec_()
+        return ExitStatus.of(self.qapp.exec_())
 
     def _cleanup(self) -> None:
         QApplication.exit()

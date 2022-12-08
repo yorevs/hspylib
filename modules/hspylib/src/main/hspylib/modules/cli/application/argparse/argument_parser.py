@@ -13,9 +13,9 @@
 
    Copyright 2022, HSPyLib team
 """
-
+import argparse
 import sys
-from argparse import ArgumentError, ArgumentParser
+from argparse import ArgumentParser
 from typing import Any
 
 
@@ -24,8 +24,8 @@ class HSArgumentParser(ArgumentParser):
 
     def _check_value(self, action, value: Any):
         if action.choices is not None and value not in action.choices:
-            msg = f"invalid choice: {value} (choose from [{', '.join(map(repr, action.choices))}])"
-            raise ArgumentError(action, msg)
+            msg = f"Invalid choice '{value}'. Choose from [{', '.join(map(repr, action.choices))}]"
+            raise argparse.ArgumentError(action, msg)
 
     def error(self, message):
         self.print_help(sys.stderr)

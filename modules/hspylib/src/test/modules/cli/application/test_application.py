@@ -13,12 +13,13 @@
 
    Copyright 2022, HSPyLib team
 """
-import argparse
 import os
 import sys
 import unittest
 
 from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.cli.application.application import Application
@@ -38,7 +39,7 @@ class TestApplication(unittest.TestCase):
         def _setup_arguments(self) -> None:
             pass
 
-        def _main(self, *params, **kwargs) -> int:
+        def _main(self, *params, **kwargs) -> ExitStatus:
             pass
 
         def _cleanup(self) -> None:
@@ -88,19 +89,19 @@ class TestApplication(unittest.TestCase):
     def test_calling_an_app_with_incorrect_opts_should_raise_errors(self) -> None:
         app = ApplicationTest()
         params = ['-g', 'input.txt', '-j', 'output.txt', 'one', 'donut']
-        self.assertRaises(argparse.ArgumentError, lambda: app.run(params, no_exit=True))
+        self.assertRaises(ApplicationError, lambda: app.run(params, no_exit=True))
 
     # Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_1(self) -> None:
         app = ApplicationTest()
         params = ['-i', 'input.txt', '-o', 'output.txt', 'four', 'donut']
-        self.assertRaises(argparse.ArgumentError, lambda: app.run(params, no_exit=True))
+        self.assertRaises(ApplicationError, lambda: app.run(params, no_exit=True))
 
     # Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_2(self) -> None:
         app = ApplicationTest()
         params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'pretzel']
-        self.assertRaises(argparse.ArgumentError, lambda: app.run(params, no_exit=True))
+        self.assertRaises(ApplicationError, lambda: app.run(params, no_exit=True))
 
     # Check options and arguments passed can be retrieved
     def test_should_be_able_to_retrieve_passed_args_and_opts(self) -> None:

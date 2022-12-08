@@ -34,7 +34,7 @@ class HttpResponse:
             HttpCode(response.status_code),
             response.headers,
             response.text,
-            Charset.of_value(response.encoding.upper()) if response.encoding else Charset.UTF_8,
+            Charset.of_value(response.encoding.lower()) if response.encoding else Charset.UTF_8,
         )
 
     def __init__(

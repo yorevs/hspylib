@@ -19,7 +19,7 @@ from typing import Generic, List, Optional, Set, Tuple, TypeVar
 from cassandra import UnresolvableContactPoints
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster, NoHostAvailable
-from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import quote

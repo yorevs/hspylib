@@ -40,9 +40,20 @@ class ExitStatus(Enumeration):
 
     # @formatter:on
 
+    @staticmethod
+    def of(value: int | type('ExitStatus')) -> 'ExitStatus':
+        try:
+            return value if isinstance(value, ExitStatus) else ExitStatus.of_value(value or 0)
+        except TypeError:
+            return ExitStatus.ERROR
+
     def __str__(self):
         return self.name
 
     def __repr__(self):
         color = VtColors.GREEN.code if self == ExitStatus.SUCCESS else VtColors.RED.code
-        return f"{color}{self.name}({self.value})"
+        return f"{color}{self.name}({self.value}){VtColors.NC.code}"
+
+    @property
+    def val(self) -> int:
+        return int(str(self.value))

@@ -18,6 +18,7 @@ import os
 import sys
 from textwrap import dedent
 
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
@@ -56,7 +57,7 @@ class Main(Application):
                     'the file containing the CF API endpoint entries. If not provided, '
                     '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
 
-    def _main(self, *params, **kwargs) -> int:
+    def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(
             self.get_arg('api'), self.get_arg('org'), self.get_arg('space'),
@@ -69,12 +70,12 @@ class Main(Application):
         Settings ==============================
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
         '''))
-        self._exec_application()
-        return 0
+        return self._exec_application()
 
-    def _exec_application(self) -> None:
+    def _exec_application(self) -> ExitStatus:
         """Execute the application"""
         self.cfman.run()
+        return ExitStatus.SUCCESS
 
     def _cleanup(self) -> None:
         pass

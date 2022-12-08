@@ -19,7 +19,7 @@ from typing import Generic, List, Optional, Tuple, TypeVar
 
 import redis
 from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import DatabaseConnectionError, DatabaseError
+from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline

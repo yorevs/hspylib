@@ -12,37 +12,46 @@
 
    Copyright 2022, HSPyLib team
 """
+import os
 import sys
 import traceback
 from typing import Callable
 
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 
 EXIT_CB = Callable[[], None]
+
 
 class ExitHooks:
     """TODO"""
 
     def __init__(self, cleanup: EXIT_CB = None):
-        self._orig_exit = None
-        self._exit_code = None
+        self._orig_exit = sys.exit
+        self._exit_status = ExitStatus.SUCCESS
         self._exception = None
         self._traceback = None
+        self._was_hooked = False
         self._cleanup = cleanup
+        sys.exit = self.exit
 
     def hook(self) -> None:
         """TODO"""
-        self._orig_exit = sys.exit
-        sys.exit = self.exit
         sys.excepthook = self.exception_hook
+        self._was_hooked = True
 
-    def exit(self, code=0) -> None:
+    def exit(self, code: ExitStatus | int | None) -> None:
         """TODO"""
-        self._exit_code = code
-        self._orig_exit(code)
+        self._exit_status = ExitStatus.of(code or ExitStatus.SUCCESS)
+        if not self._was_hooked:
+            self._orig_exit(self._exit_status.val)
+        else:
+            exit(self._exit_status.val)
 
     def exception_hook(
-        self, exc_type: TypeError | None, exc: BaseException | None,
+        self,
+        exc_type: TypeError | None,
+        exc: BaseException | None,
         tb: traceback) -> None:
         """TODO"""
 
