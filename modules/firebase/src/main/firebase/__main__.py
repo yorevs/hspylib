@@ -20,9 +20,8 @@ import sys
 from textwrap import dedent
 
 import urllib3
-
-from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application

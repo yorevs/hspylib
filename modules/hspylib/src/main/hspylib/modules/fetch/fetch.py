@@ -12,19 +12,31 @@
 
    Copyright 2022, HSPyLib team
 """
-
+import logging as log
 from typing import Any, Dict, List, Tuple, Union
+from urllib.error import HTTPError
 
 import requests
-from requests import exceptions as ex
+import requests.exceptions as exs
 from retry import retry
+from urllib3.exceptions import NewConnectionError
 
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
+from hspylib.modules.fetch.uri_builder import UriBuilder
 
+RETRYABLE_EXS = (
+    NewConnectionError,
+    HTTPError,
+    exs.ConnectTimeout,
+    exs.ConnectionError,
+    exs.ReadTimeout,
+    exs.InvalidURL,
+    exs.InvalidSchema
+)
 
-@retry(tries=3, delay=1, backoff=3, max_delay=30, jitter=0.75)
+@retry(exceptions=RETRYABLE_EXS, tries=3, delay=1, backoff=3, max_delay=30, jitter=0.75)
 def fetch(
     url: str,
     method: HttpMethod = HttpMethod.GET,
@@ -42,18 +54,18 @@ def fetch(
     :return:
     """
 
-    url = url if url and url.startswith("http") else f'http://{url}'
+    final_url = UriBuilder.ensure_scheme(url)
     if not silent:
         sysout(f"Fetching: "
                f"method={method} headers={headers if headers else '[]'} "
-               f"body={body if body else '{}'} url={url} ...")
+               f"body={body if body else '{}'} url={final_url} ...")
 
     all_headers = {}
     if headers:
         list(map(all_headers.update, headers))
 
     response = requests.request(
-        url=url,
+        url=final_url,
         method=method.name,
         headers=all_headers,
         data=body,
@@ -159,17 +171,17 @@ def patch(
 
 
 def is_reachable(
-    urls: Union[str, tuple],
+    urls: str | Tuple[str],
     timeout: Union[float, Tuple[float, float]] = 1) -> bool:
     """Check if the specified url is reachable"""
+    reachable = True
 
     try:
         if isinstance(urls, Tuple):
-            return all(is_reachable(u) for u in urls)
-        fetch(url=urls, method=HttpMethod.HEAD, timeout=timeout)
-        return True
-    except (ex.ConnectTimeout, ex.ReadTimeout, ex.InvalidURL) as err:
-        print(err)
-        return False
-    except (ex.HTTPError, ex.ConnectionError):
-        return True
+            return all(is_reachable(UriBuilder.ensure_scheme(u)) for u in urls)
+        requests.options(url=UriBuilder.ensure_scheme(urls), timeout=timeout)
+    except RETRYABLE_EXS as err:
+        log.warning(f"URLs %s is not reachable => %s", urls, err)
+        reachable = False
+
+    return reachable

@@ -13,10 +13,8 @@
    Copyright 2022, HSPyLib team
 """
 
-from http import HTTPStatus as httpCode
-
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.text_tools import titlecase
+from hspylib.core.preconditions import check_not_none
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
@@ -28,78 +26,85 @@ class HttpCode(Enumeration):
     # @formatter:off
 
     # 1xx Informational Codes
-    CONTINUE                            = httpCode.CONTINUE
-    SWITCHING_PROTOCOLS                 = httpCode.SWITCHING_PROTOCOLS
-    PROCESSING                          = httpCode.PROCESSING
-    EARLY_HINTS                         = httpCode.EARLY_HINTS
+    CONTINUE                            = 100, 'Continue'
+    SWITCHING_PROTOCOLS                 = 101, 'Switching Protocols'
+    PROCESSING                          = 102, 'Processing'
+    EARLY_HINTS                         = 103, 'Early Hints'
 
     # 2xx Success Codes
-    OK                                  = httpCode.OK
-    CREATED                             = httpCode.CREATED
-    ACCEPTED                            = httpCode.ACCEPTED
-    NON_AUTHORITATIVE_INFORMATION       = httpCode.NON_AUTHORITATIVE_INFORMATION
-    NO_CONTENT                          = httpCode.NO_CONTENT
-    RESET_CONTENT                       = httpCode.RESET_CONTENT
-    PARTIAL_CONTENT                     = httpCode.PARTIAL_CONTENT
-    MULTI_STATUS                        = httpCode.MULTI_STATUS
-    ALREADY_REPORTED                    = httpCode.ALREADY_REPORTED
-    IM_USED                             = httpCode.IM_USED
+    OK                                  = 200, 'OK'
+    CREATED                             = 201, 'Created'
+    ACCEPTED                            = 202, 'Accepted'
+    NON_AUTHORITATIVE_INFORMATION       = 203, 'Non-Authoritative Information'
+    NO_CONTENT                          = 204, 'No Content'
+    RESET_CONTENT                       = 205, 'Reset Content'
+    PARTIAL_CONTENT                     = 206, 'Partial Content',
+    MULTI_STATUS                        = 207, 'Multi-Status'
+    ALREADY_REPORTED                    = 208, 'Already Reported'
+    IM_USED                             = 226, 'IM Used'
 
     # 3xx Redirection Codes
-    MULTIPLE_CHOICES                    = httpCode.MULTIPLE_CHOICES
-    MOVED_PERMANENTLY                   = httpCode.MOVED_PERMANENTLY
-    FOUND                               = httpCode.FOUND
-    SEE_OTHER                           = httpCode.SEE_OTHER
-    NOT_MODIFIED                        = httpCode.NOT_MODIFIED
-    USE_PROXY                           = httpCode.USE_PROXY
-    TEMPORARY_REDIRECT                  = httpCode.TEMPORARY_REDIRECT
-    PERMANENT_REDIRECT                  = httpCode.PERMANENT_REDIRECT
+    MULTIPLE_CHOICES                    = 300, 'Multiple Choices'
+    MOVED_PERMANENTLY                   = 301, 'Moved Permanently'
+    FOUND                               = 302, 'Found'
+    SEE_OTHER                           = 303, 'See Other'
+    NOT_MODIFIED                        = 304, 'Not Modified'
+    USE_PROXY                           = 305, 'Use Proxy'
+    TEMPORARY_REDIRECT                  = 307, 'Temporary Redirect'
+    PERMANENT_REDIRECT                  = 308, 'Permanent Redirect'
 
     # 4xx Client Error Codes
-    BAD_REQUEST                         = httpCode.BAD_REQUEST
-    UNAUTHORIZED                        = httpCode.UNAUTHORIZED
-    PAYMENT_REQUIRED                    = httpCode.PAYMENT_REQUIRED
-    FORBIDDEN                           = httpCode.FORBIDDEN
-    NOT_FOUND                           = httpCode.NOT_FOUND
-    METHOD_NOT_ALLOWED                  = httpCode.METHOD_NOT_ALLOWED
-    NOT_ACCEPTABLE                      = httpCode.NOT_ACCEPTABLE
-    PROXY_AUTHENTICATION_REQUIRED       = httpCode.PROXY_AUTHENTICATION_REQUIRED
-    REQUEST_TIMEOUT                     = httpCode.REQUEST_TIMEOUT
-    CONFLICT                            = httpCode.CONFLICT
-    GONE                                = httpCode.GONE
-    LENGTH_REQUIRED                     = httpCode.LENGTH_REQUIRED
-    PRECONDITION_FAILED                 = httpCode.PRECONDITION_FAILED
-    PAYLOAD_TOO_LARGE                   = 413
-    REQUEST_URI_TOO_LONG                = httpCode.REQUEST_URI_TOO_LONG
-    UNSUPPORTED_MEDIA_TYPE              = httpCode.UNSUPPORTED_MEDIA_TYPE
-    REQUESTED_RANGE_NOT_SATISFIABLE     = httpCode.REQUESTED_RANGE_NOT_SATISFIABLE
-    EXPECTATION_FAILED                  = httpCode.EXPECTATION_FAILED
-    UNPROCESSABLE_ENTITY                = httpCode.UNPROCESSABLE_ENTITY
-    LOCKED                              = httpCode.LOCKED
-    FAILED_DEPENDENCY                   = httpCode.FAILED_DEPENDENCY
-    UPGRADE_REQUIRED                    = httpCode.UPGRADE_REQUIRED
-    PRECONDITION_REQUIRED               = httpCode.PRECONDITION_REQUIRED
-    TOO_MANY_REQUESTS                   = httpCode.TOO_MANY_REQUESTS
-    REQUEST_HEADER_FIELDS_TOO_LARGE     = httpCode.REQUEST_HEADER_FIELDS_TOO_LARGE
-    CONNECTION_CLOSED_WITHOUT_RESPONSE  = 444
-    UNAVAILABLE_FOR_LEGAL_REASONS       = 451
-    CLIENT_CLOSED_REQUEST               = 499
+    BAD_REQUEST                         = 400, 'Bad Request'
+    UNAUTHORIZED                        = 401, 'Unauthorized'
+    PAYMENT_REQUIRED                    = 402, 'Payment Required'
+    FORBIDDEN                           = 403, 'Forbidden'
+    NOT_FOUND                           = 404, 'Not Found'
+    METHOD_NOT_ALLOWED                  = 405, 'Method Not Allowed'
+    NOT_ACCEPTABLE                      = 406, 'Not Acceptable'
+    PROXY_AUTHENTICATION_REQUIRED       = 407, 'Proxy Authentication Required'
+    REQUEST_TIMEOUT                     = 408, 'Request Timeout'
+    CONFLICT                            = 409, 'Conflict'
+    GONE                                = 410, 'Gone'
+    LENGTH_REQUIRED                     = 411, 'Length Required'
+    PRECONDITION_FAILED                 = 412, 'Precondition Failed'
+    PAYLOAD_TOO_LARGE                   = 413, 'Payload Too Large'
+    REQUEST_URI_TOO_LONG                = 414, 'Request-URI Too Long'
+    UNSUPPORTED_MEDIA_TYPE              = 415, 'Unsupported Media Type'
+    REQUESTED_RANGE_NOT_SATISFIABLE     = 416, 'Requested Range Not Satisfiable'
+    EXPECTATION_FAILED                  = 417, 'Expectation Failed'
+    MISDIRECTED_REQUEST                 = 421, 'Misdirected Request'
+    UNPROCESSABLE_ENTITY                = 422, 'Unprocessable Entity'
+    LOCKED                              = 423, 'Locked'
+    FAILED_DEPENDENCY                   = 424, 'Failed Dependency'
+    TOO_EARLY                           = 425, 'Too Early'
+    UPGRADE_REQUIRED                    = 426, 'Upgrade Required'
+    PRECONDITION_REQUIRED               = 428, 'Precondition Required'
+    TOO_MANY_REQUESTS                   = 429, 'Too Many Requests'
+    REQUEST_HEADER_FIELDS_TOO_LARGE     = 431, 'Request Header Fields Too Large'
+    CONNECTION_CLOSED_WITHOUT_RESPONSE  = 444, 'Connection Closed Without Response'
+    UNAVAILABLE_FOR_LEGAL_REASONS       = 451, 'Unavailable For Legal Reasons'
+    CLIENT_CLOSED_REQUEST               = 499, 'Client Closed Request'
 
     # 5xx Server Error
-    INTERNAL_SERVER_ERROR               = httpCode.INTERNAL_SERVER_ERROR
-    NOT_IMPLEMENTED                     = httpCode.NOT_IMPLEMENTED
-    BAD_GATEWAY                         = httpCode.BAD_GATEWAY
-    SERVICE_UNAVAILABLE                 = httpCode.SERVICE_UNAVAILABLE
-    GATEWAY_TIMEOUT                     = httpCode.GATEWAY_TIMEOUT
-    HTTP_VERSION_NOT_SUPPORTED          = httpCode.HTTP_VERSION_NOT_SUPPORTED
-    VARIANT_ALSO_NEGOTIATES             = httpCode.VARIANT_ALSO_NEGOTIATES
-    INSUFFICIENT_STORAGE                = httpCode.INSUFFICIENT_STORAGE
-    LOOP_DETECTED                       = httpCode.LOOP_DETECTED
-    NOT_EXTENDED                        = httpCode.NOT_EXTENDED
-    NETWORK_AUTHENTICATION_REQUIRED     = httpCode.NETWORK_AUTHENTICATION_REQUIRED
-    NETWORK_CONNECT_TIMEOUT_ERROR       = 599
+    INTERNAL_SERVER_ERROR               = 500, 'Internal Server Error'
+    NOT_IMPLEMENTED                     = 501, 'Not Implemented'
+    BAD_GATEWAY                         = 502, 'Bad Gateway'
+    SERVICE_UNAVAILABLE                 = 503, 'Service Unavailable'
+    GATEWAY_TIMEOUT                     = 504, 'Gateway Timeout'
+    HTTP_VERSION_NOT_SUPPORTED          = 505, 'HTTP Version Not Supported'
+    VARIANT_ALSO_NEGOTIATES             = 506, 'Variant Also Negotiates'
+    INSUFFICIENT_STORAGE                = 507, 'Insufficient Storage'
+    LOOP_DETECTED                       = 508, 'Loop Detected'
+    NOT_EXTENDED                        = 510, 'Not Extended'
+    NETWORK_AUTHENTICATION_REQUIRED     = 511, 'Network Authentication Required'
+    NETWORK_CONNECT_TIMEOUT_ERROR       = 599, 'Network Connect Timeout Error'
 
     # @formatter:on
+
+    @classmethod
+    def of(cls, status_code: int) -> 'HttpCode':
+        found = next(filter(lambda en: en.code == status_code, list(cls)), None)
+        return check_not_none(found, "\"{}\" code does not correspond to a valid \"HttpCode\"", status_code)
 
     def __str__(self) -> str:
         return str(self.value)
@@ -114,19 +119,27 @@ class HttpCode(Enumeration):
         else:
             color = VtColors.WHITE.code
 
-        return f"{color}({self.value}) {titlecase(self.name)}{VtColors.NC.code}"
+        return f"{color}({self.code}) {self.reason}{VtColors.NC.code}"
+
+    @property
+    def code(self) -> int:
+        return self.value[0]
+
+    @property
+    def reason(self) -> int:
+        return self.value[1]
 
     def is_1xx(self) -> bool:
-        return 100 <= int(str(self.value)) < 200
+        return 100 <= self.code < 200
 
     def is_2xx(self) -> bool:
-        return 200 <= int(str(self.value)) < 300
+        return 200 <= self.code < 300
 
     def is_3xx(self) -> bool:
-        return 300 <= int(str(self.value)) < 400
+        return 300 <= self.code < 400
 
     def is_4xx(self) -> bool:
-        return 400 <= int(str(self.value)) < 500
+        return 400 <= self.code < 500
 
     def is_5xx(self) -> bool:
-        return 500 <= int(str(self.value)) < 600
+        return 500 <= self.code < 600

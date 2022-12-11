@@ -29,9 +29,9 @@ class HttpResponse:
     def of(response: Response) -> 'HttpResponse':
         """TODO"""
         return HttpResponse(
-            HttpMethod[response.request.method],
+            HttpMethod.value_of(response.request.method),
             response.url,
-            HttpCode(response.status_code),
+            HttpCode.of(response.status_code),
             response.headers,
             response.text,
             Charset.of_value(response.encoding.lower()) if response.encoding else Charset.UTF_8,
@@ -56,8 +56,5 @@ class HttpResponse:
         if self.content_type:
             self.content_type.charset = self.encoding
 
-    def __str__(self):
-        return f"({self.status_code.value}) {self.status_code} {self.url}"
-
     def __repr__(self):
-        return str(self.status_code.value)
+        return f"{repr(self.status_code)} {self.url}"
