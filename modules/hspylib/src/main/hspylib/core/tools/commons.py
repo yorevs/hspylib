@@ -19,7 +19,6 @@ import pathlib
 import sys
 from datetime import timedelta
 from typing import Optional, Set, Tuple, Type
-from urllib.parse import urlparse
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
@@ -209,7 +208,7 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
 
 
 def human_readable_time(time_microseconds: int) -> str:
-    """Return a Human readable formatted time
+    """Return a Human readable formatted time using format: HH:MM:SS.uuuuuu
     :param time_microseconds: the time to be formatted
     """
     delta = timedelta(microseconds=time_microseconds)
@@ -218,14 +217,4 @@ def human_readable_time(time_microseconds: int) -> str:
     minutes = total_seconds / 60 % 60
     hours = total_seconds / 3600
     microseconds = delta.microseconds
-    # Using format: HH:MM:SS.uuuuuu
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
-
-
-def build_url(base_url: str, scheme: str = 'http') -> str:
-    """TODO"""
-    p_url = urlparse(base_url)
-    if not p_url.scheme:
-        base_url = p_url._replace(scheme=scheme).geturl()
-
-    return base_url

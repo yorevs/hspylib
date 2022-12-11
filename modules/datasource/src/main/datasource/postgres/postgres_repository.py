@@ -17,7 +17,6 @@ import logging as log
 from typing import Generic, List, Optional, Set, Tuple, TypeVar
 
 import psycopg2
-from datasource.exception.exceptions import DatabaseConnectionError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
@@ -27,6 +26,7 @@ from retry import retry
 from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
+from datasource.exception.exceptions import DatabaseConnectionError
 from datasource.identity import Identity
 
 E = TypeVar('E', bound=CrudEntity)

@@ -19,9 +19,9 @@ from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.addons.widman.widman import WidgetManager
-from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.cli.application.application import Application

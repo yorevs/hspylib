@@ -17,8 +17,8 @@
 from typing import Any, List, Union
 
 from hspylib.core.exception.exceptions import InvalidArgumentError
-from hspylib.core.preconditions import check_and_get
 from hspylib.core.namespace import Namespace
+from hspylib.core.preconditions import check_and_get
 
 from kafman.core.schema.json.json_type import JsonType
 

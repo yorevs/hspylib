@@ -12,7 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-import os
 import sys
 import traceback
 from typing import Callable
