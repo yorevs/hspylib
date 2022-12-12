@@ -25,8 +25,9 @@ from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_not_none, check_state
-from hspylib.core.tools.commons import build_url, file_is_not_empty
+from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
+from hspylib.modules.fetch.uri_builder import UriBuilder
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from kafman.core.exception.exceptions import InvalidSchemaError
 from kafman.core.schema.schema_field import SchemaField
@@ -92,7 +93,7 @@ class KafkaSchema(ABC):
         self._schema_name = 'undefined'
         self._schema_type = schema_type
         self._filepath = filepath
-        self._registry_url = build_url(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
+        self._registry_url = UriBuilder.ensure_scheme(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
         self._charset = charset
         self._attributes = Namespace('SchemaAttributes')
         self._json_template = defaultdict()

@@ -16,8 +16,9 @@
 
 from typing import List
 
-from PyQt5.QtCore import (PyQt5.QtWidgets, QAbstractAnimation, QEasingCurve, QParallelAnimationGroup, QPoint,
-                          QPropertyAnimation, QStackedWidget, Qt, QWidget, from, import, pyqtSlot)
+from PyQt5.QtCore import pyqtSlot, QAbstractAnimation, QEasingCurve, QParallelAnimationGroup, QPoint, \
+    QPropertyAnimation, Qt
+from PyQt5.QtWidgets import QStackedWidget, QWidget
 
 
 class HStackedWidget(QStackedWidget):

@@ -45,7 +45,7 @@ class MainQtView(QtView):
 
     def submit(self) -> None:
         """TODO"""
-        row = DemoTableRow()
+        row = DemoTableRow(self)
         row.color = self.ui.cmb_hcombo_box.currentText()
         row.text = self.ui.le_hline_edit.text()
         row.desc = self.ui.te_hconsole.toPlainText()
