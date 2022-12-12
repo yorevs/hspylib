@@ -22,7 +22,6 @@ from hspylib.modules.cli.cli_application import CliApplication
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 from hspylib.modules.cli.vt100.vt_utils import exit_app
-
 from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
@@ -86,11 +85,6 @@ class Main(CliApplication):
         mm.show()
         return ExitStatus.SUCCESS
 
-    def _setup_arguments(self) -> None:
-        pass
-
-    def _cleanup(self) -> None:
-        pass
 
 # Application entry point
 if __name__ == "__main__":

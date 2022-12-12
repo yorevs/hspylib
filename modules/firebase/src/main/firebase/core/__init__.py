@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-firebase v0.9.80
+# hspylib-firebase v0.9.81
 #
 # Package: main.firebase.core
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'firebase', 
   'firebase_auth'
 ]
-__version__ = '0.9.80'
+__version__ = '0.9.81'

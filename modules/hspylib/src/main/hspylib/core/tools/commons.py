@@ -33,7 +33,7 @@ FILE_LOG_FMT = '{}\t{} {} {} {} {} '.format(
     '%(filename)s::',
     '%(message)s',
     '%(funcName)s(@Line:%(lineno)d) -',
-    '%(threadName)-12.12s',
+    '%(threadName)-12.12s'
 )
 
 CONSOLE_LOG_FMT = '{}\t{} {} {} {} '.format(
@@ -65,7 +65,9 @@ def log_init(
                 handler.close()
                 root.removeHandler(handler)
 
-    if file_enable and os.path.exists(filename):
+    if file_enable:
+        if not os.path.exists(filename):
+            touch_file(filename)
         touch_file(filename)
         file_formatter = log.Formatter(log_format)
         file_handler = log.FileHandler(filename=filename, mode=filemode)

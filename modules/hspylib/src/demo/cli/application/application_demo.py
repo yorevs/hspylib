@@ -17,8 +17,8 @@ import sys
 
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.application.application import Application
 from hspylib.modules.application.version import Version
+from hspylib.modules.cli.cli_application import CliApplication
 
 APP_NAME = 'AppTest'
 
@@ -27,7 +27,7 @@ DESCRIPTION = "HsPyLib application Demo"
 EPILOG = "This is just a simple application demo"
 
 
-class Main(Application):
+class Main(CliApplication):
 
     def _setup_arguments(self) -> None:
         # @formatter:off
@@ -55,8 +55,6 @@ class Main(Application):
         sysout(f'{repr(status)}, running from {self._run_dir}')
         return status
 
-    def _cleanup(self) -> None:
-        pass
 
 if __name__ == "__main__":
     # Application entry point

@@ -24,11 +24,11 @@ from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
-from hspylib.modules.application.application import Application
 from hspylib.modules.application.version import Version
+from hspylib.modules.cli.cli_application import CliApplication
 
 
-class Main(Application):
+class Main(CliApplication):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
     # The welcome message
@@ -125,8 +125,6 @@ class Main(Application):
             self.usage(ExitStatus.FAILED)
         return ExitStatus.SUCCESS
 
-    def _cleanup(self) -> None:
-        pass
 
 # Application entry point
 if __name__ == "__main__":
