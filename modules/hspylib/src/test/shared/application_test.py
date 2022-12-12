@@ -14,8 +14,8 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.version import Version
 
 
 class ApplicationTest(Application):

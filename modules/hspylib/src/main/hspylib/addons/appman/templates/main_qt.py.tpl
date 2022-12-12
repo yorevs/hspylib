@@ -6,7 +6,7 @@ import sys
 from
 
 from hspylib.core.enums.charset import Charset
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
 % APP_NAME %.__classpath__

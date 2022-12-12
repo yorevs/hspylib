@@ -22,8 +22,8 @@ from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.version import Version
 from shared.application_test import ApplicationTest
 
 APP_VERSION = Version.initial()

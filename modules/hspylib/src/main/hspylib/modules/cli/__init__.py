@@ -1,15 +1,15 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.130
+# hspylib v0.11.131
 #
 # Package: main.hspylib.modules.cli
 """Package initialization."""
 
 __all__ = [
-  'application', 
+  'cli_application', 
   'icons', 
   'keyboard', 
   'tui', 
   'vt100'
 ]
-__version__ = '0.11.130'
+__version__ = '0.11.131'

@@ -26,8 +26,8 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.version import Version
 
 # Disable this warning because we are hitting our own database
 urllib3.disable_warnings()
