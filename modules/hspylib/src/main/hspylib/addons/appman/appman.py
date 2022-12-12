@@ -27,8 +27,8 @@ from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import get_path, syserr, sysout
 from hspylib.core.tools.text_tools import camelcase, ensure_endswith
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.version import Version
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.vt100.terminal import Terminal

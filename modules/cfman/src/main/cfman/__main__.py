@@ -23,10 +23,8 @@ from cfman.core.cf_manager import CFManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.zoned_datetime import now
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
-
-log.captureWarnings(True)
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.version import Version
 
 
 class Main(Application):

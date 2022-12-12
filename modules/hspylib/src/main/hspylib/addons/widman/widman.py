@@ -25,7 +25,7 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import get_path
 from hspylib.core.tools.text_tools import camelcase
-from hspylib.modules.cli.application.application import Application
+from hspylib.modules.application.application import Application
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
 

@@ -15,7 +15,7 @@
 from argparse import ArgumentParser
 from typing import Any
 
-from hspylib.modules.cli.application.parser_action import ParserAction
+from hspylib.modules.application.parser_action import ParserAction
 
 
 class OptionsBuilder:

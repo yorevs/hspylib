@@ -17,18 +17,19 @@
 import sys
 
 from hspylib.core.enums.exit_status import ExitStatus
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.version import Version
+from hspylib.modules.cli.cli_application import CliApplication
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 from hspylib.modules.cli.vt100.vt_utils import exit_app
+
 from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
 
-class Main(Application):
+class Main(CliApplication):
     """TODO"""
 
     def __init__(self, app_name: str):

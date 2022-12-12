@@ -31,12 +31,12 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import log_init, sysout
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.core.zoned_datetime import now
-from hspylib.modules.cli.application.argparse.argument_parser import HSArgumentParser
-from hspylib.modules.cli.application.argparse.arguments_builder import ArgumentsBuilder
-from hspylib.modules.cli.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder
-from hspylib.modules.cli.application.argparse.options_builder import OptionsBuilder
-from hspylib.modules.cli.application.exit_hooks import ExitHooks
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
+from hspylib.modules.application.argparse.arguments_builder import ArgumentsBuilder
+from hspylib.modules.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder
+from hspylib.modules.application.argparse.options_builder import OptionsBuilder
+from hspylib.modules.application.exit_hooks import ExitHooks
+from hspylib.modules.application.version import Version
 
 
 class Application(metaclass=AbstractSingleton):
@@ -72,6 +72,7 @@ class Application(metaclass=AbstractSingleton):
         resource_dir: str = None,
         log_dir: str = None):
 
+        log.captureWarnings(True)
         signal.signal(signal.SIGINT, Application.exit)
         signal.signal(signal.SIGTERM, Application.exit)
 

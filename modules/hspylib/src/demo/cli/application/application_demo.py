@@ -17,8 +17,8 @@ import sys
 
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.application.application import Application
-from hspylib.modules.cli.application.version import Version
+from hspylib.modules.application.application import Application
+from hspylib.modules.application.version import Version
 
 APP_NAME = 'AppTest'
 
