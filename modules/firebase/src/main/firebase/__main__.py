@@ -26,14 +26,14 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
-from hspylib.modules.application.application import Application
 from hspylib.modules.application.version import Version
+from hspylib.modules.cli.cli_application import CliApplication
 
 # Disable this warning because we are hitting our own database
 urllib3.disable_warnings()
 
 
-class Main(Application):
+class Main(CliApplication):
     """Firebase Agent - Manage your firebase integration"""
 
     # The welcome message
@@ -110,8 +110,6 @@ class Main(Application):
             self.usage(ExitStatus.FAILED)
         return ExitStatus.SUCCESS
 
-    def _cleanup(self) -> None:
-        pass
 
 if __name__ == "__main__":
     # Application entry point

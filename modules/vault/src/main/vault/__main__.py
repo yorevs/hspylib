@@ -24,15 +24,15 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
-from hspylib.modules.application.application import Application
 from hspylib.modules.application.version import Version
+from hspylib.modules.cli.cli_application import CliApplication
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
 from vault.exception.exceptions import VaultOpenError
 
 
-class Main(Application):
+class Main(CliApplication):
     """HSPyLib Vault - Manage your secrets"""
 
     # The welcome message

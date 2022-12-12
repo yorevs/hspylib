@@ -23,11 +23,11 @@ from cfman.core.cf_manager import CFManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.zoned_datetime import now
-from hspylib.modules.application.application import Application
 from hspylib.modules.application.version import Version
+from hspylib.modules.cli.cli_application import CliApplication
 
 
-class Main(Application):
+class Main(CliApplication):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
@@ -74,8 +74,6 @@ class Main(Application):
         self.cfman.run()
         return ExitStatus.SUCCESS
 
-    def _cleanup(self) -> None:
-        pass
 
 if __name__ == "__main__":
     # Application entry point
