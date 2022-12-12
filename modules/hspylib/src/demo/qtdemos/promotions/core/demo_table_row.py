@@ -13,8 +13,15 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Optional
+
+from PyQt5.QtWidgets import QWidget
+
 from hspylib.modules.qt.promotions.htableview import HTableView
 
 
 class DemoTableRow(HTableView):
-    pass
+
+    def __init__(self, parent: Optional[QWidget]):
+        super().__init__(parent)
+
