@@ -15,7 +15,7 @@
 """
 
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
-from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard, MenuDashBoard
+from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import MenuDashBoard, mdashboard
 
 if __name__ == '__main__':
 # @formatter:off

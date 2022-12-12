@@ -21,12 +21,11 @@ from typing import Optional, Union
 from hspylib.core.collection_filter import CollectionFilter, ElementFilter, FilterCondition
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from kafman.__classpath__ import _Classpath
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, QObject, Qt
+from PyQt5.QtCore import QObject, Qt, pyqtSignal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
-
-from kafman.__classpath__ import _Classpath
 
 
 class FiltersDialog(QObject):

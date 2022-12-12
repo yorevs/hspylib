@@ -18,11 +18,10 @@ import logging as log
 import os
 from typing import List
 
-from hspylib.core.preconditions import check_argument
-
 from firebase.core.agent_config import AgentConfig
 from firebase.core.file_processor import FileProcessor
 from firebase.core.firebase_auth import FirebaseAuth
+from hspylib.core.preconditions import check_argument
 
 
 class Firebase:

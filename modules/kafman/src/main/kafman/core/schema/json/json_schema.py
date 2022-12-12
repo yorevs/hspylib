@@ -20,7 +20,6 @@ from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from jsonschema import validate as validate_schema
-
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.schema.json.json_parser import JsonParser

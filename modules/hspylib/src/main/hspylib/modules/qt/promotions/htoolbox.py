@@ -17,7 +17,7 @@
 from functools import cached_property
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject, Qt, QVariantAnimation
+from PyQt5.QtCore import QObject, Qt, QVariantAnimation, pyqtProperty, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QToolBox
 
 

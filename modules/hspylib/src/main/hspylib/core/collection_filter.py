@@ -13,7 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
+from typing import Iterable, Iterator, Set, Tuple, TypeVar, Union, get_args
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument

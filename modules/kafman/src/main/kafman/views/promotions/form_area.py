@@ -19,10 +19,9 @@ from collections import defaultdict
 from typing import Union
 
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
+from kafman.core.schema.widget_utils import INPUT_VALUE
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QAbstractScrollArea, QFrame, QScrollArea, QWidget
-
-from kafman.core.schema.widget_utils import INPUT_VALUE
 
 
 class FormArea(QScrollArea):

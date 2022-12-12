@@ -18,7 +18,6 @@ import unittest
 from time import sleep
 
 import keyring
-
 from hspylib.core.zoned_datetime import now_ms
 from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
 

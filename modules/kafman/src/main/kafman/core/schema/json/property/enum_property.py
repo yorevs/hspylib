@@ -16,11 +16,10 @@
 
 from typing import List
 
-from PyQt5.QtWidgets import QWidget
-
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.widget_utils import WidgetUtils
+from PyQt5.QtWidgets import QWidget
 
 
 class EnumProperty(SchemaField):

@@ -18,16 +18,15 @@ import logging as log
 from abc import abstractmethod
 from typing import Any, Generic, List, Optional, TypeVar
 
+from datasource.crud_entity import CrudEntity
+from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from datasource.identity import Identity
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.fetch.fetch import delete, get, put
 from hspylib.modules.fetch.http_response import HttpResponse
 from requests.exceptions import HTTPError
-
-from datasource.crud_entity import CrudEntity
-from datasource.firebase.firebase_configuration import FirebaseConfiguration
-from datasource.identity import Identity
 
 E = TypeVar('E', bound=CrudEntity)
 

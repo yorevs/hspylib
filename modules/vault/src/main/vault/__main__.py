@@ -26,7 +26,6 @@ from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
-
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig

@@ -17,10 +17,9 @@ import json
 from typing import Iterable, Optional
 from uuid import UUID
 
+from datasource.identity import Identity
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
-
-from datasource.identity import Identity
 
 
 class CrudEntity(Namespace):

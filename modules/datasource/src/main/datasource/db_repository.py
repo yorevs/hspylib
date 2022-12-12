@@ -16,12 +16,11 @@ import contextlib
 from abc import abstractmethod
 from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
 
-from hspylib.core.metaclass.singleton import AbstractSingleton
-from retry import retry
-
 from datasource.crud_entity import CrudEntity
 from datasource.crud_repository import CrudRepository
 from datasource.db_configuration import DBConfiguration
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from retry import retry
 
 # Stereotypes
 Connection = TypeVar('Connection', bound=Any)

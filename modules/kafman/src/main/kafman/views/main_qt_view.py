@@ -39,10 +39,6 @@ from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
 from hspylib.modules.qt.stream_capturer import StreamCapturer
 from hspylib.modules.qt.views.qt_view import QtView
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-
 from kafman.__classpath__ import _Classpath
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer.consumer_config import ConsumerConfig
@@ -63,6 +59,9 @@ from kafman.core.statistics_worker import StatisticsWorker
 from kafman.views.dialogs.filters_dialog import FiltersDialog
 from kafman.views.dialogs.settings_dialog import SettingsDialog
 from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 
 class MainQtView(QtView):

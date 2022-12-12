@@ -6,7 +6,6 @@ import sys
 from
 % APP_NAME %.__classpath__
 import _Classpath
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.cli.application.application import Application

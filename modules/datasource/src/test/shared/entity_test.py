@@ -16,11 +16,10 @@
 from collections import namedtuple
 from typing import List
 
-from hspylib.core.tools.commons import str_to_bool
-from hspylib.core.tools.text_tools import snakecase
-
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
+from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.text_tools import snakecase
 
 
 class EntityTest(CrudEntity):

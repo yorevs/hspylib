@@ -19,11 +19,10 @@ import os
 import sys
 import unittest
 
-from hspylib.core.decorator.decorators import integration_test
-from hspylib.core.tools.commons import log_init
-
 from datasource.identity import Identity
 from datasource.redis.redis_configuration import RedisConfiguration
+from hspylib.core.decorator.decorators import integration_test
+from hspylib.core.tools.commons import log_init
 from shared.entity_test import EntityTest
 from shared.redis_repository_test import RedisRepositoryTest
 

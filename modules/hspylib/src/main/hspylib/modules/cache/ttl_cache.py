@@ -20,7 +20,6 @@ from threading import Lock
 from typing import Generic, Optional, TypeVar
 
 import keyring
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none

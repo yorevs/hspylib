@@ -18,13 +18,12 @@ from urllib.error import HTTPError
 
 import requests
 import requests.exceptions as exs
-from retry import retry
-from urllib3.exceptions import NewConnectionError
-
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
 from hspylib.modules.fetch.uri_builder import UriBuilder
+from retry import retry
+from urllib3.exceptions import NewConnectionError
 
 RETRYABLE_EXS = (
     NewConnectionError,

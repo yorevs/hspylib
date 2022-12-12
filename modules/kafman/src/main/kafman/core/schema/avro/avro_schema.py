@@ -21,7 +21,6 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.schema.avro.field.field_factory import FieldFactory

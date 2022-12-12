@@ -23,11 +23,10 @@ from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hframe import HFrame
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox, \
-    QVBoxLayout, QWidget
-
 from kafman.core.schema.widget_utils import INPUT_VALUE, INPUT_WIDGET, WidgetUtils
 from kafman.views.promotions.form_area import FormArea
+from PyQt5.QtWidgets import (QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox,
+                             QVBoxLayout, QWidget)
 
 
 class FormPane(HFrame):

@@ -22,7 +22,6 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
-
 from kafman.__classpath__ import _Classpath
 from kafman.views.main_qt_view import MainQtView
 

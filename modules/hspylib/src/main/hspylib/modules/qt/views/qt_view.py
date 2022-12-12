@@ -16,12 +16,11 @@ import os
 from abc import ABC
 from typing import Optional, Tuple, Type
 
+from hspylib.core.preconditions import check_argument, check_state
+from hspylib.core.tools.commons import run_dir
 from PyQt5 import uic
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
-
-from hspylib.core.preconditions import check_argument, check_state
-from hspylib.core.tools.commons import run_dir
 
 
 class QtView(ABC):

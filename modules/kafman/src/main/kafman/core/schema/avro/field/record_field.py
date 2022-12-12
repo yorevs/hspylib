@@ -17,7 +17,6 @@
 from typing import Tuple
 
 from avro.schema import Field
-
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
 

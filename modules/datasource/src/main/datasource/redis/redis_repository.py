@@ -18,16 +18,15 @@ from abc import abstractmethod
 from typing import Generic, List, Optional, Tuple, TypeVar
 
 import redis
+from datasource.crud_entity import CrudEntity
+from datasource.db_repository import Connection, Cursor
+from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
+from datasource.redis.redis_configuration import RedisConfiguration
 from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
-
-from datasource.crud_entity import CrudEntity
-from datasource.db_repository import Connection, Cursor
-from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
-from datasource.redis.redis_configuration import RedisConfiguration
 
 E = TypeVar('E', bound=CrudEntity)
 

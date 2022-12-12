@@ -8,8 +8,10 @@ from
 from hspylib.core.enums.charset import Charset
 from hspylib.modules.cli.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
+
 % APP_NAME %.__classpath__
 import _Classpath
+
 from % APP_NAME %.view.main_qt_view
 import MainQtView
 

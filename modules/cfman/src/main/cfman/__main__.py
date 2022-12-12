@@ -18,14 +18,13 @@ import os
 import sys
 from textwrap import dedent
 
+from cfman.__classpath__ import _Classpath
+from cfman.core.cf_manager import CFManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.cli.application.application import Application
 from hspylib.modules.cli.application.version import Version
-
-from cfman.__classpath__ import _Classpath
-from cfman.core.cf_manager import CFManager
 
 log.captureWarnings(True)
 
