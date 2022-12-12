@@ -17,17 +17,16 @@ import logging as log
 from typing import Generic, List, Optional, Set, Tuple, TypeVar
 
 import psycopg2
-from hspylib.core.metaclass.singleton import AbstractSingleton
-from hspylib.core.namespace import Namespace
-from hspylib.core.tools.text_tools import quote
-from psycopg2 import DatabaseError, OperationalError, ProgrammingError
-from retry import retry
-
 from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from datasource.exception.exceptions import DatabaseConnectionError
 from datasource.identity import Identity
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
+from hspylib.core.tools.text_tools import quote
+from psycopg2 import DatabaseError, OperationalError, ProgrammingError
+from retry import retry
 
 E = TypeVar('E', bound=CrudEntity)
 

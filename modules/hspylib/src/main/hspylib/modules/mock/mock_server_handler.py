@@ -17,11 +17,10 @@ import logging as log
 from http.server import BaseHTTPRequestHandler
 from typing import List, Tuple
 
-from requests.structures import CaseInsensitiveDict
-
 from hspylib.core.enums.content_type import ContentType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
+from requests.structures import CaseInsensitiveDict
 
 
 class MockServerHandler(BaseHTTPRequestHandler):
@@ -62,13 +61,13 @@ class MockServerHandler(BaseHTTPRequestHandler):
 
     def process_default(
         self,
-        code: HttpCode = HttpCode.OK,
+        http_code: HttpCode = HttpCode.OK,
         content_type: ContentType = ContentType.APPLICATION_JSON,
         headers: CaseInsensitiveDict = None) -> None:
         """TODO"""
 
-        log.debug('Processing a default request status_code=%s content-type=%s', code, content_type)
-        self.send_response_only(code.value)
+        log.debug('Processing a default request status_code=%s content-type=%s', http_code, content_type)
+        self.send_response_only(http_code.code)
         self.process_headers(headers, content_type)
 
     def process_request(self, method: HttpMethod) -> None:
@@ -83,10 +82,10 @@ class MockServerHandler(BaseHTTPRequestHandler):
                     code = HttpCode.INTERNAL_SERVER_ERROR.value
                     request.body = 'Mocked response status_code must be provided'
                 elif method in ['OPTIONS', 'HEAD']:
-                    code = request.status_code.value
+                    code = request.status_code.code
                     request.body = None
                 else:
-                    code = request.status_code.value
+                    code = request.status_code.code
                 headers = request.headers if request.headers else []
                 self.send_response_only(code)
                 if request.received_body and 'Content-Length' in self.headers:

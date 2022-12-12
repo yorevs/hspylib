@@ -18,10 +18,9 @@ import logging as log
 from contextlib import redirect_stderr, redirect_stdout
 from time import sleep
 
-from PyQt5.QtCore import pyqtSignal, QThread
-
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import is_debugging, syserr
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class StreamCapturer(QThread):

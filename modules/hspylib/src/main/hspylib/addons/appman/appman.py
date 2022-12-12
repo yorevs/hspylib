@@ -18,7 +18,6 @@ from textwrap import dedent
 from typing import List
 
 import urllib3
-
 from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.exit_status import ExitStatus

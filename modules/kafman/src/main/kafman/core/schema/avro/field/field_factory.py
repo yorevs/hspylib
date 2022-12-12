@@ -20,7 +20,6 @@ from typing import List, Optional, Tuple
 from avro.schema import ArraySchema, EnumSchema, Field, MapSchema, PrimitiveSchema, RecordSchema, Schema, UnionSchema
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
-
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.avro.field.array_field import ArrayField
 from kafman.core.schema.avro.field.enum_field import EnumField

@@ -1,6 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   TODO Purpose of the file
+   @project: hspylib
+   @package: hspylib.main.hspylib.modules.fetch
+      @file: uri_builder.py
+   @created: Mon, 12 Dec 2022
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HSPyLib team
+"""
+
 from collections import namedtuple
 from typing import Any, Dict, List
-from urllib.parse import parse_qs, SplitResult, urlencode, urlsplit, urlunparse
+from urllib.parse import SplitResult, parse_qs, urlencode, urlsplit, urlunparse
 
 from hspylib.modules.fetch.uri_scheme import UriScheme
 

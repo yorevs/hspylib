@@ -14,7 +14,6 @@
 from confluent_kafka.serialization import SerializationContext, StringDeserializer, StringSerializer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.namespace import Namespace
-
 from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_type import SchemaType
 

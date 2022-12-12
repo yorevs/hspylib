@@ -13,11 +13,10 @@
 
    Copyright 2022, HSPyLib team
 """
+from datasource.identity import Identity
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-
-from datasource.identity import Identity
 from phonebook.entity.Company import Company
 from phonebook.entity.Person import Person
 from phonebook.entity.validator.company_validator import CompanyValidator

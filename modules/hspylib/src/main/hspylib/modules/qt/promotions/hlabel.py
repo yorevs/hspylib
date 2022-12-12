@@ -14,7 +14,7 @@
 """
 from typing import Optional
 
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFontMetrics, QMouseEvent, QResizeEvent, QTextDocument
 from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget
 

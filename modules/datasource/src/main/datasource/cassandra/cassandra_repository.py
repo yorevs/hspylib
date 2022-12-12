@@ -19,16 +19,15 @@ from typing import Generic, List, Optional, Set, Tuple, TypeVar
 from cassandra import UnresolvableContactPoints
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster, NoHostAvailable
-from hspylib.core.metaclass.singleton import AbstractSingleton
-from hspylib.core.namespace import Namespace
-from hspylib.core.tools.text_tools import quote
-from retry import retry
-
 from datasource.cassandra.cassandra_configuration import CassandraConfiguration
 from datasource.crud_entity import CrudEntity
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
 from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
 from datasource.identity import Identity
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
+from hspylib.core.tools.text_tools import quote
+from retry import retry
 
 E = TypeVar('E', bound=CrudEntity)
 

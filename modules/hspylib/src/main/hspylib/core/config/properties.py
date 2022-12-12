@@ -21,7 +21,6 @@ from configparser import ConfigParser
 from typing import Any, Callable, Iterator, List, Optional, Type
 
 import yaml
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, touch_file
 from hspylib.core.tools.dict_tools import flatten_dict

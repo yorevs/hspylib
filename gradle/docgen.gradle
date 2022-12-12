@@ -85,15 +85,15 @@ task syncPythonHeaders(type: Task) {
             has_old_headers = true
           }
         }
-        else if ('imports'.equals(parseState) || line ==~ /^(import|from) .*/) {
+        else if ('imports'.equals(parseState) || line ==~ /^(import|from .* import) .*/) {
           imports << line
-          if (line.trim().endsWith('\\')) {
+          if (line.trim().endsWith('\\') || line.trim().endsWith(',')) {
             parseState = 'imports'
           }
           else{
             parseState = parseState.equals('headers') ? 'code' : parseState
           }
-        } else if ('code'.equals(parseState) || !(line.isEmpty() && line ==~ /^(import|from) .*/)) {
+        } else if ('code'.equals(parseState) || !(line.isEmpty() && line ==~ /^(import|from .* import) .*/)) {
           code << line
         }
       }
@@ -102,3 +102,16 @@ task syncPythonHeaders(type: Task) {
     println "Finished processing all python files"
   }
 }
+
+/* Optimize python imports */
+task optimizeImports(type: Task) {
+  group = 'Documentation'
+  description = 'Optimize python imports'
+  doLast {
+    exec {
+      commandLine rootProject.python, '-m', 'isort', sourceRoot
+    }
+  }
+}
+
+syncPythonHeaders.finalizedBy("optimizeImports")

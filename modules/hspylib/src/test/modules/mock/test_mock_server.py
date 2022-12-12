@@ -19,7 +19,6 @@ import sys
 import unittest
 
 import requests
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
@@ -55,7 +54,7 @@ class TestClass(unittest.TestCase):
             .then_return(HttpCode.OK, expected_body, expected_etag_header)
         resp = requests.get(url)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.OK.value, resp.status_code)
+        self.assertEqual(HttpCode.OK.code, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
 
@@ -70,7 +69,7 @@ class TestClass(unittest.TestCase):
             .then_return_with_received_body(HttpCode.OK, expected_etag_header)
         resp = requests.post(url, data=expected_body)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.OK.value, resp.status_code)
+        self.assertEqual(HttpCode.OK.code, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
 
@@ -85,7 +84,7 @@ class TestClass(unittest.TestCase):
             .then_return(HttpCode.CREATED, expected_body, expected_etag_header)
         resp = requests.put(url, data=expected_body)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.CREATED.value, resp.status_code)
+        self.assertEqual(HttpCode.CREATED.code, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
 
@@ -100,7 +99,7 @@ class TestClass(unittest.TestCase):
             .then_return(HttpCode.ACCEPTED, expected_body, expected_etag_header)
         resp = requests.patch(url, data=expected_body)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.ACCEPTED.value, resp.status_code)
+        self.assertEqual(HttpCode.ACCEPTED.code, resp.status_code)
         self.assertEqual(expected_body, resp.text)
         self.assertEqual(resp.headers['Etag'], expected_etag_header['Etag'])
 
@@ -113,7 +112,7 @@ class TestClass(unittest.TestCase):
             .then_return(HttpCode.OK)
         resp = requests.delete(url)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.OK.value, resp.status_code)
+        self.assertEqual(HttpCode.OK.code, resp.status_code)
         self.assertEqual('', resp.text)
 
     # TC6 - Test processing menu_options request.
@@ -123,21 +122,21 @@ class TestClass(unittest.TestCase):
         url = 'http://localhost:{}{}'.format(self.server.port, endpoint)
         resp = requests.options(url)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.NO_CONTENT.value, resp.status_code)
+        self.assertEqual(HttpCode.NO_CONTENT.code, resp.status_code)
         self.assertEqual(resp.headers['Allow'], 'OPTIONS')
         self.server \
             .when_request(HttpMethod.GET, endpoint) \
             .then_return_with_received_body(HttpCode.OK)
         resp = requests.options(url)
         self.assertIsNotNone(resp, "Response is empty")
-        self.assertEqual(HttpCode.NO_CONTENT.value, resp.status_code)
+        self.assertEqual(HttpCode.NO_CONTENT.code, resp.status_code)
         self.assertEqual(resp.headers['Allow'], 'OPTIONS, GET')
         resp = requests.get("{}/notfound".format(url))
         self.assertTrue(not resp, "Response is not empty")
-        self.assertEqual(HttpCode.NOT_FOUND.value, resp.status_code)
+        self.assertEqual(HttpCode.NOT_FOUND.code, resp.status_code)
         resp = requests.patch(url)
         self.assertTrue(not resp, "Response is not empty")
-        self.assertEqual(HttpCode.METHOD_NOT_ALLOWED.value, resp.status_code)
+        self.assertEqual(HttpCode.METHOD_NOT_ALLOWED.code, resp.status_code)
 
 
 # Program entry point.

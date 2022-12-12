@@ -18,13 +18,12 @@ from abc import ABC
 from typing import Optional
 
 import firebase_admin
+from firebase.exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials
 from firebase_admin import auth, credentials
 from firebase_admin.auth import UserNotFoundError, UserRecord
 from firebase_admin.exceptions import FirebaseError
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import sysout
-
-from firebase.exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials
 
 
 class FirebaseAuth(ABC):
