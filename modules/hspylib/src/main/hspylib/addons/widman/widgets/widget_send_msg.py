@@ -41,7 +41,7 @@ class WidgetSendMsg(Widget):
     NET_TYPE_UDP = 'UDP'
     NET_TYPE_TCP = 'TCP'
 
-    # @formatter:off
+    # fmt: off
     WIDGET_ICON = WidgetIcons.NETWORK
     WIDGET_NAME = "SendMsg"
     VERSION     = Version(0, 3, 0)
@@ -62,7 +62,7 @@ class WidgetSendMsg(Widget):
 
         E.g:. send-msg.py +n tcp +m "Hello" +p 12345 +a 0.0.0.0 +k 100 +i 500 +t 2
     """)
-    # @formatter:on
+    # fmt: on
 
     def __init__(self) -> None:
         super().__init__(
@@ -131,7 +131,7 @@ class WidgetSendMsg(Widget):
 
     def _read_args(self) -> bool:
         """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
-        # @formatter:off
+        # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label('Net Type') \
@@ -174,7 +174,7 @@ class WidgetSendMsg(Widget):
                 .value('This is a test') \
                 .build() \
             .build()
-        # @formatter:on
+        # fmt: on
         result = minput(form_fields)
         self._args = result.values if result else None
         sysout('%HOM%%ED2%%MOD(0)%', end='')

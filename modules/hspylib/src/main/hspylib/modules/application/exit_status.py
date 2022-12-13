@@ -23,7 +23,7 @@ class ExitStatus(Enumeration):
     Exit statuses from shell builtins and compound commands are also limited to this range. Under certain circumstances,
     the shell will use special values to indicate specific failure modes."""
 
-    # @formatter:off
+    # fmt: off
 
     # Returned when something ran successfully without errors.
     NOT_SET     = None
@@ -43,7 +43,7 @@ class ExitStatus(Enumeration):
     # Returned when something unexpected occurred.
     ABNORMAL    = 129
 
-    # @formatter:on
+    # fmt: on
 
     @staticmethod
     def of(value: int | SystemExit) -> 'ExitStatus':

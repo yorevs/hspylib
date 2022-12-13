@@ -21,7 +21,7 @@ class ContentType(Enumeration):
     """Enumeration to wrap all http content types. The 'Content-Type' representation header is used to indicate the
     original media type of the resource (prior to any content encoding applied for sending)."""
 
-    # @formatter:off
+    # fmt: off
 
     APPLICATION_ATOM_XML                = 'application/atom+xml'
     APPLICATION_ECMASCRIPT              = 'application/ecmascript'
@@ -78,7 +78,7 @@ class ContentType(Enumeration):
     TEXT_VCARD                          = 'text/vcard'
     TEXT_XML                            = 'text/xml'
 
-    # @formatter:on
+    # fmt: on
 
     def as_header(self, encoding: Charset = Charset.UTF_8) -> Tuple[str, str]:
         """Return this content type as an http header."""

@@ -19,7 +19,7 @@ from typing import Any
 class AvroType(Enumeration):
     """TODO"""
 
-    # @formatter:off
+    # fmt: off
     BOOLEAN         = 'boolean'     # A binary value
     INT             = 'int'         # 32-bit signed integer
     LONG            = 'long'        # 64-bit signed integer
@@ -33,7 +33,7 @@ class AvroType(Enumeration):
     MAP             = 'map'         # Maps use the type name "map"
     UNION           = 'union'       # Unions, as mentioned above, are represented using JSON arrays
     FIXED           = 'fixed'       # Fixed uses the type name "fixed"
-    # @formatter:on
+    # fmt: on
 
     @classmethod
     def of_type(cls, r_type: Schema) -> 'AvroType':

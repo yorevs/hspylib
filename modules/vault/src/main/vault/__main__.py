@@ -50,7 +50,7 @@ class Main(CliApplication):
         self.vault = Vault(self.RESOURCE_DIR)
 
     def _setup_arguments(self) -> None:
-        # @formatter:off
+        # fmt: off
         self._with_chained_args('operation', 'the Vault operation to process') \
             .argument('list', 'list all entries matching the given filter criteria, if specified') \
                 .add_parameter('filter', "filter the listed vault entries by it's name", nargs='*') \
@@ -66,7 +66,7 @@ class Main(CliApplication):
                 .add_parameter('name', 'the name of the vault entry which identifies it') \
                 .add_parameter('hint', 'applicable hints related to that vault entry') \
                 .add_parameter('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
-        # @formatter:on
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""

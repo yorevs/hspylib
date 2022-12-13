@@ -22,14 +22,14 @@ class NavIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    # @formatter:off
+    # fmt: off
     LEFT = '\u2190'         # ←
     UP = '\u2191'           # ↑
     RIGHT = '\u2192'        # →
     DOWN = '\u2193'         # ↓
     ENTER = '\u21b2'        # ↲
     TAB = '\u21b9'          # ↹
-    # @formatter:on
+    # fmt: on
 
 
 if __name__ == '__main__':

@@ -22,7 +22,7 @@ class DashboardIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    # @formatter:off
+    # fmt: off
     ADJUSTMENTS = '\uFB2D'      # שּׂ
     AGENDA = '\uF073'           # 
     ALERT = '\uF071'            # 
@@ -85,7 +85,7 @@ class DashboardIcons(Awesome):
     USER = '\uF007'             # 
     VERIFIED = '\uFC8F'         # ﲏ
 
-    # @formatter:on
+    # fmt: on
 
 
 if __name__ == '__main__':

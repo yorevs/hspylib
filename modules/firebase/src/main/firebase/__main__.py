@@ -51,7 +51,7 @@ class Main(CliApplication):
         self.firebase = Firebase()
 
     def _setup_arguments(self) -> None:
-        # @formatter:off
+        # fmt: off
         self._with_options() \
             .option(
                 'config-dir', 'd', 'config-dir',
@@ -76,7 +76,7 @@ class Main(CliApplication):
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
             .add_parameter('db_alias', 'alias to identify the firebase object to fetch') \
-        # @formatter:on
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""

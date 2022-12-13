@@ -23,7 +23,7 @@ class FormIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    # @formatter:off
+    # fmt: off
     ARROW_LEFT = '\uF060'       # 
     ARROW_RIGHT = '\uF061'      # 
     ARROW_UP = '\uF062'         # 
@@ -64,7 +64,7 @@ class FormIcons(Awesome):
     EDIT = '\uF040'             # 
     PLUS = '\uF067'             # 
     MINUS = '\uF068'            # 
-    # @formatter:on
+    # fmt: on
 
 
 if __name__ == '__main__':

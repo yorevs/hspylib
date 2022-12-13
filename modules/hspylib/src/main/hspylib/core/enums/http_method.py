@@ -19,7 +19,7 @@ from hspylib.core.enums.enumeration import Enumeration
 class HttpMethod(Enumeration):
     """Associates the name of a HTTP method with an enumeration."""
 
-    # @formatter:off
+    # fmt: off
 
     # The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
     GET         = 'get'
@@ -49,4 +49,4 @@ class HttpMethod(Enumeration):
     # The PATCH method applies partial modifications to a resource.
     PATCH       = 'patch'
 
-    # @formatter:on
+    # fmt: on

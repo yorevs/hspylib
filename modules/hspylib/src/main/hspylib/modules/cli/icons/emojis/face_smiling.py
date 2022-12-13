@@ -23,7 +23,7 @@ class FaceSmiling(Emoji):
         - https://unicode.org/emoji/charts/emoji-list.html#face-smiling
     """
 
-    # @formatter:off
+    # fmt: off
 
     DEFAULT         = '\U0001F600'      # 😀
     BEAMING         = '\U0001F601'      # 😁
@@ -39,7 +39,7 @@ class FaceSmiling(Emoji):
     UPSIDE_DOWN     = '\U0001F643'      # 🙃
     ROFL            = '\U0001F923'      # 🤣
 
-    # @formatter:on
+    # fmt: on
 
     @classmethod
     def demo_emojis(cls) -> None:

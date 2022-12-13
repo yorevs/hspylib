@@ -18,7 +18,7 @@ from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcon
 from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard, MenuDashBoard
 
 if __name__ == '__main__':
-# @formatter:off
+# fmt: off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
             .icon(DashboardIcons.POWER) \
@@ -51,5 +51,5 @@ if __name__ == '__main__':
             .on_trigger(lambda: print('Exit')) \
             .build() \
         .build()
-    # @formatter:on
+    # fmt: on
 result = mdashboard(dashboard_items, 4)

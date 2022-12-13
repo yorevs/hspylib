@@ -29,7 +29,7 @@ EPILOG = "This is just a simple application demo"
 class Main(CliApplication):
 
     def _setup_arguments(self) -> None:
-        # @formatter:off
+        # fmt: off
         self._with_options() \
             .option('verbose', 'V', 'verbose', 'to be more verbose')
         self._with_chained_args('operation', 'Upload/Download files from/to server') \
@@ -38,7 +38,7 @@ class Main(CliApplication):
             .argument('upload', 'upload a file to server') \
                 .add_parameter('source', 'the source file') \
                 .add_parameter('url', 'the url of the file')
-        # @formatter:on
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         return self._exec_application()

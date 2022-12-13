@@ -64,7 +64,7 @@ from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import MenuDashBoard, mdashboard
 
 if __name__ == '__main__':
-  # @formatter:off
+  # fmt: off
   dashboard_items = MenuDashBoard.builder() \
       .item() \
           .icon(FormIcons.PLUS) \
@@ -97,7 +97,7 @@ if __name__ == '__main__':
           .on_trigger(lambda: print('Exit')) \
           .build() \
       .build()
-  # @formatter:on
+  # fmt: on
   result = mdashboard(dashboard_items, 4)
 ```
 
@@ -110,7 +110,7 @@ from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 
 if __name__ == '__main__':
-    # @formatter:off
+    # fmt: off
     form_fields = MenuInput.builder() \
         .field() \
             .label('letters') \
@@ -151,7 +151,7 @@ if __name__ == '__main__':
             .value('READ-ONLY') \
             .build() \
         .build()
-    # @formatter:on
+    # fmt: on
     result = minput(form_fields)
     print(result.__dict__)
 ```

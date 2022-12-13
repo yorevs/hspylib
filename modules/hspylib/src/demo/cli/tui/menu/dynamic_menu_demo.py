@@ -18,7 +18,7 @@ from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == '__main__':
-    # @formatter:off
+    # fmt: off
     main_menu = MenuFactory().INSTANCE \
         .create(None, 'Dynamic Main Menu') \
         .with_option('Exit').on_trigger(lambda t: exit_app(0)) \
@@ -37,6 +37,6 @@ if __name__ == '__main__':
         .with_option('Print Hello').on_trigger(lambda t: print('Hello')) \
         .with_option('Print Hi').on_trigger(lambda t: print('Hi')) \
         .build()
-    # @formatter:on
+    # fmt: on
     mm = MenuUi(main_menu)
     mm.show()

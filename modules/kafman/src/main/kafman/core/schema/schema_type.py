@@ -18,9 +18,9 @@ from hspylib.core.enums.enumeration import Enumeration
 class SchemaType(Enumeration):
     """TODO"""
 
-    # @formatter:off
+    # fmt: off
     PLAIN           = 'PLAIN'
     AVRO            = 'AVRO'
     JSON            = 'JSON'
     PROTOBUF        = 'PROTOBUF'
-    # @formatter:on
+    # fmt: on
