@@ -14,11 +14,10 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Tuple
-
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.json.property.property import Property
 from kafman.core.schema.schema_field import SchemaField
+from typing import Tuple
 
 
 class ObjectProperty(SchemaField):

@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Tuple
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
+from typing import Tuple
 
 
 class ContentType(Enumeration):

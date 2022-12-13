@@ -14,23 +14,23 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.addons.widman.widget import Widget
+from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import sysout
+from hspylib.core.zoned_datetime import now
+from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
+from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.application.version import Version
+from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.modules.cli.vt100.terminal import Terminal
+from textwrap import dedent
+from typing import List
+
 import argparse
 import os
 import re
 import sys
-from textwrap import dedent
-from typing import List
-
-from hspylib.addons.widman.widget import Widget
-from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
-from hspylib.core.enums.charset import Charset
-from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.core.tools.commons import sysout
-from hspylib.core.zoned_datetime import now
-from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
-from hspylib.modules.application.version import Version
-from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.vt100.terminal import Terminal
 
 
 class WidgetPunch(Widget):

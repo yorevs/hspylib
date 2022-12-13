@@ -13,8 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Optional
-
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -24,6 +22,7 @@ from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardIte
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
+from typing import List, Optional
 
 
 def mdashboard(

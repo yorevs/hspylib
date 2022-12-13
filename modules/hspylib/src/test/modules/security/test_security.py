@@ -14,11 +14,11 @@
    Copyright 2022, HSPyLib team
 """
 
-import sys
-import unittest
-
 from hspylib.core.tools.commons import safe_delete_file
 from hspylib.modules.security.security import decode_file, decrypt_file, encode_file, encrypt_file
+
+import sys
+import unittest
 
 PASSPHRASE = '12345'
 SALT = '1234567890'

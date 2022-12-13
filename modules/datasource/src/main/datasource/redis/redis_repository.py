@@ -12,12 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-import contextlib
-import logging as log
 from abc import abstractmethod
-from typing import Generic, List, Optional, Tuple, TypeVar
-
-import redis
 from datasource.crud_entity import CrudEntity
 from datasource.db_repository import Connection, Cursor
 from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
@@ -27,6 +22,11 @@ from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
+from typing import Generic, List, Optional, Tuple, TypeVar
+
+import contextlib
+import logging as log
+import redis
 
 E = TypeVar('E', bound=CrudEntity)
 

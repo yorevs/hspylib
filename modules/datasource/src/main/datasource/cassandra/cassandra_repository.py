@@ -12,10 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-import contextlib
-import logging as log
-from typing import Generic, List, Optional, Set, Tuple, TypeVar
-
 from cassandra import UnresolvableContactPoints
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster, NoHostAvailable
@@ -28,6 +24,10 @@ from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import quote
 from retry import retry
+from typing import Generic, List, Optional, Set, Tuple, TypeVar
+
+import contextlib
+import logging as log
 
 E = TypeVar('E', bound=CrudEntity)
 

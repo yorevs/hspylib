@@ -12,12 +12,12 @@
 
    Copyright 2022, HSPyLib team
 """
-import sys
-import traceback
-from typing import Callable
-
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.application.exit_status import ExitStatus
+from typing import Callable
+
+import sys
+import traceback
 
 CLEANUP_CB = Callable[[], None]
 EXIT_CB = Callable[[int | ExitStatus], None]

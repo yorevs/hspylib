@@ -12,11 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-import contextlib
-import logging as log
-from typing import Generic, List, Optional, Set, Tuple, TypeVar
-
-import pymysql
 from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import DBRepository, ResultSet, Session
@@ -28,6 +23,11 @@ from hspylib.core.tools.text_tools import quote
 from pymysql import Connection, Error
 from pymysql.cursors import Cursor
 from retry import retry
+from typing import Generic, List, Optional, Set, Tuple, TypeVar
+
+import contextlib
+import logging as log
+import pymysql
 
 E = TypeVar('E', bound=CrudEntity)
 

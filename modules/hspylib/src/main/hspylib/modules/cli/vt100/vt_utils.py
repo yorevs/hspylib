@@ -13,18 +13,18 @@
    Copyright 2022, HSPyLib team
 """
 
+from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.modules.cli.vt100.vt_colors import VtColors
+from typing import List, Optional, Tuple
+
 import os
 import re
 import signal
 import sys
 import termios
 import tty
-from typing import List, Optional, Tuple
-
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 def require_terminal() -> None:

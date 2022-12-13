@@ -13,9 +13,8 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Optional, Tuple, TypeVar
-
 from hspylib.core.exception.exceptions import InvalidArgumentError, InvalidStateError
+from typing import Any, Optional, Tuple, TypeVar
 
 T = TypeVar('T')
 

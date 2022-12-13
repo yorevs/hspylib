@@ -12,12 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Optional
-
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_entry import MenuEntry
 from hspylib.modules.cli.tui.menu.menu_option import MenuOption
+from typing import Optional
 
 
 class MenuFactory(metaclass=Singleton):

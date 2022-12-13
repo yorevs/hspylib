@@ -12,22 +12,22 @@
 
    Copyright 2022, HSPyLib team
 """
-import atexit
-import os
-import sys
-from typing import List
-
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widget_entry import WidgetEntry
-from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import get_path
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.application.application import Application
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard
+from typing import List
+
+import atexit
+import os
+import sys
 
 HERE = get_path(__file__)
 

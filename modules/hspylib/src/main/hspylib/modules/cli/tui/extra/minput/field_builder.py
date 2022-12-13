@@ -12,8 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Any, TypeVar
-
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import str_to_bool
 from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
@@ -21,6 +19,7 @@ from hspylib.modules.cli.tui.extra.minput.form_field import FormField
 from hspylib.modules.cli.tui.extra.minput.input_type import InputType
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
+from typing import Any, TypeVar
 
 T = TypeVar('T')
 

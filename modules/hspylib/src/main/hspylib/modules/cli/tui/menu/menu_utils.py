@@ -13,14 +13,14 @@
    Copyright 2022, HSPyLib team
 """
 
-import time
 from abc import ABC
-from typing import Any, Callable, Optional, Tuple
-
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_colors import VtColors
+from typing import Any, Callable, Optional, Tuple
+
+import time
 
 VALIDATION_FNC = Callable[[Any], Tuple[bool ,str]]
 

@@ -13,9 +13,8 @@
 
    Copyright 2022, HSPyLib team
 """
-from time import sleep
-
 from hspylib.modules.cli.vt100.vt_codes import vt_print
+from time import sleep
 
 if __name__ == '__main__':
     vt_print('%CSV%Cursor saved', end='\n')

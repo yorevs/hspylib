@@ -15,8 +15,6 @@
 """
 
 from abc import ABC
-from typing import List, Optional, Tuple
-
 from avro.schema import ArraySchema, EnumSchema, Field, MapSchema, PrimitiveSchema, RecordSchema, Schema, UnionSchema
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
@@ -27,6 +25,7 @@ from kafman.core.schema.avro.field.map_field import MapField
 from kafman.core.schema.avro.field.primitive_field import PrimitiveField
 from kafman.core.schema.avro.field.record_field import RecordField
 from kafman.core.schema.schema_field import SchemaField
+from typing import List, Optional, Tuple
 
 
 class FieldFactory(ABC):

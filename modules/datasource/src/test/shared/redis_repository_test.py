@@ -13,12 +13,12 @@
 
    Copyright 2022, HSPyLib team
 """
-import ast
-
 from datasource.identity import Identity
 from datasource.redis.redis_repository import RedisRepository
 from hspylib.core.enums.charset import Charset
 from shared.entity_test import EntityTest
+
+import ast
 
 
 class RedisRepositoryTest(RedisRepository[EntityTest]):

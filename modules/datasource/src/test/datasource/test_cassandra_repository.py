@@ -14,12 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-import logging as log
-import os
-import sys
-import unittest
-from textwrap import dedent
-
 from datasource.cassandra.cassandra_configuration import CassandraConfiguration
 from datasource.identity import Identity
 from hspylib.core.decorator.decorators import integration_test
@@ -28,6 +22,12 @@ from hspylib.core.tools.commons import log_init
 from hspylib.core.tools.text_tools import quote
 from shared.cassandra_repository_test import CassandraRepositoryTest
 from shared.entity_test import EntityTest
+from textwrap import dedent
+
+import logging as log
+import os
+import sys
+import unittest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

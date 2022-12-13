@@ -14,8 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-import os
-
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
@@ -26,6 +24,8 @@ from PyQt5 import uic
 from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
+
+import os
 
 
 class SettingsDialog(QObject):

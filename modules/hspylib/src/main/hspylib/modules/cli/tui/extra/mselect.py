@@ -12,10 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-import re
 from abc import ABC
-from typing import List, Optional, TypeVar
-
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -23,6 +20,9 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
+from typing import List, Optional, TypeVar
+
+import re
 
 T = TypeVar('T')
 

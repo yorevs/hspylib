@@ -18,7 +18,6 @@ def PY_FILE_HEADER = """#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 \"\"\"
-   TODO Purpose of the file
    @project: ${project.ext.app_name}
    @package: %package%
       @file: %filename%
@@ -87,7 +86,7 @@ task syncPythonHeaders(type: Task) {
         }
         else if ('imports'.equals(parseState) || line ==~ /^(import|from .* import) .*/) {
           imports << line
-          if (line.trim().endsWith('\\') || line.trim().endsWith(',')) {
+          if (line.trim().endsWith('\\') || line.trim().endsWith(',') || line.trim().endsWith('(')) {
             parseState = 'imports'
           }
           else{
@@ -109,9 +108,21 @@ task optimizeImports(type: Task) {
   description = 'Optimize python imports'
   doLast {
     exec {
-      commandLine rootProject.python, '-m', 'isort', sourceRoot
+      commandLine rootProject.python, '-m', 'isort', '--fas', '--profile', 'django', sourceRoot
+    }
+  }
+}
+
+/* Reformat the python code using black */
+task reformatCode(type: Task) {
+  group = 'Documentation'
+  description = 'Reformat the python code using black'
+  doLast {
+    exec {
+      commandLine rootProject.python, '-m', 'black', '--fast', '-C', '-t', 'py310', '-l', 120, sourceRoot
     }
   }
 }
 
 syncPythonHeaders.finalizedBy("optimizeImports")
+reformatCode.finalizedBy("optimizeImports")

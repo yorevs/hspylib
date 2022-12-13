@@ -14,12 +14,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Tuple, TypeVar, Union
-
 from hspylib.core.constants import RE_COMMON_2_30_NAME, RE_PHONE_NUMBER
 from hspylib.core.tools.validator import Validator
 from phonebook.entity.Company import Company
 from phonebook.entity.Person import Person
+from typing import List, Tuple, TypeVar, Union
 
 Contact = TypeVar('Contact', bound=Union[Person, Company])
 

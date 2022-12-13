@@ -13,10 +13,6 @@
 
    Copyright 2022, HSPyLib team
 """
-import logging as log
-import os
-from typing import Any, Optional
-
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
 from firebase.core.firebase_auth import FirebaseAuth
 from firebase.exception.exceptions import FirebaseAuthenticationError
@@ -24,6 +20,10 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, file_is_not_empty, sysout
 from requests.structures import CaseInsensitiveDict
+from typing import Any, Optional
+
+import logging as log
+import os
 
 
 class AgentConfig(metaclass=Singleton):

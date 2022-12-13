@@ -13,10 +13,10 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.core.tools.commons import str_to_bool
+
 import sys
 import unittest
-
-from hspylib.core.tools.commons import str_to_bool
 
 
 class TestCommons(unittest.TestCase):
