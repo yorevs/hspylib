@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   @Package: main.enums
+   @Package: hspylib.core.enums
       @file: exit_status.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -41,7 +40,7 @@ class ExitStatus(Enumeration):
     # @formatter:on
 
     @staticmethod
-    def of(value: int | type('ExitStatus')) -> 'ExitStatus':
+    def of(value: int) -> 'ExitStatus':
         try:
             return value if isinstance(value, ExitStatus) else ExitStatus.of_value(value or 0)
         except TypeError:

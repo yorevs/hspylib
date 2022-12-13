@@ -114,7 +114,7 @@ class Application(metaclass=AbstractSingleton):
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
             log.debug('Command line arguments: %s', str(self._args))
-            self._exit_code = ExitStatus.of(self._main(*params, **kwargs))
+            self._exit_code = self._main(*params, **kwargs)
         except argparse.ArgumentError as err:
             log.error('Application failed to execute %s => %s', today, err)
             self.usage(no_exit=True)
@@ -125,8 +125,8 @@ class Application(metaclass=AbstractSingleton):
             # Re-Raise the exception so upper level layers can catch
             raise ApplicationError(f"Application execution failed => {err}") from err
         finally:
-            _, ec, _ = sys.exc_info()
-            self._exit_code = ExitStatus.of(ec)
+            _, code, _ = sys.exc_info()
+            self._exit_code = ExitStatus.of(code)
             log.info('Application %s finished %s', self._app_name, today)
             if 'no_exit' not in kwargs:
                 Application.exit(self._exit_code.val)

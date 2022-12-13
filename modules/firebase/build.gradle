@@ -25,6 +25,11 @@ ext {
   pythonPath = "$sourceRoot/main:$sourceRoot/test"
 }
 
+dependencies {
+    project(':datasource')
+    project(':hspylib')
+}
+
 apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/python.gradle"
 apply from: "$rootDir/gradle/build-info.gradle"
