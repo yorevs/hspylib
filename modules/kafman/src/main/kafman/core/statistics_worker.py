@@ -12,11 +12,10 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Tuple
-
 from hspylib.core.namespace import Namespace
 from hspylib.core.zoned_datetime import now_ms
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QThread
+from typing import Tuple
 
 
 class StatisticsWorker(QThread):

@@ -13,14 +13,14 @@
 
    Copyright 2022, HSPyLib team
 """
-import re
 from collections import namedtuple
-from textwrap import dedent
-from typing import List
-
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.zoned_datetime import now
+from textwrap import dedent
+from typing import List
+
+import re
 
 
 class VaultEntry(CrudEntity):

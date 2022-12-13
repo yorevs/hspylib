@@ -13,17 +13,17 @@
    Copyright 2022, HSPyLib team
 """
 
+from abc import ABC
+from hspylib.core.tools.commons import syserr
+from hspylib.modules.application.exit_status import ExitStatus
+from typing import Optional, Tuple
+
 import logging as log
 import os
 import platform
 import select
 import shlex
 import subprocess
-from abc import ABC
-from typing import Optional, Tuple
-
-from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.core.tools.commons import syserr
 
 
 class Terminal(ABC):

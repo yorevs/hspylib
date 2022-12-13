@@ -14,24 +14,24 @@
 
    Copyright 2022, HSPyLib team
 """
-import os
-import signal
-import socket
-import threading
-from textwrap import dedent
-from time import sleep
-from typing import List
-
 from hspylib.addons.widman.widget import Widget
-from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from textwrap import dedent
+from time import sleep
+from typing import List
+
+import os
+import signal
+import socket
+import threading
 
 
 class WidgetSendMsg(Widget):

@@ -12,10 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-import re
-import time
-from typing import List, Optional
-
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import syserr, sysout
@@ -29,8 +25,13 @@ from hspylib.modules.cli.tui.extra.minput.input_type import InputType
 from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
-from hspylib.modules.cli.vt100.vt_utils import (get_cursor_position, prepare_render, restore_cursor, restore_terminal,
-                                                set_enable_echo)
+from hspylib.modules.cli.vt100.vt_utils import (
+    get_cursor_position, prepare_render, restore_cursor, restore_terminal, set_enable_echo,
+)
+from typing import List, Optional
+
+import re
+import time
 
 
 def minput(

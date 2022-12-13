@@ -15,10 +15,9 @@
 """
 
 from collections import namedtuple
-from typing import Any, Dict, List
-from urllib.parse import SplitResult, parse_qs, urlencode, urlsplit, urlunparse
-
 from hspylib.modules.fetch.uri_scheme import UriScheme
+from typing import Any, Dict, List
+from urllib.parse import parse_qs, SplitResult, urlencode, urlsplit, urlunparse
 
 URI = namedtuple(
     typename='URI',

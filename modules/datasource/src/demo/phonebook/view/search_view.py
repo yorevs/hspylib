@@ -14,8 +14,6 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List
-
 from datasource.crud_entity import CrudEntity
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
@@ -27,6 +25,7 @@ from phonebook.entity.Company import Company
 from phonebook.entity.Person import Person
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
+from typing import List
 
 
 class SearchView(metaclass=Singleton):

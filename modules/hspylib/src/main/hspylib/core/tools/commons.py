@@ -12,19 +12,19 @@
 
    Copyright 2022, HSPyLib team
 """
-import inspect
-import logging as log
-import os
-import pathlib
-import sys
 from datetime import timedelta
-from typing import Optional, Set, Tuple, Type
-
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_codes import VtCodes
 from hspylib.modules.cli.vt100.vt_colors import VtColors
+from typing import Optional, Set, Tuple, Type
+
+import inspect
+import logging as log
+import os
+import pathlib
+import sys
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = '{}\t{} {} {} {} {} '.format(

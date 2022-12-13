@@ -13,11 +13,11 @@
    Copyright 2022, HSPyLib team
 """
 
-import signal
-from typing import Optional
-
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.vt100.vt_utils import exit_app
+from typing import Optional
+
+import signal
 
 
 class MenuUi:

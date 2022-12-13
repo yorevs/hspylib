@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import List, Optional
-
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import CB_ON_TRIGGER, DashboardItem
+from typing import List, Optional
 
 
 class DashboardBuilder:

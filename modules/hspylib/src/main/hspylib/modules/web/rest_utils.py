@@ -13,13 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-import logging as log
-from typing import Optional
-
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.fetch import fetch
 from hspylib.modules.fetch.http_response import HttpResponse
 from requests.structures import CaseInsensitiveDict
+from typing import Optional
+
+import logging as log
 
 
 def rest_call(

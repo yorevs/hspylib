@@ -14,12 +14,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List
-
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.widget_utils import WidgetUtils
 from PyQt5.QtWidgets import QWidget
+from typing import List
 
 
 class EnumProperty(SchemaField):

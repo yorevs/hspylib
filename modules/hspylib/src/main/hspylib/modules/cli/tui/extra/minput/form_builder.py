@@ -13,9 +13,8 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any
-
 from hspylib.modules.cli.tui.extra.minput.field_builder import FieldBuilder
+from typing import Any
 
 
 class FormBuilder:

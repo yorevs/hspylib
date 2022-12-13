@@ -15,14 +15,13 @@
 """
 
 from abc import ABC
-from typing import List, TypeVar, Union
-
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
+from typing import List, TypeVar, Union
 
 INPUT_WIDGET = TypeVar(
     'INPUT_WIDGET', QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget)

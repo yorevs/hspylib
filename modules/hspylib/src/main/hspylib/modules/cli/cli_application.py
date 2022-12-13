@@ -1,5 +1,5 @@
-from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.application import Application
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
 

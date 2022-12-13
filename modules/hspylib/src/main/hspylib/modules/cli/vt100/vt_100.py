@@ -13,10 +13,10 @@
    Copyright 2022, HSPyLib team
 """
 
-import re
 from abc import ABC
-
 from hspylib.core.preconditions import check_argument
+
+import re
 
 
 class Vt100(ABC):

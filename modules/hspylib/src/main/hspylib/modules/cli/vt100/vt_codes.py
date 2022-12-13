@@ -13,12 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-import re
 from enum import auto
-from typing import Callable, Optional
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
+from typing import Callable, Optional
+
+import re
 
 
 def vt_print(vt100_str: str, end: str = '') -> None:
