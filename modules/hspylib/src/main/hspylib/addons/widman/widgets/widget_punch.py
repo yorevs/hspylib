@@ -36,7 +36,7 @@ import sys
 class WidgetPunch(Widget):
     """HSPyLib Widget to Report current system memory usage"""
 
-    # @formatter:off
+    # fmt: off
     WIDGET_ICON = WidgetIcons.PUNCH
     WIDGET_NAME = "Punch"
     VERSION     = Version(0, 1, 0)
@@ -53,7 +53,7 @@ class WidgetPunch(Widget):
       Notes: '
         When no arguments are provided it will !!PUNCH THE CLOCK!!.'
     """)
-    # @formatter:on
+    # fmt: on
 
     HHS_DIR = os.getenv('HHS_PUNCH_FILE', os.getenv('HOME', './'))
 

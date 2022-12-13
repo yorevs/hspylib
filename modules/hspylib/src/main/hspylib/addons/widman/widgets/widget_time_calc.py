@@ -31,13 +31,13 @@ import re
 class WidgetTimeCalc(Widget):
     """HSPyLib Widget to calculate time based operations"""
 
-    # @formatter:off
+    # fmt: off
     WIDGET_ICON = WidgetIcons.CLOCK
     WIDGET_NAME = "TimeCalc"
     VERSION     = Version(0, 1, 0)
     TOOLTIP     = "Calculate time based operations."
     USAGE       = "Usage: TimeCalc [+d|++decimal] <HH1:MM1[:SS1]> <+|-> <HH2:MM2[:SS2]>"
-    # @formatter:on
+    # fmt: on
 
     @staticmethod
     def to_decimal(time_raw: int = 0) -> int:
@@ -123,7 +123,7 @@ class WidgetTimeCalc(Widget):
 
     def _read_args(self) -> bool:
         """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
-        # @formatter:off
+        # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label('Time 1') \
@@ -141,7 +141,7 @@ class WidgetTimeCalc(Widget):
                 .value('|##:##:##') \
                 .build() \
             .build()
-        # @formatter:on
+        # fmt: on
 
         result = minput(form_fields)
         self._args = result.values if result else None

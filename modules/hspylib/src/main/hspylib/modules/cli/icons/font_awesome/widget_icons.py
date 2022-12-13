@@ -23,7 +23,7 @@ class WidgetIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    # @formatter:off
+    # fmt: off
     CHART_2 = '\uFC68'      # ﱩ
     CHART_1 = '\uFC67'      # ﱨ
     CLOCK = '\uF651'        # 
@@ -34,7 +34,7 @@ class WidgetIcons(Awesome):
     SIGN = '\uFC7E'         # ﱿ
     SWORDS = '\uFC84'       # ﲅ
     WIDGET = '\uFC65'       # ﱥ
-    # @formatter:on
+    # fmt: on
 
 
 if __name__ == '__main__':

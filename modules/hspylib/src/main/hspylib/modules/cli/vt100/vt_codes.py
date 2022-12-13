@@ -29,7 +29,7 @@ def vt_print(vt100_str: str, end: str = '') -> None:
 class VtCodes(Enumeration):
     """VT-100 escape codes"""
 
-    # @formatter:off
+    # fmt: off
     CSV = Vt100.save_cursor()           # ^[7 -> Save cursor position and attributes
     CRE = Vt100.restore_cursor()        # ^[8 -> Restore cursor position and attributes
     RIS = Vt100.reset()                 # ^[c -> Reset terminal to initial state
@@ -57,7 +57,7 @@ class VtCodes(Enumeration):
     CUD = auto()                        # ^[[<n>B         -> Move cursor down n lines
     CUF = auto()                        # ^[[<n>C         -> Move cursor right n lines
     CUB = auto()                        # ^[[<n>D         -> Move cursor left n lines
-    # @formatter:on
+    # fmt: on
 
     # For all mnemonics that take arguments we need to include in this map, so we can call it
 

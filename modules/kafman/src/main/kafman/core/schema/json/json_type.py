@@ -22,7 +22,7 @@ from typing import Any
 class JsonType(Enumeration):
     """TODO"""
 
-    # @formatter:off
+    # fmt: off
     STRING          = 'string'   # string|bytes|enum|fixed
     NUMBER          = 'number'   # float|double
     INTEGER         = 'integer'  # int|long
@@ -30,7 +30,7 @@ class JsonType(Enumeration):
     ARRAY           = 'array'    # array
     BOOLEAN         = 'boolean'  # bool
     ENUM            = 'enum'     # array or string enumeration
-    # @formatter:on
+    # fmt: on
 
     def empty_value(self) -> Any:
         """TODO"""

@@ -16,19 +16,19 @@ from datetime import datetime, timezone
 from hspylib.core.enums.enumeration import Enumeration
 
 # Date and time formats
-# @formatter:off
+# fmt: off
 ISO_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 DATETIME_FORMAT     = '%Y-%m-%d %H:%M:%S'
 DATE_FORMAT         = '%Y-%m-%d'
 TIME_FORMAT         = '%H:%M:%S'
-# @formatter:on
+# fmt: on
 
 class ZonedDatetime(Enumeration):
 
-    # @formatter:off
+    # fmt: off
     LOCAL   = 'localtime'
     UTC     = 'UTC'
-    # @formatter:on
+    # fmt: on
 
     def datetime(self) -> datetime:
         """ Return the current datetime"""

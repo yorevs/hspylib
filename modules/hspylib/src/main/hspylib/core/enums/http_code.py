@@ -23,7 +23,7 @@ class HttpCode(Enumeration):
     Ref:http://www.cs.ait.ac.th/~on/O/oreilly/java-ent/servlet/appc_01.htm
     """
 
-    # @formatter:off
+    # fmt: off
 
     # 1xx Informational Codes
     CONTINUE                            = 100, 'Continue'
@@ -99,7 +99,7 @@ class HttpCode(Enumeration):
     NETWORK_AUTHENTICATION_REQUIRED     = 511, 'Network Authentication Required'
     NETWORK_CONNECT_TIMEOUT_ERROR       = 599, 'Network Connect Timeout Error'
 
-    # @formatter:on
+    # fmt: on
 
     @classmethod
     def of(cls, status_code: int) -> 'HttpCode':
@@ -126,7 +126,7 @@ class HttpCode(Enumeration):
         return self.value[0]
 
     @property
-    def reason(self) -> int:
+    def reason(self) -> str:
         return self.value[1]
 
     def is_1xx(self) -> bool:

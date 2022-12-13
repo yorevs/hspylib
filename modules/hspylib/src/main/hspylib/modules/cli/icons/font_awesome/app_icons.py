@@ -22,7 +22,7 @@ class AppIcons(Awesome):
         - https://fontawesome.com/cheatsheet?from=io
     """
 
-    # @formatter:off
+    # fmt: off
     APPLE = '\uF534'            # 
     AWS = '\uF375'              # 
     CPLUSPLUS = '\uFB70'        # ﭱ
@@ -41,7 +41,7 @@ class AppIcons(Awesome):
     TWITTER = '\uF081'          # 
     VS_CODE = '\uFB0F'          # ﬏
     WHATSAPP = '\uFAA2'         # 甆
-    # @formatter:on
+    # fmt: on
 
 
 if __name__ == '__main__':

@@ -19,7 +19,7 @@ from hspylib.core.enums.enumeration import Enumeration
 class Charset(Enumeration):
     """Enumeration to wrap all charset/encode types."""
 
-    # @formatter:off
+    # fmt: off
 
     ASCII           = 'ascii'
     BIG5            = 'big5'
@@ -116,7 +116,7 @@ class Charset(Enumeration):
     UTF_7           = 'utf-7'
     UTF_8           = 'utf-8'
 
-    # @formatter:on
+    # fmt: on
 
     @property
     def val(self) -> str:

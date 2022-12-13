@@ -31,14 +31,14 @@ class ApplicationTest(Application):
         super().__init__('AppTest', Version.load(), self.DESCRIPTION)
 
     def _setup_arguments(self) -> None:
-        # @formatter:off
+        # fmt: off
         self._with_options() \
             .option('input', 'i', 'input', required=True) \
             .option('output', 'o', 'output', required=True)
         self._with_arguments() \
             .argument('amount', 'the amount', choices=['one', 'two', 'three']) \
             .argument('item', 'the item', choices=['donut', 'bagel'])
-        # @formatter:on
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> None:
         """Run the application with the command line arguments"""

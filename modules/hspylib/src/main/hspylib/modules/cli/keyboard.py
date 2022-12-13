@@ -30,7 +30,7 @@ require_terminal()
 class Keyboard(Enumeration):
     """Provides keyboard interaction with the terminal."""
 
-    # @formatter:off
+    # fmt: off
 
     # Control keys
     VK_NONE         = ''
@@ -82,7 +82,7 @@ class Keyboard(Enumeration):
     VK_ASTERISK     = '*'; VK_RIGHT_BRACE       = '}'; VK_PERIOD            = '.'
     VK_SLASH        = '/'; VK_QUESTION_MARK     = '?'
 
-    # @formatter:on
+    # fmt: on
 
     @staticmethod
     def kbhit() -> bool:

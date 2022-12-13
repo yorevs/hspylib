@@ -63,7 +63,7 @@ class AppManager(metaclass=Singleton):
     @staticmethod
     def prompt() -> Namespace:
         """When no input is provided, prompt the user for the info. """
-        # @formatter:off
+        # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label('App Name') \
@@ -93,7 +93,7 @@ class AppManager(metaclass=Singleton):
                 .value(True) \
                 .build() \
             .build()
-        # @formatter:on
+        # fmt: on
         return minput(form_fields)
 
     def __init__(self, parent_app: Application) -> None:

@@ -18,7 +18,7 @@ from hspylib.core.enums.enumeration import Enumeration
 class ParserAction(Enumeration):
     """TODO"""
 
-    # @formatter:off
+    # fmt: off
 
     # This stores a list, and appends each argument value to the list.
     APPEND          = 'append'
@@ -44,4 +44,4 @@ class ParserAction(Enumeration):
     # This expects a version= keyword argument, prints version information and exits when invoked.
     VERSION         = 'version'
 
-    # @formatter:on
+    # fmt: on

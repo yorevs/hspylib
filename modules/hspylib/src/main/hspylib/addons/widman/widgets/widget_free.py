@@ -32,13 +32,13 @@ import re
 class WidgetFree(Widget):
     """HSPyLib Widget to Report current system memory usage"""
 
-    # @formatter:off
+    # fmt: off
     WIDGET_ICON = WidgetIcons.CHIP
     WIDGET_NAME = "Free"
     VERSION     = Version(0, 2, 0)
     TOOLTIP     = "Report system memory usage."
     USAGE       = "Usage: Free"
-    # @formatter:on
+    # fmt: on
 
     def __init__(self) -> None:
         super().__init__(

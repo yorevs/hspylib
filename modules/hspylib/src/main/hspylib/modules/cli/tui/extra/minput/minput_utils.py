@@ -49,7 +49,7 @@ class MInputUtils(ABC):
             return '|'.join(values)
 
         unselected = list(map(lambda x: x.replace('<', '').replace('>', ''), values))
-        # @formatter:off
+        # fmt: off
         return '|'.join([
             f'<{val}>'
             if
@@ -58,17 +58,17 @@ class MInputUtils(ABC):
             else
                 val for idx, val in enumerate(unselected)
         ])
-        # @formatter:on
+        # fmt: on
 
     @staticmethod
     def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:
         values = tokenized_values.split('|')
-        # @formatter:off
+        # fmt: off
         sel_item = next((
             val.replace('<', '').replace('>', '')
             for val in values if val.startswith('<') and val.endswith('>')
         ), values[0])
-        # @formatter:on
+        # fmt: on
         try:
             return values.index(sel_item), sel_item
         except ValueError:

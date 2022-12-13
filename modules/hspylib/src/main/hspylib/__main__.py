@@ -39,10 +39,10 @@ class Main(CliApplication):
 
     class Addon(Enumeration):
         """HsPyLib addon types."""
-        # @formatter:off
+        # fmt: off
         APPMAN  = 'appman'
         WIDGETS = 'widgets'
-        # @formatter:on
+        # fmt: on
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
@@ -51,7 +51,7 @@ class Main(CliApplication):
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
 
-        # @formatter:off
+        # fmt: off
         self._with_chained_args('application', 'the HSPyLib application to run') \
             .argument(self.Addon.APPMAN.value, 'app Application Manager: Create HSPyLib based python applications') \
                 .add_option(
@@ -81,7 +81,7 @@ class Main(CliApplication):
                 .add_parameter(
                     'widget-args', "the widget's arguments (if applicable)",
                     nargs='*') \
-            # @formatter:on
+            # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Main entry point handler"""

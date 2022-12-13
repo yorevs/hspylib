@@ -33,12 +33,12 @@ class SettingsDialog(QObject):
 
     DIALOG_FORM = _Classpath.get_resource_path("forms/settings_dlg.ui")
 
-    # @formatter:off
+    # fmt: off
     FORBIDDEN_SETTINGS = {
         'key.deserializer': '', 'value.deserializer': '',
         'key.serializer': '', 'value.serializer': ''
     }
-    # @formatter:on
+    # fmt: on
 
     class SettingsType(Enumeration):
         """TODO"""
@@ -48,10 +48,10 @@ class SettingsDialog(QObject):
         CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties") \
             .read_text(encoding=Charset.UTF_8.val)
 
-        # @formatter:off
+        # fmt: off
         PRODUCER = 'PRODUCER', PRODUCER_SETTINGS
         CONSUMER = 'CONSUMER', CONSUMER_SETTINGS
-        # @formatter:on
+        # fmt: on
 
         def settings(self) -> str:
             return self.value[1]

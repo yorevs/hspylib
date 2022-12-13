@@ -39,7 +39,7 @@ class Main(CliApplication):
 
     def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
-        # @formatter:off
+        # fmt: off
         main_menu = MenuFactory \
             .create(menu_title=self._app_name) \
                 .with_option('Exit')\
@@ -80,7 +80,7 @@ class Main(CliApplication):
                 .with_option('List all')\
                     .on_trigger(lambda t: search_view.list_all()) \
                 .build()
-        # @formatter:on
+        # fmt: on
         mm = MenuUi(main_menu)
         mm.show()
         return ExitStatus.SUCCESS

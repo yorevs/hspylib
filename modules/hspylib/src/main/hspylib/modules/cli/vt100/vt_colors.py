@@ -20,7 +20,7 @@ from hspylib.modules.cli.vt100.vt_100 import Vt100
 class VtColors(Enumeration):
     """TODO"""
 
-    # @formatter:off
+    # fmt: off
     NC      = Vt100.mode('0;0;0')
     BLACK   = Vt100.mode('0;30')
     RED     = Vt100.mode('0;31')
@@ -33,7 +33,7 @@ class VtColors(Enumeration):
     ORANGE  = Vt100.mode('38;5;202')
     VIOLET  = Vt100.mode('0;95')
     WHITE   = Vt100.mode('0;97')
-    # @formatter:on
+    # fmt: on
 
     @staticmethod
     def colorize(input_string: str) -> str:

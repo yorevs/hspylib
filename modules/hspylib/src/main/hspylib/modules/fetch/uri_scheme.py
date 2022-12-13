@@ -22,13 +22,13 @@ class UriScheme(Enumeration):
     Ref.: https://en.wikipedia.org/wiki/List_of_URI_schemes
     """
 
-    # @formatter:off
+    # fmt: off
     ABOUT   = 'about'
     HTTP    = 'http'
     HTTPS   = 'https'
     FTP     = 'ftp'
     FILE    = 'file'
-    # @formatter:on
+    # fmt: on
 
     @classmethod
     def of(cls, scheme: str) -> 'UriScheme':

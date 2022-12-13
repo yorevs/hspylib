@@ -25,7 +25,7 @@ FILTER_VALUE = TypeVar('FILTER_VALUE', int, str, bool, float)
 class FilterCondition(Enumeration):
     """Collection filter conditions."""
 
-    # @formatter:off
+    # fmt: off
     LESS_THAN                   =      '<', Union[int, float]
     LESS_THAN_OR_EQUALS_TO      =     '<=', Union[int, float]
     GREATER_THAN                =      '>', Union[int, float]
@@ -36,7 +36,7 @@ class FilterCondition(Enumeration):
     DOES_NOT_CONTAIN            = 'not in', Union[str]
     IS                          =     '==', Union[bool]
     IS_NOT                      =     '!=', Union[bool]
-    # @formatter:on
+    # fmt: on
 
     def __str__(self):
         return self.name.lower().replace('_', ' ')
