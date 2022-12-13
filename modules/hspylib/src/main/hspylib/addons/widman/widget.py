@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from textwrap import dedent
 from typing import List
 
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 

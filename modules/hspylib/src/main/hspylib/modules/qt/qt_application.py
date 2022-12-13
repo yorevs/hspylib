@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 from typing import TypeVar
 
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.text_tools import titlecase
 from hspylib.modules.application.application import Application

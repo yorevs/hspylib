@@ -18,9 +18,11 @@ import sys
 from argparse import ArgumentParser
 from typing import Any
 
+from hspylib.modules.application.exit_status import ExitStatus
+
 
 class HSArgumentParser(ArgumentParser):
-    """TODO"""
+    """HSPyLib custom argument parser"""
 
     def _check_value(self, action, value: Any):
         if action.choices is not None and value not in action.choices:
@@ -29,4 +31,4 @@ class HSArgumentParser(ArgumentParser):
 
     def error(self, message):
         self.print_help(sys.stderr)
-        self.exit(2, f'\n### Error {self.prog} -> {message}\n\n')
+        self.exit(ExitStatus.FAILED.val, f"\n### Error {self.prog} -> {message}\n\n")

@@ -37,7 +37,7 @@ class ChainedArgumentsBuilder:
 
         return self
 
-    def add_argument(
+    def add_parameter(
         self,
         name: str,
         help_string: str = None,

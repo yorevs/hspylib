@@ -16,32 +16,32 @@ import sys
 import traceback
 from typing import Callable
 
-from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
+from hspylib.modules.application.exit_status import ExitStatus
 
-EXIT_CB = Callable[[], None]
+CLEANUP_CB = Callable[[], None]
+EXIT_CB = Callable[[int | ExitStatus], None]
 
 
 class ExitHooks:
     """TODO"""
 
-    def __init__(self, cleanup: EXIT_CB = None):
-        self._orig_exit = sys.exit
-        self._exit_status = ExitStatus.SUCCESS
+    def __init__(self, cleanup: CLEANUP_CB = None):
+        self._orig_exit: EXIT_CB = sys.exit
+        self._exit_status: ExitStatus = ExitStatus.SUCCESS
         self._exception = None
         self._traceback = None
-        self._was_hooked = False
-        self._cleanup = cleanup
+        self._was_hooked: bool = False
+        self._cleanup: CLEANUP_CB = cleanup
         sys.exit = self.exit
 
     def hook(self) -> None:
         """TODO"""
         sys.excepthook = self.exception_hook
-        self._was_hooked = True
 
     def exit(self, code: ExitStatus | int | None) -> None:
         """TODO"""
-        self._exit_status = ExitStatus.of(code or ExitStatus.SUCCESS)
+        self._exit_status = ExitStatus.of(code or 0)
         if not self._was_hooked:
             self._orig_exit(self._exit_status.val)
         else:
@@ -54,6 +54,7 @@ class ExitHooks:
         tb: traceback) -> None:
         """TODO"""
 
+        self._was_hooked = True
         self._exception, self._traceback = exc, tb
         tb = "\t".join(traceback.format_exception(exc_type, exc, self._traceback))
         syserr(tb)

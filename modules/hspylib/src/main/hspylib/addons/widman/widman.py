@@ -19,7 +19,7 @@ from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widget_entry import WidgetEntry
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state

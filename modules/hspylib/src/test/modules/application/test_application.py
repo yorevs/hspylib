@@ -18,7 +18,7 @@ import sys
 import unittest
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import get_path

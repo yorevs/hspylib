@@ -21,7 +21,7 @@ import sys
 from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.version import Version
@@ -53,19 +53,19 @@ class Main(CliApplication):
         # @formatter:off
         self._with_chained_args('operation', 'the Vault operation to process') \
             .argument('list', 'list all entries matching the given filter criteria, if specified') \
-                .add_argument('filter', "filter the listed vault entries by it's name", nargs='*') \
+                .add_parameter('filter', "filter the listed vault entries by it's name", nargs='*') \
             .argument('get', 'get a vault entry') \
-                .add_argument('name', 'the name of the vault entry which identifies it') \
+                .add_parameter('name', 'the name of the vault entry which identifies it') \
             .argument('del', 'delete an existing vault entry') \
-                .add_argument('name', 'the name of the vault entry which identifies it') \
+                .add_parameter('name', 'the name of the vault entry which identifies it') \
             .argument('add', 'add a NEW UNIQUE vault entry') \
-                .add_argument('name', 'the name of the vault entry which identifies it') \
-                .add_argument('hint', 'applicable hints related to that vault entry') \
-                .add_argument('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
+                .add_parameter('name', 'the name of the vault entry which identifies it') \
+                .add_parameter('hint', 'applicable hints related to that vault entry') \
+                .add_parameter('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
             .argument('upd', 'update an existing vault entry') \
-                .add_argument('name', 'the name of the vault entry which identifies it') \
-                .add_argument('hint', 'applicable hints related to that vault entry') \
-                .add_argument('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
+                .add_parameter('name', 'the name of the vault entry which identifies it') \
+                .add_parameter('hint', 'applicable hints related to that vault entry') \
+                .add_parameter('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> ExitStatus:

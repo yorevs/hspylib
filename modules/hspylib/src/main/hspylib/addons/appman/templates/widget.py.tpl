@@ -18,7 +18,7 @@ from time import sleep
 from typing import List
 
 from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.keyboard import Keyboard

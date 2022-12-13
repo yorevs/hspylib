@@ -14,7 +14,7 @@
 """
 from typing import Tuple
 
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.vt100.terminal import Terminal
 
 

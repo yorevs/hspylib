@@ -21,7 +21,7 @@ from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.addons.widman.widman import WidgetManager
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.version import Version
@@ -58,27 +58,27 @@ class Main(CliApplication):
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
-                .add_argument(
+                .add_parameter(
                     'app-name',
                     'the application name', nargs='?') \
-                .add_argument(
+                .add_parameter(
                     'app-type',
                     'the application type. Appman is going to scaffold a basic application based on the app type',
                     choices=[
                         AppType.APP.value, AppType.QT_APP.value, AppType.WIDGET.value
                     ], nargs='?') \
-                .add_argument(
+                .add_parameter(
                     'app-ext',
                     '"gradle" is going to initialize you project with gradle (requires gradle). '
                     '"git" is going to initialize a git repository (requires git)',
                     nargs='*') \
             .argument(self.Addon.WIDGETS.value, 'app Widgets Manager: Execute an HSPyLib widget') \
-                .add_argument(
+                .add_parameter(
                     'widget-name',
                     'the name of the widget to be executed. If omitted, all available widgets will be '
                     'presented in a dashboard',
                     nargs='?') \
-                .add_argument(
+                .add_parameter(
                     'widget-args', "the widget's arguments (if applicable)",
                     nargs='*') \
             # @formatter:on
