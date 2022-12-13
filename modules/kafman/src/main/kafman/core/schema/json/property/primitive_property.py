@@ -20,17 +20,5 @@ from typing import Any
 
 
 class PrimitiveProperty(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        p_type: JsonType,
-        default: Any = None,
-        required: bool = True):
-        super().__init__(
-            name,
-            description,
-            p_type,
-            default,
-            required)
+    def __init__(self, name: str, description: str, p_type: JsonType, default: Any = None, required: bool = True):
+        super().__init__(name, description, p_type, default, required)

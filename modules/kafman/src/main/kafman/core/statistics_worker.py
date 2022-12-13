@@ -25,12 +25,12 @@ class StatisticsWorker(QThread):
 
     def __init__(self, report_interval: int = 1):
         super().__init__()
-        self.setObjectName('kafka-statistics')
+        self.setObjectName("kafka-statistics")
         self._started_ts = now_ms()
-        self._consumed = Namespace('ConsumerStats')
+        self._consumed = Namespace("ConsumerStats")
         self._consumed.total = 0
         self._consumed.in_a_tick = 0
-        self._produced = Namespace('ProducerStats')
+        self._produced = Namespace("ProducerStats")
         self._produced.total = 0
         self._produced.in_a_tick = 0
         self._report_interval = report_interval
@@ -69,5 +69,5 @@ class StatisticsWorker(QThread):
             self._produced.in_a_tick,
             self._consumed.in_a_tick,
             int(self._produced.total / diff_time),
-            int(self._consumed.total / diff_time)
+            int(self._consumed.total / diff_time),
         )

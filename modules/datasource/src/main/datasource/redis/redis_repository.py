@@ -28,7 +28,7 @@ import contextlib
 import logging as log
 import redis
 
-E = TypeVar('E', bound=CrudEntity)
+E = TypeVar("E", bound=CrudEntity)
 
 
 class RedisRepository(Generic[E], metaclass=AbstractSingleton):
@@ -49,7 +49,7 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
     @property
     def logname(self) -> str:
         """TODO"""
-        return self.__class__.__name__.split('_', maxsplit=1)[0]
+        return self.__class__.__name__.split("_", maxsplit=1)[0]
 
     @property
     def hostname(self) -> str:
@@ -75,12 +75,8 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
     def _create_session(self) -> Tuple[Connection, Cursor]:
         """TODO"""
         log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
-        conn = redis.Redis(
-            ssl=self.ssl,
-            host=self.hostname,
-            port=self.port,
-            password=self.password)
-        log.debug("%s Connection info: %s", self.logname, conn.config_get('databases'))
+        conn = redis.Redis(ssl=self.ssl, host=self.hostname, port=self.port, password=self.password)
+        log.debug("%s Connection info: %s", self.logname, conn.config_get("databases"))
         return conn, conn.pipeline()
 
     @contextlib.contextmanager
@@ -120,8 +116,9 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
             ret_val = list(filter(None, pipe.execute()))
             if ret_val:
                 list(map(lambda e: result.append(self.to_entity_type(e)), ret_val[0]))
-            log.debug("%s Executed '%s' pipelined 'GET' command(s) and returned %d entries",
-                      self.logname, count, len(result))
+            log.debug(
+                "%s Executed '%s' pipelined 'GET' command(s) and returned %d entries", self.logname, count, len(result)
+            )
             return result
 
     def get_one(self, key: str) -> Optional[E]:

@@ -30,8 +30,9 @@ class FormField:
         min_length: int = 0,
         max_length: int = 30,
         access_type: AccessType = AccessType.READ_WRITE,
-        value: Any = '',
-        validator: InputValidator = None):
+        value: Any = "",
+        validator: InputValidator = None,
+    ):
 
         self.value = value
         self.label = label
@@ -75,5 +76,4 @@ class FormField:
         return False
 
     def validate(self, value: Any = None) -> bool:
-        return self.validator.validate(str(value) or str(self.value)) \
-            if self.validator else False
+        return self.validator.validate(str(value) or str(self.value)) if self.validator else False

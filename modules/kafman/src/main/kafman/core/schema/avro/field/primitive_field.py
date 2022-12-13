@@ -20,17 +20,5 @@ from typing import Any
 
 
 class PrimitiveField(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        doc: str,
-        p_type: AvroType,
-        default: Any = None,
-        required: bool = True):
-        super().__init__(
-            name,
-            doc,
-            p_type,
-            default,
-            required=required)
+    def __init__(self, name: str, doc: str, p_type: AvroType, default: Any = None, required: bool = True):
+        super().__init__(name, doc, p_type, default, required=required)

@@ -28,7 +28,7 @@ class SelectableItem:
         return str(self)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     quantity = 21
     it = [SelectableItem(f"Item-{n}", f"Value-{n}") for n in range(1, quantity)]
     sel = mselect(it, max_rows=10)

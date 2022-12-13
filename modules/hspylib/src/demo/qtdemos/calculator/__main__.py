@@ -27,9 +27,9 @@ class Main(QtApplication):
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=HERE)
-        super().__init__(MainQtView, app_name, version, resource_dir=f'{HERE}/resources')
+        super().__init__(MainQtView, app_name, version, resource_dir=f"{HERE}/resources")
 
 
 if __name__ == "__main__":
     # Application entry point
-    Main('Qt_Calculator').INSTANCE.run(sys.argv[1:])
+    Main("Qt_Calculator").INSTANCE.run(sys.argv[1:])

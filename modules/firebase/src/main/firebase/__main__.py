@@ -75,42 +75,40 @@ class Main(CliApplication):
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
-            .add_parameter('db_alias', 'alias to identify the firebase object to fetch') \
+            .add_parameter('db_alias', 'alias to identify the firebase object to fetch')
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""
-        log.info(dedent(f'''
+        log.info(
+            dedent(
+                f"""
         {self._app_name} v{self._app_version}
         Settings ==============================
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
-        '''))
+        """
+            )
+        )
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
         """Execute the specified firebase operation"""
-        op = self.get_arg('operation')
-        if op == 'setup' or not self.firebase.is_configured():
+        op = self.get_arg("operation")
+        if op == "setup" or not self.firebase.is_configured():
             self.firebase.setup()
         # Already handled above
-        if op == 'setup':
-            log.debug('Operation is setup but it was already handled')
-        elif op == 'upload':
-            self.firebase.upload(
-                self.get_arg('db_alias'),
-                self.get_arg('files'),
-                self.get_arg('glob'))
-        elif op == 'download':
-            self.firebase.download(
-                self.get_arg('db_alias'),
-                self.get_arg('dest-dir')
-            )
+        if op == "setup":
+            log.debug("Operation is setup but it was already handled")
+        elif op == "upload":
+            self.firebase.upload(self.get_arg("db_alias"), self.get_arg("files"), self.get_arg("glob"))
+        elif op == "download":
+            self.firebase.download(self.get_arg("db_alias"), self.get_arg("dest-dir"))
         else:
-            syserr(f'### Unhandled operation: {op}')
+            syserr(f"### Unhandled operation: {op}")
             self.usage(ExitStatus.FAILED)
         return ExitStatus.SUCCESS
 
 
 if __name__ == "__main__":
     # Application entry point
-    Main('firebase').INSTANCE.run(sys.argv[1:])
+    Main("firebase").INSTANCE.run(sys.argv[1:])

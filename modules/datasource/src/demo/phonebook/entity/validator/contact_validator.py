@@ -20,11 +20,10 @@ from phonebook.entity.Company import Company
 from phonebook.entity.Person import Person
 from typing import List, Tuple, TypeVar, Union
 
-Contact = TypeVar('Contact', bound=Union[Person, Company])
+Contact = TypeVar("Contact", bound=Union[Person, Company])
 
 
 class ContactValidator(Validator):
-
     def __call__(self, *contacts: Contact, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         for contact in contacts:
@@ -37,13 +36,11 @@ class ContactValidator(Validator):
 
     @staticmethod
     def validate_name(name: str) -> (bool, str):
-        return Validator \
-                   .matches(name, RE_COMMON_2_30_NAME), "Invalid name"
+        return Validator.matches(name, RE_COMMON_2_30_NAME), "Invalid name"
 
     @staticmethod
     def validate_phone(phone: str) -> (bool, str):
-        return Validator \
-                   .matches(phone, RE_PHONE_NUMBER), "Invalid phone"
+        return Validator.matches(phone, RE_PHONE_NUMBER), "Invalid phone"
 
     @staticmethod
     def validate_address(address: str) -> (bool, str):

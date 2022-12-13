@@ -79,8 +79,8 @@ class HToolBox(QToolBox):
         """TODO"""
         animation = QVariantAnimation(self)
         animation.setDuration(120)
-        animation.setStartValue(0.)
-        animation.setEndValue(1.)
+        animation.setStartValue(0.0)
+        animation.setEndValue(1.0)
         animation.valueChanged.connect(self._update_sizes)
         return animation
 
@@ -164,7 +164,7 @@ class HToolBox(QToolBox):
             self._targetSize = 0
             return
         _, top, _, bottom = self.getContentsMargins()
-        base_height = (self._pages[0].button.sizeHint().height() + self.layout().spacing())
+        base_height = self._pages[0].button.sizeHint().height() + self.layout().spacing()
         self._targetSize = self.height() - top - bottom - base_height * self.count()
 
     def _button_clicked(self):

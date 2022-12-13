@@ -24,14 +24,10 @@ import base64
 import os
 
 # Please do not modify this value
-DEFAULT_HS_SALT = 'HsPyLib'
+DEFAULT_HS_SALT = "HsPyLib"
 
 
-def encode_file(
-    in_file: str,
-    out_file: str,
-    binary: bool = False,
-    encoding: str = Charset.UTF_8.val) -> int:
+def encode_file(in_file: str, out_file: str, binary: bool = False, encoding: str = Charset.UTF_8.val) -> int:
     """Encode file into base64
     :param in_file: The file to be encoded
     :param out_file: The resulting encoded file
@@ -40,22 +36,18 @@ def encode_file(
     """
 
     if binary:
-        with open(in_file, 'rb') as f_in_file:
-            with open(out_file, 'wb') as f_out_file:
+        with open(in_file, "rb") as f_in_file:
+            with open(out_file, "wb") as f_out_file:
                 data = base64.b64encode(f_in_file.read())
                 return f_out_file.write(data)
 
-    with open(in_file, 'r', encoding=Charset.UTF_8.val) as f_in_file:
-        with open(out_file, 'w', encoding=encoding) as f_out_file:
+    with open(in_file, "r", encoding=Charset.UTF_8.val) as f_in_file:
+        with open(out_file, "w", encoding=encoding) as f_out_file:
             data = base64.b64encode(str.encode(f_in_file.read()))
             return f_out_file.write(str(data, encoding=encoding))
 
 
-def decode_file(
-    in_file: str,
-    out_file: str,
-    binary: bool = False,
-    encoding: str = Charset.UTF_8.val) -> int:
+def decode_file(in_file: str, out_file: str, binary: bool = False, encoding: str = Charset.UTF_8.val) -> int:
     """Decode file from base64
     :param in_file: The file to be decoded
     :param out_file: The resulting decoded file
@@ -64,13 +56,13 @@ def decode_file(
     """
 
     if binary:
-        with open(in_file, 'rb') as f_in_file:
-            with open(out_file, 'wb') as f_out_file:
+        with open(in_file, "rb") as f_in_file:
+            with open(out_file, "wb") as f_out_file:
                 data = base64.b64decode(f_in_file.read())
                 return f_out_file.write(data)
 
-    with open(in_file, 'r', encoding=encoding) as f_in_file:
-        with open(out_file, 'w', encoding=encoding) as f_out_file:
+    with open(in_file, "r", encoding=encoding) as f_in_file:
+        with open(out_file, "w", encoding=encoding) as f_out_file:
             data = base64.b64decode(f_in_file.read())
             return f_out_file.write(str(data, encoding=encoding))
 
@@ -83,7 +75,8 @@ def encrypt_file(
     digest_algo: hashes.HashAlgorithm = hashes.SHA256(),
     length=32,
     iterations=100000,
-    encoding: str = Charset.UTF_8.val) -> None:
+    encoding: str = Charset.UTF_8.val,
+) -> None:
     """Encrypt file using Fernet cryptography
     :param in_file: The file to be encrypted
     :param out_file: The resulting encrypted file
@@ -100,15 +93,15 @@ def encrypt_file(
         length=length,
         salt=salt.encode(encoding),
         iterations=iterations,
-        backend=default_backend()
+        backend=default_backend(),
     )
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
-    check_argument(os.path.exists(in_file), "Input file \"{}\" does not exist", in_file)
+    check_argument(os.path.exists(in_file), 'Input file "{}" does not exist', in_file)
     with open(in_file, encoding=encoding) as f_in_file:
-        with open(out_file, 'w', encoding=encoding) as f_out_file:
+        with open(out_file, "w", encoding=encoding) as f_out_file:
             f_out_file.write(f.encrypt(f_in_file.read().encode(encoding)).decode(encoding))
-    check_state(os.path.exists(out_file), "Unable to encrypt file \"{}\"", in_file)
+    check_state(os.path.exists(out_file), 'Unable to encrypt file "{}"', in_file)
 
 
 def decrypt_file(
@@ -119,7 +112,8 @@ def decrypt_file(
     digest_algo: hashes.HashAlgorithm = hashes.SHA256(),
     length=32,
     iterations=100000,
-    encoding: str = Charset.UTF_8.val) -> None:
+    encoding: str = Charset.UTF_8.val,
+) -> None:
     """Decrypt file using Fernet cryptography
     :param in_file: The file to be decrypted
     :param out_file: The resulting decrypted file
@@ -136,15 +130,15 @@ def decrypt_file(
         length=length,
         salt=salt.encode(encoding),
         iterations=iterations,
-        backend=default_backend()
+        backend=default_backend(),
     )
     key = base64.urlsafe_b64encode(kdf.derive(pass_phrase.encode(encoding)))
     f = Fernet(key)
-    check_argument(os.path.exists(in_file), "Input file \"{}\" does not exist", in_file)
+    check_argument(os.path.exists(in_file), 'Input file "{}" does not exist', in_file)
     with open(in_file, encoding=encoding) as f_in_file:
-        with open(out_file, 'w', encoding=encoding) as f_out_file:
+        with open(out_file, "w", encoding=encoding) as f_out_file:
             f_out_file.write(f.decrypt(f_in_file.read().encode(encoding)).decode(encoding))
-    check_state(os.path.exists(out_file), "Unable to decrypt file \"{}\"", in_file)
+    check_state(os.path.exists(out_file), 'Unable to decrypt file "{}"', in_file)
 
 
 def b64_encode(text: str, encoding: str = Charset.UTF_8.val) -> str:

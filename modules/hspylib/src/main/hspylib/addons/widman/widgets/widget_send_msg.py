@@ -38,8 +38,8 @@ class WidgetSendMsg(Widget):
     """HSPyLib Widget to send TCP/UDP messages (multi-threaded)"""
 
     MAX_THREADS = 1000
-    NET_TYPE_UDP = 'UDP'
-    NET_TYPE_TCP = 'TCP'
+    NET_TYPE_UDP = "UDP"
+    NET_TYPE_TCP = "TCP"
 
     # fmt: off
     WIDGET_ICON = WidgetIcons.NETWORK
@@ -65,12 +65,7 @@ class WidgetSendMsg(Widget):
     # fmt: on
 
     def __init__(self) -> None:
-        super().__init__(
-            self.WIDGET_ICON,
-            self.WIDGET_NAME,
-            self.TOOLTIP,
-            self.USAGE,
-            self.VERSION)
+        super().__init__(self.WIDGET_ICON, self.WIDGET_NAME, self.TOOLTIP, self.USAGE, self.VERSION)
 
         self.is_alive = True
         self.net_type = None
@@ -87,10 +82,10 @@ class WidgetSendMsg(Widget):
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
 
-        if args and args[0] in ['-h', '--help']:
+        if args and args[0] in ["-h", "--help"]:
             sysout(self.usage())
             return ExitStatus.SUCCESS
-        if args and args[0] in ['-v', '--version']:
+        if args and args[0] in ["-v", "--version"]:
             sysout(self.version())
             return ExitStatus.SUCCESS
 
@@ -102,7 +97,7 @@ class WidgetSendMsg(Widget):
             return ExitStatus.ERROR
 
         self.net_type = self._args.net_type or self.NET_TYPE_TCP
-        self.host = (self._args.address or '127.0.0.1', self._args.port or 12345)
+        self.host = (self._args.address or "127.0.0.1", self._args.port or 12345)
         self.packets = self._args.packets or 100
         self.interval = self._args.interval or 1
         self.threads = self._args.threads or 1
@@ -110,7 +105,7 @@ class WidgetSendMsg(Widget):
         if self._args.message and os.path.isfile(self._args.message):
             file_size = os.stat(self._args.message).st_size
             sysout(f"Reading contents from file: {self._args.message} ({file_size}) [Bs] instead")
-            with open(self._args.message, 'r', encoding='utf-8') as f_msg:
+            with open(self._args.message, "r", encoding="utf-8") as f_msg:
                 self.message = f_msg.read()
         else:
             self.message = self._args.message or f"This is a {self._args.net_type} test %(count)"
@@ -123,14 +118,14 @@ class WidgetSendMsg(Widget):
 
     def cleanup(self) -> None:
         """Stops workers and close socket connection."""
-        sysout('Terminating threads%NC%')
+        sysout("Terminating threads%NC%")
         self.is_alive = False
         if self.net_type == self.NET_TYPE_TCP:
-            sysout('Closing TCP connection')
+            sysout("Closing TCP connection")
             self.socket.close()
 
     def _read_args(self) -> bool:
-        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -177,36 +172,79 @@ class WidgetSendMsg(Widget):
         # fmt: on
         result = minput(form_fields)
         self._args = result.values if result else None
-        sysout('%HOM%%ED2%%MOD(0)%', end='')
+        sysout("%HOM%%ED2%%MOD(0)%", end="")
 
         return len(self._args.__dict__) > 1 if self._args else False
 
     def _parse_args(self, args: List[str]):
         """When arguments are passed from the command line, parse them"""
         parser = HSArgumentParser(
-            prog='sendmsg', prefix_chars="+", description='Sends TCP/UDP messages (multi-threaded)')
+            prog="sendmsg", prefix_chars="+", description="Sends TCP/UDP messages (multi-threaded)"
+        )
         parser.add_parameter(
-            '+n', '++net-type', action='store', type=str, choices=['udp', 'tcp'], default='tcp', required=False,
-            help='The network type to be used. Either udp or tcp ( default is tcp )')
+            "+n",
+            "++net-type",
+            action="store",
+            type=str,
+            choices=["udp", "tcp"],
+            default="tcp",
+            required=False,
+            help="The network type to be used. Either udp or tcp ( default is tcp )",
+        )
         parser.add_parameter(
-            '+a', '++address', action='store', type=str, default='127.0.0.1', required=False,
-            help='The address of the datagram receiver ( default is 127.0.0.1 )')
+            "+a",
+            "++address",
+            action="store",
+            type=str,
+            default="127.0.0.1",
+            required=False,
+            help="The address of the datagram receiver ( default is 127.0.0.1 )",
+        )
         parser.add_parameter(
-            '+p', '++port', action='store', type=int, default=12345, required=False,
-            help='The port number [1-65535] ( default is 12345)')
+            "+p",
+            "++port",
+            action="store",
+            type=int,
+            default=12345,
+            required=False,
+            help="The port number [1-65535] ( default is 12345)",
+        )
         parser.add_parameter(
-            '+k', '++packets', action='store', type=int, default=100, required=False,
-            help='The number of max datagrams to be send. If zero is specified, then the app '
-                 'is going to send indefinitely ( default is 100 ).')
+            "+k",
+            "++packets",
+            action="store",
+            type=int,
+            default=100,
+            required=False,
+            help="The number of max datagrams to be send. If zero is specified, then the app "
+                 "is going to send indefinitely ( default is 100 ).",
+        )
         parser.add_parameter(
-            '+i', '++interval', action='store', type=float, default=1, required=False,
-            help='The interval in seconds between each datagram ( default is 1 Second )')
+            "+i",
+            "++interval",
+            action="store",
+            type=float,
+            default=1,
+            required=False,
+            help="The interval in seconds between each datagram ( default is 1 Second )",
+        )
         parser.add_parameter(
-            '+t', '++threads', action='store', type=int, default=1, required=False,
-            help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
+            "+t",
+            "++threads",
+            action="store",
+            type=int,
+            default=1,
+            required=False,
+            help=f"Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )",
+        )
         parser.add_parameter(
-            '+m', '++message', action='store', type=str, required=False,
-            help='The message to be sent. If the message matches a filename, then the file contents sent instead')
+            "+m",
+            "++message",
+            action="store",
+            type=str,
+            required=False,
+            help="The message to be sent. If the message matches a filename, then the file contents sent instead",
+        )
         self._args = parser.parse_args(args)
 
         return bool(self._args)
@@ -221,15 +259,17 @@ class WidgetSendMsg(Widget):
                 self.socket.connect(self.host)
                 sysout(f"Successfully connected to {self.host}")
             except socket.error as err:
-                raise WidgetExecutionError('Unable to initialize sockets') from err
+                raise WidgetExecutionError("Unable to initialize sockets") from err
 
     def _start_send(self) -> None:
         """Start sending packets"""
         thread_relief = 0.05
         self._init_sockets()
-        sysout(f"\n%ORANGE%Start sending {self.packets} "
-               f"{self.net_type.upper()} packet(s) "
-               f"every {self.interval} second(s) to {self.host} using {self.threads} thread(s)")
+        sysout(
+            f"\n%ORANGE%Start sending {self.packets} "
+            f"{self.net_type.upper()} packet(s) "
+            f"every {self.interval} second(s) to {self.host} using {self.threads} thread(s)"
+        )
         threads_num = threading.active_count()
 
         for thread_num in range(1, int(self.threads) + 1):
@@ -246,18 +286,20 @@ class WidgetSendMsg(Widget):
         lock = threading.Lock()
 
         while self.is_alive and self.packets <= 0 or self.counter <= self.packets:
-            message = self.message.replace('%(count)', str(self.counter))
+            message = self.message.replace("%(count)", str(self.counter))
             length = len(message)
-            sysout(f"%BLUE%[Thread-{thread_num:d}] "
-                   f"%GREEN%Sending \"{message:s}\" ({length:d}) bytes, "
-                   f"Pkt = {self.counter:>d}/{self.packets:>d} %NC%...")
+            sysout(
+                f"%BLUE%[Thread-{thread_num:d}] "
+                f'%GREEN%Sending "{message:s}" ({length:d}) bytes, '
+                f"Pkt = {self.counter:>d}/{self.packets:>d} %NC%..."
+            )
             if self.net_type == self.NET_TYPE_UDP:
                 self.socket.sendto(message.encode(), self.host)
             else:
                 try:
-                    self.socket.sendall((message + '\n').encode())
+                    self.socket.sendall((message + "\n").encode())
                     with lock:
                         self.counter += 1
                 except socket.error as err:
-                    raise WidgetExecutionError('Unable to send packet') from err
+                    raise WidgetExecutionError("Unable to send packet") from err
             sleep(self.interval)

@@ -5,8 +5,5 @@
 # Package: main.datasource.cassandra
 """Package initialization."""
 
-__all__ = [
-  'cassandra_configuration', 
-  'cassandra_repository'
-]
-__version__ = '0.9.16'
+__all__ = ["cassandra_configuration", "cassandra_repository"]
+__version__ = "0.9.16"

@@ -34,7 +34,7 @@ class MenuItem(Menu, ABC):
         self.menu_data = None
 
     def __str__(self):
-        return self.menu_data if self.menu_data else ''
+        return self.menu_data if self.menu_data else ""
 
     def execute(self) -> Optional[Menu]:
         """TODO"""
@@ -42,7 +42,7 @@ class MenuItem(Menu, ABC):
         while self.selected != 0 and not self.done:
             sysout(str(self))
             try:
-                self.selected = MenuUtils.prompt(end='$ ')
+                self.selected = MenuUtils.prompt(end="$ ")
                 if not self.selected:
                     continue
                 if self.selected.isalnum() and self.is_valid_option():

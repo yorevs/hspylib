@@ -32,8 +32,9 @@ RETRYABLE_EXS = (
     exs.ConnectionError,
     exs.ReadTimeout,
     exs.InvalidURL,
-    exs.InvalidSchema
+    exs.InvalidSchema,
 )
+
 
 @retry(exceptions=RETRYABLE_EXS, tries=3, delay=1, backoff=3, max_delay=30, jitter=0.75)
 def fetch(
@@ -42,8 +43,9 @@ def fetch(
     headers: List[Dict[str, str]] = None,
     body: Any = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
-    """ Do a request specified by method and according to parameters.
+    timeout: Union[float, Tuple[float, float]] = 10,
+) -> HttpResponse:
+    """Do a request specified by method and according to parameters.
     :param url: The url to make the request.
     :param method: The http method to be used [ GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS ].
     :param headers: The http request headers.
@@ -55,67 +57,45 @@ def fetch(
 
     final_url = UriBuilder.ensure_scheme(url)
     if not silent:
-        sysout(f"Fetching: "
-               f"method={method} headers={headers if headers else '[]'} "
-               f"body={body if body else '{}'} url={final_url} ...")
+        sysout(
+            f"Fetching: "
+            f"method={method} headers={headers if headers else '[]'} "
+            f"body={body if body else '{}'} url={final_url} ..."
+        )
 
     all_headers = {}
     if headers:
         list(map(all_headers.update, headers))
 
     response = requests.request(
-        url=final_url,
-        method=method.name,
-        headers=all_headers,
-        data=body,
-        timeout=timeout,
-        verify=False)
+        url=final_url, method=method.name, headers=all_headers, data=body, timeout=timeout, verify=False
+    )
 
     return HttpResponse.of(response)
 
 
 def head(
-    url: str,
-    headers: List[Dict[str, str]] = None,
-    silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
+    url: str, headers: List[Dict[str, str]] = None, silent: bool = True, timeout: Union[float, Tuple[float, float]] = 10
+) -> HttpResponse:
     """Do HEAD request and according to parameters."""
 
-    return fetch(
-        url=url,
-        method=HttpMethod.HEAD,
-        headers=headers,
-        silent=silent,
-        timeout=timeout)
+    return fetch(url=url, method=HttpMethod.HEAD, headers=headers, silent=silent, timeout=timeout)
 
 
 def get(
-    url: str,
-    headers: List[Dict[str, str]] = None,
-    silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
+    url: str, headers: List[Dict[str, str]] = None, silent: bool = True, timeout: Union[float, Tuple[float, float]] = 10
+) -> HttpResponse:
     """Do GET request and according to parameters."""
 
-    return fetch(
-        url=url,
-        headers=headers,
-        silent=silent,
-        timeout=timeout)
+    return fetch(url=url, headers=headers, silent=silent, timeout=timeout)
 
 
 def delete(
-    url: str,
-    headers: List[Dict[str, str]] = None,
-    silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
+    url: str, headers: List[Dict[str, str]] = None, silent: bool = True, timeout: Union[float, Tuple[float, float]] = 10
+) -> HttpResponse:
     """Do DELETE request and according to parameters."""
 
-    return fetch(
-        url=url,
-        method=HttpMethod.DELETE,
-        headers=headers,
-        silent=silent,
-        timeout=timeout)
+    return fetch(url=url, method=HttpMethod.DELETE, headers=headers, silent=silent, timeout=timeout)
 
 
 def post(
@@ -123,16 +103,11 @@ def post(
     body=None,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
+    timeout: Union[float, Tuple[float, float]] = 10,
+) -> HttpResponse:
     """Do POST request and according to parameters."""
 
-    return fetch(
-        url=url,
-        method=HttpMethod.POST,
-        headers=headers,
-        body=body,
-        silent=silent,
-        timeout=timeout)
+    return fetch(url=url, method=HttpMethod.POST, headers=headers, body=body, silent=silent, timeout=timeout)
 
 
 def put(
@@ -140,16 +115,11 @@ def put(
     body=None,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
+    timeout: Union[float, Tuple[float, float]] = 10,
+) -> HttpResponse:
     """Do PUT request and according to parameters."""
 
-    return fetch(
-        url=url,
-        method=HttpMethod.PUT,
-        headers=headers,
-        body=body,
-        silent=silent,
-        timeout=timeout)
+    return fetch(url=url, method=HttpMethod.PUT, headers=headers, body=body, silent=silent, timeout=timeout)
 
 
 def patch(
@@ -157,21 +127,14 @@ def patch(
     body=None,
     headers: List[Dict[str, str]] = None,
     silent: bool = True,
-    timeout: Union[float, Tuple[float, float]] = 10) -> HttpResponse:
+    timeout: Union[float, Tuple[float, float]] = 10,
+) -> HttpResponse:
     """Do PATCH request and according to parameters."""
 
-    return fetch(
-        url=url,
-        method=HttpMethod.PATCH,
-        headers=headers,
-        body=body,
-        silent=silent,
-        timeout=timeout)
+    return fetch(url=url, method=HttpMethod.PATCH, headers=headers, body=body, silent=silent, timeout=timeout)
 
 
-def is_reachable(
-    urls: str | Tuple[str],
-    timeout: Union[float, Tuple[float, float]] = 1) -> bool:
+def is_reachable(urls: str | Tuple[str], timeout: Union[float, Tuple[float, float]] = 1) -> bool:
     """Check if the specified url is reachable"""
     reachable = True
 

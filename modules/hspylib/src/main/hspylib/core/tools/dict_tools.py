@@ -15,7 +15,7 @@
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 
-def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') -> Optional[Any]:
+def search_dict(root_element: dict, search_path: str, parent_key="", sep=".") -> Optional[Any]:
     """
     TODO
     :param root_element:
@@ -44,7 +44,7 @@ def search_dict(root_element: dict, search_path: str, parent_key='', sep='.') ->
     return found, el
 
 
-def flatten_dict(dictionary: dict, parent_key='', sep='.') -> dict:
+def flatten_dict(dictionary: dict, parent_key="", sep=".") -> dict:
     """Flatten a dictionary and all it's items.
     :param dictionary: The dictionary to be flattened
     :param parent_key: The parent key name

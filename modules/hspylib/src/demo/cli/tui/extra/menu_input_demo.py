@@ -16,8 +16,8 @@
 from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
 
-if __name__ == '__main__':
-# fmt: off
+if __name__ == "__main__":
+    # fmt: off
     form_fields = MenuInput.builder() \
         .field() \
             .label('letters') \
@@ -61,4 +61,4 @@ if __name__ == '__main__':
     # fmt: on
 
 result = minput(form_fields)
-print(result.__dict__ if result else 'None')
+print(result.__dict__ if result else "None")

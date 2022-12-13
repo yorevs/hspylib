@@ -29,15 +29,17 @@ class ArgumentsBuilder:
         help_string: str = None,
         choices: list = None,
         nargs: Union[str, int] = None,
-        default: Any = None) -> 'ArgumentsBuilder':
+        default: Any = None,
+    ) -> "ArgumentsBuilder":
         """TODO"""
 
         self._arg_parser.add_argument(
             dest=name,
-            help=help_string or f'the {name}',
+            help=help_string or f"the {name}",
             action=ParserAction.STORE.value,
             choices=choices,
             nargs=nargs,
-            default=default)
+            default=default,
+        )
 
         return self

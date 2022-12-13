@@ -5,7 +5,5 @@
 # Package: main
 """Package initialization."""
 
-__all__ = [
-  'kafman'
-]
-__version__ = '0.9.92'
+__all__ = ["kafman"]
+__version__ = "0.9.92"

@@ -23,9 +23,9 @@ class VaultConfig(DBConfiguration):
 
     def __init__(self, resource_dir: str):
         super().__init__(resource_dir)
-        self._vault_user = self['hhs.vault.user']
-        self._passphrase = self['hhs.vault.passphrase']
-        self._vault_file = self['hhs.vault.file']
+        self._vault_user = self["hhs.vault.user"]
+        self._passphrase = self["hhs.vault.passphrase"]
+        self._vault_file = self["hhs.vault.file"]
 
     @property
     def vault_user(self) -> str:

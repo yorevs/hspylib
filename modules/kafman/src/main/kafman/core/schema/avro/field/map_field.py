@@ -19,18 +19,7 @@ from kafman.core.schema.schema_field import SchemaField
 
 
 class MapField(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        doc: str,
-        values: dict,
-        default: str = None,
-        required: bool = True):
-        super().__init__(
-            name,
-            doc,
-            AvroType.MAP,
-            default, required=required)
+    def __init__(self, name: str, doc: str, values: dict, default: str = None, required: bool = True):
+        super().__init__(name, doc, AvroType.MAP, default, required=required)
 
         self.values = values

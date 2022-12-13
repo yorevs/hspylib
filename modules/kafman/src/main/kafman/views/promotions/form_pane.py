@@ -38,7 +38,7 @@ class FormPane(HFrame):
 
     FIELD_COLUMN = 2
 
-    INPUT_WIDGETS = ['HComboBox', 'HListWidget', 'QCheckBox', 'QSpinBox', 'QDoubleSpinBox', 'QLineEdit']
+    INPUT_WIDGETS = ["HComboBox", "HListWidget", "QCheckBox", "QSpinBox", "QDoubleSpinBox", "QLineEdit"]
 
     _forms = defaultdict()
 
@@ -62,9 +62,9 @@ class FormPane(HFrame):
 
         return value
 
-    def __init__(self, parent: QWidget, parent_form: 'FormPane', form_name: str):
+    def __init__(self, parent: QWidget, parent_form: "FormPane", form_name: str):
         super().__init__(parent)
-        check_argument(form_name is not None and len(form_name) > 1, f'Invalid form name: {form_name}')
+        check_argument(form_name is not None and len(form_name) > 1, f"Invalid form name: {form_name}")
         self._fields = defaultdict()
         self._forms[form_name] = self
         self._name = form_name
@@ -94,13 +94,7 @@ class FormPane(HFrame):
     def parent_name(self) -> Optional[str]:
         return self._parent_form.name() if self._parent_form else None
 
-    def add_field(
-        self,
-        field_name: str,
-        label: QLabel,
-        req_label: QLabel,
-        widget: INPUT_WIDGET,
-        row: int) -> None:
+    def add_field(self, field_name: str, label: QLabel, req_label: QLabel, widget: INPUT_WIDGET, row: int) -> None:
         """TODO"""
 
         check_not_none(widget)
@@ -111,18 +105,13 @@ class FormPane(HFrame):
         self._fields[widget.objectName()] = defaultdict()
 
     def add_form_button(
-        self,
-        field_name: str,
-        label: QLabel,
-        req_label: QLabel,
-        row: int,
-        index: int,
-        form_stack: HStackedWidget) -> None:
+        self, field_name: str, label: QLabel, req_label: QLabel, row: int, index: int, form_stack: HStackedWidget
+    ) -> None:
         """TODO"""
 
         fill_button = QPushButton(FormIcons.ARROW_RIGHT.value + " Fill")
         fill_button.clicked.connect(lambda: form_stack.slide_to_index(index))
-        WidgetUtils.setup_widget_commons(fill_button, 'Click to fill the form')
+        WidgetUtils.setup_widget_commons(fill_button, "Click to fill the form")
         fill_button.setMaximumWidth(100)
         fill_button.setMinimumHeight(30)
         fill_button.setDefault(False)

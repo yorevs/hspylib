@@ -43,10 +43,12 @@ class SettingsDialog(QObject):
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = _Classpath.get_resource_path("producer-settings.properties") \
-            .read_text(encoding=Charset.UTF_8.val)
-        CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties") \
-            .read_text(encoding=Charset.UTF_8.val)
+        PRODUCER_SETTINGS = _Classpath.get_resource_path("producer-settings.properties").read_text(
+            encoding=Charset.UTF_8.val
+        )
+        CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties").read_text(
+            encoding=Charset.UTF_8.val
+        )
 
         # fmt: off
         PRODUCER = 'PRODUCER', PRODUCER_SETTINGS
@@ -57,7 +59,8 @@ class SettingsDialog(QObject):
             return self.value[1]
 
     def __init__(
-        self, parent: QWidget, settings_type: 'SettingsType', current_settings: dict, settings_widget: HListWidget):
+        self, parent: QWidget, settings_type: "SettingsType", current_settings: dict, settings_widget: HListWidget
+    ):
 
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)
@@ -82,7 +85,7 @@ class SettingsDialog(QObject):
 
     def _set_font(self) -> None:
         """TODO"""
-        widgets = list(filter(lambda o: hasattr(getattr(self.ui, o), 'setFont'), vars(self.ui)))
+        widgets = list(filter(lambda o: hasattr(getattr(self.ui, o), "setFont"), vars(self.ui)))
         list(map(lambda w: getattr(self.ui, w).setFont(QFont("DroidSansMono Nerd Font", 13)), widgets))
 
     def set_window_title(self, param):
@@ -103,9 +106,7 @@ class SettingsDialog(QObject):
         """TODO"""
         all_settings = self._settings_type.settings().split(os.linesep)
         self._settings.update(Properties.read_properties(all_settings))
-        self.ui.cmb_settings.addItems({
-            k: v for (k, v) in self._settings.items() if k not in self._forbidden_settings
-        })
+        self.ui.cmb_settings.addItems({k: v for (k, v) in self._settings.items() if k not in self._forbidden_settings})
 
     def _change_setting(self, setting_name: str) -> None:
         """TODO"""

@@ -23,19 +23,14 @@ import logging as log
 
 
 def soap_call(
-    url: str,
-    method: HttpMethod,
-    data: str,
-    headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
+    url: str, method: HttpMethod, data: str, headers: Optional[CaseInsensitiveDict]
+) -> Optional[HttpResponse]:
     """TODO"""
 
     all_headers = {} if not headers else headers
-    all_headers.update({
-        "Content-Type": "application/xml",
-        "Accept": "*/*"
-    })
-    log.info("Processing SOAP %s {method} -> %s \n%s", all_headers, url, data if data else '<None>')
+    all_headers.update({"Content-Type": "application/xml", "Accept": "*/*"})
+    log.info("Processing SOAP %s {method} -> %s \n%s", all_headers, url, data if data else "<None>")
     response = fetch(url=url, method=method, headers=all_headers, body=data)
-    log.info("Response <=  Status: %s  Payload: %s", response.status_code, response.body if response.body else '<None>')
+    log.info("Response <=  Status: %s  Payload: %s", response.status_code, response.body if response.body else "<None>")
 
     return response

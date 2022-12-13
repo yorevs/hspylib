@@ -36,33 +36,33 @@ class AvroType(Enumeration):
     # fmt: on
 
     @classmethod
-    def of_type(cls, r_type: Schema) -> 'AvroType':
+    def of_type(cls, r_type: Schema) -> "AvroType":
         """TODO"""
         return cls.of_value(r_type.type)
 
     def empty_value(self) -> Any:
         """TODO"""
 
-        if self.value == 'boolean':
+        if self.value == "boolean":
             value = False
-        elif self.value in ['int', 'long']:
+        elif self.value in ["int", "long"]:
             value = 0
-        elif self.value in ['float', 'double']:
+        elif self.value in ["float", "double"]:
             value = 0.0
-        elif self.value == 'bytes':
-            value = b''
-        elif self.value == 'array':
+        elif self.value == "bytes":
+            value = b""
+        elif self.value == "array":
             value = []
         else:
-            value = ''
+            value = ""
 
         return value
 
     def is_primitive(self):
-        return self.value not in ['record', 'enum', 'array', 'map', 'union', 'fixed']
+        return self.value not in ["record", "enum", "array", "map", "union", "fixed"]
 
     def is_union(self):
-        return self.value == 'union'
+        return self.value == "union"
 
     def is_record(self):
-        return self.value == 'record'
+        return self.value == "record"

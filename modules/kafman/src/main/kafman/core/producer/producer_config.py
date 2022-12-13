@@ -19,9 +19,9 @@ from typing import List
 class ProducerConfig(ABC):
     """Some of the confluence exposed producer properties"""
 
-    BOOTSTRAP_SERVERS = 'bootstrap.servers'
-    KEY_SERIALIZER = 'key.serializer'
-    VALUE_SERIALIZER = 'value.serializer'
+    BOOTSTRAP_SERVERS = "bootstrap.servers"
+    KEY_SERIALIZER = "key.serializer"
+    VALUE_SERIALIZER = "value.serializer"
 
     @classmethod
     def required_settings(cls) -> List[str]:
@@ -29,8 +29,4 @@ class ProducerConfig(ABC):
 
     @classmethod
     def defaults(cls) -> dict:
-        return {
-            'producer': {
-                ProducerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
-            }
-        }
+        return {"producer": {ProducerConfig.BOOTSTRAP_SERVERS: "localhost:9092"}}

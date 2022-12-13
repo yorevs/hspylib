@@ -5,8 +5,5 @@
 # Package: main.hspylib.addons
 """Package initialization."""
 
-__all__ = [
-  'appman', 
-  'widman'
-]
-__version__ = '0.11.133'
+__all__ = ["appman", "widman"]
+__version__ = "0.11.133"

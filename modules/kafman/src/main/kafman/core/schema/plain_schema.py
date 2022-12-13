@@ -27,7 +27,7 @@ class PlainSchema(KafkaSchema):
 
     @classmethod
     def from_dict(cls, obj: dict, ctx: SerializationContext) -> str:
-        return str(Namespace('PlainSchemaObject'))
+        return str(Namespace("PlainSchemaObject"))
 
     def __init__(self, charset: Charset = Charset.UTF_8):
         super().__init__(SchemaType.PLAIN, charset=charset)
@@ -40,8 +40,8 @@ class PlainSchema(KafkaSchema):
 
     def settings(self) -> dict:
         return {
-            'key.serializer': StringSerializer(str(self._charset)),
-            'value.serializer': StringSerializer(str(self._charset)),
-            'key.deserializer': StringDeserializer(str(self._charset)),
-            'value.deserializer': StringDeserializer(str(self._charset))
+            "key.serializer": StringSerializer(str(self._charset)),
+            "value.serializer": StringSerializer(str(self._charset)),
+            "key.deserializer": StringDeserializer(str(self._charset)),
+            "value.deserializer": StringDeserializer(str(self._charset)),
         }

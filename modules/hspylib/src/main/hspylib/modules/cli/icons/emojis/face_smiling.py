@@ -18,9 +18,9 @@ from hspylib.modules.cli.icons.emojis.emojis import Emoji
 
 class FaceSmiling(Emoji):
     """
-        Face smiling emojis.
-        Codes can be found here:
-        - https://unicode.org/emoji/charts/emoji-list.html#face-smiling
+    Face smiling emojis.
+    Codes can be found here:
+    - https://unicode.org/emoji/charts/emoji-list.html#face-smiling
     """
 
     # fmt: off
@@ -46,5 +46,5 @@ class FaceSmiling(Emoji):
         list(map(Emoji.emj_print, cls.values()))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     FaceSmiling.demo_emojis()

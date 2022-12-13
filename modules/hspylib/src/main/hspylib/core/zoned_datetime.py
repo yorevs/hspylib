@@ -23,6 +23,7 @@ DATE_FORMAT         = '%Y-%m-%d'
 TIME_FORMAT         = '%H:%M:%S'
 # fmt: on
 
+
 class ZonedDatetime(Enumeration):
 
     # fmt: off
@@ -31,7 +32,7 @@ class ZonedDatetime(Enumeration):
     # fmt: on
 
     def datetime(self) -> datetime:
-        """ Return the current datetime"""
+        """Return the current datetime"""
         now_dt = datetime.now(timezone.utc)
         if self == ZonedDatetime.LOCAL:
             now_dt = now_dt.astimezone()
@@ -39,14 +40,14 @@ class ZonedDatetime(Enumeration):
         return now_dt
 
     def now(self, date_time_fmt: str = DATETIME_FORMAT) -> str:
-        """ Return a formatted datetime string
+        """Return a formatted datetime string
         Ref. https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
         """
 
         return self.datetime().strftime(date_time_fmt)
 
     def now_ms(self) -> int:
-        """ Return the datetime timestamp """
+        """Return the datetime timestamp"""
 
         return int(self.datetime().timestamp())
 

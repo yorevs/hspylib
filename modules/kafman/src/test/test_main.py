@@ -29,8 +29,8 @@ class TestMain(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        resource_dir = '{}/resources'.format(TEST_DIR)
-        os.environ['ACTIVE_PROFILE'] = "test"
+        resource_dir = "{}/resources".format(TEST_DIR)
+        os.environ["ACTIVE_PROFILE"] = "test"
         self.configs = AppConfigs(resource_dir=resource_dir)
         self.assertIsNotNone(self.configs)
         self.assertIsNotNone(AppConfigs.INSTANCE)
@@ -47,8 +47,6 @@ class TestMain(unittest.TestCase):
 
 
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestMain)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

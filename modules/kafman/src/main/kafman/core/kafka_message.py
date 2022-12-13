@@ -17,12 +17,8 @@ class KafkaMessage:
     """Represent a produced or consumed Kafka message"""
 
     def __init__(
-        self,
-        timestamp: int = None,
-        topic: str = None,
-        partition: int = None,
-        offset: int = None,
-        value: str = None):
+        self, timestamp: int = None, topic: str = None, partition: int = None, offset: int = None, value: str = None
+    ):
         self.timestamp = timestamp
         self.topic = topic
         self.partition = partition
@@ -34,5 +30,3 @@ class KafkaMessage:
 
     def __repr__(self):
         return str(self)
-
-

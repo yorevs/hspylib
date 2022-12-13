@@ -33,32 +33,28 @@ import avro.schema as schema_parser
 
 class AvroSchema(KafkaSchema):
     """Apache AVRO schema serializer/deserializer
-       Documentation:
-        - https://avro.apache.org/docs/current/spec.html
-        - https://avro.apache.org/docs/current/gettingstartedpython.html
-       Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
+    Documentation:
+     - https://avro.apache.org/docs/current/spec.html
+     - https://avro.apache.org/docs/current/gettingstartedpython.html
+    Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
 
-        E.g:.
-        {
-          "type": "record",
-          "name": "myRecord",
-          "fields": [
-              {"name": "name",  "type": "string" }
-            , {"name": "calories", "type": "float" }
-            , {"name": "colour", "type": "string" }
-          ]
-        }
+     E.g:.
+     {
+       "type": "record",
+       "name": "myRecord",
+       "fields": [
+           {"name": "name",  "type": "string" }
+         , {"name": "calories", "type": "float" }
+         , {"name": "colour", "type": "string" }
+       ]
+     }
     """
 
     @classmethod
     def extensions(cls) -> List[str]:
-        return ['*.avsc']
+        return ["*.avsc"]
 
-    def __init__(
-        self,
-        filepath: str,
-        registry_url: str,
-        charset: Charset = Charset.UTF_8):
+    def __init__(self, filepath: str, registry_url: str, charset: Charset = Charset.UTF_8):
         super().__init__(SchemaType.AVRO, filepath, registry_url, charset)
 
     def settings(self) -> dict:
@@ -67,7 +63,9 @@ class AvroSchema(KafkaSchema):
             ProducerConfig.KEY_SERIALIZER: StringSerializer(self._charset.value),
             ProducerConfig.VALUE_SERIALIZER: AvroSerializer(self._schema_client, self._content_text, self.to_dict),
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
-            ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(self._schema_client, self._content_text, self.from_dict)
+            ConsumerConfig.VALUE_DESERIALIZER: AvroDeserializer(
+                self._schema_client, self._content_text, self.from_dict
+            ),
         }
 
     def validate(self, json_form: dict) -> None:
@@ -78,7 +76,8 @@ class AvroSchema(KafkaSchema):
         form_stack: HStackedWidget,
         parent_pane: FormPane = None,
         form_name: str = None,
-        fields: List[SchemaField] = None) -> int:
+        fields: List[SchemaField] = None,
+    ) -> int:
         """Create the stacked frame with the form widget"""
 
         form_fields = fields if fields is not None else self._attributes.fields
@@ -117,8 +116,8 @@ class AvroSchema(KafkaSchema):
 
         field_type = self._parsed.type
 
-        if 'record' == field_type:
+        if "record" == field_type:
             self._attributes.fields = FieldFactory.create_schema_fields(self._parsed.fields)
         else:
             # TODO Check if it is needed to add the other types such as array, map, etc...
-            raise InvalidStateError(f'Unsupported field type {field_type}')
+            raise InvalidStateError(f"Unsupported field type {field_type}")

@@ -25,21 +25,17 @@ from typing import List
 class Widget(ABC):
     """HSPyLib_Widman base class. All widgets must inherit from this class to properly work."""
 
-    _USAGE_FMT = dedent("""
+    _USAGE_FMT = dedent(
+        """
     HSPyLib Widget: {} v{}
 
     {}
 
     {}
-    """)
+    """
+    )
 
-    def __init__(
-        self,
-        icon: Awesome,
-        name: str,
-        tooltip: str,
-        usage: str,
-        version: Version):
+    def __init__(self, icon: Awesome, name: str, tooltip: str, usage: str, version: Version):
         self._icon = icon
         self._name = name
         self._tooltip = tooltip

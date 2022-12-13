@@ -29,20 +29,20 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 
 # This call to setup() does all the work
 setuptools.setup(
-    name='hspylib-datasource',
+    name="hspylib-datasource",
     version=VERSION,
-    description='HSPyLib - Datasource integration',
-    author='Hugo Saporetti Junior',
-    author_email='yorevs@hotmail.com',
+    description="HSPyLib - Datasource integration",
+    author="Hugo Saporetti Junior",
+    author_email="yorevs@hotmail.com",
     long_description=README,
-    long_description_content_type='text/markdown',
-    url='https://github.com/yorevs/hspylib',
+    long_description_content_type="text/markdown",
+    url="https://github.com/yorevs/hspylib",
     project_urls={
-        'GitHub': 'https://github.com/yorevs/hspylib',
-        'PyPi': 'https://pypi.org/project/hspylib-datasource/'
+        "GitHub": "https://github.com/yorevs/hspylib",
+        "PyPi": "https://pypi.org/project/hspylib-datasource/",
     },
-    license='MIT',
-    license_files='LICENSE.md',
+    license="MIT",
+    license_files="LICENSE.md",
     packages=setuptools.find_namespace_packages(),
     include_package_data=True,
     classifiers=[
@@ -50,11 +50,10 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
-        "Operating System :: Unix"
-
+        "Operating System :: Unix",
     ],
-    python_requires='>=3.10',
+    python_requires=">=3.10",
     install_requires=REQUIREMENTS,
-    keywords='datasource,database,sql,nosql,db',
-    platforms='Darwin,Linux'
+    keywords="datasource,database,sql,nosql,db",
+    platforms="Darwin,Linux",
 )

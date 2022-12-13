@@ -18,7 +18,7 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class UriScheme(Enumeration):
-    """ Uniform Resource Identifier helps identify a source without ambiguity
+    """Uniform Resource Identifier helps identify a source without ambiguity
     Ref.: https://en.wikipedia.org/wiki/List_of_URI_schemes
     """
 
@@ -31,7 +31,7 @@ class UriScheme(Enumeration):
     # fmt: on
 
     @classmethod
-    def of(cls, scheme: str) -> 'UriScheme':
+    def of(cls, scheme: str) -> "UriScheme":
         try:
             e = super().of_value(scheme, ignore_case=True)
             return e

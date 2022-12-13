@@ -43,30 +43,46 @@ class Main(CliApplication):
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
-        self._with_options() \
-            .option('api', 'a', 'api', 'the API endpoint to connect to (e.g. https://api.example.com)', nargs='?') \
-            .option('org', 'o', 'org', 'the organization to connect to (Target organization)', nargs='?') \
-            .option('space', 's', 'space', 'the space to connect to (Target organization space)', nargs='?') \
-            .option('username', 'u', 'username', 'the PCF username', nargs='?') \
-            .option('password', 'p', 'password', 'the PCF password', nargs='?') \
-            .option('refresh', 'r', 'refresh', 'avoiding using cached apps', nargs='?') \
-            .option('endpoints', 'f', 'endpoints',
-                    'the file containing the CF API endpoint entries. If not provided, '
-                    '$HOME/cf_endpoints.txt will be used instead.', nargs=1)
+        self._with_options().option(
+            "api", "a", "api", "the API endpoint to connect to (e.g. https://api.example.com)", nargs="?"
+        ).option("org", "o", "org", "the organization to connect to (Target organization)", nargs="?").option(
+            "space", "s", "space", "the space to connect to (Target organization space)", nargs="?"
+        ).option(
+            "username", "u", "username", "the PCF username", nargs="?"
+        ).option(
+            "password", "p", "password", "the PCF password", nargs="?"
+        ).option(
+            "refresh", "r", "refresh", "avoiding using cached apps", nargs="?"
+        ).option(
+            "endpoints",
+            "f",
+            "endpoints",
+            "the file containing the CF API endpoint entries. If not provided, "
+            "$HOME/cf_endpoints.txt will be used instead.",
+            nargs=1,
+        )
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""
         self.cfman = CFManager(
-            self.get_arg('api'), self.get_arg('org'), self.get_arg('space'),
-            self.get_arg('username'), self.get_arg('password'), self.get_arg('refresh'),
-            self.get_arg('endpoints') or f"{os.getenv('HOME', os.getcwd())}/.cfman_endpoints.txt"
+            self.get_arg("api"),
+            self.get_arg("org"),
+            self.get_arg("space"),
+            self.get_arg("username"),
+            self.get_arg("password"),
+            self.get_arg("refresh"),
+            self.get_arg("endpoints") or f"{os.getenv('HOME', os.getcwd())}/.cfman_endpoints.txt",
         )
-        log.info(dedent(f'''
+        log.info(
+            dedent(
+                f"""
         {self._app_name} v{self._app_version}
 
         Settings ==============================
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
-        '''))
+        """
+            )
+        )
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
@@ -77,4 +93,4 @@ class Main(CliApplication):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('cfman').INSTANCE.run(sys.argv[1:])
+    Main("cfman").INSTANCE.run(sys.argv[1:])

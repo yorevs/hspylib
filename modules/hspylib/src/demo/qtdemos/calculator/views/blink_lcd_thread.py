@@ -30,6 +30,6 @@ class BlinkLcdThread(Thread):
         bg_color = palette.color(palette.Background)
         palette.setColor(palette.WindowText, bg_color)
         self.lcd.setPalette(palette)
-        sleep(float(AppConfigs.INSTANCE['lcd.blink.delay']))
+        sleep(float(AppConfigs.INSTANCE["lcd.blink.delay"]))
         palette.setColor(palette.WindowText, fg_color)
         self.lcd.setPalette(palette)

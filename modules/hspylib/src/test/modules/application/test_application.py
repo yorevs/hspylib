@@ -30,10 +30,8 @@ APP_VERSION = Version.initial()
 
 
 class TestApplication(unittest.TestCase):
-
     class AppTest(Application, metaclass=Singleton):
-
-        def __init__(self, name: str = 'AppTest', version: Version = APP_VERSION, resource_dir: str = None):
+        def __init__(self, name: str = "AppTest", version: Version = APP_VERSION, resource_dir: str = None):
             super().__init__(name, version, resource_dir=resource_dir)
 
         def _setup_arguments(self) -> None:
@@ -47,7 +45,7 @@ class TestApplication(unittest.TestCase):
 
     # TEST CASES ----------
     def setUp(self) -> None:
-        os.environ['ACTIVE_PROFILE'] = ''
+        os.environ["ACTIVE_PROFILE"] = ""
         if Singleton.has_instance(self.AppTest):
             Singleton.del_instance(self.AppTest)
         if Singleton.has_instance(AppConfigs):
@@ -65,58 +63,56 @@ class TestApplication(unittest.TestCase):
 
     # Creating an application without specifying source root directory
     def test_should_not_instantiate_configs(self) -> None:
-        app = self.AppTest(resource_dir='/gabs')
-        self.assertFalse(hasattr(app, 'configs'))
+        app = self.AppTest(resource_dir="/gabs")
+        self.assertFalse(hasattr(app, "configs"))
         self.assertFalse(Singleton.has_instance(AppConfigs))
 
     # Creating an application specifying source root directory
     def test_should_instantiate_configs(self) -> None:
         cur_dir = get_path(__file__)
-        app = self.AppTest(resource_dir=f'{str(cur_dir)}/resources')
-        self.assertTrue(hasattr(app.configs, 'INSTANCE'))
+        app = self.AppTest(resource_dir=f"{str(cur_dir)}/resources")
+        self.assertTrue(hasattr(app.configs, "INSTANCE"))
 
     # Check when passing defined options and arguments
     def test_calling_an_app_with_correct_opts_and_args_should_not_raise_errors(self) -> None:
         app = ApplicationTest()
-        params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
+        params = ["-i", "input.txt", "-o", "output.txt", "one", "donut"]
         app.run(params, no_exit=True)
-        self.assertEqual('input.txt', app.get_arg('input'))
-        self.assertEqual('output.txt', app.get_arg('output'))
-        self.assertEqual('one', app.get_arg('amount'))
-        self.assertEqual('donut', app.get_arg('item'))
+        self.assertEqual("input.txt", app.get_arg("input"))
+        self.assertEqual("output.txt", app.get_arg("output"))
+        self.assertEqual("one", app.get_arg("amount"))
+        self.assertEqual("donut", app.get_arg("item"))
 
     # Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_opts_should_raise_errors(self) -> None:
         app = ApplicationTest()
-        params = ['-g', 'input.txt', '-j', 'output.txt', 'one', 'donut']
+        params = ["-g", "input.txt", "-j", "output.txt", "one", "donut"]
         self.assertRaises(ApplicationError, lambda: app.run(params, no_exit=True))
 
     # Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_1(self) -> None:
         app = ApplicationTest()
-        params = ['-i', 'input.txt', '-o', 'output.txt', 'four', 'donut']
+        params = ["-i", "input.txt", "-o", "output.txt", "four", "donut"]
         self.assertRaises(ApplicationError, lambda: app.run(params, no_exit=True))
 
     # Check when passing undefined options and arguments
     def test_calling_an_app_with_incorrect_args_should_raise_errors_part_2(self) -> None:
         app = ApplicationTest()
-        params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'pretzel']
+        params = ["-i", "input.txt", "-o", "output.txt", "one", "pretzel"]
         self.assertRaises(ApplicationError, lambda: app.run(params, no_exit=True))
 
     # Check options and arguments passed can be retrieved
     def test_should_be_able_to_retrieve_passed_args_and_opts(self) -> None:
         app = ApplicationTest()
-        params = ['-i', 'input.txt', '-o', 'output.txt', 'one', 'donut']
+        params = ["-i", "input.txt", "-o", "output.txt", "one", "donut"]
         app.run(params, no_exit=True)
-        self.assertEqual('input.txt', app.get_arg('input'))
-        self.assertEqual('output.txt', app.get_arg('output'))
-        self.assertEqual('one', app.get_arg('amount'))
-        self.assertEqual('donut', app.get_arg('item'))
+        self.assertEqual("input.txt", app.get_arg("input"))
+        self.assertEqual("output.txt", app.get_arg("output"))
+        self.assertEqual("one", app.get_arg("amount"))
+        self.assertEqual("donut", app.get_arg("item"))
 
 
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestApplication)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

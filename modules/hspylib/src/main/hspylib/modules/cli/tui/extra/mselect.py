@@ -12,7 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
+import re
 from abc import ABC
+from typing import List, Optional, TypeVar
+
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -20,20 +23,18 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
-from typing import List, Optional, TypeVar
 
-import re
-
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def mselect(
     items: List[T],
-    title: str = 'Please select one',
+    title: str = "Please select one",
     max_rows: int = 15,
     title_color: VtColors = VtColors.ORANGE,
     highlight_color: VtColors = VtColors.BLUE,
-    nav_color: VtColors = VtColors.YELLOW) -> Optional[T]:
+    nav_color: VtColors = VtColors.YELLOW,
+) -> Optional[T]:
     """
     TODO
     :param items:
@@ -49,16 +50,14 @@ def mselect(
 
 class MenuSelect(ABC):
     """TODO"""
-    UNSELECTED = ' '
+
+    UNSELECTED = " "
     SELECTED = FormIcons.SELECTOR
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
     NAV_BAR = f"[Enter] Select  [{NAV_ICONS}] Navigate  [Esc] Quit  [1..%TO%] Goto: %EL0%"
 
-    def __init__(
-        self,
-        items: List[T],
-        max_rows: int = 15):
+    def __init__(self, items: List[T], max_rows: int = 15):
 
         self.items = items
         self.show_from = 0
@@ -68,12 +67,7 @@ class MenuSelect(ABC):
         self.re_render = True
         self.done = None
 
-    def select(
-        self,
-        title: str,
-        title_color: VtColors,
-        highlight_color: VtColors,
-        nav_color: VtColors) -> Optional[T]:
+    def select(self, title: str, title_color: VtColors, highlight_color: VtColors, nav_color: VtColors) -> Optional[T]:
         """TODO"""
 
         ret_val = Keyboard.VK_NONE
@@ -110,8 +104,8 @@ class MenuSelect(ABC):
             selector = self.UNSELECTED
 
             if idx < length:  # When the number of items is lower than the max_rows, skip the other lines
-                option_line = str(self.items[idx])[0:int(columns)]
-                vt_print('%EL2%\r')  # Erase current line before repaint
+                option_line = str(self.items[idx])[0: int(columns)]
+                vt_print("%EL2%\r")  # Erase current line before repaint
 
                 # Print the selector if the index is currently selected
                 if idx == self.sel_index:
@@ -123,11 +117,11 @@ class MenuSelect(ABC):
 
                 # Check if the text fits the screen and print it, otherwise print '...'
                 if len(option_line) >= int(columns):
-                    sysout("%CUB(4)%%EL0%...%NC%", end='')
+                    sysout("%CUB(4)%%EL0%...%NC%", end="")
             else:
                 break
 
-        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end="")
         self.re_render = False
 
     # pylint: disable=too-many-branches
@@ -142,20 +136,20 @@ class MenuSelect(ABC):
                 self.done = True
             elif keypress.isdigit():  # An index was typed
                 typed_index = keypress.value
-                sysout(f"{keypress.value}", end='')
+                sysout(f"{keypress.value}", end="")
                 index_len = 1
                 while len(typed_index) < len(str(length)):
-                    num_press = Keyboard.read_keystroke()
-                    if not num_press:
+                    keystroke = Keyboard.read_keystroke()
+                    if not keystroke:
                         break
-                    if not re.match(r'^[0-9]*$', num_press.value):
+                    if not re.match(r"^[0-9]*$", keystroke.val):
                         typed_index = None
                         break
-                    typed_index = f"{typed_index}{num_press.value if num_press else ''}"
-                    sysout(f"{num_press.value if num_press else ''}", end='')
+                    typed_index = f"{typed_index}{keystroke.value if keystroke else ''}"
+                    sysout(f"{keystroke.value if keystroke else ''}", end="")
                     index_len += 1
                 # Erase the index typed by the user
-                sysout(f"%CUB({index_len})%%EL0%", end='')
+                sysout(f"%CUB({index_len})%%EL0%", end="")
                 if 1 <= int(typed_index) <= length:
                     self.show_to = max(int(typed_index), self.diff_index)
                     self.show_from = self.show_to - self.diff_index

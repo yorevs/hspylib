@@ -32,18 +32,20 @@ class OptionsBuilder:
         choices: list = None,
         required: bool = False,
         nargs: str | int = None,
-        default: Any = None) -> 'OptionsBuilder':
+        default: Any = None,
+    ) -> "OptionsBuilder":
         """TODO"""
 
         self._arg_parser.add_argument(
             f"-{shortopt.replace('^-', '')[0]}",
             f"--{longopt.replace('^-*', '')}",
             dest=name,
-            help=help_string or f'the {longopt}',
+            help=help_string or f"the {longopt}",
             required=required,
             action=ParserAction.STORE.value,
             choices=choices,
             nargs=nargs,
-            default=default)
+            default=default,
+        )
 
         return self

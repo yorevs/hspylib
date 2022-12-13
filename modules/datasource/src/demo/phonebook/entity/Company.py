@@ -21,15 +21,13 @@ from typing import List, Tuple
 
 class Company(CrudEntity):
 
-    CompanyId = namedtuple('CompanyId', ['uuid'])
+    CompanyId = namedtuple("CompanyId", ["uuid"])
 
     @staticmethod
     def columns() -> List[str]:
         return ["uuid", "cnpj", "name", "website", "phone", "address", "complement"]
 
     @classmethod
-    def from_tuple(cls, values: Tuple) -> 'Company':
+    def from_tuple(cls, values: Tuple) -> "Company":
         row = {k: v for k, v in zip(cls.columns(), values)}
-        return Company(
-            Identity(cls.CompanyId(row['uuid'])), **row,
-        )
+        return Company(Identity(cls.CompanyId(row["uuid"])), **row)

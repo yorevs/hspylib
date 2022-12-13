@@ -25,10 +25,10 @@ def subscribe(**kwargs) -> Callable:
     """Method decorator to subscribe to a given bus event."""
 
     def subscribe_closure(func) -> None:
-        check_argument(func.__code__.co_argcount >= 1, 'Subscriber callbacks require at least one parameter.')
-        missing = next((p for p in ['bus', 'event'] if p not in kwargs), None)
+        check_argument(func.__code__.co_argcount >= 1, "Subscriber callbacks require at least one parameter.")
+        missing = next((p for p in ["bus", "event"] if p not in kwargs), None)
         check_argument(missing is None, f"Missing required parameter: '{missing}: str'.")
-        EventBus.get(str(kwargs['bus'])).subscribe(str(kwargs['event']), func)
+        EventBus.get(str(kwargs["bus"])).subscribe(str(kwargs["event"]), func)
 
     return subscribe_closure
 
@@ -46,7 +46,7 @@ class EventBus:
     _events: List[Event] = []
 
     @classmethod
-    def get(cls, bus_name: str) -> 'EventBus':
+    def get(cls, bus_name: str) -> "EventBus":
         """Return the bus instance referred to the specified bus name."""
         if bus_name in cls._buses:
             return cls._buses[bus_name]
@@ -57,10 +57,10 @@ class EventBus:
     @classmethod
     def _get_subscriber(cls, bus_name: str, event_name: str) -> Any:
         """Return the subscriber of the referred bus name and event name."""
-        cache_key = f'{bus_name}.{event_name}'
+        cache_key = f"{bus_name}.{event_name}"
         if cache_key in cls._subscribers:
             return cls._subscribers[cache_key]
-        subscriber = {'callbacks': []}
+        subscriber = {"callbacks": []}
         cls._subscribers[cache_key] = subscriber
         return subscriber
 
@@ -74,7 +74,7 @@ class EventBus:
     def subscribe(self, event_name: str, cb_event_handler: EVENT_CALLBACK) -> None:
         """Subscribe to the specified event bus."""
         subscriber = self._get_subscriber(self.name, event_name)
-        subscriber['callbacks'].append(cb_event_handler)
+        subscriber["callbacks"].append(cb_event_handler)
 
     def emit(self, event_name: str, **kwargs) -> None:
         """Emit an event to this bus."""
@@ -83,10 +83,11 @@ class EventBus:
             event = self._events.pop()
             cache_key = f"{self.name}.{event.name}"
             subscribers = self._subscribers[cache_key] if cache_key in self._subscribers else None
-            if subscribers and len(subscribers['callbacks']) > 0:
-                for callback in subscribers['callbacks']:
+            if subscribers and len(subscribers["callbacks"]) > 0:
+                for callback in subscribers["callbacks"]:
                     try:
                         callback(event)
                     except Exception as err:
                         raise HSBaseException(
-                            f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}") from err
+                            f"{self.__class__.__name__}::emit Callback invocation failed - {str(err)}"
+                        ) from err

@@ -22,20 +22,8 @@ from typing import List
 
 
 class EnumProperty(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        symbols: List[str],
-        default: str,
-        required: bool = True):
-        super().__init__(
-            name,
-            description,
-            JsonType.ENUM,
-            default,
-            required)
+    def __init__(self, name: str, description: str, symbols: List[str], default: str, required: bool = True):
+        super().__init__(name, description, JsonType.ENUM, default, required)
 
         self.symbols = symbols
 

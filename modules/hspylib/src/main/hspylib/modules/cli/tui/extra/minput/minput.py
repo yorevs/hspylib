@@ -36,10 +36,11 @@ import time
 
 def minput(
     form_fields: List[FormField],
-    title: str = 'Please fill all fields of the form fields below',
+    title: str = "Please fill all fields of the form fields below",
     prefix: str = None,
     title_color: VtColors = VtColors.ORANGE,
-    nav_color: VtColors = VtColors.YELLOW) -> Optional[Namespace]:
+    nav_color: VtColors = VtColors.YELLOW,
+) -> Optional[Namespace]:
     """
     TODO
     :param form_fields:
@@ -55,7 +56,7 @@ def minput(
 class MenuInput:
     """TODO"""
 
-    SELECTED_BG = '%MOD(44)%'
+    SELECTED_BG = "%MOD(44)%"
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
     NAV_BAR = f"[Enter] Submit  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %EL0%"
 
@@ -73,12 +74,7 @@ class MenuInput:
         self.max_detail_length = max(MInputUtils.detail_len(field) for field in all_fields)
         self.re_render = True
 
-    def input(
-        self,
-        title: str,
-        prefix: str,
-        title_color: VtColors,
-        nav_color: VtColors) -> Optional[Namespace]:
+    def input(self, title: str, prefix: str, title_color: VtColors, nav_color: VtColors) -> Optional[Namespace]:
         """TODO"""
 
         ret_val = Keyboard.VK_NONE
@@ -101,7 +97,7 @@ class MenuInput:
         restore_terminal()
 
         if ret_val == Keyboard.VK_ENTER:
-            form_fields = Namespace('FormFields')
+            form_fields = Namespace("FormFields")
             for field in self.all_fields:
                 att_name = f"{prefix or ''}{snakecase(field.label)}"
                 form_fields.setattr(att_name, field.value)
@@ -128,17 +124,19 @@ class MenuInput:
             if field.itype == InputType.TEXT:
                 MInputUtils.mi_print(self.max_value_length, field.value)
             elif field.itype == InputType.PASSWORD:
-                MInputUtils.mi_print(self.max_value_length, '*' * field_size)
+                MInputUtils.mi_print(self.max_value_length, "*" * field_size)
             elif field.itype == InputType.CHECKBOX:
                 MInputUtils.mi_print(
-                    self.max_value_length - 1, ' ', str(FormIcons.CHECK_SQUARE)
-                    if field.value else str(FormIcons.UNCHECK_SQUARE))
+                    self.max_value_length - 1,
+                    " ",
+                    str(FormIcons.CHECK_SQUARE) if field.value else str(FormIcons.UNCHECK_SQUARE),
+                )
             elif field.itype == InputType.SELECT:
                 field_size = 1
                 if field.value:
-                    mat = re.search(r'.*\|?<(.+)>\|?.*', field.value)
-                    sel_value = mat.group(1) if mat else field.value.split('|')[0]
-                    MInputUtils.mi_print(self.max_value_length, f'{sel_value}')
+                    mat = re.search(r".*\|?<(.+)>\|?.*", field.value)
+                    sel_value = mat.group(1) if mat else field.value.split("|")[0]
+                    MInputUtils.mi_print(self.max_value_length, f"{sel_value}")
             elif field.itype == InputType.MASKED:
                 value, mask = MInputUtils.unpack_masked(str(field.value))
                 MInputUtils.mi_print(self.max_value_length, MInputUtils.over_masked(value, mask))
@@ -146,7 +144,7 @@ class MenuInput:
             # Remaining/max characters
             self._render_details(field, field_size)
 
-        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end="")
         self.re_render = False
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:
@@ -165,10 +163,10 @@ class MenuInput:
 
         # Print details about total/remaining field characters
         padding = 1 - len(str(self.max_detail_length / 2))
-        fmt = '{:<3}{:>' + str(padding) + '}/{:<' + str(padding) + '} %MOD(0)%'
+        fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %MOD(0)%"
         if field.itype == InputType.SELECT:
             idx, _ = MInputUtils.get_selected(field.value)
-            sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split('|'))))
+            sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split("|"))))
         elif field.itype == InputType.MASKED:
             value, _ = MInputUtils.unpack_masked(str(field.value))
             sysout(fmt.format(field.icon, len(value), field.max_length))
@@ -191,12 +189,12 @@ class MenuInput:
                 self.tab_index = max(0, self.tab_index - 1)
             elif keypress == Keyboard.VK_BACKSPACE:  # Handle backspace
                 if not self.cur_field.can_write():
-                    self._display_error('This field is read only !')
+                    self._display_error("This field is read only !")
                 else:
                     self._handle_backspace()
             elif keypress.isalnum() or keypress.ispunct() or keypress == Keyboard.VK_SPACE:  # Handle an input
                 if not self.cur_field.can_write():
-                    self._display_error('This field is read only !')
+                    self._display_error("This field is read only !")
                 else:
                     self._handle_input(keypress)
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
@@ -210,7 +208,7 @@ class MenuInput:
                 else:
                     for idx, field in enumerate(self.all_fields):
                         if field.itype == InputType.MASKED:
-                            field.value = field.value.split('|')[0]
+                            field.value = field.value.split("|")[0]
                         elif field.itype == InputType.CHECKBOX:
                             field.value = bool(field.value)
                         elif field.itype == InputType.SELECT:
@@ -242,8 +240,7 @@ class MenuInput:
                 if self.cur_field.validate(keypress.value):
                     self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                 else:
-                    self._display_error(
-                        f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !")
+                    self._display_error(f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !")
 
     def _handle_backspace(self) -> None:
         """TODO"""
@@ -251,14 +248,14 @@ class MenuInput:
         if self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
             value = value[:-1]
-            while mask[len(value) - 1] not in ['#', '@', '*']:
+            while mask[len(value) - 1] not in ["#", "@", "*"]:
                 value = value[:-1]
             self.cur_field.value = f"{value}|{mask}"
         elif self.cur_field.itype not in [InputType.CHECKBOX, InputType.SELECT]:
             if self.cur_field.can_write() and len(str(self.cur_field.value)) >= 1:
                 self.cur_field.value = str(self.cur_field.value)[:-1]
             elif not self.cur_field.can_write():
-                self._display_error('This field is read only !')
+                self._display_error("This field is read only !")
 
     def _display_error(self, err_msg) -> None:
         """TODO"""
@@ -266,7 +263,7 @@ class MenuInput:
         set_enable_echo(False)
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + 12
         vt_print(f"%CUP({self.cur_row};{err_pos})%")
-        syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end='')
+        syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end="")
         time.sleep(max(2, int(len(err_msg) / 25)))
         set_enable_echo()
         vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")  # Remove the message after the timeout

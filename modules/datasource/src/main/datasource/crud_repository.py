@@ -12,16 +12,17 @@
 
    Copyright 2022, HSPyLib team
 """
+import json
 from abc import abstractmethod
-from datasource.crud_entity import CrudEntity
-from datasource.identity import Identity
-from hspylib.core.metaclass.singleton import AbstractSingleton
-from hspylib.core.namespace import Namespace
 from typing import Generic, List, Optional, Set, TypeVar
 
-import json
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
 
-T = TypeVar('T', bound=CrudEntity)
+from datasource.crud_entity import CrudEntity
+from datasource.identity import Identity
+
+T = TypeVar("T", bound=CrudEntity)
 
 
 class CrudRepository(Generic[T], metaclass=AbstractSingleton):
@@ -30,7 +31,7 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
     @property
     def logname(self) -> str:
         """TODO"""
-        return self.__class__.__name__.split('_', maxsplit=1)[0]
+        return self.__class__.__name__.split("_", maxsplit=1)[0]
 
     @abstractmethod
     def count(self) -> int:
@@ -62,14 +63,13 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
         fields: Optional[Set[str]] = None,
         filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
-        limit: int = 500, offset: int = 0) -> List[T]:
+        limit: int = 500,
+        offset: int = 0,
+    ) -> List[T]:
         """TODO"""
 
     @abstractmethod
-    def find_by_id(
-        self,
-        entity_id: Identity,
-        fields: Optional[Set[str]] = None) -> Optional[T]:
+    def find_by_id(self, entity_id: Identity, fields: Optional[Set[str]] = None) -> Optional[T]:
         """TODO"""
 
     def exists_by_id(self, entity_id: Identity) -> bool:

@@ -30,20 +30,20 @@ import tty
 def require_terminal() -> None:
     """Require a terminal"""
     if not sys.stdin.isatty():
-        raise Exception('This module requires a terminal (TTY)')
+        raise Exception("This module requires a terminal (TTY)")
 
 
 def screen_size() -> Optional[List[str]]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
-        return os.popen('stty size').read().split()
+        return os.popen("stty size").read().split()
     return None
 
 
 # Solution taken from:
 # https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
 def get_cursor_position() -> Optional[Tuple[int, int]]:
-    """ Get the terminal cursor position """
+    """Get the terminal cursor position"""
     if sys.stdout.isatty() and not is_debugging():
         buf = ""
         stdin = sys.stdin.fileno()
@@ -102,22 +102,22 @@ def restore_cursor():
 def restore_terminal(clear_screen: bool = True):
     """Clear terminal and restore default attributes"""
     if clear_screen:
-        vt_print('%HOM%%ED2%%MOD(0)%')
+        vt_print("%HOM%%ED2%%MOD(0)%")
     set_auto_wrap()
     set_show_cursor()
     set_enable_echo()
-    sysout('%NC%')
+    sysout("%NC%")
 
 
 def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done.") -> None:
     """Exit the application. Commonly hooked to signals"""
-    sysout(str(frame) if frame else '', end='')
+    sysout(str(frame) if frame else "", end="")
     sysout(f"%HOM%%ED2%%NC%\n{exit_msg}\n")
     restore_terminal(False)
     sys.exit(exit_code if exit_code else 0)
 
 
-def prepare_render(render_msg: str = '', render_color: VtColors = VtColors.ORANGE):
+def prepare_render(render_msg: str = "", render_color: VtColors = VtColors.ORANGE):
     """Prepare the terminal for TUI renderization"""
     signal.signal(signal.SIGINT, exit_app)
     signal.signal(signal.SIGHUP, exit_app)

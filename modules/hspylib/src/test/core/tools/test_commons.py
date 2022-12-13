@@ -20,25 +20,22 @@ import unittest
 
 
 class TestCommons(unittest.TestCase):
-
     def test_should_return_proper_bool_value(self):
-        self.assertFalse(str_to_bool(''))
-        self.assertFalse(str_to_bool('0'))
-        self.assertFalse(str_to_bool('off'))
-        self.assertFalse(str_to_bool('no'))
-        self.assertTrue(str_to_bool('1'))
-        self.assertTrue(str_to_bool('true'))
-        self.assertTrue(str_to_bool('True'))
-        self.assertTrue(str_to_bool('on'))
-        self.assertTrue(str_to_bool('yes'))
+        self.assertFalse(str_to_bool(""))
+        self.assertFalse(str_to_bool("0"))
+        self.assertFalse(str_to_bool("off"))
+        self.assertFalse(str_to_bool("no"))
+        self.assertTrue(str_to_bool("1"))
+        self.assertTrue(str_to_bool("true"))
+        self.assertTrue(str_to_bool("True"))
+        self.assertTrue(str_to_bool("on"))
+        self.assertTrue(str_to_bool("yes"))
 
-        self.assertFalse(str_to_bool('good'))
-        self.assertTrue(str_to_bool('good', {'good'}))
-        self.assertFalse(str_to_bool('bad', {'good'}))
+        self.assertFalse(str_to_bool("good"))
+        self.assertTrue(str_to_bool("good", {"good"}))
+        self.assertFalse(str_to_bool("bad", {"good"}))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestCommons)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

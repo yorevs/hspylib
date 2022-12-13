@@ -23,13 +23,13 @@ import json
 
 
 class FirebaseEntry:
-
     def __init__(
         self,
         name: str = None,
         last_update_user: str = None,
         files: List[FileEntry] = None,
-        encoding: Charset = Charset.UTF_8):
+        encoding: Charset = Charset.UTF_8,
+    ):
         self.name = name
         self.last_update_user = last_update_user
         self.files = files if files else []
@@ -44,9 +44,11 @@ class FirebaseEntry:
 
     def payload(self) -> str:
         """Return a firebase request payload for this entry"""
-        return str({
-            'encoding': self.str_encoding,
-            'file_paths': str(self.files),
-            'last_modified': self.last_modified,
-            'last_update_user': self.last_update_user
-        })
+        return str(
+            {
+                "encoding": self.str_encoding,
+                "file_paths": str(self.files),
+                "last_modified": self.last_modified,
+                "last_update_user": self.last_update_user,
+            }
+        )

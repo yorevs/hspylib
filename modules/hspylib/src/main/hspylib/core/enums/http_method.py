@@ -50,3 +50,7 @@ class HttpMethod(Enumeration):
     PATCH       = 'patch'
 
     # fmt: on
+
+    @property
+    def val(self) -> str:
+        return str(self.value)

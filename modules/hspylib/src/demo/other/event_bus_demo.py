@@ -16,16 +16,16 @@
 from hspylib.modules.eventbus import eventbus
 
 
-@eventbus.subscribe(bus='oni-bus', event='door-open')
+@eventbus.subscribe(bus="oni-bus", event="door-open")
 def door_open(ev) -> None:
-    print('EVENT:', ev, 'NAME:', ev.name, 'KNOCKS:', ev.args.knock, 'ALERT:', ev.args.alert)
+    print("EVENT:", ev, "NAME:", ev.name, "KNOCKS:", ev.args.knock, "ALERT:", ev.args.alert)
 
 
-@eventbus.subscribe(bus='oni-bus', event='door-close')
+@eventbus.subscribe(bus="oni-bus", event="door-close")
 def door_close(ev) -> None:
-    print('EVENT:', ev, 'NAME:', ev.name, 'KNOCKS:', ev.args.knock, 'ALERT:', ev.args.alert)
+    print("EVENT:", ev, "NAME:", ev.name, "KNOCKS:", ev.args.knock, "ALERT:", ev.args.alert)
 
 
-if __name__ == '__main__':
-    eventbus.emit('oni-bus', 'door-open', knock=3, alert=False)
-    eventbus.emit('oni-bus', 'door-close', knock=1, alert=True)
+if __name__ == "__main__":
+    eventbus.emit("oni-bus", "door-open", knock=3, alert=False)
+    eventbus.emit("oni-bus", "door-close", knock=1, alert=True)

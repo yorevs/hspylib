@@ -5,9 +5,5 @@
 # Package: main.kafman.core.schema.avro
 """Package initialization."""
 
-__all__ = [
-  'avro_schema', 
-  'avro_type', 
-  'field'
-]
-__version__ = '0.9.92'
+__all__ = ["avro_schema", "avro_type", "field"]
+__version__ = "0.9.92"

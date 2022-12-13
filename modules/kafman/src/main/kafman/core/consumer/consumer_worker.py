@@ -25,9 +25,9 @@ import threading
 
 class ConsumerWorker(QThread):
     """Confluent Kafka Consumer with Qt.
-       Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
-       For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-       Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_consumer.py
+    Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
+    For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
+    Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_consumer.py
     """
 
     messageConsumed = pyqtSignal(str, int, int, str)
@@ -35,7 +35,7 @@ class ConsumerWorker(QThread):
 
     def __init__(self, poll_interval: float = 0.5):
         super().__init__()
-        self.setObjectName('kafka-consumer')
+        self.setObjectName("kafka-consumer")
         self._started = False
         self._poll_interval = poll_interval
         self._consumer = None
@@ -99,7 +99,8 @@ class ConsumerWorker(QThread):
                         self.messageFailed.emit(str(message.error()))
                     else:
                         self.messageConsumed.emit(
-                            message.topic(), message.partition(), message.offset(), str(message.value()))
+                            message.topic(), message.partition(), message.offset(), str(message.value())
+                        )
                 except (ValueDeserializationError, ConsumeError) as err:
                     self.messageFailed.emit(str(err))
         except KeyboardInterrupt:

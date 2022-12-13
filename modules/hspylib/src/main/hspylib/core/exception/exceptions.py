@@ -25,7 +25,7 @@ class HSBaseException(Exception):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         if exc_type and exc_obj and exc_tb:
             filename = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            err_cause = str(cause) if cause else ''
+            err_cause = str(cause) if cause else ""
             fmt_msg = f"### {message} :{err_cause}: (File {filename}, Line {exc_tb.tb_lineno})"
         else:
             fmt_msg = message
@@ -66,7 +66,7 @@ class InvalidOptionError(HSBaseException):
 
 
 class InvalidInputError(Exception):
-    """Raised when an invalid input is provided """
+    """Raised when an invalid input is provided"""
 
 
 class InvalidArgumentError(Exception):

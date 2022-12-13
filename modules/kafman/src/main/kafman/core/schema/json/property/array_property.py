@@ -22,18 +22,8 @@ from typing import List
 
 
 class ArrayProperty(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        a_items: List[str],
-        required: bool = True):
-        super().__init__(
-            name,
-            description,
-            JsonType.ARRAY,
-            required=required)
+    def __init__(self, name: str, description: str, a_items: List[str], required: bool = True):
+        super().__init__(name, description, JsonType.ARRAY, required=required)
 
         self.a_items = a_items
 

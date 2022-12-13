@@ -23,7 +23,6 @@ from vault.entity.vault_entry import VaultEntry
 
 
 class EntryValidator(Validator):
-
     def __call__(self, *entries: VaultEntry, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         check_argument(len(entries) == 1, "Exactly one entry can be validated at a time. Given: {}", len(entries))
@@ -38,13 +37,11 @@ class EntryValidator(Validator):
 
     @staticmethod
     def validate_key(key: str) -> Tuple[bool, str]:
-        return Validator \
-                   .matches(key, RE_COMMON_2_30_NAME), "Invalid key"
+        return Validator.matches(key, RE_COMMON_2_30_NAME), "Invalid key"
 
     @staticmethod
     def validate_name(name: str) -> Tuple[bool, str]:
-        return Validator \
-                   .matches(name, RE_COMMON_2_30_NAME), "Invalid name"
+        return Validator.matches(name, RE_COMMON_2_30_NAME), "Invalid name"
 
     @staticmethod
     def validate_password(password: str) -> Tuple[bool, str]:
@@ -52,8 +49,8 @@ class EntryValidator(Validator):
 
     @staticmethod
     def validate_hint(hint: str) -> Tuple[bool, str]:
-        return hint is not None, 'Invalid hint'
+        return hint is not None, "Invalid hint"
 
     @staticmethod
     def validate_modified(modified: datetime) -> Tuple[bool, str]:
-        return modified is not None, 'Invalid modified date'
+        return modified is not None, "Invalid modified date"

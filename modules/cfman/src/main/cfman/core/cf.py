@@ -24,64 +24,64 @@ class CloudFoundry(metaclass=Singleton):
 
     def __init__(self) -> None:
         self.connected = False
-        self.targeted = {'org': None, 'space': None, 'targeted': False}
+        self.targeted = {"org": None, "space": None, "targeted": False}
         self.last_result = None
         self.last_exit_code = None
 
     def is_targeted(self) -> bool:
-        return self.targeted['org'] and self.targeted['space'] and self.targeted['targeted']
+        return self.targeted["org"] and self.targeted["space"] and self.targeted["targeted"]
 
     # Before getting started:
     def connect(self) -> bool:
         """Attempt to connect to CloudFoundry"""
         if not self.connected:
-            result = self._exec('orgs')
-            self.connected = result and 'FAILED' not in str(result)
+            result = self._exec("orgs")
+            self.connected = result and "FAILED" not in str(result)
         return self.connected
 
     def api(self, api: str) -> bool:
         """Set or view target api url"""
         result = self._exec(f"api {api}")
-        return result and 'FAILED' not in str(result)
+        return result and "FAILED" not in str(result)
 
     def auth(self, username: str, password: str) -> bool:
         """Authorize a CloudFoundry user"""
         result = self._exec(f"auth {username} {password}")
-        return result and 'FAILED' not in str(result)
+        return result and "FAILED" not in str(result)
 
     def target(self, **kwargs) -> dict:
         """Set or view the targeted org or space"""
-        params = ['target']
-        if 'org' in kwargs and kwargs['org']:
-            params.append('-o')
-            params.append(kwargs['org'])
-            self.targeted['org'] = kwargs['org']
-        if 'space' in kwargs and kwargs['space']:
-            params.append('-s')
-            params.append(kwargs['space'])
-            self.targeted['space'] = kwargs['space']
-        result = self._exec(' '.join(params))
-        self.targeted['targeted'] = result and 'FAILED' not in str(result)
+        params = ["target"]
+        if "org" in kwargs and kwargs["org"]:
+            params.append("-o")
+            params.append(kwargs["org"])
+            self.targeted["org"] = kwargs["org"]
+        if "space" in kwargs and kwargs["space"]:
+            params.append("-s")
+            params.append(kwargs["space"])
+            self.targeted["space"] = kwargs["space"]
+        result = self._exec(" ".join(params))
+        self.targeted["targeted"] = result and "FAILED" not in str(result)
 
         return self.targeted
 
     # Space management
     def spaces(self) -> List[str]:
         """List all spaces from organization"""
-        all_spaces = self._exec('spaces').split('\n')
-        return all_spaces[3:] if all_spaces and 'FAILED' not in str(all_spaces) else None
+        all_spaces = self._exec("spaces").split("\n")
+        return all_spaces[3:] if all_spaces and "FAILED" not in str(all_spaces) else None
 
     # Org management
     def orgs(self) -> List[str]:
         """List all organizations"""
-        all_orgs = self._exec('orgs').split('\n')
-        return all_orgs[3:] if all_orgs and 'FAILED' not in str(all_orgs) else None
+        all_orgs = self._exec("orgs").split("\n")
+        return all_orgs[3:] if all_orgs and "FAILED" not in str(all_orgs) else None
 
     # Application lifecycle:
     def apps(self) -> List[str]:
         """List all applications from targeted space"""
-        all_apps = self._exec('apps').split('\n')
-        return all_apps[4:] if all_apps and 'FAILED' not in str(all_apps) else None
+        all_apps = self._exec("apps").split("\n")
+        return all_apps[4:] if all_apps and "FAILED" not in str(all_apps) else None
 
     def start(self, **kwargs) -> str:
         """Start an app"""

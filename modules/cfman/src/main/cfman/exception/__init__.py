@@ -5,7 +5,5 @@
 # Package: main.cfman.exception
 """Package initialization."""
 
-__all__ = [
-  'exceptions'
-]
-__version__ = '0.9.65'
+__all__ = ["exceptions"]
+__version__ = "0.9.65"

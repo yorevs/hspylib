@@ -23,20 +23,8 @@ from typing import List
 
 
 class EnumField(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        doc: str,
-        symbols: List[str],
-        default: str = None,
-        required: bool = True):
-        super().__init__(
-            name,
-            doc,
-            AvroType.ENUM,
-            default,
-            required=required)
+    def __init__(self, name: str, doc: str, symbols: List[str], default: str = None, required: bool = True):
+        super().__init__(name, doc, AvroType.ENUM, default, required=required)
 
         self.symbols = symbols
 

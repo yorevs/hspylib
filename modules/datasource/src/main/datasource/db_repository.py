@@ -23,14 +23,14 @@ from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
 import contextlib
 
 # Stereotypes
-Connection = TypeVar('Connection', bound=Any)
-Cursor = TypeVar('Cursor', bound=Any)
-Session = TypeVar('Session', bound=Any)
-ResultSet = TypeVar('ResultSet', bound=Iterable)
+Connection = TypeVar("Connection", bound=Any)
+Cursor = TypeVar("Cursor", bound=Any)
+Session = TypeVar("Session", bound=Any)
+ResultSet = TypeVar("ResultSet", bound=Iterable)
 
 # Generics
-E = TypeVar('E', bound=CrudEntity)
-C = TypeVar('C', bound=DBConfiguration)
+E = TypeVar("E", bound=CrudEntity)
+C = TypeVar("C", bound=DBConfiguration)
 
 
 class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton):

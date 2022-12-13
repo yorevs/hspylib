@@ -16,7 +16,7 @@ from enum import Enum
 from hspylib.core.preconditions import check_not_none
 from typing import Any, List, Tuple, TypeVar
 
-E = TypeVar('E', bound='Enumeration')
+E = TypeVar("E", bound="Enumeration")
 
 
 class Enumeration(Enum):
@@ -39,7 +39,7 @@ class Enumeration(Enum):
             found = next(filter(lambda en: en.name.upper() == name.upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.name == name, list(cls)), None)
-        return check_not_none(found, "\"{}\" name does not correspond to a valid \"{}\" enum", name, cls.__name__)
+        return check_not_none(found, '"{}" name does not correspond to a valid "{}" enum', name, cls.__name__)
 
     @classmethod
     def of_value(cls, value: Any, ignore_case: bool = False) -> E:
@@ -47,7 +47,7 @@ class Enumeration(Enum):
             found = next(filter(lambda en: str(en.value).upper() == str(value).upper(), list(cls)), None)
         else:
             found = next(filter(lambda en: en.value == value, list(cls)), None)
-        return check_not_none(found, "\"{}\" value does not correspond to a valid \"{}\" enum", value, cls.__name__)
+        return check_not_none(found, '"{}" value does not correspond to a valid "{}" enum', value, cls.__name__)
 
     def __str__(self):
         return str(self.value)

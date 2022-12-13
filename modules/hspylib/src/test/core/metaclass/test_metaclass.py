@@ -23,7 +23,6 @@ import unittest
 
 
 class TestClass(unittest.TestCase):
-
     class SingletonClass(metaclass=Singleton):
         pass
 
@@ -38,7 +37,7 @@ class TestClass(unittest.TestCase):
 
     class ConcreteSingletonClass(AbstractSingletonClass):
         def do_it(self) -> int:
-            print('Done')
+            print("Done")
             return 1
 
     # TEST CASES ----------
@@ -72,8 +71,6 @@ class TestClass(unittest.TestCase):
 
 
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestClass)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

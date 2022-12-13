@@ -65,12 +65,14 @@ class Main(CliApplication):
             .argument('upd', 'update an existing vault entry') \
                 .add_parameter('name', 'the name of the vault entry which identifies it') \
                 .add_parameter('hint', 'applicable hints related to that vault entry') \
-                .add_parameter('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
-        # fmt: on
+                .add_parameter('password', 'the password of the entry. If not provided, it will be prompted',
+                               nargs='?')  # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""
-        log.info(dedent(f'''
+        log.info(
+            dedent(
+                f"""
         {self._app_name} v{self._app_version}
 
         Settings ==============================
@@ -78,7 +80,9 @@ class Main(CliApplication):
                 VAULT_FILE: {VaultConfig.INSTANCE.vault_file}
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
         =======================================\n
-        '''))
+        """
+            )
+        )
 
         signal.signal(signal.SIGINT, self._abort)
         signal.signal(signal.SIGTERM, self._abort)
@@ -99,25 +103,25 @@ class Main(CliApplication):
         self._cleanup()
         self.exit(signum, frame)
 
-    def _exec_application(self, ) -> ExitStatus:
+    def _exec_application(self) -> ExitStatus:
         """Execute the specified vault operation"""
-        ret_val, op = 0, self.get_arg('operation')
+        ret_val, op = 0, self.get_arg("operation")
         with self.vault.open() as unlocked:
             if not unlocked:
                 raise VaultOpenError("Unable to open/unlock vault")
-            if op == 'add':
-                self.vault.add(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
-            elif op == 'get':
-                self.vault.get(self.get_arg('name'))
-            elif op == 'del':
-                self.vault.remove(self.get_arg('name'))
-            elif op == 'upd':
-                self.vault.update(self.get_arg('name'), self.get_arg('hint'), self.get_arg('password'))
-            elif op == 'list':
-                self.vault.list(self.get_arg('filter'))
+            if op == "add":
+                self.vault.add(self.get_arg("name"), self.get_arg("hint"), self.get_arg("password"))
+            elif op == "get":
+                self.vault.get(self.get_arg("name"))
+            elif op == "del":
+                self.vault.remove(self.get_arg("name"))
+            elif op == "upd":
+                self.vault.update(self.get_arg("name"), self.get_arg("hint"), self.get_arg("password"))
+            elif op == "list":
+                self.vault.list(self.get_arg("filter"))
             else:
                 ret_val = 1
-                syserr(f'### Invalid operation: {op}')
+                syserr(f"### Invalid operation: {op}")
                 self.usage(ExitStatus.FAILED)
 
         return ExitStatus.of(ret_val)
@@ -125,4 +129,4 @@ class Main(CliApplication):
 
 if __name__ == "__main__":
     # Application entry point
-    Main('vault').INSTANCE.run(sys.argv[1:])
+    Main("vault").INSTANCE.run(sys.argv[1:])

@@ -25,11 +25,7 @@ import os
 class SchemaFactory(ABC):
     """Factory method to create Avro schemas"""
 
-    _schemas_types = [
-        AvroSchema,
-        JsonSchema,
-        PlainSchema
-    ]
+    _schemas_types = [AvroSchema, JsonSchema, PlainSchema]
 
     @classmethod
     def create_schema(cls, filepath: str, registry_url: str) -> KafkaSchema:

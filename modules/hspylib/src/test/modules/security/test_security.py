@@ -20,8 +20,8 @@ from hspylib.modules.security.security import decode_file, decrypt_file, encode_
 import sys
 import unittest
 
-PASSPHRASE = '12345'
-SALT = '1234567890'
+PASSPHRASE = "12345"
+SALT = "1234567890"
 
 SAMPLE_IN_FILE_NAME = "resources/secret.in"
 SAMPLE_OUT_FILE_NAME = "resources/secret.out"
@@ -37,9 +37,9 @@ class TestSecurity(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        with open(SAMPLE_IN_FILE_NAME, 'w') as f_out:
+        with open(SAMPLE_IN_FILE_NAME, "w") as f_out:
             f_out.write(ORIGINAL_FILE_CONTENTS)
-        with open(SAMPLE_OUT_FILE_NAME, 'w') as f_out:
+        with open(SAMPLE_OUT_FILE_NAME, "w") as f_out:
             f_out.write(ENCODED_FILE_CONTENTS)
         with open(SAMPLE_IN_FILE_NAME) as f_in:
             contents = str(f_in.read().strip())
@@ -79,8 +79,6 @@ class TestSecurity(unittest.TestCase):
 
 
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSecurity)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

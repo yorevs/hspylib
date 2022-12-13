@@ -5,7 +5,5 @@
 # Package: main.hspylib.modules.json_search
 """Package initialization."""
 
-__all__ = [
-  'json_search'
-]
-__version__ = '0.11.133'
+__all__ = ["json_search"]
+__version__ = "0.11.133"

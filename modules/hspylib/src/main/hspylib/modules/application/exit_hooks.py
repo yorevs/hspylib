@@ -47,11 +47,7 @@ class ExitHooks:
         else:
             exit(self._exit_status.val)
 
-    def exception_hook(
-        self,
-        exc_type: TypeError | None,
-        exc: BaseException | None,
-        tb: traceback) -> None:
+    def exception_hook(self, exc_type: TypeError | None, exc: BaseException | None, tb: traceback) -> None:
         """TODO"""
 
         self._was_hooked = True

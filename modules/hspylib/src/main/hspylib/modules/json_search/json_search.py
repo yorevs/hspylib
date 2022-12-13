@@ -22,14 +22,10 @@ import re
 class JsonSearch:
     """TODO"""
 
-    RE_JSON_NAME = '[a-zA-Z0-9_\\- ]'
-    RE_JSON_ARRAY_INDEX = '[0-9]{1,}'
+    RE_JSON_NAME = "[a-zA-Z0-9_\\- ]"
+    RE_JSON_ARRAY_INDEX = "[0-9]{1,}"
 
-    def __init__(
-        self,
-        separator='.',
-        json_name_re=RE_JSON_NAME,
-        json_array_index_re=RE_JSON_ARRAY_INDEX):
+    def __init__(self, separator=".", json_name_re=RE_JSON_NAME, json_array_index_re=RE_JSON_ARRAY_INDEX):
         """Construction"""
 
         self.separator = separator
@@ -40,12 +36,7 @@ class JsonSearch:
         self.pat_sub_expr = None
         self.pat_sub_expr_val = None
 
-    def __find_next_element__(
-        self,
-        root_element,
-        match_name,
-        match_value=None,
-        fetch_parent=False) -> Any:
+    def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False) -> Any:
         """Find the next element in the list matching the specified value."""
 
         selected_element = root_element
@@ -76,12 +67,7 @@ class JsonSearch:
 
         return selected_element
 
-    def __find_in_subex__(
-        self,
-        sub_expressions,
-        sub_selected_element,
-        pat_subst_expr_val,
-        fetch_parent=False) -> Any:
+    def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False) -> Any:
         """Find the element in the sub-expressions."""
 
         for nextSubExpr in sub_expressions:
@@ -91,16 +77,13 @@ class JsonSearch:
                 sub_elem_id = sub_parts.group(1)
                 sub_elem_val = sub_parts.group(3)
                 sub_selected_element = self.__find_next_element__(
-                    sub_selected_element, sub_elem_id, sub_elem_val, fetch_parent)
+                    sub_selected_element, sub_elem_id, sub_elem_val, fetch_parent
+                )
 
         return sub_selected_element
 
     # pylint: disable=too-many-branches,consider-using-f-string
-    def select(
-        self,
-        root_element,
-        search_path,
-        fetch_parent=False) -> Any:
+    def select(self, root_element, search_path, fetch_parent=False) -> Any:
         """
         Get the json element through it's path. Returned object is either [dict, list or unicode].
 
@@ -117,18 +100,22 @@ class JsonSearch:
          10. elem1.elem2{property<value>}.{property2<value2>}.elem3
         """
 
-        self.pat_elem = '%s+' % self.jsonNameRe
-        self.pat_sel_elem_val = '(%s)?((\\{(%s)(<(%s)>)?\\})+)(\\[(%s)\\])?' % (
-            self.pat_elem, self.pat_elem, self.pat_elem, self.jsonArrayIndexRe)
-        self.pat_sub_expr = '(\\{%s\\})' % self.pat_elem
-        self.pat_sub_expr_val = '\\{(%s)(<(%s)>)?\\}' % (self.pat_elem, self.pat_elem)
+        self.pat_elem = "%s+" % self.jsonNameRe
+        self.pat_sel_elem_val = "(%s)?((\\{(%s)(<(%s)>)?\\})+)(\\[(%s)\\])?" % (
+            self.pat_elem,
+            self.pat_elem,
+            self.pat_elem,
+            self.jsonArrayIndexRe,
+        )
+        self.pat_sub_expr = "(\\{%s\\})" % self.pat_elem
+        self.pat_sub_expr_val = "\\{(%s)(<(%s)>)?\\}" % (self.pat_elem, self.pat_elem)
         selected_element = root_element
 
         # pylint: disable=too-many-nested-blocks
         try:
             search_tokens = search_path.split(self.separator)
             for nextElement in search_tokens:
-                if nextElement.find('{') >= 0:  # Next element has nested elements
+                if nextElement.find("{") >= 0:  # Next element has nested elements
                     parts = re.search(self.pat_sel_elem_val, nextElement)
                     sel_elem_id = parts.group(1)
                     sub_parts = parts.group(2)
@@ -143,7 +130,8 @@ class JsonSearch:
                         if isinstance(selected_element, list):
                             for nextInList in selected_element:
                                 sub_selected_element = self.__find_in_subex__(
-                                    sub_expressions, nextInList, self.pat_sub_expr_val, fetch_parent)
+                                    sub_expressions, nextInList, self.pat_sub_expr_val, fetch_parent
+                                )
                                 # It sub_selected_element is not null then we have found what we wanted.
                                 if sub_selected_element:
                                     selected_element = sub_selected_element
@@ -152,8 +140,8 @@ class JsonSearch:
                         if elem_array_group and elem_array_index and isinstance(selected_element, list):
                             selected_element = selected_element[int(elem_array_index)]
 
-                elif nextElement.find('[') >= 0:  # Next element is indexed
-                    pat_sel_elem_idx = f'({self.pat_elem})\\[({self.jsonArrayIndexRe})\\]'
+                elif nextElement.find("[") >= 0:  # Next element is indexed
+                    pat_sel_elem_idx = f"({self.pat_elem})\\[({self.jsonArrayIndexRe})\\]"
                     parts = re.search(pat_sel_elem_idx, nextElement)
                     sub_elem_id = parts.group(1)
                     elem_array_index = parts.group(2)

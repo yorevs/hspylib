@@ -12,9 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Tuple
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
-from typing import Tuple
 
 
 class ContentType(Enumeration):
@@ -82,4 +83,8 @@ class ContentType(Enumeration):
 
     def as_header(self, encoding: Charset = Charset.UTF_8) -> Tuple[str, str]:
         """Return this content type as an http header."""
-        return 'Content-Type', f"{self.value}; charset={str(encoding)}"
+        return "Content-Type", f"{self.value}; charset={str(encoding)}"
+
+    @property
+    def val(self) -> str:
+        return str(self.value)

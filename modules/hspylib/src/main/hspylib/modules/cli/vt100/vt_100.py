@@ -42,19 +42,19 @@ class Vt100(ABC):
     @staticmethod
     def save_cursor() -> str:
         """TODO"""
-        return Vt100.escape('7')
+        return Vt100.escape("7")
 
     # Esc8
     @staticmethod
     def restore_cursor() -> str:
         """TODO"""
-        return Vt100.escape('8')
+        return Vt100.escape("8")
 
     # Esc[c
     @staticmethod
     def reset() -> str:
         """TODO"""
-        return Vt100.sequence('c')
+        return Vt100.sequence("c")
 
     # Esc[?7<h/l>
     @staticmethod
@@ -80,25 +80,25 @@ class Vt100(ABC):
     def clear_screen(mod_cls: int = None) -> str:
         """TODO"""
         if not mod_cls:
-            return Vt100.sequence('J')
+            return Vt100.sequence("J")
         check_argument(mod_cls in [0, 1, 2], f"Invalid clear screen sequence: {mod_cls}")
-        return Vt100.sequence(f'{mod_cls}J')
+        return Vt100.sequence(f"{mod_cls}J")
 
     # Esc[<n>K
     @staticmethod
     def clear_line(mod_cls: int = None) -> str:
         """TODO"""
         if not mod_cls:
-            return Vt100.sequence('K')
+            return Vt100.sequence("K")
         check_argument(mod_cls in [0, 1, 2], f"Invalid clea line sequence: {mod_cls}")
-        return Vt100.sequence(f'{mod_cls}K')
+        return Vt100.sequence(f"{mod_cls}K")
 
     # Esc[<v>;<h>H
     @staticmethod
     def cursor_pos(cup_seq: str = None) -> str:
         """TODO"""
         if not cup_seq:
-            return Vt100.sequence('H')
+            return Vt100.sequence("H")
         check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), f"Invalid cursor position sequence: {cup_seq}")
         return Vt100.sequence(f"{cup_seq}H")
 
@@ -106,30 +106,32 @@ class Vt100(ABC):
     @staticmethod
     def cursor_move(amount: int, direction: str) -> str:
         """TODO"""
-        check_argument(int(amount) >= 0 and direction in ['A', 'B', 'C', 'D'],
-                       f"Invalid direction={direction} or move amount={amount}")
+        check_argument(
+            int(amount) >= 0 and direction in ["A", "B", "C", "D"],
+            f"Invalid direction={direction} or move amount={amount}",
+        )
         return Vt100.sequence(f"{amount}{direction}")
 
     # Esc[<n>A
     @staticmethod
     def cursor_move_up(amount: int = None) -> str:
         """TODO"""
-        return Vt100.cursor_move(amount or 0, 'A')
+        return Vt100.cursor_move(amount or 0, "A")
 
     # Esc[<n>B
     @staticmethod
     def cursor_move_down(amount: int = None) -> str:
         """TODO"""
-        return Vt100.cursor_move(amount or 0, 'B')
+        return Vt100.cursor_move(amount or 0, "B")
 
     # Esc[<n>C
     @staticmethod
     def cursor_move_forward(amount: int = None) -> str:
         """TODO"""
-        return Vt100.cursor_move(amount or 0, 'C')
+        return Vt100.cursor_move(amount or 0, "C")
 
     # Esc[<n>D
     @staticmethod
     def cursor_move_backward(amount: int = None) -> str:
         """TODO"""
-        return Vt100.cursor_move(amount or 0, 'D')
+        return Vt100.cursor_move(amount or 0, "D")

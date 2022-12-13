@@ -16,19 +16,19 @@
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from time import sleep
 
-if __name__ == '__main__':
-    vt_print('%CSV%Cursor saved', end='\n')
+if __name__ == "__main__":
+    vt_print("%CSV%Cursor saved", end="\n")
     sleep(1)
-    vt_print('%MOD(1;31)%RED%MOD(0)%', end='\n')
-    vt_print('%MOD(1;32)%GREEN%MOD(0)%\n')
+    vt_print("%MOD(1;31)%RED%MOD(0)%", end="\n")
+    vt_print("%MOD(1;32)%GREEN%MOD(0)%\n")
     sleep(1)
-    vt_print('%CUU(2)%')
+    vt_print("%CUU(2)%")
     sleep(1)
-    vt_print('%MOD(1;36)%MA%MOD(0)%\n')
+    vt_print("%MOD(1;36)%MA%MOD(0)%\n")
     sleep(1)
-    vt_print('%USC%HIDDEN_TEXT\n')
-    vt_print('%SSC%VISIBLE_TEXT\n')
+    vt_print("%USC%HIDDEN_TEXT\n")
+    vt_print("%SSC%VISIBLE_TEXT\n")
     sleep(1)
-    vt_print('%CRE%%EL0%')
-    vt_print('Done')
-    vt_print('%ED0%')
+    vt_print("%CRE%%EL0%")
+    vt_print("Done")
+    vt_print("%ED0%")

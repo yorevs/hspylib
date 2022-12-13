@@ -5,8 +5,5 @@
 # Package: main.hspylib.modules.cli.icons
 """Package initialization."""
 
-__all__ = [
-  'emojis', 
-  'font_awesome'
-]
-__version__ = '0.11.133'
+__all__ = ["emojis", "font_awesome"]
+__version__ = "0.11.133"

@@ -40,7 +40,7 @@ class FirebaseAuth(ABC):
         try:
             creds = credentials.Certificate(certificate_file.format(project_id=project_id))
         except (IOError, ValueError) as err:
-            raise InvalidFirebaseCredentials('Invalid credentials provided') from err
+            raise InvalidFirebaseCredentials("Invalid credentials provided") from err
 
         return creds
 
@@ -52,9 +52,9 @@ class FirebaseAuth(ABC):
         try:
             user = auth.get_user(uuid)
             if user:
-                sysout('Firebase authentication succeeded')
+                sysout("Firebase authentication succeeded")
                 return user
-            raise FirebaseAuthenticationError('Failed to authenticate to Firebase')
+            raise FirebaseAuthenticationError("Failed to authenticate to Firebase")
         except UserNotFoundError as err:
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:

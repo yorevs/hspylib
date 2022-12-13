@@ -20,9 +20,8 @@ ATTRIBUTE_TYPES = Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]
 
 
 class Namespace:
-
     @staticmethod
-    def of(type_name: str, attributes: ATTRIBUTE_TYPES, final: bool = False) -> 'Namespace':
+    def of(type_name: str, attributes: ATTRIBUTE_TYPES, final: bool = False) -> "Namespace":
         check_not_none(attributes)
         self = Namespace(type_name, final)
         self += attributes if isinstance(attributes, dict) else merge(attributes)
@@ -47,7 +46,7 @@ class Namespace:
     def __hash__(self) -> int:
         return hash(self.key())
 
-    def __eq__(self, other: 'Namespace') -> bool:
+    def __eq__(self, other: "Namespace") -> bool:
         if isinstance(other, self.__class__):
             return self.key() == other.key()
         return NotImplemented
@@ -72,19 +71,19 @@ class Namespace:
     def __contains__(self, attribute: str):
         return hasattr(self, attribute)
 
-    def __iadd__(self, attribute: Dict[str, Any] | 'Namespace') -> 'Namespace':
+    def __iadd__(self, attribute: Dict[str, Any] | "Namespace") -> "Namespace":
         for a, av in attribute.items():
             self.setattr(a, av)
         return self
 
-    def __add__(self, other: Dict[str, Any] | 'Namespace') -> 'Namespace':
-        self.__name__ += '.' + other.__name__
+    def __add__(self, other: Dict[str, Any] | "Namespace") -> "Namespace":
+        self.__name__ += "." + other.__name__
         return self.__iadd__(other)
 
-    def setattr(self, name: str, value: Any) -> 'Namespace':
+    def setattr(self, name: str, value: Any) -> "Namespace":
         if self._final and not hasattr(self, name):
             raise ValueError(f"{self.__name__} Namespace is final")
-        if name.startswith(('_', '__')) or name.endswith(('_', '__')):
+        if name.startswith(("_", "__")) or name.endswith(("_", "__")):
             raise NameError("Attribute names can't start with '_' or '__'")
         setattr(self, name, value)
         return self
@@ -101,16 +100,15 @@ class Namespace:
     @property
     def attributes(self) -> Tuple[str]:
         return tuple(
-            a for a in
-            filter(lambda name:
-                   self[name] is not None
-                   and not name.startswith(('_', '__'))
-                   and not name.endswith(('_', '__')),
-                   vars(self)))
+            a
+            for a in filter(
+                lambda name: self[name] is not None
+                             and not name.startswith(("_", "__"))
+                             and not name.endswith(("_", "__")),
+                vars(self),
+            )
+        )
 
     @property
     def values(self) -> Tuple[Any]:
-        return tuple(
-            filter(lambda val:
-                   val is not None,
-                   [getattr(self, a) for a in self.attributes]))
+        return tuple(filter(lambda val: val is not None, [getattr(self, a) for a in self.attributes]))

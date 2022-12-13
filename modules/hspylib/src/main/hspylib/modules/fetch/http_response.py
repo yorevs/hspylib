@@ -24,7 +24,7 @@ class HttpResponse:
     """TODO"""
 
     @staticmethod
-    def of(response: Response) -> 'HttpResponse':
+    def of(response: Response) -> "HttpResponse":
         """TODO"""
         return HttpResponse(
             HttpMethod.value_of(response.request.method),
@@ -43,7 +43,8 @@ class HttpResponse:
         headers: CaseInsensitiveDict = None,
         body: Optional[str] = None,
         encoding: Charset = Charset.UTF_8,
-        content_type=ContentType.APPLICATION_JSON):
+        content_type=ContentType.APPLICATION_JSON,
+    ):
         self.method = method
         self.url = url
         self.status_code = status_code

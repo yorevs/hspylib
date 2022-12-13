@@ -21,17 +21,7 @@ from typing import Tuple
 
 
 class RecordField(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        doc: str,
-        fields: Tuple[Field],
-        required: bool = True):
-        super().__init__(
-            name,
-            doc,
-            AvroType.RECORD,
-            required=required)
+    def __init__(self, name: str, doc: str, fields: Tuple[Field], required: bool = True):
+        super().__init__(name, doc, AvroType.RECORD, required=required)
 
         self.fields = fields

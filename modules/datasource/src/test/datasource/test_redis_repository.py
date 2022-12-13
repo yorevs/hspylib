@@ -40,10 +40,10 @@ class TestClass(unittest.TestCase):
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:
-        os.environ['DATASOURCE_PORT'] = '6379'
-        os.environ['DATASOURCE_PASSWORD'] = 'password'
+        os.environ["DATASOURCE_PORT"] = "6379"
+        os.environ["DATASOURCE_PASSWORD"] = "password"
         log_init(file_enable=False, console_enable=True)
-        resource_dir = '{}/resources'.format(TEST_DIR)
+        resource_dir = "{}/resources".format(TEST_DIR)
         config = RedisConfiguration(resource_dir, profile="test")
         log.info(config)
         cls.repository = RedisRepositoryTest(config)
@@ -55,9 +55,9 @@ class TestClass(unittest.TestCase):
 
     # Test updating a single row from the database.
     def test_should_update_redis_database(self) -> None:
-        test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         self.repository.set(test_entity)
-        test_entity.comment = 'Updated My-Test Data'
+        test_entity.comment = "Updated My-Test Data"
         self.repository.set(test_entity)
         result_set = self.repository.get(self.repository.build_key(test_entity))
         self.assertIsNotNone(result_set, "Result set is none")
@@ -70,8 +70,8 @@ class TestClass(unittest.TestCase):
 
     # Test selecting all objects from the database.
     def test_should_select_all_from_redis(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
+        test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.set(test_entity_1, test_entity_2)
         result_set = self.repository.get(test_entity_1.key(), test_entity_2.key())
         self.assertIsNotNone(result_set, "Result set is none")
@@ -80,8 +80,8 @@ class TestClass(unittest.TestCase):
 
     # Test selecting a single row from the database.
     def test_should_select_one_from_postgres(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
+        test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.set(test_entity_1, test_entity_2)
         result_one = self.repository.get_one(test_entity_1.key())
         self.assertIsNotNone(result_one, "Result set is none")
@@ -93,7 +93,7 @@ class TestClass(unittest.TestCase):
 
     # Test deleting one row from the database.
     def test_should_delete_from_postgres(self) -> None:
-        test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         self.repository.set(test_entity)
         result_one = self.repository.get_one(test_entity.key())
         self.assertIsNotNone(result_one, "Result set is none")
@@ -105,17 +105,15 @@ class TestClass(unittest.TestCase):
 
     # Test get redis keys by pattern
     def test_should_fetch_redis_keys(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
+        test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.set(test_entity_1, test_entity_2)
         expected_keys = [test_entity_1.key(), test_entity_2.key()]
-        result_set = self.repository.keys('ENTITY_TEST_ID_*')
+        result_set = self.repository.keys("ENTITY_TEST_ID_*")
         self.assertCountEqual(expected_keys, result_set)
 
 
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestClass)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

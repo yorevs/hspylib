@@ -23,13 +23,11 @@ class ChainedArgumentsBuilder:
     def __init__(self, arg_parser: ArgumentParser, subcommand_name: str, subcommand_help: str):
         self._arg_parser = arg_parser
         self._subparsers = self._arg_parser.add_subparsers(
-            title=subcommand_name, dest=subcommand_name, help=subcommand_help, required=True)
+            title=subcommand_name, dest=subcommand_name, help=subcommand_help, required=True
+        )
         self._current = arg_parser
 
-    def argument(
-        self,
-        name: str,
-        help_string: str = None) -> 'ChainedArgumentsBuilder':
+    def argument(self, name: str, help_string: str = None) -> "ChainedArgumentsBuilder":
         """TODO"""
 
         self._current = self._subparsers.add_parser(name, help=help_string)
@@ -42,16 +40,18 @@ class ChainedArgumentsBuilder:
         help_string: str = None,
         choices: list = None,
         nargs: Union[str, int] = None,
-        default: Any = None) -> 'ChainedArgumentsBuilder':
+        default: Any = None,
+    ) -> "ChainedArgumentsBuilder":
         """TODO"""
 
         self._current.add_argument(
             dest=name,
-            help=help_string or f'the {name}',
+            help=help_string or f"the {name}",
             action=ParserAction.STORE.value,
             choices=choices,
             nargs=nargs,
-            default=default)
+            default=default,
+        )
 
         return self
 
@@ -64,18 +64,20 @@ class ChainedArgumentsBuilder:
         choices: list = None,
         required: bool = False,
         nargs: Union[str, int] = None,
-        default: Any = None) -> 'ChainedArgumentsBuilder':
+        default: Any = None,
+    ) -> "ChainedArgumentsBuilder":
         """TODO"""
 
         self._current.add_argument(
             f"-{shortopt.replace('^-*', '')[0]}",
             f"--{longopt.replace('^-*', '')}",
             dest=name,
-            help=help_string or f'the {longopt}',
+            help=help_string or f"the {longopt}",
             action=ParserAction.STORE.value,
             choices=choices,
             nargs=nargs,
             default=default,
-            required=required)
+            required=required,
+        )
 
         return self

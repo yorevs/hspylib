@@ -43,30 +43,42 @@ class TestClass(unittest.TestCase):
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:
-        os.environ['DATASOURCE_PORT'] = '9042'
-        os.environ['DATASOURCE_USERNAME'] = 'astra'
-        os.environ['DATASOURCE_PASSWORD'] = 'astra'
+        os.environ["DATASOURCE_PORT"] = "9042"
+        os.environ["DATASOURCE_USERNAME"] = "astra"
+        os.environ["DATASOURCE_PASSWORD"] = "astra"
         log_init(file_enable=False, console_enable=True)
-        resource_dir = '{}/resources'.format(TEST_DIR)
+        resource_dir = "{}/resources".format(TEST_DIR)
         config = CassandraConfiguration(resource_dir, profile="test")
         log.info(config)
         repository = CassandraRepositoryTest(config)
-        repository.execute(dedent(f"""
+        repository.execute(
+            dedent(
+                f"""
         CREATE KEYSPACE IF NOT EXISTS {repository.database}
-            WITH REPLICATION = """ + """{'class': 'SimpleStrategy', 'replication_factor': 1}
-        """))
-        repository.execute(dedent(f"""
+            WITH REPLICATION = """
+                + """{'class': 'SimpleStrategy', 'replication_factor': 1}
+        """
+            )
+        )
+        repository.execute(
+            dedent(
+                f"""
         CREATE CUSTOM INDEX IF NOT EXISTS comment_idx ON
             {repository.database}.ENTITY_TEST (comment)
         USING
             'org.apache.cassandra.index.sasi.SASIIndex'
-        WITH OPTIONS = """ + """{
+        WITH OPTIONS = """
+                + """{
             'mode': 'CONTAINS',
             'analyzer_class': 'org.apache.cassandra.index.sasi.analyzer.StandardAnalyzer',
             'case_sensitive': 'false'
         }
-        """))
-        repository.execute(dedent(f"""
+        """
+            )
+        )
+        repository.execute(
+            dedent(
+                f"""
         CREATE TABLE IF NOT EXISTS {repository.database}.ENTITY_TEST
         (
             id           text,
@@ -76,7 +88,9 @@ class TestClass(unittest.TestCase):
 
             PRIMARY KEY (id)
         )
-        """))
+        """
+            )
+        )
         cls.repository = repository
 
     def setUp(self) -> None:
@@ -86,9 +100,9 @@ class TestClass(unittest.TestCase):
 
     # Test updating a single object from cassandra.
     def test_should_update_cassandra_database(self) -> None:
-        test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         self.repository.save(test_entity)
-        test_entity.comment = 'Updated My-Test Data'
+        test_entity.comment = "Updated My-Test Data"
         self.repository.save(test_entity)
         result_set = self.repository.find_all(filters=Namespace(by_id=f"id = {quote(test_entity.id)}"))
         self.assertIsNotNone(result_set, "Result set is none")
@@ -102,8 +116,8 @@ class TestClass(unittest.TestCase):
 
     # Test selecting all objects from cassandra.
     def test_should_select_all_from_cassandra(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
+        test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.save_all([test_entity_1, test_entity_2])
         result_set = self.repository.find_all()
         self.assertIsNotNone(result_set, "Result set is none")
@@ -112,8 +126,8 @@ class TestClass(unittest.TestCase):
 
     # Test selecting a single object from cassandra.
     def test_should_select_one_from_cassandra(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
+        test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.save_all([test_entity_1, test_entity_2])
         result_one = self.repository.find_by_id(test_entity_1.identity)
         self.assertIsNotNone(result_one, "Result set is none")
@@ -125,7 +139,7 @@ class TestClass(unittest.TestCase):
 
     # Test deleting one object from cassandra.
     def test_should_delete_from_cassandra(self) -> None:
-        test_entity = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
+        test_entity = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         self.repository.save(test_entity)
         result_one = self.repository.find_by_id(test_entity.identity)
         self.assertIsNotNone(result_one, "Result set is none")
@@ -136,10 +150,10 @@ class TestClass(unittest.TestCase):
         self.assertIsNone(result_one, "Result set is not empty")
 
     def test_should_select_using_filters_from_cassandra(self) -> None:
-        test_entity_1 = EntityTest(Identity.auto(), comment='My-Test Data-1', lucky_number=50, is_working=True)
-        test_entity_2 = EntityTest(Identity.auto(), comment='My-Work Data-2', lucky_number=40, is_working=False)
-        test_entity_3 = EntityTest(Identity.auto(), comment='My-Sets Data-3', lucky_number=30, is_working=True)
-        test_entity_4 = EntityTest(Identity.auto(), comment='My-Fest Data-4', lucky_number=20, is_working=False)
+        test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data-1", lucky_number=50, is_working=True)
+        test_entity_2 = EntityTest(Identity.auto(), comment="My-Work Data-2", lucky_number=40, is_working=False)
+        test_entity_3 = EntityTest(Identity.auto(), comment="My-Sets Data-3", lucky_number=30, is_working=True)
+        test_entity_4 = EntityTest(Identity.auto(), comment="My-Fest Data-4", lucky_number=20, is_working=False)
         expected_list = [test_entity_1, test_entity_2, test_entity_3, test_entity_4]
         self.repository.save_all(expected_list)
         result_set = self.repository.find_all()
@@ -153,8 +167,6 @@ class TestClass(unittest.TestCase):
 
 
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestClass)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

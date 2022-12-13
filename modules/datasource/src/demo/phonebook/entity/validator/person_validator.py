@@ -23,7 +23,6 @@ from typing import List, Tuple
 
 
 class PersonValidator(ContactValidator):
-
     def __call__(self, *persons: Person, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         check_argument(len(persons) == 1, f"Exactly one person can be validated at a time. Given: {len(persons)}")
@@ -43,5 +42,4 @@ class PersonValidator(ContactValidator):
 
     @staticmethod
     def validate_email(email: str) -> (bool, str):
-        return Validator \
-                   .matches(email, RE_EMAIL_W3C), "Invalid email"
+        return Validator.matches(email, RE_EMAIL_W3C), "Invalid email"

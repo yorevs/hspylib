@@ -29,15 +29,12 @@ class TableRenderer:
         """
         Table cell text justification helper.
         """
+
         LEFT = justified_left
         CENTER = justified_center
         RIGHT = justified_right
 
-    def __init__(
-        self,
-        table_headers: List[str],
-        table_data: Optional[iter],
-        table_caption: str = None):
+    def __init__(self, table_headers: List[str], table_data: Optional[iter], table_caption: str = None):
         """
         :param table_headers: table headers to be displayed.
         :param table_data: table record set with the selected rows.
@@ -53,8 +50,10 @@ class TableRenderer:
         if self.rows:
             check_argument(
                 len(min(self.rows, key=len)) == len(self.headers),
-                'Headers and Columns must have the same size: {} vs {}',
-                len(min(self.rows, key=len)), len(self.headers))
+                "Headers and Columns must have the same size: {} vs {}",
+                len(min(self.rows, key=len)),
+                len(self.headers),
+            )
         self.column_sizes = [max(self.min_column_size, len(header)) for header in self.headers]
         self.indexes = range(len(self.column_sizes))
 
@@ -105,9 +104,12 @@ class TableRenderer:
         Render table based on a list of fixed sizes.
         :return: None
         """
-        check_argument(len(min(self.rows, key=len)) == len(cell_sizes),
-                       'Sizes and Columns must have the same size: {} vs {}', len(min(self.rows, key=len)),
-                       len(cell_sizes))
+        check_argument(
+            len(min(self.rows, key=len)) == len(cell_sizes),
+            "Sizes and Columns must have the same size: {} vs {}",
+            len(min(self.rows, key=len)),
+            len(cell_sizes),
+        )
         for row in self.rows:
             for idx in range(0, len(row)):
                 self.column_sizes[idx] = max(cell_sizes[idx], self.min_column_size)
@@ -119,21 +121,23 @@ class TableRenderer:
         :return: None
         """
         header_cols, data_cols = self._join_header_columns(), self._join_data_columns()
-        table_borders = '+' + ''.join((('-' * (self.column_sizes[idx] + 2) + '+') for idx in self.indexes))
+        table_borders = "+" + "".join((("-" * (self.column_sizes[idx] + 2) + "+") for idx in self.indexes))
         self._print_table(table_borders, header_cols, data_cols, file)
 
     def _join_header_columns(self) -> list:
         """TODO"""
         cols = [self.header_alignment(self._header_text(idx), self.column_sizes[idx]) for idx in self.indexes]
-        return ['| ' + ' | '.join(cols) + ' |']
+        return ["| " + " | ".join(cols) + " |"]
 
     # pylint: disable=consider-using-f-string
     def _join_data_columns(self) -> list:
         """TODO"""
         return [
-            '| ' + ''.join(
-                '%s | ' % self.cell_alignment(self._cell_text(row, idx), self.column_sizes[idx]) for idx in self.indexes
-            ) for row in self.rows
+            "| "
+            + "".join(
+                "%s | " % self.cell_alignment(self._cell_text(row, idx), self.column_sizes[idx]) for idx in self.indexes
+            )
+            for row in self.rows
         ]
 
     def _header_text(self, idx: int) -> str:
@@ -148,23 +152,19 @@ class TableRenderer:
         """TODO"""
         return self.column_sizes[idx]
 
-    def _print_table(
-        self,
-        table_line: str,
-        header_cols: List[str],
-        data_cols: List[str],
-        file=sys.stdout) -> None:
+    def _print_table(self, table_line: str, header_cols: List[str], data_cols: List[str], file=sys.stdout) -> None:
         """TODO"""
 
         if self.caption:
-            print(table_line.replace('+', '-'), file=file)
-            print('| ' + elide_text(self.caption, len(table_line) - 4)
-                  .center(len(header_cols[0]) - 4, ' ') + ' |', file=file)
+            print(table_line.replace("+", "-"), file=file)
+            print(
+                "| " + elide_text(self.caption, len(table_line) - 4).center(len(header_cols[0]) - 4, " ") + " |",
+                file=file,
+            )
         print(f"|{table_line[1:-1]}|", file=file)
-        print('\n'.join(header_cols), file=file)
+        print("\n".join(header_cols), file=file)
         print(f"|{table_line[1:-1]}|", file=file)
         print(
-            '\n'.join(data_cols) if data_cols
-            else '| ' + '<empty>'.center(len(table_line) - 4, ' ') + ' |', file=file
+            "\n".join(data_cols) if data_cols else "| " + "<empty>".center(len(table_line) - 4, " ") + " |", file=file
         )
-        print(table_line.replace('+', '-'), file=file)
+        print(table_line.replace("+", "-"), file=file)

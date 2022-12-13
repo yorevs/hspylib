@@ -21,7 +21,7 @@ from typing import Any, Type, TypeVar, Union
 import logging as log
 import sys
 
-SINGLETON = TypeVar('SINGLETON', bound=Union[Type, 'Singleton'])
+SINGLETON = TypeVar("SINGLETON", bound=Union[Type, "Singleton"])
 
 
 class Singleton(Type):
@@ -36,27 +36,27 @@ class Singleton(Type):
         if not Singleton.has_instance(self):
             try:
                 instance = super().__call__(*args, **kwargs)
-                check_not_none(instance, f'Unable to create Singleton instance: {self}')
-                setattr(self, 'INSTANCE', instance)
+                check_not_none(instance, f"Unable to create Singleton instance: {self}")
+                setattr(self, "INSTANCE", instance)
                 Singleton._instances[self.__name__] = instance
-                log.debug('Created a new Singleton instance: %s.%s', self.__module__, self.__name__)
+                log.debug("Created a new Singleton instance: %s.%s", self.__module__, self.__name__)
             except Exception as err:
                 raise HSBaseException(f"Failed to create singleton instance: '{self.__name__}'", err) from err
         return Singleton._instances[self.__name__]
 
     @classmethod
     def has_instance(cls, clazz: SINGLETON) -> bool:
-        """Whether the class has an instance or not. """
+        """Whether the class has an instance or not."""
         return clazz.__name__ in cls._instances
 
     @classmethod
     def del_instance(cls, clazz: SINGLETON) -> None:
         """Deletes the singleton instance. This method should be used only for testing purposes."""
-        if any(m in sys.modules for m in ['unittest', 'pytest']):
+        if any(m in sys.modules for m in ["unittest", "pytest"]):
             if Singleton.has_instance(clazz):
-                log.warning('Deleted an existing Singleton instance: %s.%s', cls.__module__, cls.__name__)
+                log.warning("Deleted an existing Singleton instance: %s.%s", cls.__module__, cls.__name__)
                 del cls._instances[clazz.__name__]
-                delattr(clazz, 'INSTANCE')
+                delattr(clazz, "INSTANCE")
                 del clazz
             else:
                 raise HSBaseException(f"Failed to delete singleton instance: '{clazz.__name__}' was not found")
@@ -66,5 +66,6 @@ class Singleton(Type):
 
 class AbstractSingleton(Singleton, ABCMeta):
     """This metaclass mixes Singleton and Abstract class."""
+
     def __call__(cls, *args, **kwargs) -> Any:
         return super().__call__(*args, **kwargs)

@@ -35,22 +35,23 @@ HERE = get_path(__file__)
 class WidgetManager(metaclass=Singleton):
     """HSPyLib widget manager that handles HSPyLib widgets"""
 
-    WIDGETS_PATH = (HERE / "widgets")
+    WIDGETS_PATH = HERE / "widgets"
 
     @staticmethod
     def _name_matches(widget_1_name: str, widget_2_name: str) -> bool:
         """Check if two names matches using defined naming rules"""
 
-        return \
-            widget_1_name.lower() == widget_2_name.lower() \
-            or widget_1_name == widget_2_name.capitalize() \
-            or widget_1_name == camelcase(widget_2_name, upper=True) \
-            or widget_1_name.lower() == widget_2_name.lower().replace('_', '')
+        return (
+            widget_1_name.lower() == widget_2_name.lower()
+            or widget_1_name == widget_2_name.capitalize()
+            or widget_1_name == camelcase(widget_2_name, upper=True)
+            or widget_1_name.lower() == widget_2_name.lower().replace("_", "")
+        )
 
     def __init__(self, parent_app: Application):
         self._parent_app = parent_app
         self._widgets = []
-        self._lookup_paths = os.environ.get('HHS_WIDGETS_PATH', '').split(':')
+        self._lookup_paths = os.environ.get("HHS_WIDGETS_PATH", "").split(":")
         self._lookup_paths.insert(0, str(WidgetManager.WIDGETS_PATH))
         list(map(sys.path.append, self._lookup_paths))
         check_state(self._load_widgets() > 0, "Unable to find any widgets from: {}", self._lookup_paths)
@@ -75,10 +76,11 @@ class WidgetManager(metaclass=Singleton):
             for widget_entry in self._widgets:
                 widget = self._find_widget(widget_entry.name)
                 item = DashboardItem(
-                    widget.icon(), f"{widget.name()} v{widget.version()}: {widget.tooltip()}", widget.execute)
+                    widget.icon(), f"{widget.name()} v{widget.version()}: {widget.tooltip()}", widget.execute
+                )
                 items.append(item)
             check_state(len(items) > 0, "No widgets found from: {}", str(self._lookup_paths))
-            mdashboard(items, 6, 'Please select a widget to execute')
+            mdashboard(items, 6, "Please select a widget to execute")
         except Exception as err:
             raise WidgetExecutionError(f"Failed to execute widget :: {str(err)}") from err
 
@@ -88,9 +90,7 @@ class WidgetManager(metaclass=Singleton):
 
         for path in self._lookup_paths:
             for root, _, files in os.walk(path):
-                filtered = list(filter(
-                    lambda p: p.startswith(WidgetEntry.MODULE_PREFIX) and p.endswith('py'), files
-                ))
+                filtered = list(filter(lambda p: p.startswith(WidgetEntry.MODULE_PREFIX) and p.endswith("py"), files))
                 widgets = list(map(lambda w: WidgetEntry(w, f"{root}/{w}"), filtered))
                 self._widgets.extend(widgets)
 
@@ -105,12 +105,14 @@ class WidgetManager(metaclass=Singleton):
         widget_entry = next((w for w in self._widgets if self._name_matches(widget_name, w.name)), None)
         if not widget_entry:
             raise WidgetNotFoundError(
-                f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}")
+                f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}"
+            )
         try:
             widget_module = __import__(widget_entry.module)
         except ModuleNotFoundError as err:
             raise WidgetNotFoundError(
-                f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}") from err
+                f"Widget '{widget_name}' was not found on widget lookup paths: {str(self._lookup_paths)}"
+            ) from err
         widget_clazz = getattr(widget_module, widget_entry.clazz)
         widget = widget_clazz()
         check_state(isinstance(widget, Widget), 'All widgets must inherit from "addons.widman.widget.Widget"')

@@ -38,19 +38,19 @@ class JsonParser(ABC):
             self.type = None
 
     @staticmethod
-    def parse(schema_dict: dict) -> 'JsonSchemaData':
+    def parse(schema_dict: dict) -> "JsonSchemaData":
         """TODO"""
         Draft202012Validator(schema=schema_dict, format_checker=None)
         schema = JsonParser.JsonSchemaData()
-        schema.id = check_and_get('$id', schema_dict)
-        schema.schema = check_and_get('$schema', schema_dict)
-        schema.title = check_and_get('title', schema_dict)
-        schema.description = check_and_get('description', schema_dict, False)
-        schema.required = check_and_get('required', schema_dict, False, [])
-        schema.type = check_and_get('type', schema_dict)
+        schema.id = check_and_get("$id", schema_dict)
+        schema.schema = check_and_get("$schema", schema_dict)
+        schema.title = check_and_get("title", schema_dict)
+        schema.description = check_and_get("description", schema_dict, False)
+        schema.required = check_and_get("required", schema_dict, False, [])
+        schema.type = check_and_get("type", schema_dict)
 
         if JsonType.OBJECT.value == schema.type:
-            properties = check_and_get('properties', schema_dict, default={})
+            properties = check_and_get("properties", schema_dict, default={})
             schema.properties = JsonParser._parse_properties(properties, schema.required)
 
         return schema
@@ -61,16 +61,18 @@ class JsonParser(ABC):
 
         schema_properties = []
         for p_name, props in properties.items():
-            p_title = check_and_get('title', props, False, '')
-            p_description = check_and_get('description', props, False, '')
-            p_type = JsonType.of_value(check_and_get('type', props))
-            p_default = check_and_get('default', props, False)
+            p_title = check_and_get("title", props, False, "")
+            p_description = check_and_get("description", props, False, "")
+            p_type = JsonType.of_value(check_and_get("type", props))
+            p_default = check_and_get("default", props, False)
             p_required = p_name in required
 
-            p_properties = JsonParser._parse_properties(check_and_get('properties', props), required) \
-                if p_type == JsonType.OBJECT else None
-            p_items = check_and_get('items', props, False) \
-                if p_type == JsonType.ARRAY else None
+            p_properties = (
+                JsonParser._parse_properties(check_and_get("properties", props), required)
+                if p_type == JsonType.OBJECT
+                else None
+            )
+            p_items = check_and_get("items", props, False) if p_type == JsonType.ARRAY else None
 
             prop = Property(p_name, p_title, p_description, p_type, p_default, p_required)
             prop.all_properties = p_properties

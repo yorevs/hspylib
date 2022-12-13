@@ -19,12 +19,11 @@ from phonebook.entity.Person import Person
 
 
 class PersonRepository(SQLiteRepository[Person]):
-
     def __init__(self, config: DBConfiguration):
         super().__init__(config)
 
     def table_name(self) -> str:
-        return 'PERSONS'
+        return "PERSONS"
 
     def to_entity_type(self, entity_dict: dict | tuple) -> Person:
         return Person.from_tuple(entity_dict)

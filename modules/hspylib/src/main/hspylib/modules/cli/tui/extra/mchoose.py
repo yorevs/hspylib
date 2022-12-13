@@ -12,7 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
+import re
 from abc import ABC
+from typing import List, Optional, TypeVar
+
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -20,21 +23,19 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
-from typing import List, Optional, TypeVar
 
-import re
-
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def mchoose(
     items: List[T],
     checked: bool = True,
-    title: str = 'Please select one',
+    title: str = "Please select one",
     max_rows: int = 15,
     title_color: VtColors = VtColors.ORANGE,
     highlight_color: VtColors = VtColors.BLUE,
-    nav_color: VtColors = VtColors.YELLOW) -> Optional[List[T]]:
+    nav_color: VtColors = VtColors.YELLOW,
+) -> Optional[List[T]]:
     """
     TODO
     :param items:
@@ -51,7 +52,8 @@ def mchoose(
 
 class MenuChoose(ABC):
     """TODO"""
-    UNSELECTED = ' '
+
+    UNSELECTED = " "
     SELECTED = FormIcons.SELECTOR
     MARKED = FormIcons.MARKED
     UNMARKED = FormIcons.UNMARKED
@@ -59,11 +61,7 @@ class MenuChoose(ABC):
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
     NAV_BAR = f"[Enter] Accept  [{NAV_ICONS}] Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..%TO%] Goto: %EL0%"
 
-    def __init__(
-        self,
-        items: List[T],
-        max_rows: int = 15,
-        checked: bool = True):
+    def __init__(self, items: List[T], max_rows: int = 15, checked: bool = True):
 
         self.items = items
         self.checked = checked
@@ -76,11 +74,8 @@ class MenuChoose(ABC):
         self.done = None
 
     def choose(
-        self,
-        title: str,
-        title_color: VtColors,
-        highlight_color: VtColors,
-        nav_color: VtColors) -> Optional[List[T]]:
+        self, title: str, title_color: VtColors, highlight_color: VtColors, nav_color: VtColors
+    ) -> Optional[List[T]]:
         """TODO"""
 
         keypress = Keyboard.VK_NONE
@@ -102,8 +97,11 @@ class MenuChoose(ABC):
 
         restore_terminal()
 
-        return [op for idx, op in enumerate(self.items) if self.sel_options[idx]] \
-            if keypress == Keyboard.VK_ENTER else None
+        return (
+            [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
+            if keypress == Keyboard.VK_ENTER
+            else None
+        )
 
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
         """TODO"""
@@ -116,8 +114,8 @@ class MenuChoose(ABC):
             selector = self.UNSELECTED
 
             if idx < length:  # When the number of items is lower than the max_rows, skip the other lines
-                option_line = str(self.items[idx])[0:int(columns)]
-                vt_print('%EL2%\r')  # Erase current line before repaint
+                option_line = str(self.items[idx])[0: int(columns)]
+                vt_print("%EL2%\r")  # Erase current line before repaint
 
                 # Print the selector if the index is current
                 if idx == self.sel_index:
@@ -126,17 +124,24 @@ class MenuChoose(ABC):
 
                 # Print the marked or unmarked option
                 mark = self.MARKED if self.sel_options[idx] == 1 else self.UNMARKED
-                fmt = "  {:>" + str(len(str(length))) + "}{:>" \
-                      + str(1 + len(str(selector))) + "} {:>" + str(len(str(mark))) + "} {}"
+                fmt = (
+                    "  {:>"
+                    + str(len(str(length)))
+                    + "}{:>"
+                    + str(1 + len(str(selector)))
+                    + "} {:>"
+                    + str(len(str(mark)))
+                    + "} {}"
+                )
                 sysout(fmt.format(idx + 1, selector, mark, option_line))
 
                 # Check if the text fits the screen and print it, otherwise print '...'
                 if len(option_line) >= int(columns):
-                    sysout("%CUB(4)%%EL0%...", end='')
+                    sysout("%CUB(4)%%EL0%...", end="")
             else:
                 break
 
-        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end='')
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end="")
         self.re_render = False
 
     # pylint: disable=too-many-branches,too-many-statements
@@ -151,20 +156,20 @@ class MenuChoose(ABC):
                 self.done = True
             elif keypress.isdigit():  # An index was typed
                 typed_index = keypress.value
-                sysout(f"{keypress.value}", end='')
+                sysout(f"{keypress.value}", end="")
                 index_len = 1
                 while len(typed_index) < len(str(length)):
-                    num_press = Keyboard.read_keystroke()
-                    if not num_press:
+                    keystroke = Keyboard.read_keystroke()
+                    if not keystroke:
                         break
-                    if not re.match(r'^[0-9]*$', num_press.value):
+                    if not re.match(r"^[0-9]*$", keystroke.val):
                         typed_index = None
                         break
-                    typed_index = f"{typed_index}{num_press.value if num_press else ''}"
-                    sysout(f"{num_press.value if num_press else ''}", end='')
+                    typed_index = f"{typed_index}{keystroke.value if keystroke else ''}"
+                    sysout(f"{keystroke.value if keystroke else ''}", end="")
                     index_len += 1
                 # Erase the index typed by the user
-                sysout(f"%CUB({index_len})%%EL0%", end='')
+                sysout(f"%CUB({index_len})%%EL0%", end="")
                 if 1 <= int(typed_index) <= length:
                     self.show_to = max(int(typed_index), self.diff_index)
                     self.show_from = self.show_to - self.diff_index

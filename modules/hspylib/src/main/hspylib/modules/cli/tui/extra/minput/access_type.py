@@ -19,9 +19,9 @@ from hspylib.core.enums.enumeration import Enumeration
 class AccessType(Enumeration):
     """TODO"""
 
-    NO_ACCESS = 'no-access'
-    READ_ONLY = 'read-only'
-    READ_WRITE = 'read-write'
+    NO_ACCESS = "no-access"
+    READ_ONLY = "read-only"
+    READ_WRITE = "read-write"
 
     def __str__(self):
         return str(self.value)

@@ -20,9 +20,8 @@ from typing import NamedTuple
 
 
 class CassandraRepositoryTest(CassandraRepository):
-
     def table_name(self) -> str:
-        return 'ENTITY_TEST'
+        return "ENTITY_TEST"
 
     def to_entity_type(self, entity_tuple: NamedTuple) -> EntityTest:
         identity = Identity(EntityTest.EntityId(entity_tuple.id))
@@ -31,5 +30,5 @@ class CassandraRepositoryTest(CassandraRepository):
             id=entity_tuple.id,
             comment=entity_tuple.comment,
             lucky_number=entity_tuple.lucky_number,
-            is_working=entity_tuple.is_working
+            is_working=entity_tuple.is_working,
         )

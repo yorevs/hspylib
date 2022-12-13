@@ -16,6 +16,6 @@
 from cli.tui.menu.main_menu import MainMenu
 from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     mm = MenuUi(MainMenu())
     mm.show()
