@@ -23,7 +23,7 @@ import urllib3
 from firebase.__classpath__ import _Classpath
 from firebase.core.firebase import Firebase
 from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.version import Version
@@ -68,14 +68,14 @@ class Main(CliApplication):
                     'glob', 'g', 'glob',
                     'filter path names matching a specified glob pattern.',
                     nargs='?') \
-            .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
-                .add_argument('files', 'list of files to upload (separated by a space)', nargs='*') \
+            .add_parameter('db_alias', 'alias to identify the firebase object to fetch') \
+                .add_parameter('files', 'list of files to upload (separated by a space)', nargs='*') \
             .argument('download', 'download files from your Firebase Realtime Database') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
-            .add_argument('db_alias', 'alias to identify the firebase object to fetch') \
+            .add_parameter('db_alias', 'alias to identify the firebase object to fetch') \
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> ExitStatus:

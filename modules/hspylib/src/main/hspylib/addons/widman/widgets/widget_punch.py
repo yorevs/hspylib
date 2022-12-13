@@ -24,7 +24,7 @@ from typing import List
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
 from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
@@ -151,7 +151,7 @@ class WidgetPunch(Widget):
         subparsers.add_parser('reset', help='reset punches for the current week and save the previous one.')
 
         w_parser = subparsers.add_parser('week', help='list all punches of the specified week-num (week-N.punch).')
-        w_parser.add_argument('week_num', type=int, default=1, help='the week number')
+        w_parser.add_parameter('week_num', type=int, default=1, help='the week number')
 
         self._args = parser.parse_args(args)
 

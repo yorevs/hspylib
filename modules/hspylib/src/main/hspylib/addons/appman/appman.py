@@ -20,7 +20,7 @@ from typing import List
 import urllib3
 from hspylib.addons.appman.appman_enums import AppType, Extension
 from hspylib.core.enums.charset import Charset
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.namespace import Namespace

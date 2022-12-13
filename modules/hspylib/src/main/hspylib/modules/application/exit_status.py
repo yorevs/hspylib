@@ -25,26 +25,32 @@ class ExitStatus(Enumeration):
 
     # @formatter:off
 
-    # Returned when something went wrong due to any Human interaction
-    ERROR   = 129
+    # Returned when something ran successfully without errors.
+    NOT_SET     = None
 
-    # Returned when something ran successfully without errors
-    SUCCESS =  0
+    # Returned when something ran successfully without errors.
+    SUCCESS     = 0
 
-    # Returned when something that was supposed to work and failed due to unexpected software behaviour
-    FAILED  =  62
+    # Returned when something went wrong due to any Human interaction.
+    ERROR       = 1
 
-    # Returned when something ran should be aborted. Generally due to usr cancellation
-    ABORTED =  63
+    # Returned when something that was supposed to work and failed due to unexpected software behaviour.
+    FAILED      = 2
+
+    # Returned when something ran should be aborted. Generally due to user cancellation.
+    ABORTED     = 127
+
+    # Returned when something unexpected occurred.
+    ABNORMAL    = 129
 
     # @formatter:on
 
     @staticmethod
-    def of(value: int) -> 'ExitStatus':
+    def of(value: int | SystemExit) -> 'ExitStatus':
         try:
-            return value if isinstance(value, ExitStatus) else ExitStatus.of_value(value or 0)
+            return ExitStatus.of_value(value.code if isinstance(value, SystemExit) else value or 0)
         except TypeError:
-            return ExitStatus.ERROR
+            return ExitStatus.ABNORMAL
 
     def __str__(self):
         return self.name

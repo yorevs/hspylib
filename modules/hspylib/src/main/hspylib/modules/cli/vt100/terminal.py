@@ -22,7 +22,7 @@ import subprocess
 from abc import ABC
 from typing import Optional, Tuple
 
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.tools.commons import syserr
 
 

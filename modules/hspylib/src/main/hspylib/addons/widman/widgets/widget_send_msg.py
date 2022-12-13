@@ -23,7 +23,7 @@ from time import sleep
 from typing import List
 
 from hspylib.addons.widman.widget import Widget
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
@@ -185,26 +185,26 @@ class WidgetSendMsg(Widget):
         """When arguments are passed from the command line, parse them"""
         parser = HSArgumentParser(
             prog='sendmsg', prefix_chars="+", description='Sends TCP/UDP messages (multi-threaded)')
-        parser.add_argument(
+        parser.add_parameter(
             '+n', '++net-type', action='store', type=str, choices=['udp', 'tcp'], default='tcp', required=False,
             help='The network type to be used. Either udp or tcp ( default is tcp )')
-        parser.add_argument(
+        parser.add_parameter(
             '+a', '++address', action='store', type=str, default='127.0.0.1', required=False,
             help='The address of the datagram receiver ( default is 127.0.0.1 )')
-        parser.add_argument(
+        parser.add_parameter(
             '+p', '++port', action='store', type=int, default=12345, required=False,
             help='The port number [1-65535] ( default is 12345)')
-        parser.add_argument(
+        parser.add_parameter(
             '+k', '++packets', action='store', type=int, default=100, required=False,
             help='The number of max datagrams to be send. If zero is specified, then the app '
                  'is going to send indefinitely ( default is 100 ).')
-        parser.add_argument(
+        parser.add_parameter(
             '+i', '++interval', action='store', type=float, default=1, required=False,
             help='The interval in seconds between each datagram ( default is 1 Second )')
-        parser.add_argument(
+        parser.add_parameter(
             '+t', '++threads', action='store', type=int, default=1, required=False,
             help=f'Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )')
-        parser.add_argument(
+        parser.add_parameter(
             '+m', '++message', action='store', type=str, required=False,
             help='The message to be sent. If the message matches a filename, then the file contents sent instead')
         self._args = parser.parse_args(args)

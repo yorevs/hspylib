@@ -16,7 +16,7 @@
 
 import sys
 
-from hspylib.core.enums.exit_status import ExitStatus
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.cli_application import CliApplication
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory

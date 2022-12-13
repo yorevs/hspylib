@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    @package: demo.cli.application
       @file: application_demo.py
@@ -15,8 +14,8 @@
 """
 import sys
 
-from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.tools.commons import sysout
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.cli_application import CliApplication
 
@@ -31,14 +30,14 @@ class Main(CliApplication):
 
     def _setup_arguments(self) -> None:
         # @formatter:off
-        self._with_options()\
+        self._with_options() \
             .option('verbose', 'V', 'verbose', 'to be more verbose')
         self._with_chained_args('operation', 'Upload/Download files from/to server') \
             .argument('download', 'download a file from server') \
-                .add_argument('url', 'the url of the file') \
+                .add_parameter('url', 'the url of the file') \
             .argument('upload', 'upload a file to server') \
-                .add_argument('source', 'the source file') \
-                .add_argument('url', 'the url of the file') \
+                .add_parameter('source', 'the source file') \
+                .add_parameter('url', 'the url of the file')
         # @formatter:on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
@@ -47,10 +46,9 @@ class Main(CliApplication):
     def _exec_application(self) -> ExitStatus:
         """Execute the application logic."""
         if self.get_arg('operation') == 'download':
-            print('Downloading')
+            print('Downloading...')
         elif self.get_arg('operation') == 'upload':
-            print('Uploading')
-
+            print('Uploading...')
         status = ExitStatus.SUCCESS
         sysout(f'{repr(status)}, running from {self._run_dir}')
         return status

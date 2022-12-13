@@ -24,11 +24,10 @@ from textwrap import dedent
 from typing import Any, Optional, Union
 
 from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.enums.exit_status import ExitStatus
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_state
-from hspylib.core.tools.commons import log_init, sysout
+from hspylib.core.tools.commons import log_init, syserr, sysout
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
@@ -36,6 +35,7 @@ from hspylib.modules.application.argparse.arguments_builder import ArgumentsBuil
 from hspylib.modules.application.argparse.chained_arguments_builder import ChainedArgumentsBuilder
 from hspylib.modules.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.application.exit_hooks import ExitHooks
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
 
@@ -52,14 +52,14 @@ class Application(metaclass=AbstractSingleton):
         :param frame: The frame raised by the signal
         :param clear_screen: Whether to clean the screen before execution or not
         """
-        if frame is not None:
+        if frame:
             log.warning('Signal handler hooked signum=%d frame=%s', signum, frame)
             exit_status = ExitStatus.ABORTED
         else:
-            log.warning('Exit handler called signum=%d', signum)
             exit_status = ExitStatus.of(signum)
         if clear_screen:
             sysout('%ED2%%HOM%')
+
         sys.exit(exit_status.value)
 
     def __init__(
@@ -79,6 +79,8 @@ class Application(metaclass=AbstractSingleton):
         self.exit_hooks = ExitHooks(self._cleanup)
         self.exit_hooks.hook()
         self._run_dir = os.getcwd()
+        self._args = {}
+        self._exit_code = ExitStatus.NOT_SET
         self._app_name = name
         self._app_version = version
         self._app_description = description
@@ -89,8 +91,6 @@ class Application(metaclass=AbstractSingleton):
             epilog=dedent(epilog or ''))
         self._arg_parser.add_argument(
             '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
-        self._args = {}
-        self._exit_code = ExitStatus.SUCCESS
 
         # Initialize application configs
         if os.path.exists(f'{resource_dir}'):
@@ -107,6 +107,7 @@ class Application(metaclass=AbstractSingleton):
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
         today = now()
+        no_exit = 'no_exit' in kwargs
         log.info('Application %s started %s', self._app_name, today)
         try:
             # Perform application cleanup after execution
@@ -117,18 +118,22 @@ class Application(metaclass=AbstractSingleton):
             self._exit_code = self._main(*params, **kwargs)
         except argparse.ArgumentError as err:
             log.error('Application failed to execute %s => %s', today, err)
-            self.usage(no_exit=True)
-            raise ApplicationError(f"Application failed to execute => {err}") from err
+            self.usage(ExitStatus.FAILED, no_exit=True)
+            syserr(f"\n### Error {self._app_name} -> {err}\n\n")
+            raise ApplicationError(f'Application failed to execute => {err}') from err
         except Exception as err:
+            _, code, tb = sys.exc_info()
+            if tb:
+                traceback.print_exc(file=sys.stderr)
             log.error('Application execution failed %s => %s', today, err)
-            traceback.print_exc(file=sys.stderr)
-            # Re-Raise the exception so upper level layers can catch
-            raise ApplicationError(f"Application execution failed => {err}") from err
+            self._exit_code = ExitStatus.ERROR
+            raise ApplicationError(f'Application execution failed => {err}') from err
         finally:
-            _, code, _ = sys.exc_info()
-            self._exit_code = ExitStatus.of(code)
             log.info('Application %s finished %s', self._app_name, today)
-            if 'no_exit' not in kwargs:
+            if self._exit_code == ExitStatus.NOT_SET:
+                _, code, tb = sys.exc_info()
+                self._exit_code = ExitStatus.of(code)
+            if not no_exit:
                 Application.exit(self._exit_code.val)
 
     def usage(self, exit_code: ExitStatus = ExitStatus.SUCCESS, no_exit: bool = False) -> None:
