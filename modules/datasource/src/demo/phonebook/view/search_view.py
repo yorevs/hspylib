@@ -29,13 +29,12 @@ from typing import List
 
 
 class SearchView(metaclass=Singleton):
-
     def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
     def by_name(self) -> None:
-        MenuUtils.title('SEARCH BY NAME')
+        MenuUtils.title("SEARCH BY NAME")
         try:
             filters = Namespace(name=f"name='{MenuUtils.prompt('Person or Company name')}'")
             all_persons = self.person_service.list(filters=filters)
@@ -45,7 +44,7 @@ class SearchView(metaclass=Singleton):
             pass
 
     def by_uuid(self) -> None:
-        MenuUtils.title('SEARCH BY UUID')
+        MenuUtils.title("SEARCH BY UUID")
         try:
             filters = Namespace(uuid=f"uuid='{MenuUtils.prompt('Person or Company uuid')}'")
             all_persons = self.person_service.list(filters=filters)
@@ -63,11 +62,13 @@ class SearchView(metaclass=Singleton):
     def display_contacts(persons: List[Person], companies: List[Company]) -> None:
         if persons or companies:
             SearchView.display_table(
-                list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), 'PERSONS')
+                list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
+            )
             SearchView.display_table(
-                list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), 'COMPANIES')
+                list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
+            )
         else:
-            sysout('-=- No results to be displayed -=-')
+            sysout("-=- No results to be displayed -=-")
             MenuUtils.wait_enter()
 
     @staticmethod

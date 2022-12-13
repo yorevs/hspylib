@@ -27,13 +27,13 @@ import keyring
 import os
 import tempfile
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class TTLCache(Generic[T], metaclass=Singleton):
     """TODO"""
 
-    CACHE_SERVICE = 'HS-CACHE-SERVICE'
+    CACHE_SERVICE = "HS-CACHE-SERVICE"
 
     def __init__(self, ttl_minutes: int = 15, ttl_seconds: int = 0) -> None:
         super().__init__()
@@ -44,7 +44,7 @@ class TTLCache(Generic[T], metaclass=Singleton):
         """TODO"""
         check_not_none(key, entry)
         with self._lock:
-            with tempfile.NamedTemporaryFile(delete=False, mode='w', encoding=Charset.UTF_8.val) as f_temp:
+            with tempfile.NamedTemporaryFile(delete=False, mode="w", encoding=Charset.UTF_8.val) as f_temp:
                 content = b64_encode(f"{repr(entry)}")
                 f_temp.write(content)
                 keyring.set_password(self.CACHE_SERVICE, key, f_temp.name)
@@ -71,13 +71,13 @@ class TTLCache(Generic[T], metaclass=Singleton):
             keyring.delete_password(self.CACHE_SERVICE, key)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     c = TTLCache(ttl_minutes=0, ttl_seconds=10)
     l = [1, 2, 3, 4, 5]
-    print(c.save('test', l))
-    l2 = c.read('test')
+    print(c.save("test", l))
+    l2 = c.read("test")
     print(l2)
-    m = dict(name= 'test', age= 31)
-    print(c.save('test1', m))
-    m2 = c.read('test1')
+    m = dict(name="test", age=31)
+    print(c.save("test1", m))
+    m2 = c.read("test1")
     print(m2)

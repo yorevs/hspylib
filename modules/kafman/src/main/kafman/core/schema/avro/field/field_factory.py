@@ -29,12 +29,11 @@ from typing import List, Optional, Tuple
 
 
 class FieldFactory(ABC):
-
     @staticmethod
-    def create_field(field: Field) -> 'SchemaField':
+    def create_field(field: Field) -> "SchemaField":
         """TODO"""
         field_name, field_type = field.name, field.type
-        field_doc = field.doc or f'the {field_name}'
+        field_doc = field.doc or f"the {field_name}"
         field_default = field.default if field.has_default else None
         required = FieldFactory.is_required(field)
         avro_type = AvroType.of_type(field_type)
@@ -54,18 +53,17 @@ class FieldFactory(ABC):
             elif isinstance(complex_type, RecordSchema):
                 schema_field = RecordField(field_name, field_doc, complex_type.fields, required)
             else:
-                schema_field = InvalidStateError(f'Invalid field type: {complex_type}')
+                schema_field = InvalidStateError(f"Invalid field type: {complex_type}")
 
-        check_not_none(schema_field, f'Unable to parse field {field_name}')
+        check_not_none(schema_field, f"Unable to parse field {field_name}")
 
         return schema_field
 
     @staticmethod
     def _get_union_type(union_type: UnionSchema) -> Optional[Schema]:
-        return next((
-            sch for sch in union_type.schemas if
-            not isinstance(sch, PrimitiveSchema) or sch.fullname != 'null'
-        ), None)
+        return next(
+            (sch for sch in union_type.schemas if not isinstance(sch, PrimitiveSchema) or sch.fullname != "null"), None
+        )
 
     @staticmethod
     def create_schema_fields(fields: Tuple[Field]) -> List[SchemaField]:
@@ -80,7 +78,7 @@ class FieldFactory(ABC):
     @staticmethod
     def is_required(field: Field) -> bool:
         if isinstance(field.type, UnionSchema):
-            has_null = next((sch for sch in field.type.schemas if sch.fullname == 'null'), None)
+            has_null = next((sch for sch in field.type.schemas if sch.fullname == "null"), None)
             return has_null is None
 
         return True

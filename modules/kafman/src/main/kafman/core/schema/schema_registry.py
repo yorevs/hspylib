@@ -31,7 +31,7 @@ class SchemaRegistry:
     """This class is used to manage and hold information about the schema registry server"""
 
     def __init__(self, url: str = None):
-        self._url = url or 'localhost:8081'
+        self._url = url or "localhost:8081"
         self._valid = False
         self._schema_types = []
         self._subjects = []
@@ -73,30 +73,31 @@ class SchemaRegistry:
             url=f"{self._url}/subjects/{subject}/versions",
             method=HttpMethod.POST,
             headers=[{"Content-Type": "application/vnd.schemaregistry.v1+json"}],
-            body=schema_payload)
+            body=schema_payload,
+        )
         self._subjects.append(subject)
-        log.debug('Schema subject successfully registered: %s', subject)
+        log.debug("Schema subject successfully registered: %s", subject)
 
     def deregister(self, subjects: Set[RegistrySubject]) -> None:
         """Deregister the list of subjects from the registry server"""
         for subject in subjects:
             # Invoke delete subject
             self._make_request(
-                url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}",
-                method=HttpMethod.DELETE)
+                url=f"{self._url}/subjects/{subject.subject}/versions/{subject.version}", method=HttpMethod.DELETE
+            )
             self._subjects.remove(subject.subject)
-        log.debug('Schema subject successfully deregistered: %s', str(subjects))
+        log.debug("Schema subject successfully deregistered: %s", str(subjects))
 
     def fetch_server_info(self) -> Tuple[str, Optional[str]]:
         """Fetch information about the selected schema registry server"""
 
         # Fetch server supported schema types
         response = self._make_request(
-            url=f"{self._url}/schemas/types", expected_codes=[HttpCode.OK, HttpCode.NOT_FOUND])
+            url=f"{self._url}/schemas/types", expected_codes=[HttpCode.OK, HttpCode.NOT_FOUND]
+        )
         self._schema_types = response.body
         # Fetch current registered subjects
-        response = self._make_request(
-            url=f"{self._url}/subjects")
+        response = self._make_request(url=f"{self._url}/subjects")
         self._subjects = json.loads(response.body)
 
         return self._schema_types, self._subjects
@@ -116,13 +117,15 @@ class SchemaRegistry:
                     subject_response = self._make_request(url=f"{self._url}/subjects/{subject}/versions/{v}")
                     check_not_none(subject_response)
                     subject = json.loads(subject_response.body)
-                    subjects.append(RegistrySubject(
-                        subject['schemaType'] if 'schemaType' in subject else 'AVRO',
-                        subject['subject'],
-                        subject['id'],
-                        subject['version'],
-                        json.loads(subject['schema']),
-                    ))
+                    subjects.append(
+                        RegistrySubject(
+                            subject["schemaType"] if "schemaType" in subject else "AVRO",
+                            subject["subject"],
+                            subject["id"],
+                            subject["version"],
+                            json.loads(subject["schema"]),
+                        )
+                    )
 
         return subjects
 
@@ -132,7 +135,8 @@ class SchemaRegistry:
         method: HttpMethod = HttpMethod.GET,
         headers: List[Dict[str, str]] = None,
         body: Optional[Any] = None,
-        expected_codes: List[HttpCode] = None) -> HttpResponse:
+        expected_codes: List[HttpCode] = None,
+    ) -> HttpResponse:
         """Make a request from the registry server"""
 
         if self._valid:
@@ -144,11 +148,11 @@ class SchemaRegistry:
                 check_not_none(response)
                 if response.status_code not in expected_codes:
                     raise SchemaRegistryError(
-                        f"Request failed. Expecting {str(expected_codes)} but received: {response.status_code}" +
-                        f"\n\t=> {response.body}")
+                        f"Request failed. Expecting {str(expected_codes)} but received: {response.status_code}"
+                        + f"\n\t=> {response.body}"
+                    )
                 return response
             except (ex.ConnectTimeout, ex.ConnectionError, ex.ReadTimeout, ex.InvalidURL) as err:
-                raise SchemaRegistryError(
-                    f"Unable to fetch from {self._url}\n => {str(err)}") from err
+                raise SchemaRegistryError(f"Unable to fetch from {self._url}\n => {str(err)}") from err
 
         raise SchemaRegistryError(f"Schema registry server {url} is not valid")

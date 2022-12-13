@@ -33,7 +33,7 @@ class FormArea(QScrollArea):
     def _is_not_empty(value: Union[INPUT_VALUE, dict]) -> bool:
         if isinstance(value, (list, dict)):
             return True
-        return str(value) != ''
+        return str(value) != ""
 
     def __init__(self, parent: QWidget):
         super().__init__(parent)
@@ -44,7 +44,7 @@ class FormArea(QScrollArea):
 
     def setWidget(self, widget: QWidget) -> None:
         if self._form is not None:
-            assert isinstance(widget, HStackedWidget), 'Only HStackedWidget type instances are accepted'
+            assert isinstance(widget, HStackedWidget), "Only HStackedWidget type instances are accepted"
         super().setWidget(widget)
         self._form = widget
 

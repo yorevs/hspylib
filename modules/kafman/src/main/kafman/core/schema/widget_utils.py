@@ -24,27 +24,28 @@ from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, Q
 from typing import List, TypeVar, Union
 
 INPUT_WIDGET = TypeVar(
-    'INPUT_WIDGET', QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget)
+    "INPUT_WIDGET", QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget
+)
 
-INPUT_VALUE = TypeVar('INPUT_VALUE', int, str, bool, float, list)
+INPUT_VALUE = TypeVar("INPUT_VALUE", int, str, bool, float, list)
 
 
 class WidgetUtils(ABC):
     QWIDGET_TYPE_MAP = {
-        'boolean': QCheckBox,
-        'integer': QSpinBox,
-        'int': QSpinBox,
-        'long': QSpinBox,
-        'float': QDoubleSpinBox,
-        'double': QDoubleSpinBox,
-        'number': QDoubleSpinBox,
-        'bytes': QLineEdit,
-        'string': QLineEdit,
-        'fixed': QLineEdit,
-        'enum': HComboBox,
-        'array': HListWidget,
-        'record': None,
-        'object': None,
+        "boolean": QCheckBox,
+        "integer": QSpinBox,
+        "int": QSpinBox,
+        "long": QSpinBox,
+        "float": QDoubleSpinBox,
+        "double": QDoubleSpinBox,
+        "number": QDoubleSpinBox,
+        "bytes": QLineEdit,
+        "string": QLineEdit,
+        "fixed": QLineEdit,
+        "enum": HComboBox,
+        "array": HListWidget,
+        "record": None,
+        "object": None,
     }
 
     @staticmethod
@@ -53,10 +54,8 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_widget(
-        widget: INPUT_WIDGET,
-        doc: str = None,
-        symbols: list = None,
-        default: Union[str, int, float, bool] = None) -> QWidget:
+        widget: INPUT_WIDGET, doc: str = None, symbols: list = None, default: Union[str, int, float, bool] = None
+    ) -> QWidget:
         """Return the QWidget that the field is displayed at the schema form"""
 
         widget_type = widget.__class__
@@ -82,18 +81,14 @@ class WidgetUtils(ABC):
     def setup_widget_commons(widget: QWidget, tooltip: str) -> QWidget:
         widget.setToolTip(tooltip)
         widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        widget.setStyleSheet('QWidget {padding: 5px;}')
+        widget.setStyleSheet("QWidget {padding: 5px;}")
         widget.setFont(QFont("DroidSansMono Nerd Font", 14))
         widget.setMinimumHeight(35)
 
         return widget
 
     @staticmethod
-    def setup_combo_box(
-        widget: HComboBox,
-        symbols: List[str],
-        tooltip: str = None,
-        default: str = None) -> QWidget:
+    def setup_combo_box(widget: HComboBox, symbols: List[str], tooltip: str = None, default: str = None) -> QWidget:
 
         widget.addItems(symbols or default or [])
         widget.setEditable(True)
@@ -103,10 +98,7 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_list(
-        widget: HListWidget,
-        tooltip: str = None,
-        all_items: List[str] = None) -> QWidget:
+    def setup_list(widget: HListWidget, tooltip: str = None, all_items: List[str] = None) -> QWidget:
 
         list(map(widget.set_item, all_items or []))
         widget.set_editable()
@@ -116,20 +108,14 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_checkbox(
-        widget: QCheckBox,
-        tooltip: str = None,
-        default: Union[int, float] = False) -> QWidget:
+    def setup_checkbox(widget: QCheckBox, tooltip: str = None, default: Union[int, float] = False) -> QWidget:
 
         widget.setChecked(default or False)
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_spin_box(
-        widget: QSpinBox,
-        tooltip: str = None,
-        default: int = 0) -> QWidget:
+    def setup_spin_box(widget: QSpinBox, tooltip: str = None, default: int = 0) -> QWidget:
 
         min_val, max_val = 0, 9999
         widget.setMinimum(min_val)
@@ -140,10 +126,7 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_double_spin_box(
-        widget: QDoubleSpinBox,
-        tooltip: str = None,
-        default: float = 0.0) -> QWidget:
+    def setup_double_spin_box(widget: QDoubleSpinBox, tooltip: str = None, default: float = 0.0) -> QWidget:
 
         min_val, max_val = 0.0, 9999.9999
         widget.setMinimum(min_val)
@@ -154,12 +137,9 @@ class WidgetUtils(ABC):
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
-    def setup_line_edit(
-        widget: QLineEdit,
-        tooltip: str = None,
-        default: str = '') -> QWidget:
+    def setup_line_edit(widget: QLineEdit, tooltip: str = None, default: str = "") -> QWidget:
 
         widget.setPlaceholderText(tooltip)
-        widget.setText(default or '')
+        widget.setText(default or "")
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)

@@ -30,13 +30,10 @@ MENU = """%ED2%%HOM%
 
 class MainMenu(MenuItem):
     def __init__(self):
-        super().__init__(title='Static Main Menu')
+        super().__init__(title="Static Main Menu")
         self.menu_data = str(MENU).format(self.title)
         self.options = range(0, 3)
-        self.menu_items = {
-            '1': SubMenu1(parent=self),
-            '2': SubMenu2(parent=self)
-        }
+        self.menu_items = {"1": SubMenu1(parent=self), "2": SubMenu2(parent=self)}
 
     def trigger_menu_item(self) -> Menu:  # pylint: disable=inconsistent-return-statements
         int_op = int(str(self.selected).strip())

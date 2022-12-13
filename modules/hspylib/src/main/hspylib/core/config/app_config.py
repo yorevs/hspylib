@@ -29,31 +29,31 @@ class AppConfigs(metaclass=Singleton):
 
     INSTANCE = None
 
-    DISPLAY_FORMAT = dedent("""
+    DISPLAY_FORMAT = dedent(
+        """
     AppConfigs
       |-Run-dir = {}
       |-Resources-dir = {}
       |-Properties:
        \\-{}
-    """)
+    """
+    )
 
     def __init__(self, resource_dir: str, filename: str | None = None, profile: str | None = None):
-        check_argument(os.path.exists(resource_dir),
-                       "Unable to locate resources dir: {}", resource_dir)
+        check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = resource_dir
         self._properties = Properties(filename=filename, load_dir=resource_dir, profile=profile)
         log.info(self)
 
     def __str__(self) -> str:
-        return '\n{}{}{}'.format(
-            '-=' * 40,
+        return "\n{}{}{}".format(
+            "-=" * 40,
             self.DISPLAY_FORMAT.format(
                 str(run_dir()),
                 str(self._resource_dir),
-                str(self._properties).replace(
-                    os.linesep, f"{os.linesep}   |-") if self._properties.size > 0 else ''
+                str(self._properties).replace(os.linesep, f"{os.linesep}   |-") if self._properties.size > 0 else "",
             ),
-            '-=' * 40
+            "-=" * 40,
         )
 
     def __repr__(self):

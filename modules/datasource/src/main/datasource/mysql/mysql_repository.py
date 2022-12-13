@@ -29,7 +29,7 @@ import contextlib
 import logging as log
 import pymysql
 
-E = TypeVar('E', bound=CrudEntity)
+E = TypeVar("E", bound=CrudEntity)
 
 
 class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
@@ -42,11 +42,8 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
     def _create_session(self) -> Tuple[Connection, Cursor]:
         log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         conn = pymysql.connect(
-            host=self.hostname,
-            user=self.username,
-            port=self.port,
-            password=self.password,
-            database=self.database)
+            host=self.hostname, user=self.username, port=self.port, password=self.password, database=self.database
+        )
         return conn, conn.cursor()
 
     @contextlib.contextmanager
@@ -69,9 +66,11 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
         with self._session() as dbs:
             try:
                 rows = []
-                log.debug(f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                          f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
-                          f"\t|-Statement: {sql_statement}")
+                log.debug(
+                    f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
+                    f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
+                    f"\t|-Statement: {sql_statement}"
+                )
                 if (rows_affected := dbs.execute(sql_statement, **kwargs) or 0) > 0:
                     list(map(rows.append, dbs))
                 return rows_affected, rows
@@ -87,30 +86,33 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
 
     def delete_by_id(self, entity_id: Identity) -> None:
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"DELETE FROM {self.table_name()} WHERE " + ' AND '.join(clauses)
+        sql = f"DELETE FROM {self.table_name()} WHERE " + " AND ".join(clauses)
         self.execute(sql)
 
     def delete_all(self, entities: List[E]) -> None:
         values, s = [], entities[0]
         list(map(lambda e: values.append(str(e.values)), entities))
-        sql = f"DELETE FROM " \
-              f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
+        sql = f"DELETE FROM " f"{self.table_name()} WHERE ({s.as_columns()}) IN ({', '.join(values)}) "
         self.execute(sql)
 
     def save(self, entity: E) -> None:
         columns, ids = entity.as_columns(), set(entity.identity.attributes)
-        sql = f"INSERT INTO " \
-              f"{self.table_name()} ({columns}) VALUES {entity.values} AS new " \
-              f"ON DUPLICATE KEY UPDATE {entity.as_column_set(prefix='new.', exclude=ids)}"
+        sql = (
+            f"INSERT INTO "
+            f"{self.table_name()} ({columns}) VALUES {entity.values} AS new "
+            f"ON DUPLICATE KEY UPDATE {entity.as_column_set(prefix='new.', exclude=ids)}"
+        )
         self.execute(sql)
 
     def save_all(self, entities: List[E]) -> None:
         values, sample = [], entities[0]
         columns, ids = sample.as_columns(), set(sample.identity.attributes)
         list(map(lambda e: values.append(str(e.values)), entities))
-        sql = f"INSERT INTO " \
-              f"{self.table_name()} ({columns}) VALUES {', '.join(values)} AS new " \
-              f"ON DUPLICATE KEY UPDATE {sample.as_column_set(prefix='new.', exclude=ids)}"
+        sql = (
+            f"INSERT INTO "
+            f"{self.table_name()} ({columns}) VALUES {', '.join(values)} AS new "
+            f"ON DUPLICATE KEY UPDATE {sample.as_column_set(prefix='new.', exclude=ids)}"
+        )
         self.execute(sql)
 
     def find_all(
@@ -118,27 +120,27 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
         fields: Optional[Set[str]] = None,
         filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
-        limit: int = 500, offset: int = 0) -> List[E]:
+        limit: int = 500,
+        offset: int = 0,
+    ) -> List[E]:
 
-        fields = '*' if not fields else ', '.join(fields)
+        fields = "*" if not fields else ", ".join(fields)
         clauses = list(filter(None, filters.values)) if filters else None
         orders = list(filter(None, order_bys)) if order_bys else None
-        sql = f"SELECT {fields} FROM {self.table_name()} " \
-              f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} " \
-              f"{('ORDER BY ' + ', '.join(orders)) if orders else ''} " \
-              f"LIMIT {limit} OFFSET {offset}"
+        sql = (
+            f"SELECT {fields} FROM {self.table_name()} "
+            f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} "
+            f"{('ORDER BY ' + ', '.join(orders)) if orders else ''} "
+            f"LIMIT {limit} OFFSET {offset}"
+        )
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))
 
-    def find_by_id(
-        self,
-        entity_id: Identity,
-        fields: Optional[Set[str]] = None) -> Optional[E]:
+    def find_by_id(self, entity_id: Identity, fields: Optional[Set[str]] = None) -> Optional[E]:
 
-        fields = '*' if not fields else ', '.join(fields)
+        fields = "*" if not fields else ", ".join(fields)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"SELECT {fields} FROM {self.table_name()} " \
-              f"WHERE {' AND '.join(clauses)}"
+        sql = f"SELECT {fields} FROM {self.table_name()} " f"WHERE {' AND '.join(clauses)}"
         result = next((e for e in self.execute(sql)[1]), None)
 
         return self.to_entity_type(result) if result else None

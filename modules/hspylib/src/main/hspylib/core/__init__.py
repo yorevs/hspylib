@@ -6,16 +6,16 @@
 """Package initialization."""
 
 __all__ = [
-  'collection_filter', 
-  'config', 
-  'constants', 
-  'decorator', 
-  'enums', 
-  'exception', 
-  'metaclass', 
-  'namespace', 
-  'preconditions', 
-  'tools', 
-  'zoned_datetime'
+    "collection_filter",
+    "config",
+    "constants",
+    "decorator",
+    "enums",
+    "exception",
+    "metaclass",
+    "namespace",
+    "preconditions",
+    "tools",
+    "zoned_datetime",
 ]
-__version__ = '0.11.133'
+__version__ = "0.11.133"

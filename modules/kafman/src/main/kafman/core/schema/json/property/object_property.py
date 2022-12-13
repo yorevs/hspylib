@@ -21,17 +21,7 @@ from typing import Tuple
 
 
 class ObjectProperty(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        properties: Tuple[Property],
-        required: bool = True):
-        super().__init__(
-            name,
-            description,
-            JsonType.OBJECT,
-            required=required)
+    def __init__(self, name: str, description: str, properties: Tuple[Property], required: bool = True):
+        super().__init__(name, description, JsonType.OBJECT, required=required)
 
         self.properties = properties

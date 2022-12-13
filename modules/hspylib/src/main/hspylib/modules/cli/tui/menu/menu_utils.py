@@ -22,44 +22,40 @@ from typing import Any, Callable, Optional, Tuple
 
 import time
 
-VALIDATION_FNC = Callable[[Any], Tuple[bool ,str]]
+VALIDATION_FNC = Callable[[Any], Tuple[bool, str]]
 
 
 class MenuUtils(ABC):
     """TODO"""
 
     @staticmethod
-    def print_error(
-        message: str,
-        argument: Any = None,
-        wait_interval: int = 2) -> None:
+    def print_error(message: str, argument: Any = None, wait_interval: int = 2) -> None:
         """TODO"""
 
         syserr(f"### Error: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
-        sysout('%CUU(2)%%ED0%', end='')
+        sysout("%CUU(2)%%ED0%", end="")
 
     @staticmethod
     def print_warning(
-        message: str,
-        argument: str = None,
-        wait_interval: int = 2,
-        color: VtColors = VtColors.YELLOW) -> None:
+        message: str, argument: str = None, wait_interval: int = 2, color: VtColors = VtColors.YELLOW
+    ) -> None:
         """TODO"""
 
         sysout(f"{color.placeholder}### Warn: {message} \"{argument or ''}\"")
         time.sleep(wait_interval)
-        sysout('%CUU(2)%%ED0%', end='')
+        sysout("%CUU(2)%%ED0%", end="")
 
     @staticmethod
     def prompt(
-        prompt_msg: str = '',
+        prompt_msg: str = "",
         validator: Callable = None,
         default_value: Any = None,
         any_key: bool = False,
         on_blank_abort: bool = True,
         color: VtColors = VtColors.GREEN,
-        end: str = ': ') -> Optional[Any]:
+        end: str = ": ",
+    ) -> Optional[Any]:
         """TODO"""
 
         valid = False
@@ -87,7 +83,7 @@ class MenuUtils(ABC):
                     if not on_blank_abort:
                         MenuUtils.print_error("Input can't be empty: ", input_data)
                     else:
-                        raise InputAbortedError('Input process was aborted')
+                        raise InputAbortedError("Input process was aborted")
             except EOFError as err:
                 MenuUtils.print_error("Input failed: ", str(err))
                 break
@@ -95,11 +91,9 @@ class MenuUtils(ABC):
         return input_data
 
     @staticmethod
-    def wait_enter(
-        wait_msg: str = 'Press [Enter] to continue ...',
-        color: VtColors = VtColors.YELLOW) -> None:
+    def wait_enter(wait_msg: str = "Press [Enter] to continue ...", color: VtColors = VtColors.YELLOW) -> None:
         """TODO"""
-        MenuUtils.prompt(wait_msg, any_key=True, color=color, end='')
+        MenuUtils.prompt(wait_msg, any_key=True, color=color, end="")
 
     @staticmethod
     def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:

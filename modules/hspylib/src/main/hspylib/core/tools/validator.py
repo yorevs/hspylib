@@ -22,7 +22,6 @@ import re
 
 
 class Validator(ABC):
-
     @staticmethod
     def assert_valid(errors: list, validation: Tuple[bool, str], throw_if_invalid: bool = False) -> None:
         if not validation[0]:
@@ -35,39 +34,27 @@ class Validator(ABC):
         return input_string and len(input_string) >= min_length
 
     @staticmethod
-    def matches(
-        input_string: str,
-        regex_pattern: str) -> bool:
+    def matches(input_string: str, regex_pattern: str) -> bool:
 
         return bool(re.match(regex_pattern, input_string))
 
     @staticmethod
-    def is_integer(
-        number: str,
-        min_value: int = 0,
-        max_value: int = 65535) -> bool:
+    def is_integer(number: str, min_value: int = 0, max_value: int = 65535) -> bool:
 
         return number.isdigit() and min_value <= int(number) <= max_value
 
     @staticmethod
-    def is_float(
-        number: str,
-        min_value: float = 0,
-        max_value: float = 65535) -> bool:
+    def is_float(number: str, min_value: float = 0, max_value: float = 65535) -> bool:
 
         return number.isdecimal() and min_value <= float(number) <= max_value
 
     @staticmethod
-    def is_enum(
-        name: str,
-        enum_type: Type) -> bool:
+    def is_enum(name: str, enum_type: Type) -> bool:
 
         return name.upper() in enum_type.__dict__
 
     @staticmethod
-    def is_date(
-        date_text: str,
-        fmt: str = DATETIME_FORMAT) -> bool:
+    def is_date(date_text: str, fmt: str = DATETIME_FORMAT) -> bool:
 
         try:
             datetime.strptime(date_text, fmt)
@@ -81,10 +68,7 @@ class Validator(ABC):
 
     @staticmethod
     def in_range(array: list, start: int, end: int) -> bool:
-        return \
-            list is not None \
-            and 0 <= start < len(array) \
-            and 0 <= start <= end < len(array)
+        return list is not None and 0 <= start < len(array) and 0 <= start <= end < len(array)
 
     @abstractmethod
     def __call__(self, *args, **kwargs) -> bool:

@@ -32,24 +32,23 @@ class Properties:
     """The Properties class represents a persistent set of properties. Each key and its corresponding value in the
     property list is a string."""
 
-    _default_name: str = 'application'
-    _default_ext: str = '.properties'
+    _default_name: str = "application"
+    _default_ext: str = ".properties"
 
     @staticmethod
     def environ_name(property_name: str) -> str:
         """Retrieve the environment name of the specified property name
         :param property_name: the name of the property using space, dot or dash notations
         """
-        return re.sub('[ -.]', '_', property_name).upper()
+        return re.sub("[ -.]", "_", property_name).upper()
 
     @staticmethod
     def _read_properties(all_lines: List[str]) -> dict:
         """Reads a property list (key and element pairs) from the input list."""
         return {
-            p[0].strip(): p[1].strip() for p in [
-                p.split('=', 1) for p in list(
-                    filter(lambda l: re.match(r'[a-zA-Z]([.\\-]|\w)* *= *.+', l), all_lines)
-                )
+            p[0].strip(): p[1].strip()
+            for p in [
+                p.split("=", 1) for p in list(filter(lambda l: re.match(r"[a-zA-Z]([.\\-]|\w)* *= *.+", l), all_lines))
             ]
         }
 
@@ -64,21 +63,19 @@ class Properties:
             all_cfgs.update(dict(cfg.items(section)))
         return all_cfgs
 
-    def __init__(
-        self, filename: str = None,
-        profile: str | None = None,
-        load_dir: str | None = None) -> None:
+    def __init__(self, filename: str = None, profile: str | None = None, load_dir: str | None = None) -> None:
 
         self._filename, self._extension = os.path.splitext(
-            filename if filename else f'{self._default_name}{self._default_ext}')
-        self._profile = profile if profile else os.environ.get('ACTIVE_PROFILE', '')
+            filename if filename else f"{self._default_name}{self._default_ext}"
+        )
+        self._profile = profile if profile else os.environ.get("ACTIVE_PROFILE", "")
         self._properties = defaultdict()
-        self._load(load_dir or f'{run_dir()}/resources')
+        self._load(load_dir or f"{run_dir()}/resources")
 
     def __str__(self) -> str:
-        str_val = ''
+        str_val = ""
         for key, value in self._properties.items():
-            str_val += '{}{}={}'.format('\n' if str_val else '', key, value)
+            str_val += "{}{}={}".format("\n" if str_val else "", key, value)
         return str_val
 
     def __repr__(self) -> str:
@@ -94,10 +91,7 @@ class Properties:
         """Retrieve the amount of properties"""
         return len(self._properties)
 
-    def get(
-        self, prop_name: str,
-        cb_to_type: CONVERSION_FN = str,
-        default: Any | None = None) -> Optional[Any]:
+    def get(self, prop_name: str, cb_to_type: CONVERSION_FN = str, default: Any | None = None) -> Optional[Any]:
         """Retrieve a property specified by property and cast to the proper type. If the property is not found,
         return the default value."""
 
@@ -135,8 +129,7 @@ class Properties:
         if os.path.exists(filepath):
             return self._parse(filepath)
 
-        raise FileNotFoundError(
-            f'File "{filepath}" does not exist')
+        raise FileNotFoundError(f'File "{filepath}" does not exist')
 
     def _build_path(self, load_dir: str) -> str:
         """Find the proper path for the properties file"""
@@ -148,15 +141,15 @@ class Properties:
             touch_file(filepath)
         ext = self._extension.lower()
         with open(filepath, encoding=Charset.UTF_8.val) as fh_props:
-            if ext in ['.ini', '.cfg']:
+            if ext in [".ini", ".cfg"]:
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
                 all_properties = self._read_cfg_or_ini(all_lines)
-            elif ext == '.properties':
+            elif ext == ".properties":
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
                 all_properties = self._read_properties(all_lines)
-            elif ext in ['.yml', '.yaml']:
+            elif ext in [".yml", ".yaml"]:
                 all_properties = flatten_dict(yaml.safe_load(fh_props))
             else:
                 raise NotImplementedError(f"Extension {ext} is not supported")
             self._properties.update(all_properties)
-        log.debug('Successfully loaded %d properties from: %s', len(self._properties), filepath)
+        log.debug("Successfully loaded %d properties from: %s", len(self._properties), filepath)

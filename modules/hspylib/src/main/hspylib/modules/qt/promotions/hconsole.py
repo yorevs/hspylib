@@ -25,7 +25,7 @@ class HConsole(QPlainTextEdit):
     class _LineNumberArea(QWidget):
         """TODO"""
 
-        def __init__(self, text_edit: 'HConsole'):
+        def __init__(self, text_edit: "HConsole"):
             super().__init__(text_edit)
             self._text_edit = text_edit
 
@@ -45,7 +45,7 @@ class HConsole(QPlainTextEdit):
         self._highlight_enabled = False
         self._show_line_numbers = False
         self.setReadOnly(True)
-        self.setPlaceholderText('No messages received yet')
+        self.setPlaceholderText("No messages received yet")
         self.setFont(QFont("Courier New", 14))
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._context_menu)
@@ -79,8 +79,13 @@ class HConsole(QPlainTextEdit):
                 number = str(block_number + 1)
                 painter.setPen(txt_color)
                 painter.drawText(
-                    margin_right, top, self._line_number_area.width(),
-                    self.fontMetrics().height(), Qt.AlignRight, number)
+                    margin_right,
+                    top,
+                    self._line_number_area.width(),
+                    self.fontMetrics().height(),
+                    Qt.AlignRight,
+                    number,
+                )
             block = block.next()
             top = bottom
             bottom = top + round(self.blockBoundingRect(block).height())
@@ -92,7 +97,7 @@ class HConsole(QPlainTextEdit):
             digits = 1
             margin_left = 10
             max_count = max(1, self.document().blockCount())
-            char_width = self.fontMetrics().widthChar('_')
+            char_width = self.fontMetrics().widthChar("_")
             # Check the amount of digits to be printed
             while max_count >= 10:
                 max_count /= 10
@@ -167,7 +172,7 @@ class HConsole(QPlainTextEdit):
             ctx_menu = self.createStandardContextMenu()
             if self._clearable:
                 ctx_menu.addSeparator()
-                ctx_menu.addAction('Clear', self.clear)
+                ctx_menu.addAction("Clear", self.clear)
             ctx_menu.exec_(QCursor.pos())
 
     def set_context_menu_enable(self, enabled: bool = True):

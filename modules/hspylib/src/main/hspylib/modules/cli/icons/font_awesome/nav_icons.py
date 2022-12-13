@@ -17,20 +17,16 @@ from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 class NavIcons(Awesome):
     """
-        Navigation icons.
-        Codes can be found here:
-        - https://fontawesome.com/cheatsheet?from=io
+    Navigation icons.
+    Codes can be found here:
+    - https://fontawesome.com/cheatsheet?from=io
     """
 
     # fmt: off
-    LEFT = '\u2190'         # ←
-    UP = '\u2191'           # ↑
-    RIGHT = '\u2192'        # →
-    DOWN = '\u2193'         # ↓
-    ENTER = '\u21b2'        # ↲
-    TAB = '\u21b9'          # ↹
+    LEFT    = '\u2190'  # ←
+    UP      = '\u2191'  # ↑
+    RIGHT   = '\u2192'  # →
+    DOWN    = '\u2193'  # ↓
+    ENTER   = '\u21b2'  # ↲
+    TAB     = '\u21b9'  # ↹
     # fmt: on
-
-
-if __name__ == '__main__':
-    NavIcons.demo_icons()

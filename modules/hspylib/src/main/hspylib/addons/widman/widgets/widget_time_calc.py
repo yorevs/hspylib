@@ -41,13 +41,13 @@ class WidgetTimeCalc(Widget):
 
     @staticmethod
     def to_decimal(time_raw: int = 0) -> int:
-        """ Convert a raw time into decimal """
+        """Convert a raw time into decimal"""
         return int(round(((time_raw / 60.00) * 100.00)))
 
     @staticmethod
     def calc_time(args: List[str]) -> Tuple[int, int, int]:
         """Calculate the time resulted from the specified operations."""
-        op, total_seconds = '+', 0
+        op, total_seconds = "+", 0
         for tm in args:
             if not tm:
                 continue
@@ -55,16 +55,16 @@ class WidgetTimeCalc(Widget):
                 op = tm
             elif re.match(r"^([0-9]{1,2}:?)+", tm):
                 try:
-                    parts = [int(math.floor(float(s))) for s in tm.split(':')]
+                    parts = [int(math.floor(float(s))) for s in tm.split(":")]
                 except ValueError as err:
                     raise WidgetExecutionError(f"Unable to extract time parts from '{tm}'") from err
                 f_hours = parts[0] if len(parts) > 0 else 0
                 f_minutes = parts[1] if len(parts) > 1 else 0
                 f_secs = parts[2] if len(parts) > 2 else 0
-                tm_amount = ((f_hours * 60 + f_minutes) * 60 + f_secs)
-                if op == '+':
+                tm_amount = (f_hours * 60 + f_minutes) * 60 + f_secs
+                if op == "+":
                     total_seconds += tm_amount
-                elif op == '-':
+                elif op == "-":
                     total_seconds -= tm_amount
             else:
                 raise WidgetExecutionError(f"Invalid time input: '{tm}'")
@@ -74,12 +74,7 @@ class WidgetTimeCalc(Widget):
         return hours if total_seconds > 0 else -1 * hours, minutes, seconds
 
     def __init__(self) -> None:
-        super().__init__(
-            self.WIDGET_ICON,
-            self.WIDGET_NAME,
-            self.TOOLTIP,
-            self.USAGE,
-            self.VERSION)
+        super().__init__(self.WIDGET_ICON, self.WIDGET_NAME, self.TOOLTIP, self.USAGE, self.VERSION)
 
         self._decimal = False
         self._args = None
@@ -89,14 +84,14 @@ class WidgetTimeCalc(Widget):
 
         if not args and not self._read_args():
             return ExitStatus.ABORTED
-        if args and any(a in args for a in ['+h', '++help']):
+        if args and any(a in args for a in ["+h", "++help"]):
             sysout(self.usage())
             return ExitStatus.SUCCESS
-        if args and any(a in args for a in ['+v', '++version']):
+        if args and any(a in args for a in ["+v", "++version"]):
             sysout(self.version())
             return ExitStatus.SUCCESS
 
-        if args and any(a in args for a in ['+d', '++decimal']):
+        if args and any(a in args for a in ["+d", "++decimal"]):
             self._decimal = True
             args = args[1:]
 
@@ -122,7 +117,7 @@ class WidgetTimeCalc(Widget):
         return ExitStatus.SUCCESS
 
     def _read_args(self) -> bool:
-        """ When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info. """
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -145,6 +140,6 @@ class WidgetTimeCalc(Widget):
 
         result = minput(form_fields)
         self._args = result.values if result else None
-        sysout('%HOM%%ED2%%MOD(0)%', end='')
+        sysout("%HOM%%ED2%%MOD(0)%", end="")
 
         return bool(result)

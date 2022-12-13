@@ -23,19 +23,14 @@ import logging as log
 
 
 def rest_call(
-    url: str,
-    method: HttpMethod,
-    data: str,
-    headers: Optional[CaseInsensitiveDict]) -> Optional[HttpResponse]:
+    url: str, method: HttpMethod, data: str, headers: Optional[CaseInsensitiveDict]
+) -> Optional[HttpResponse]:
     """TODO"""
 
     all_headers = {} if not headers else headers
-    all_headers.update({
-        "Content-Type": "application/json",
-        "Accept": "*/*"
-    })
+    all_headers.update({"Content-Type": "application/json", "Accept": "*/*"})
 
-    log.debug('Processing REST {all_headers} {method} -> {url}')
+    log.debug("Processing REST {all_headers} {method} -> {url}")
     response = fetch(url=url, method=method, headers=all_headers, body=data)
     log.debug("Response <=  Status: %s  Payload: %s", response.status_code, response)
 

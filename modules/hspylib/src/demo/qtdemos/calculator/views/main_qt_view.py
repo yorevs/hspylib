@@ -26,19 +26,19 @@ import logging as log
 class MainQtView(QtView):
     """TODO"""
 
-    UI_FILE = 'qt_calculator.ui'
+    UI_FILE = "qt_calculator.ui"
 
     def __init__(self):
         super().__init__(self.UI_FILE)
         self.configs = AppConfigs.INSTANCE
-        self.dec_sep = AppConfigs.INSTANCE['decimal.separator']
-        self.min_digits = int(AppConfigs.INSTANCE['min.digits'])
-        self.max_digits = int(AppConfigs.INSTANCE['max.digits'])
+        self.dec_sep = AppConfigs.INSTANCE["decimal.separator"]
+        self.min_digits = int(AppConfigs.INSTANCE["min.digits"])
+        self.max_digits = int(AppConfigs.INSTANCE["max.digits"])
         self.wait_operand = self.wait_operand2 = True
         self.operand = self.operand2 = self.last_operand = None
         self.memory_rec = None
         self.keymap = None
-        self.display_text = ''
+        self.display_text = ""
         self.op = CalcOperations.NO_OP
         self._setup_keymap()
         self._setup_ui()
@@ -111,7 +111,7 @@ class MainQtView(QtView):
     def _blink_lcd(self) -> None:
         blink = BlinkLcdThread(self.ui.lcdDisplay)
         blink.start()
-        self.display_text = ''
+        self.display_text = ""
 
     def _soft_reset(self) -> None:
         self.wait_operand = True
@@ -120,11 +120,11 @@ class MainQtView(QtView):
         self.operand = 0
         self.operand2 = 0
         self.memory_rec = 0
-        self.display_text = ''
+        self.display_text = ""
 
     def _append_digit(self, digit: int) -> None:
-        self.ui.btnAC.setText('C')
-        if not self.display_text or self.display_text == '0':
+        self.ui.btnAC.setText("C")
+        if not self.display_text or self.display_text == "0":
             self.display_text = str(digit)
         else:
             self.display_text += str(digit)
@@ -151,7 +151,7 @@ class MainQtView(QtView):
             result = self.operand * self.operand2
         elif self.op == CalcOperations.DIVISION:
             if self.operand2 == 0:
-                result = 'oo'
+                result = "oo"
             else:
                 result = self.operand / self.operand2
         self._display(result)
@@ -192,8 +192,8 @@ class MainQtView(QtView):
             self.ui.lcdDisplay.setDigitCount(self.min_digits)
             self._display(0)
             self._soft_reset()
-            self.ui.btnAC.setText('AC')
-        self.display_text = ''
+            self.ui.btnAC.setText("AC")
+        self.display_text = ""
         self._blink_lcd()
 
     def _btn_period_clicked(self) -> None:
@@ -205,7 +205,7 @@ class MainQtView(QtView):
         log.info("Clicked: %")
         if not self.memory_rec:
             self._display(self.ui.lcdDisplay.value() / 100)
-            self.display_text = ''
+            self.display_text = ""
         else:
             operand1 = self.memory_rec
             operand2 = self.ui.lcdDisplay.value()
@@ -272,5 +272,5 @@ class MainQtView(QtView):
     def _btn_comma_clicked(self) -> None:
         log.info("Clicked: ,")
         if self.dec_sep not in self.display_text:
-            self.display_text += self.dec_sep if self.display_text else '0' + self.dec_sep
+            self.display_text += self.dec_sep if self.display_text else "0" + self.dec_sep
         self._display(self.display_text)

@@ -20,12 +20,12 @@ import typing
 class InputValidator:
     """TODO"""
 
-    RE_FMT_LETTER = r'^[a-zA-Z]{%min%,%max%}$'
-    RE_FMT_WORD = r'^[a-zA-Z0-9 _]{%min%,%max%}$'
-    RE_FMT_NUMBER = r'^[0-9\.]{%min%,%max%}$'
-    RE_FMT_TOKEN = r'^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$'
-    RE_FMT_MASKED = r'.*\|.+'
-    RE_FMT_ANYTHING = r'^.{%min%,%max%}$'
+    RE_FMT_LETTER = r"^[a-zA-Z]{%min%,%max%}$"
+    RE_FMT_WORD = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
+    RE_FMT_NUMBER = r"^[0-9\.]{%min%,%max%}$"
+    RE_FMT_TOKEN = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
+    RE_FMT_MASKED = r".*\|.+"
+    RE_FMT_ANYTHING = r"^.{%min%,%max%}$"
 
     def __init__(self, min_length: int = 1, max_length: int = 30, pattern: str = None):
         self._min_length = min_length
@@ -33,7 +33,7 @@ class InputValidator:
         self._pattern = pattern or self.RE_FMT_ANYTHING
 
     def __str__(self) -> str:
-        return f"r\"{self._pattern}\""
+        return f'r"{self._pattern}"'
 
     def __repr__(self):
         return str(self)
@@ -63,6 +63,4 @@ class InputValidator:
         return re.search(regex, value) is not None
 
     def _get_pattern(self) -> str:
-        return self._pattern \
-            .replace('%min%', str(self._min_length or 1)) \
-            .replace('%max%', str(self._max_length or 30))
+        return self._pattern.replace("%min%", str(self._min_length or 1)).replace("%max%", str(self._max_length or 30))

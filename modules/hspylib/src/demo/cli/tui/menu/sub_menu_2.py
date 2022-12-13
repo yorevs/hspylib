@@ -27,7 +27,7 @@ MENU = """%ED2%%HOM%
 
 class SubMenu2(MenuItem):
     def __init__(self, parent: Menu = None):
-        super().__init__(parent, '-= Sub Menu 2 =-')
+        super().__init__(parent, "-= Sub Menu 2 =-")
         self.menu_data = str(MENU).format(self.title)
         self.options = range(0, 3)
 
@@ -37,8 +37,8 @@ class SubMenu2(MenuItem):
             return self.parent
 
         if int_op == 1:
-            print('Hello')
+            print("Hello")
         elif int_op == 2:
-            print('Hi')
+            print("Hi")
 
         return self

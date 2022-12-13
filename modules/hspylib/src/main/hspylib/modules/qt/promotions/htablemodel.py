@@ -22,7 +22,7 @@ from typing import List, Tuple, Type, TypeVar, Union
 
 import collections
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class HTableModel(QAbstractTableModel):
@@ -35,7 +35,8 @@ class HTableModel(QAbstractTableModel):
         headers: List[str] = None,
         table_data: List[T] = None,
         cell_alignments: List[Qt.AlignmentFlag] = None,
-        max_rows: int = 500):
+        max_rows: int = 500,
+    ):
 
         QAbstractTableModel.__init__(self, parent)
         self._parent = parent
@@ -62,13 +63,16 @@ class HTableModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             row_dict = self._data[index.row()].__dict__
             value = class_attribute_values(row_dict)[index.column()]
-            ret_val = QVariant(str(value if value is not None else ''))
+            ret_val = QVariant(str(value if value is not None else ""))
         elif role == Qt.TextAlignmentRole:
-            ret_val = QVariant(self._cell_alignments[index.column()]) \
-                if self._cell_alignments else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
+            ret_val = (
+                QVariant(self._cell_alignments[index.column()])
+                if self._cell_alignments
+                else QVariant(Qt.AlignLeft | Qt.AlignVCenter)
+            )
         elif role == Qt.BackgroundColorRole:
             light_gray = self._parent.palette().color(QPalette.Window).lighter(100)
-            ret_val = QVariant(light_gray if index.row() % 2 != 0 else '')
+            ret_val = QVariant(light_gray if index.row() % 2 != 0 else "")
         else:
             ret_val = None
 
@@ -78,8 +82,7 @@ class HTableModel(QAbstractTableModel):
         """TODO"""
         ret_val = None
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            ret_val = QVariant(self._headers[section].upper()) \
-                if len(self._headers) >= section else QVariant('-')
+            ret_val = QVariant(self._headers[section].upper()) if len(self._headers) >= section else QVariant("-")
         elif orientation == Qt.Vertical and role == Qt.DisplayRole:
             ret_val = QVariant(str(section))
 
@@ -108,11 +111,8 @@ class HTableModel(QAbstractTableModel):
             self.layoutChanged.emit()
 
     def apply_filter(
-        self,
-        name: str,
-        el_name: str,
-        condition: FilterCondition,
-        el_value: Union[int, str, bool, float]) -> None:
+        self, name: str, el_name: str, condition: FilterCondition, el_value: Union[int, str, bool, float]
+    ) -> None:
         """TODO"""
         self._filters.apply_filter(name, el_name, condition, el_value)
 

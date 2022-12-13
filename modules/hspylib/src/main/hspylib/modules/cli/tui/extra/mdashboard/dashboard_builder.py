@@ -24,23 +24,23 @@ class DashboardBuilder:
     class DashboardItemBuilder:
         """Dashboard item builder"""
 
-        def __init__(self, parent: 'DashboardBuilder'):
+        def __init__(self, parent: "DashboardBuilder"):
             self._parent = parent
             self._item = DashboardItem()
 
-        def icon(self, icon: Awesome) -> 'DashboardBuilder.DashboardItemBuilder':
+        def icon(self, icon: Awesome) -> "DashboardBuilder.DashboardItemBuilder":
             self._item.icon = icon
             return self
 
-        def tooltip(self, tooltip: str) -> 'DashboardBuilder.DashboardItemBuilder':
+        def tooltip(self, tooltip: str) -> "DashboardBuilder.DashboardItemBuilder":
             self._item.tooltip = tooltip
             return self
 
-        def on_trigger(self, on_trigger: CB_ON_TRIGGER) -> Optional['DashboardBuilder.DashboardItemBuilder']:
+        def on_trigger(self, on_trigger: CB_ON_TRIGGER) -> Optional["DashboardBuilder.DashboardItemBuilder"]:
             self._item.on_trigger = on_trigger
             return self
 
-        def build(self) -> 'DashboardBuilder':
+        def build(self) -> "DashboardBuilder":
             self._parent.items.append(self._item)
             return self._parent
 

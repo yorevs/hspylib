@@ -22,10 +22,7 @@ class _Classpath(Classpath):
     """TODO"""
 
     def __init__(self):
-        super().__init__(
-            get_path(__file__),
-            get_path(run_dir()),
-            (get_path(__file__) / "resources"))
+        super().__init__(get_path(__file__), get_path(run_dir()), (get_path(__file__) / "resources"))
 
 
 # Instantiate the classpath singleton

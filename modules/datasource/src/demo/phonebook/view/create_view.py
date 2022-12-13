@@ -27,45 +27,48 @@ from phonebook.service.person_service import PersonService
 
 
 class CreateView(metaclass=Singleton):
-
     def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        MenuUtils.title('CREATE PERSON')
+        MenuUtils.title("CREATE PERSON")
         person = Person(Identity.auto())
         try:
             person.uuid = person.identity.values
-            person.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
-            person.age = MenuUtils.prompt('Age', PersonValidator.validate_age)
-            person.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)
-            person.email = MenuUtils.prompt('Email', PersonValidator.validate_email)
+            person.name = MenuUtils.prompt("Name", ContactValidator.validate_name)
+            person.age = MenuUtils.prompt("Age", PersonValidator.validate_age)
+            person.phone = MenuUtils.prompt("Phone", ContactValidator.validate_phone)
+            person.email = MenuUtils.prompt("Email", PersonValidator.validate_email)
             person.address = MenuUtils.prompt(
-                'Address', on_blank_abort=False, validator=ContactValidator.validate_address)
+                "Address", on_blank_abort=False, validator=ContactValidator.validate_address
+            )
             person.complement = MenuUtils.prompt(
-                'Complement', on_blank_abort=False, validator=ContactValidator.validate_complement)
+                "Complement", on_blank_abort=False, validator=ContactValidator.validate_complement
+            )
             self.person_service.save(person)
         except InputAbortedError:
-            MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
+            MenuUtils.wait_enter("Operation aborted. Press [Enter]...")
 
         MenuUtils.wait_enter()
 
     def company(self) -> None:
-        MenuUtils.title('CREATE COMPANY')
+        MenuUtils.title("CREATE COMPANY")
         company = Company(Identity.auto())
         try:
             company.uuid = company.identity.values
-            company.name = MenuUtils.prompt('Name', ContactValidator.validate_name)
-            company.cnpj = MenuUtils.prompt('CNPJ', CompanyValidator.validate_cnpj)
-            company.phone = MenuUtils.prompt('Phone', ContactValidator.validate_phone)
-            company.website = MenuUtils.prompt('WebSite', CompanyValidator.validate_website)
+            company.name = MenuUtils.prompt("Name", ContactValidator.validate_name)
+            company.cnpj = MenuUtils.prompt("CNPJ", CompanyValidator.validate_cnpj)
+            company.phone = MenuUtils.prompt("Phone", ContactValidator.validate_phone)
+            company.website = MenuUtils.prompt("WebSite", CompanyValidator.validate_website)
             company.address = MenuUtils.prompt(
-                'Address', on_blank_abort=False, validator=ContactValidator.validate_address)
+                "Address", on_blank_abort=False, validator=ContactValidator.validate_address
+            )
             company.complement = MenuUtils.prompt(
-                'Complement', on_blank_abort=False, validator=ContactValidator.validate_complement)
+                "Complement", on_blank_abort=False, validator=ContactValidator.validate_complement
+            )
             self.company_service.save(company)
         except InputAbortedError:
-            MenuUtils.wait_enter('Operation aborted. Press [Enter]...')
+            MenuUtils.wait_enter("Operation aborted. Press [Enter]...")
 
         MenuUtils.wait_enter()

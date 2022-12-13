@@ -24,11 +24,10 @@ from typing import TypeVar
 
 import sys
 
-V = TypeVar('V', bound='QWidget')
+V = TypeVar("V", bound="QWidget")
 
 
 class QtApplication(Application):
-
     def __init__(
         self,
         main_view: V,
@@ -38,7 +37,8 @@ class QtApplication(Application):
         usage: str = None,
         epilog: str = None,
         resource_dir: str = None,
-        log_dir: str = None):
+        log_dir: str = None,
+    ):
         super().__init__(name, version, description, usage, epilog, resource_dir, log_dir)
         app_title = titlecase(name)
         self.qapp = QApplication(sys.argv)
@@ -62,7 +62,7 @@ class QtApplication(Application):
 
     def set_application_font(self, font_path: Path) -> None:
         """TODO"""
-        check_argument(font_path.exists(), f'Could not find font at: {str(font_path)}')
+        check_argument(font_path.exists(), f"Could not find font at: {str(font_path)}")
         font_id = QFontDatabase.addApplicationFont(str(font_path))
         families = QFontDatabase.applicationFontFamilies(font_id)
         check_state(families is not None and len(families) == 1)
@@ -70,5 +70,5 @@ class QtApplication(Application):
 
     def set_application_icon(self, icon_path: Path) -> None:
         """TODO"""
-        check_argument(icon_path.exists(), f'Could not find icon file at: {str(icon_path)}')
+        check_argument(icon_path.exists(), f"Could not find icon file at: {str(icon_path)}")
         self.qapp.setWindowIcon(QIcon(str(icon_path)))

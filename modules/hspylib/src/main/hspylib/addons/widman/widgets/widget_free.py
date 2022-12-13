@@ -41,12 +41,7 @@ class WidgetFree(Widget):
     # fmt: on
 
     def __init__(self) -> None:
-        super().__init__(
-            self.WIDGET_ICON,
-            self.WIDGET_NAME,
-            self.TOOLTIP,
-            self.USAGE,
-            self.VERSION)
+        super().__init__(self.WIDGET_ICON, self.WIDGET_NAME, self.TOOLTIP, self.USAGE, self.VERSION)
         self._is_alive = True
         self._report_interval = 1.5
         self._exit_code = ExitStatus.SUCCESS
@@ -65,31 +60,31 @@ class WidgetFree(Widget):
     @staticmethod
     def _report_usage() -> bool:
         """Display the memory usage for the cycle"""
-        ps, ec1 = Terminal.shell_exec('ps -caxm -orss,comm')  # Get process info
-        vm, ec2 = Terminal.shell_exec('vm_stat')  # Grabbing memory characteristics
+        ps, ec1 = Terminal.shell_exec("ps -caxm -orss,comm")  # Get process info
+        vm, ec2 = Terminal.shell_exec("vm_stat")  # Grabbing memory characteristics
 
         if ec1 == ExitStatus.SUCCESS and ec2 == ExitStatus.SUCCESS and ps:
-            process_lines = ps.split('\n')  # Iterate processes
-            sep = re.compile(' +')
+            process_lines = ps.split("\n")  # Iterate processes
+            sep = re.compile(" +")
             rss_total = 0  # kB
 
             for row in range(1, len(process_lines)):
                 row_text = process_lines[row].strip()
                 row_elements = sep.split(row_text)
-                if re.match('^[0-9]+$', row_elements[0]):
+                if re.match("^[0-9]+$", row_elements[0]):
                     rss = float(row_elements[0]) * 1024
                 else:
                     rss = 0
                 rss_total += rss
 
-            vm_lines = vm.split('\n')  # Process vm_stat
-            sep = re.compile(': +')
+            vm_lines = vm.split("\n")  # Process vm_stat
+            sep = re.compile(": +")
             vm_stats = {}
 
             for row in range(1, len(vm_lines) - 2):
                 row_text = vm_lines[row].strip()
                 row_elements = sep.split(row_text)
-                vm_stats[(row_elements[0])] = int(row_elements[1].strip('\\.')) * 4096
+                vm_stats[(row_elements[0])] = int(row_elements[1].strip("\\.")) * 4096
 
             wired, wu = human_readable_bytes(vm_stats["Pages wired down"])
             active, au = human_readable_bytes(vm_stats["Pages active"])
@@ -97,7 +92,9 @@ class WidgetFree(Widget):
             free, fu = human_readable_bytes(vm_stats["Pages free"])
             real, ru = human_readable_bytes(rss_total)  # Total memory
 
-            sysout(dedent(f"""
+            sysout(
+                dedent(
+                    f"""
             %HOM%%ED2%%MOD(0)%
             %ORANGE%Reporting system memory usage:%NC%
             {'-' * 30}
@@ -107,7 +104,9 @@ class WidgetFree(Widget):
             %GREEN%    Free Memory: {free:6s} {fu:2s}
             %GREEN%    Real Memory: {real:6s} {ru:2s}
 
-            %YELLOW%Press [Enter] to exit ..."""))
+            %YELLOW%Press [Enter] to exit ..."""
+                )
+            )
 
             return True
 

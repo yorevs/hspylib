@@ -21,15 +21,13 @@ from typing import List, Tuple
 
 class Person(CrudEntity):
 
-    PersonId = namedtuple('PersonId', ['uuid'])
+    PersonId = namedtuple("PersonId", ["uuid"])
 
     @staticmethod
     def columns() -> List[str]:
         return ["uuid", "email", "name", "age", "phone", "address", "complement"]
 
     @classmethod
-    def from_tuple(cls, values: Tuple) -> 'Person':
+    def from_tuple(cls, values: Tuple) -> "Person":
         row = {k: v for k, v in zip(cls.columns(), values)}
-        return Person(
-            Identity(cls.PersonId(row['uuid'])), **row,
-        )
+        return Person(Identity(cls.PersonId(row["uuid"])), **row)

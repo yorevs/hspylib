@@ -5,10 +5,5 @@
 # Package: main.hspylib.modules.cli.tui.extra
 """Package initialization."""
 
-__all__ = [
-  'mchoose', 
-  'mdashboard', 
-  'minput', 
-  'mselect'
-]
-__version__ = '0.11.133'
+__all__ = ["mchoose", "mdashboard", "minput", "mselect"]
+__version__ = "0.11.133"

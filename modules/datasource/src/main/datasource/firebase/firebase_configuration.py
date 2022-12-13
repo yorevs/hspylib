@@ -29,7 +29,8 @@ import os
 class FirebaseConfiguration(AppConfigs):
     """Represents a Firebase datasource configuration"""
 
-    CONFIG_FORMAT = dedent("""
+    CONFIG_FORMAT = dedent(
+        """
     # Your Firebase configuration:
     # --------------------------
     UID={uid}
@@ -37,31 +38,30 @@ class FirebaseConfiguration(AppConfigs):
     EMAIL={email}
     DATABASE={database}
     BASE_URL={base_url}
-    """)
+    """
+    )
 
-    REQUIRED_SETTINGS = ['UID', 'PROJECT_ID', 'EMAIL', 'DATABASE']
+    REQUIRED_SETTINGS = ["UID", "PROJECT_ID", "EMAIL", "DATABASE"]
 
     @staticmethod
-    def of(
-        resource_dir: str,
-        filename: str,
-        config_dict: CaseInsensitiveDict) -> 'FirebaseConfiguration':
+    def of(resource_dir: str, filename: str, config_dict: CaseInsensitiveDict) -> "FirebaseConfiguration":
         """Create a Firebase config from a case insensitive dictionary."""
 
         check_state(
             all(setting in config_dict for setting in FirebaseConfiguration.REQUIRED_SETTINGS),
-            f"Invalid configuration file.\nMust contain required settings: {FirebaseConfiguration.REQUIRED_SETTINGS}")
+            f"Invalid configuration file.\nMust contain required settings: {FirebaseConfiguration.REQUIRED_SETTINGS}",
+        )
         return FirebaseConfiguration(
             resource_dir,
             filename,
-            config_dict['UID'],
-            config_dict['PROJECT_ID'],
-            config_dict['EMAIL'],
-            config_dict['DATABASE']
+            config_dict["UID"],
+            config_dict["PROJECT_ID"],
+            config_dict["EMAIL"],
+            config_dict["DATABASE"],
         )
 
     @staticmethod
-    def of_file(filename: str, encoding: str = Charset.UTF_8.val) -> 'FirebaseConfiguration':
+    def of_file(filename: str, encoding: str = Charset.UTF_8.val) -> "FirebaseConfiguration":
         """Create a Firebase config from a config file."""
         check_argument(os.path.exists(filename), f"Config file does not exist: {filename}")
 
@@ -85,26 +85,31 @@ class FirebaseConfiguration(AppConfigs):
         project_id: str,
         email: str,
         database: Optional[str] = None,
-        profile: Optional[str] = None):
+        profile: Optional[str] = None,
+    ):
 
         super().__init__(resource_dir, filename, profile)
         self._valid = None
-        self._base_url = self['datasource.base.url']
-        self._scheme = self['datasource.scheme'] or 'https'
-        self._hostname = self['datasource.hostname'] or 'firebaseio.com'
-        self._port = self['datasource.port'] or 443 if self._scheme.endswith('s') else 80
-        self._uid = uid or self['firebase.user.uid']
-        self._project_id = project_id or self['firebase.project.id']
-        self._email = email or self['firebase.email']
-        self._database = database or self['firebase.database']
+        self._base_url = self["datasource.base.url"]
+        self._scheme = self["datasource.scheme"] or "https"
+        self._hostname = self["datasource.hostname"] or "firebaseio.com"
+        self._port = self["datasource.port"] or 443 if self._scheme.endswith("s") else 80
+        self._uid = uid or self["firebase.user.uid"]
+        self._project_id = project_id or self["firebase.project.id"]
+        self._email = email or self["firebase.email"]
+        self._database = database or self["firebase.database"]
 
     def __str__(self) -> str:
-        return '' if not hasattr(self, '_uid') else self.CONFIG_FORMAT.format(
-            uid=self._uid or 'not-set',
-            project_id=self._project_id or 'not-set',
-            email=self._email or 'not-set',
-            database=self.database or 'not-set',
-            base_url=self.base_url or 'not-set'
+        return (
+            ""
+            if not hasattr(self, "_uid")
+            else self.CONFIG_FORMAT.format(
+                uid=self._uid or "not-set",
+                project_id=self._project_id or "not-set",
+                email=self._email or "not-set",
+                database=self.database or "not-set",
+                base_url=self.base_url or "not-set",
+            )
         )
 
     @property
@@ -137,19 +142,19 @@ class FirebaseConfiguration(AppConfigs):
 
     @property
     def base_url(self) -> str:
-        return self._base_url or f'{self.scheme}://{self.hostname}:{self.port}/{self.database}'
+        return self._base_url or f"{self.scheme}://{self.hostname}:{self.port}/{self.database}"
 
     def validate_config(self) -> bool:
         """Validate the current configuration"""
         check_not_none(self._uid, "User UID must be defined")
         check_not_none(self._project_id, "Project ID must be defined")
         check_not_none(self._email, "Email must be defined")
-        response = get(f'{self.base_url}.json')
+        response = get(f"{self.base_url}.json")
         self._valid = response is not None and response.status_code == HttpCode.OK
 
         return self._valid
 
-    def url(self, db_alias: Optional[str] = '') -> str:
+    def url(self, db_alias: Optional[str] = "") -> str:
         """Return the url for an element at the Firebase webapp."""
-        final_alias_url = db_alias.replace(' ', '%20').replace('.', '/')
-        return f'{self.base_url}/{final_alias_url}'
+        final_alias_url = db_alias.replace(" ", "%20").replace(".", "/")
+        return f"{self.base_url}/{final_alias_url}"

@@ -21,7 +21,7 @@ from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
 from typing import Any, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class FieldBuilder:
@@ -31,52 +31,53 @@ class FieldBuilder:
         self.parent = parent
         self.field = FormField()
 
-    def label(self, label: str) -> 'FieldBuilder':
+    def label(self, label: str) -> "FieldBuilder":
         self.field.label = label
         return self
 
-    def itype(self, itype: str) -> 'FieldBuilder':
+    def itype(self, itype: str) -> "FieldBuilder":
         self.field.itype = InputType.of_value(itype)
         return self
 
-    def validator(self, validator: InputValidator) -> 'FieldBuilder':
+    def validator(self, validator: InputValidator) -> "FieldBuilder":
         self.field.validator = validator
         return self
 
-    def min_max_length(self, min_length: int, max_length: int) -> 'FieldBuilder':
+    def min_max_length(self, min_length: int, max_length: int) -> "FieldBuilder":
         check_argument(max_length >= min_length, "Not a valid field length: ({}-{})", min_length, max_length)
         check_argument(max_length > 0 and min_length > 0, "Not a valid field length: ({}-{})", min_length, max_length)
         self.field.min_length = min_length
         self.field.max_length = max_length
         return self
 
-    def access_type(self, access_type: str) -> 'FieldBuilder':
+    def access_type(self, access_type: str) -> "FieldBuilder":
         self.field.access_type = AccessType.of_value(access_type)
         return self
 
-    def value(self, value: T) -> 'FieldBuilder':
-        check_argument(self.field.assign(value),
-                       "Not a valid value: \"{}\". Validation pattern=\"{}\"", value, self.field.validator)
+    def value(self, value: T) -> "FieldBuilder":
+        check_argument(
+            self.field.assign(value), 'Not a valid value: "{}". Validation pattern="{}"', value, self.field.validator
+        )
         return self
 
     def build(self) -> Any:
         self.field.itype = self.field.itype or InputType.TEXT
         if self.field.itype == InputType.CHECKBOX:
-            self.field.value = '1' if str_to_bool(str(self.field.value)) else '0'
+            self.field.value = "1" if str_to_bool(str(self.field.value)) else "0"
             self.field.min_length = self.field.max_length = 1
-            self.validator(InputValidator.custom(r'[01]'))
+            self.validator(InputValidator.custom(r"[01]"))
         elif self.field.itype == InputType.SELECT:
             self.field.min_length = self.field.max_length = 1
             self.validator(InputValidator.anything())
         elif self.field.itype == InputType.MASKED:
             _, mask = MInputUtils.unpack_masked(self.field.value)
             self.field.min_length = self.field.max_length = len(mask)
-            self.validator(InputValidator.custom(mask.replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')))
-        self.field.label = self.field.label or 'Field'
+            self.validator(InputValidator.custom(mask.replace("#", "[0-9]").replace("@", "[a-zA-Z]").replace("*", ".")))
+        self.field.label = self.field.label or "Field"
         self.field.min_length = self.field.min_length or 1
         self.field.max_length = self.field.max_length or 30
         self.field.access_type = self.field.access_type or AccessType.READ_WRITE
         self.field.icon = self.field.get_icon()
-        self.field.value = self.field.value if self.field.value else ''
+        self.field.value = self.field.value if self.field.value else ""
         self.parent.fields.append(self.field)
         return self.parent

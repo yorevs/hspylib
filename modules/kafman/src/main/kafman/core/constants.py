@@ -21,10 +21,11 @@ MAX_HISTORY_SIZE_BYTES = 250
 # pylint: disable=too-few-public-methods
 class StatusColor(ABC):
     """Colors to be used in the status text"""
-    white = QColor('#FFFFFF')
-    red = QColor('#FF554D')
-    green = QColor('#28C941')
-    yellow = QColor('#FEBE2F')
-    blue = QColor('#2380FA')
-    orange = QColor('#FF8C36')
-    purple = QColor('#D9A2FF')
+
+    white = QColor("#FFFFFF")
+    red = QColor("#FF554D")
+    green = QColor("#28C941")
+    yellow = QColor("#FEBE2F")
+    blue = QColor("#2380FA")
+    orange = QColor("#FF8C36")
+    purple = QColor("#D9A2FF")

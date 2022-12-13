@@ -13,13 +13,14 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote
-from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
 
-T = TypeVar('T')
-FILTER_VALUE = TypeVar('FILTER_VALUE', int, str, bool, float)
+T = TypeVar("T")
+FILTER_VALUE = TypeVar("FILTER_VALUE", int, str, bool, float)
 
 
 class FilterCondition(Enumeration):
@@ -38,19 +39,19 @@ class FilterCondition(Enumeration):
     IS_NOT                      =     '!=', Union[bool]
     # fmt: on
 
-    def __str__(self):
-        return self.name.lower().replace('_', ' ')
+    def __str__(self) -> str:
+        return self.name.lower().replace("_", " ")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
     def matches(self, param_value: FILTER_VALUE, value: FILTER_VALUE) -> bool:
         """Whether this filter value matches the specified param."""
         operator = self.value[0]
-        if self.name in ['CONTAINS', 'DOES_NOT_CONTAIN']:
-            expression = f'{quote(value)} {operator} {quote(param_value)}'
+        if self.name in ["CONTAINS", "DOES_NOT_CONTAIN"]:
+            expression = f"{quote(value)} {operator} {quote(param_value)}"
         else:
-            expression = f'{quote(param_value)} {operator} {quote(value)}'
+            expression = f"{quote(param_value)} {operator} {quote(value)}"
         return self._allow_type(value) and eval(expression)  # pylint: disable=eval-used
 
     def _allow_type(self, value: FILTER_VALUE) -> bool:
@@ -64,29 +65,25 @@ class FilterCondition(Enumeration):
 class ElementFilter:
     """Represent a single filter condition."""
 
-    def __init__(
-        self, name: str,
-        el_name: str,
-        condition: 'FilterCondition',
-        el_value: FILTER_VALUE):
+    def __init__(self, name: str, el_name: str, condition: "FilterCondition", el_value: FILTER_VALUE):
         self.name = name
         self.el_name = el_name
         self.condition = condition
         self.el_value = el_value
 
     def __str__(self):
-        return f'{quote(self.el_name)} {self.condition} {quote(self.el_value)}'
+        return f"{quote(self.el_name)} {self.condition} {quote(self.el_value)}"
 
     def __repr__(self):
         return str(self)
 
-    def key(self) -> Tuple[str, 'FilterCondition', FILTER_VALUE]:
+    def key(self) -> Tuple[str, "FilterCondition", FILTER_VALUE]:
         return self.el_name, self.condition, self.el_value
 
     def __hash__(self) -> int:
         return hash(self.key())
 
-    def __eq__(self, other: 'ElementFilter') -> bool:
+    def __eq__(self, other: "ElementFilter") -> bool:
         if isinstance(other, self.__class__):
             return self.key() == other.key()
         return NotImplemented
@@ -98,7 +95,7 @@ class ElementFilter:
             entry = None
             if isinstance(element, dict):
                 entry = element
-            elif hasattr(element, '__dict__'):
+            elif hasattr(element, "__dict__"):
                 entry = element.__dict__
             elif isinstance(element, tuple):
                 entry = dict(element)
@@ -115,10 +112,8 @@ class CollectionFilter:
 
     def __str__(self) -> str:
         if len(self._filters) > 0:
-            return ' '.join([
-                f"{'AND ' if i > 0 else ''}{str(f)}" for i, f in enumerate(self._filters)
-            ])
-        return 'No filters applied'
+            return " ".join([f"{'AND ' if i > 0 else ''}{str(f)}" for i, f in enumerate(self._filters)])
+        return "No filters applied"
 
     def __repr__(self) -> str:
         return str(self)
@@ -130,15 +125,11 @@ class CollectionFilter:
         return len(self._filters)
 
     def apply_filter(
-        self,
-        name: str,
-        el_name: str,
-        condition: 'FilterCondition',
-        el_value: Union[int, str, bool, float]) -> None:
+        self, name: str, el_name: str, condition: "FilterCondition", el_value: Union[int, str, bool, float]
+    ) -> None:
         """Apply the specified filter."""
 
-        check_argument(not any(f.name == name for f in self._filters),
-                       f'Filter {name} already exists!')
+        check_argument(not any(f.name == name for f in self._filters), f"Filter {name} already exists!")
         f = ElementFilter(name, el_name, condition, el_value)
         self._filters.add(f)
 
@@ -156,9 +147,9 @@ class CollectionFilter:
         filtered: Iterable[T] = data.__class__()
         for element in data:
             if not self.should_filter(element):
-                if hasattr(filtered, 'append'):
+                if hasattr(filtered, "append"):
                     filtered.append(element)
-                elif hasattr(filtered, 'add'):
+                elif hasattr(filtered, "add"):
                     filtered.add(element)
         return filtered
 
@@ -167,9 +158,9 @@ class CollectionFilter:
         filtered: Iterable[T] = data.__class__()
         for element in data:
             if self.should_filter(element):
-                if hasattr(filtered, 'append'):
+                if hasattr(filtered, "append"):
                     filtered.append(element)
-                elif hasattr(filtered, 'add'):
+                elif hasattr(filtered, "add"):
                     filtered.add(element)
         return filtered
 

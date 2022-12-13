@@ -41,18 +41,18 @@ class HListWidget(QListWidget):
         self.itemChanged.connect(self.item_changed)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        """Handles and forwards the key press event in the list. """
+        """Handles and forwards the key press event in the list."""
         super().keyPressEvent(event)
         self.keyPressed.emit(event.key())
 
     def item_changed(self, item: QListWidgetItem):
-        """Handles itemChanged event to avoid adding duplicates to the list. """
+        """Handles itemChanged event to avoid adding duplicates to the list."""
         existing = self.findItems(item.text(), Qt.MatchFixedString)
         if len(existing) > 1:
             self.del_item(item)
 
     def addItem(self, item: QListWidgetItem) -> None:
-        """Adds the specified element to this list regardless if it is present or not. """
+        """Adds the specified element to this list regardless if it is present or not."""
         prev = self.item(self.count() - 1)
         if prev:
             item.setFlags(prev.flags())
@@ -60,7 +60,7 @@ class HListWidget(QListWidget):
         self._items.append(item)
 
     def is_empty(self) -> bool:
-        """Returns true if this list contains no elements. """
+        """Returns true if this list contains no elements."""
         return len(self._items) == 0
 
     def set_item(self, item: Union[str, QListWidgetItem], flags: Union[Qt.ItemFlags, Qt.ItemFlag] = None) -> None:
@@ -75,7 +75,7 @@ class HListWidget(QListWidget):
                 self.addItem(item)
 
     def remove_item_at_index(self, row: int) -> Optional[QListWidgetItem]:
-        """Removes the element at the specified row from this list if it is present. """
+        """Removes the element at the specified row from this list if it is present."""
         item = self.takeItem(row)
         if item:
             self._items.remove(self._items[row])
@@ -102,7 +102,7 @@ class HListWidget(QListWidget):
         del self._items[:]
 
     def size(self) -> int:
-        """Returns the number of elements in this list. """
+        """Returns the number of elements in this list."""
         return self.count()
 
     def index_of(self, item: str) -> int:
@@ -147,16 +147,16 @@ class HListWidget(QListWidget):
         if self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self._editable:
-                ctx_menu.addAction('Add Item', lambda: self.set_item("<new_item>"))
+                ctx_menu.addAction("Add Item", lambda: self.set_item("<new_item>"))
                 if not self.is_empty():
-                    ctx_menu.addAction('Delete Item', lambda: self.del_item(self.currentIndex().row()))
+                    ctx_menu.addAction("Delete Item", lambda: self.del_item(self.currentIndex().row()))
                     ctx_menu.addSeparator()
-                    ctx_menu.addAction('Clear list', self.clear)
+                    ctx_menu.addAction("Clear list", self.clear)
 
             for act in self._custom_menu_actions:
                 check_not_none(act)
-                check_state(len(act) == 3, f'Invalid custom menu action: {act}')
-                check_argument(callable(act[1]), 'The action must be callable')
+                check_state(len(act) == 3, f"Invalid custom menu action: {act}")
+                check_argument(callable(act[1]), "The action must be callable")
                 if act[2]:
                     ctx_menu.addSeparator()
                 ctx_menu.addAction(act[0], act[1])

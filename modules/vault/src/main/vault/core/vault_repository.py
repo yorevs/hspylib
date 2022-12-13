@@ -21,13 +21,12 @@ from vault.entity.vault_entry import VaultEntry
 
 
 class VaultRepository(SQLiteRepository[VaultEntry]):
-
     @property
     def database(self) -> str:
         return self._config.database
 
     def find_by_key(self, key: str, fields: Set[str] = None) -> Optional[VaultEntry]:
-        fields = '*' if not fields else ', '.join(fields)
+        fields = "*" if not fields else ", ".join(fields)
         clause = f"key = {quote(key)}"
         sql = f"SELECT {fields} FROM {self.table_name()} WHERE {clause} ORDER BY key"
         result = next((e for e in self.execute(sql)[1]), None)
@@ -35,11 +34,11 @@ class VaultRepository(SQLiteRepository[VaultEntry]):
         return self.to_entity_type(result) if result else None
 
     def table_name(self) -> str:
-        return 'VAULT_ENTRIES'
+        return "VAULT_ENTRIES"
 
     def to_entity_type(self, entity_dict: dict | tuple) -> VaultEntry:
         if isinstance(entity_dict, dict):
-            return VaultEntry(Identity(VaultEntry.VaultId(entity_dict['uuid'])), **entity_dict)
+            return VaultEntry(Identity(VaultEntry.VaultId(entity_dict["uuid"])), **entity_dict)
         return VaultEntry(
             Identity(VaultEntry.VaultId(entity_dict[0])),
             uuid=entity_dict[0],

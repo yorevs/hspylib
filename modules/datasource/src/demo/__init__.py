@@ -5,7 +5,5 @@
 # Package: demo
 """Package initialization."""
 
-__all__ = [
-  'phonebook'
-]
-__version__ = '0.9.16'
+__all__ = ["phonebook"]
+__version__ = "0.9.16"

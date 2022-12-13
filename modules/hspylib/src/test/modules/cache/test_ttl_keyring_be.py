@@ -24,8 +24,8 @@ import unittest
 
 class TestTextTools(unittest.TestCase):
 
-    TEST_SERVICE = 'test-srv'
-    TEST_USER = 'test-un'
+    TEST_SERVICE = "test-srv"
+    TEST_USER = "test-un"
 
     def setUp(self) -> None:
         self.m, self.s = 0, 3
@@ -35,20 +35,18 @@ class TestTextTools(unittest.TestCase):
     def test_should_expire_the_passwords_on_the_right_timestamp(self) -> None:
         now = now_ms()
         t = self.m * 60 + self.s
-        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD be None')
-        keyring.set_password(self.TEST_SERVICE, self.TEST_USER, 'test-pwd')
-        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD NOT be None')
+        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD be None")
+        keyring.set_password(self.TEST_SERVICE, self.TEST_USER, "test-pwd")
+        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
         sleep(t - 1)
-        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD NOT be None')
+        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
         sleep(2)
         done = now_ms()
         expected = 1 + now + t
-        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), 'Password SHOULD have expired')
-        self.assertEqual(expected, done, 'Time elapsed SHOULD be equal')
+        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD have expired")
+        self.assertEqual(expected, done, "Time elapsed SHOULD be equal")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTextTools)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

@@ -18,24 +18,20 @@ from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 class WidgetIcons(Awesome):
     """
-        Dashboard UI icons.
-        Codes can be found here:
-        - https://fontawesome.com/cheatsheet?from=io
+    Dashboard UI icons.
+    Codes can be found here:
+    - https://fontawesome.com/cheatsheet?from=io
     """
 
     # fmt: off
-    CHART_2 = '\uFC68'      # ﱩ
-    CHART_1 = '\uFC67'      # ﱨ
-    CLOCK = '\uF651'        # 
-    CHIP = '\uFB19'         # ﬙
-    MUSIC = '\uFC6E'        # ﱯ
-    NETWORK = '\uF819'      # 
-    PUNCH = '\uF255'        # 
-    SIGN = '\uFC7E'         # ﱿ
-    SWORDS = '\uFC84'       # ﲅ
-    WIDGET = '\uFC65'       # ﱥ
+    CHART_2     = '\uFC68'  # ﱩ
+    CHART_1     = '\uFC67'  # ﱨ
+    CLOCK       = '\uF651'  # 
+    CHIP        = '\uFB19'  # ﬙
+    MUSIC       = '\uFC6E'  # ﱯ
+    NETWORK     = '\uF819'  # 
+    PUNCH       = '\uF255'  # 
+    SIGN        = '\uFC7E'  # ﱿ
+    SWORDS      = '\uFC84'  # ﲅ
+    WIDGET      = '\uFC65'  # ﱥ
     # fmt: on
-
-
-if __name__ == '__main__':
-    WidgetIcons.demo_icons()

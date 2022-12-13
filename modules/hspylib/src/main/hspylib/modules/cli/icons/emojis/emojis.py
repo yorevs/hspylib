@@ -20,13 +20,13 @@ from hspylib.core.tools.commons import sysout
 
 class Emoji(Enumeration):
     """
-        Emoji codes
-        Full list of emojis can be found here:
-          - https://unicode.org/emoji/charts/emoji-list.html
+    Emoji codes
+    Full list of emojis can be found here:
+      - https://unicode.org/emoji/charts/emoji-list.html
     """
 
     @staticmethod
-    def emj_print(emoji_str: str, end: str = '') -> None:
+    def emj_print(emoji_str: str, end: str = "") -> None:
         sysout(f"{emojize(emoji_str)} ", end=end)
 
     def __str__(self) -> str:

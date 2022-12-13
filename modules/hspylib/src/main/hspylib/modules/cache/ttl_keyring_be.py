@@ -41,7 +41,7 @@ class TTLKeyringBE(ChainerBackend):
         try:
             check_not_none(service, username, password)
             expires_sec = now_ms() + (self._ttl[0] * 60 + self._ttl[1])
-            passwd_obj = {'sn': service, 'un': username, 'pw': password, 'ttl': expires_sec}
+            passwd_obj = {"sn": service, "un": username, "pw": password, "ttl": expires_sec}
             b64_pwd = b64_encode(json.dumps(passwd_obj))
             super().set_password(service, username, b64_pwd)
         except PasswordSetError:
@@ -53,13 +53,13 @@ class TTLKeyringBE(ChainerBackend):
         if b64_pwd := super().get_password(service, username):
             passwd_str = b64_decode(b64_pwd)
             passwd_obj = json.loads(passwd_str)
-            dt_object = datetime.fromtimestamp(passwd_obj['ttl'])
+            dt_object = datetime.fromtimestamp(passwd_obj["ttl"])
             if now_ms() - dt_object.timestamp() > 0:
                 keyring.delete_password(service, username)
                 if self._cb_expired:
-                    self._cb_expired(passwd_obj['pw'])
+                    self._cb_expired(passwd_obj["pw"])
             else:
-                return passwd_obj['pw']
+                return passwd_obj["pw"]
 
         return None
 

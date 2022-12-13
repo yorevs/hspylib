@@ -33,7 +33,7 @@ class MockServer(HTTPServer):
     RANDOM_PORT = randint(49152, 65535)
 
     class ServerThread(Thread):
-        def __init__(self, parent: 'MockServer'):
+        def __init__(self, parent: "MockServer"):
             super().__init__()
             self.parent = parent
 
@@ -45,20 +45,21 @@ class MockServer(HTTPServer):
 
         def __init__(
             self,
-            parent: 'MockServer',
+            parent: "MockServer",
             method: HttpMethod,
             url: str,
             status_code: HttpCode = None,
             body: str = None,
             headers=None,
             encoding: Charset = Charset.UTF_8,
-            content_type=ContentType.APPLICATION_JSON):
+            content_type=ContentType.APPLICATION_JSON,
+        ):
 
             super().__init__(method, url, status_code, headers, body, encoding, content_type)
             self.parent = parent
             self.received_body = False
 
-        def then_wait(self, delay: int) -> 'MockServer.MockResponse':
+        def then_wait(self, delay: int) -> "MockServer.MockResponse":
             sleep(delay)
             return self
 
@@ -68,7 +69,8 @@ class MockServer(HTTPServer):
             body: str = None,
             headers=None,
             encoding: Charset = Charset.UTF_8,
-            content_type=ContentType.APPLICATION_JSON) -> 'MockServer':
+            content_type=ContentType.APPLICATION_JSON,
+        ) -> "MockServer":
             """TODO"""
 
             response = self.parent.mock(self.method, self.url)
@@ -87,7 +89,8 @@ class MockServer(HTTPServer):
             code: HttpCode,
             headers: CaseInsensitiveDict = None,
             encoding: Charset = Charset.UTF_8,
-            content_type=ContentType.APPLICATION_JSON) -> 'MockServer':
+            content_type=ContentType.APPLICATION_JSON,
+        ) -> "MockServer":
             """TODO"""
 
             response = self.parent.mock(self.method, self.url)
@@ -106,7 +109,7 @@ class MockServer(HTTPServer):
         self._mocks = {}
         self.hostname = hostname
         self.port = port
-        self.version = '0.9.0'
+        self.version = "0.9.0"
         super().__init__(self.address(), MockServerHandler)
 
     def mock(self, method: HttpMethod, url: str) -> Optional[MockResponse]:

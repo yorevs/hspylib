@@ -31,7 +31,7 @@ class TestProperties(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
-        os.environ['ACTIVE_PROFILE'] = ''
+        os.environ["ACTIVE_PROFILE"] = ""
 
     # TEST CASES ----------
 
@@ -44,7 +44,7 @@ class TestProperties(unittest.TestCase):
 
     def test_should_load_properties_using_custom_attributes(self) -> None:
         expected_size = 6
-        filename = 'config.properties'
+        filename = "config.properties"
         profile = "test"
         properties = Properties(filename=filename, profile=profile, load_dir=RESOURCE_DIR)
         self.assertIsNotNone(properties)
@@ -52,14 +52,14 @@ class TestProperties(unittest.TestCase):
 
     def test_should_load_properties_from_ini_file(self) -> None:
         expected_size = 6
-        filename = 'application.ini'
+        filename = "application.ini"
         properties = Properties(filename=filename, load_dir=RESOURCE_DIR)
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
 
     def test_should_load_properties_from_yaml_file(self) -> None:
         expected_size = 6
-        filename = 'application.yaml'
+        filename = "application.yaml"
         properties = Properties(filename=filename, load_dir=RESOURCE_DIR)
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
@@ -69,12 +69,12 @@ class TestProperties(unittest.TestCase):
         properties = Properties(load_dir=RESOURCE_DIR)
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
-        expected_value = 'this is. = a weird value'
-        self.assertEqual(expected_value, properties['test.weird.property'])
+        expected_value = "this is. = a weird value"
+        self.assertEqual(expected_value, properties["test.weird.property"])
 
     def test_properties_should_be_iterable(self) -> None:
         properties = Properties(load_dir=RESOURCE_DIR)
-        expected_properties = ['this is. = a weird value', '1055', '3.14', 'FALse', 'TRue', 'should not be gotten']
+        expected_properties = ["this is. = a weird value", "1055", "3.14", "FALse", "TRue", "should not be gotten"]
         expected_size = 6
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
@@ -84,9 +84,9 @@ class TestProperties(unittest.TestCase):
         self.assertEqual(0, len(expected_properties))
 
     def test_should_load_properties_with_profile(self) -> None:
-        os.environ['ACTIVE_PROFILE'] = 'stage'
+        os.environ["ACTIVE_PROFILE"] = "stage"
         properties = Properties(load_dir=RESOURCE_DIR)
-        expected_properties = ['First property', '2022', '2.666', 'TRue']
+        expected_properties = ["First property", "2022", "2.666", "TRue"]
         expected_size = 4
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
@@ -95,9 +95,8 @@ class TestProperties(unittest.TestCase):
             del expected_properties[0]
         self.assertEqual(0, len(expected_properties))
 
+
 # Program entry point.
-if __name__ == '__main__':
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestProperties)
-    unittest \
-        .TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout) \
-        .run(suite)
+    unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

@@ -31,20 +31,17 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 
 # This call to setup() does all the work
 setuptools.setup(
-    name='hspylib-cfman',
+    name="hspylib-cfman",
     version=VERSION,
-    description='HSPyLib - CloudFoundry manager',
-    author='Hugo Saporetti Junior',
-    author_email='yorevs@hotmail.com',
+    description="HSPyLib - CloudFoundry manager",
+    author="Hugo Saporetti Junior",
+    author_email="yorevs@hotmail.com",
     long_description=README,
-    long_description_content_type='text/markdown',
-    url='https://github.com/yorevs/hspylib',
-    project_urls={
-        'GitHub': 'https://github.com/yorevs/hspylib',
-        'PyPi': 'https://pypi.org/project/hspylib-cfman/'
-    },
-    license='MIT',
-    license_files='LICENSE.md',
+    long_description_content_type="text/markdown",
+    url="https://github.com/yorevs/hspylib",
+    project_urls={"GitHub": "https://github.com/yorevs/hspylib", "PyPi": "https://pypi.org/project/hspylib-cfman/"},
+    license="MIT",
+    license_files="LICENSE.md",
     packages=setuptools.find_namespace_packages(),
     include_package_data=True,
     classifiers=[
@@ -52,11 +49,10 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
-        "Operating System :: Unix"
-
+        "Operating System :: Unix",
     ],
-    python_requires='>=3.10',
+    python_requires=">=3.10",
     install_requires=REQUIREMENTS,
-    keywords='pivotal,pcf,cloudfoundry,manager,application',
-    platforms='Darwin,Linux'
+    keywords="pivotal,pcf,cloudfoundry,manager,application",
+    platforms="Darwin,Linux",
 )

@@ -23,39 +23,37 @@ from typing import List
 
 class EntityTest(CrudEntity):
 
-    EntityId = namedtuple('EntityId', ['id'])
+    EntityId = namedtuple("EntityId", ["id"])
 
     @staticmethod
     def columns() -> List[str]:
-        return ['id', 'comment', 'lucky_number', 'is_working']
+        return ["id", "comment", "lucky_number", "is_working"]
 
     @classmethod
-    def from_tuple(cls, values: tuple) -> 'EntityTest':
-        return EntityTest(
-            Identity(cls.EntityId(values[0])), **{k: v for k, v in zip(cls.columns(), values)},
-        )
+    def from_tuple(cls, values: tuple) -> "EntityTest":
+        return EntityTest(Identity(cls.EntityId(values[0])), **{k: v for k, v in zip(cls.columns(), values)})
 
     def __init__(self, entity_id: Identity, **kwargs):
         self.id = None  # Will be filled later
         super().__init__(entity_id)
-        self.comment = kwargs['comment']
-        self.lucky_number = kwargs['lucky_number']
-        self.is_working = str_to_bool(str(kwargs['is_working']))
+        self.comment = kwargs["comment"]
+        self.lucky_number = kwargs["lucky_number"]
+        self.is_working = str_to_bool(str(kwargs["is_working"]))
 
     def __str__(self) -> str:
         return f"id={self.id} comment={self.comment} lucky_number={self.lucky_number} working={self.is_working}"
 
     def key(self) -> str:
-        return snakecase(self.__class__.__name__, screaming=True) + '_' + \
-               self.identity.as_column_set() \
-                   .replace(' ', '') \
-                   .replace('=', '_') \
-                   .upper()
+        return (
+            snakecase(self.__class__.__name__, screaming=True)
+            + "_"
+            + self.identity.as_column_set().replace(" ", "").replace("=", "_").upper()
+        )
 
 
-if __name__ == '__main__':
-    t1 = EntityTest(Identity.auto(), comment='My-Test Data', lucky_number=51, is_working=True)
-    t2 = EntityTest(Identity.auto(), comment='My-Test Data 2', lucky_number=55, is_working=False)
+if __name__ == "__main__":
+    t1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
+    t2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
     print(t1, t1.values)
     print(t2, t2.values)
     print(t1.key(), t2.key())

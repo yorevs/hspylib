@@ -34,7 +34,7 @@ class StreamCapturer(QThread):
 
         streamCaptured = pyqtSignal(str)
 
-        def __init__(self, parent: 'StreamCapturer', poll_interval: float):
+        def __init__(self, parent: "StreamCapturer", poll_interval: float):
             super().__init__()
             self._poll_interval = poll_interval
             self._parent = parent
@@ -44,7 +44,7 @@ class StreamCapturer(QThread):
             with io.StringIO() as buf, redirect_stdout(buf):
                 while not self._parent.isFinished():
                     output = buf.getvalue()
-                    if output and output != '':
+                    if output and output != "":
                         log.info(output)
                         self.streamCaptured.emit(output)
                         buf.truncate(0)
@@ -55,17 +55,17 @@ class StreamCapturer(QThread):
 
         streamCaptured = pyqtSignal(str)
 
-        def __init__(self, parent: 'StreamCapturer', poll_interval: float):
+        def __init__(self, parent: "StreamCapturer", poll_interval: float):
             super().__init__()
             self._poll_interval = poll_interval
             self._parent = parent
 
         def run(self):
-            self.setObjectName('stderr-worker')
+            self.setObjectName("stderr-worker")
             with io.StringIO() as buf, redirect_stderr(buf):
                 while not self._parent.isFinished():
                     output = buf.getvalue()
-                    if output and output != '':
+                    if output and output != "":
                         log.error(output)
                         self.streamCaptured.emit(output)
                         buf.truncate(0)
@@ -76,11 +76,12 @@ class StreamCapturer(QThread):
         capture_stderr: bool = True,
         capture_stdout: bool = True,
         stdout_poll_interval: float = 0.5,
-        stderr_poll_interval: float = 0.5):
+        stderr_poll_interval: float = 0.5,
+    ):
 
-        check_argument(capture_stderr or capture_stdout, 'At least one capturer must be started')
+        check_argument(capture_stderr or capture_stdout, "At least one capturer must be started")
         super().__init__()
-        self.setObjectName('stream-capturer')
+        self.setObjectName("stream-capturer")
         self._capture_stdout = capture_stdout
         self._capture_stderr = capture_stderr
         self._poll_interval = stdout_poll_interval + stderr_poll_interval
@@ -104,4 +105,4 @@ class StreamCapturer(QThread):
         if not is_debugging():
             super().start(priority)
         else:
-            syserr('Stderr/Stdout capture is not started in debugging mode')
+            syserr("Stderr/Stdout capture is not started in debugging mode")

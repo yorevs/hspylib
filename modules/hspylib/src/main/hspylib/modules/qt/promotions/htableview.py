@@ -35,7 +35,7 @@ class HTableView(QTableView):
         self._copyable = True
         self._clearable = True
         self._deletable = True
-        self._placeholder = placeholder or 'No data to display'
+        self._placeholder = placeholder or "No data to display"
         self._custom_menu_actions = []
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.context_menu)
@@ -52,8 +52,7 @@ class HTableView(QTableView):
         painter = QPainter(self.viewport())
         painter.save()
         painter.setPen(color)
-        elided_text = self.fontMetrics() \
-            .elidedText(self._placeholder, Qt.ElideRight, self.viewport().width())
+        elided_text = self.fontMetrics().elidedText(self._placeholder, Qt.ElideRight, self.viewport().width())
         painter.drawText(self.viewport().rect(), Qt.AlignCenter, elided_text)
         painter.restore()
 
@@ -76,12 +75,12 @@ class HTableView(QTableView):
         sel_model = self.selectionModel()
         if sel_model:
             index_list = sel_model.selectedIndexes()
-            text = ''
+            text = ""
             last_row = 0
             for index in index_list:
                 if len(text) > 0:
                     if last_row == index.row():
-                        text += '\t'
+                        text += "\t"
                     else:
                         text += os.linesep
                 text += strip_linebreaks(str(self.model().column(index)))
@@ -101,17 +100,17 @@ class HTableView(QTableView):
         if not self.is_empty() and self._context_menu_enable:
             ctx_menu = QMenu(self)
             if self._copyable:
-                ctx_menu.addAction('Copy Cells', self.copy)
+                ctx_menu.addAction("Copy Cells", self.copy)
             if self._deletable:
-                ctx_menu.addAction('Delete Row', self.delete)
+                ctx_menu.addAction("Delete Row", self.delete)
             if self._clearable:
                 ctx_menu.addSeparator()
-                ctx_menu.addAction('Clear table', self.clear)
+                ctx_menu.addAction("Clear table", self.clear)
 
             for action in self._custom_menu_actions:
                 check_not_none(action)
-                check_state(len(action) == 3, f'Invalid custom menu action: {action}')
-                check_argument(callable(action[1]), 'The action must be callable')
+                check_state(len(action) == 3, f"Invalid custom menu action: {action}")
+                check_argument(callable(action[1]), "The action must be callable")
                 if action[2]:
                     ctx_menu.addSeparator()
                 ctx_menu.addAction(action[0], action[1])

@@ -5,10 +5,5 @@
 # Package: main.vault.core
 """Package initialization."""
 
-__all__ = [
-  'vault', 
-  'vault_config', 
-  'vault_repository', 
-  'vault_service'
-]
-__version__ = '0.9.67'
+__all__ = ["vault", "vault_config", "vault_repository", "vault_service"]
+__version__ = "0.9.67"

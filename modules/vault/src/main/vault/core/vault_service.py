@@ -35,11 +35,13 @@ class VaultService(CrudService[VaultRepository, VaultEntry]):
         return self.repository.find_by_key(key)
 
     def list_by_key(self, filter_expr: List[str] = None) -> List[VaultEntry]:
-        filters = ' or '.join([f"key like '%{f}%'" for f in filter_expr])
-        return self.list(Namespace('Filters', by_key_like=filters), ['key', 'modified'])
+        filters = " or ".join([f"key like '%{f}%'" for f in filter_expr])
+        return self.list(Namespace("Filters", by_key_like=filters), ["key", "modified"])
 
     def create_vault_db(self) -> None:
-        self.repository.execute(dedent("""
+        self.repository.execute(
+            dedent(
+                """
         CREATE TABLE IF NOT EXISTS "VAULT_ENTRIES"
         (
             uuid         TEXT       not null,
@@ -52,4 +54,6 @@ class VaultService(CrudService[VaultRepository, VaultEntry]):
             CONSTRAINT UUID_pk PRIMARY KEY (uuid),
             CONSTRAINT KEY_uk UNIQUE (key)
         )
-        """))
+        """
+            )
+        )

@@ -44,10 +44,10 @@ class FileProcessor(ABC):
                 else:
                     sysout(f'Uploading files from "{f_path}" to Firebase ...')
                     all_files = next(os.walk(f_path))[2]
-                    log.debug('\nGlob: %s \nFiles: %s', glob_exp, all_files)
+                    log.debug("\nGlob: %s \nFiles: %s", glob_exp, all_files)
                     for file in all_files:
                         filename = os.path.join(f_path, file)
-                        if os.path.isfile(filename) and fnmatch(file, glob_exp or '*.*'):
+                        if os.path.isfile(filename) and fnmatch(file, glob_exp or "*.*"):
                             f_entry = FileProcessor._read_and_encode(filename)
                             data.append(f_entry)
             else:
@@ -57,15 +57,14 @@ class FileProcessor(ABC):
             response = put(url, payload)
             check_not_none(response)
             if response.status_code != HttpCode.OK:
-                raise HTTPError(
-                    f'{response.status_code} - Unable to upload into={url} with json_string={payload}')
-            paths = ', \n  |- '.join([f.path for f in data])
+                raise HTTPError(f"{response.status_code} - Unable to upload into={url} with json_string={payload}")
+            paths = ", \n  |- ".join([f.path for f in data])
 
             sysout(f"%GREEN%File(s) [\n  |- {paths}\n] successfully uploaded to: {url}%NC%")
 
             return len(data)
 
-        sysout(f'%ORANGE%No files were uploaded from {file_paths} %NC%')
+        sysout(f"%ORANGE%No files were uploaded from {file_paths} %NC%")
 
         return 0
 
@@ -74,20 +73,21 @@ class FileProcessor(ABC):
         """Download files from URL"""
         check_argument(
             destination_dir and os.path.exists(destination_dir),
-            "Unable find destination directory: {}", destination_dir)
+            "Unable find destination directory: {}",
+            destination_dir,
+        )
         sysout(f'Downloading files from Firebase into "{destination_dir}" ...')
         response = get(url)
         check_not_none(response)
         check_not_none(response.body)
         if response.status_code != HttpCode.OK:
-            raise HTTPError(
-                f'{response.status_code} - Unable to download from={url} with response={response}')
+            raise HTTPError(f"{response.status_code} - Unable to download from={url} with response={response}")
         file_data = FileProcessor._from_json(response.body)
         if file_data and len(file_data) > 0:
             FileProcessor._decode_and_write(destination_dir, file_data)
             return len(file_data)
 
-        sysout(f'%ORANGE%Database alias was not found in: {url} %NC%')
+        sysout(f"%ORANGE%Database alias was not found in: {url} %NC%")
 
         return 0
 
@@ -101,22 +101,22 @@ class FileProcessor(ABC):
         """B64 decode and write entries to file"""
         if isinstance(data, list):
             for entry in data:
-                FileEntry \
-                    .of(f"{destination_dir}/{os.path.basename(entry['path'])}", entry['data'], entry['size']).save()
-            paths = ', \n  |- '.join([f['path'] for f in data])
+                FileEntry.of(
+                    f"{destination_dir}/{os.path.basename(entry['path'])}", entry["data"], entry["size"]
+                ).save()
+            paths = ", \n  |- ".join([f["path"] for f in data])
         elif isinstance(data, dict):
-            FileEntry \
-                .of(f"{destination_dir}/{os.path.basename(data['path'])}", data['data'], data['size']).save()
-            paths = data['path']
+            FileEntry.of(f"{destination_dir}/{os.path.basename(data['path'])}", data["data"], data["size"]).save()
+            paths = data["path"]
         else:
-            raise TypeError(f'Downloaded data format is not supported: {type(data)}')
+            raise TypeError(f"Downloaded data format is not supported: {type(data)}")
 
         sysout(f"%GREEN%File(s) [\n  |- {paths}\n] successfully downloaded into: {destination_dir}%NC%")
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:
         """Convert the file data into json format"""
-        return '[' + ','.join([str(entry) for entry in file_data]) + ']'
+        return "[" + ",".join([str(entry) for entry in file_data]) + "]"
 
     @staticmethod
     def _from_json(file_data: str) -> List[dict]:

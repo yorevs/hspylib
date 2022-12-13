@@ -22,20 +22,8 @@ from typing import List
 
 
 class ArrayField(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        doc: str,
-        items: List[str],
-        default: str = None,
-        required: bool = True):
-        super().__init__(
-            name,
-            doc,
-            AvroType.ARRAY,
-            default,
-            required=required)
+    def __init__(self, name: str, doc: str, items: List[str], default: str = None, required: bool = True):
+        super().__init__(name, doc, AvroType.ARRAY, default, required=required)
 
         self.items = items
 

@@ -23,7 +23,6 @@ from typing import List, Tuple
 
 
 class CompanyValidator(ContactValidator):
-
     def __call__(self, *companies: Company, **kwargs) -> Tuple[bool, List[dict]]:
         errors = []
         check_argument(len(companies) == 1, f"Exactly one company can be validated at a time. Given: {len(companies)}")
@@ -39,10 +38,8 @@ class CompanyValidator(ContactValidator):
 
     @staticmethod
     def validate_website(website: str) -> (bool, str):
-        return Validator \
-                   .matches(website, RE_URL), "Invalid website"
+        return Validator.matches(website, RE_URL), "Invalid website"
 
     @staticmethod
     def validate_cnpj(website: str) -> (bool, str):
-        return Validator \
-                   .matches(website, RE_CNPJ), "Invalid CNPJ"
+        return Validator.matches(website, RE_CNPJ), "Invalid CNPJ"

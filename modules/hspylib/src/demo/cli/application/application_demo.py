@@ -19,7 +19,7 @@ from hspylib.modules.cli.cli_application import CliApplication
 
 import sys
 
-APP_NAME = 'AppTest'
+APP_NAME = "AppTest"
 
 DESCRIPTION = "HsPyLib application Demo"
 
@@ -27,7 +27,6 @@ EPILOG = "This is just a simple application demo"
 
 
 class Main(CliApplication):
-
     def _setup_arguments(self) -> None:
         # fmt: off
         self._with_options() \
@@ -45,15 +44,15 @@ class Main(CliApplication):
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application logic."""
-        if self.get_arg('operation') == 'download':
-            print('Downloading...')
-        elif self.get_arg('operation') == 'upload':
-            print('Uploading...')
+        if self.get_arg("operation") == "download":
+            print("Downloading...")
+        elif self.get_arg("operation") == "upload":
+            print("Uploading...")
         status = ExitStatus.SUCCESS
-        sysout(f'{repr(status)}, running from {self._run_dir}')
+        sysout(f"{repr(status)}, running from {self._run_dir}")
         return status
 
 
 if __name__ == "__main__":
     # Application entry point
-    Main('AppTest', Version.load(), DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])
+    Main("AppTest", Version.load(), DESCRIPTION, epilog=EPILOG).INSTANCE.run(sys.argv[1:])

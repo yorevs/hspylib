@@ -19,14 +19,14 @@ from typing import List
 class ConsumerConfig(ABC):
     """Some of the confluence exposed consumer properties"""
 
-    BOOTSTRAP_SERVERS = 'bootstrap.servers'
-    GROUP_ID = 'group.id'
-    CLIENT_ID = 'client.id'
-    ENABLE_AUTO_COMMIT = 'enable.auto.commit'
-    SESSION_TIMEOUT_MS = 'session.timeout.ms'
-    AUTO_OFFSET_RESET = 'auto.offset.reset'
-    KEY_DESERIALIZER = 'key.deserializer'
-    VALUE_DESERIALIZER = 'value.deserializer'
+    BOOTSTRAP_SERVERS = "bootstrap.servers"
+    GROUP_ID = "group.id"
+    CLIENT_ID = "client.id"
+    ENABLE_AUTO_COMMIT = "enable.auto.commit"
+    SESSION_TIMEOUT_MS = "session.timeout.ms"
+    AUTO_OFFSET_RESET = "auto.offset.reset"
+    KEY_DESERIALIZER = "key.deserializer"
+    VALUE_DESERIALIZER = "value.deserializer"
 
     @classmethod
     def required_settings(cls) -> List[str]:
@@ -35,12 +35,12 @@ class ConsumerConfig(ABC):
     @classmethod
     def defaults(cls) -> dict:
         return {
-            'consumer': {
-                ConsumerConfig.BOOTSTRAP_SERVERS: 'localhost:9092',
-                ConsumerConfig.GROUP_ID: 'kafman_testing_group',
-                ConsumerConfig.CLIENT_ID: 'kafman_client_1',
+            "consumer": {
+                ConsumerConfig.BOOTSTRAP_SERVERS: "localhost:9092",
+                ConsumerConfig.GROUP_ID: "kafman_testing_group",
+                ConsumerConfig.CLIENT_ID: "kafman_client_1",
                 ConsumerConfig.ENABLE_AUTO_COMMIT: True,
                 ConsumerConfig.SESSION_TIMEOUT_MS: 6000,
-                ConsumerConfig.AUTO_OFFSET_RESET: 'earliest'
+                ConsumerConfig.AUTO_OFFSET_RESET: "earliest",
             }
         }

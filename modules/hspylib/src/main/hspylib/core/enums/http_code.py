@@ -102,9 +102,9 @@ class HttpCode(Enumeration):
     # fmt: on
 
     @classmethod
-    def of(cls, status_code: int) -> 'HttpCode':
+    def of(cls, status_code: int) -> "HttpCode":
         found = next(filter(lambda en: en.code == status_code, list(cls)), None)
-        return check_not_none(found, "\"{}\" code does not correspond to a valid \"HttpCode\"", status_code)
+        return check_not_none(found, '"{}" code does not correspond to a valid "HttpCode"', status_code)
 
     def __str__(self) -> str:
         return str(self.value)

@@ -13,15 +13,16 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError
-from hspylib.modules.cli.vt100.vt_utils import require_terminal
-from typing import Optional
-
-import getkey
 import select
 import string
 import sys
+from typing import Optional
+
+import getkey
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.exception.exceptions import KeyboardInputError
+from hspylib.modules.cli.vt100.vt_utils import require_terminal
 
 require_terminal()
 
@@ -35,14 +36,14 @@ class Keyboard(Enumeration):
     # Control keys
     VK_NONE         = ''
 
-    VK_ESC          = getkey.keys.ESC; VK_ENTER         = getkey.keys.ENTER
-    VK_UP           = getkey.keys.UP; VK_TAB            = '\t'
-    VK_DOWN         = getkey.keys.DOWN; VK_SPACE        = getkey.keys.SPACE
-    VK_LEFT         = getkey.keys.LEFT; VK_HOME         = getkey.keys.HOME
-    VK_RIGHT        = getkey.keys.RIGHT; VK_END         = getkey.keys.END
-    VK_BACKSPACE    = getkey.keys.BACKSPACE; VK_PAGE_UP = getkey.keys.PAGE_UP
-    VK_INSERT       = getkey.keys.INSERT; VK_PAGE_DOWN  = getkey.keys.PAGE_DOWN
-    VK_DELETE       = getkey.keys.DELETE; VK_SHIFT_TAB  = '\x1b[Z'
+    VK_ESC          = getkey.keys.ESC; VK_ENTER             = getkey.keys.ENTER
+    VK_UP           = getkey.keys.UP; VK_TAB                = '\t'
+    VK_DOWN         = getkey.keys.DOWN; VK_SPACE            = getkey.keys.SPACE
+    VK_LEFT         = getkey.keys.LEFT; VK_HOME             = getkey.keys.HOME
+    VK_RIGHT        = getkey.keys.RIGHT; VK_END             = getkey.keys.END
+    VK_BACKSPACE    = getkey.keys.BACKSPACE; VK_PAGE_UP     = getkey.keys.PAGE_UP
+    VK_INSERT       = getkey.keys.INSERT; VK_PAGE_DOWN      = getkey.keys.PAGE_DOWN
+    VK_DELETE       = getkey.keys.DELETE; VK_SHIFT_TAB      = '\x1b[Z'
 
     # Letters
     VK_a = 'a'; VK_i = 'i'; VK_q = 'q'; VK_y = 'y'
@@ -91,12 +92,12 @@ class Keyboard(Enumeration):
         return dr != []
 
     @staticmethod
-    def getch() -> 'Keyboard':
+    def getch() -> "Keyboard":
         """Read and return a character from a keyboard press."""
         return Keyboard.of_value(sys.stdin.read(1))
 
     @classmethod
-    def read_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional['Keyboard']:
+    def read_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
         """TODO"""
         try:
             keystroke = getkey.getkey(blocking)
@@ -132,6 +133,6 @@ class Keyboard(Enumeration):
         """TODO"""
         return all(ch in string.punctuation for ch in str(self.value))
 
-
-if __name__ == '__main__':
-    print('Press', Keyboard.kbhit())
+    @property
+    def val(self) -> str:
+        return str(self.value)

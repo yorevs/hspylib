@@ -27,9 +27,9 @@ import threading
 
 class ProducerWorker(QThread):
     """Confluent Kafka Producer with Qt.
-       Example at: # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
-       For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-       Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_producer.py
+    Example at: # Example at https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/python.html
+    For all kafka settings: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
+    Ref:. https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/json_producer.py
     """
 
     messageProduced = pyqtSignal(str, int, int, str)
@@ -37,7 +37,7 @@ class ProducerWorker(QThread):
 
     def __init__(self, poll_interval: float = 0.5, flush_timeout: int = 30):
         super().__init__()
-        self.setObjectName('kafka-producer')
+        self.setObjectName("kafka-producer")
         self._started = False
         self._poll_interval = poll_interval
         self._flush_timeout = flush_timeout
@@ -71,7 +71,7 @@ class ProducerWorker(QThread):
     def produce(self, topics: List[Any], messages: Union[str, List[str]]) -> None:
         """Create a worker thread to produce the messages to the specified topics."""
         if self._started and self._producer is not None:
-            self._worker_thread = threading.Thread(target=self._produce, args=(topics, messages,))
+            self._worker_thread = threading.Thread(target=self._produce, args=(topics, messages))
             self._worker_thread.name = f"kafka-producer-worker-{hash(self)}"
             self._worker_thread.daemon = True
             self._worker_thread.start()
@@ -102,7 +102,8 @@ class ProducerWorker(QThread):
                 try:
                     if msg:
                         self._producer.produce(
-                            topic=topic, key=self._schema.key(), value=msg, on_delivery=self._cb_message_produced)
+                            topic=topic, key=self._schema.key(), value=msg, on_delivery=self._cb_message_produced
+                        )
                     self._producer.poll(self._poll_interval)
                 except KeyboardInterrupt:
                     syserr("Keyboard interrupted")
@@ -119,5 +120,4 @@ class ProducerWorker(QThread):
         if error is not None:
             self.messageFailed.emit(str(error))
         else:
-            self.messageProduced.emit(
-                message.topic(), message.partition(), message.offset(), str(message.value()))
+            self.messageProduced.emit(message.topic(), message.partition(), message.offset(), str(message.value()))

@@ -39,6 +39,7 @@ class Main(CliApplication):
 
     class Addon(Enumeration):
         """HsPyLib addon types."""
+
         # fmt: off
         APPMAN  = 'appman'
         WIDGETS = 'widgets'
@@ -80,8 +81,7 @@ class Main(CliApplication):
                     nargs='?') \
                 .add_parameter(
                     'widget-args', "the widget's arguments (if applicable)",
-                    nargs='*') \
-            # fmt: on
+                    nargs='*')  # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Main entry point handler"""
@@ -90,16 +90,18 @@ class Main(CliApplication):
     def _exec_application(self) -> ExitStatus:
         """Execute the application"""
 
-        app = self.get_arg('application')
+        app = self.get_arg("application")
         if app == self.Addon.APPMAN.value:
             addon = AppManager(self)
-            app_type = self.get_arg('app-type')
+            app_type = self.get_arg("app-type")
             if app_type:
-                app_ext = self.get_arg('app-ext')
+                app_ext = self.get_arg("app-ext")
                 addon.create(
-                    self.get_arg('app-name'), AppType.of_value(app_type),
+                    self.get_arg("app-name"),
+                    AppType.of_value(app_type),
                     list(map(Extension.value_of, app_ext)) if app_ext else [],
-                    self.get_arg('dest-dir') or run_dir())
+                    self.get_arg("dest-dir") or run_dir(),
+                )
             else:
                 args = addon.prompt()
                 if args:
@@ -109,23 +111,22 @@ class Main(CliApplication):
                     if args.initialize_git:
                         app_ext.append(Extension.GIT)
                     addon.create(
-                        args.app_name, AppType.of_value(args.app_type),
-                        list(app_ext),
-                        args.dest_dir or run_dir())
+                        args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir()
+                    )
         elif app == self.Addon.WIDGETS.value:
             addon = WidgetManager(self)
-            widget_name = self.get_arg('widget-name')
+            widget_name = self.get_arg("widget-name")
             if widget_name:
-                widget_args = list(map(strip_linebreaks, self.get_arg('widget-args')))
+                widget_args = list(map(strip_linebreaks, self.get_arg("widget-args")))
                 addon.execute(widget_name, widget_args)
             else:
                 addon.dashboard()
         else:
-            syserr(f'### Invalid application: {app}')
+            syserr(f"### Invalid application: {app}")
             self.usage(ExitStatus.FAILED)
         return ExitStatus.SUCCESS
 
 
 # Application entry point
 if __name__ == "__main__":
-    Main('hspylib').INSTANCE.run(sys.argv[1:])
+    Main("hspylib").INSTANCE.run(sys.argv[1:])

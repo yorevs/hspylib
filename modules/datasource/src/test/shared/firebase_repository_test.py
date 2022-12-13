@@ -21,13 +21,12 @@ from shared.entity_test import EntityTest
 
 
 class FirebaseRepositoryTest(FirebaseRepository[EntityTest]):
-
     def table_name(self) -> str:
-        return 'hspylib-test.integration-test'
+        return "hspylib-test.integration-test"
 
     def to_entity_type(self, entity_dict: dict | tuple) -> EntityTest:
         if isinstance(entity_dict, dict):
-            identity = Identity(EntityTest.EntityId(entity_dict['id']))
+            identity = Identity(EntityTest.EntityId(entity_dict["id"]))
             return EntityTest(identity, **entity_dict)
 
         identity = Identity(EntityTest.EntityId(entity_dict[0]))
@@ -36,5 +35,5 @@ class FirebaseRepositoryTest(FirebaseRepository[EntityTest]):
             id=get_or_default(entity_dict, 0),
             comment=get_or_default(entity_dict, 1),
             lucky_number=get_or_default(entity_dict, 2),
-            is_working=get_or_default(entity_dict, 3)
+            is_working=get_or_default(entity_dict, 3),
         )

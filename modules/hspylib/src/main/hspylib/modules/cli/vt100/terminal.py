@@ -46,19 +46,19 @@ class Terminal(ABC):
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
         """Execute command with arguments and continuously poll it's output."""
-        if 'stdout' in kwargs:
-            del kwargs['stdout']  # Deleted since we use our own
-        if 'stderr' in kwargs:
-            del kwargs['stderr']  # Deleted since we use our own
+        if "stdout" in kwargs:
+            del kwargs["stdout"]  # Deleted since we use our own
+        if "stderr" in kwargs:
+            del kwargs["stderr"]  # Deleted since we use our own
         try:
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            with(subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)) as file:
+            with (subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)) as file:
                 process = select.poll()
                 process.register(file.stdout)
                 while True:
-                    line = bytes(file.stdout.readline()).decode('utf-8').strip()
-                    print('.' + line)
+                    line = bytes(file.stdout.readline()).decode("utf-8").strip()
+                    print("." + line)
         except (InterruptedError, KeyboardInterrupt):
             log.warning("Polling process has been interrupted command='%s'", cmd_line)
         except subprocess.CalledProcessError as err:
@@ -68,7 +68,7 @@ class Terminal(ABC):
     @staticmethod
     def open(filename: str):
         """Open the specified file using the default editor."""
-        my_os = os.environ.get('HHS_MY_OS', platform.system())
+        my_os = os.environ.get("HHS_MY_OS", platform.system())
         if "Darwin" == my_os:
             Terminal.shell_exec(f"open {filename}")
         elif "Linux" == my_os:

@@ -21,17 +21,13 @@ from typing import Any, Optional, Union
 
 class SchemaField(ABC):
     """Represents a schema registry field and form component.
-        - Avro Types: https://avro.apache.org/docs/current/spec.html#schema_record
-        - Json Types: https://json-schema.org/understanding-json-schema/reference/type.html
+    - Avro Types: https://avro.apache.org/docs/current/spec.html#schema_record
+    - Json Types: https://json-schema.org/understanding-json-schema/reference/type.html
     """
 
     def __init__(
-        self,
-        name: str,
-        doc: str,
-        a_type: Union[AvroType, JsonType],
-        default: Any = None,
-        required: bool = True):
+        self, name: str, doc: str, a_type: Union[AvroType, JsonType], default: Any = None, required: bool = True
+    ):
 
         self.name = name
         self.doc = doc
@@ -41,10 +37,7 @@ class SchemaField(ABC):
         self.widget = None
 
     def __str__(self):
-        return \
-            f"name={self.name}, " \
-            f"type={str(self.a_type)}, " \
-            f"required={self.required}, "
+        return f"name={self.name}, " f"type={str(self.a_type)}, " f"required={self.required}, "
 
     def create_input_widget(self) -> Optional[QWidget]:
         """TODO"""

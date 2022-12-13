@@ -19,14 +19,5 @@ from kafman.core.schema.schema_field import SchemaField
 
 
 class FixedField(SchemaField):
-
-    def __init__(
-        self,
-        name: str,
-        doc: str,
-        size: int):
-        super().__init__(
-            name,
-            doc,
-            AvroType.FIXED,
-            default=size)
+    def __init__(self, name: str, doc: str, size: int):
+        super().__init__(name, doc, AvroType.FIXED, default=size)

@@ -17,7 +17,6 @@ from PyQt5.QtWidgets import QComboBox
 
 
 class HComboBox(QComboBox):
-
     def set_item(self, item: str) -> None:
         """TODO"""
         if self.findText(item) < 0:

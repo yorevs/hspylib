@@ -21,7 +21,7 @@ class Event:
 
     def __init__(self, event_name: str, **kwargs):
         self._name = event_name
-        self._args = Namespace('EventArgs', True, **kwargs)
+        self._args = Namespace("EventArgs", True, **kwargs)
 
     def __str__(self) -> str:
         return f"Event(name={self.name})"
@@ -32,7 +32,7 @@ class Event:
     def __hash__(self) -> int:
         return hash(self.name)
 
-    def __eq__(self, other: 'Event') -> bool:
+    def __eq__(self, other: "Event") -> bool:
         if isinstance(other, self.__class__):
             return self.name == other.name
         return NotImplemented

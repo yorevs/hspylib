@@ -21,18 +21,13 @@ CB_ON_TRIGGER = Callable[[], None]
 class DashboardItem:
     """TODO"""
 
-    def __init__(
-        self,
-        icon: Awesome = None,
-        tooltip: str = None,
-        on_trigger: Optional[CB_ON_TRIGGER] = None):
-
+    def __init__(self, icon: Awesome = None, tooltip: str = None, on_trigger: Optional[CB_ON_TRIGGER] = None):
         self.icon = icon
         self.tooltip = tooltip
         self.on_trigger = on_trigger
 
     def __str__(self):
-        return f"{self.icon} \"{self.tooltip}\" -> {self.on_trigger}"
+        return f'{self.icon} "{self.tooltip}" -> {self.on_trigger}'
 
     def __repr__(self):
         return str(self)

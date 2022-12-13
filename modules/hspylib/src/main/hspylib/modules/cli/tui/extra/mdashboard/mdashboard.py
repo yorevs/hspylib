@@ -13,6 +13,8 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import List, Optional
+
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -22,15 +24,15 @@ from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardIte
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
-from typing import List, Optional
 
 
 def mdashboard(
     items: List[DashboardItem],
     items_per_line: int = 5,
-    title: str = 'Please select one item',
+    title: str = "Please select one item",
     title_color: VtColors = VtColors.ORANGE,
-    nav_color: VtColors = VtColors.YELLOW) -> Optional[DashboardItem]:
+    nav_color: VtColors = VtColors.YELLOW,
+) -> Optional[DashboardItem]:
     """TODO"""
 
     return MenuDashBoard(items, items_per_line).dashboard(title, title_color, nav_color)
@@ -39,19 +41,21 @@ def mdashboard(
 class MenuDashBoard:
     """TODO"""
 
-    ICN = 'X'
+    # fmt: off
+    ICN = "X"
 
     CELL_TPL = [
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ICN, ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", ICN, " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
     ]
 
     SEL_CELL_TPL = [
-        [' ', '┏', '━', ' ', ' ', '━', '┓', ' '],
-        [' ', ' ', ' ', ICN, ' ', ' ', ' ', ' '],
-        [' ', '┗', '━', ' ', ' ', '━', '┛', ' '],
+        [" ", "┏", "━", " ", " ", "━", "┓", " "],
+        [" ", " ", " ", ICN, " ", " ", " ", " "],
+        [" ", "┗", "━", " ", " ", "━", "┛", " "],
     ]
+    # fmt: on
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.RIGHT, NavIcons.DOWN, NavIcons.LEFT)
     NAV_BAR = f"[Enter] Select  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Esc] Quit %EL0%"
@@ -62,10 +66,7 @@ class MenuDashBoard:
 
         return DashboardBuilder()
 
-    def __init__(
-        self,
-        items: List[DashboardItem],
-        items_per_line: int = 5):
+    def __init__(self, items: List[DashboardItem], items_per_line: int = 5):
 
         self.items = items
         self.done = None
@@ -74,13 +75,10 @@ class MenuDashBoard:
         self.items_per_line = items_per_line
         check_state(
             len(self.CELL_TPL) == len(self.SEL_CELL_TPL) and len(self.CELL_TPL[0]) == len(self.SEL_CELL_TPL[0]),
-            'Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.')
+            "Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.",
+        )
 
-    def dashboard(
-        self,
-        title: str,
-        title_color: VtColors,
-        nav_color: VtColors) -> Optional[DashboardItem]:
+    def dashboard(self, title: str, title_color: VtColors, nav_color: VtColors) -> Optional[DashboardItem]:
         """TODO"""
 
         ret_val = Keyboard.VK_NONE
@@ -117,8 +115,8 @@ class MenuDashBoard:
         for idx, item in enumerate(self.items):
             self._print_cell(idx, item, MenuDashBoard.CELL_TPL if self.tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
 
-        sysout(f'%EL2%\r> %GREEN%{self.items[self.tab_index].tooltip}%NC%')
-        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end='')
+        sysout(f"%EL2%\r> %GREEN%{self.items[self.tab_index].tooltip}%NC%")
+        sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end="")
         self.re_render = False
 
     def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
@@ -128,12 +126,12 @@ class MenuDashBoard:
 
         for row in range(0, num_rows):
             for col in range(0, num_cols):
-                vt_print(f'{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}')
-            vt_print(f'%CUD(1)%%CUB({num_cols})%')
+                vt_print(f"{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}")
+            vt_print(f"%CUD(1)%%CUB({num_cols})%")
         if idx > 0 and (idx + 1) % self.items_per_line == 0:
-            vt_print(f'%CUD(1)%%CUB({num_cols * self.items_per_line})%')  # Break the line
+            vt_print(f"%CUD(1)%%CUB({num_cols * self.items_per_line})%")  # Break the line
         elif idx + 1 < len(self.items):
-            vt_print(f'%CUU({num_rows})%%CUF({num_cols})%')  # Continue with the same line
+            vt_print(f"%CUU({num_rows})%%CUF({num_cols})%")  # Continue with the same line
 
     def _nav_input(self) -> chr:
         """TODO"""

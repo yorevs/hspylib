@@ -30,25 +30,25 @@ class MInputUtils(ABC):
         return 1 + (2 * max_len)
 
     @staticmethod
-    def mi_print(size: int = 0, text: str = None, prepend: str = None, end: str = '') -> None:
-        fmt = ('{}' if prepend else '') + "{:<" + str(size) + "} : "
+    def mi_print(size: int = 0, text: str = None, prepend: str = None, end: str = "") -> None:
+        fmt = ("{}" if prepend else "") + "{:<" + str(size) + "} : "
         if prepend:
             vt_print(fmt.format(prepend, text), end=end)
         else:
-            vt_print(fmt.format(text or ''), end=end)
+            vt_print(fmt.format(text or ""), end=end)
 
     @staticmethod
     def toggle_selected(tokenized_values: str) -> str:
-        values = tokenized_values.split('|')
-        cur_idx = next((idx for idx, val in enumerate(values) if val.find('<') >= 0), -1)
+        values = tokenized_values.split("|")
+        cur_idx = next((idx for idx, val in enumerate(values) if val.find("<") >= 0), -1)
         if cur_idx < 0:
             if len(values) > 1:
-                values[1] = f'<{values[1]}>'
+                values[1] = f"<{values[1]}>"
             else:
-                values[0] = f'<{values[0]}>'
-            return '|'.join(values)
+                values[0] = f"<{values[0]}>"
+            return "|".join(values)
 
-        unselected = list(map(lambda x: x.replace('<', '').replace('>', ''), values))
+        unselected = list(map(lambda x: x.replace("<", "").replace(">", ""), values))
         # fmt: off
         return '|'.join([
             f'<{val}>'
@@ -62,7 +62,7 @@ class MInputUtils(ABC):
 
     @staticmethod
     def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:
-        values = tokenized_values.split('|')
+        values = tokenized_values.split("|")
         # fmt: off
         sel_item = next((
             val.replace('<', '').replace('>', '')
@@ -79,7 +79,7 @@ class MInputUtils(ABC):
 
     @staticmethod
     def unpack_masked(value: str) -> Tuple[str, str]:
-        parts = value.split('|')
+        parts = value.split("|")
         check_argument(len(parts) == 2, "Invalid masked value: {}", value)
         return parts[0], parts[1]
 
@@ -87,11 +87,11 @@ class MInputUtils(ABC):
     def append_masked(value: str, mask: str, keypress_value: chr) -> str:
         masked_value = value
         idx = len(value)
-        while idx < len(mask) and mask[idx] not in ['#', '@', '*']:
+        while idx < len(mask) and mask[idx] not in ["#", "@", "*"]:
             masked_value += mask[idx]
             idx += 1
         if mask and idx < len(mask):
-            mask_regex = mask[idx].replace('#', '[0-9]').replace('@', '[a-zA-Z]').replace('*', '.')
+            mask_regex = mask[idx].replace("#", "[0-9]").replace("@", "[a-zA-Z]").replace("*", ".")
             if re.search(mask_regex, keypress_value):
                 masked_value += keypress_value
             else:
@@ -101,10 +101,10 @@ class MInputUtils(ABC):
 
     @staticmethod
     def over_masked(value: str, mask: str) -> str:
-        masked_value = ''
+        masked_value = ""
         for idx, element in enumerate(mask):
-            if element in ['#', '@', '*']:
-                masked_value += value[idx] if idx < len(value) else '_'
+            if element in ["#", "@", "*"]:
+                masked_value += value[idx] if idx < len(value) else "_"
             else:
                 masked_value += element
 

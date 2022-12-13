@@ -19,12 +19,11 @@ from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
 from typing import Generic, List, Optional, TypeVar
 
-E = TypeVar('E', bound=CrudEntity)
-R = TypeVar('R', bound=CrudRepository)
+E = TypeVar("E", bound=CrudEntity)
+R = TypeVar("R", bound=CrudRepository)
 
 
 class CrudService(Generic[R, E], metaclass=AbstractSingleton):
-
     def __init__(self, repository: R):
         self._repository = repository
 

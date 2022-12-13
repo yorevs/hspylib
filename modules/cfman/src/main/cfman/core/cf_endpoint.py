@@ -26,7 +26,7 @@ class CFEndpoint:
         self.protected = attrs[2]
 
     def __str__(self) -> str:
-        return f'{self.alias}  {self.host}'
+        return f"{self.alias}  {self.host}"
 
     def __repr__(self):
         return str(self)

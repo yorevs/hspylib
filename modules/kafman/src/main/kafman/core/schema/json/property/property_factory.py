@@ -28,14 +28,13 @@ from typing import List, Tuple
 
 
 class PropertyFactory(ABC):
-
     @staticmethod
-    def create_field(p_property: Property) -> 'SchemaField':
+    def create_field(p_property: Property) -> "SchemaField":
         """TODO"""
 
         check_not_none(p_property)
         prop_name, prop_type = p_property.name, p_property.type
-        prop_doc = p_property.description or f'the {prop_name}'
+        prop_doc = p_property.description or f"the {prop_name}"
         prop_default = p_property.default
         required = p_property.required
         prop_type = p_property.type
@@ -43,9 +42,9 @@ class PropertyFactory(ABC):
         if p_property.type.is_primitive():
             schema_field = PrimitiveProperty(prop_name, prop_doc, prop_type, prop_default, required)
         elif p_property.type == JsonType.ARRAY:
-            if hasattr(p_property.extras, 'a_items'):
+            if hasattr(p_property.extras, "a_items"):
                 schema_field = ArrayProperty(prop_name, prop_doc, p_property.extras.a_items, required)
-            elif hasattr(p_property.extras, 'enum'):
+            elif hasattr(p_property.extras, "enum"):
                 schema_field = EnumProperty(prop_name, prop_doc, p_property.extras.enum, prop_default, required)
             else:
                 schema_field = ArrayProperty(prop_name, prop_doc, [], required)
@@ -53,9 +52,9 @@ class PropertyFactory(ABC):
             properties = p_property.all_properties
             schema_field = ObjectProperty(prop_name, prop_doc, tuple(properties), required)
         else:
-            raise InvalidStateError(f'Invalid field type: {p_property.type}')
+            raise InvalidStateError(f"Invalid field type: {p_property.type}")
 
-        check_not_none(schema_field, f'Unable to parse field {prop_name}')
+        check_not_none(schema_field, f"Unable to parse field {prop_name}")
 
         return schema_field
 

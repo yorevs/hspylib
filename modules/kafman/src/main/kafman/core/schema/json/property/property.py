@@ -25,13 +25,8 @@ class Property:
     """TODO"""
 
     def __init__(
-        self,
-        name: str,
-        title: str,
-        description: str,
-        s_type: JsonType,
-        default: Any = None,
-        required: bool = True):
+        self, name: str, title: str, description: str, s_type: JsonType, default: Any = None, required: bool = True
+    ):
 
         self.name = name
         self.title = title
@@ -40,13 +35,13 @@ class Property:
         self.default = default
         self.required = required
         self.all_properties = None
-        self.extras = Namespace('SchemaAttributes')
+        self.extras = Namespace("SchemaAttributes")
 
     def set_items(self, p_items: Union[List[str], dict]) -> None:
         """TODO"""
         if isinstance(p_items, list):
             self.extras.a_items = p_items
         elif isinstance(p_items, dict):
-            self.extras.enum = check_and_get('enum', p_items, False, [])
+            self.extras.enum = check_and_get("enum", p_items, False, [])
         else:
-            raise InvalidArgumentError(f'Invalid property \"items\" type: {type(p_items)}')
+            raise InvalidArgumentError(f'Invalid property "items" type: {type(p_items)}')

@@ -18,8 +18,8 @@ from hspylib.core.enums.enumeration import Enumeration
 
 class CalcOperations(Enumeration):
     NO_OP = None
-    DIVISION = '/'
-    MULTIPLICATION = 'x'
-    SUBTRACTION = '-'
-    SUM = '+'
-    PERCENT = '%'
+    DIVISION = "/"
+    MULTIPLICATION = "x"
+    SUBTRACTION = "-"
+    SUM = "+"
+    PERCENT = "%"

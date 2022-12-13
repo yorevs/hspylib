@@ -21,8 +21,8 @@ from typing import Callable, Optional
 import re
 
 
-def vt_print(vt100_str: str, end: str = '') -> None:
-    """Print a vt-100 encoded string. VT-100 string will contain one or more %VT-100-CODE% """
+def vt_print(vt100_str: str, end: str = "") -> None:
+    """Print a vt-100 encoded string. VT-100 string will contain one or more %VT-100-CODE%"""
     print(VtCodes.decode(vt100_str), end=end)
 
 
@@ -83,19 +83,17 @@ class VtCodes(Enumeration):
     @classmethod
     def decode(cls, input_string: str) -> str:
         """Decode the string into a VT_CODE enum"""
-        results = re.findall(r'%([a-zA-Z0-9]+)(\([0-9]+(;[0-9]+)*\))?%', input_string)
+        results = re.findall(r"%([a-zA-Z0-9]+)(\([0-9]+(;[0-9]+)*\))?%", input_string)
         for nextResult in results:
             mnemonic = nextResult[0]
             if mnemonic in VtCodes.names():
-                args = nextResult[1][1:-1] if nextResult[1] else ''
+                args = nextResult[1][1:-1] if nextResult[1] else ""
                 # Command has args, so, we need to call the vt100 function
                 if args:
                     fnc = VtCodes.value_of(mnemonic).__call__
-                    input_string = input_string.replace(
-                        f'%{mnemonic + nextResult[1]}%', fnc(args) if fnc else '')
+                    input_string = input_string.replace(f"%{mnemonic + nextResult[1]}%", fnc(args) if fnc else "")
                 else:
-                    input_string = input_string.replace(
-                        f'%{mnemonic}%', str(VtCodes.value_of(mnemonic).value))
+                    input_string = input_string.replace(f"%{mnemonic}%", str(VtCodes.value_of(mnemonic).value))
 
         return input_string
 

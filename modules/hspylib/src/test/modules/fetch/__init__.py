@@ -5,7 +5,5 @@
 # Package: test.modules.fetch
 """Package initialization."""
 
-__all__ = [
-  'test_fetch'
-]
-__version__ = '0.11.133'
+__all__ = ["test_fetch"]
+__version__ = "0.11.133"

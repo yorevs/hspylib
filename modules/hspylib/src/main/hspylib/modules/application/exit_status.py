@@ -46,7 +46,7 @@ class ExitStatus(Enumeration):
     # fmt: on
 
     @staticmethod
-    def of(value: int | SystemExit) -> 'ExitStatus':
+    def of(value: int | SystemExit) -> "ExitStatus":
         try:
             return ExitStatus.of_value(value.code if isinstance(value, SystemExit) else value or 0)
         except TypeError:

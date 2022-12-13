@@ -32,36 +32,32 @@ from typing import List
 
 class JsonSchema(KafkaSchema):
     """Json schema serializer/deserializer
-       Documentation: https://json-schema.org/
-       Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
+    Documentation: https://json-schema.org/
+    Additional Ref: https://docs.confluent.io/5.3.0/schema-registry/serializer-formatter.html
 
-       E.g:.
-       {
-          "definitions" : {
-            "record:myRecord" : {
-              "type" : "object",
-              "required" : [ "name", "calories" ],
-              "additionalProperties" : false,
-              "properties" : {
-                "name" : {"type" : "string"},
-                "calories" : {"type" : "number"},
-                "colour" : {"type" : "string"}
-              }
-            }
-          },
-          "$ref" : "#/definitions/record:myRecord"
-        }
+    E.g:.
+    {
+       "definitions" : {
+         "record:myRecord" : {
+           "type" : "object",
+           "required" : [ "name", "calories" ],
+           "additionalProperties" : false,
+           "properties" : {
+             "name" : {"type" : "string"},
+             "calories" : {"type" : "number"},
+             "colour" : {"type" : "string"}
+           }
+         }
+       },
+       "$ref" : "#/definitions/record:myRecord"
+     }
     """
 
     @classmethod
     def extensions(cls) -> List[str]:
-        return ['*.json']
+        return ["*.json"]
 
-    def __init__(
-        self,
-        filepath: str,
-        registry_url: str,
-        charset: Charset = Charset.UTF_8):
+    def __init__(self, filepath: str, registry_url: str, charset: Charset = Charset.UTF_8):
         super().__init__(SchemaType.JSON, filepath, registry_url, charset)
 
     def settings(self) -> dict:
@@ -69,7 +65,7 @@ class JsonSchema(KafkaSchema):
             ProducerConfig.KEY_SERIALIZER: StringSerializer(self._charset.value),
             ProducerConfig.VALUE_SERIALIZER: JSONSerializer(self._content_text, self._schema_client, self.to_dict),
             ConsumerConfig.KEY_DESERIALIZER: StringDeserializer(self._charset.value),
-            ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._content_text, self.from_dict)
+            ConsumerConfig.VALUE_DESERIALIZER: JSONDeserializer(self._content_text, self.from_dict),
         }
 
     def validate(self, json_form: dict) -> None:
@@ -80,7 +76,8 @@ class JsonSchema(KafkaSchema):
         form_stack: HStackedWidget,
         parent_pane: FormPane = None,
         form_name: str = None,
-        fields: List[SchemaField] = None) -> int:
+        fields: List[SchemaField] = None,
+    ) -> int:
         """Create the stacked frame with the form widget"""
 
         form_fields = fields if fields is not None else self._attributes.fields
@@ -116,12 +113,12 @@ class JsonSchema(KafkaSchema):
         self._schema_name = self._parsed.title
         self._attributes.name = self._parsed.title
         self._attributes.namespace = self._parsed.schema
-        self._attributes.doc = self._parsed.description if self._parsed.description else '<no-description>'
+        self._attributes.doc = self._parsed.description if self._parsed.description else "<no-description>"
 
         field_type = self._parsed.type
 
-        if 'object' == field_type:
+        if "object" == field_type:
             self._attributes.fields = PropertyFactory.create_schema_fields(self._parsed.properties)
         else:
             # TODO Check if it is needed to add the other types such as array, map, etc...
-            raise InvalidStateError(f'Unsupported field type {field_type}')
+            raise InvalidStateError(f"Unsupported field type {field_type}")

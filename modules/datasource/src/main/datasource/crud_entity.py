@@ -57,22 +57,22 @@ class CrudEntity(Namespace):
         return json.dumps(self.as_dict(), indent=indent)
 
     def as_column_set(
-        self,
-        separator: str = ', ',
-        prefix: Optional[str] = None,
-        exclude: Optional[Iterable[str]] = None) -> str:
+        self, separator: str = ", ", prefix: Optional[str] = None, exclude: Optional[Iterable[str]] = None
+    ) -> str:
         """TODO"""
 
         column_set = []
         exclude = exclude or []
-        list(map(
-            lambda key: column_set.append(f"{key} = {(prefix or '') + key}"),
-            filter(lambda a: a not in exclude, self.attributes)
-        ))
+        list(
+            map(
+                lambda key: column_set.append(f"{key} = {(prefix or '') + key}"),
+                filter(lambda a: a not in exclude, self.attributes),
+            )
+        )
 
         return separator.join(column_set)
 
-    def as_columns(self, separator: str = ', ') -> str:
+    def as_columns(self, separator: str = ", ") -> str:
         """TODO"""
 
         columns = []

@@ -40,7 +40,7 @@ import logging as log
 class KafkaSchema(ABC):
     """Generic Kafka avro schema"""
 
-    LOCAL_REGISTRY_SERVER_URL = 'http://localhost:8081'
+    LOCAL_REGISTRY_SERVER_URL = "http://localhost:8081"
 
     @classmethod
     def extensions(cls) -> List[str]:
@@ -71,43 +71,40 @@ class KafkaSchema(ABC):
         """Create a schema form row widget"""
 
         check_not_none(field)
-        field_name = field.name.replace('_', ' ').title()
+        field_name = field.name.replace("_", " ").title()
         label = QLabel(f"{field_name}: ")
         if field.required:
-            req_label = QLabel('*')
-            req_label.setStyleSheet('QLabel {color: #FF554D;}')
+            req_label = QLabel("*")
+            req_label.setStyleSheet("QLabel {color: #FF554D;}")
         else:
-            req_label = QLabel(' ')
+            req_label = QLabel(" ")
         req_label.setToolTip(f"This field is {'required' if field.required else 'optional'}")
         input_widget = field.create_input_widget()
 
         return req_label, label, input_widget
 
     def __init__(
-        self,
-        schema_type: SchemaType,
-        filepath: str = None,
-        registry_url: str = None,
-        charset: Charset = Charset.UTF_8):
+        self, schema_type: SchemaType, filepath: str = None, registry_url: str = None, charset: Charset = Charset.UTF_8
+    ):
 
-        self._schema_name = 'undefined'
+        self._schema_name = "undefined"
         self._schema_type = schema_type
         self._filepath = filepath
         self._registry_url = UriBuilder.ensure_scheme(registry_url or self.LOCAL_REGISTRY_SERVER_URL)
         self._charset = charset
-        self._attributes = Namespace('SchemaAttributes')
+        self._attributes = Namespace("SchemaAttributes")
         self._json_template = defaultdict()
         self._form_stack = None
 
         try:
             if filepath:
                 check_state(file_is_not_empty(filepath), f"Schema file is empty or not found: {filepath}")
-                with open(filepath, 'r', encoding=str(self._charset)) as f_schema:
+                with open(filepath, "r", encoding=str(self._charset)) as f_schema:
                     self._content_text = strip_extra_spaces(strip_linebreaks(f_schema.read()))
                     self._content_dict = defaultdict(None, json.loads(self._content_text))
                     check_not_none(self._content_dict)
                 self._parse()
-                self._schema_conf = {'url': self._registry_url}
+                self._schema_conf = {"url": self._registry_url}
                 self._schema_client = SchemaRegistryClient(self._schema_conf)
                 self._schema = Schema(self._content_text, self._schema_type.name)
         except (KeyError, TypeError, JSONDecodeError, SchemaParseException) as err:
@@ -123,7 +120,8 @@ class KafkaSchema(ABC):
         form_stack: HStackedWidget,
         parent_pane: FormPane = None,
         form_name: str = None,
-        fields: List[SchemaField] = None) -> int:
+        fields: List[SchemaField] = None,
+    ) -> int:
         """Create the stacked frame with the form widget"""
 
     @abstractmethod
@@ -149,7 +147,7 @@ class KafkaSchema(ABC):
         """Return the schema name"""
         return self._schema_name
 
-    def get_schema_fields(self) -> List['SchemaField']:
+    def get_schema_fields(self) -> List["SchemaField"]:
         """Return the schema fields"""
         return self._attributes.fields
 

@@ -5,9 +5,5 @@
 # Package: demo.qtdemos.calculator
 """Package initialization."""
 
-__all__ = [
-  '__main__', 
-  'core', 
-  'views'
-]
-__version__ = '0.11.133'
+__all__ = ["__main__", "core", "views"]
+__version__ = "0.11.133"

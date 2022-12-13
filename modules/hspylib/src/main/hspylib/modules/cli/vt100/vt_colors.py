@@ -37,19 +37,20 @@ class VtColors(Enumeration):
 
     @staticmethod
     def colorize(input_string: str) -> str:
-        return input_string \
-            .replace("%NC%", VtColors.NC.code) \
-            .replace("%BLACK%", VtColors.BLACK.code) \
-            .replace("%RED%", VtColors.RED.code) \
-            .replace("%GREEN%", VtColors.GREEN.code) \
-            .replace("%YELLOW%", VtColors.YELLOW.code) \
-            .replace("%BLUE%", VtColors.BLUE.code) \
-            .replace("%PURPLE%", VtColors.PURPLE.code) \
-            .replace("%CYAN%", VtColors.CYAN.code) \
-            .replace("%GRAY%", VtColors.GRAY.code) \
-            .replace("%ORANGE%", VtColors.ORANGE.code) \
-            .replace("%VIOLET%", VtColors.VIOLET.code) \
+        return (
+            input_string.replace("%NC%", VtColors.NC.code)
+            .replace("%BLACK%", VtColors.BLACK.code)
+            .replace("%RED%", VtColors.RED.code)
+            .replace("%GREEN%", VtColors.GREEN.code)
+            .replace("%YELLOW%", VtColors.YELLOW.code)
+            .replace("%BLUE%", VtColors.BLUE.code)
+            .replace("%PURPLE%", VtColors.PURPLE.code)
+            .replace("%CYAN%", VtColors.CYAN.code)
+            .replace("%GRAY%", VtColors.GRAY.code)
+            .replace("%ORANGE%", VtColors.ORANGE.code)
+            .replace("%VIOLET%", VtColors.VIOLET.code)
             .replace("%WHITE%", VtColors.WHITE.code)
+        )
 
     @property
     def code(self) -> str:

@@ -53,12 +53,12 @@ class Application(metaclass=AbstractSingleton):
         :param clear_screen: Whether to clean the screen before execution or not
         """
         if frame:
-            log.warning('Signal handler hooked signum=%d frame=%s', signum, frame)
+            log.warning("Signal handler hooked signum=%d frame=%s", signum, frame)
             exit_status = ExitStatus.ABORTED
         else:
             exit_status = ExitStatus.of(signum)
         if clear_screen:
-            sysout('%ED2%%HOM%')
+            sysout("%ED2%%HOM%")
 
         sys.exit(exit_status.value)
 
@@ -70,7 +70,8 @@ class Application(metaclass=AbstractSingleton):
         usage: str = None,
         epilog: str = None,
         resource_dir: str = None,
-        log_dir: str = None):
+        log_dir: str = None,
+    ):
 
         log.captureWarnings(True)
         signal.signal(signal.SIGINT, Application.exit)
@@ -85,20 +86,23 @@ class Application(metaclass=AbstractSingleton):
         self._app_version = version
         self._app_description = description
         self._arg_parser = HSArgumentParser(
-            exit_on_error=False, prog=name, allow_abbrev=False,
+            exit_on_error=False,
+            prog=name,
+            allow_abbrev=False,
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            description=dedent(description or ''), usage=usage,
-            epilog=dedent(epilog or ''))
-        self._arg_parser.add_argument(
-            '-v', '--version', action='version', version=f"%(prog)s v{self._app_version}")
+            description=dedent(description or ""),
+            usage=usage,
+            epilog=dedent(epilog or ""),
+        )
+        self._arg_parser.add_argument("-v", "--version", action="version", version=f"%(prog)s v{self._app_version}")
 
         # Initialize application configs
-        if os.path.exists(f'{resource_dir}'):
+        if os.path.exists(f"{resource_dir}"):
             self.configs = AppConfigs(resource_dir=resource_dir)
-        elif not resource_dir and os.path.exists(f'{self._run_dir}/resources/application.properties'):
-            self.configs = AppConfigs(resource_dir=f'{self._run_dir}/resources')
+        elif not resource_dir and os.path.exists(f"{self._run_dir}/resources/application.properties"):
+            self.configs = AppConfigs(resource_dir=f"{self._run_dir}/resources")
         else:
-            log.debug('Resource dir \"%s\" not found. AppConfigs will not be available!', resource_dir or "<none>")
+            log.debug('Resource dir "%s" not found. AppConfigs will not be available!', resource_dir or "<none>")
 
         # Initialize application logs
         self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
@@ -107,29 +111,29 @@ class Application(metaclass=AbstractSingleton):
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler"""
         today = now()
-        no_exit = 'no_exit' in kwargs
-        log.info('Application %s started %s', self._app_name, today)
+        no_exit = "no_exit" in kwargs
+        log.info("Application %s started %s", self._app_name, today)
         try:
             # Perform application cleanup after execution
             atexit.register(self._cleanup)
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
-            log.debug('Command line arguments: %s', str(self._args))
+            log.debug("Command line arguments: %s", str(self._args))
             self._exit_code = self._main(*params, **kwargs)
         except argparse.ArgumentError as err:
-            log.error('Application failed to execute %s => %s', today, err)
+            log.error("Application failed to execute %s => %s", today, err)
             self.usage(ExitStatus.FAILED, no_exit=True)
             syserr(f"\n### Error {self._app_name} -> {err}\n\n")
-            raise ApplicationError(f'Application failed to execute => {err}') from err
+            raise ApplicationError(f"Application failed to execute => {err}") from err
         except Exception as err:
             _, code, tb = sys.exc_info()
             if tb:
                 traceback.print_exc(file=sys.stderr)
-            log.error('Application execution failed %s => %s', today, err)
+            log.error("Application execution failed %s => %s", today, err)
             self._exit_code = ExitStatus.ERROR
-            raise ApplicationError(f'Application execution failed => {err}') from err
+            raise ApplicationError(f"Application execution failed => {err}") from err
         finally:
-            log.info('Application %s finished %s', self._app_name, today)
+            log.info("Application %s finished %s", self._app_name, today)
             if self._exit_code == ExitStatus.NOT_SET:
                 _, code, tb = sys.exc_info()
                 self._exit_code = ExitStatus.of(code)
@@ -156,19 +160,17 @@ class Application(metaclass=AbstractSingleton):
 
     def get_arg(self, arg_name: str) -> Optional[Union[str, list]]:
         """Get the argument value named by arg_name"""
-        return getattr(self._args, arg_name) \
-            if self._args and hasattr(self._args, arg_name) \
-            else None
+        return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
 
-    def _with_options(self) -> 'OptionsBuilder':
+    def _with_options(self) -> "OptionsBuilder":
         """TODO"""
         return OptionsBuilder(self._arg_parser)
 
-    def _with_arguments(self) -> 'ArgumentsBuilder':
+    def _with_arguments(self) -> "ArgumentsBuilder":
         """TODO"""
         return ArgumentsBuilder(self._arg_parser)
 
-    def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> 'ChainedArgumentsBuilder':
+    def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> "ChainedArgumentsBuilder":
         """TODO"""
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 

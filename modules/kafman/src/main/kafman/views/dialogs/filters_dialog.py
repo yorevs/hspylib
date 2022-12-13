@@ -51,19 +51,19 @@ class FiltersDialog(QObject):
         self.dialog.setWindowModality(Qt.ApplicationModal)
         self.dialog.setModal(True)
         self._set_font()
-        self.ui.le_filter_value.setPlaceholderText('Type in the filter value')
+        self.ui.le_filter_value.setPlaceholderText("Type in the filter value")
         self.ui.btn_box.button(QDialogButtonBox.Discard).setText("Remove")
         self.ui.btn_box.clicked.connect(self._button_clicked)
         self.ui.tbtn_clear_filters.setText(FormIcons.CLEAR.value)
         self.ui.tbtn_clear_filters.clicked.connect(self._clear_filters)
         self.ui.cmb_filter_field.currentTextChanged.connect(self._field_changed)
-        self.ui.cmb_filter_field.setCurrentText('value')
-        self.ui.cmb_filter_condition.setCurrentText('contains')
+        self.ui.cmb_filter_field.setCurrentText("value")
+        self.ui.cmb_filter_condition.setCurrentText("contains")
         self._sync_filters()
 
     def _set_font(self) -> None:
         """TODO"""
-        widgets = list(filter(lambda o: hasattr(getattr(self.ui, o), 'setFont'), vars(self.ui)))
+        widgets = list(filter(lambda o: hasattr(getattr(self.ui, o), "setFont"), vars(self.ui)))
         list(map(lambda w: getattr(self.ui, w).setFont(QFont("DroidSansMono Nerd Font", 13)), widgets))
 
     def show(self):
@@ -80,17 +80,26 @@ class FiltersDialog(QObject):
 
     def _field_changed(self, el_name: str) -> None:
         self.ui.cmb_filter_condition.clear()
-        if el_name in ['timestamp', 'partition', 'offset']:
-            self.ui.cmb_filter_condition.addItems([
-                str(FilterCondition.LESS_THAN), str(FilterCondition.LESS_THAN_OR_EQUALS_TO),
-                str(FilterCondition.GREATER_THAN), str(FilterCondition.GREATER_THAN_OR_EQUALS_TO),
-                str(FilterCondition.EQUALS_TO), str(FilterCondition.DIFFERENT_FROM)
-            ])
+        if el_name in ["timestamp", "partition", "offset"]:
+            self.ui.cmb_filter_condition.addItems(
+                [
+                    str(FilterCondition.LESS_THAN),
+                    str(FilterCondition.LESS_THAN_OR_EQUALS_TO),
+                    str(FilterCondition.GREATER_THAN),
+                    str(FilterCondition.GREATER_THAN_OR_EQUALS_TO),
+                    str(FilterCondition.EQUALS_TO),
+                    str(FilterCondition.DIFFERENT_FROM),
+                ]
+            )
         else:
-            self.ui.cmb_filter_condition.addItems([
-                str(FilterCondition.EQUALS_TO), str(FilterCondition.DIFFERENT_FROM),
-                str(FilterCondition.CONTAINS), str(FilterCondition.DOES_NOT_CONTAIN)
-            ])
+            self.ui.cmb_filter_condition.addItems(
+                [
+                    str(FilterCondition.EQUALS_TO),
+                    str(FilterCondition.DIFFERENT_FROM),
+                    str(FilterCondition.CONTAINS),
+                    str(FilterCondition.DOES_NOT_CONTAIN),
+                ]
+            )
 
     def _clear_filters(self) -> None:
         """TODO"""
@@ -113,11 +122,11 @@ class FiltersDialog(QObject):
         el_name = self.ui.cmb_filter_field.currentText()
         el_value = self._get_filter_value(el_name)
         if el_value:
-            condition = FilterCondition.value_of(self.ui.cmb_filter_condition.currentText().upper().replace(' ', '_'))
+            condition = FilterCondition.value_of(self.ui.cmb_filter_condition.currentText().upper().replace(" ", "_"))
             name = f"F:{el_name}:{''.join(random.choice(string.ascii_lowercase) for i in range(10))}"
             self._filters.apply_filter(name, el_name, condition, el_value)
             self.filtersChanged.emit(str(self._filters))
-            self.ui.le_filter_value.setText('')
+            self.ui.le_filter_value.setText("")
 
     def _discard_filter(self) -> None:
         """TODO"""
@@ -130,7 +139,7 @@ class FiltersDialog(QObject):
         """TODO"""
         str_value = self.ui.le_filter_value.text()
         try:
-            if el_name in ['timestamp', 'partition', 'offset']:
+            if el_name in ["timestamp", "partition", "offset"]:
                 return int(str_value)
         except TypeError:
             pass
