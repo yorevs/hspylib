@@ -23,10 +23,11 @@ class NavIcons(Awesome):
     """
 
     # fmt: off
-    LEFT    = '\u2190'  # ←
-    UP      = '\u2191'  # ↑
-    RIGHT   = '\u2192'  # →
-    DOWN    = '\u2193'  # ↓
-    ENTER   = '\u21b2'  # ↲
-    TAB     = '\u21b9'  # ↹
+    LEFT        = '\u2190'  # ←
+    UP          = '\u2191'  # ↑
+    RIGHT       = '\u2192'  # →
+    DOWN        = '\u2193'  # ↓
+    ENTER       = '\u21B2'  # ↲
+    TAB         = '\u21B9'  # ↹
+    SELECTOR    = '\uF432'  # 
     # fmt: on

@@ -24,14 +24,13 @@ class WidgetIcons(Awesome):
     """
 
     # fmt: off
-    CHART_2     = '\uFC68'  # ﱩ
-    CHART_1     = '\uFC67'  # ﱨ
+    CHART_2     = '\uF200'  # 
+    CHART_1     = '\uF1FE'  # 
     CLOCK       = '\uF651'  # 
     CHIP        = '\uFB19'  # ﬙
-    MUSIC       = '\uFC6E'  # ﱯ
+    MUSIC       = '\uF3B5'  # 
     NETWORK     = '\uF819'  # 
     PUNCH       = '\uF255'  # 
-    SIGN        = '\uFC7E'  # ﱿ
-    SWORDS      = '\uFC84'  # ﲅ
-    WIDGET      = '\uFC65'  # ﱥ
+    SIGN        = '\uF45D'  # 
+    WIDGET      = '\uF198'  # 
     # fmt: on

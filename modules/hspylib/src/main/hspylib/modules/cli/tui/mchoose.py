@@ -55,7 +55,7 @@ class MenuChoose(ABC):
 
     # fmt: off
     UNSELECTED  = " "
-    SELECTED    = FormIcons.SELECTOR
+    SELECTED    = NavIcons.SELECTOR
     MARKED      = FormIcons.MARKED
     UNMARKED    = FormIcons.UNMARKED
     # fmt: on

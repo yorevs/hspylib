@@ -17,7 +17,6 @@ from abc import ABC
 from typing import List, Optional, TypeVar
 
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_codes import vt_print
@@ -53,7 +52,7 @@ class MenuSelect(ABC):
 
     # fmt: off
     UNSELECTED  = " "
-    SELECTED    = FormIcons.SELECTOR
+    SELECTED    = NavIcons.SELECTOR
     # fmt: on
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)

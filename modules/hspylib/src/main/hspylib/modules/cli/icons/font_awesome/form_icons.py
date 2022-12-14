@@ -29,7 +29,6 @@ class FormIcons(Awesome):
     ARROW_UP            = '\uF062'  # 
     ARROW_DOWN          = '\uF063'  # 
     MOVE_ARROWS         = '\uF047'  # 
-    SELECTOR            = '\uFC32'  # ﰲ
     CHECK               = '\uF00C'  # 
     UNCHECK             = '\uF00D'  # 
     PLUS_CIRCLE         = '\uF055'  # 
@@ -58,6 +57,8 @@ class FormIcons(Awesome):
     DESELECT            = '\uF657'  # 
     DELETE              = '\uF014'  # 
     EDIT                = '\uF040'  # 
+    CUT                 = '\uF68F'  # 
+    PASTE               = '\uF68E'  # 
     PLUS                = '\uF067'  # 
     MINUS               = '\uF068'  # 
     # fmt: on

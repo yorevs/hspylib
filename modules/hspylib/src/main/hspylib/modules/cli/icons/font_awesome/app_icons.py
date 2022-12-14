@@ -23,22 +23,30 @@ class AppIcons(Awesome):
     """
 
     # fmt: off
-    APPLE           = '\uF534'  # 
+    AMAZON          = '\uF270'  # 
+    APPLE           = '\uF179'  # 
     AWS             = '\uF375'  # 
-    CPLUSPLUS       = '\uFB70'  # ﭱ
+    CPLUSPLUS       = '\uF38C'  # 
     DOCKER          = '\uF308'  # 
     DROPBOX         = '\uF6E2'  # 
     GIT             = '\uF813'  # 
     GITHUB          = '\uF408'  # 
+    GOOGLE          = '\uF1A0'  # 
     GOOGLE_DRIVE    = '\uF3AA'  # 
     FACEBOOK        = '\uF082'  # 
     FIREBASE        = '\uF1D0'  # 
     IE              = '\uF7FF'  # 
+    INSTAGRAM       = '\uF16D'  # 
     JAVA            = '\uF4E4'  # 
     LINKED_IN       = '\uF08C'  # 
-    PYTHON          = '\uF81F'  # 
-    STACK_OVERFLOW  = '\uF9CB'  # 溜
+    LINUX           = '\uF31A'  # 
+    PAYPAL          = '\uF1ED'  # 
+    PYTHON          = '\uF3E2'  # 
+    STACK_OVERFLOW  = '\uF16C'  # 
     TWITTER         = '\uF081'  # 
-    VS_CODE         = '\uFB0F'  # ﬏
+    UBUNTU          = '\uF31B'  # 
+    VS_CODE         = '\uF3AB'  # 
+    YOUTUBE         = '\uF16A'  # 
     WHATSAPP        = '\uFAA2'  # 甆
+    WINDOWS         = '\uF17A'  # 
     # fmt: on
