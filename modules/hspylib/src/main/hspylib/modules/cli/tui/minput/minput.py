@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.extra
+   @package: main.modules.cli.tui.components
       @file: minput.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -12,6 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
+import re
+import time
+from typing import List, Optional
+
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import syserr, sysout
@@ -19,25 +23,20 @@ from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.tui.extra.minput.form_builder import FormBuilder
-from hspylib.modules.cli.tui.extra.minput.form_field import FormField
-from hspylib.modules.cli.tui.extra.minput.input_type import InputType
-from hspylib.modules.cli.tui.extra.minput.minput_utils import MInputUtils
+from hspylib.modules.cli.tui.minput.form_builder import FormBuilder
+from hspylib.modules.cli.tui.minput.form_field import FormField
+from hspylib.modules.cli.tui.minput.input_type import InputType
+from hspylib.modules.cli.tui.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import (
     get_cursor_position, prepare_render, restore_cursor, restore_terminal, set_enable_echo,
 )
-from typing import List, Optional
-
-import re
-import time
 
 
 def minput(
     form_fields: List[FormField],
     title: str = "Please fill all fields of the form fields below",
-    prefix: str = None,
     title_color: VtColors = VtColors.ORANGE,
     nav_color: VtColors = VtColors.YELLOW,
 ) -> Optional[Namespace]:
@@ -45,61 +44,61 @@ def minput(
     TODO
     :param form_fields:
     :param title:
-    :param prefix:
     :param title_color:
     :param nav_color:
     :return:
     """
-    return MenuInput(form_fields).input(title, prefix, title_color, nav_color)
+    return MenuInput(form_fields).execute(title, title_color, nav_color)
 
 
 class MenuInput:
     """TODO"""
 
+    # fmt: off
     SELECTED_BG = "%MOD(44)%"
-    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
-    NAV_BAR = f"[Enter] Submit  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %EL0%"
+    NAV_ICONS   = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
+    NAV_BAR     = f"[Enter] Submit  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %EL0%"
+    # fmt: off
 
     @classmethod
     def builder(cls) -> FormBuilder:
         return FormBuilder()
 
-    def __init__(self, all_fields: List[FormField]):
-        self.all_fields = all_fields
-        self.all_pos = [(0, 0) for _ in all_fields]
+    def __init__(self, fields: List[FormField]):
+        self.fields = fields
+        self.positions = [(0, 0) for _ in fields]
         self.cur_field = self.done = None
         self.cur_row = self.cur_col = self.tab_index = 0
-        self.max_label_length = max(len(field.label) for field in all_fields)
-        self.max_value_length = max(field.max_length for field in all_fields)
-        self.max_detail_length = max(MInputUtils.detail_len(field) for field in all_fields)
+        self.max_label_length = max(len(field.label) for field in fields)
+        self.max_value_length = max(field.max_length for field in fields)
+        self.max_detail_length = max(MInputUtils.detail_len(field) for field in fields)
         self.re_render = True
 
-    def input(self, title: str, prefix: str, title_color: VtColors, nav_color: VtColors) -> Optional[Namespace]:
+    def execute(self, title: str, title_color: VtColors, nav_color: VtColors) -> Optional[Namespace]:
         """TODO"""
 
-        ret_val = Keyboard.VK_NONE
-        length = len(self.all_fields)
+        keypress = Keyboard.VK_NONE
 
-        if length == 0:
+        if len(self.fields) == 0:
             return None
 
         prepare_render(title, title_color)
 
         # Wait for user interaction
-        while not self.done and ret_val not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done and keypress not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
             # Menu Renderization
             if self.re_render:
                 self._render(nav_color)
 
             # Navigation input
-            ret_val = self._nav_input()
+            keypress = self._handle_keypress()
 
         restore_terminal()
 
-        if ret_val == Keyboard.VK_ENTER:
+        if keypress == Keyboard.VK_ENTER:
             form_fields = Namespace("FormFields")
-            for field in self.all_fields:
-                att_name = f"{prefix or ''}{snakecase(field.label)}"
+            for field in self.fields:
+                att_name = f"{snakecase(field.label)}"
                 form_fields.setattr(att_name, field.value)
             return form_fields
 
@@ -110,7 +109,7 @@ class MenuInput:
 
         restore_cursor()
 
-        for idx, field in enumerate(self.all_fields):
+        for idx, field in enumerate(self.fields):
 
             field_size = len(str(field.value))
             if self.tab_index == idx:
@@ -147,17 +146,6 @@ class MenuInput:
         sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end="")
         self.re_render = False
 
-    def _buffer_pos(self, field_size: int, idx: int) -> None:
-        """TODO"""
-
-        # Buffering the all positions to avoid calling get_cursor_pos over and over
-        f_pos = get_cursor_position() if self.all_pos[idx] == (0, 0) else self.all_pos[idx]
-        if f_pos:
-            self.all_pos[idx] = f_pos
-            if self.tab_index == idx:
-                self.cur_row = f_pos[0]
-                self.cur_col = f_pos[1] + field_size
-
     def _render_details(self, field: FormField, field_size: int) -> None:
         """TODO"""
 
@@ -174,10 +162,10 @@ class MenuInput:
             sysout(fmt.format(field.icon, field_size, field.max_length))
 
     # pylint: disable=too-many-branches
-    def _nav_input(self) -> chr:
+    def _handle_keypress(self) -> Keyboard:
         """TODO"""
 
-        length = len(self.all_fields)
+        length = len(self.fields)
         keypress = Keyboard.read_keystroke()
 
         if keypress:
@@ -198,15 +186,15 @@ class MenuInput:
                 else:
                     self._handle_input(keypress)
             elif keypress == Keyboard.VK_ENTER:  # Validate & Save form and exit
-                invalid = next((field for field in self.all_fields if not field.validate(field.value)), None)
+                invalid = next((field for field in self.fields if not field.validate(field.value)), None)
                 if invalid:
                     keypress = None
-                    idx = self.all_fields.index(invalid)
-                    self.cur_row = self.all_pos[idx][0]
+                    idx = self.fields.index(invalid)
+                    self.cur_row = self.positions[idx][0]
                     self.tab_index = idx
                     self._display_error("Form field is not valid: " + str(invalid))
                 else:
-                    for idx, field in enumerate(self.all_fields):
+                    for idx, field in enumerate(self.fields):
                         if field.itype == InputType.MASKED:
                             field.value = field.value.split("|")[0]
                         elif field.itype == InputType.CHECKBOX:
@@ -256,6 +244,17 @@ class MenuInput:
                 self.cur_field.value = str(self.cur_field.value)[:-1]
             elif not self.cur_field.can_write():
                 self._display_error("This field is read only !")
+
+    def _buffer_pos(self, field_size: int, idx: int) -> None:
+        """TODO"""
+
+        # Buffering the all positions to avoid calling get_cursor_pos over and over
+        f_pos = get_cursor_position() if self.positions[idx] == (0, 0) else self.positions[idx]
+        if f_pos:
+            self.positions[idx] = f_pos
+            if self.tab_index == idx:
+                self.cur_row = f_pos[0]
+                self.cur_col = f_pos[1] + field_size
 
     def _display_error(self, err_msg) -> None:
         """TODO"""

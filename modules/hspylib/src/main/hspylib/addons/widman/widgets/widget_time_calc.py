@@ -15,17 +15,17 @@
    Copyright 2022, HSPyLib team
 """
 
+import math
+import re
+from typing import List, Optional, Tuple
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.tui.extra.minput.minput import MenuInput, minput
-from typing import List, Optional, Tuple
-
-import math
-import re
+from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
 
 
 class WidgetTimeCalc(Widget):

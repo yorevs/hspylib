@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   demo.cli.tui.extra
+   demo.cli.tui.components
       @file: menu_dashboard_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -15,7 +15,7 @@
 """
 
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
-from hspylib.modules.cli.tui.extra.mdashboard.mdashboard import mdashboard, MenuDashBoard
+from hspylib.modules.cli.tui.mdashboard.mdashboard import mdashboard, MenuDashBoard
 
 if __name__ == "__main__":
     # fmt: off

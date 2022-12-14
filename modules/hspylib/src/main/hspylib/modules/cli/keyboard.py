@@ -22,9 +22,6 @@ import getkey
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.exception.exceptions import KeyboardInputError
-from hspylib.modules.cli.vt100.vt_utils import require_terminal
-
-require_terminal()
 
 
 # pylint: disable=multiple-statements

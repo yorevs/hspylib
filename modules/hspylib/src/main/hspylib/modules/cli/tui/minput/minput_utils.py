@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.extra.minput
+   @package: main.modules.cli.tui.minput
       @file: minput_utils.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -12,13 +12,13 @@
 
    Copyright 2022, HSPyLib team
 """
+import re
 from abc import ABC
+from typing import Any, Optional, Tuple
+
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.preconditions import check_argument
 from hspylib.modules.cli.vt100.vt_codes import vt_print
-from typing import Any, Optional, Tuple
-
-import re
 
 
 class MInputUtils(ABC):
@@ -31,6 +31,7 @@ class MInputUtils(ABC):
 
     @staticmethod
     def mi_print(size: int = 0, text: str = None, prepend: str = None, end: str = "") -> None:
+        """TODO"""
         fmt = ("{}" if prepend else "") + "{:<" + str(size) + "} : "
         if prepend:
             vt_print(fmt.format(prepend, text), end=end)
@@ -39,6 +40,7 @@ class MInputUtils(ABC):
 
     @staticmethod
     def toggle_selected(tokenized_values: str) -> str:
+        """TODO"""
         values = tokenized_values.split("|")
         cur_idx = next((idx for idx, val in enumerate(values) if val.find("<") >= 0), -1)
         if cur_idx < 0:
@@ -47,21 +49,18 @@ class MInputUtils(ABC):
             else:
                 values[0] = f"<{values[0]}>"
             return "|".join(values)
-
         unselected = list(map(lambda x: x.replace("<", "").replace(">", ""), values))
         # fmt: off
         return '|'.join([
             f'<{val}>'
-            if
-                idx == (cur_idx + 1)
-                or ((cur_idx + 1) >= len(unselected) and idx == 0)
-            else
-                val for idx, val in enumerate(unselected)
+            if idx == (cur_idx + 1) or ((cur_idx + 1) >= len(unselected) and idx == 0)
+            else val for idx, val in enumerate(unselected)
         ])
         # fmt: on
 
     @staticmethod
     def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:
+        """TODO"""
         values = tokenized_values.split("|")
         # fmt: off
         sel_item = next((
@@ -79,12 +78,14 @@ class MInputUtils(ABC):
 
     @staticmethod
     def unpack_masked(value: str) -> Tuple[str, str]:
+        """TODO"""
         parts = value.split("|")
         check_argument(len(parts) == 2, "Invalid masked value: {}", value)
         return parts[0], parts[1]
 
     @staticmethod
     def append_masked(value: str, mask: str, keypress_value: chr) -> str:
+        """TODO"""
         masked_value = value
         idx = len(value)
         while idx < len(mask) and mask[idx] not in ["#", "@", "*"]:
@@ -101,6 +102,7 @@ class MInputUtils(ABC):
 
     @staticmethod
     def over_masked(value: str, mask: str) -> str:
+        """TODO"""
         masked_value = ""
         for idx, element in enumerate(mask):
             if element in ["#", "@", "*"]:

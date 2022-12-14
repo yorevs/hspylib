@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.133
 #
-# Package: main.hspylib.modules.cli.tui.extra.minput
+# Package: main.hspylib.modules.cli.tui.minput
 """Package initialization."""
 
 __all__ = [

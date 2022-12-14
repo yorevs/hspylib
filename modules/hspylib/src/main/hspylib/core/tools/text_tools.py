@@ -12,12 +12,12 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.tools.dict_tools import get_or_default
-from typing import Any, List, Optional, Tuple
-
 import os
 import random
 import re
+from typing import Any, List, Optional, Tuple
+
+from hspylib.core.tools.dict_tools import get_or_default
 
 
 def elide_text(text: str, width: int, elide_with: str = "...") -> str:
@@ -112,7 +112,7 @@ def strip_linebreaks(text: str, re_exp: str = r"(\n|\r|\n\r)+") -> str:
 
 
 def strip_extra_spaces(text: str, re_exp: str = r"\s+", trim: bool = False) -> str:
-    """Return a copy of the string stripping out all extra spaces 2+ from it."""
+    """Return a copy of the string stripping out all components spaces 2+ from it."""
     s = re.sub(re.compile(rf"{re_exp}"), " ", text)
     return s if not trim else s.strip()
 

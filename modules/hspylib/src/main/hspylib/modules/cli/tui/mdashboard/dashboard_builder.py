@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.extra.mdashboard
+   @package: main.modules.cli.tui.mdashboard
       @file: dashboard_builder.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -12,9 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import CB_ON_TRIGGER, DashboardItem
 from typing import List, Optional
+
+from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
+from hspylib.modules.cli.tui.mdashboard.dashboard_item import CB_ON_TRIGGER, DashboardItem
 
 
 class DashboardBuilder:

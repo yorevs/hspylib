@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.extra
+   @package: main.modules.cli.tui.components
       @file: mdashboard.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -19,8 +19,8 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_builder import DashboardBuilder
-from hspylib.modules.cli.tui.extra.mdashboard.dashboard_item import DashboardItem
+from hspylib.modules.cli.tui.mdashboard.dashboard_builder import DashboardBuilder
+from hspylib.modules.cli.tui.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
@@ -35,7 +35,7 @@ def mdashboard(
 ) -> Optional[DashboardItem]:
     """TODO"""
 
-    return MenuDashBoard(items, items_per_line).dashboard(title, title_color, nav_color)
+    return MenuDashBoard(items, items_per_line).execute(title, title_color, nav_color)
 
 
 class MenuDashBoard:
@@ -63,10 +63,9 @@ class MenuDashBoard:
     @classmethod
     def builder(cls):
         """TODO"""
-
         return DashboardBuilder()
 
-    def __init__(self, items: List[DashboardItem], items_per_line: int = 5):
+    def __init__(self, items: List[DashboardItem], items_per_line: int):
 
         self.items = items
         self.done = None
@@ -78,28 +77,27 @@ class MenuDashBoard:
             "Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.",
         )
 
-    def dashboard(self, title: str, title_color: VtColors, nav_color: VtColors) -> Optional[DashboardItem]:
+    def execute(self, title: str, title_color: VtColors, nav_color: VtColors) -> Optional[DashboardItem]:
         """TODO"""
 
-        ret_val = Keyboard.VK_NONE
-        length = len(self.items)
+        keypress = Keyboard.VK_NONE
 
-        if length == 0:
+        if len(self.items) == 0:
             return None
 
         prepare_render(title, title_color)
 
         # Wait for user interaction
-        while not self.done and ret_val not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done and keypress not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
             # Menu Renderization
             if self.re_render:
                 self._render(nav_color)
 
             # Navigation input
-            ret_val = self._nav_input()
+            keypress = self._handle_keypress()
 
         restore_terminal()
-        selected = self.items[self.tab_index] if ret_val == Keyboard.VK_ENTER else None
+        selected = self.items[self.tab_index] if keypress == Keyboard.VK_ENTER else None
 
         if selected and selected.on_trigger:
             selected.on_trigger()
@@ -119,21 +117,7 @@ class MenuDashBoard:
         sysout(f"\n{nav_color.placeholder}{self.NAV_BAR}", end="")
         self.re_render = False
 
-    def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
-        """TODO"""
-
-        num_cols, num_rows = len(cell_template[0]), len(cell_template)
-
-        for row in range(0, num_rows):
-            for col in range(0, num_cols):
-                vt_print(f"{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}")
-            vt_print(f"%CUD(1)%%CUB({num_cols})%")
-        if idx > 0 and (idx + 1) % self.items_per_line == 0:
-            vt_print(f"%CUD(1)%%CUB({num_cols * self.items_per_line})%")  # Break the line
-        elif idx + 1 < len(self.items):
-            vt_print(f"%CUU({num_rows})%%CUF({num_cols})%")  # Continue with the same line
-
-    def _nav_input(self) -> chr:
+    def _handle_keypress(self) -> Keyboard:
         """TODO"""
 
         length = len(self.items)
@@ -153,4 +137,19 @@ class MenuDashBoard:
                 pass  # Just exit
 
         self.re_render = True
+
         return keypress
+
+    def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
+        """TODO"""
+
+        num_cols, num_rows = len(cell_template[0]), len(cell_template)
+
+        for row in range(0, num_rows):
+            for col in range(0, num_cols):
+                vt_print(f"{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}")
+            vt_print(f"%CUD(1)%%CUB({num_cols})%")
+        if idx > 0 and (idx + 1) % self.items_per_line == 0:
+            vt_print(f"%CUD(1)%%CUB({num_cols * self.items_per_line})%")  # Break the line
+        elif idx + 1 < len(self.items):
+            vt_print(f"%CUU({num_rows})%%CUF({num_cols})%")  # Continue with the same line
