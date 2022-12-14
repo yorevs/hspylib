@@ -4,7 +4,7 @@
 """
    TODO Purpose of the file
    @project: HSPyLib
-   demo.cli.tui.extra
+   demo.cli.tui.components
       @file: menu_choose_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,7 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.modules.cli.tui.extra.mchoose import mchoose
+from hspylib.modules.cli.tui.mchoose import mchoose
 
 
 class ChooseableItem:

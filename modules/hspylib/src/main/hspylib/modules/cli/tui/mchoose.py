@@ -3,8 +3,8 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.extra
-      @file: mselect.py
+   @package: main.modules.cli.tui.components
+      @file: mchoose.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -27,17 +27,19 @@ from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, r
 T = TypeVar("T")
 
 
-def mselect(
+def mchoose(
     items: List[T],
+    checked: bool = True,
     title: str = "Please select one",
     max_rows: int = 15,
     title_color: VtColors = VtColors.ORANGE,
     highlight_color: VtColors = VtColors.BLUE,
     nav_color: VtColors = VtColors.YELLOW,
-) -> Optional[T]:
+) -> Optional[List[T]]:
     """
     TODO
     :param items:
+    :param checked:
     :param title:
     :param max_rows:
     :param title_color:
@@ -45,59 +47,66 @@ def mselect(
     :param nav_color:
     :return:
     """
-    return MenuSelect(items, max_rows).select(title, title_color, highlight_color, nav_color)
+    return MenuChoose(items, max_rows, checked).execute(title, title_color, highlight_color, nav_color)
 
 
-class MenuSelect(ABC):
+class MenuChoose(ABC):
     """TODO"""
 
-    UNSELECTED = " "
-    SELECTED = FormIcons.SELECTOR
+    # fmt: off
+    UNSELECTED  = " "
+    SELECTED    = FormIcons.SELECTOR
+    MARKED      = FormIcons.MARKED
+    UNMARKED    = FormIcons.UNMARKED
+    # fmt: on
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
-    NAV_BAR = f"[Enter] Select  [{NAV_ICONS}] Navigate  [Esc] Quit  [1..%TO%] Goto: %EL0%"
+    NAV_BAR = f"[Enter] Accept  [{NAV_ICONS}] Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..%TO%] Goto: %EL0%"
 
-    def __init__(self, items: List[T], max_rows: int = 15):
-
+    def __init__(self, items: List[T], max_rows: int, default_checked: bool):
         self.items = items
         self.show_from = 0
-        self.show_to = max_rows - 1
+        self.show_to = max(10, max_rows - 1)
         self.diff_index = self.show_to - self.show_from
         self.sel_index = 0
+        self.sel_options = [1 if default_checked else 0 for _ in range(len(items))]  # Initialize all options
         self.re_render = True
         self.done = None
 
-    def select(self, title: str, title_color: VtColors, highlight_color: VtColors, nav_color: VtColors) -> Optional[T]:
+    def execute(
+        self, title: str, title_color: VtColors, highlight_color: VtColors, nav_color: VtColors
+    ) -> Optional[List[T]]:
         """TODO"""
 
-        ret_val = Keyboard.VK_NONE
-        length = len(self.items)
+        keypress = Keyboard.VK_NONE
 
-        if length == 0:
+        if len(self.items) == 0:
             return None
-        if length == 1:  # When only one option is provided, select the element at index 0 and return
-            return self.items[0]
 
         prepare_render(title, title_color)
 
         # Wait for user interaction
-        while not self.done and ret_val not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done and keypress not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
             # Menu Renderization
             if self.re_render:
                 self._render(highlight_color, nav_color)
 
             # Navigation input
-            ret_val = self._nav_input()
+            keypress = self._handle_keypress()
 
         restore_terminal()
 
-        return self.items[self.sel_index] if ret_val == Keyboard.VK_ENTER else None
+        return (
+            [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
+            if keypress == Keyboard.VK_ENTER
+            else None
+        )
 
     def _render(self, highlight_color: VtColors, nav_color: VtColors) -> None:
         """TODO"""
 
         length = len(self.items)
-        dummy, columns = screen_size()
+        _, columns = screen_size()
         restore_cursor()
 
         for idx in range(self.show_from, self.show_to):
@@ -107,25 +116,33 @@ class MenuSelect(ABC):
                 option_line = str(self.items[idx])[0: int(columns)]
                 vt_print("%EL2%\r")  # Erase current line before repaint
 
-                # Print the selector if the index is currently selected
+                #  Print the selector if the index is currently selected
                 if idx == self.sel_index:
                     vt_print(highlight_color.code)
                     selector = self.SELECTED
 
-                fmt = "  {:>" + str(len(str(length))) + "}{:>" + str(1 + len(str(selector))) + "} {}"
-                sysout(fmt.format(idx + 1, selector, option_line))
+                # Print the marked or unmarked option
+                mark = self.MARKED if self.sel_options[idx] == 1 else self.UNMARKED
+                # fmt: off
+                fmt = (
+                    "  {:>" + str(len(str(length))) + "}"
+                    + "{:>" + str(1 + len(str(selector))) + "} "
+                    + "{:>" + str(len(str(mark))) + "} {}"
+                )
+                # fmt: on
+                sysout(fmt.format(idx + 1, selector, mark, option_line))
 
                 # Check if the text fits the screen and print it, otherwise print '...'
                 if len(option_line) >= int(columns):
-                    sysout("%CUB(4)%%EL0%...%NC%", end="")
+                    sysout("%CUB(4)%%EL0%...", end="")
             else:
                 break
 
         sysout(f"\n{nav_color.placeholder}{self.NAV_BAR.replace('%TO%', str(length))}", end="")
         self.re_render = False
 
-    # pylint: disable=too-many-branches
-    def _nav_input(self) -> chr:
+    # pylint: disable=too-many-branches,too-many-statements
+    def _handle_keypress(self) -> Keyboard:
         """TODO"""
 
         length = len(self.items)
@@ -155,14 +172,23 @@ class MenuSelect(ABC):
                     self.show_from = self.show_to - self.diff_index
                     self.sel_index = int(typed_index) - 1
                     self.re_render = True
-            elif keypress == Keyboard.VK_UP:  # Cursor up
+            elif keypress == Keyboard.VK_SPACE:  # Space -> Mark option
+                if self.sel_options[self.sel_index] == 0:
+                    self.sel_options[self.sel_index] = 1
+                else:
+                    self.sel_options[self.sel_index] = 0
+                self.re_render = True
+            elif keypress in [Keyboard.VK_i, Keyboard.VK_I]:  # I -> Invert options
+                self.sel_options = [(0 if op == 1 else 1) for op in self.sel_options]
+                self.re_render = True
+            elif keypress == Keyboard.VK_UP:  # Cursor up or shift tab
                 if self.sel_index == self.show_from and self.show_from > 0:
                     self.show_from -= 1
                     self.show_to -= 1
                 if self.sel_index - 1 >= 0:
                     self.sel_index -= 1
                     self.re_render = True
-            elif keypress == Keyboard.VK_DOWN:  # Cursor down
+            elif keypress == Keyboard.VK_DOWN:  # Cursor down or tab
                 if self.sel_index + 1 == self.show_to and self.show_to < length:
                     self.show_from += 1
                     self.show_to += 1

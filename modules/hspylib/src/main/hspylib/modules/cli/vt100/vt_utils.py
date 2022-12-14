@@ -27,17 +27,11 @@ import termios
 import tty
 
 
-def require_terminal() -> None:
-    """Require a terminal"""
-    if not sys.stdin.isatty():
-        raise Exception("This module requires a terminal (TTY)")
-
-
-def screen_size() -> Optional[List[str]]:
+def screen_size() -> List[str]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
         return os.popen("stty size").read().split()
-    return None
+    raise NotImplementedError("screen_size:: Requires a terminal (TTY)")
 
 
 # Solution taken from:
@@ -50,7 +44,7 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
         attrs = termios.tcgetattr(stdin)
         try:
             tty.setcbreak(stdin, termios.TCSANOW)
-            sys.stdout.write("\x1b[6n")
+            sys.stdout.write("\x1b[6n")  # Query the terminal
             sys.stdout.flush()
             while True:
                 buf += sys.stdin.read(1)
@@ -64,7 +58,7 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
         finally:
             termios.tcsetattr(stdin, termios.TCSANOW, attrs)
 
-    return None
+    raise NotImplementedError("get_cursor_position:: Requires a terminal (TTY)")
 
 
 def set_enable_echo(enabled: bool = True) -> None:
@@ -73,6 +67,8 @@ def set_enable_echo(enabled: bool = True) -> None:
     """
     if sys.stdout.isatty():
         os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
+    else:
+        NotImplementedError("set_enable_echo:: Requires a terminal (TTY)")
 
 
 def set_auto_wrap(auto_wrap: bool = True) -> None:

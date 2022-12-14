@@ -2,7 +2,7 @@
 #
 # hspylib v0.11.133
 #
-# Package: main.hspylib.modules.cli.tui.extra.mdashboard
+# Package: main.hspylib.modules.cli.tui.mdashboard
 """Package initialization."""
 
 __all__ = ["dashboard_builder", "dashboard_item", "mdashboard"]

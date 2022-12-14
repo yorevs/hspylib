@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.extra.minput
+   @package: main.modules.cli.tui.minput
       @file: form_field.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,11 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
-from hspylib.modules.cli.tui.extra.minput.access_type import AccessType
-from hspylib.modules.cli.tui.extra.minput.input_type import InputType
-from hspylib.modules.cli.tui.extra.minput.input_validator import InputValidator
 from typing import Any
+
+from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
+from hspylib.modules.cli.tui.minput.access_type import AccessType
+from hspylib.modules.cli.tui.minput.input_type import InputType
+from hspylib.modules.cli.tui.minput.input_validator import InputValidator
 
 
 class FormField:
