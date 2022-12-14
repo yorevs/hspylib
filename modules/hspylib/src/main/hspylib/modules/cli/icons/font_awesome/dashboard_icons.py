@@ -23,7 +23,7 @@ class DashboardIcons(Awesome):
     """
 
     # fmt: off
-    ADJUSTMENTS     = '\uFB2D'  # שּׂ
+    ADJUSTMENTS     = '\uF1DE'  # 
     AGENDA          = '\uF073'  # 
     ALERT           = '\uF071'  # 
     ARCHIVE         = '\uF01C'  # 
@@ -41,19 +41,20 @@ class DashboardIcons(Awesome):
     DOWNLOAD        = '\uF019'  # 
     EMAIL           = '\uF003'  # 
     ERROR           = '\uF06A'  # 
-    EXIT            = '\uF08B'  # 
+    EXIT            = '\uF426'  # 
     EXPORT          = '\uF5F6'  # 
     FAVORITE        = '\uF02E'  # 
     FLAG            = '\uF024'  # 
     FOLDER          = '\uF74A'  # 
     FOLDER_OPEN     = '\uF07C'  # 
-    FORM            = '\uF767'  # 
-    FORMAT          = '\uF9C5'  # 暈
+    FORM            = '\uF233'  # 
+    FORMAT          = '\uF6C8'  # 
+    GRAPHS          = '\uF627'  # 
     HISTORY         = '\uF017'  # 
     HOME            = '\uF015'  # 
     IDENTITY        = '\uF2BB'  # 
     IMPORT          = '\uF5F9'  # 
-    KILL            = '\uFB8A'  # ﮊ
+    KILL            = '\uF8C4'  # 
     LIGHT_ON        = '\uF834'  # 
     LIGHT_OFF       = '\uF835'  # 
     LIKE            = '\uF004'  # 
@@ -66,23 +67,24 @@ class DashboardIcons(Awesome):
     NOTIFICATION    = '\uF0F3'  # 
     PICTURE         = '\uF03E'  # 
     PLAY            = '\uF01D'  # 
-    PLUGIN          = '\uF930'  # 擄
+    PLUGIN          = '\uF12E'  # 
     PLUG_IN         = '\uF1E6'  # 
     PLUG_OUT        = '\uF492'  # 
-    PLUGGED         = '\uFBA3'  # ﮣ
+    PLUGGED         = '\uF700'  # 
     POWER           = '\uF011'  # 
     PRINTER         = '\uF02F'  # 
-    READ            = '\uFB3C'  # לּ
+    READ            = '\uF830'  # 
     SAVE            = '\uF0C7'  # 
     SEARCH          = '\uF002'  # 
     SECRET          = '\uF49C'  # 
-    SEND            = '\uF989'  # 黎
-    SENT            = '\uF1D8'  # 
+    SEND            = '\uF3FE'  # 
+    SENT            = '\uF0FB'  # 
     SETTINGS        = '\uF013'  # 
     SHOPPING_CART   = '\uF60F'  # 
-    UN_MUTE         = '\uF86B'  # 
-    UNPLUGGED       = '\uFBA4'  # ﮤ
+    TERMINAL        = '\uF120'  # 
+    UN_MUTE         = '\uF86E'  # 
+    UNPLUGGED       = '\uF701'  # 
     USER            = '\uF007'  # 
-    VERIFIED        = '\uFC8F'  # ﲏ
+    VERIFIED        = '\uF265'  # 
 
     # fmt: on

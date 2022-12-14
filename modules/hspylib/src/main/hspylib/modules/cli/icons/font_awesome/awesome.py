@@ -60,16 +60,16 @@ class Awesome(Enumeration):
         return str(self.value)
 
 
-def demo_unicodes(split_columns: int = 16, fa_start: int = 0xF000, fa_end: int = 0xFD50) -> None:
+def demo_unicodes(fa_start: int = 0xF000, fa_end: int = 0xFD50, split_columns: int = 16) -> None:
     """TODO"""
     fa_range = fa_start, fa_end  # Font awesome range unicodes
     st_base = [f"{hex(x)[2:]}" for x in range(*fa_range)]
     for n, h in enumerate(st_base):
         Awesome.print_unicode(h)
-        sysout(f"{h:04}", end=eol(n, split_columns))
+        sysout(f"{h.upper():04}", end=eol(n, split_columns))
 
 
-def demo_icons(split_columns: int = 16, awesome: AwesomeClass = Awesome) -> None:
+def demo_icons(awesome: AwesomeClass = Awesome, split_columns: int = 16) -> None:
     """TODO"""
-    for i, n in enumerate(awesome.values()):
-        sysout(f"{n:2}", end=eol(i, split_columns))
+    for i, (v, n) in enumerate(zip(awesome.values(), awesome.names())):
+        sysout(f"{n}: {v:2}", end=eol(i, split_columns))
