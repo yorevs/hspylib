@@ -80,7 +80,7 @@ class WidgetManager(metaclass=Singleton):
                 )
                 items.append(item)
             check_state(len(items) > 0, "No widgets found from: {}", str(self._lookup_paths))
-            mdashboard(items, 6, "Please select a widget to execute")
+            mdashboard(items, "Please select a widget to execute")
         except Exception as err:
             raise WidgetExecutionError(f"Failed to execute widget :: {str(err)}") from err
 

@@ -16,13 +16,11 @@ from typing import Callable, Optional
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
-CB_ON_TRIGGER = Callable[[], None]
-
 
 class DashboardItem:
     """TODO"""
 
-    def __init__(self, icon: Awesome = None, tooltip: str = None, on_trigger: Optional[CB_ON_TRIGGER] = None):
+    def __init__(self, icon: Awesome = None, tooltip: str = None, on_trigger: Optional[Callable] = None):
         self.icon = icon
         self.tooltip = tooltip
         self.on_trigger = on_trigger

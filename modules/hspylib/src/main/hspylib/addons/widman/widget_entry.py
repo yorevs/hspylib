@@ -20,8 +20,10 @@ import os
 class WidgetEntry:
     """Placeholder object for a HSPyLib::Widman Widget and details about it."""
 
-    MODULE_PREFIX = "widget_"
-    CLASS_PREFIX = "Widget"
+    # fmt: off
+    MODULE_PREFIX   = "widget_"
+    CLASS_PREFIX    = "Widget"
+    # fmt: on
 
     def __init__(self, file: str, path: str):
         self._module = os.path.splitext(file)[0]

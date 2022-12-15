@@ -125,7 +125,7 @@ class AppManager(metaclass=Singleton):
                 raise TypeError(f"Unsupported application type: {app_type}")
         except OSError as err:
             syserr(f'Could not create application "{app_name}"!\n  => {str(err)}')
-            self._parent_app.exit(ExitStatus.FAILED.value)
+            self._parent_app.exit(ExitStatus.FAILED.val)
 
         sysout(f"Successfully created the {app_type.value} {app_name}")
 

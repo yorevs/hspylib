@@ -37,16 +37,16 @@ from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 class WidgetSendMsg(Widget):
     """HSPyLib Widget to send TCP/UDP messages (multi-threaded)"""
 
-    MAX_THREADS = 1000
-    NET_TYPE_UDP = "UDP"
-    NET_TYPE_TCP = "TCP"
-
     # fmt: off
-    WIDGET_ICON = WidgetIcons.NETWORK
-    WIDGET_NAME = "SendMsg"
-    VERSION     = Version(0, 3, 0)
-    TOOLTIP     = "Multi-Threaded IP Message Sender. Sends TCP/UDP messages"
-    USAGE       = dedent(f"""Usage: SendMsg [options]
+    MAX_THREADS     = 1000
+    NET_TYPE_UDP    = "UDP"
+    NET_TYPE_TCP    = "TCP"
+
+    WIDGET_ICON     = WidgetIcons.NETWORK
+    WIDGET_NAME     = "SendMsg"
+    VERSION         = Version(0, 3, 0)
+    TOOLTIP         = "Multi-Threaded IP Message Sender. Sends TCP/UDP messages"
+    USAGE           = dedent(f"""Usage: SendMsg [options]
 
       Options:
         +n, ++net_type   <network_type>     : The network type to be used. Either udp or tcp ( default is tcp ).
@@ -66,7 +66,6 @@ class WidgetSendMsg(Widget):
 
     def __init__(self) -> None:
         super().__init__(self.WIDGET_ICON, self.WIDGET_NAME, self.TOOLTIP, self.USAGE, self.VERSION)
-
         self.is_alive = True
         self.net_type = None
         self.host = None
@@ -81,17 +80,16 @@ class WidgetSendMsg(Widget):
     def execute(self, args: List[str] = None) -> ExitStatus:
         signal.signal(signal.SIGINT, self.cleanup)
         signal.signal(signal.SIGTERM, self.cleanup)
-
+        signal.signal(signal.SIGHUP, self.cleanup)
         if args and args[0] in ["-h", "--help"]:
             sysout(self.usage())
             return ExitStatus.SUCCESS
         if args and args[0] in ["-v", "--version"]:
             sysout(self.version())
             return ExitStatus.SUCCESS
-
         if args and not self._parse_args(args):
             return ExitStatus.ERROR
-        if not args and not self._read_args():
+        if not args and not self._prompt():
             return ExitStatus.ERROR
         if not args and not self._args:
             return ExitStatus.ERROR
@@ -124,7 +122,7 @@ class WidgetSendMsg(Widget):
             sysout("Closing TCP connection")
             self.socket.close()
 
-    def _read_args(self) -> bool:
+    def _prompt(self) -> bool:
         """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
         # fmt: off
         form_fields = MenuInput.builder() \
@@ -170,81 +168,54 @@ class WidgetSendMsg(Widget):
                 .build() \
             .build()
         # fmt: on
-        result = minput(form_fields)
-        self._args = result.values if result else None
+        self._args = minput(form_fields)
         sysout("%HOM%%ED2%%MOD(0)%", end="")
 
-        return len(self._args.__dict__) > 1 if self._args else False
+        return len(self._args) > 1 if self._args else False
 
     def _parse_args(self, args: List[str]):
         """When arguments are passed from the command line, parse them"""
         parser = HSArgumentParser(
             prog="sendmsg", prefix_chars="+", description="Sends TCP/UDP messages (multi-threaded)"
         )
-        parser.add_parameter(
-            "+n",
-            "++net-type",
-            action="store",
-            type=str,
-            choices=["udp", "tcp"],
-            default="tcp",
-            required=False,
+        # fmt: off
+        parser.add_argument(
+            "+n", "++net-type", action="store", choices=["udp", "tcp"],
+            type=str, default="tcp", required=False,
             help="The network type to be used. Either udp or tcp ( default is tcp )",
         )
-        parser.add_parameter(
-            "+a",
-            "++address",
-            action="store",
-            type=str,
-            default="127.0.0.1",
-            required=False,
+        parser.add_argument(
+            "+a", "++address", action="store",
+            type=str, default="127.0.0.1", required=False,
             help="The address of the datagram receiver ( default is 127.0.0.1 )",
         )
-        parser.add_parameter(
-            "+p",
-            "++port",
-            action="store",
-            type=int,
-            default=12345,
-            required=False,
+        parser.add_argument(
+            "+p", "++port", action="store",
+            type=int, default=12345, required=False,
             help="The port number [1-65535] ( default is 12345)",
         )
-        parser.add_parameter(
-            "+k",
-            "++packets",
-            action="store",
-            type=int,
-            default=100,
-            required=False,
+        parser.add_argument(
+            "+k", "++packets", action="store",
+            type=int, default=100, required=False,
             help="The number of max datagrams to be send. If zero is specified, then the app "
                  "is going to send indefinitely ( default is 100 ).",
         )
-        parser.add_parameter(
-            "+i",
-            "++interval",
-            action="store",
-            type=float,
-            default=1,
-            required=False,
+        parser.add_argument(
+            "+i", "++interval", action="store",
+            type=float, default=1, required=False,
             help="The interval in seconds between each datagram ( default is 1 Second )",
         )
-        parser.add_parameter(
-            "+t",
-            "++threads",
-            action="store",
-            type=int,
-            default=1,
-            required=False,
+        parser.add_argument(
+            "+t", "++threads", action="store",
+            type=int, default=1, required=False,
             help=f"Number of threads [1-{self.MAX_THREADS}] to be opened to send simultaneously ( default is 1 )",
         )
-        parser.add_parameter(
-            "+m",
-            "++message",
-            action="store",
-            type=str,
-            required=False,
+        parser.add_argument(
+            "+m", "++message", action="store",
+            type=str, required=False,
             help="The message to be sent. If the message matches a filename, then the file contents sent instead",
         )
+        # fmt: on
         self._args = parser.parse_args(args)
 
         return bool(self._args)

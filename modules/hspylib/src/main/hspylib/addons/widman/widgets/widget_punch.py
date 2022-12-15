@@ -148,7 +148,7 @@ class WidgetPunch(Widget):
         subparsers.add_parser("reset", help="reset punches for the current week and save the previous one.")
 
         w_parser = subparsers.add_parser("week", help="list all punches of the specified week-num (week-N.punch).")
-        w_parser.add_parameter("week_num", type=int, default=1, help="the week number")
+        w_parser.add_argument("week_num", type=int, default=1, help="the week number")
 
         self._args = parser.parse_args(args)
 
@@ -192,7 +192,7 @@ class WidgetPunch(Widget):
                 else:
                     raise Exception("Invalid punch file")
                 self._punches[-1] = self._today
-            list(map(f_punch.write, [f"{l.strip()}\n" for l in self._punches]))
+            list(map(f_punch.write, [f"{punch.strip()}\n" for punch in self._punches]))
         sysout(f"{re.sub(self.DATE_STAMP, '%GREEN%Today%NC%', self._today)} ")
 
     def _list_punches(self) -> None:

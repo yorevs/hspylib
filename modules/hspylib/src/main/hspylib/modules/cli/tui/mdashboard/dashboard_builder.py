@@ -12,10 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import List, Optional
+from typing import List, Optional, Callable
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
-from hspylib.modules.cli.tui.mdashboard.dashboard_item import CB_ON_TRIGGER, DashboardItem
+from hspylib.modules.cli.tui.mdashboard.dashboard_item import DashboardItem
 
 
 class DashboardBuilder:
@@ -37,7 +37,7 @@ class DashboardBuilder:
             self._item.tooltip = tooltip
             return self
 
-        def on_trigger(self, on_trigger: CB_ON_TRIGGER) -> Optional["DashboardBuilder.DashboardItemBuilder"]:
+        def on_trigger(self, on_trigger: Callable) -> Optional["DashboardBuilder.DashboardItemBuilder"]:
             self._item.on_trigger = on_trigger
             return self
 
