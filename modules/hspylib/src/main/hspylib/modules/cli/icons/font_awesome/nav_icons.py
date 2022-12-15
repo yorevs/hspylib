@@ -29,5 +29,7 @@ class NavIcons(Awesome):
     DOWN        = '\u2193'  # ↓
     ENTER       = '\u21B2'  # ↲
     TAB         = '\u21B9'  # ↹
-    SELECTOR    = '\uF432'  # 
+    POINTER     = '\uF432'  # 
+    SELECTED    = '\uF814'  # 
+    UNSELECTED  = '\uF815'  # 
     # fmt: on

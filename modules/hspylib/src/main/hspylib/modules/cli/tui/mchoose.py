@@ -12,7 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-import re
 from abc import ABC
 from typing import List, Optional, TypeVar
 
@@ -55,7 +54,7 @@ class MenuChoose(ABC):
 
     # fmt: off
     UNSELECTED  = " "
-    SELECTED    = NavIcons.SELECTOR
+    SELECTED    = NavIcons.SELECTED
     MARKED      = FormIcons.MARKED
     UNMARKED    = FormIcons.UNMARKED
     # fmt: on
@@ -86,7 +85,7 @@ class MenuChoose(ABC):
         prepare_render(title, title_color)
 
         # Wait for user interaction
-        while not self.done and keypress not in [Keyboard.VK_Q, Keyboard.VK_q, Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done and keypress not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
             # Menu Renderization
             if self.re_render:
                 self._render(highlight_color, nav_color)
@@ -145,7 +144,7 @@ class MenuChoose(ABC):
         keypress = Keyboard.read_keystroke()
 
         if keypress:
-            if keypress in [Keyboard.VK_q, Keyboard.VK_Q, Keyboard.VK_ESC]:
+            if keypress in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
                 self.done = True
             elif keypress.isdigit():  # An index was typed
                 typed_index = keypress.value
@@ -153,38 +152,36 @@ class MenuChoose(ABC):
                 index_len = 1
                 while len(typed_index) < len(str(length)):
                     keystroke = Keyboard.read_keystroke()
-                    if not keystroke:
-                        break
-                    if not re.match(r"^[0-9]*$", keystroke.val):
-                        typed_index = None
+                    if not keystroke or not keystroke.isdigit():
+                        typed_index = None if keystroke != Keyboard.VK_ENTER else typed_index
                         break
                     typed_index = f"{typed_index}{keystroke.value if keystroke else ''}"
                     sysout(f"{keystroke.value if keystroke else ''}", end="")
                     index_len += 1
                 # Erase the index typed by the user
                 sysout(f"%CUB({index_len})%%EL0%", end="")
-                if 1 <= int(typed_index) <= length:
+                if typed_index and 1 <= int(typed_index) <= length:
                     self.show_to = max(int(typed_index), self.diff_index)
                     self.show_from = self.show_to - self.diff_index
                     self.sel_index = int(typed_index) - 1
                     self.re_render = True
-            elif keypress == Keyboard.VK_SPACE:  # Space -> Mark option
+            elif keypress == Keyboard.VK_SPACE:  # Mark option
                 if self.sel_options[self.sel_index] == 0:
                     self.sel_options[self.sel_index] = 1
                 else:
                     self.sel_options[self.sel_index] = 0
                 self.re_render = True
-            elif keypress in [Keyboard.VK_i, Keyboard.VK_I]:  # I -> Invert options
+            elif keypress in [Keyboard.VK_i, Keyboard.VK_I]:  # Invert options
                 self.sel_options = [(0 if op == 1 else 1) for op in self.sel_options]
                 self.re_render = True
-            elif keypress == Keyboard.VK_UP:  # Cursor up or shift tab
+            elif keypress == Keyboard.VK_UP:
                 if self.sel_index == self.show_from and self.show_from > 0:
                     self.show_from -= 1
                     self.show_to -= 1
                 if self.sel_index - 1 >= 0:
                     self.sel_index -= 1
                     self.re_render = True
-            elif keypress == Keyboard.VK_DOWN:  # Cursor down or tab
+            elif keypress == Keyboard.VK_DOWN:
                 if self.sel_index + 1 == self.show_to and self.show_to < length:
                     self.show_from += 1
                     self.show_to += 1
@@ -203,8 +200,6 @@ class MenuChoose(ABC):
                 self.show_to = self.show_from + self.diff_index
                 self.sel_index = self.show_from
                 self.re_render = True
-            elif keypress == Keyboard.VK_ENTER:  # Enter
-                self.done = True
 
         self.re_render = True
         return keypress

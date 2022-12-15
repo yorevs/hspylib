@@ -14,6 +14,8 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.modules.cli.tui.mselect import mselect
+from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
 class SelectableItem:
@@ -29,7 +31,8 @@ class SelectableItem:
 
 
 if __name__ == "__main__":
+    TUIPreferences(max_rows=10, highlight_color=VtColors.WHITE)
     quantity = 21
     it = [SelectableItem(f"Item-{n}", f"Value-{n}") for n in range(1, quantity)]
-    sel = mselect(it, max_rows=15)
+    sel = mselect(it)
     print(str(sel))

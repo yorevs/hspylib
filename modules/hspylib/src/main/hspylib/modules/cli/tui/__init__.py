@@ -12,6 +12,7 @@ __all__ = [
   'minput', 
   'mselect', 
   'table', 
+  'tui_component', 
   'tui_preferences'
 ]
 __version__ = '0.11.133'

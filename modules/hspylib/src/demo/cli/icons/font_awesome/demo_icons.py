@@ -1,5 +1,5 @@
 from hspylib.modules.cli.icons.font_awesome.app_icons import AppIcons
-from hspylib.modules.cli.icons.font_awesome.awesome import demo_unicodes, demo_icons
+from hspylib.modules.cli.icons.font_awesome.awesome import demo_icons
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
@@ -20,6 +20,3 @@ if __name__ == '__main__':
 
     print('\n\nWidgetIcons ' + '-' * 30)
     demo_icons(awesome=WidgetIcons, split_columns=10)
-
-    # print('\n\nALL UNICODES ' + '-' * 30)
-    # demo_unicodes()

@@ -85,6 +85,6 @@ class DashboardIcons(Awesome):
     UN_MUTE         = '\uF86E'  # 
     UNPLUGGED       = '\uF701'  # 
     USER            = '\uF007'  # 
-    VERIFIED        = '\uF265'  # 
+    VERIFIED        = '\uF4A1'  # 
 
     # fmt: on
