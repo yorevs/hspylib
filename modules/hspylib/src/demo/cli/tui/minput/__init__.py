@@ -2,13 +2,10 @@
 #
 # hspylib v0.11.133
 #
-# Package: main.hspylib.addons.widman
+# Package: demo.cli.tui.minput
 """Package initialization."""
 
 __all__ = [
-  'widget', 
-  'widget_entry', 
-  'widgets', 
-  'widman'
+  'menu_input_demo'
 ]
 __version__ = '0.11.133'

@@ -21,7 +21,6 @@ from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.mdashboard.dashboard_item import DashboardItem
-from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
 
@@ -147,9 +146,9 @@ class MenuDashBoard:
 
         for row in range(0, num_rows):
             for col in range(0, num_cols):
-                vt_print(f"{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}")
-            vt_print(f"%CUD(1)%%CUB({num_cols})%")
+                sysout(f"{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}", end="")
+            sysout(f"%CUD(1)%%CUB({num_cols})%", end="")
         if idx > 0 and (idx + 1) % self.items_per_line == 0:
-            vt_print(f"%CUD(1)%%CUB({num_cols * self.items_per_line})%")  # Break the line
+            sysout(f"%CUD(1)%%CUB({num_cols * self.items_per_line})%", end="")  # Break the line
         elif idx + 1 < len(self.items):
-            vt_print(f"%CUU({num_rows})%%CUF({num_cols})%")  # Continue with the same line
+            sysout(f"%CUU({num_rows})%%CUF({num_cols})%", end="")  # Continue with the same line

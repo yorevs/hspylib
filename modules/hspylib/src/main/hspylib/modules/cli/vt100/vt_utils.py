@@ -13,24 +13,23 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from hspylib.modules.cli.vt100.vt_codes import vt_print
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from typing import List, Optional, Tuple
-
 import os
 import re
 import signal
 import sys
 import termios
 import tty
+from typing import Optional, Tuple
+
+from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 
-def screen_size() -> List[str]:
+def screen_size() -> tuple[int, ...]:
     """Retrieve the size of the terminal"""
     if sys.stdout.isatty():
-        return os.popen("stty size").read().split()
+        return tuple(map(int, os.popen("stty size").read().split()))
     raise NotImplementedError("screen_size:: Requires a terminal (TTY)")
 
 
@@ -44,7 +43,7 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
         attrs = termios.tcgetattr(stdin)
         try:
             tty.setcbreak(stdin, termios.TCSANOW)
-            sys.stdout.write("\x1b[6n")  # Query the terminal
+            sys.stdout.write(Vt100.get_cursor_pos())  # Query the terminal
             sys.stdout.flush()
             while True:
                 buf += sys.stdin.read(1)
@@ -57,6 +56,8 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
             return None
         finally:
             termios.tcsetattr(stdin, termios.TCSANOW, attrs)
+    elif is_debugging():
+        return 0, 0
 
     raise NotImplementedError("get_cursor_position:: Requires a terminal (TTY)")
 
@@ -75,30 +76,30 @@ def set_auto_wrap(auto_wrap: bool = True) -> None:
     """Set auto-wrap mode in the terminal
     :param auto_wrap: whether auto_wrap is set or not
     """
-    vt_print(Vt100.set_auto_wrap(auto_wrap))
+    sysout(Vt100.set_auto_wrap(auto_wrap), end="")
 
 
 def set_show_cursor(show_cursor: bool = True):
     """Show or hide cursor in the terminal
     :param show_cursor: whether to show or hide he cursor
     """
-    vt_print(Vt100.set_show_cursor(show_cursor))
+    sysout(Vt100.set_show_cursor(show_cursor), end="")
 
 
 def save_cursor():
     """Save cursor position and attributes"""
-    vt_print(Vt100.save_cursor())
+    sysout(Vt100.save_cursor(), end="")
 
 
 def restore_cursor():
     """Restore cursor position and attributes"""
-    vt_print(Vt100.restore_cursor())
+    sysout(Vt100.restore_cursor(), end="")
 
 
 def restore_terminal(clear_screen: bool = True):
     """Clear terminal and restore default attributes"""
     if clear_screen:
-        vt_print("%HOM%%ED2%%MOD(0)%")
+        sysout("%HOM%%ED2%%MOD(0)%", end="")
     set_auto_wrap()
     set_show_cursor()
     set_enable_echo()
@@ -119,5 +120,5 @@ def prepare_render(render_msg: str = "", render_color: VtColors = VtColors.ORANG
     signal.signal(signal.SIGHUP, exit_app)
     set_auto_wrap(False)
     set_show_cursor(False)
-    sysout(f"%ED2%%HOM%{render_color.placeholder}{render_msg}%HOM%%CUD(1)%%ED0%")
+    sysout(f"%ED2%%HOM%{render_color.placeholder}{render_msg}%HOM%%CUD(1)%%ED0%%NC%")
     save_cursor()

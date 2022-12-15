@@ -99,15 +99,17 @@ class Namespace:
 
     @property
     def attributes(self) -> Tuple[str]:
+        # fmt: off
         return tuple(
-            a
-            for a in filter(
-                lambda name: self[name] is not None
-                             and not name.startswith(("_", "__"))
-                             and not name.endswith(("_", "__")),
+            a for a in filter(
+                lambda name:
+                    self[name] is not None
+                    and not name.startswith(("_", "__"))
+                    and not name.endswith(("_", "__")),
                 vars(self),
             )
         )
+        # fmt: on
 
     @property
     def values(self) -> Tuple[Any]:

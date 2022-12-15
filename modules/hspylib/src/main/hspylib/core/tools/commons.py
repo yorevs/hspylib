@@ -12,19 +12,19 @@
 
    Copyright 2022, HSPyLib team
 """
-from datetime import timedelta
-from hspylib.core.constants import TRUE_VALUES
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.validator import Validator
-from hspylib.modules.cli.vt100.vt_codes import VtCodes
-from hspylib.modules.cli.vt100.vt_colors import VtColors
-from typing import Optional, Set, Tuple, Type
-
 import inspect
 import logging as log
 import os
 import pathlib
 import sys
+from datetime import timedelta
+from typing import Optional, Set, Tuple, Type, Callable, Iterable
+
+from hspylib.core.constants import TRUE_VALUES
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.validator import Validator
+from hspylib.modules.cli.vt100.vt_codes import VtCodes
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{}\t{} {} {} {} {} ".format(
@@ -105,23 +105,23 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def sysout(string: str, end: str = "\n") -> None:
+def sysout(string: str, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
     :param string: values to be printed to sys.stdout
     :param end: string appended after the last value, default a newline
     """
     if Validator.is_not_blank(string):
-        msg = VtColors.colorize(VtCodes.decode(f"{string}%NC%"))
+        msg = VtColors.colorize(VtCodes.decode(f"{string}"))
         print(msg, file=sys.stdout, flush=True, end=end)
 
 
-def syserr(string: str, end: str = "\n") -> None:
+def syserr(string: str, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
     :param string: values to be printed to sys.stderr
     :param end: string appended after the last value, default a newline
     """
     if Validator.is_not_blank(string):
-        msg = VtColors.colorize(VtCodes.decode(f"%RED%{string}%NC%"))
+        msg = VtColors.colorize(VtCodes.decode(f"%RED%{VtColors.strip_colors(string)}%NC%"))
         print(msg, file=sys.stderr, flush=True, end=end)
 
 
@@ -145,6 +145,17 @@ def str_to_bool(string: str, true_values: Set[str] = None) -> bool:
     :param true_values: The list of strings that will become True value
     """
     return string is not None and string.lower() in (true_values or TRUE_VALUES)
+
+
+def map_many(iterable: Iterable, function: Callable, *functions) -> map | None:
+    """Maps multiple functions to the same iterable
+    :param iterable The iterable to map
+    :param function The first function to be mapped
+    :param functions the other functions to be mapped
+    """
+    if functions:
+        return map_many(map(function, iterable), *functions)
+    return map(function, iterable)
 
 
 def safe_delete_file(filename: str, on_not_found_except: bool = False) -> bool:

@@ -18,7 +18,7 @@ from typing import Any, Optional, Tuple
 
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.preconditions import check_argument
-from hspylib.modules.cli.vt100.vt_codes import vt_print
+from hspylib.core.tools.commons import sysout
 
 
 class MInputUtils(ABC):
@@ -34,9 +34,9 @@ class MInputUtils(ABC):
         """TODO"""
         fmt = ("{}" if prepend else "") + "{:<" + str(size) + "} : "
         if prepend:
-            vt_print(fmt.format(prepend, text), end=end)
+            sysout(fmt.format(prepend, text), end=end)
         else:
-            vt_print(fmt.format(text or ""), end=end)
+            sysout(fmt.format(text or ""), end=end)
 
     @staticmethod
     def toggle_selected(tokenized_values: str) -> str:

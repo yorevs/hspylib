@@ -5,5 +5,13 @@
 # Package: main.hspylib.modules.cli.tui
 """Package initialization."""
 
-__all__ = ["components", "menu", "table"]
-__version__ = "0.11.133"
+__all__ = [
+  'mchoose', 
+  'mdashboard', 
+  'menu', 
+  'minput', 
+  'mselect', 
+  'table', 
+  'tui_preferences'
+]
+__version__ = '0.11.133'

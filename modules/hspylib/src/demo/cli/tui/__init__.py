@@ -5,5 +5,12 @@
 # Package: demo.cli.tui
 """Package initialization."""
 
-__all__ = ["extra", "menu", "table"]
-__version__ = "0.11.133"
+__all__ = [
+  'dashboard', 
+  'menu', 
+  'menu_choose_demo', 
+  'menu_select_demo', 
+  'minput', 
+  'table'
+]
+__version__ = '0.11.133'

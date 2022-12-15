@@ -5,5 +5,9 @@
 # Package: demo
 """Package initialization."""
 
-__all__ = ["cli", "other", "qtdemos"]
-__version__ = "0.11.133"
+__all__ = [
+  'cli', 
+  'other', 
+  'qtdemos'
+]
+__version__ = '0.11.133'

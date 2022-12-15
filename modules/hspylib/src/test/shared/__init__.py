@@ -5,5 +5,7 @@
 # Package: test.shared
 """Package initialization."""
 
-__all__ = ["application_test"]
-__version__ = "0.11.133"
+__all__ = [
+  'application_test'
+]
+__version__ = '0.11.133'
