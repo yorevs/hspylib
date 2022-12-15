@@ -2,13 +2,10 @@
 #
 # hspylib v0.11.133
 #
-# Package: demo.cli
+# Package: demo.cli.icons.font_awesome
 """Package initialization."""
 
 __all__ = [
-  'application', 
-  'icons', 
-  'tui', 
-  'vt100'
+  'awesome_demo'
 ]
 __version__ = '0.11.133'

@@ -55,6 +55,9 @@ class Awesome(Enumeration):
     def __repr__(self) -> str:
         return str(self)
 
+    def __len__(self) -> int:
+        return len(str(self.value))
+
     @property
     def unicode(self) -> str:
         return str(self.value)
