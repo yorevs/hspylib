@@ -53,7 +53,7 @@ class Version:
             if mat := re.search(r"v?((\d+)\.(\d+)\.(\d+)(.*))", ver_str):
                 delimiters = re.findall(r"[-_ ]", ver_str)
                 extras = re.split(r"[-_ ]", ver_str)[1:]
-                ext = list(map(lambda t: "".join(t), zip(delimiters, extras)))
+                ext = list(map("".join, zip(delimiters, extras)))
                 return Version(mat.group(2), mat.group(3), mat.group(4), *ext)
             return Version.unversioned()
 

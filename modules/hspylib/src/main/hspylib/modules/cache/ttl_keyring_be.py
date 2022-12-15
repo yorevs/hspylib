@@ -19,12 +19,12 @@ from hspylib.core.zoned_datetime import now_ms
 from hspylib.modules.security.security import b64_decode, b64_encode
 from keyring.backends.chainer import ChainerBackend
 from keyring.errors import PasswordDeleteError, PasswordSetError
-from typing import Callable, Optional
+from typing import Callable, Optional, Any
 
 import json
 import keyring
 
-PWD_EXPIRED_CB = Callable[[str], None]
+PWD_EXPIRED_CB = Callable[[str], Any]
 
 
 class TTLKeyringBE(ChainerBackend):

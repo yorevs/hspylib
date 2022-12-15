@@ -72,7 +72,7 @@ class Vt100(ABC):
     @staticmethod
     def get_cursor_pos() -> str:
         """TODO"""
-        return Vt100.sequence(f"6n")
+        return Vt100.sequence("6n")
 
     # Esc[<Modes...>m
     @staticmethod

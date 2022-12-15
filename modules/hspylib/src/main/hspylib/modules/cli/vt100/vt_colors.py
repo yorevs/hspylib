@@ -17,6 +17,7 @@ from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
+# pylint: disable=multiple-statements
 class VtColors(Enumeration):
     """
     Ref.: https://en.wikipedia.org/wiki/ANSI_escape_code#SGR
@@ -66,4 +67,3 @@ class VtColors(Enumeration):
     @property
     def placeholder(self) -> str:
         return f"%{self.name}%"
-
