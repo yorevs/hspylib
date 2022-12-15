@@ -35,5 +35,5 @@ class UriScheme(Enumeration):
         try:
             e = super().of_value(scheme, ignore_case=True)
             return e
-        except TypeError:
-            raise NotImplementedError(f"'{scheme}' scheme is not supported")
+        except TypeError as err:
+            raise NotImplementedError(f"'{scheme}' scheme is not supported") from err

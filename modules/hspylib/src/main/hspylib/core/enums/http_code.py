@@ -38,7 +38,7 @@ class HttpCode(Enumeration):
     NON_AUTHORITATIVE_INFORMATION       = 203, 'Non-Authoritative Information'
     NO_CONTENT                          = 204, 'No Content'
     RESET_CONTENT                       = 205, 'Reset Content'
-    PARTIAL_CONTENT                     = 206, 'Partial Content',
+    PARTIAL_CONTENT                     = 206, 'Partial Content'
     MULTI_STATUS                        = 207, 'Multi-Status'
     ALREADY_REPORTED                    = 208, 'Already Reported'
     IM_USED                             = 226, 'IM Used'

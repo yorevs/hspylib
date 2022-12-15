@@ -30,7 +30,7 @@ class AgentConfig(metaclass=Singleton):
     """Holds the firebase agent configurations"""
 
     def __init__(self) -> None:
-        self.app_configs = AppConfigs.INSTANCE
+        self.app_configs = AppConfigs()
         self.firebase_configs = None
         if file_is_not_empty(self.filename):
             self._load()
@@ -43,7 +43,7 @@ class AgentConfig(metaclass=Singleton):
         return str(self)
 
     def __getitem__(self, item) -> Any:
-        return self.app_configs[item]  # python: disable=unsubscriptable-object
+        return self.app_configs[item]
 
     @property
     def hash_str(self) -> str:

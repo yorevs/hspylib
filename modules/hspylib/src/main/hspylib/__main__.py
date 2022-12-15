@@ -92,39 +92,48 @@ class Main(CliApplication):
 
         app = self.get_arg("application")
         if app == self.Addon.APPMAN.value:
-            addon = AppManager(self)
-            app_type = self.get_arg("app-type")
-            if app_type:
-                app_ext = self.get_arg("app-ext")
-                addon.create(
-                    self.get_arg("app-name"),
-                    AppType.of_value(app_type),
-                    list(map(Extension.value_of, app_ext)) if app_ext else [],
-                    self.get_arg("dest-dir") or run_dir(),
-                )
-            else:
-                args = addon.prompt()
-                if args:
-                    app_ext = []
-                    if args.initialize_gradle:
-                        app_ext.append(Extension.GRADLE)
-                    if args.initialize_git:
-                        app_ext.append(Extension.GIT)
-                    addon.create(
-                        args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir()
-                    )
+            self.start_appman()
         elif app == self.Addon.WIDGETS.value:
-            addon = WidgetManager(self)
-            widget_name = self.get_arg("widget-name")
-            if widget_name:
-                widget_args = list(map(strip_linebreaks, self.get_arg("widget-args")))
-                addon.execute(widget_name, widget_args)
-            else:
-                addon.dashboard()
+            self.start_widman()
         else:
             syserr(f"### Invalid application: {app}")
             self.usage(ExitStatus.FAILED)
+
         return ExitStatus.SUCCESS
+
+    def start_widman(self) -> None:
+        """Start the Widman application"""
+        addon = WidgetManager(self)
+        widget_name = self.get_arg("widget-name")
+        if widget_name:
+            widget_args = list(map(strip_linebreaks, self.get_arg("widget-args")))
+            addon.execute(widget_name, widget_args)
+        else:
+            addon.dashboard()
+
+    def start_appman(self) -> None:
+        """Start the Appman application"""
+        addon = AppManager(self)
+        app_type = self.get_arg("app-type")
+        if app_type:
+            app_ext = self.get_arg("app-ext")
+            addon.create(
+                self.get_arg("app-name"),
+                AppType.of_value(app_type),
+                list(map(Extension.value_of, app_ext)) if app_ext else [],
+                self.get_arg("dest-dir") or run_dir(),
+            )
+        else:
+            args = addon.prompt()
+            if args:
+                app_ext = []
+                if args.initialize_gradle:
+                    app_ext.append(Extension.GRADLE)
+                if args.initialize_git:
+                    app_ext.append(Extension.GIT)
+                addon.create(
+                    args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir()
+                )
 
 
 # Application entry point

@@ -69,15 +69,3 @@ class TTLCache(Generic[T], metaclass=Singleton):
         check_not_none(key)
         with self._lock:
             keyring.delete_password(self.CACHE_SERVICE, key)
-
-
-if __name__ == "__main__":
-    c = TTLCache(ttl_minutes=0, ttl_seconds=10)
-    l = [1, 2, 3, 4, 5]
-    print(c.save("test", l))
-    l2 = c.read("test")
-    print(l2)
-    m = dict(name="test", age=31)
-    print(c.save("test1", m))
-    m2 = c.read("test1")
-    print(m2)

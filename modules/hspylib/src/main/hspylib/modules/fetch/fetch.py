@@ -143,7 +143,7 @@ def is_reachable(urls: str | Tuple[str], timeout: Union[float, Tuple[float, floa
             return all(is_reachable(UriBuilder.ensure_scheme(u)) for u in urls)
         requests.options(url=UriBuilder.ensure_scheme(urls), timeout=timeout)
     except RETRYABLE_EXS as err:
-        log.warning(f"URLs %s is not reachable => %s", urls, err)
+        log.warning("URLs %s is not reachable => %s", urls, err)
         reachable = False
 
     return reachable

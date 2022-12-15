@@ -17,3 +17,4 @@ package: retry, version: latest, space: user
 package: cassandra-driver, version: latest, space: user
 package: psycopg2, version: latest, space: user
 package: PyMySQL, version: latest, space: user
+package: redis, version: latest, space: user

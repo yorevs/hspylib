@@ -17,7 +17,7 @@
 from hspylib.addons.widman.widget import Widget
 from hspylib.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
@@ -157,17 +157,17 @@ class WidgetPunch(Widget):
     def _read_punches(self, punch_file: str) -> List[str]:
         """Read all punches from the punch file."""
         if not os.path.exists(punch_file):
-            sysout(f"%RED%Punch file '{punch_file}' not found !%NC%")
-            sys.exit(int(str(ExitStatus.FAILED.value)))
-        else:
-            with open(punch_file, "r", encoding=Charset.UTF_8.val) as f_punch:
-                all_punches = list(
-                    map(self._set_today, filter(lambda l: re.match(self.RE_PUNCH_LINE, l), f_punch.readlines()))
-                )
-                if len(all_punches) > self.MAX_PUNCHES:
-                    sysout(f"%RED%Punch file contains more than {self.MAX_PUNCHES} punch lines !%NC%")
-                    sys.exit(int(str(ExitStatus.FAILED.value)))
-                return all_punches
+            syserr(f"Punch file '{punch_file}' not found !")
+            raise FileNotFoundError(f"Punch file '{punch_file}' not found !")
+
+        with open(punch_file, "r", encoding=Charset.UTF_8.val) as f_punch:
+            all_punches = list(
+                map(self._set_today, filter(lambda l: re.match(self.RE_PUNCH_LINE, l), f_punch.readlines()))
+            )
+            if len(all_punches) > self.MAX_PUNCHES:
+                sysout(f"%RED%Punch file contains more than {self.MAX_PUNCHES} punch lines !%NC%")
+                sys.exit(int(str(ExitStatus.FAILED.value)))
+            return all_punches
 
     def _is_today(self, punch_line: str) -> bool:
         """Whether the punch line refer to today's date."""

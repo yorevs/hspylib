@@ -90,20 +90,20 @@ class MenuChoose(TUIComponent):
         for idx in range(self.show_from, self.show_to):
             if idx >= length:
                 break  # When the number of items is lower than the max_rows, skip the other lines
-            else:
-                option_line = str(self.items[idx])
-                sysout("%EL2%\r", end="")  # Erase current line before repaint
-                # Print the selector if the index is currently selected
-                selector = self._draw_line_color(idx == self.sel_index)
-                mark = self.prefs.marked if self.sel_options[idx] == 1 else self.prefs.unmarked
-                # fmt: off
-                line_fmt = (
-                    "  {:>" + f"{len(str(length))}" + "}"
-                    + "{:>" + f"{len(selector) + 1}" + "} "
-                    + "{:>" + f"{len(str(mark))}" + "} {}"
-                )
-                # fmt: on
-                self._draw_line(line_fmt, columns, idx + 1, selector, mark, option_line)
+
+            option_line = str(self.items[idx])
+            sysout("%EL2%\r", end="")  # Erase current line before repaint
+            # Print the selector if the index is currently selected
+            selector = self._draw_line_color(idx == self.sel_index)
+            mark = self.prefs.marked if self.sel_options[idx] == 1 else self.prefs.unmarked
+            # fmt: off
+            line_fmt = (
+                "  {:>" + f"{len(str(length))}" + "}"
+                + "{:>" + f"{len(selector) + 1}" + "} "
+                + "{:>" + f"{len(str(mark))}" + "} {}"
+            )
+            # fmt: on
+            self._draw_line(line_fmt, columns, idx + 1, selector, mark, option_line)
 
         sysout(self._navbar().replace('%TO%', str(length)), end="")
         self.require_render = False

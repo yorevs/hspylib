@@ -45,6 +45,7 @@ class AppConfigs(metaclass=Singleton):
         self._properties = Properties(filename=filename, load_dir=resource_dir, profile=profile)
         log.info(self)
 
+    # pylint: disable=consider-using-f-string
     def __str__(self) -> str:
         return "\n{}{}{}".format(
             "-=" * 40,

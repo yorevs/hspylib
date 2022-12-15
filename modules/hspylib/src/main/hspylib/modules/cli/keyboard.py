@@ -61,11 +61,11 @@ class Keyboard(Enumeration):
     VK_H = 'H'; VK_P = 'P'; VK_X = 'X'
 
     # Numbers
-    VK_ZERO     = '0'; VK_FIVE  = '5'
-    VK_ONE      = '1'; VK_SIX   = '6'
-    VK_TWO      = '2'; VK_SEVEN = '7'
-    VK_THREE    = '3'; VK_EIGHT = '8'
-    VK_FOUR     = '4'; VK_NINE  = '9'
+    VK_ZERO         = '0'; VK_FIVE  = '5'
+    VK_ONE          = '1'; VK_SIX   = '6'
+    VK_TWO          = '2'; VK_SEVEN = '7'
+    VK_THREE        = '3'; VK_EIGHT = '8'
+    VK_FOUR         = '4'; VK_NINE  = '9'
 
     # Punctuation
     VK_BACKTICK     = '`'; VK_OPEN_PARENTHESIS  = '('; VK_PIPE              = '|'
