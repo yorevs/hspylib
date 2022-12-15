@@ -18,14 +18,13 @@ from hspylib.core.enums.enumeration import Enumeration
 class InputType(Enumeration):
     """TODO"""
 
-    TEXT = "text"
-    PASSWORD = "password"
-    CHECKBOX = "checkbox"
-    SELECT = "select"
-    MASKED = "masked"
-
-    def __str__(self):
-        return str(self.value)
+    # fmt: off
+    TEXT        = "text"
+    PASSWORD    = "password"
+    CHECKBOX    = "checkbox"
+    SELECT      = "select"
+    MASKED      = "masked"
+    # fmt: on
 
     def __repr__(self):
         return str(self)

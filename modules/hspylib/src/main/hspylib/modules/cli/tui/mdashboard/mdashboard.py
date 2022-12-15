@@ -56,7 +56,7 @@ class MenuDashBoard(TUIComponent):
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.RIGHT, NavIcons.DOWN, NavIcons.LEFT)
 
     @classmethod
-    def builder(cls):
+    def builder(cls) -> DashboardBuilder:
         """TODO"""
         return DashboardBuilder()
 
@@ -69,7 +69,7 @@ class MenuDashBoard(TUIComponent):
             "Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.",
         )
 
-    def execute(self, title) -> Optional[DashboardItem]:
+    def execute(self, title: str) -> Optional[DashboardItem]:
         """TODO"""
 
         keypress = Keyboard.VK_NONE
@@ -80,7 +80,7 @@ class MenuDashBoard(TUIComponent):
         prepare_render(title)
 
         # Wait for user interaction
-        while not self.done and keypress not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done:
             # Menu Renderization
             if self.require_render:
                 self._render()

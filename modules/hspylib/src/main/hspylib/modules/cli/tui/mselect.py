@@ -63,7 +63,7 @@ class MenuSelect(TUIComponent):
         prepare_render(title)
 
         # Wait for user interaction
-        while not self.done and keypress not in [Keyboard.VK_ENTER, Keyboard.VK_ESC]:
+        while not self.done:
             # Menu Renderization
             if self.require_render:
                 self._render()
@@ -127,11 +127,11 @@ class MenuSelect(TUIComponent):
 
         return keypress
 
-    def _handle_digit(self, keypress) -> None:
+    def _handle_digit(self, digit: Keyboard) -> None:
         """TODO"""
         length = len(self.items)
-        typed_index = keypress.value
-        sysout(f"{keypress.value}", end="")  # echo the digit typed
+        typed_index = digit.value
+        sysout(f"{digit.value}", end="")  # echo the digit typed
         index_len = 1
         while len(typed_index) < len(str(length)):
             keystroke = Keyboard.wait_keystroke()

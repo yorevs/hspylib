@@ -7,10 +7,10 @@ from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
 
-ITEM_TYPE = TypeVar("ITEM_TYPE")
+T = TypeVar("T")
 
 
-class TUIComponent(Generic[ITEM_TYPE], ABC):
+class TUIComponent(Generic[T], ABC):
 
     @staticmethod
     def _draw_line(line_fmt: str, max_columns: int, *args: Any) -> None:
@@ -23,7 +23,7 @@ class TUIComponent(Generic[ITEM_TYPE], ABC):
         self.require_render = True
 
     @abstractmethod
-    def execute(self, title: str) -> Optional[ITEM_TYPE | List[ITEM_TYPE]]:
+    def execute(self, title: str) -> Optional[T | List[T]]:
         """TODO"""
 
     def _draw_line_color(self, is_selected: bool) -> Awesome:
