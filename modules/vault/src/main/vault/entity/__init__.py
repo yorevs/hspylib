@@ -5,5 +5,8 @@
 # Package: main.vault.entity
 """Package initialization."""
 
-__all__ = ["validator", "vault_entry"]
-__version__ = "0.9.67"
+__all__ = [
+  'validator', 
+  'vault_entry'
+]
+__version__ = '0.9.67'

@@ -38,7 +38,8 @@ if __name__ == "__main__":
         selected=NavIcons.SELECTED,
         unselected=NavIcons.UNSELECTED,
     )
-    quantity = 21
-    it = [SelectableItem(f"Item-{n}", f"Value-{n}") for n in range(1, quantity)]
+    quantity = 22
+    digits = len(str(quantity))
+    it = [SelectableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
     sel = mselect(it)
     print(str(sel))

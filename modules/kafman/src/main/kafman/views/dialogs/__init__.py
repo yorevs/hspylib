@@ -5,5 +5,8 @@
 # Package: main.kafman.views.dialogs
 """Package initialization."""
 
-__all__ = ["filters_dialog", "settings_dialog"]
-__version__ = "0.9.92"
+__all__ = [
+  'filters_dialog', 
+  'settings_dialog'
+]
+__version__ = '0.9.92'

@@ -61,4 +61,6 @@ class FormIcons(Awesome):
     PASTE               = '\uF68E'  # 
     PLUS                = '\uF067'  # 
     MINUS               = '\uF068'  # 
+    NUMBERS             = '\uF162'  # 
+    LETTERS             = '\uF15D'  # 
     # fmt: on

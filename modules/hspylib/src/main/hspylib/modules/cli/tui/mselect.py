@@ -19,7 +19,7 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.tui_component import TUIComponent
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size, erase_line
 
 T = TypeVar("T")
 
@@ -49,6 +49,7 @@ class MenuSelect(TUIComponent):
         self.show_to = self.prefs.max_rows
         self.diff_index = self.show_to - self.show_from
         self.sel_index = 0
+        self.max_line_length = max(len(str(item)) for item in items)
 
     def execute(self, title: str) -> Optional[T]:
         """TODO"""
@@ -87,25 +88,27 @@ class MenuSelect(TUIComponent):
                 break  # When the number of items is lower than the max_rows, skip the other lines
 
             option_line = str(self.items[idx])
-            sysout("%EL2%\r", end="")  # Erase current line before repaint
+            erase_line()
             # Print the selector if the index is currently selected
             selector = self._draw_line_color(idx == self.sel_index)
             # fmt: off
             line_fmt = (
-                "  {:>" + f"{len(str(length))}" + "}"
-                + "{:>" + f"{len(selector) + 1}" + "} {}"
+                "  {:>" + f"{len(str(length))}" + "}  "
+                + "{:>" + f"{len(selector)}" + "}  "
+                + "{:<" + f"{self.max_line_length}" + "}  "
             )
             # fmt: on
             self._draw_line(line_fmt, columns, idx + 1, selector, option_line)
 
-        sysout(self._navbar().replace('%TO%', str(length)), end="")
+        sysout(self._navbar(length), end="")
         self.require_render = False
 
-    def _navbar(self) -> str:
-        return \
-            f"\n{self.prefs.navbar_color.placeholder}" \
-            f"[Enter] Select  [{self.NAV_ICONS}] " \
-            f"Navigate  [Esc] Quit  [1..%TO%] Goto: %EL0%"
+    def _navbar(self, to: int) -> str:
+        return (
+            f"%EOL%{self.prefs.navbar_color.placeholder}"
+            f"[Enter] Select  [{self.NAV_ICONS}] "
+            f"Navigate  [Esc] Quit  [1..{to}] Goto: %EL0%"
+        )
 
     def _handle_keypress(self) -> Keyboard:
         """TODO"""

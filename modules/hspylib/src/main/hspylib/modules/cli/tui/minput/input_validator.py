@@ -14,53 +14,77 @@
 """
 
 import re
-import typing
+from enum import auto
+
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class InputValidator:
     """TODO"""
 
-    RE_FMT_LETTER = r"^[a-zA-Z]{%min%,%max%}$"
-    RE_FMT_WORD = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
-    RE_FMT_NUMBER = r"^[0-9\.]{%min%,%max%}$"
-    RE_FMT_TOKEN = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
-    RE_FMT_MASKED = r".*\|.+"
-    RE_FMT_ANYTHING = r"^.{%min%,%max%}$"
+    class PatternType(Enumeration):
+        """TODO"""
+        # fmt: off
+        LETTERS     = r"^[a-zA-Z]{%min%,%max%}$"
+        WORDS       = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
+        NUMBERS     = r"^[0-9\.]{%min%,%max%}$"
+        TOKEN       = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
+        MASKED      = r".*\|.+"
+        ANYTHING    = r"^.{%min%,%max%}$"
+        CUSTOM      = auto()
+        # fmt: on
 
-    def __init__(self, min_length: int = 1, max_length: int = 30, pattern: str = None):
+    @classmethod
+    def custom(cls, pattern: str) -> 'InputValidator':
+        pattern_type = cls.PatternType.CUSTOM
+        validator = InputValidator(pattern_type=pattern_type)
+        validator.pattern = pattern
+        return validator
+
+    @classmethod
+    def letters(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        return InputValidator(min_length, max_length, cls.PatternType.LETTERS)
+
+    @classmethod
+    def words(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        return InputValidator(min_length, max_length, cls.PatternType.WORDS)
+
+    @classmethod
+    def numbers(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        return InputValidator(min_length, max_length, cls.PatternType.NUMBERS)
+
+    @classmethod
+    def anything(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        return InputValidator(min_length, max_length, cls.PatternType.ANYTHING)
+
+    def __init__(self, min_length: int = 1, max_length: int = 30, pattern_type: PatternType = PatternType.ANYTHING):
         self._min_length = min_length
         self._max_length = max_length
-        self._pattern = pattern or self.RE_FMT_ANYTHING
+        self._pattern_type = pattern_type
+        self._pattern = pattern_type.value
 
     def __str__(self) -> str:
-        return f'r"{self._pattern}"'
+        return f'r"{self.pattern}"' \
+        if self == InputValidator.pattern_type == self.PatternType.CUSTOM \
+        else self.pattern_type.name
 
     def __repr__(self):
         return str(self)
 
-    @staticmethod
-    def letters(min_length: int = 1, max_length: int = 30) -> typing.Any:
-        return InputValidator(min_length, max_length, InputValidator.RE_FMT_LETTER)
-
-    @staticmethod
-    def words(min_length: int = 1, max_length: int = 30) -> typing.Any:
-        return InputValidator(min_length, max_length, InputValidator.RE_FMT_WORD)
-
-    @staticmethod
-    def numbers(min_length: int = 1, max_length: int = 30) -> typing.Any:
-        return InputValidator(min_length, max_length, InputValidator.RE_FMT_NUMBER)
-
-    @staticmethod
-    def anything(min_length: int = 1, max_length: int = 30) -> typing.Any:
-        return InputValidator(min_length, max_length, InputValidator.RE_FMT_ANYTHING)
-
-    @staticmethod
-    def custom(pattern: str) -> typing.Any:
-        return InputValidator(pattern=pattern)
-
     def validate(self, value: str) -> bool:
-        regex = self._get_pattern()
-        return re.search(regex, value) is not None
+        regex = self.pattern
+        return bool(re.match(regex, value))
 
-    def _get_pattern(self) -> str:
-        return self._pattern.replace("%min%", str(self._min_length or 1)).replace("%max%", str(self._max_length or 30))
+    @property
+    def pattern(self) -> str:
+        return str(self._pattern) \
+            .replace("%min%", str(self._min_length or 1)) \
+            .replace("%max%", str(self._max_length or 30))
+
+    @pattern.setter
+    def pattern(self, pattern: str) -> None:
+        self._pattern = rf"{pattern}"
+
+    @property
+    def pattern_type(self) -> PatternType:
+        return self._pattern_type

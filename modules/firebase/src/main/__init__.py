@@ -5,5 +5,7 @@
 # Package: main
 """Package initialization."""
 
-__all__ = ["firebase"]
-__version__ = "0.9.82"
+__all__ = [
+  'firebase'
+]
+__version__ = '0.9.82'

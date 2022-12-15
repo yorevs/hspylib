@@ -5,5 +5,10 @@
 # Package: main.kafman
 """Package initialization."""
 
-__all__ = ["__classpath__", "__main__", "core", "views"]
-__version__ = "0.9.92"
+__all__ = [
+  '__classpath__', 
+  '__main__', 
+  'core', 
+  'views'
+]
+__version__ = '0.9.92'

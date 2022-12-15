@@ -11,8 +11,6 @@ __all__ = [
   'cli', 
   'eventbus', 
   'fetch', 
-  'json_search', 
-  'mock', 
   'qt', 
   'security', 
   'web'

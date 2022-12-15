@@ -7,6 +7,7 @@
 
 __all__ = [
   'test_commons', 
+  'test_json_search', 
   'test_text_tools'
 ]
 __version__ = '0.11.133'

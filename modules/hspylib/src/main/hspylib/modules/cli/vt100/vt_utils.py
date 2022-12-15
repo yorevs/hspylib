@@ -79,38 +79,53 @@ def set_auto_wrap(auto_wrap: bool = True) -> None:
     sysout(Vt100.set_auto_wrap(auto_wrap), end="")
 
 
-def set_show_cursor(show_cursor: bool = True):
+def set_show_cursor(show_cursor: bool = True) -> None:
     """Show or hide cursor in the terminal
     :param show_cursor: whether to show or hide he cursor
     """
     sysout(Vt100.set_show_cursor(show_cursor), end="")
 
 
-def save_cursor():
+def erase_line(mode: int = 2) -> None:
+    """Erase current line"""
+    sysout(f"%EL{mode}%\r", end="")
+
+
+def save_cursor() -> None:
     """Save cursor position and attributes"""
     sysout(Vt100.save_cursor(), end="")
 
 
-def restore_cursor():
+def restore_cursor() -> None:
     """Restore cursor position and attributes"""
     sysout(Vt100.restore_cursor(), end="")
 
 
-def restore_terminal(clear_screen: bool = True):
+def alternate_screen(enable: bool = True) -> None:
+    """Switch to the alternate screen buffer on/off"""
+    sysout(f"%SC{'A' if enable else 'M'}%", end="")
+
+
+def clear_screen() -> None:
+    sysout("%ED2%")
+
+
+def restore_terminal(cls: bool = True) -> None:
     """Clear terminal and restore default attributes"""
-    if clear_screen:
-        sysout("%HOM%%ED2%%MOD(0)%", end="")
+    if cls:
+        clear_screen()
     set_auto_wrap()
     set_show_cursor()
     set_enable_echo()
     sysout("%NC%")
+    alternate_screen(False)
 
 
 def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done.") -> None:
     """Exit the application. Commonly hooked to signals"""
     sysout(str(frame) if frame else "", end="")
+    restore_terminal()
     sysout(f"%HOM%%ED2%%NC%\n{exit_msg}\n")
-    restore_terminal(False)
     sys.exit(exit_code if exit_code else 0)
 
 
@@ -121,5 +136,7 @@ def prepare_render(render_msg: str = "", render_color: VtColor = VtColor.ORANGE)
     signal.signal(signal.SIGHUP, exit_app)
     set_auto_wrap(False)
     set_show_cursor(False)
+    alternate_screen()
+    clear_screen()
     sysout(f"%ED2%%HOM%{render_color.placeholder}{render_msg}%HOM%%CUD(1)%%ED0%%NC%")
     save_cursor()
