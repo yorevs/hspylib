@@ -27,7 +27,6 @@ from hspylib.modules.cli.tui.minput.form_builder import FormBuilder
 from hspylib.modules.cli.tui.minput.form_field import FormField
 from hspylib.modules.cli.tui.minput.input_type import InputType
 from hspylib.modules.cli.tui.minput.minput_utils import MInputUtils
-from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import (
     get_cursor_position, prepare_render, restore_cursor, restore_terminal, set_enable_echo,
@@ -55,7 +54,7 @@ class MenuInput:
     """TODO"""
 
     # fmt: off
-    SELECTED_BG = "%MOD(44)%"
+    SELECTED_BG = "%BG_BLUE%"
     NAV_ICONS   = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
     NAV_BAR     = f"[Enter] Submit  [{NAV_ICONS}] Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %EL0%"
     # fmt: off
@@ -249,20 +248,18 @@ class MenuInput:
         """TODO"""
 
         # Buffering the all positions to avoid calling get_cursor_pos over and over
-        f_pos = get_cursor_position() if self.positions[idx] == (0, 0) else self.positions[idx]
-        if f_pos:
+        if f_pos := get_cursor_position() if self.positions[idx] == (0, 0) else self.positions[idx]:
             self.positions[idx] = f_pos
             if self.tab_index == idx:
-                self.cur_row = f_pos[0]
-                self.cur_col = f_pos[1] + field_size
+                self.cur_row, self.cur_col = f_pos[0], f_pos[1] + field_size
 
     def _display_error(self, err_msg) -> None:
         """TODO"""
-
+        offset = 12
         set_enable_echo(False)
-        err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + 12
-        vt_print(f"%CUP({self.cur_row};{err_pos})%")
+        err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + offset
+        sysout(f"%CUP({self.cur_row};{err_pos})%", end="")
         syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end="")
         time.sleep(max(2, int(len(err_msg) / 25)))
         set_enable_echo()
-        vt_print(f"%CUP({self.cur_row};{err_pos})%%EL0%")  # Remove the message after the timeout
+        sysout(f"%CUP({self.cur_row};{err_pos})%%EL0%", end="")  # Remove the message after the timeout

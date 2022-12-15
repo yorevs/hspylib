@@ -5,5 +5,11 @@
 # Package: main.hspylib.modules.cli
 """Package initialization."""
 
-__all__ = ["cli_application", "icons", "keyboard", "tui", "vt100"]
-__version__ = "0.11.133"
+__all__ = [
+  'cli_application', 
+  'icons', 
+  'keyboard', 
+  'tui', 
+  'vt100'
+]
+__version__ = '0.11.133'

@@ -5,5 +5,7 @@
 # Package: test.modules.mock
 """Package initialization."""
 
-__all__ = ["test_mock_server"]
-__version__ = "0.11.133"
+__all__ = [
+  'test_mock_server'
+]
+__version__ = '0.11.133'

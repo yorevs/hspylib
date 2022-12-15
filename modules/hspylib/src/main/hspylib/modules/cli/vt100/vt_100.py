@@ -68,6 +68,12 @@ class Vt100(ABC):
         """TODO"""
         return Vt100.sequence(f"?25{'h' if enabled else 'l'}")
 
+    # Esc[?25<h/l>
+    @staticmethod
+    def get_cursor_pos() -> str:
+        """TODO"""
+        return Vt100.sequence(f"6n")
+
     # Esc[<Modes...>m
     @staticmethod
     def mode(mod_seq: str) -> str:
@@ -95,7 +101,7 @@ class Vt100(ABC):
 
     # Esc[<v>;<h>H
     @staticmethod
-    def cursor_pos(cup_seq: str = None) -> str:
+    def set_cursor_pos(cup_seq: str = None) -> str:
         """TODO"""
         if not cup_seq:
             return Vt100.sequence("H")

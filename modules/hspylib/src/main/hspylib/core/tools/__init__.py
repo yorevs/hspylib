@@ -5,5 +5,11 @@
 # Package: main.hspylib.core.tools
 """Package initialization."""
 
-__all__ = ["commons", "dict_tools", "git_tools", "text_tools", "validator"]
-__version__ = "0.11.133"
+__all__ = [
+  'commons', 
+  'dict_tools', 
+  'git_tools', 
+  'text_tools', 
+  'validator'
+]
+__version__ = '0.11.133'

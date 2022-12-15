@@ -13,21 +13,18 @@
    Copyright 2022, HSPyLib team
 """
 
+import re
 from enum import auto
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.modules.cli.vt100.vt_100 import Vt100
 from typing import Callable, Optional
 
-import re
-
-
-def vt_print(vt100_str: str, end: str = "") -> None:
-    """Print a vt-100 encoded string. VT-100 string will contain one or more %VT-100-CODE%"""
-    print(VtCodes.decode(vt100_str), end=end)
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 class VtCodes(Enumeration):
-    """VT-100 escape codes"""
+    """VT-100 escape codes
+    Ref.: http://domoticx.com/terminal-codes-ansivt100/
+    """
 
     # fmt: off
     CSV = Vt100.save_cursor()           # ^[7 -> Save cursor position and attributes
@@ -47,7 +44,7 @@ class VtCodes(Enumeration):
     EL1 = Vt100.clear_line(1)           # ^[[1K -> Clear line from cursor left
     EL2 = Vt100.clear_line(2)           # ^[[2K -> Clear entire line
 
-    HOM = Vt100.cursor_pos()            # ^[[H  -> Move cursor to upper left corner
+    HOM = Vt100.set_cursor_pos()            # ^[[H  -> Move cursor to upper left corner
 
     # The following entries must defined as auto(), so they can be invoked as Callable
 
@@ -69,7 +66,7 @@ class VtCodes(Enumeration):
             case "MOD":
                 fnc = Vt100.mode
             case "CUP":
-                fnc = Vt100.cursor_pos
+                fnc = Vt100.set_cursor_pos
             case "CUU":
                 fnc = Vt100.cursor_move_up
             case "CUD":

@@ -17,9 +17,9 @@ from abc import ABC
 from typing import List, Optional, TypeVar
 
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import elide_text, ensure_endswith
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_codes import vt_print
 from hspylib.modules.cli.vt100.vt_colors import VtColors
 from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size
 
@@ -103,12 +103,12 @@ class MenuSelect(ABC):
             selector = self.UNSELECTED
 
             if idx < length:  # When the number of items is lower than the max_rows, skip the other lines
-                option_line = str(self.items[idx])[0: int(columns)]
-                vt_print("%EL2%\r")  # Erase current line before repaint
+                option_line = str(self.items[idx])[0: columns]
+                sysout("%EL2%\r", end="")  # Erase current line before repaint
 
                 # Print the selector if the index is currently selected
                 if idx == self.sel_index:
-                    vt_print(highlight_color.code)
+                    sysout(highlight_color.code, end="")
                     selector = self.SELECTED
 
                 # fmt: off
@@ -117,11 +117,7 @@ class MenuSelect(ABC):
                     + "{:>" + str(1 + len(str(selector))) + "} {}"
                 )
                 # fmt: on
-                sysout(fmt.format(idx + 1, selector, option_line))
-
-                # Check if the text fits the screen and print it, otherwise print '...'
-                if len(option_line) >= int(columns):
-                    sysout("%CUB(4)%%EL0%...%NC%", end="")
+                sysout(ensure_endswith(elide_text(fmt.format(idx + 1, selector, option_line), columns), "%NC%"))
             else:
                 break
 

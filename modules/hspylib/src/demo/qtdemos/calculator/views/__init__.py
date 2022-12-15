@@ -5,5 +5,8 @@
 # Package: demo.qtdemos.calculator.views
 """Package initialization."""
 
-__all__ = ["blink_lcd_thread", "main_qt_view"]
-__version__ = "0.11.133"
+__all__ = [
+  'blink_lcd_thread', 
+  'main_qt_view'
+]
+__version__ = '0.11.133'
