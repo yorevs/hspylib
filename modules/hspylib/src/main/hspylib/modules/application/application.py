@@ -74,8 +74,9 @@ class Application(metaclass=AbstractSingleton):
     ):
 
         log.captureWarnings(True)
-        signal.signal(signal.SIGINT, Application.exit)
         signal.signal(signal.SIGTERM, Application.exit)
+        signal.signal(signal.SIGINT, Application.exit)
+        signal.signal(signal.SIGHUP, Application.exit)
 
         self.exit_hooks = ExitHooks(self._cleanup)
         self.exit_hooks.hook()

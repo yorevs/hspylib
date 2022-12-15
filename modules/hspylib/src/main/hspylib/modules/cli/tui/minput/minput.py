@@ -165,7 +165,7 @@ class MenuInput:
         """TODO"""
 
         length = len(self.fields)
-        keypress = Keyboard.read_keystroke()
+        keypress = Keyboard.wait_keystroke()
 
         if keypress:
             if keypress == Keyboard.VK_ESC:
