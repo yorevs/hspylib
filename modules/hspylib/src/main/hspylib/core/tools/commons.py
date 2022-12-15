@@ -23,8 +23,8 @@ from typing import Optional, Set, Tuple, Type, Callable, Iterable
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.validator import Validator
-from hspylib.modules.cli.vt100.vt_codes import VtCodes
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_code import VtCode
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{}\t{} {} {} {} {} ".format(
@@ -111,7 +111,7 @@ def sysout(string: str, end: str = os.linesep) -> None:
     :param end: string appended after the last value, default a newline
     """
     if Validator.is_not_blank(string):
-        msg = VtColors.colorize(VtCodes.decode(f"{string}"))
+        msg = VtColor.colorize(VtCode.decode(f"{string}"))
         print(msg, file=sys.stdout, flush=True, end=end)
 
 
@@ -121,7 +121,7 @@ def syserr(string: str, end: str = os.linesep) -> None:
     :param end: string appended after the last value, default a newline
     """
     if Validator.is_not_blank(string):
-        msg = VtColors.colorize(VtCodes.decode(f"%RED%{VtColors.strip_colors(string)}%NC%"))
+        msg = VtColor.colorize(VtCode.decode(f"%RED%{VtColor.strip_colors(string)}%NC%"))
         print(msg, file=sys.stderr, flush=True, end=end)
 
 

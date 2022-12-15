@@ -23,7 +23,7 @@ from typing import Optional, Tuple
 
 from hspylib.core.tools.commons import is_debugging, sysout
 from hspylib.modules.cli.vt100.vt_100 import Vt100
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 def screen_size() -> tuple[int, ...]:
@@ -114,7 +114,7 @@ def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done."
     sys.exit(exit_code if exit_code else 0)
 
 
-def prepare_render(render_msg: str = "", render_color: VtColors = VtColors.ORANGE):
+def prepare_render(render_msg: str = "", render_color: VtColor = VtColor.ORANGE):
     """Prepare the terminal for TUI renderization"""
     signal.signal(signal.SIGTERM, exit_app)
     signal.signal(signal.SIGINT, exit_app)

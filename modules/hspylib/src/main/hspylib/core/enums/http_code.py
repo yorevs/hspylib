@@ -15,7 +15,7 @@
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_not_none
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class HttpCode(Enumeration):
@@ -111,15 +111,15 @@ class HttpCode(Enumeration):
 
     def __repr__(self) -> str:
         if self.is_2xx():
-            color = VtColors.GREEN.code
+            color = VtColor.GREEN.code
         elif self.is_3xx():
-            color = VtColors.YELLOW.code
+            color = VtColor.YELLOW.code
         elif self.is_4xx() or self.is_5xx():
-            color = VtColors.RED.code
+            color = VtColor.RED.code
         else:
-            color = VtColors.WHITE.code
+            color = VtColor.WHITE.code
 
-        return f"{color}({self.code}) {self.reason}{VtColors.NC.code}"
+        return f"{color}({self.code}) {self.reason}{VtColor.NC.code}"
 
     @property
     def code(self) -> int:

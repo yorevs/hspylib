@@ -15,7 +15,7 @@
 
 from hspylib.modules.cli.tui.menu.menu import Menu
 from hspylib.modules.cli.tui.menu.menu_item import MenuItem
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 MENU_TPL = """%ED2%%HOM%
 {}
@@ -27,7 +27,7 @@ MENU_TPL = """%ED2%%HOM%
 class MenuEntry(MenuItem):
     """TODO"""
 
-    def __init__(self, parent: Menu, items: dict, title: str = None, color: VtColors = VtColors.ORANGE):
+    def __init__(self, parent: Menu, items: dict, title: str = None, color: VtColor = VtColor.ORANGE):
         super().__init__(parent, title)
         title_len = round(len(title) / 2) + 2
         self.menu_data = MENU_TPL.format(

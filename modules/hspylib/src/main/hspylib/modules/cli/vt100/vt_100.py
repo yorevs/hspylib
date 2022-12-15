@@ -12,7 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-
+import os
 from abc import ABC
 from hspylib.core.preconditions import check_argument
 
@@ -25,6 +25,8 @@ class Vt100(ABC):
         - https://vt100.net/docs/vt100-ug/chapter3.html
         - https://espterm.github.io/docs/VT100%20escape%20codes.html
     """
+
+    TERM = os.environ.get('TERM', 'xterm-color')
 
     # Esc<Sequence>
     @staticmethod
@@ -141,3 +143,15 @@ class Vt100(ABC):
     def cursor_move_backward(amount: int = None) -> str:
         """TODO"""
         return Vt100.cursor_move(amount or 0, "D")
+
+    # Esc[?1049<h/l>
+    @staticmethod
+    def alternate_screen(enable: bool = True) -> str:
+        """TODO"""
+        if Vt100.TERM == "xterm-256color":
+            return Vt100.sequence(f"?1049{'h' if enable else 'l'}")
+        elif Vt100.TERM == "xterm-color":
+            if enable:
+                return Vt100.escape("7") + Vt100.sequence(f"?47h")
+            else:
+                return Vt100.sequence("2J") + Vt100.sequence(f"?47l") + Vt100.escape("8")
