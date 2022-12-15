@@ -16,7 +16,7 @@
 import select
 import string
 import sys
-from typing import Optional
+from typing import Optional, List
 
 import getkey
 
@@ -94,7 +94,17 @@ class Keyboard(Enumeration):
         return Keyboard.of_value(sys.stdin.read(1))
 
     @classmethod
-    def read_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
+    def digits(cls) -> List['Keyboard']:
+        """Return all digits"""
+        return list(map(cls.of_value, filter(lambda v: str(v).isdigit(), cls.values())))
+
+    @classmethod
+    def letters(cls) -> List['Keyboard']:
+        """Return all digits"""
+        return list(map(cls.of_value, filter(lambda v: str(v).isalpha(), cls.values())))
+
+    @classmethod
+    def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
         """TODO"""
         try:
             keystroke = getkey.getkey(blocking)

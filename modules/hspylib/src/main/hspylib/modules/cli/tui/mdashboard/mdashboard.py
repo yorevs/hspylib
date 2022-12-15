@@ -120,7 +120,7 @@ class MenuDashBoard:
         """TODO"""
 
         length = len(self.items)
-        keypress = Keyboard.read_keystroke()
+        keypress = Keyboard.wait_keystroke()
         if keypress:
             if keypress == Keyboard.VK_ESC:
                 self.done = True

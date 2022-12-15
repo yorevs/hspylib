@@ -31,6 +31,10 @@ class Awesome(Enumeration):
     """
 
     @staticmethod
+    def no_icon() -> str:
+        return ' '
+
+    @staticmethod
     def compose(*icons: "Awesome") -> str:
         result = ""
         for i in icons:

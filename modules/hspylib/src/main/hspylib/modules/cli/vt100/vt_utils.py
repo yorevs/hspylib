@@ -116,6 +116,7 @@ def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done."
 
 def prepare_render(render_msg: str = "", render_color: VtColors = VtColors.ORANGE):
     """Prepare the terminal for TUI renderization"""
+    signal.signal(signal.SIGTERM, exit_app)
     signal.signal(signal.SIGINT, exit_app)
     signal.signal(signal.SIGHUP, exit_app)
     set_auto_wrap(False)
