@@ -17,10 +17,10 @@
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.tui.mdashboard.mdashboard import mdashboard, MenuDashBoard
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 if __name__ == "__main__":
-    TUIPreferences(max_rows=10, highlight_color=VtColors.WHITE)
+    TUIPreferences(max_rows=10, highlight_color=VtColor.WHITE)
     # fmt: off
     dashboard_items = MenuDashBoard.builder() \
         .item() \

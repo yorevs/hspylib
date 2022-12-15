@@ -17,7 +17,7 @@ from abc import ABC
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.validator import Validator
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 from typing import Any, Callable, Optional, Tuple
 
 import time
@@ -38,7 +38,7 @@ class MenuUtils(ABC):
 
     @staticmethod
     def print_warning(
-        message: str, argument: str = None, wait_interval: int = 2, color: VtColors = VtColors.YELLOW
+        message: str, argument: str = None, wait_interval: int = 2, color: VtColor = VtColor.YELLOW
     ) -> None:
         """TODO"""
 
@@ -53,7 +53,7 @@ class MenuUtils(ABC):
         default_value: Any = None,
         any_key: bool = False,
         on_blank_abort: bool = True,
-        color: VtColors = VtColors.GREEN,
+        color: VtColor = VtColor.GREEN,
         end: str = ": ",
     ) -> Optional[Any]:
         """TODO"""
@@ -63,10 +63,10 @@ class MenuUtils(ABC):
 
         while not valid:
             try:
-                colorized = VtColors.colorize(
+                colorized = VtColor.colorize(
                     f"{color.placeholder}{prompt_msg}"
                     f"{f'[{default_value}]' if default_value else ''}"
-                    f"{end}{VtColors.NC.placeholder}"
+                    f"{end}{VtColor.NC.placeholder}"
                 )
                 input_data = input(colorized)
                 if not validator:
@@ -91,11 +91,11 @@ class MenuUtils(ABC):
         return input_data
 
     @staticmethod
-    def wait_enter(wait_msg: str = "Press [Enter] to continue ...", color: VtColors = VtColors.YELLOW) -> None:
+    def wait_enter(wait_msg: str = "Press [Enter] to continue ...", color: VtColor = VtColor.YELLOW) -> None:
         """TODO"""
         MenuUtils.prompt(wait_msg, any_key=True, color=color, end="")
 
     @staticmethod
-    def title(title_str: str, color: VtColors = VtColors.YELLOW) -> None:
+    def title(title_str: str, color: VtColor = VtColor.YELLOW) -> None:
         """TODO"""
         sysout(f"%ED2%%HOM%\n{color.placeholder}{title_str}\n")

@@ -18,6 +18,7 @@ from time import sleep
 from hspylib.core.tools.commons import sysout
 
 if __name__ == "__main__":
+    sysout("%SCA%")
     sysout("%CSV%Cursor saved")
     sleep(1)
     sysout("%MOD(1;31)%RED%MOD(0)%")
@@ -37,3 +38,4 @@ if __name__ == "__main__":
     sysout("%CRE%%EL0%", end="")
     sysout("Done")
     sysout("%ED0%", end="")
+    sysout("%SCM%")

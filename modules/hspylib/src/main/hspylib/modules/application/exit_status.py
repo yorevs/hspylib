@@ -14,7 +14,7 @@
 """
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class ExitStatus(Enumeration):
@@ -56,8 +56,8 @@ class ExitStatus(Enumeration):
         return self.name
 
     def __repr__(self):
-        color = VtColors.GREEN.code if self == ExitStatus.SUCCESS else VtColors.RED.code
-        return f"{color}{self.name}({self.value}){VtColors.NC.code}"
+        color = VtColor.GREEN.code if self == ExitStatus.SUCCESS else VtColor.RED.code
+        return f"{color}{self.name}({self.value}){VtColor.NC.code}"
 
     @property
     def val(self) -> int:

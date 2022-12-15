@@ -16,7 +16,7 @@
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.tui.mselect import mselect
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class SelectableItem:
@@ -34,7 +34,7 @@ class SelectableItem:
 if __name__ == "__main__":
     TUIPreferences(
         max_rows=10,
-        highlight_color=VtColors.WHITE,
+        highlight_color=VtColor.WHITE,
         selected=NavIcons.SELECTED,
         unselected=NavIcons.UNSELECTED,
     )

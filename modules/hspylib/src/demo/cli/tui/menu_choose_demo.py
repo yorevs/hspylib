@@ -15,7 +15,7 @@
 """
 from hspylib.modules.cli.tui.mchoose import mchoose
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
-from hspylib.modules.cli.vt100.vt_colors import VtColors
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class ChooseableItem:
@@ -31,7 +31,7 @@ class ChooseableItem:
 
 
 if __name__ == "__main__":
-    TUIPreferences(max_rows=10, highlight_color=VtColors.WHITE)
+    TUIPreferences(max_rows=10, highlight_color=VtColor.WHITE)
     quantity = 21
     it = [ChooseableItem(f"Item-{n}", f"Value-{n}") for n in range(1, quantity)]
     sel = mchoose(it)

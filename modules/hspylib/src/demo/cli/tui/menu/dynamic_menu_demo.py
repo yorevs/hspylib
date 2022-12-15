@@ -14,7 +14,7 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
-from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
+from hspylib.modules.cli.tui.menu.menu_ui import TUIMenu
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == "__main__":
@@ -47,4 +47,4 @@ if __name__ == "__main__":
             .on_trigger(lambda t: print('Hi')) \
         .build()
     # fmt: on
-    MenuUi(main_menu).show()
+    TUIMenu(main_menu).show()

@@ -18,7 +18,7 @@ from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 # pylint: disable=multiple-statements
-class VtColors(Enumeration):
+class VtColor(Enumeration):
     """
     Ref.: https://en.wikipedia.org/wiki/ANSI_escape_code#SGR
     """
@@ -54,7 +54,7 @@ class VtColors(Enumeration):
 
     @classmethod
     def _replace_all(cls, input_string: str, color_name: str) -> str:
-        color = VtColors.value_of(color_name.upper())
+        color = VtColor.value_of(color_name.upper())
         return input_string.replace(color.placeholder, color.code)
 
     def __str__(self) -> str:
