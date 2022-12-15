@@ -14,6 +14,7 @@ class TUIComponent(Generic[ITEM_TYPE], ABC):
 
     @staticmethod
     def _draw_line(line_fmt: str, max_columns: int, *args: Any) -> None:
+        """TODO"""
         sysout(ensure_endswith(elide_text(line_fmt.format(*args), max_columns), "%NC%"))
 
     def __init__(self):

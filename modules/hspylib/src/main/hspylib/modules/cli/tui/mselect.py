@@ -98,11 +98,12 @@ class MenuSelect(TUIComponent):
                 # fmt: on
                 self._draw_line(line_fmt, columns, idx + 1, selector, option_line)
 
-        sysout(f"\n{self.prefs.navbar_color.placeholder}{self._navbar().replace('%TO%', str(length))}", end="")
+        sysout(self._navbar().replace('%TO%', str(length)), end="")
         self.require_render = False
 
     def _navbar(self) -> str:
         return \
+            f"\n{self.prefs.navbar_color.placeholder}" \
             f"[Enter] Select  [{self.NAV_ICONS}] " \
             f"Navigate  [Esc] Quit  [1..%TO%] Goto: %EL0%"
 
