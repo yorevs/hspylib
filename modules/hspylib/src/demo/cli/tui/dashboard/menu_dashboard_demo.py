@@ -16,8 +16,11 @@
 
 from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
 from hspylib.modules.cli.tui.mdashboard.mdashboard import mdashboard, MenuDashBoard
+from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
+from hspylib.modules.cli.vt100.vt_colors import VtColors
 
 if __name__ == "__main__":
+    TUIPreferences(max_rows=10, highlight_color=VtColors.WHITE)
     # fmt: off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
@@ -52,4 +55,4 @@ if __name__ == "__main__":
             .build() \
         .build()
     # fmt: on
-result = mdashboard(dashboard_items, 4)
+result = mdashboard(dashboard_items)
