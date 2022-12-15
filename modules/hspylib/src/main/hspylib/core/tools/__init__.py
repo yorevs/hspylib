@@ -9,6 +9,7 @@ __all__ = [
   'commons', 
   'dict_tools', 
   'git_tools', 
+  'json_search', 
   'text_tools', 
   'validator'
 ]

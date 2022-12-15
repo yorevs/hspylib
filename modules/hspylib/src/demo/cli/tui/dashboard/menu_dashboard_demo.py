@@ -20,7 +20,11 @@ from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
 if __name__ == "__main__":
-    TUIPreferences(max_rows=10, highlight_color=VtColor.WHITE)
+    TUIPreferences(
+        max_rows=10,
+        items_per_line=3,
+        highlight_color=VtColor.WHITE
+    )
     # fmt: off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
@@ -55,4 +59,5 @@ if __name__ == "__main__":
             .build() \
         .build()
     # fmt: on
-result = mdashboard(dashboard_items)
+
+    result = mdashboard(dashboard_items)

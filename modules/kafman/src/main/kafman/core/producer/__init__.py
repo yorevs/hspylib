@@ -5,5 +5,8 @@
 # Package: main.kafman.core.producer
 """Package initialization."""
 
-__all__ = ["producer_config", "producer_worker"]
-__version__ = "0.9.92"
+__all__ = [
+  'producer_config', 
+  'producer_worker'
+]
+__version__ = '0.9.92'

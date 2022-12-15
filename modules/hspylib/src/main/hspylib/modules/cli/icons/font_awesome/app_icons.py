@@ -28,7 +28,7 @@ class AppIcons(Awesome):
     AWS             = '\uF375'  # 
     CPLUSPLUS       = '\uF38C'  # 
     DOCKER          = '\uF308'  # 
-    DROPBOX         = '\uF6E2'  # 
+    DROPBOX         = '\uF16B'  # 
     GIT             = '\uF813'  # 
     GITHUB          = '\uF408'  # 
     GOOGLE          = '\uF1A0'  # 

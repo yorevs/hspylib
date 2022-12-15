@@ -16,9 +16,10 @@
 from time import sleep
 
 from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.vt100.vt_utils import alternate_screen
 
 if __name__ == "__main__":
-    sysout("%SCA%")
+    alternate_screen()
     sysout("%CSV%Cursor saved")
     sleep(1)
     sysout("%MOD(1;31)%RED%MOD(0)%")
@@ -31,11 +32,11 @@ if __name__ == "__main__":
     sysout("%USC%HIDDEN_TEXT")
     sysout("%SSC%VISIBLE_TEXT")
     sleep(2)
-    sysout("%CUP(4;2)%ELLO THERE(3;1)", end="")
+    sysout("%CUP(3;2)%ELLO THERE(3;1)", end="")
     sleep(2)
-    sysout("%CUP(5;3)%EW HERE(4;3)", end="")
+    sysout("%CUP(4;3)%EW HERE(4;3)", end="")
     sleep(2)
     sysout("%CRE%%EL0%", end="")
     sysout("Done")
     sysout("%ED0%", end="")
-    sysout("%SCM%")
+    alternate_screen(False)

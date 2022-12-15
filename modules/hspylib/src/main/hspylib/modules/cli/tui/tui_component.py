@@ -18,9 +18,9 @@ class TUIComponent(Generic[T], ABC):
         sysout(ensure_endswith(elide_text(line_fmt.format(*args), max_columns), "%NC%"))
 
     def __init__(self):
-        self.prefs = TUIPreferences()
-        self.done = None
-        self.require_render = True
+        self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
+        self.done: bool = False
+        self.require_render: bool = True
 
     @abstractmethod
     def execute(self, title: str) -> Optional[T | List[T]]:
@@ -43,7 +43,7 @@ class TUIComponent(Generic[T], ABC):
         """TODO"""
 
     @abstractmethod
-    def _navbar(self) -> str:
+    def _navbar(self, *args) -> str:
         """TODO"""
 
     @abstractmethod

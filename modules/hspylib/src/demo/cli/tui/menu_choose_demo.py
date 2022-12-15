@@ -31,8 +31,11 @@ class ChooseableItem:
 
 
 if __name__ == "__main__":
-    TUIPreferences(max_rows=10, highlight_color=VtColor.WHITE)
-    quantity = 21
-    it = [ChooseableItem(f"Item-{n}", f"Value-{n}") for n in range(1, quantity)]
+    TUIPreferences(
+        max_rows=10, highlight_color=VtColor.WHITE
+    )
+    quantity = 22
+    digits = len(str(quantity))
+    it = [ChooseableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
     sel = mchoose(it)
     print(str(sel))

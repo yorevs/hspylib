@@ -31,18 +31,19 @@ class Singleton(Type):
     _instances = {}
 
     # pylint: disable=bad-mcs-method-argument
-    def __call__(self, *args, **kwargs) -> Any:
+    def __call__(mcs, *args, **kwargs) -> Any:
         """Invoke the class constructor or return the instance if it exists."""
-        if not Singleton.has_instance(self):
+        if not Singleton.has_instance(mcs):
             try:
                 instance = super().__call__(*args, **kwargs)
-                check_not_none(instance, f"Unable to create Singleton instance: {self}")
-                setattr(self, "INSTANCE", instance)
-                Singleton._instances[self.__name__] = instance
-                log.debug("Created a new Singleton instance: %s.%s", self.__module__, self.__name__)
+                check_not_none(instance, f"Unable to create Singleton instance: {mcs}")
+                setattr(mcs, "INSTANCE", instance)
+                Singleton._instances[mcs.__name__] = instance
+                log.debug("Created a new Singleton instance: %s.%s", mcs.__module__, mcs.__name__)
+                return instance
             except Exception as err:
-                raise HSBaseException(f"Failed to create singleton instance: '{self.__name__}'", err) from err
-        return Singleton._instances[self.__name__]
+                raise HSBaseException(f"Failed to create singleton instance: '{mcs.__name__}'", err) from err
+        return Singleton._instances[mcs.__name__]
 
     @classmethod
     def has_instance(cls, clazz: SINGLETON) -> bool:

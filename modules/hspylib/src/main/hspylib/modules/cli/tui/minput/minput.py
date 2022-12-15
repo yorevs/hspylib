@@ -105,10 +105,10 @@ class MenuInput(TUIComponent):
 
             field_size = field.width
             if self.tab_index == idx:
-                MInputUtils.mi_print(self.max_label_length, field.label, self.prefs.sel_bg_color.placeholder)
+                MInputUtils.mi_print(self.max_label_length + 2, f"  {field.label}", self.prefs.sel_bg_color.placeholder)
                 self.cur_field = field
             else:
-                MInputUtils.mi_print(self.max_label_length, field.label)
+                MInputUtils.mi_print(self.max_label_length + 2, f"  {field.label}")
 
             self._buffer_pos(field_size, idx)
             self._render_field(field)
@@ -141,7 +141,7 @@ class MenuInput(TUIComponent):
     def _render_details(self, field: FormField, field_size: int) -> None:
         """Render details about total/remaining field characters"""
         padding = 1 - len(str(self.max_detail_length / 2))
-        fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "} %NC%"
+        fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "}  %NC%"
         if field.itype == InputType.SELECT:
             idx, _ = MInputUtils.get_selected(field.value)
             sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split("|"))))
@@ -231,7 +231,7 @@ class MenuInput(TUIComponent):
                         self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                     else:
                         self._display_error(
-                            f"This {self.cur_field.itype} field only accept {self.cur_field.validator} !")
+                            f"This field only accept {self.cur_field.validator} !")
 
     def _handle_backspace(self) -> None:
         """TODO"""
@@ -259,8 +259,8 @@ class MenuInput(TUIComponent):
 
     def _display_error(self, err_msg) -> None:
         """TODO"""
-        offset = 12
         set_enable_echo(False)
+        offset = 16
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + offset
         sysout(f"%CUP({self.cur_row};{err_pos})%", end="")
         syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end="")

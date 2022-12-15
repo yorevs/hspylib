@@ -12,7 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-
+import os
 import re
 from enum import auto
 from typing import Callable, Optional
@@ -49,6 +49,8 @@ class VtCode(Enumeration):
 
     SCA = Vt100.alternate_screen()          # ^[?1049h -> Switch to alternate screen buffer
     SCM = Vt100.alternate_screen(False)     # ^[?1049l -> Switch to main screen buffer
+
+    EOL = os.linesep                        # Line separator (eol)
 
     # For all commands that take arguments, we need to add to this map, so we can call it.
     # The following entry values must defined as auto(), so they can be invoked as Callable

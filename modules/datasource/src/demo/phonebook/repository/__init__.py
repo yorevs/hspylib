@@ -5,5 +5,8 @@
 # Package: demo.phonebook.repository
 """Package initialization."""
 
-__all__ = ["company_repository", "person_repository"]
-__version__ = "0.9.16"
+__all__ = [
+  'company_repository', 
+  'person_repository'
+]
+__version__ = '0.9.16'

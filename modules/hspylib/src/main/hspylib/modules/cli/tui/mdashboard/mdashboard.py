@@ -12,7 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-
 from typing import List, Optional
 
 from hspylib.core.preconditions import check_state
@@ -22,7 +21,8 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.tui.tui_component import TUIComponent
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo, \
+    erase_line
 
 
 def mdashboard(
@@ -38,18 +38,18 @@ class MenuDashBoard(TUIComponent):
     """TODO"""
 
     # fmt: off
-    ICN = "X"
+    ICN = "╳"
 
     CELL_TPL = [
-        [" ", " ", " ", " ", " ", " ", " ", " "],
-        [" ", " ", " ", ICN, " ", " ", " ", " "],
-        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", ICN, " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " "],
     ]
 
     SEL_CELL_TPL = [
-        [" ", "┏", "━", " ", " ", "━", "┓", " "],
-        [" ", " ", " ", ICN, " ", " ", " ", " "],
-        [" ", "┗", "━", " ", " ", "━", "┛", " "],
+        [" ", "╭", " ", " ", " ", "╮", " "],
+        [" ", " ", " ", ICN, " ", " ", " "],
+        [" ", "╰", " ", " ", " ", "╯", " "],
     ]
     # fmt: on
 
@@ -103,17 +103,42 @@ class MenuDashBoard(TUIComponent):
         set_enable_echo()
 
         for idx, item in enumerate(self.items):
-            self._print_cell(idx, item, MenuDashBoard.CELL_TPL if self.tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
+            self._print_cell(
+                idx, item,
+                MenuDashBoard.CELL_TPL
+                if self.tab_index != idx
+                else MenuDashBoard.SEL_CELL_TPL
+            )
 
-        sysout(f"%EL2%\r> %GREEN%{self.items[self.tab_index].tooltip}%NC%")
+        erase_line()
         sysout(self._navbar(), end="")
         self.require_render = False
 
+    def _print_cell(
+        self, item_idx: int,
+        item: DashboardItem,
+        cell_template: List[List[str]]) -> None:
+        """TODO"""
+
+        num_cols, num_rows = len(cell_template[0]), len(cell_template)
+
+        for row in range(0, num_rows):
+            for col in range(0, num_cols):
+                cur_cell = cell_template[row][col]
+                sysout(f"{item.icon if cur_cell == self.ICN else cur_cell}", end="")  # Print current cell
+            sysout(f"%CUD(1)%%CUB({num_cols})%", end="")  # Print the next row
+        if item_idx > 0 and (item_idx + 1) % self.prefs.items_per_line == 0:
+            sysout(f"%CUD(1)%%CUB({num_cols * self.prefs.items_per_line})%", end="")  # Break the line
+        elif item_idx + 1 < len(self.items):
+            sysout(f"%CUU({num_rows})%%CUF({num_cols})%", end="")  # Continue with the same line
+
     def _navbar(self) -> str:
-        return \
-            f"\n{self.prefs.navbar_color.placeholder}" \
-            f"[Enter] Select  [{self.NAV_ICONS}] " \
+        return (
+            f"{NavIcons.POINTER} %GREEN%{self.items[self.tab_index].tooltip}%NC%"
+            f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
+            f"[Enter] Select  [{self.NAV_ICONS}] "
             f"Navigate  [{NavIcons.TAB}] Next  [Esc] Quit %EL0%"
+        )
 
     def _handle_keypress(self) -> Keyboard:
         """TODO"""
@@ -135,17 +160,3 @@ class MenuDashBoard(TUIComponent):
         self.require_render = True
 
         return keypress
-
-    def _print_cell(self, idx: int, item: DashboardItem, cell_template: List[List[str]]) -> None:
-        """TODO"""
-
-        num_cols, num_rows = len(cell_template[0]), len(cell_template)
-
-        for row in range(0, num_rows):
-            for col in range(0, num_cols):
-                sysout(f"{item.icon if cell_template[row][col] == self.ICN else cell_template[row][col]}", end="")
-            sysout(f"%CUD(1)%%CUB({num_cols})%", end="")
-        if idx > 0 and (idx + 1) % self.prefs.items_per_line == 0:
-            sysout(f"%CUD(1)%%CUB({num_cols * self.prefs.items_per_line})%", end="")  # Break the line
-        elif idx + 1 < len(self.items):
-            sysout(f"%CUU({num_rows})%%CUF({num_cols})%", end="")  # Continue with the same line

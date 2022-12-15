@@ -2,10 +2,12 @@
 #
 # hspylib v0.11.133
 #
-# Package: test.modules.mock
+# Package: test.mock
 """Package initialization."""
 
 __all__ = [
+  'mock_server', 
+  'mock_server_handler', 
   'test_mock_server'
 ]
 __version__ = '0.11.133'

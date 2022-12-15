@@ -5,5 +5,8 @@
 # Package: main.firebase.entity
 """Package initialization."""
 
-__all__ = ["file_entry", "firebase_entry"]
-__version__ = "0.9.82"
+__all__ = [
+  'file_entry', 
+  'firebase_entry'
+]
+__version__ = '0.9.82'

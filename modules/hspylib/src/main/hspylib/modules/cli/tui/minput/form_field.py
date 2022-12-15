@@ -56,19 +56,27 @@ class FormField:
     @property
     def icon(self) -> FormIcons:
         if self.access_type == AccessType.READ_ONLY:
-            icon = FormIcons.LOCKED
-        else:
-            match self.itype:
-                case InputType.PASSWORD:
-                    icon = FormIcons.HIDDEN
-                case InputType.CHECKBOX:
-                    icon = FormIcons.MARKED
-                case InputType.SELECT:
-                    icon = FormIcons.SELECTABLE
-                case InputType.MASKED:
-                    icon = FormIcons.MASKED
-                case _:
+            return FormIcons.LOCKED
+        match self.itype:
+            case InputType.PASSWORD:
+                icon = FormIcons.HIDDEN
+            case InputType.CHECKBOX:
+                icon = FormIcons.MARKED
+            case InputType.SELECT:
+                icon = FormIcons.SELECTABLE
+            case InputType.MASKED:
+                icon = FormIcons.MASKED
+            case InputType.TEXT:
+                if self.validator.pattern_type == InputValidator.PatternType.NUMBERS:
+                    icon = FormIcons.NUMBERS
+                elif self.validator.pattern_type == InputValidator.PatternType.LETTERS:
+                    icon = FormIcons.LETTERS
+                elif self.validator.pattern_type == InputValidator.PatternType.WORDS:
                     icon = FormIcons.EDITABLE
+                else:
+                    icon = FormIcons.EDITABLE
+            case _:
+                icon = FormIcons.QUESTION_CIRCLE
         return icon
 
     def can_write(self) -> bool:
