@@ -42,7 +42,6 @@ class FormField:
         self.max_length = max_length
         self.access_type = access_type
         self.validator = validator or InputValidator.anything(min_length, max_length)
-        self.icon = self.get_icon()
 
     def __str__(self) -> str:
         return f"{self.label}: {self.itype}({self.min_length}-{self.max_length}) [{self.access_type}] = '{self.value}'"
@@ -50,20 +49,26 @@ class FormField:
     def __repr__(self):
         return str(self)
 
-    def get_icon(self) -> FormIcons:
+    @property
+    def width(self) -> int:
+        return len(str(self.value)) if self.itype != InputType.SELECT else 1
+
+    @property
+    def icon(self) -> FormIcons:
         if self.access_type == AccessType.READ_ONLY:
             icon = FormIcons.LOCKED
-        elif self.itype == InputType.PASSWORD:
-            icon = FormIcons.HIDDEN
-        elif self.itype == InputType.CHECKBOX:
-            icon = FormIcons.MARKED
-        elif self.itype == InputType.SELECT:
-            icon = FormIcons.SELECTABLE
-        elif self.itype == InputType.MASKED:
-            icon = FormIcons.MASKED
         else:
-            icon = FormIcons.EDITABLE
-
+            match self.itype:
+                case InputType.PASSWORD:
+                    icon = FormIcons.HIDDEN
+                case InputType.CHECKBOX:
+                    icon = FormIcons.MARKED
+                case InputType.SELECT:
+                    icon = FormIcons.SELECTABLE
+                case InputType.MASKED:
+                    icon = FormIcons.MASKED
+                case _:
+                    icon = FormIcons.EDITABLE
         return icon
 
     def can_write(self) -> bool:
@@ -73,7 +78,6 @@ class FormField:
         if self.validate(value):
             self.value = value
             return True
-
         return False
 
     def validate(self, value: Any = None) -> bool:

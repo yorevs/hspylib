@@ -73,12 +73,19 @@ class FieldBuilder:
         elif self.field.itype == InputType.MASKED:
             _, mask = MInputUtils.unpack_masked(self.field.value)
             self.field.min_length = self.field.max_length = len(mask)
-            self.validator(InputValidator.custom(mask.replace("#", "[0-9]").replace("@", "[a-zA-Z]").replace("*", ".")))
+            # fmt: off
+            self.validator(
+                InputValidator.custom(
+                    mask
+                    .replace("#", "[0-9]")
+                    .replace("@", "[a-zA-Z]")
+                    .replace("*", ".")
+                ))
+            # fmt: on
         self.field.label = self.field.label or "Field"
         self.field.min_length = self.field.min_length or 1
         self.field.max_length = self.field.max_length or 30
         self.field.access_type = self.field.access_type or AccessType.READ_WRITE
-        self.field.icon = self.field.get_icon()
         self.field.value = self.field.value if self.field.value else ""
         self.parent.fields.append(self.field)
         return self.parent
