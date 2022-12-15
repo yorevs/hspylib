@@ -137,19 +137,21 @@ class CFManager:
 
     def _require_credentials(self) -> None:
         """Prompt the user for PCF credentials"""
+        # fmt: off
         form_fields = (
             MenuInput.builder()
-            .field()
-            .label("Username")
-            .value(self._username)
-            .build()
-            .field()
-            .label("Password")
-            .itype("password")
-            .value(self._password)
-            .build()
+                .field()
+                    .label("Username")
+                    .value(self._username)
+                    .build()
+                .field()
+                    .label("Password")
+                    .itype("password")
+                    .value(self._password)
+                    .build()
             .build()
         )
+        # fmt: on
         result = minput(form_fields, title="Please type your Cloud Foundry credentials")
         if result:
             self._username = result.username

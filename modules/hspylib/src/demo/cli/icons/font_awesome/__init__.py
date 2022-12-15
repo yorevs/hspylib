@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'awesome_demo'
+  'awesome_demo', 
+  'demo_icons'
 ]
 __version__ = '0.11.133'

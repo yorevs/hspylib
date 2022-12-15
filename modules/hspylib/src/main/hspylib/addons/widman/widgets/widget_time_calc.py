@@ -90,11 +90,9 @@ class WidgetTimeCalc(Widget):
         if args and any(a in args for a in ["+v", "++version"]):
             sysout(self.version())
             return ExitStatus.SUCCESS
-
         if args and any(a in args for a in ["+d", "++decimal"]):
             self._decimal = True
             args = args[1:]
-
         if not self._args:
             self._args = args
 
