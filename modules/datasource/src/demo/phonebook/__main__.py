@@ -80,7 +80,7 @@ class Main(CliApplication):
                 .build()
         # fmt: on
         mm = MenuUi(main_menu)
-        mm.show()
+        mm.execute()
         return ExitStatus.SUCCESS
 
 

@@ -15,7 +15,6 @@
    Copyright 2022, HSPyLib team
 """
 import os
-import signal
 import socket
 import threading
 from textwrap import dedent
@@ -24,7 +23,7 @@ from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetExecutionError
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import sysout, hook_exit_signals
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
@@ -78,9 +77,7 @@ class WidgetSendMsg(Widget):
         self.counter = 1
 
     def execute(self, args: List[str] = None) -> ExitStatus:
-        signal.signal(signal.SIGINT, self.cleanup)
-        signal.signal(signal.SIGTERM, self.cleanup)
-        signal.signal(signal.SIGHUP, self.cleanup)
+        hook_exit_signals(self.cleanup)
         if args and args[0] in ["-h", "--help"]:
             sysout(self.usage())
             return ExitStatus.SUCCESS

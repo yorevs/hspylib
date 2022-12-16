@@ -26,11 +26,12 @@ class TUIComponent(Generic[T], ABC):
     def execute(self, title: str) -> Optional[T | List[T]]:
         """TODO"""
 
-    def _draw_line_color(self, is_selected: bool) -> Awesome:
+    def _draw_line_color(self, is_selected: bool = False, set_bg_color: bool = True) -> Awesome:
         """TODO"""
         if is_selected:
             selector = self.prefs.selected
-            sysout(self.prefs.sel_bg_color.code, end="")
+            if set_bg_color:
+                sysout(self.prefs.sel_bg_color.code, end="")
             sysout(self.prefs.highlight_color.code, end="")
         else:
             selector = self.prefs.unselected

@@ -12,12 +12,21 @@
 
    Copyright 2022, HSPyLib team
 """
+import argparse
+import atexit
+import logging as log
+import os
+import sys
+import traceback
 from abc import abstractmethod
+from textwrap import dedent
+from typing import Any, Optional, Union
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_state
-from hspylib.core.tools.commons import log_init, syserr, sysout
+from hspylib.core.tools.commons import log_init, syserr, sysout, hook_exit_signals
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
@@ -27,16 +36,6 @@ from hspylib.modules.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.application.exit_hooks import ExitHooks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
-from typing import Any, Optional, Union
-
-import argparse
-import atexit
-import logging as log
-import os
-import signal
-import sys
-import traceback
 
 
 class Application(metaclass=AbstractSingleton):
@@ -74,9 +73,7 @@ class Application(metaclass=AbstractSingleton):
     ):
 
         log.captureWarnings(True)
-        signal.signal(signal.SIGTERM, Application.exit)
-        signal.signal(signal.SIGINT, Application.exit)
-        signal.signal(signal.SIGHUP, Application.exit)
+        hook_exit_signals(Application.exit)
 
         self.exit_hooks = ExitHooks(self._cleanup)
         self.exit_hooks.hook()

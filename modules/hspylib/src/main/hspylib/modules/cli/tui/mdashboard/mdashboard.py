@@ -72,11 +72,10 @@ class MenuDashBoard(TUIComponent):
     def execute(self, title: str) -> Optional[DashboardItem]:
         """TODO"""
 
-        keypress = Keyboard.VK_NONE
-
         if len(self.items) == 0:
             return None
 
+        keypress = Keyboard.VK_NONE
         prepare_render(title)
 
         # Wait for user interaction
@@ -136,8 +135,8 @@ class MenuDashBoard(TUIComponent):
         return (
             f"{NavIcons.POINTER} %GREEN%{self.items[self.tab_index].tooltip}%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
-            f"[Enter] Select  [{self.NAV_ICONS}] "
-            f"Navigate  [{NavIcons.TAB}] Next  [Esc] Quit %EL0%"
+            f"[Enter] Select  [Enter] "
+            f"Navigate  [{self.NAV_ICONS}]  Next  [{NavIcons.TAB}]  [Esc] Quit %EL0%"
         )
 
     def _handle_keypress(self) -> Keyboard:

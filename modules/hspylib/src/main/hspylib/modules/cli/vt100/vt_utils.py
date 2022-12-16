@@ -21,7 +21,7 @@ import termios
 import tty
 from typing import Optional, Tuple
 
-from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.core.tools.commons import is_debugging, sysout, hook_exit_signals
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
@@ -106,8 +106,8 @@ def alternate_screen(enable: bool = True) -> None:
     sysout(f"%SC{'A' if enable else 'M'}%", end="")
 
 
-def clear_screen() -> None:
-    sysout("%ED2%")
+def clear_screen(mode: int = 2) -> None:
+    sysout(f"%ED{mode}%")
 
 
 def restore_terminal(cls: bool = True) -> None:
@@ -131,12 +131,11 @@ def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done."
 
 def prepare_render(render_msg: str = "", render_color: VtColor = VtColor.ORANGE):
     """Prepare the terminal for TUI renderization"""
-    signal.signal(signal.SIGTERM, exit_app)
-    signal.signal(signal.SIGINT, exit_app)
-    signal.signal(signal.SIGHUP, exit_app)
+    hook_exit_signals(exit_app)
     set_auto_wrap(False)
     set_show_cursor(False)
     alternate_screen()
     clear_screen()
-    sysout(f"%ED2%%HOM%{render_color.placeholder}{render_msg}%HOM%%CUD(1)%%ED0%%NC%")
+    sysout(f"%HOM%{render_color.placeholder}{render_msg}", end="")
+    sysout(f"%HOM%%CUD({max(2, render_msg.count(os.linesep))})%%ED0%%NC%", end="")
     save_cursor()

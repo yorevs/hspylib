@@ -77,7 +77,7 @@ def intersect(left_dict: Iterable, right_dict: Iterable) -> Iterable:
     return type(left_dict)([value for value in left_dict if value in right_dict])
 
 
-def get_or_default(options: tuple | list, index: int, default_value=None) -> Optional[Any]:
+def get_or_default(options: tuple | list, index: int, default_value: Any = None) -> Optional[Any]:
     """Retrieve an item from the options list or default_value if index is out of range
     :param options: The available list of options
     :param index: The index of the item
@@ -86,7 +86,7 @@ def get_or_default(options: tuple | list, index: int, default_value=None) -> Opt
     return options[index] if index < len(options) else default_value
 
 
-def get_or_default_by_key(options: dict, key: str, default_value=None) -> Optional[Any]:
+def get_or_default_by_key(options: dict, key: str, default_value: Any = None) -> Optional[Any]:
     """Retrieve an item from the options list or default_value if key was not found
     :param options: The available list of options
     :param key: The key of the item
