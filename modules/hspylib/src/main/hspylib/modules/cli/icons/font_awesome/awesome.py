@@ -35,13 +35,6 @@ class Awesome(Enumeration):
         return ' '
 
     @staticmethod
-    def compose(*icons: "Awesome") -> str:
-        result = ""
-        for i in icons:
-            result += i.unicode
-        return result
-
-    @staticmethod
     def print_unicode(uni_code: Union[str, int], end: str = "") -> None:
         """TODO"""
         if isinstance(uni_code, str) and re.match(r"^[a-fA-F0-9]{1,4}$", uni_code):

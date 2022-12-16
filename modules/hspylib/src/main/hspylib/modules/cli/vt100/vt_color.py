@@ -12,20 +12,22 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 # pylint: disable=multiple-statements
+# @composable
 class VtColor(Enumeration):
     """
     Ref.: https://en.wikipedia.org/wiki/ANSI_escape_code#SGR
     """
 
     # fmt: off
-    NC      = Vt100.mode('0;0;0')
-    BLACK   = Vt100.mode('30')
+    _CUSTOM = auto()
+    NC      = Vt100.mode('0;0;0')       ; BLACK   = Vt100.mode('30')
     RED     = Vt100.mode('31')          ; BG_RED     = Vt100.mode('41')
     GREEN   = Vt100.mode('32')          ; BG_GREEN   = Vt100.mode('42')
     YELLOW  = Vt100.mode('93')          ; BG_YELLOW  = Vt100.mode('43')
@@ -56,9 +58,6 @@ class VtColor(Enumeration):
     def _replace_all(cls, input_string: str, color_name: str) -> str:
         color = VtColor.value_of(color_name.upper())
         return input_string.replace(color.placeholder, color.code)
-
-    def __str__(self) -> str:
-        return self.name
 
     @property
     def code(self) -> str:

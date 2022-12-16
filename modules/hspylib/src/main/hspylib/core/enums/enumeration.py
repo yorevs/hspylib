@@ -12,11 +12,18 @@
 
    Copyright 2022, HSPyLib team
 """
-from enum import Enum
-from hspylib.core.preconditions import check_not_none
+from enum import Enum, auto
+from hspylib.core.preconditions import check_not_none, check_argument
 from typing import Any, List, Tuple, TypeVar
 
 E = TypeVar("E", bound="Enumeration")
+
+
+def composable(cls: type):
+    """Make the enumeration class, composable"""
+    check_argument(issubclass(cls, Enumeration))
+    setattr(cls.__class__, '_CUSTOM', auto())
+    return cls
 
 
 class Enumeration(Enum):
@@ -49,8 +56,19 @@ class Enumeration(Enum):
             found = next(filter(lambda en: en.value == value, list(cls)), None)
         return check_not_none(found, '"{}" value does not correspond to a valid "{}" enum', value, cls.__name__)
 
+    @classmethod
+    def compose(cls, first: E, *others: E) -> E:
+        try:
+            e = getattr(first.__class__, "_CUSTOM")
+            e._value_ = str(first)
+            for other in others:
+                e._value_ += str(other)
+            return e
+        except AttributeError as err:
+            raise AttributeError("Composable enumerations must declare a '_CUSTOM' member") from err
+
     def __str__(self):
-        return str(self.value)
+        return str(self._value_)
 
     def __repr__(self):
         return self.name
@@ -62,6 +80,9 @@ class Enumeration(Enum):
         if isinstance(other, self.__class__):
             return self.key == other.key
         return NotImplemented
+
+    def __add__(self, other) -> E:
+        return Enumeration.compose(self, other)
 
     @property
     def key(self) -> Tuple[str, Any]:

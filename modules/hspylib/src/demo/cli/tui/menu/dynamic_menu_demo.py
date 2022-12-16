@@ -14,37 +14,33 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
-from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == "__main__":
     # fmt: off
-    main_menu = TUIMenuFactory() \
-        .create_menu(None, 'Dynamic Main Menu') \
-        .with_option('Exit') \
-            .on_trigger(lambda t: exit_app(0)) \
-        .with_option('Sub-Menu-1') \
-            .on_trigger(lambda x: sub_menu_1) \
-        .with_option('Sub-Menu-2') \
-            .on_trigger(lambda x: sub_menu_2) \
-        .build()
-    sub_menu_1 = TUIMenuFactory() \
-        .create_menu(main_menu, 'Sub-Menu-1') \
-        .with_option('Back') \
-            .on_trigger(lambda x: main_menu) \
-        .with_option('Print Hey') \
-            .on_trigger(lambda t: print('Hey')) \
-        .with_option('Print Hoo') \
-            .on_trigger(lambda t: print('Hoo')) \
-        .build()
-    sub_menu_2 = TUIMenuFactory() \
-        .create_menu(main_menu, 'Sub-Menu-2') \
-        .with_option('Back') \
-            .on_trigger(lambda x: main_menu) \
-        .with_option('Print Hello') \
-            .on_trigger(lambda t: print('Hello')) \
-        .with_option('Print Hi') \
-            .on_trigger(lambda t: print('Hi')) \
+    main_menu = TUIMenuFactory \
+        .create_main_menu('Dynamic Main Menu', tooltip='Test Dynamic Menus') \
+            .with_item('Sub-Menu-1') \
+                .with_action("DO IT 1", "Let's do it")\
+                    .on_trigger(lambda x: print("ACTION 1")) \
+                .with_view("Just a View 1", "Show the view 1")\
+                    .content("MY BEAUTIFUL VIEW 1") \
+                .with_action("Back", "Back to the previous menu")\
+                    .on_trigger(lambda x: x.parent) \
+                .then() \
+            .with_item('Sub-Menu-2') \
+                .with_action("DO IT 2", "Let's do it too")\
+                    .on_trigger(lambda x: print("ACTION 2")) \
+                .with_view("Just a View 2", "Show the view 2")\
+                    .content("MY BEAUTIFUL VIEW 2") \
+                .with_action("Back", "Back to the previous menu")\
+                    .on_trigger(lambda x: x.parent) \
+                .then() \
+            .with_action('Exit', 'Exit the application')\
+                .on_trigger(lambda x: exit_app(0)) \
+            .then() \
         .build()
     # fmt: on
-    TUIMenu(main_menu).execute()
+
+    TUIMenuUi(main_menu).execute('Testing Menus')
