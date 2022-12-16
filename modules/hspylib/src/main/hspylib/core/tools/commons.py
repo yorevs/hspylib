@@ -16,12 +16,14 @@ import inspect
 import logging as log
 import os
 import pathlib
+import signal
 import sys
 from datetime import timedelta
 from typing import Optional, Set, Tuple, Type, Callable, Iterable
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_code import VtCode
 from hspylib.modules.cli.vt100.vt_color import VtColor
@@ -123,6 +125,17 @@ def syserr(string: str, end: str = os.linesep) -> None:
     if Validator.is_not_blank(string):
         msg = VtColor.colorize(VtCode.decode(f"%RED%{VtColor.strip_colors(string)}%NC%"))
         print(msg, file=sys.stderr, flush=True, end=end)
+
+
+def hook_exit_signals(handler: Callable) -> None:
+    """Hook common exit signals and set proper handlers for them
+    :param handler a Callable to handle the exit signals
+    """
+    check_argument(handler is not None and isinstance(handler, Callable))
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGTERM, handler)
+    signal.signal(signal.SIGHUP, handler)
+    signal.signal(signal.SIGABRT, handler)
 
 
 def class_attribute_names(clazz: Type) -> Optional[Tuple]:

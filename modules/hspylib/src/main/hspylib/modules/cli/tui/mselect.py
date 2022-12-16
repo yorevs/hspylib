@@ -54,13 +54,12 @@ class MenuSelect(TUIComponent):
     def execute(self, title: str) -> Optional[T]:
         """TODO"""
 
-        keypress = Keyboard.VK_NONE
-
         if (length := len(self.items)) == 0:
             return None
         if length == 1:  # When only one option is provided, select the element at index 0 and return
             return self.items[0]
 
+        keypress = Keyboard.VK_NONE
         prepare_render(title)
 
         # Wait for user interaction

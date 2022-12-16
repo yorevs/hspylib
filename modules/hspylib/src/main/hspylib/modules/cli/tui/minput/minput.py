@@ -69,11 +69,10 @@ class MenuInput(TUIComponent):
     def execute(self, title: str) -> Optional[Namespace]:
         """TODO"""
 
-        keypress = Keyboard.VK_NONE
-
         if len(self.fields) == 0:
             return None
 
+        keypress = Keyboard.VK_NONE
         prepare_render(title)
 
         # Wait for user interaction

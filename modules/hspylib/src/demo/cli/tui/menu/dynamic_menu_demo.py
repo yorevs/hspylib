@@ -13,14 +13,14 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
-from hspylib.modules.cli.tui.menu.menu_ui import TUIMenu
+from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
+from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == "__main__":
     # fmt: off
-    main_menu = MenuFactory() \
-        .create(None, 'Dynamic Main Menu') \
+    main_menu = TUIMenuFactory() \
+        .create_menu(None, 'Dynamic Main Menu') \
         .with_option('Exit') \
             .on_trigger(lambda t: exit_app(0)) \
         .with_option('Sub-Menu-1') \
@@ -28,8 +28,8 @@ if __name__ == "__main__":
         .with_option('Sub-Menu-2') \
             .on_trigger(lambda x: sub_menu_2) \
         .build()
-    sub_menu_1 = MenuFactory() \
-        .create(main_menu, 'Sub-Menu-1') \
+    sub_menu_1 = TUIMenuFactory() \
+        .create_menu(main_menu, 'Sub-Menu-1') \
         .with_option('Back') \
             .on_trigger(lambda x: main_menu) \
         .with_option('Print Hey') \
@@ -37,8 +37,8 @@ if __name__ == "__main__":
         .with_option('Print Hoo') \
             .on_trigger(lambda t: print('Hoo')) \
         .build()
-    sub_menu_2 = MenuFactory() \
-        .create(main_menu, 'Sub-Menu-2') \
+    sub_menu_2 = TUIMenuFactory() \
+        .create_menu(main_menu, 'Sub-Menu-2') \
         .with_option('Back') \
             .on_trigger(lambda x: main_menu) \
         .with_option('Print Hello') \
@@ -47,4 +47,4 @@ if __name__ == "__main__":
             .on_trigger(lambda t: print('Hi')) \
         .build()
     # fmt: on
-    TUIMenu(main_menu).show()
+    TUIMenu(main_menu).execute()
