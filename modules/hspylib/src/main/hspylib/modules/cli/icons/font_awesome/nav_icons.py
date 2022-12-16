@@ -12,9 +12,12 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
+
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
+# @composable
 class NavIcons(Awesome):
     """
     Navigation icons.
@@ -23,6 +26,7 @@ class NavIcons(Awesome):
     """
 
     # fmt: off
+    _CUSTOM = auto()
     LEFT        = '\u2190'  # ←
     UP          = '\u2191'  # ↑
     RIGHT       = '\u2192'  # →
@@ -32,4 +36,5 @@ class NavIcons(Awesome):
     POINTER     = '\uF432'  # 
     SELECTED    = '\uF814'  # 
     UNSELECTED  = '\uF815'  # 
+    BREADCRUMB  = '\uF44A'  # 
     # fmt: on
