@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import Callable, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
+from hspylib.modules.cli.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
 from hspylib.modules.cli.vt100.vt_utils import restore_cursor
+from hspylib.modules.eventbus import eventbus
 
 
 class TUIMenuView(TUIMenu):
@@ -12,22 +13,22 @@ class TUIMenuView(TUIMenu):
     def __init__(
         self,
         parent: TUIMenu,
-        display_text: str = None,
         title: Optional[str] = None,
-        tooltip: Optional[str] = None):
+        tooltip: Optional[str] = None,
+        display_text: Optional[str] = None):
         super().__init__(parent, title or 'Menu View', tooltip or f"Access the '{title}' view")
-        self._content = display_text or f"%ED0%This is a view: {self.title}"
+        self._on_render: ON_TRIGGER_CB = self._display_content
+        self._content: str = display_text or f"%ED0%This is a view: {self.title}"
 
-    @property
-    def content(self) -> str:
-        return self._content
+    def on_render(self, on_render: str | ON_TRIGGER_CB) -> None:
+        if isinstance(on_render, str):
+            self._content = on_render
+            self._on_render = self._display_content
+        elif isinstance(on_render, Callable):
+            self._on_render = on_render
+            self._content = f"%ED0%This is a view: {self.title}"
 
-    @content.setter
-    def content(self, text: str) -> None:
-        self._content = text
-
-    def execute(self, title: str = "Main Menu") -> Optional[TUIMenu]:
-
+    def execute(self) -> Optional[TUIMenu]:
         self._render()
         while not (keypress := Keyboard.wait_keystroke()):
             pass
@@ -36,5 +37,9 @@ class TUIMenuView(TUIMenu):
 
     def _render(self) -> None:
         restore_cursor()
-        sysout(self.content)
+        eventbus.emit("tui-menu-ui", "render-app-title")
+        self._on_render()
         sysout(self._navbar())
+
+    def _display_content(self) -> None:
+        sysout(self._content)

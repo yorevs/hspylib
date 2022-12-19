@@ -28,7 +28,7 @@ from hspylib.modules.application.argparse.argument_parser import HSArgumentParse
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
 
@@ -107,7 +107,7 @@ class WidgetSendMsg(Widget):
 
         self._start_send()
 
-        MenuUtils.wait_enter()
+        Keyboard.wait_keystroke()
 
         return ExitStatus.SUCCESS
 
