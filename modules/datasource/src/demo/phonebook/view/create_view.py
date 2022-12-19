@@ -13,8 +13,12 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.namespace import Namespace
+from hspylib.modules.cli.tui.minput.input_validator import InputValidator
+from hspylib.modules.cli.tui.minput.minput import minput, MenuInput
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.vt100.vt_utils import clear_screen
 
 from datasource.identity import Identity
 from phonebook.entity.Company import Company
@@ -22,40 +26,100 @@ from phonebook.entity.Person import Person
 from phonebook.entity.validator.contact_validator import ContactValidator
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
-from phonebook.view.menu_utils import MenuUtils
 
 
 class CreateView(metaclass=Singleton):
+    """ TODO"""
+
+    @staticmethod
+    def person_form() -> Namespace:
+        # fmt: off
+        form_fields = MenuInput.builder() \
+            .field() \
+                .label("Name") \
+                .validator(InputValidator.letters()) \
+                .build() \
+            .field() \
+                .label("Age") \
+                .validator(InputValidator.numbers()) \
+                .build() \
+            .field() \
+                .label("Phone") \
+                .validator(InputValidator.anything()) \
+                .build() \
+            .field() \
+                .label("Email") \
+                .validator(InputValidator.anything()) \
+                .build() \
+            .field() \
+                .label("Address") \
+                .validator(InputValidator.anything()) \
+                .build() \
+            .field() \
+                .label("Complement") \
+                .validator(InputValidator.numbers()) \
+                .build() \
+            .build()
+        # fmt: on
+        return minput(form_fields, 'Please fill the person form below')
+
+    @staticmethod
+    def company_form() -> Namespace:
+        # fmt: off
+        form_fields = MenuInput.builder() \
+            .field() \
+                .label("Name") \
+                .validator(InputValidator.letters()) \
+                .build() \
+                .field() \
+            .label("CNPJ") \
+                .validator(InputValidator.anything()) \
+                .build() \
+                .field() \
+            .label("Phone") \
+                .validator(InputValidator.anything()) \
+                .build() \
+                .field() \
+            .label("WebSite") \
+                .validator(InputValidator.anything()) \
+                .build() \
+                .field() \
+            .label("Address") \
+                .validator(InputValidator.anything()) \
+                .build() \
+                .field() \
+            .label("Complement") \
+                .validator(InputValidator.numbers()) \
+                .build() \
+            .build()
+        # fmt: on
+        return minput(form_fields, 'Please fill the person form below')
+
     def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        MenuUtils.title("CREATE PERSON")
-        person = Person(Identity.auto())
-        try:
-            person.uuid = person.identity.values
-            person.name = MenuUtils.prompt("Name", ContactValidator.validate_name)
-            person.age = MenuUtils.prompt("Age", ContactValidator.validate_name)
-            person.phone = MenuUtils.prompt("Phone", ContactValidator.validate_name)
-            person.email = MenuUtils.prompt("Email", ContactValidator.validate_name)
-            person.address = MenuUtils.prompt("Address", ContactValidator.validate_name)
-            person.complement = MenuUtils.prompt("Complement", ContactValidator.validate_name)
+        form = self.person_form()
+        if form:
+            person = Person(Identity.auto())
+            person.name = form.name
+            person.age = form.age
+            person.phone = form.phone
+            person.email = form.email
+            person.address = form.address
+            person.complement = form.complement
             self.person_service.save(person)
-        except InputAbortedError:
-            pass
 
     def company(self) -> None:
-        MenuUtils.title("CREATE COMPANY")
-        company = Company(Identity.auto())
-        try:
-            company.uuid = company.identity.values
-            company.name = MenuUtils.prompt("Name", ContactValidator.validate_name)
-            company.cnpj = MenuUtils.prompt("CNPJ", ContactValidator.validate_name)
-            company.phone = MenuUtils.prompt("Phone", ContactValidator.validate_name)
-            company.website = MenuUtils.prompt("WebSite", ContactValidator.validate_name)
-            company.address = MenuUtils.prompt("Address", ContactValidator.validate_name)
-            company.complement = MenuUtils.prompt("Complement", ContactValidator.validate_name)
+        form = self.company_form()
+        if form:
+            company = Company(Identity.auto())
+            company.uuid = form.uuid
+            company.name = form.name
+            company.cnpj = form.cnpj
+            company.phone = form.phone
+            company.website = form.website
+            company.address = form.address
+            company.complement = form.complement
             self.company_service.save(company)
-        except InputAbortedError:
-            pass

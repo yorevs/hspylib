@@ -40,35 +40,35 @@ class Main(CliApplication):
         main_menu = TUIMenuFactory \
             .create_main_menu(self._app_name, 'Main Menu') \
                 .with_item('Create', 'Create new contact') \
-                    .with_action('Back', 'Back to previous menu') \
-                        .on_trigger(lambda x: x.parent) \
                     .with_view('Person', 'Create a new Person contact') \
                         .on_render(lambda : create_view.person()) \
                     .with_view('Company', 'Create a new Company contact') \
                         .on_render(lambda : create_view.company()) \
-                    .then() \
-                .with_item('Edit', 'Edit contact') \
                     .with_action('Back', 'Back to previous menu') \
                         .on_trigger(lambda x: x.parent) \
+                    .then() \
+                .with_item('Edit', 'Edit contact') \
                     .with_view('Person', 'Edit a Person contact') \
                         .on_render(lambda : edit_view.person()) \
                     .with_view('Company', 'Edit a Company contact') \
                         .on_render(lambda : edit_view.company()) \
-                    .then() \
-                .with_item('Search', 'Search contacts') \
                     .with_action('Back', 'Back to previous menu') \
                         .on_trigger(lambda x: x.parent) \
+                    .then() \
+                .with_item('Search', 'Search contacts') \
                     .with_view('By name', 'Search contacts by name') \
                         .on_render(lambda : search_view.by_name()) \
                     .with_view('By uid', 'Search contacts by user ID') \
                         .on_render(lambda : search_view.by_uuid()) \
                     .with_view('List all', 'List all available contacts') \
                         .on_render(lambda : search_view.list_all()) \
+                    .with_action('Back', 'Back to previous menu') \
+                        .on_trigger(lambda x: x.parent) \
                     .then() \
                 .then() \
             .build()
         # fmt: on
-        TUIMenuUi(main_menu).execute('Phonebook')
+        TUIMenuUi(main_menu, 'Phonebook').execute()
         return ExitStatus.SUCCESS
 
 

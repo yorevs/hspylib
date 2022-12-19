@@ -12,17 +12,17 @@
 
    Copyright 2022, HSPyLib team
 """
-from textwrap import dedent
+import atexit
 from typing import List, Optional
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.commons import hook_exit_signals, sysout
+from hspylib.core.tools.commons import hook_exit_signals
 from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.tui_component import T
-from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
-from hspylib.modules.cli.vt100.vt_utils import exit_app, prepare_render, restore_cursor, restore_terminal, clear_screen
+from hspylib.modules.cli.vt100.vt_utils import exit_app, prepare_render, restore_terminal, clear_screen
 from hspylib.modules.eventbus import eventbus
 from hspylib.modules.eventbus.event import Event
 
@@ -30,30 +30,22 @@ from hspylib.modules.eventbus.event import Event
 class TUIMenuUi(metaclass=Singleton):
     """TODO"""
 
-    TITLE_LINE_SIZE = 20
-    MENU_LINE = '-=' * TITLE_LINE_SIZE
-    MENU_TITLE_FMT = (
-        "{title_color}{menu_line}%EOL%"
-        "{title:^" + str(2 * TITLE_LINE_SIZE) + "s}%EOL%"
-        "{menu_line}%EOL%%NC%")
+    _app_title = "Main Menu"
 
     @staticmethod
     @eventbus.subscribe(bus="tui-menu-ui", event="render-app-title")
     def render_title(event: Event) -> None:
         """TODO"""
-        sysout(TUIMenuUi.MENU_TITLE_FMT)
+        MenuUtils.title(TUIMenuUi._app_title)
 
     def __init__(self, main_menu: TUIMenu, title: str | None):
         check_not_none(main_menu)
         super().__init__()
-        prefs = TUIPreferences.INSTANCE or TUIPreferences()
-        TUIMenuUi.MENU_TITLE_FMT = TUIMenuUi.MENU_TITLE_FMT.format(
-            title_color=prefs.title_color, title=title or "Main Menu", menu_line=TUIMenuUi.MENU_LINE)
+        self._app_title: str = title or "Main Menu"
         self._done: bool = False
         self._curr_menu: TUIMenu = main_menu
         self._prev_menu: Optional[TUIMenu] = None
         self._next_menu: Optional[TUIMenu] = None
-        hook_exit_signals(exit_app)
 
     def execute(self) -> Optional[T | List[T]]:
         """TODO"""
@@ -71,7 +63,7 @@ class TUIMenuUi(metaclass=Singleton):
             else:
                 self._done = True
 
-        restore_terminal()
+        atexit.register(restore_terminal)
 
         return None
 
