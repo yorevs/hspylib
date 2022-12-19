@@ -15,7 +15,6 @@
 """
 from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
 from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
-from hspylib.modules.cli.vt100.vt_utils import exit_app
 
 if __name__ == "__main__":
     # fmt: off
@@ -37,8 +36,6 @@ if __name__ == "__main__":
                 .with_action("Back", "Back to the previous menu")\
                     .on_trigger(lambda x: x.parent) \
                 .then() \
-            .with_action('Exit', 'Exit the application')\
-                .on_trigger(lambda x: exit_app(0)) \
             .then() \
         .build()
     # fmt: on

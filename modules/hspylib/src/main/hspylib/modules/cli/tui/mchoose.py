@@ -72,7 +72,6 @@ class MenuChoose(TUIComponent):
             # Navigation input
             keypress = self._handle_keypress()
 
-        restore_terminal()
         sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
 
         return (

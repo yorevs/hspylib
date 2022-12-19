@@ -12,10 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
-
 import os
 import re
-import signal
 import sys
 import termios
 import tty
@@ -97,9 +95,16 @@ def save_cursor() -> None:
     sysout(Vt100.save_cursor(), end="")
 
 
-def restore_cursor() -> None:
+def clear_screen(mode: int = 2) -> None:
+    """Clear terminal"""
+    sysout(f"%CUP(0;0)%%ED{mode}%", end="")
+
+
+def restore_cursor(cls: bool = False) -> None:
     """Restore cursor position and attributes"""
     sysout(Vt100.restore_cursor(), end="")
+    if cls:
+        clear_screen()
 
 
 def alternate_screen(enable: bool = True) -> None:
@@ -107,28 +112,21 @@ def alternate_screen(enable: bool = True) -> None:
     sysout(f"%SC{'A' if enable else 'M'}%", end="")
 
 
-def clear_screen(mode: int = 2) -> None:
-    """Clear terminal"""
-    sysout(f"%CUP(0;0)%%ED{mode}%", end="")
-
-
-def restore_terminal(cls: bool = True) -> None:
+def restore_terminal() -> None:
     """Clear the terminal and restore default attributes"""
-    if cls:
-        clear_screen()
     set_auto_wrap()
     set_show_cursor()
     set_enable_echo()
-    sysout("%NC%")
+    sysout("%MOD(0)%")
     alternate_screen(False)
 
 
-def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done.") -> None:
+def exit_app(exit_code: int = None, frame=None, exit_msg: str = "") -> None:
     """Exit the application. Commonly hooked to signals"""
     sysout(str(frame) if frame else "", end="")
     restore_terminal()
-    sysout(f"%HOM%%ED2%%NC%\n{exit_msg}\n")
-    sys.exit(exit_code if exit_code else 0)
+    sysout(f"{f'%EOF%{exit_msg}%EOF%' if exit_msg else ''}")
+    sys.exit(exit_code)
 
 
 def prepare_render():
@@ -137,5 +135,4 @@ def prepare_render():
     set_auto_wrap(False)
     set_show_cursor(False)
     alternate_screen()
-    clear_screen()
     save_cursor()

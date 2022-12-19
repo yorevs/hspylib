@@ -18,7 +18,6 @@ from cryptography.fernet import InvalidToken
 from datasource.identity import Identity
 from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
 from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.security.security import b64_decode, decode_file, decrypt_file, encode_file, encrypt_file
 from typing import List
 from vault.core.vault_config import VaultConfig
@@ -76,7 +75,7 @@ class Vault:
             yield self._is_unlocked or None
         except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
             log.error("Authentication failure => %s", err)
-            MenuUtils.print_error("Authentication failure", wait_interval=0)
+            syserr("Authentication failure")
             keyring.delete_password(self._VAULT_CACHE_NAME, self._configs.vault_user)
             yield None
         finally:
@@ -92,7 +91,7 @@ class Vault:
                 log.debug("Vault closed and locked")
         except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
             log.error("Authentication failure => %s", err)
-            MenuUtils.print_error("Authentication failure")
+            syserr("Authentication failure")
             return False
         except Exception as err:
             raise VaultCloseError(f"Unable to close Vault file => {self._configs.vault_file}", err) from err

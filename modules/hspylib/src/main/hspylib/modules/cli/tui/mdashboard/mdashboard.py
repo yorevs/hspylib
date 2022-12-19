@@ -21,8 +21,7 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.tui.tui_component import TUIComponent
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, set_enable_echo, \
-    erase_line
+from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, erase_line, exit_app
 
 
 def mdashboard(
@@ -30,7 +29,6 @@ def mdashboard(
     title: str = "Please select one item"
 ) -> Optional[DashboardItem]:
     """TODO"""
-
     return MenuDashBoard(title, items).execute()
 
 
@@ -87,7 +85,6 @@ class MenuDashBoard(TUIComponent):
             # Navigation input
             keypress = self._handle_keypress()
 
-        restore_terminal()
         selected = self.items[self.tab_index] if keypress == Keyboard.VK_ENTER else None
 
         if selected and selected.on_trigger:

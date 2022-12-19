@@ -20,6 +20,8 @@ class TUIPreferences(metaclass=Singleton):
             get_or_default_by_key(kwargs, 'items_per_line', 5)
         self._title_color: VtColor      = \
             get_or_default_by_key(kwargs, 'title_color', VtColor.ORANGE)
+        self._title_line_length: int    = \
+            get_or_default_by_key(kwargs, 'title_line_length', 30)
         self._text_color: VtColor       = \
             get_or_default_by_key(kwargs, 'text_color', VtColor.NC)
         self._highlight_color: VtColor  = \
@@ -66,6 +68,10 @@ class TUIPreferences(metaclass=Singleton):
     @property
     def title_color(self) -> VtColor:
         return self._title_color
+
+    @property
+    def title_line_length(self) -> int:
+        return self._title_line_length
 
     @property
     def text_color(self) -> VtColor:

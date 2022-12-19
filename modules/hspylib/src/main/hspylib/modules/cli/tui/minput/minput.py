@@ -83,8 +83,6 @@ class MenuInput(TUIComponent):
             # Navigation input
             keypress = self._handle_keypress()
 
-        restore_terminal()
-
         if keypress == Keyboard.VK_ENTER:
             form_fields = Namespace("FormFields")
             for field in self.fields:
