@@ -25,7 +25,7 @@ if __name__ == "__main__":
                 .with_action("DO IT 1", "Let's do it")\
                     .on_trigger(lambda x: print("ACTION 1")) \
                 .with_view("Just a View 1", "Show the view 1")\
-                    .content("MY BEAUTIFUL VIEW 1") \
+                    .on_render("MY BEAUTIFUL VIEW 1") \
                 .with_action("Back", "Back to the previous menu")\
                     .on_trigger(lambda x: x.parent) \
                 .then() \
@@ -33,7 +33,7 @@ if __name__ == "__main__":
                 .with_action("DO IT 2", "Let's do it too")\
                     .on_trigger(lambda x: print("ACTION 2")) \
                 .with_view("Just a View 2", "Show the view 2")\
-                    .content("MY BEAUTIFUL VIEW 2") \
+                    .on_render("MY BEAUTIFUL VIEW 2") \
                 .with_action("Back", "Back to the previous menu")\
                     .on_trigger(lambda x: x.parent) \
                 .then() \
@@ -43,4 +43,4 @@ if __name__ == "__main__":
         .build()
     # fmt: on
 
-    TUIMenuUi(main_menu).execute('Testing Menus')
+    TUIMenuUi(main_menu, 'Testing Menus').execute()

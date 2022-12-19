@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Callable, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -16,9 +16,8 @@ class TUIMenu(TUIComponent, ABC):
         parent: Optional['TUIMenu'] = None,
         title: Optional[str] = 'Sub Menu',
         tooltip: Optional[str] = None):
-        super().__init__()
+        super().__init__(title)
 
-        self._title: str = title or ''
         self._tooltip: str = tooltip or ''
         self._parent: Optional['TUIMenu'] = parent
         self._on_trigger: ON_TRIGGER_CB = self._default_trigger_cb
@@ -34,15 +33,11 @@ class TUIMenu(TUIComponent, ABC):
         return self._parent
 
     @property
-    def title(self) -> str:
-        return self._title
-
-    @property
     def tooltip(self) -> str:
         return self._tooltip
 
     @abstractmethod
-    def execute(self, title: str) -> Optional[Any]:
+    def execute(self) -> Optional[Any]:
         """TODO"""
 
     def _handle_keypress(self) -> Keyboard:

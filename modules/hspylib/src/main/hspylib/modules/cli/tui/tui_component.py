@@ -17,13 +17,18 @@ class TUIComponent(Generic[T], ABC):
         """TODO"""
         sysout(ensure_endswith(elide_text(line_fmt.format(*args), max_columns), "%NC%"))
 
-    def __init__(self):
+    def __init__(self, title: Optional[str] = None):
         self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
-        self.done: bool = False
-        self.require_render: bool = True
+        self._done: bool = False
+        self._re_render: bool = True
+        self._title: str = title
+
+    @property
+    def title(self) -> str:
+        return self._title
 
     @abstractmethod
-    def execute(self, title: str) -> Optional[T | List[T]]:
+    def execute(self) -> Optional[T | List[T]]:
         """TODO"""
 
     def _draw_line_color(self, is_selected: bool = False, set_bg_color: bool = True) -> Awesome:

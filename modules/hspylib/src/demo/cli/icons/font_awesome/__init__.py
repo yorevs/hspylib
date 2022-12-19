@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.133
+# hspylib v0.11.134
 #
 # Package: demo.cli.icons.font_awesome
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'awesome_demo', 
   'demo_icons'
 ]
-__version__ = '0.11.133'
+__version__ = '0.11.134'

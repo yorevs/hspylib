@@ -21,23 +21,28 @@ import termios
 import tty
 from typing import Optional, Tuple
 
-from hspylib.core.tools.commons import is_debugging, sysout, hook_exit_signals
+from hspylib.core.tools.commons import hook_exit_signals, is_debugging, sysout
 from hspylib.modules.cli.vt100.vt_100 import Vt100
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 def screen_size() -> tuple[int, ...]:
     """Retrieve the size of the terminal"""
-    if sys.stdout.isatty():
-        return tuple(map(int, os.popen("stty size").read().split()))
-    raise NotImplementedError("screen_size:: Requires a terminal (TTY)")
+    if not sys.stdout.isatty():
+        raise NotImplementedError("screen_size:: Requires a terminal (TTY)")
+
+    return tuple(map(int, os.popen("stty size").read().split()))
 
 
 # Solution taken from:
 # https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
 def get_cursor_position() -> Optional[Tuple[int, int]]:
     """Get the terminal cursor position"""
-    if sys.stdout.isatty() and not is_debugging():
+    if not sys.stdout.isatty():
+        raise NotImplementedError("get_cursor_position:: Requires a terminal (TTY)")
+
+    if is_debugging():
+        return 0, 0
+    else:
         buf = ""
         stdin = sys.stdin.fileno()
         attrs = termios.tcgetattr(stdin)
@@ -56,20 +61,16 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
             return None
         finally:
             termios.tcsetattr(stdin, termios.TCSANOW, attrs)
-    elif is_debugging():
-        return 0, 0
-
-    raise NotImplementedError("get_cursor_position:: Requires a terminal (TTY)")
 
 
 def set_enable_echo(enabled: bool = True) -> None:
     """Enable echo in the terminal
     :param enabled: whether is enabled or not
     """
-    if sys.stdout.isatty():
-        os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
-    else:
-        NotImplementedError("set_enable_echo:: Requires a terminal (TTY)")
+    if not sys.stdout.isatty():
+        raise NotImplementedError("set_enable_echo:: Requires a terminal (TTY)")
+
+    os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
 
 
 def set_auto_wrap(auto_wrap: bool = True) -> None:
@@ -107,11 +108,12 @@ def alternate_screen(enable: bool = True) -> None:
 
 
 def clear_screen(mode: int = 2) -> None:
-    sysout(f"%ED{mode}%")
+    """Clear terminal"""
+    sysout(f"%CUP(0;0)%%ED{mode}%", end="")
 
 
 def restore_terminal(cls: bool = True) -> None:
-    """Clear terminal and restore default attributes"""
+    """Clear the terminal and restore default attributes"""
     if cls:
         clear_screen()
     set_auto_wrap()
@@ -129,13 +131,11 @@ def exit_app(exit_code: int = signal.SIGHUP, frame=None, exit_msg: str = "Done."
     sys.exit(exit_code if exit_code else 0)
 
 
-def prepare_render(render_msg: str = "", render_color: VtColor = VtColor.ORANGE):
+def prepare_render():
     """Prepare the terminal for TUI renderization"""
     hook_exit_signals(exit_app)
     set_auto_wrap(False)
     set_show_cursor(False)
     alternate_screen()
     clear_screen()
-    sysout(f"%HOM%{render_color.placeholder}{render_msg}", end="")
-    sysout(f"%HOM%%CUD({max(2, render_msg.count(os.linesep))})%%ED0%%NC%", end="")
     save_cursor()

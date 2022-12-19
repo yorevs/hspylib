@@ -43,7 +43,7 @@ def minput(
     :param title:
     :return:
     """
-    return MenuInput(form_fields).execute(title)
+    return MenuInput(title, form_fields).execute()
 
 
 class MenuInput(TUIComponent):
@@ -55,30 +55,29 @@ class MenuInput(TUIComponent):
     def builder(cls) -> FormBuilder:
         return FormBuilder()
 
-    def __init__(self, fields: List[FormField]):
-        super().__init__()
+    def __init__(self, title: str, fields: List[FormField]):
+        super().__init__(title)
         self.fields = fields
         self.positions = [(0, 0) for _ in fields]
-        self.cur_field = self.done = None
+        self.cur_field = self._done = None
         self.cur_row = self.cur_col = self.tab_index = 0
         self.max_label_length = max(len(field.label) for field in fields)
         self.max_value_length = max(field.max_length for field in fields)
         self.max_detail_length = max(MInputUtils.detail_len(field) for field in fields)
-        self.re_render = True
 
-    def execute(self, title: str) -> Optional[Namespace]:
+    def execute(self) -> Optional[Namespace]:
         """TODO"""
 
         if len(self.fields) == 0:
             return None
 
         keypress = Keyboard.VK_NONE
-        prepare_render(title)
+        prepare_render()
 
         # Wait for user interaction
-        while not self.done:
+        while not self._done:
             # Menu Renderization
-            if self.re_render:
+            if self._re_render:
                 self._render()
 
             # Navigation input
@@ -99,6 +98,7 @@ class MenuInput(TUIComponent):
         """TODO"""
 
         restore_cursor()
+        sysout(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx, field in enumerate(self.fields):
 
@@ -114,7 +114,7 @@ class MenuInput(TUIComponent):
             self._render_details(field, field_size)
 
         sysout(self._navbar(), end="")
-        self.re_render = False
+        self._re_render = False
 
     def _render_field(self, field: FormField) -> None:
         """Render the form field"""
@@ -164,7 +164,7 @@ class MenuInput(TUIComponent):
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case Keyboard.VK_ESC:
-                    self.done = True
+                    self._done = True
                 case _ as key if key in [Keyboard.VK_TAB, Keyboard.VK_DOWN]:
                     self.tab_index = min(length - 1, self.tab_index + 1)
                 case _ as key if key in [Keyboard.VK_SHIFT_TAB, Keyboard.VK_UP]:
@@ -182,7 +182,7 @@ class MenuInput(TUIComponent):
                 case Keyboard.VK_ENTER:
                     self._handle_enter()
 
-        self.re_render = True
+        self._re_render = True
 
         return keypress
 
@@ -204,7 +204,7 @@ class MenuInput(TUIComponent):
                         field.value = bool(field.value)
                     case InputType.SELECT:
                         _, field.value = MInputUtils.get_selected(field.value)
-            self.done = True
+            self._done = True
 
     def _handle_input(self, keypress: Keyboard) -> None:
         """TODO"""

@@ -21,6 +21,7 @@ from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor, screen_size
+from hspylib.modules.eventbus import eventbus
 
 
 class TUIMenuItem(TUIMenu):
@@ -51,16 +52,16 @@ class TUIMenuItem(TUIMenu):
         """TODO"""
         list(map(self._items.append, items))
 
-    def execute(self, title: str = "Main Menu") -> Optional[TUIMenu]:
+    def execute(self) -> Optional[TUIMenu]:
 
         # Wait for user interaction
-        while not self.done:
+        while not self._done:
 
             if not len(self._items):
                 return self._on_trigger(self._parent)
 
             # Menu Renderization
-            if self.require_render:
+            if self._re_render:
                 self._render()
 
             # Navigation input
@@ -74,8 +75,8 @@ class TUIMenuItem(TUIMenu):
         length = len(self._items)
         _, columns = screen_size()
         restore_cursor()
-
-        self.require_render = False
+        eventbus.emit("tui-menu-ui", "render-app-title")
+        self._re_render = False
 
         if length > 0:
             for idx in range(self._show_from, self._show_to):
@@ -112,7 +113,7 @@ class TUIMenuItem(TUIMenu):
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case Keyboard.VK_ESC:
-                    self.done = True
+                    self._done = True
                 case Keyboard.VK_UP:
                     self._handle_key_up()
                 case Keyboard.VK_DOWN:
@@ -123,7 +124,7 @@ class TUIMenuItem(TUIMenu):
                     self._handle_shift_tab()
                 case _ as key if key in self._digits:
                     self._handle_digit(keypress)
-            self.require_render = True
+            self._re_render = True
 
         return keypress
 
@@ -134,7 +135,7 @@ class TUIMenuItem(TUIMenu):
             self._show_to -= 1
         if self._sel_index - 1 >= 0:
             self._sel_index -= 1
-            self.require_render = True
+            self._re_render = True
 
     def _handle_key_down(self) -> None:
         """TODO"""
@@ -144,7 +145,7 @@ class TUIMenuItem(TUIMenu):
             self._show_to += 1
         if self._sel_index + 1 < length:
             self._sel_index += 1
-            self.require_render = True
+            self._re_render = True
 
     def _handle_tab(self) -> None:
         """TODO"""
@@ -153,7 +154,7 @@ class TUIMenuItem(TUIMenu):
         self._show_to = max(page_index, self._diff_index)
         self._show_from = self._show_to - self._diff_index
         self._sel_index = self._show_from
-        self.require_render = True
+        self._re_render = True
 
     def _handle_shift_tab(self) -> None:
         """TODO"""
@@ -161,7 +162,7 @@ class TUIMenuItem(TUIMenu):
         self._show_from = min(page_index, self._diff_index)
         self._show_to = self._show_from + self._diff_index
         self._sel_index = self._show_from
-        self.require_render = True
+        self._re_render = True
 
     def _handle_digit(self, digit: Keyboard) -> None:
         """TODO"""
@@ -183,7 +184,7 @@ class TUIMenuItem(TUIMenu):
             self._show_to = max(int(typed_index), self._diff_index)
             self._show_from = self._show_to - self._diff_index
             self._sel_index = int(typed_index) - 1
-            self.require_render = True
+            self._re_render = True
 
     def _default_trigger_cb(self, source: TUIMenu) -> Optional['TUIMenu']:
         """TODO"""

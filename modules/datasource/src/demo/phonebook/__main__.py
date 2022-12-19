@@ -13,19 +13,18 @@
 
    Copyright 2022, HSPyLib team
 """
+import sys
 
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.cli_application import CliApplication
-from hspylib.modules.cli.tui.menu.menu_factory import MenuFactory
-from hspylib.modules.cli.tui.menu.menu_ui import MenuUi
-from hspylib.modules.cli.vt100.vt_utils import exit_app
+from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
+
 from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
-
-import sys
 
 
 class Main(CliApplication):
@@ -38,49 +37,38 @@ class Main(CliApplication):
     def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
         # fmt: off
-        main_menu = MenuFactory \
-            .create(menu_title=self._app_name) \
-                .with_option('Exit')\
-                    .on_trigger(lambda t: exit_app(0)) \
-                .with_option('Create')\
-                    .on_trigger(lambda x: create_menu) \
-                .with_option('Edit')\
-                    .on_trigger(lambda x: edit_menu) \
-                .with_option('Search')\
-                    .on_trigger(lambda x: search_menu) \
-                .build()
-        create_menu = MenuFactory \
-            .create(parent_menu=main_menu, menu_title='Create new contact') \
-                .with_option('Back')\
-                    .on_trigger(lambda x: main_menu) \
-                .with_option('Person')\
-                    .on_trigger(lambda t: create_view.person()) \
-                .with_option('Company')\
-                    .on_trigger(lambda t: create_view.company()) \
-                .build()
-        edit_menu = MenuFactory \
-            .create(parent_menu=main_menu, menu_title='Edit contact') \
-                .with_option('Back')\
-                    .on_trigger(lambda x: main_menu) \
-                .with_option('Person')\
-                    .on_trigger(lambda t: edit_view.person()) \
-                .with_option('Company')\
-                    .on_trigger(lambda t: edit_view.company()) \
-                .build()
-        search_menu = MenuFactory \
-            .create(parent_menu=main_menu, menu_title='Search contacts') \
-                .with_option('Back')\
-                    .on_trigger(lambda x: main_menu) \
-                .with_option('By name')\
-                    .on_trigger(lambda t: search_view.by_name()) \
-                .with_option('By uid')\
-                    .on_trigger(lambda t: search_view.by_uuid()) \
-                .with_option('List all')\
-                    .on_trigger(lambda t: search_view.list_all()) \
-                .build()
+        main_menu = TUIMenuFactory \
+            .create_main_menu(self._app_name, 'Main Menu') \
+                .with_item('Create', 'Create new contact') \
+                    .with_action('Back', 'Back to previous menu') \
+                        .on_trigger(lambda x: x.parent) \
+                    .with_view('Person', 'Create a new Person contact') \
+                        .on_render(lambda : create_view.person()) \
+                    .with_view('Company', 'Create a new Company contact') \
+                        .on_render(lambda : create_view.company()) \
+                    .then() \
+                .with_item('Edit', 'Edit contact') \
+                    .with_action('Back', 'Back to previous menu') \
+                        .on_trigger(lambda x: x.parent) \
+                    .with_view('Person', 'Edit a Person contact') \
+                        .on_render(lambda : edit_view.person()) \
+                    .with_view('Company', 'Edit a Company contact') \
+                        .on_render(lambda : edit_view.company()) \
+                    .then() \
+                .with_item('Search', 'Search contacts') \
+                    .with_action('Back', 'Back to previous menu') \
+                        .on_trigger(lambda x: x.parent) \
+                    .with_view('By name', 'Search contacts by name') \
+                        .on_render(lambda : search_view.by_name()) \
+                    .with_view('By uid', 'Search contacts by user ID') \
+                        .on_render(lambda : search_view.by_uuid()) \
+                    .with_view('List all', 'List all available contacts') \
+                        .on_render(lambda : search_view.list_all()) \
+                    .then() \
+                .then() \
+            .build()
         # fmt: on
-        mm = MenuUi(main_menu)
-        mm.execute()
+        TUIMenuUi(main_menu).execute('Phonebook')
         return ExitStatus.SUCCESS
 
 

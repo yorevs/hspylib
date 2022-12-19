@@ -31,7 +31,7 @@ def mdashboard(
 ) -> Optional[DashboardItem]:
     """TODO"""
 
-    return MenuDashBoard(items).execute(title)
+    return MenuDashBoard(title, items).execute()
 
 
 class MenuDashBoard(TUIComponent):
@@ -60,8 +60,8 @@ class MenuDashBoard(TUIComponent):
         """TODO"""
         return DashboardBuilder()
 
-    def __init__(self, items: List[DashboardItem]):
-        super().__init__()
+    def __init__(self, title: str, items: List[DashboardItem]):
+        super().__init__(title)
         self.items = items
         self.tab_index = 0
         check_state(
@@ -69,19 +69,19 @@ class MenuDashBoard(TUIComponent):
             "Invalid CELL definitions. Selected and Unselected matrices should have the same lengths.",
         )
 
-    def execute(self, title: str) -> Optional[DashboardItem]:
+    def execute(self) -> Optional[DashboardItem]:
         """TODO"""
 
         if len(self.items) == 0:
             return None
 
         keypress = Keyboard.VK_NONE
-        prepare_render(title)
+        prepare_render()
 
         # Wait for user interaction
-        while not self.done:
+        while not self._done:
             # Menu Renderization
-            if self.require_render:
+            if self._re_render:
                 self._render()
 
             # Navigation input
@@ -99,7 +99,7 @@ class MenuDashBoard(TUIComponent):
         """TODO"""
 
         restore_cursor()
-        set_enable_echo()
+        sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
 
         for idx, item in enumerate(self.items):
             self._print_cell(
@@ -111,7 +111,7 @@ class MenuDashBoard(TUIComponent):
 
         erase_line()
         sysout(self._navbar(), end="")
-        self.require_render = False
+        self._re_render = False
 
     def _print_cell(
         self, item_idx: int,
@@ -146,7 +146,7 @@ class MenuDashBoard(TUIComponent):
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
-                    self.done = True
+                    self._done = True
                 case Keyboard.VK_UP:
                     self.tab_index = max(0, self.tab_index - self.prefs.items_per_line)
                 case Keyboard.VK_DOWN:
@@ -156,6 +156,6 @@ class MenuDashBoard(TUIComponent):
                 case _ as key if key in [Keyboard.VK_RIGHT, Keyboard.VK_TAB]:
                     self.tab_index = min(length - 1, self.tab_index + 1)
 
-        self.require_render = True
+        self._re_render = True
 
         return keypress

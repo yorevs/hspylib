@@ -81,8 +81,8 @@ class TUIMenuFactory:
             self._menu_view = TUIMenuView(parent_item, title, tooltip)
             parent_item.add_items(self._menu_view)
 
-        def content(self, text: str) -> 'TUIMenuFactory.TUIMenuItemBuilder':
-            self._menu_view.content = text
+        def on_render(self, on_render: str | ON_TRIGGER_CB) -> 'TUIMenuFactory.TUIMenuItemBuilder':
+            self._menu_view.on_render(on_render)
             return self._parent
 
     class TUIMenuActionBuilder:

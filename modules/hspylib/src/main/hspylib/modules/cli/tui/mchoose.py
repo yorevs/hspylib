@@ -19,7 +19,7 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.tui_component import TUIComponent
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, restore_terminal, screen_size, erase_line
+from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, restore_terminal, screen_size
 
 T = TypeVar("T")
 
@@ -36,7 +36,7 @@ def mchoose(
     :param title:
     :return:
     """
-    return MenuChoose(items, checked).execute(title)
+    return MenuChoose(title, items, checked).execute()
 
 
 class MenuChoose(TUIComponent):
@@ -44,8 +44,8 @@ class MenuChoose(TUIComponent):
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
-    def __init__(self, items: List[T], default_checked: bool):
-        super().__init__()
+    def __init__(self, title: str, items: List[T], default_checked: bool):
+        super().__init__(title)
         self.items = items
         self.show_from = 0
         self.show_to = self.prefs.max_rows
@@ -54,25 +54,26 @@ class MenuChoose(TUIComponent):
         self.sel_options = [1 if default_checked else 0 for _ in range(len(items))]  # Initialize all options
         self.max_line_length = max(len(str(item)) for item in items)
 
-    def execute(self, title: str) -> Optional[List[T]]:
+    def execute(self) -> Optional[List[T]]:
         """TODO"""
 
         if len(self.items) == 0:
             return None
 
         keypress = Keyboard.VK_NONE
-        prepare_render(title)
+        prepare_render()
 
         # Wait for user interaction
-        while not self.done:
+        while not self._done:
             # Menu Renderization
-            if self.require_render:
+            if self._re_render:
                 self._render()
 
             # Navigation input
             keypress = self._handle_keypress()
 
         restore_terminal()
+        sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
 
         return (
             [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
@@ -86,6 +87,7 @@ class MenuChoose(TUIComponent):
         length = len(self.items)
         _, columns = screen_size()
         restore_cursor()
+        sysout(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx in range(self.show_from, self.show_to):
             if idx >= length:
@@ -107,7 +109,7 @@ class MenuChoose(TUIComponent):
             self._draw_line(line_fmt, columns, idx + 1, selector, mark, option_line)
 
         sysout(self._navbar(length), end="")
-        self.require_render = False
+        self._re_render = False
 
     def _navbar(self, to: int) -> str:
         return (
@@ -122,7 +124,7 @@ class MenuChoose(TUIComponent):
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
-                    self.done = True
+                    self._done = True
                 case Keyboard.VK_UP:
                     self._handle_key_up()
                 case Keyboard.VK_DOWN:
@@ -160,7 +162,7 @@ class MenuChoose(TUIComponent):
             self.show_to = max(int(typed_index), self.diff_index)
             self.show_from = self.show_to - self.diff_index
             self.sel_index = int(typed_index) - 1
-            self.require_render = True
+            self._re_render = True
 
     def _handle_key_up(self) -> None:
         """TODO"""
@@ -169,7 +171,7 @@ class MenuChoose(TUIComponent):
             self.show_to -= 1
         if self.sel_index - 1 >= 0:
             self.sel_index -= 1
-            self.require_render = True
+            self._re_render = True
 
     def _handle_key_down(self) -> None:
         """TODO"""
@@ -179,7 +181,7 @@ class MenuChoose(TUIComponent):
             self.show_to += 1
         if self.sel_index + 1 < length:
             self.sel_index += 1
-            self.require_render = True
+            self._re_render = True
 
     def _handle_tab(self) -> None:
         """TODO"""
@@ -188,7 +190,7 @@ class MenuChoose(TUIComponent):
         self.show_to = max(page_index, self.diff_index)
         self.show_from = self.show_to - self.diff_index
         self.sel_index = self.show_from
-        self.require_render = True
+        self._re_render = True
 
     def _handle_shift_tab(self) -> None:
         """TODO"""
@@ -196,7 +198,7 @@ class MenuChoose(TUIComponent):
         self.show_from = min(page_index, self.diff_index)
         self.show_to = self.show_from + self.diff_index
         self.sel_index = self.show_from
-        self.require_render = True
+        self._re_render = True
 
     def _handle_space(self) -> None:
         """TODO"""
@@ -204,12 +206,12 @@ class MenuChoose(TUIComponent):
             self.sel_options[self.sel_index] = 1
         else:
             self.sel_options[self.sel_index] = 0
-        self.require_render = True
+        self._re_render = True
 
     def _handle_i(self) -> None:
         """TODO"""
         self.sel_options = [(0 if op == 1 else 1) for op in self.sel_options]
-        self.require_render = True
+        self._re_render = True
 
     @cached_property
     def _digits(self) -> List[Keyboard]:

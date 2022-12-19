@@ -14,18 +14,21 @@
    Copyright 2022, HSPyLib team
 """
 
-from datasource.crud_entity import CrudEntity
+from typing import List
+
 from hspylib.core.exception.exceptions import InputAbortedError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
+
+from datasource.crud_entity import CrudEntity
 from phonebook.entity.Company import Company
 from phonebook.entity.Person import Person
+from phonebook.entity.validator.contact_validator import ContactValidator
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
-from typing import List
+from phonebook.view.menu_utils import MenuUtils
 
 
 class SearchView(metaclass=Singleton):
@@ -36,7 +39,8 @@ class SearchView(metaclass=Singleton):
     def by_name(self) -> None:
         MenuUtils.title("SEARCH BY NAME")
         try:
-            filters = Namespace(name=f"name='{MenuUtils.prompt('Person or Company name')}'")
+            filters = Namespace(
+                name=f"name='{MenuUtils.prompt('Person or Company name', ContactValidator.validate_name)}'")
             all_persons = self.person_service.list(filters=filters)
             all_companies = self.company_service.list(filters=filters)
             self.display_contacts(all_persons, all_companies)
@@ -46,7 +50,8 @@ class SearchView(metaclass=Singleton):
     def by_uuid(self) -> None:
         MenuUtils.title("SEARCH BY UUID")
         try:
-            filters = Namespace(uuid=f"uuid='{MenuUtils.prompt('Person or Company uuid')}'")
+            filters = Namespace(
+                uuid=f"uuid='{MenuUtils.prompt('Person or Company uuid', ContactValidator.validate_name)}'")
             all_persons = self.person_service.list(filters=filters)
             all_companies = self.company_service.list(filters=filters)
             self.display_contacts(all_persons, all_companies)
@@ -69,7 +74,6 @@ class SearchView(metaclass=Singleton):
             )
         else:
             sysout("-=- No results to be displayed -=-")
-            MenuUtils.wait_enter()
 
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:
@@ -77,4 +81,4 @@ class SearchView(metaclass=Singleton):
         tr = TableRenderer(headers, entities, title)
         tr.adjust_sizes_by_largest_cell()
         tr.render()
-        MenuUtils.wait_enter()
+        MenuUtils.wait_enter("Press any key to continue")
