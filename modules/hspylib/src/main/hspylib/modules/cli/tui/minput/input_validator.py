@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   main.modules.cli.tui.minput
+   @package: main.modules.cli.tui.minput
       @file: input_validator.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,9 +17,10 @@ import re
 from enum import auto
 
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.validator import Validator
 
 
-class InputValidator:
+class InputValidator(Validator):
     """TODO"""
 
     class PatternType(Enumeration):
@@ -70,6 +71,9 @@ class InputValidator:
 
     def __repr__(self):
         return str(self)
+
+    def __call__(self, *args, **kwargs) -> bool:
+        return all(self.validate(value) for value in args)
 
     def validate(self, value: str) -> bool:
         regex = self.pattern

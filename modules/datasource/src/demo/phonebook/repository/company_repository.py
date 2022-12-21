@@ -15,7 +15,7 @@
 """
 from datasource.db_configuration import DBConfiguration
 from datasource.sqlite.sqlite_repository import SQLiteRepository
-from phonebook.entity.Company import Company
+from phonebook.entity.company import Company
 
 
 class CompanyRepository(SQLiteRepository[Company]):

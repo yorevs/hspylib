@@ -109,7 +109,7 @@ class TUIMenuFactory:
         cls,
         title: str = None,
         tooltip: str | None = None) -> 'TUIMenuBuilder':
-        cls._main_menu: TUIMenuItem = TUIMenuItem(title, tooltip)
+        cls._main_menu: TUIMenuItem = TUIMenuItem(title=title, tooltip=tooltip)
         factory = TUIMenuFactory()
 
         return cls.TUIMenuBuilder(factory, cls._main_menu)

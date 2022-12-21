@@ -11,11 +11,12 @@ class MenuUtils:
 
     # fmt: off
     PREFS = TUIPreferences.INSTANCE or TUIPreferences()
-    MENU_LINE = '-=' * PREFS.title_line_length
+    MENU_LINE = f"{'┅┅' * PREFS.title_line_length}"
     MENU_TITLE_FMT = (
-        f"{PREFS.title_color}{MENU_LINE}%EOL%"
-        "{title:^" + str(2 * PREFS.title_line_length) + "s}%EOL%"
-        f"{MENU_LINE}%EOL%%NC%"
+        f"{PREFS.title_color}"
+        f"┍{MENU_LINE}┓%EOL%"
+        "┣{title:^" + str(2 * PREFS.title_line_length) + "s}┫%EOL%"
+        f"┕{MENU_LINE}┙%EOL%%NC%"
     )
     # fmt: on
 
@@ -36,10 +37,6 @@ class MenuUtils:
         return ret_val
 
     @classmethod
-    def wait_enter(cls, wait_message: str = None) -> None:
+    def wait_keystroke(cls, wait_message: str = "Press any key to continue") -> None:
         sysout(wait_message)
         Keyboard.wait_keystroke()
-
-    @classmethod
-    def print_error(cls, param, uuid) -> None:
-        pass

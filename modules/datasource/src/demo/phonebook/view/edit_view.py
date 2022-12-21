@@ -15,8 +15,9 @@
 """
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.core.tools.commons import syserr
 
-from phonebook.entity.validator.contact_validator import ContactValidator
+from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
@@ -27,30 +28,38 @@ class EditView(metaclass=Singleton):
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        uuid = MenuUtils.prompt("Enter uid", ContactValidator.validate_name)
+        uuid = MenuUtils.prompt("uuid")
+        if not uuid:
+            return
         found = self.person_service.get(uuid)
         if not found:
-            MenuUtils.print_error("Person does not exist", uuid)
+            syserr("Person does not exist", uuid)
         else:
-            found.name = MenuUtils.prompt("Name", ContactValidator.validate_name)
-            found.age = MenuUtils.prompt("Age", ContactValidator.validate_name)
-            found.phone = MenuUtils.prompt("Phone", ContactValidator.validate_name)
-            found.email = MenuUtils.prompt("Email", ContactValidator.validate_name)
-            found.address = MenuUtils.prompt("Address", ContactValidator.validate_name)
-            found.complement = MenuUtils.prompt("Complement", ContactValidator.validate_name)
-            self.person_service.save(found)
-            MenuUtils.wait_enter()
+            form = ContactForms.person_form(
+                found.name, found.age, found.phone, found.email, found.address, found.complement)
+            if form:
+                found.name = form.name
+                found.age = form.age
+                found.phone = form.phone
+                found.email = form.email
+                found.address = form.address
+                found.complement = form.complement
+                self.person_service.save(found)
 
     def company(self) -> None:
-        uuid = MenuUtils.prompt("Enter uid", ContactValidator.validate_name)
+        uuid = MenuUtils.prompt("uuid")
+        if not uuid:
+            return
         found = self.company_service.get(uuid)
         if not found:
-            MenuUtils.print_error("Company does not exist", uuid)
+            syserr("Company does not exist", uuid)
         else:
-            found.name = MenuUtils.prompt("Name", ContactValidator.validate_name)
-            found.phone = MenuUtils.prompt("Phone", ContactValidator.validate_name)
-            found.website = MenuUtils.prompt("WebSite", ContactValidator.validate_name)
-            found.address = MenuUtils.prompt("Address", ContactValidator.validate_name)
-            found.complement = MenuUtils.prompt("Complement", ContactValidator.validate_name)
-            self.company_service.save(found)
-            MenuUtils.wait_enter()
+            form = ContactForms.company_form(
+                found.name, found.age, found.phone, found.email, found.address, found.complement)
+            if form:
+                found.name = form.name
+                found.phone = form.phone
+                found.website = form.website
+                found.address = form.address
+                found.complement = form.complement
+                self.company_service.save(found)

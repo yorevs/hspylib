@@ -14,16 +14,11 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.namespace import Namespace
-from hspylib.modules.cli.tui.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.minput.minput import minput, MenuInput
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-from hspylib.modules.cli.vt100.vt_utils import clear_screen
 
 from datasource.identity import Identity
-from phonebook.entity.Company import Company
-from phonebook.entity.Person import Person
-from phonebook.entity.validator.contact_validator import ContactValidator
+from phonebook.entity.company import Company
+from phonebook.entity.person import Person
+from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
@@ -31,78 +26,14 @@ from phonebook.service.person_service import PersonService
 class CreateView(metaclass=Singleton):
     """ TODO"""
 
-    @staticmethod
-    def person_form() -> Namespace:
-        # fmt: off
-        form_fields = MenuInput.builder() \
-            .field() \
-                .label("Name") \
-                .validator(InputValidator.letters()) \
-                .build() \
-            .field() \
-                .label("Age") \
-                .validator(InputValidator.numbers()) \
-                .build() \
-            .field() \
-                .label("Phone") \
-                .validator(InputValidator.anything()) \
-                .build() \
-            .field() \
-                .label("Email") \
-                .validator(InputValidator.anything()) \
-                .build() \
-            .field() \
-                .label("Address") \
-                .validator(InputValidator.anything()) \
-                .build() \
-            .field() \
-                .label("Complement") \
-                .validator(InputValidator.numbers()) \
-                .build() \
-            .build()
-        # fmt: on
-        return minput(form_fields, 'Please fill the person form below')
-
-    @staticmethod
-    def company_form() -> Namespace:
-        # fmt: off
-        form_fields = MenuInput.builder() \
-            .field() \
-                .label("Name") \
-                .validator(InputValidator.letters()) \
-                .build() \
-                .field() \
-            .label("CNPJ") \
-                .validator(InputValidator.anything()) \
-                .build() \
-                .field() \
-            .label("Phone") \
-                .validator(InputValidator.anything()) \
-                .build() \
-                .field() \
-            .label("WebSite") \
-                .validator(InputValidator.anything()) \
-                .build() \
-                .field() \
-            .label("Address") \
-                .validator(InputValidator.anything()) \
-                .build() \
-                .field() \
-            .label("Complement") \
-                .validator(InputValidator.numbers()) \
-                .build() \
-            .build()
-        # fmt: on
-        return minput(form_fields, 'Please fill the person form below')
-
     def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        form = self.person_form()
+        form = ContactForms.person_form()
         if form:
-            person = Person(Identity.auto())
+            person = Person(Identity.auto(field_name='uuid'))
             person.name = form.name
             person.age = form.age
             person.phone = form.phone
@@ -112,9 +43,9 @@ class CreateView(metaclass=Singleton):
             self.person_service.save(person)
 
     def company(self) -> None:
-        form = self.company_form()
+        form = ContactForms.company_form()
         if form:
-            company = Company(Identity.auto())
+            company = Company(Identity.auto(field_name='uuid'))
             company.uuid = form.uuid
             company.name = form.name
             company.cnpj = form.cnpj
