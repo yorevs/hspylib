@@ -55,9 +55,9 @@ class FieldBuilder:
         self.field.access_type = AccessType.of_value(access_type)
         return self
 
-    def value(self, value: T) -> "FieldBuilder":
+    def value(self, value: T | None) -> "FieldBuilder":
         check_argument(
-            self.field.assign(value), 'Not a valid value: "{}". Validation pattern="{}"', value, self.field.validator
+            not value or self.field.assign(value), 'Not a valid value: "{}". Validation pattern="{}"', value, self.field.validator
         )
         return self
 

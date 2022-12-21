@@ -19,12 +19,11 @@ import pathlib
 import signal
 import sys
 from datetime import timedelta
-from typing import Optional, Set, Tuple, Type, Callable, Iterable
+from typing import Optional, Set, Tuple, Type, Callable, Iterable, Any
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.validator import Validator
 from hspylib.modules.cli.vt100.vt_code import VtCode
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
@@ -107,24 +106,28 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def sysout(string: str, end: str = os.linesep) -> None:
+def sysout(*string: str, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
     :param string: values to be printed to sys.stdout
     :param end: string appended after the last value, default a newline
     """
-    if Validator.is_not_blank(string):
-        msg = VtColor.colorize(VtCode.decode(f"{string}"))
-        print(msg, file=sys.stdout, flush=True, end=end)
+    def sysout_format(text: str) -> str:
+        msg = VtColor.colorize(VtCode.decode(f"{text}"))
+        return msg
+    list(map_many(string, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
+    print("", file=sys.stdout, flush=True, end=end)
 
 
-def syserr(string: str, end: str = os.linesep) -> None:
+def syserr(*string: Any, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
     :param string: values to be printed to sys.stderr
     :param end: string appended after the last value, default a newline
     """
-    if Validator.is_not_blank(string):
-        msg = VtColor.colorize(VtCode.decode(f"%RED%{VtColor.strip_colors(string)}%NC%"))
-        print(msg, file=sys.stderr, flush=True, end=end)
+    def syserr_format(text: Any) -> str:
+        msg = VtColor.colorize(VtCode.decode(f"%RED%{VtColor.strip_colors(str(text))}%NC%"))
+        return msg
+    list(map_many(string, syserr_format, lambda s: print(f"{s} ", file=sys.stderr, flush=True, end="")))
+    print("", file=sys.stdout, flush=True, end=end)
 
 
 def hook_exit_signals(handler: Callable) -> None:

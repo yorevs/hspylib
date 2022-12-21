@@ -17,7 +17,7 @@
 from datasource.crud_service import CrudService
 from datasource.db_configuration import DBConfiguration
 from phonebook.__classpath__ import _Classpath
-from phonebook.entity.Person import Person
+from phonebook.entity.person import Person
 from phonebook.repository.person_repository import PersonRepository
 
 

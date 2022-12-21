@@ -38,7 +38,7 @@ class Main(CliApplication):
         create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
         # fmt: off
         main_menu = TUIMenuFactory \
-            .create_main_menu(self._app_name, 'Main Menu') \
+            .create_main_menu(self._app_name, 'Access the Main Menu') \
                 .with_item('Create', 'Create new contact') \
                     .with_view('Person', 'Create a new Person contact') \
                         .on_render(lambda : create_view.person()) \
@@ -68,7 +68,7 @@ class Main(CliApplication):
                 .then() \
             .build()
         # fmt: on
-        TUIMenuUi(main_menu, 'Phonebook').execute()
+        TUIMenuUi(main_menu, self._app_name).execute()
         return ExitStatus.SUCCESS
 
 

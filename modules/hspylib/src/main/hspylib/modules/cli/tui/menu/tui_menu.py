@@ -14,9 +14,9 @@ class TUIMenu(TUIComponent, ABC):
     def __init__(
         self,
         parent: Optional['TUIMenu'] = None,
-        title: Optional[str] = 'Sub Menu',
+        title: Optional[str] = None,
         tooltip: Optional[str] = None):
-        super().__init__(title)
+        super().__init__(title or '')
 
         self._tooltip: str = tooltip or ''
         self._parent: Optional['TUIMenu'] = parent

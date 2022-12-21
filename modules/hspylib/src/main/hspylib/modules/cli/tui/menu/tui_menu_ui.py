@@ -41,7 +41,7 @@ class TUIMenuUi(metaclass=Singleton):
     def __init__(self, main_menu: TUIMenu, title: str | None):
         check_not_none(main_menu)
         super().__init__()
-        self._app_title: str = title or "Main Menu"
+        TUIMenuUi._app_title = title or "Main Menu"
         self._done: bool = False
         self._curr_menu: TUIMenu = main_menu
         self._prev_menu: Optional[TUIMenu] = None

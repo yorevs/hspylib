@@ -17,7 +17,7 @@ class TUIComponent(Generic[T], ABC):
         """TODO"""
         sysout(ensure_endswith(elide_text(line_fmt.format(*args), max_columns), "%NC%"))
 
-    def __init__(self, title: Optional[str] = None):
+    def __init__(self, title: str = None):
         self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
         self._done: bool = False
         self._re_render: bool = True

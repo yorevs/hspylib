@@ -22,6 +22,8 @@ import re
 
 
 class Validator(ABC):
+    """TODO"""
+
     @staticmethod
     def assert_valid(errors: list, validation: Tuple[bool, str], throw_if_invalid: bool = False) -> None:
         if not validation[0]:

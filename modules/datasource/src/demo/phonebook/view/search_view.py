@@ -20,14 +20,11 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
-from hspylib.modules.cli.tui.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.minput.minput import MenuInput
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 
 from datasource.crud_entity import CrudEntity
-from phonebook.entity.Company import Company
-from phonebook.entity.Person import Person
-from phonebook.entity.validator.contact_validator import ContactValidator
+from phonebook.entity.company import Company
+from phonebook.entity.person import Person
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
@@ -62,7 +59,7 @@ class SearchView(metaclass=Singleton):
             SearchView.display_table(
                 list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
             )
-            MenuUtils.wait_enter("Press any key to continue")
+            MenuUtils.wait_keystroke()
             SearchView.display_table(
                 list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
             )
