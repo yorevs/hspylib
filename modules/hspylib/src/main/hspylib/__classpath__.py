@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: hspylib
-   @package: hspylib.main.hspylib
+   @package: hspylib
       @file: __classpath__.py
    @created: Wed, 8 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

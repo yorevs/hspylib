@@ -1,3 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   @project: HSPyLib-Datasource
+   @package: phonebook.entity
+      @file: contact_forms.py
+   @created: Thu, 22 Dec 2022
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2022, HSPyLib team
+"""
+
 from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.tui.minput.input_validator import InputValidator
 from hspylib.modules.cli.tui.minput.minput import MenuInput, minput

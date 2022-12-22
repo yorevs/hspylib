@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   @Package: datasource.sqlite
+   @project: HSPyLib-Datasource
+   @package: datasource.sqlite
       @file: sqlite_repository.py
-   @created: Eue, 4 May 2021
+   @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>

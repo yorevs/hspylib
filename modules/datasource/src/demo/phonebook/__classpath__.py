@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: hspylib-datasource
-   @package: demo.phonebook
+   @project: HSPyLib-Datasource
+   @package: phonebook
       @file: __classpath__.py
    @created: Thu, 03 Jun 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior

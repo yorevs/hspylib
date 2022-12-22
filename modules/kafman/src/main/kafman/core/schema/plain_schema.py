@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HSPyLib-Kafman
+   @package: kafman.core.schema
       @file: json_schema.py
    @created: Sun, 18 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

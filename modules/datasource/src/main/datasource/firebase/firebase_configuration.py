@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   @Package: datasource.firebase
+   @project: HSPyLib-Datasource
+   @package: datasource.firebase
       @file: firebase_configuration.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

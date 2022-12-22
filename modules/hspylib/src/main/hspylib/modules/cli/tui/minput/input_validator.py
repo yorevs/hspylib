@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui.minput
+   @package: hspylib.modules.cli.tui.minput
       @file: input_validator.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

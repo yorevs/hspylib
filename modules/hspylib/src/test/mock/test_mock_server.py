@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    test.modules.mock
       @file: test_mock_server.py

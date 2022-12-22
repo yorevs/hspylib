@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: hspylib-kafman
-   @package: hspylib-kafman.main.kafman.views.promotions
+   @project: HSPyLib-Kafman
+   @package: kafman.views.dialogs
       @file: settings_dialog.py
    @created: Wed, 8 Jun 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
@@ -106,7 +105,7 @@ class SettingsDialog(QObject):
     def _fill_settings(self) -> None:
         """TODO"""
         all_settings = self._settings_type.settings().split(os.linesep)
-        self._settings.update(Properties.read_properties(all_settings))
+        self._settings.update(Properties._read_properties(all_settings))
         self.ui.cmb_settings.addItems({k: v for (k, v) in self._settings.items() if k not in self._forbidden_settings})
 
     def _change_setting(self, setting_name: str) -> None:

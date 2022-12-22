@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   @Package: datasource.cassandra
+   @project: HSPyLib-Datasource
+   @package: datasource.cassandra
       @file: cassandra_configuration.py
    @created: Sat, 12 Nov 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

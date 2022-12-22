@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    main.addons.appman.templates
       @file: widget.py.tpl

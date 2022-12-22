@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: hspylib.core.enums
+   @package: hspylib.modules.application
       @file: exit_status.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

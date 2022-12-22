@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.json_search
+   @package: hspylib.core.tools
       @file: json_search.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

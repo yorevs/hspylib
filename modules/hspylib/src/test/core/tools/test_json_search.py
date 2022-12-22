@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    test.modules.json_search
       @file: test_json_search.py

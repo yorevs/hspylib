@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   @package: demo.phonebook.view
+   @project: HSPyLib-Datasource
+   @package: phonebook.view
       @file: edit_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

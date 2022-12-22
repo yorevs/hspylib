@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.icons.font_awesome
+   @package: hspylib.modules.cli.icons.font_awesome
       @file: awesome.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+
 import re
 import struct
 from typing import TypeVar, Union

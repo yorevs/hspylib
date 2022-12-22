@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    test.enum
       @file: test_enumeration.py

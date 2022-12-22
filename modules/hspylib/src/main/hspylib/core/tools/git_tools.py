@@ -3,12 +3,12 @@
 
 """
    @project: HSPyLib
-   @package: main.tools
-   @file: git_tools.py
-  @created: Nov 14, 2019
-   @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-     @site: https://github.com/yorevs/homesetup
-  @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+   @package: hspylib.core.tools
+      @file: git_tools.py
+   @created: Nov 14, 2019
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
    Copyright 2022, HSPyLib team
 """

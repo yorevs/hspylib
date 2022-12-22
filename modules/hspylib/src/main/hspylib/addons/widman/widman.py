@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   main.addons.widman
+   @package: hspylib.addons.widman
       @file: widman.py
    @created: Thu, 20 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

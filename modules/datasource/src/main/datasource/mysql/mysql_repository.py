@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   @Package: datasource.mysql
+   @project: HSPyLib-Datasource
+   @package: datasource.mysql
       @file: mysql_repository.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

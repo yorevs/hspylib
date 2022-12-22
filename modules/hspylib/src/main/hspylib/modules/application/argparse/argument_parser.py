@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   @package: main.modules.cli.application
+   @package: hspylib.modules.application.argparse
       @file: argument_parser.py
    @created: Thu, 14 Feb 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HSPyLib-Kafman
+   @package: kafman.core.schema.avro
       @file: avro_schema.py
    @created: Sat, 17 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

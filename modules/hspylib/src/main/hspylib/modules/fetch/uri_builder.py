@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: hspylib
-   @package: hspylib.main.hspylib.modules.fetch
+   @package: hspylib.modules.fetch
       @file: uri_builder.py
    @created: Mon, 12 Dec 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.eventbus
+   @package: hspylib.modules.eventbus
       @file: event.py
    @created: Wed, 30 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

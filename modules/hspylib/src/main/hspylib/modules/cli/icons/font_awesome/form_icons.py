@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.icons.font_awesome
+   @package: hspylib.modules.cli.icons.font_awesome
       @file: form_icons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

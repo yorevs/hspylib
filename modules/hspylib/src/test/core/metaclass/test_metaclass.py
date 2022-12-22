@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: hspylib
    @package: hspylib.test.core.metaclass
       @file: test_metaclass.py

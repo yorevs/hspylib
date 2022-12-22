@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
    @package: hspylib.modules.cache
       @file: ttl_keyring_be.py

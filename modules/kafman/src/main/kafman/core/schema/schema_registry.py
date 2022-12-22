@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HSPyLib-Kafman
+   @package: kafman.core.schema
       @file: schema_registry.py
    @created: Thu, 5 Aug 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

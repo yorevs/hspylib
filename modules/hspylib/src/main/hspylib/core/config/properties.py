@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @Package: main.config
+   @package: hspylib.core.config
       @file: properties.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

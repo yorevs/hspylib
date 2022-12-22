@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: HSPyLib
-   @package: hspylib.app.vault.core
+   @project: HSPyLib-Vault
+   @package: vault.core
       @file: vault_config.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

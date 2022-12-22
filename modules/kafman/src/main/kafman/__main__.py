@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: hspylib-kafman
-   @package: hspylib-kafman.main.kafman
+   @project: HSPyLib-Kafman
+   @package: kafman
       @file: __main__.py
    @created: Fri, 1 Jul 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

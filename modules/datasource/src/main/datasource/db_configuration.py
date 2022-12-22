@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
-   @Package: datasource
+   @project: HSPyLib-Datasource
+   @package: datasource
       @file: db_configuration.py
    @created: Thu, 03 Nov 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
