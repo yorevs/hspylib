@@ -24,7 +24,7 @@ from hspylib.core.tools.commons import syserr, hook_exit_signals
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.cli_application import CliApplication
+from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
@@ -32,7 +32,7 @@ from vault.core.vault_config import VaultConfig
 from vault.exception.exceptions import VaultOpenError
 
 
-class Main(CliApplication):
+class Main(TUIApplication):
     """HSPyLib Vault - Manage your secrets"""
 
     # The welcome message

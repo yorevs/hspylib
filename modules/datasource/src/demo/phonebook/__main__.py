@@ -17,7 +17,7 @@ import sys
 
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.cli_application import CliApplication
+from hspylib.modules.cli.tui.tui_application import TUIApplication
 from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
 from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 
@@ -27,11 +27,11 @@ from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
 
 
-class Main(CliApplication):
+class Main(TUIApplication):
     """TODO"""
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=_Classpath.run_path())
+        version = Version.load(load_dir=f"{_Classpath.run_path()}/phonebook")
         super().__init__(app_name, version, "A Simple CLI phonebook", resource_dir=str(_Classpath.resource_path()))
 
     def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
@@ -45,7 +45,7 @@ class Main(CliApplication):
                     .with_view('Company', 'Create a new Company contact') \
                         .on_render(lambda : create_view.company()) \
                     .with_action('Back', 'Back to previous menu') \
-                        .on_trigger(lambda x: x.parent) \
+                        .on_trigger(TUIMenuUi.back) \
                     .then() \
                 .with_item('Edit', 'Edit contact') \
                     .with_view('Person', 'Edit a Person contact') \
@@ -53,7 +53,7 @@ class Main(CliApplication):
                     .with_view('Company', 'Edit a Company contact') \
                         .on_render(lambda : edit_view.company()) \
                     .with_action('Back', 'Back to previous menu') \
-                        .on_trigger(lambda x: x.parent) \
+                        .on_trigger(TUIMenuUi.back) \
                     .then() \
                 .with_item('Search', 'Search contacts') \
                     .with_view('By name', 'Search contacts by name') \
@@ -63,11 +63,12 @@ class Main(CliApplication):
                     .with_view('List all', 'List all available contacts') \
                         .on_render(lambda : search_view.list_all()) \
                     .with_action('Back', 'Back to previous menu') \
-                        .on_trigger(lambda x: x.parent) \
+                        .on_trigger(TUIMenuUi.back) \
                     .then() \
                 .then() \
             .build()
         # fmt: on
+        self._alternate_screen()
         TUIMenuUi(main_menu, self._app_name).execute()
         return ExitStatus.SUCCESS
 
@@ -75,4 +76,4 @@ class Main(CliApplication):
 # Application entry point
 if __name__ == "__main__":
     # Application entry point
-    Main("HSPyLib Phonebook - Demo").INSTANCE.run(sys.argv[1:])
+    Main("Phonebook").INSTANCE.run(sys.argv[1:])

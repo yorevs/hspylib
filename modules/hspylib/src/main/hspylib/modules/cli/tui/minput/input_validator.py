@@ -28,7 +28,7 @@ class InputValidator(Validator):
         # fmt: off
         LETTERS     = r"^[a-zA-Z]{%min%,%max%}$"
         WORDS       = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
-        NUMBERS     = r"^[0-9\.]{%min%,%max%}$"
+        NUMBERS     = r"^[0-9\.\,]{%min%,%max%}$"
         TOKEN       = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
         MASKED      = r".*\|.+"
         ANYTHING    = r"^.{%min%,%max%}$"

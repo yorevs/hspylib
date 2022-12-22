@@ -1,9 +1,9 @@
 from typing import Callable, Optional
 
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
-from hspylib.modules.cli.vt100.vt_utils import restore_cursor
+from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
+from hspylib.modules.cli.vt100.vt_utils import clear_screen
 from hspylib.modules.eventbus import eventbus
 
 
@@ -30,16 +30,15 @@ class TUIMenuView(TUIMenu):
 
     def execute(self) -> Optional[TUIMenu]:
         self._render()
-        while not (keypress := Keyboard.wait_keystroke()):
-            pass
 
-        return self._on_trigger(self) if keypress != Keyboard.VK_ESC else None
+        return self._on_trigger(self)
 
     def _render(self) -> None:
-        restore_cursor()
+        clear_screen()
         eventbus.emit("tui-menu-ui", "render-app-title")
         self._on_render()
         sysout(self._navbar())
 
     def _display_content(self) -> None:
         sysout(self._content)
+        TUIMenuUtils.wait_keystroke()

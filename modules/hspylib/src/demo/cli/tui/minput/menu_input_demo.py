@@ -30,7 +30,7 @@ if __name__ == "__main__":
         .field() \
             .label('number') \
             .validator(InputValidator.numbers()) \
-            .min_max_length(1, 2) \
+            .min_max_length(1, 4) \
             .build() \
         .field() \
             .label('masked') \

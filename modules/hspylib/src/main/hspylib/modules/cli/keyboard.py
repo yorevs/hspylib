@@ -16,12 +16,13 @@
 import select
 import string
 import sys
+import termios
 from typing import Optional, List
 
 import getkey
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError
+from hspylib.core.exception.exceptions import KeyboardInputError, NotATerminalError
 
 
 # pylint: disable=multiple-statements
@@ -31,16 +32,24 @@ class Keyboard(Enumeration):
     # fmt: off
 
     # Control keys
-    VK_NONE         = ''
+    VK_NONE         = ''; VK_DISABLED = ''
 
     VK_ESC          = getkey.keys.ESC; VK_ENTER             = getkey.keys.ENTER
-    VK_UP           = getkey.keys.UP; VK_TAB                = '\t'
+    VK_UP           = getkey.keys.UP; VK_DELETE             = getkey.keys.DELETE
     VK_DOWN         = getkey.keys.DOWN; VK_SPACE            = getkey.keys.SPACE
     VK_LEFT         = getkey.keys.LEFT; VK_HOME             = getkey.keys.HOME
     VK_RIGHT        = getkey.keys.RIGHT; VK_END             = getkey.keys.END
     VK_BACKSPACE    = getkey.keys.BACKSPACE; VK_PAGE_UP     = getkey.keys.PAGE_UP
     VK_INSERT       = getkey.keys.INSERT; VK_PAGE_DOWN      = getkey.keys.PAGE_DOWN
-    VK_DELETE       = getkey.keys.DELETE; VK_SHIFT_TAB      = '\x1b[Z'
+    VK_TAB          = '\t'; VK_SHIFT_TAB                    = '\x1b[Z'
+
+    VK_CTRL_A       = '\x01';       VK_CTRL_B = '\x02';       VK_CTRL_C = VK_DISABLED; VK_CTRL_D = '\x04'
+    VK_CTRL_E       = '\x05';       VK_CTRL_F = '\x06';       VK_CTRL_G = '\x07';      VK_CTRL_H = '\x08'
+    VK_CTRL_I       = VK_DISABLED;  VK_CTRL_J = VK_DISABLED;  VK_CTRL_K = '\x0b';      VK_CTRL_L = '\x0c'
+    VK_CTRL_M       = VK_DISABLED;  VK_CTRL_N = '\x0e';       VK_CTRL_O = VK_DISABLED; VK_CTRL_P = '\x10'
+    VK_CTRL_Q       = VK_DISABLED;  VK_CTRL_R = '\x12';       VK_CTRL_S = VK_DISABLED; VK_CTRL_T = '\x14'
+    VK_CTRL_U       = '\x15';       VK_CTRL_V = VK_DISABLED;  VK_CTRL_W = '\x17';      VK_CTRL_X = '\x18'
+    VK_CTRL_Y       = '\x19';       VK_CTRL_Z = VK_DISABLED
 
     # Letters
     VK_a = 'a'; VK_i = 'i'; VK_q = 'q'; VK_y = 'y'
@@ -113,6 +122,8 @@ class Keyboard(Enumeration):
         except (KeyboardInterrupt, AssertionError) as err:
             if not ignore_error_keys:
                 raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
+        except termios.error:
+            raise NotATerminalError("keyboard:: Requires a terminal (TTY)")
         finally:
             sys.stdin.flush()
 

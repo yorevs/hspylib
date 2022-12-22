@@ -19,7 +19,7 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.tui_component import TUIComponent
-from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, restore_terminal, screen_size
+from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, screen_size
 
 T = TypeVar("T")
 
@@ -72,8 +72,6 @@ class MenuChoose(TUIComponent):
             # Navigation input
             keypress = self._handle_keypress()
 
-        sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
-
         return (
             [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
             if keypress == Keyboard.VK_ENTER
@@ -114,7 +112,7 @@ class MenuChoose(TUIComponent):
         return (
             f"%EOL%{self.prefs.navbar_color.placeholder}"
             f"[Enter] Accept  [{self.NAV_ICONS}] "
-            f"Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..{to}] Goto: %EL0%"
+            f"Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..{to}] Goto: %NC%%EL0%%EOL%%EOL%"
         )
 
     def _handle_keypress(self) -> Keyboard:

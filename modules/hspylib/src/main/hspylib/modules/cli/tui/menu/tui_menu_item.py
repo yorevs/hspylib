@@ -105,7 +105,7 @@ class TUIMenuItem(TUIMenu):
             f"{tooltip + ' ' if tooltip else ''}%ED0%%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
             f"[Enter] Select  Navigate  [{self.NAV_ICONS}]  "
-            f"[Esc] Quit  [1..{to}] Goto: %EL0%"
+            f"[Esc] Quit  [1..{to}] Goto: %NC%%EL0%%EOL%%EOL%"
         )
 
     def _handle_keypress(self) -> Keyboard:

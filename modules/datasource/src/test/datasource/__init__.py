@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.17
+# hspylib-datasource v0.9.18
 #
 # Package: test.datasource
 """Package initialization."""
@@ -13,4 +13,4 @@ __all__ = [
   'test_redis_repository', 
   'test_sqlite_repository'
 ]
-__version__ = '0.9.17'
+__version__ = '0.9.18'

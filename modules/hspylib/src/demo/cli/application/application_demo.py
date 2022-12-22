@@ -15,7 +15,7 @@
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.cli_application import CliApplication
+from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 import sys
 
@@ -26,7 +26,7 @@ DESCRIPTION = "HsPyLib application Demo"
 EPILOG = "This is just a simple application demo"
 
 
-class Main(CliApplication):
+class Main(TUIApplication):
     def _setup_arguments(self) -> None:
         # fmt: off
         self._with_options() \

@@ -16,10 +16,10 @@
 
 from typing import List
 
-from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
+from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 
 from datasource.crud_entity import CrudEntity
@@ -29,24 +29,26 @@ from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
 
-class SearchView(metaclass=Singleton):
+class SearchView(TUIMenuView):
     def __init__(self) -> None:
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
     def by_name(self) -> None:
-        filters = Namespace(
-            uuid=f"uuid='{MenuUtils.prompt('Person or Company uuid')}'")
-        all_persons = self.person_service.list(filters=filters)
-        all_companies = self.company_service.list(filters=filters)
-        self.display_contacts(all_persons, all_companies)
+        contact = TUIMenuUtils.prompt('Person or Company name', dest='name')
+        if contact:
+            filters = Namespace(uuid=f"name='{contact.name}'")
+            all_persons = self.person_service.list(filters=filters)
+            all_companies = self.company_service.list(filters=filters)
+            self.display_contacts(all_persons, all_companies)
 
     def by_uuid(self) -> None:
-        filters = Namespace(
-            uuid=f"uuid='{MenuUtils.prompt('Person or Company uuid')}'")
-        all_persons = self.person_service.list(filters=filters)
-        all_companies = self.company_service.list(filters=filters)
-        self.display_contacts(all_persons, all_companies)
+        contact = TUIMenuUtils.prompt('Person or Company uuid', dest='uuid')
+        if contact:
+            filters = Namespace(uuid=f"uuid='{contact.uuid}'")
+            all_persons = self.person_service.list(filters=filters)
+            all_companies = self.company_service.list(filters=filters)
+            self.display_contacts(all_persons, all_companies)
 
     def list_all(self) -> None:
         all_persons = self.person_service.list()
@@ -55,16 +57,20 @@ class SearchView(metaclass=Singleton):
 
     @staticmethod
     def display_contacts(persons: List[Person], companies: List[Company]) -> None:
-        if persons or companies:
+        TUIMenuUtils.render_app_title()
+        if persons:
             SearchView.display_table(
                 list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
             )
-            MenuUtils.wait_keystroke()
+            TUIMenuUtils.wait_keystroke()
+        if companies:
             SearchView.display_table(
                 list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
             )
-        else:
-            sysout("-=- No results to be displayed -=-")
+            TUIMenuUtils.wait_keystroke()
+        if not persons and not companies:
+            sysout("-=- No results to be displayed -=-%EOL%")
+            TUIMenuUtils.wait_keystroke()
 
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:

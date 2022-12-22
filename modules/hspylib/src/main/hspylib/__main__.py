@@ -23,12 +23,12 @@ from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.cli_application import CliApplication
+from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 import sys
 
 
-class Main(CliApplication):
+class Main(TUIApplication):
     """HSPyLib Manager - Manage HSPyLib applications."""
 
     # The welcome message

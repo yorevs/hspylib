@@ -13,7 +13,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.metaclass.singleton import Singleton
+from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
+from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
+from hspylib.core.tools.commons import sysout
 
 from datasource.identity import Identity
 from phonebook.entity.company import Company
@@ -23,7 +25,7 @@ from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
 
-class CreateView(metaclass=Singleton):
+class CreateView(TUIMenuView):
     """ TODO"""
 
     def __init__(self) -> None:
@@ -41,6 +43,9 @@ class CreateView(metaclass=Singleton):
             person.address = form.address
             person.complement = form.complement
             self.person_service.save(person)
+            TUIMenuUtils.render_app_title()
+            sysout("Person successfully saved!%EOL%")
+            TUIMenuUtils.wait_keystroke()
 
     def company(self) -> None:
         form = ContactForms.company_form()
@@ -54,3 +59,6 @@ class CreateView(metaclass=Singleton):
             company.address = form.address
             company.complement = form.complement
             self.company_service.save(company)
+            TUIMenuUtils.render_app_title()
+            sysout("Company successfully saved!%EOL%")
+            TUIMenuUtils.wait_keystroke()
