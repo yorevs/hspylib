@@ -22,6 +22,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
+from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 from cfman.__classpath__ import _Classpath
@@ -44,24 +45,23 @@ class Main(TUIApplication):
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
-        self._with_options().option(
-            "api", "a", "api", "the API endpoint to connect to (e.g. https://api.example.com)", nargs="?"
-        ).option("org", "o", "org", "the organization to connect to (Target organization)", nargs="?").option(
-            "space", "s", "space", "the space to connect to (Target organization space)", nargs="?"
-        ).option(
-            "username", "u", "username", "the PCF username", nargs="?"
-        ).option(
-            "password", "p", "password", "the PCF password", nargs="?"
-        ).option(
-            "refresh", "r", "refresh", "avoiding using cached apps", nargs="?"
-        ).option(
-            "endpoints",
-            "f",
-            "endpoints",
-            "the file containing the CF API endpoint entries. If not provided, "
-            "$HOME/cf_endpoints.txt will be used instead.",
-            nargs=1,
-        )
+        # fmt: off
+        self._with_options() \
+            .option("api", "a", "api", "the API endpoint to connect to (e.g. https://api.example.com)", nargs="?")\
+            .option("org", "o", "org", "the organization to connect to (Target organization)", nargs="?")\
+            .option("space", "s", "space", "the space to connect to (Target organization space)", nargs="?")\
+            .option("username", "u", "username", "the PCF username", nargs="?")\
+            .option("password", "p", "password", "the PCF password", nargs="?")\
+            .option(
+                "no-cache", "r", "no-cache", "avoiding using cached apps",
+                nargs="?", action=ParserAction.STORE_TRUE)\
+            .option(
+                "endpoints", "f", "endpoints",
+                "the file containing the CF API endpoint entries. "
+                "If not provided, '$HOME/cf_endpoints.txt' will be used instead.",
+                nargs=1
+            )
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments"""

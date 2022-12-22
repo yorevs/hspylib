@@ -44,7 +44,6 @@ class CFApplication:
         raise InvalidArgumentError(f"Invalid application line: {app_line}")
 
     def __init__(self, name: str, state: str, instances: str, memory: str, disk: str, urls: List[str]) -> None:
-
         self.name = name
         self.state = state
         self.instances = instances
@@ -54,7 +53,7 @@ class CFApplication:
         self.max_name_length = max(self.max_name_length, len(self.name))
 
     def __str__(self) -> str:
-        return self.name
+        return f"[{self.colored_state}] {self.name}"
 
     def __repr__(self) -> str:
         return str(self)
@@ -63,13 +62,18 @@ class CFApplication:
     def print_status(self) -> None:
         """TODO"""
         sysout(
-            "%CYAN%{}  %{}%{:5}  %NC%{:10}  {:4}  {:4}  {}".format(
+            "%CYAN%{}  {:5}  %NC%{:10}  {:4}  {:4}  {}".format(
                 self.name.ljust(self.max_name_length),
-                "GREEN" if self.state == "started" else "RED",
-                self.state,
+                self.colored_state,
                 self.instances,
                 self.memory,
                 self.disk,
                 self.urls,
             )
         )
+
+    @property
+    def colored_state(self) -> str:
+        """TODO"""
+        state = self.state.upper()
+        return f"{'%GREEN%' if state == 'STARTED' else '%RED%':5}{state}%NC%"

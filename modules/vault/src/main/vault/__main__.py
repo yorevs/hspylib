@@ -61,7 +61,8 @@ class Main(TUIApplication):
             .argument('add', 'add a NEW UNIQUE vault entry') \
                 .add_parameter('name', 'the name of the vault entry which identifies it') \
                 .add_parameter('hint', 'applicable hints related to that vault entry') \
-                .add_parameter('password', 'the password of the entry. If not provided, it will be prompted', nargs='?') \
+                .add_parameter('password', 'the password of the entry. If not provided, it will be prompted',
+                               nargs='?') \
             .argument('upd', 'update an existing vault entry') \
                 .add_parameter('name', 'the name of the vault entry which identifies it') \
                 .add_parameter('hint', 'applicable hints related to that vault entry') \

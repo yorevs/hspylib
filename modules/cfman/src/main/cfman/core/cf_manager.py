@@ -14,11 +14,15 @@
    Copyright 2022, HSPyLib team
 """
 import sys
+from functools import partial
 from time import sleep
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
+import requests
 from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.tools.commons import file_is_not_empty, str_to_bool, syserr, sysout
+from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cache.ttl_cache import TTLCache
 from hspylib.modules.cli.tui.mchoose import mchoose
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
@@ -51,8 +55,20 @@ class CFManager:
         """Checks whether the action is callable or not"""
         return action.lower() not in ["status", "target"]
 
+    @staticmethod
+    def required_states(action: str) -> str | Tuple[str, str]:
+        match action.lower():
+            case "logs":
+                return "started"
+            case "start":
+                return "stopped"
+            case "stop":
+                return "started"
+            case _:
+                return "started", "stopped"
+
     def __init__(self, api: str, org: str, space: str, username: str, password: str, refresh: str, cf_endpoints: str):
-        assert file_is_not_empty(cf_endpoints), f"CF Endpoints file {cf_endpoints} is empty or does not exist !"
+        check_state(file_is_not_empty(cf_endpoints), f"CF Endpoints file {cf_endpoints} is empty or does not exist !")
         self._cf = CloudFoundry()
         self._cache = TTLCache()
         self._api = api
@@ -60,7 +76,7 @@ class CFManager:
         self._space = space
         self._username = username
         self._password = password
-        self._refresh = str_to_bool(refresh or "false")
+        self._refresh = refresh or False
         self._cf_endpoints_file = cf_endpoints
         self._cf_apps = None
         self._done = False
@@ -69,7 +85,12 @@ class CFManager:
         """Execute main cf manager routines"""
         sysout("%GREEN%Checking CloudFoundry authorization...")
         if self._cf.connect():
+            self._api = self._cf.api()
+            target = self._cf.target()
+            self._org, self._space = target['org'], target['space']
             sysout("%GREEN%Already authorized to CloudFoundry!")
+            sysout(f"Targeted to -> ORG=[{self._org}]  SPACE=[{self._space}]  API=[{self._api}]")
+            sleep(2)
         else:
             authorized = False
             sysout("%YELLOW%Not authorized to CloudFoundry, login required...")
@@ -89,21 +110,6 @@ class CFManager:
 
         self._loop_actions()
 
-    def _get_apps(self) -> List[CFApplication]:
-        """Retrieve all cf applications under the target/org"""
-        sysout(f'%GREEN%Retrieving applications from space: "{self._space}"...')
-        if self._refresh or not (apps := self._cache.read(f"cf-apps-{self._space}")):
-            apps = self._cf.apps()
-            self._cache.save(f"cf-apps-{self._space}", apps)
-        cf_apps = list(map(CFApplication.of, apps if apps else []))
-        if not cf_apps:
-            if "OK" not in self._cf.last_result:
-                raise CFExecutionError(f"Unable to retrieve applications: => {self._cf.last_result}")
-            sysout(f"%YELLOW%No apps found for space {self._space}")
-        self._cf_apps = cf_apps
-
-        return self._cf_apps
-
     def _select_endpoint(self) -> None:
         """Select the PCF endpoint to connect to"""
         try:
@@ -121,8 +127,11 @@ class CFManager:
                         else:
                             syserr(f"Failed to connect to API ({response.status_code}): {selected}")
                             self._abort()
-                    except Exception as err:
-                        raise CFConnectionError(f"Failed to connect to API => {selected.host}") from err
+                    except requests.exceptions.ConnectionError as err:
+                        syserr(CFConnectionError(
+                            f"Failed to connect API host: '{selected.host}' "
+                            f"=> {err.__class__.__name__}"))
+                        sys.exit(ExitStatus.FAILED.val)
                 else:
                     syserr(
                         f"No endpoint yet configured. Please create the file {self._cf_endpoints_file} "
@@ -172,9 +181,8 @@ class CFManager:
     def _set_org(self) -> None:
         """Set the active organization"""
         if not self._org:
-            sysout("%YELLOW%Checking organization...")
-            orgs = self._cf.orgs()
-            if not orgs:
+            sysout(f'%GREEN%Retrieving organizations from {self._api}...')
+            if not (orgs := self._cf.orgs()):
                 raise CFExecutionError(f"Unable to retrieve organizations: => {self._cf.last_result}")
             self._org = mselect(orgs, title="Please select the organization")
             if not self._org:
@@ -185,33 +193,51 @@ class CFManager:
     def _set_space(self) -> None:
         """Set the active space"""
         if not self._space:
-            sysout("%YELLOW%Checking space...")
+            sysout(f'%GREEN%Retrieving spaces from org: "{self._org}"...')
             if self._refresh or not (spaces := self._cache.read(f"cf-spaces-{self._org}")):
                 spaces = self._cf.spaces()
                 self._cache.save(f"cf-spaces-{self._org}", spaces)
             if not spaces:
-                raise CFExecutionError(f"Unable to retrieve spaces: => {self._cf.last_result}")
-            self._space = mselect(spaces, title="Please select a space")
+                raise CFExecutionError(f"Unable to retrieve org={self._org} spaces: => {self._cf.last_result}")
+            self._space = mselect(spaces, title="Please select the space")
             if not self._space:
                 self._abort()
             else:
                 self._target()
 
-    def _choose_apps(self) -> Optional[List[CFApplication]]:
+    def _get_apps(self) -> List[CFApplication]:
+        """Retrieve all cf applications under the target/org"""
+        if self._refresh or not (apps := self._cache.read(f"cf-apps-{self._space}")):
+            sysout(f'%GREEN%Retrieving applications from space: "{self._space}"...')
+            apps = self._cf.apps()
+            self._cache.save(f"cf-apps-{self._space}", apps)
+        cf_apps = list(map(CFApplication.of, apps if apps else []))
+        if not cf_apps:
+            if "OK" not in self._cf.last_result:
+                raise CFExecutionError(f"Unable to retrieve applications: => {self._cf.last_result}")
+            syserr(f"%YELLOW%No apps found for space {self._space}")
+        self._cf_apps = cf_apps
+        sysout(f"%YELLOW%Found {len(self._cf_apps)} apps in space {self._space}")
+
+        return self._cf_apps
+
+    def _choose_apps(self, required_states: str | Tuple[str, str]) -> Optional[List[CFApplication]]:
         """Choose multiple PCF apps from the available list"""
+        self._cf_apps = list(filter(lambda app: app.state.lower() in required_states, self._get_apps()))
         if not self._cf_apps:
-            self._cf_apps = self._get_apps()
+            return None
         return mchoose(self._cf_apps, checked=False, title="Please choose the applications you want to manage")
 
-    def _select_app(self) -> Optional[CFApplication]:
+    def _select_app(self, required_states: str | Tuple[str, str]) -> Optional[CFApplication]:
         """Select a single PCF app from the available list"""
+        self._cf_apps = list(filter(lambda app: app.state.lower() in required_states, self._get_apps()))
         if not self._cf_apps:
-            self._cf_apps = self._get_apps()
+            return None
         return mselect(self._cf_apps, title="Please select the application you want to manage")
 
     def _target(self) -> None:
         """Send a target request to PCF"""
-        sysout(f"%GREEN%Targeting ORG={self._org} and SPACE={self._space}...")
+        sysout(f"%GREEN%Targeting -> ORG=[{self._org}]  SPACE=[{self._space}]...")
         if not self._cf.target(org=self._org, space=self._space):
             raise CFExecutionError(f"Unable to target ORG: {self._org} => {self._cf.last_result}")
 
@@ -229,28 +255,28 @@ class CFManager:
                     f"Unable to target ORG={self._org}  SPACE={self._space} => {self._cf.last_result}"
                 )
 
-            action = mselect(CFManager.CF_ACTIONS, "Please select an action to perform")
-
-            if not action:
+            if not (action := mselect(CFManager.CF_ACTIONS, "Please select an action to perform")):
                 self._done = True
             else:
                 if self._is_callable(action):
                     self._perform_callable(action)
-                else:
-                    if action.lower() == "status":
-                        self._display_app_status()
-                    elif action.lower() == "target":
-                        self._space = self._org = self._cf_apps = None
-                        self._cf.targeted = {"org": None, "space": None, "targeted": False}
-                        continue
+                    continue
+                if action.lower() == "status":
+                    self._display_app_status()
+                elif action.lower() == "target":
+                    self._space = self._org = self._cf_apps = None
+                    self._cf.targeted = {"org": None, "space": None, "targeted": False}
+                    continue
 
-                    TUIMenuUtils.wait_keystroke()
+                TUIMenuUtils.wait_keystroke()
 
+    # pylint: disable=consider-using-f-string
     def _display_app_status(self) -> None:
         """Display select apps status"""
         apps = self._get_apps()
         if len(apps) > 0:
-            # pylint: disable=consider-using-f-string
+            sysout(f"%HOM%%ED2%%GREEN%Listing all '{self._org}::{self._space}' applications ...%EOL%")
+            # fmt: off
             sysout(
                 "%WHITE%{}  {}  {}  {}  {}  {}".format(
                     "Name".ljust(CFApplication.max_name_length),
@@ -261,21 +287,21 @@ class CFManager:
                     "URLs",
                 )
             )
-            for app in apps:
-                app.print_status()
+            # fmt: on
+            list(map(lambda a: a.print_status(), apps))
 
-    def _perform_callable(self, action):
+    def _perform_callable(self, action: str) -> None:
         """Perform the selected callable action"""
         if self._allow_multiple(action.lower()):
-            apps = self._choose_apps()
+            apps = self._choose_apps(self.required_states(action))
         else:
-            app = self._select_app()
+            app = self._select_app(self.required_states(action))
             apps = [app] if app else None
         if apps:
-            for app in apps:
-                self._perform(action, app=app.name, org=self._org, space=self._space)
+            perform = partial(self._perform, action=action, org=self._org, space=self._space)
+            list(map(lambda a: perform(app=a.name), apps))
 
-    def _perform(self, action: str, **kwargs):
+    def _perform(self, action: str, **kwargs) -> None:
         """Perform the selected PCF action"""
         sysout(f"%GREEN%Performing {action.lower()} {str(kwargs)}...")
         method_to_call = getattr(self._cf, action.lower())
