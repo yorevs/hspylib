@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.application
+   @package: hspylib.modules.application.argparse
       @file: argument_chain_builder.py
    @created: hu, 14 Feb 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

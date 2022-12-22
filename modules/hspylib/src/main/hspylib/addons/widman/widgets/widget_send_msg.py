@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   IP Message Sender. Sends TCP/UDP messages (multi-threaded).
-
    @project: HSPyLib
-   @package: main.addons.widman.widgets
+   @package: hspylib.addons.widman.widgets
       @file: widget_send_msg.py
    @created: Thu, 26 Aug 2017
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

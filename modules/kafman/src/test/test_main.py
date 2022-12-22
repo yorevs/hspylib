@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: HSPyLib
-   @package: hspylib.hspylib.addons.appman.templates
+   @project: HSPyLib-Kafman
+   @package: test.kafman
       @file: tpl-test_main.py
    @created: Tue, 1 Jun 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: HSPyLib
-   @package: hspylib.app.cfman.exception
+   @project: HSPyLib-CFMan
+   @package: cfman.exception
       @file: exceptions.py
    @created: Tue, 11 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

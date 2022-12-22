@@ -3,8 +3,8 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.application
-      @file: argument_chain_builder.py
+   @package: hspylib.modules.application
+      @file: parser_action.py
    @created: hu, 14 Feb 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib

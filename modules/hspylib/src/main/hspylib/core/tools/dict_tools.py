@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.tools
+   @package: hspylib.core.tools
       @file: dict_tools.py
    @created: Thu, 03 May 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: HSPyLib
+   @project: HSPyLib-Datasource
       @file: setup.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

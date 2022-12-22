@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: hspylib
-   @package: hspylib.demo.other
+   @project: HSPyLib
+   @package: demo.other
       @file: event_bus_demo.py
    @created: Mon, 31 Oct 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

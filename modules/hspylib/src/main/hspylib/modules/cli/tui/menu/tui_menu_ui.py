@@ -3,8 +3,8 @@
 
 """
    @project: HSPyLib
-   @package: main.modules.cli.tui
-      @file: menu_ui.py
+   @package: hspylib.modules.cli.tui.menu
+      @file: tui_menu_ui.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+
 from typing import List, Optional
 
 from hspylib.core.metaclass.singleton import Singleton

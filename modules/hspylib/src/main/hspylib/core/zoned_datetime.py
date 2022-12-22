@@ -3,12 +3,12 @@
 
 """
    @project: HSPyLib
-   @package: main.tools
-   @file: zoned_datetime.py
-  @created: Thu, 20 Sep 2022
-   @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
-     @site: https://github.com/yorevs/homesetup
-  @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+   @package: hspylib.core
+      @file: zoned_datetime.py
+   @created: Thu, 20 Sep 2022
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
    Copyright 2022, HSPyLib team
 """

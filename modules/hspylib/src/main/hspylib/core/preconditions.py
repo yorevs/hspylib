@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib
-   @package: main.tools
+   @package: hspylib.core
       @file: preconditions.py
    @created: Fri, 16 Jul 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

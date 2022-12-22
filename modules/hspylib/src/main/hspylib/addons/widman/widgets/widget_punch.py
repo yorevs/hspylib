@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-
    @project: HSPyLib
-   @package: main.addons.widman.widgets
+   @package: hspylib.addons.widman.widgets
       @file: widget_punch.py
    @created: Thu, 20 Sep 2022
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

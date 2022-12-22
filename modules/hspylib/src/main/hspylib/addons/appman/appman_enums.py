@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: hspylib
-   @package: hspylib.hspylib.addons.appman
+   @project: HSPyLib
+   @package: hspylib.addons.appman
       @file: appman_enums.py
    @created: Fri, 29 Jul 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"

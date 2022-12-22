@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   demo.cli.tui.components
+   @package: demo.cli.tui.dashboard
       @file: menu_dashboard_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,6 +17,7 @@ from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcon
 from hspylib.modules.cli.tui.mdashboard.mdashboard import mdashboard, MenuDashBoard
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
 from hspylib.modules.cli.vt100.vt_color import VtColor
+
 
 if __name__ == "__main__":
     TUIPreferences(

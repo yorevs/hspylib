@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: hspylib
    @package: hspylib.test.tools
       @file: test_collection_filter.py
