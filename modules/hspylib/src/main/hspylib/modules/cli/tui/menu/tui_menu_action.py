@@ -1,4 +1,3 @@
-
 from typing import Optional
 
 from hspylib.modules.cli.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu

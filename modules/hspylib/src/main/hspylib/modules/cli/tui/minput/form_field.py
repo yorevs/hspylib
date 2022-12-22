@@ -15,7 +15,6 @@
 
 from typing import Any
 
-from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.tui.minput.access_type import AccessType
 from hspylib.modules.cli.tui.minput.input_type import InputType

@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'dialogs', 
-  'indexes', 
-  'main_qt_view', 
-  'promotions'
+    'dialogs',
+    'indexes',
+    'main_qt_view',
+    'promotions'
 ]
 __version__ = '0.9.93'

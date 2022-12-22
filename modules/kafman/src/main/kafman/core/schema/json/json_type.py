@@ -15,8 +15,9 @@
 """
 
 from collections import defaultdict
-from hspylib.core.enums.enumeration import Enumeration
 from typing import Any
+
+from hspylib.core.enums.enumeration import Enumeration
 
 
 class JsonType(Enumeration):

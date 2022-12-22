@@ -15,11 +15,13 @@
 """
 
 from abc import ABC
+from typing import List, Tuple
+
 from hspylib.core.preconditions import check_and_get
 from jsonschema.validators import Draft202012Validator
+
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.json.property.property import Property
-from typing import List, Tuple
 
 
 class JsonParser(ABC):

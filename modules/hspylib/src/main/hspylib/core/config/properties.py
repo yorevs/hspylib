@@ -13,17 +13,18 @@
    Copyright 2022, HSPyLib team
 """
 
-from collections import defaultdict
-from configparser import ConfigParser
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import run_dir, touch_file
-from hspylib.core.tools.dict_tools import flatten_dict
-from typing import Any, Callable, Iterator, List, Optional, Type
-
 import logging as log
 import os
 import re
+from collections import defaultdict
+from configparser import ConfigParser
+from typing import Any, Callable, Iterator, List, Optional, Type
+
 import yaml
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import run_dir, touch_file
+from hspylib.core.tools.dict_tools import flatten_dict
 
 CONVERSION_FN = Type | Callable[[Any], Any]
 

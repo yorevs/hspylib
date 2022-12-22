@@ -13,12 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
+import sys
 from abc import ABC
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right
 from typing import List, Optional
 
-import sys
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right
 
 
 class TableRenderer:

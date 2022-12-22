@@ -16,7 +16,7 @@ import random
 import string
 import sys
 from collections import namedtuple
-from typing import Tuple, Type, Union
+from typing import Any, Dict, Tuple, Type, Union
 from uuid import UUID, uuid4
 
 from hspylib.core.namespace import Namespace
@@ -26,6 +26,8 @@ IDENTITY = Union[Tuple, int, str, UUID]
 
 
 class Identity(Namespace):
+    """TODO"""
+
     @classmethod
     def auto(cls, field_name: str = "id", id_type: Type = UUID) -> "Identity":
         _id_ = namedtuple("Identity", [f"{field_name}"])
@@ -42,11 +44,11 @@ class Identity(Namespace):
             case other:
                 raise NotImplementedError(f"auto-identity generator for type '{other}' is not implemented")
 
-    def __init__(self, identity: Tuple | "Identity"):
-        check_argument(isinstance(identity, Tuple | Identity), "Must be a named tuple or Identity")
+    def __init__(self, identity: Tuple | Namespace | "Identity"):
+        check_argument(isinstance(identity, Tuple | Identity | Namespace), "Must be a named tuple or Identity")
         identity = identity.identity if isinstance(identity, Identity) else identity
         self._identity = identity
-        super().__init__("Identity", **self.as_dict())
+        super().__init__("Identity", **self._asdict())
 
     def __str__(self) -> str:
         return str(self._identity)
@@ -55,7 +57,7 @@ class Identity(Namespace):
     def identity(self) -> Tuple:
         return self._identity
 
-    def as_dict(self) -> dict:
+    def _asdict(self) -> Dict[str, Any]:
         return self._identity._asdict()
 
     def as_column_set(self, separator: str = ",") -> str:
@@ -68,16 +70,20 @@ class Identity(Namespace):
 if __name__ == "__main__":
     PersonId = namedtuple("PersonId", ["uuid"])
     UserId = namedtuple("UserId", ["uid", "email"])
+    ns = Namespace(uuid=uuid4().hex)
     i1 = Identity.auto("uid")
     i2 = Identity(i1)
     i3 = Identity(UserId("12345", "user@example.com"))
     i4 = Identity(PersonId(uuid4().hex))
-    print("Identities: ", i1, i2, i3, i4)
-    print("Values: ", i1.values, i2.values, i3.values, i4.values)
-    print("Items: ", i1.items(), i2.items(), i3.items(), i4.items())
+    i5 = Identity(ns)
+    print("Identities: ", i1, i2, i3, i4, i5)
+    print("Values: ", i1.values, i2.values, i3.values, i4.values, i5.values)
+    print("Items: ", i1.items(), i2.items(), i3.items(), i4.items(), i5.items())
     print("Attrs/Values: ", i1.attributes, i1.values)
     print("Attrs/Values: ", i2.attributes, i2.values)
     print("Attrs/Values: ", i3.attributes, i3.values)
     print("Attrs/Values: ", i4.attributes, i4.values)
-    print("As Dict: ", i1.as_dict(), i2.as_dict(), i3.as_dict(), i4.as_dict())
-    print("As ColSet: ", i1.as_column_set(), i2.as_column_set(), i3.as_column_set(), i4.as_column_set())
+    print("Attrs/Values: ", i5.attributes, i5.values)
+    print("As Dict: ", i1._asdict(), i2._asdict(), i3._asdict(), i4._asdict(), i5._asdict())
+    print("As ColSet: ", i1.as_column_set(), i2.as_column_set(), i3.as_column_set(), i4.as_column_set(),
+          i5.as_column_set())

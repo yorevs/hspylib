@@ -14,17 +14,17 @@
    Copyright 2022, HSPyLib team
 """
 
+import os
+import sys
+import unittest
+
+from requests import ConnectTimeout, exceptions as ex
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.decorator.decorators import integration_test
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.fetch import delete, get, head, is_reachable, patch, post, put
-from requests import ConnectTimeout, exceptions as ex
-
-import os
-import sys
-import unittest
-
 from mock.mock_server import MockServer
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))

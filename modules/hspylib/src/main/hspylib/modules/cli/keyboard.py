@@ -17,7 +17,7 @@ import select
 import string
 import sys
 import termios
-from typing import Optional, List
+from typing import List, Optional
 
 import getkey
 

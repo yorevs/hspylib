@@ -14,11 +14,13 @@
    Copyright 2022, HSPyLib team
 """
 from collections import namedtuple
-from datasource.crud_entity import CrudEntity
-from datasource.identity import Identity
+from typing import List
+
 from hspylib.core.tools.commons import str_to_bool
 from hspylib.core.tools.text_tools import snakecase
-from typing import List
+
+from datasource.crud_entity import CrudEntity
+from datasource.identity import Identity
 
 
 class EntityTest(CrudEntity):

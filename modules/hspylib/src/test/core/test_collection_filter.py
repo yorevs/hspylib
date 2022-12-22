@@ -14,13 +14,13 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.collection_filter import *
-from hspylib.core.exception.exceptions import InvalidArgumentError
-from typing import List
-
 import collections
 import sys
 import unittest
+from typing import List
+
+from hspylib.core.collection_filter import *
+from hspylib.core.exception.exceptions import InvalidArgumentError
 
 
 def get_dict() -> List[dict]:

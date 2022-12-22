@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Optional, List, Any
+from typing import Any, Generic, List, Optional, TypeVar
 
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import ensure_endswith, elide_text
+from hspylib.core.tools.text_tools import elide_text, ensure_endswith
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences

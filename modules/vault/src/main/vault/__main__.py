@@ -20,7 +20,7 @@ import sys
 from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import syserr, hook_exit_signals
+from hspylib.core.tools.commons import hook_exit_signals, syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version

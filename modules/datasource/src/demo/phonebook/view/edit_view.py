@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   demo.phonebook.view
+   @package: demo.phonebook.view
       @file: edit_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -13,17 +12,20 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.core.tools.commons import syserr
+from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
-from hspylib.core.tools.commons import syserr, sysout
 
+from datasource.identity import Identity
 from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
 
 class EditView(TUIMenuView):
-    def __init__(self) -> None:
+    def __init__(self, parent: TUIMenu) -> None:
+        super().__init__(parent)
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
@@ -31,9 +33,9 @@ class EditView(TUIMenuView):
         uuid = TUIMenuUtils.prompt("uuid")
         if not uuid:
             return
-        found = self.person_service.get(uuid)
+        found = self.person_service.get(Identity(uuid))
         if not found:
-            syserr("Person does not exist", uuid)
+            syserr(f"Person does not exist: uuid={uuid.uuid}")
             TUIMenuUtils.wait_keystroke()
         else:
             form = ContactForms.person_form(
@@ -47,16 +49,15 @@ class EditView(TUIMenuView):
                 found.complement = form.complement
                 self.person_service.save(found)
                 TUIMenuUtils.render_app_title()
-                sysout("Person successfully saved!%EOL%")
-                TUIMenuUtils.wait_keystroke()
+                TUIMenuUtils.wait_keystroke("Person successfully saved!%EOL%")
 
     def company(self) -> None:
         uuid = TUIMenuUtils.prompt("uuid")
         if not uuid:
             return
-        found = self.company_service.get(uuid)
+        found = self.company_service.get(Identity(uuid))
         if not found:
-            syserr("Company does not exist", uuid)
+            syserr(f"Company does not exist: uuid={uuid.uuid}")
             TUIMenuUtils.wait_keystroke()
         else:
             form = ContactForms.company_form(
@@ -69,5 +70,4 @@ class EditView(TUIMenuView):
                 found.complement = form.complement
                 self.company_service.save(found)
                 TUIMenuUtils.render_app_title()
-                sysout("Company successfully saved!%EOL%")
-                TUIMenuUtils.wait_keystroke()
+                TUIMenuUtils.wait_keystroke("Company successfully saved!%EOL%")

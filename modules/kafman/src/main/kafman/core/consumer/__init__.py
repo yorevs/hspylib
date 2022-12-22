@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'consumer_config', 
-  'consumer_worker'
+    'consumer_config',
+    'consumer_worker'
 ]
 __version__ = '0.9.93'

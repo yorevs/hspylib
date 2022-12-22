@@ -14,10 +14,12 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import Tuple
+
 from avro.schema import Field
+
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
-from typing import Tuple
 
 
 class RecordField(SchemaField):

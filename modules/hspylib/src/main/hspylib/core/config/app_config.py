@@ -13,15 +13,15 @@
    Copyright 2022, HSPyLib team
 """
 
+import logging as log
+import os
+from textwrap import dedent
+from typing import Any, Optional
+
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import run_dir, str_to_bool
-from textwrap import dedent
-from typing import Any, Optional
-
-import logging as log
-import os
 
 
 class AppConfigs(metaclass=Singleton):

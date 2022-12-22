@@ -13,9 +13,8 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any
-
 import re
+from typing import Any
 
 from pyparsing import unicode
 

@@ -13,10 +13,12 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Optional, Set
+
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from hspylib.core.tools.text_tools import quote
-from typing import Optional, Set
+
 from vault.entity.vault_entry import VaultEntry
 
 

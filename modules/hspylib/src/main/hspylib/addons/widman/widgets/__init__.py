@@ -1,14 +1,14 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.137
+# hspylib v0.11.138
 #
 # Package: main.hspylib.addons.widman.widgets
 """Package initialization."""
 
 __all__ = [
-  'widget_free', 
-  'widget_punch', 
-  'widget_send_msg', 
-  'widget_time_calc'
+    'widget_free',
+    'widget_punch',
+    'widget_send_msg',
+    'widget_time_calc'
 ]
-__version__ = '0.11.137'
+__version__ = '0.11.138'

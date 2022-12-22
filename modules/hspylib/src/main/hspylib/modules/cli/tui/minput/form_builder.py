@@ -53,7 +53,8 @@ class FormBuilder:
 
         def min_max_length(self, min_length: int, max_length: int) -> "FormBuilder.FieldBuilder":
             check_argument(max_length >= min_length, "Not a valid field length: ({}-{})", min_length, max_length)
-            check_argument(max_length > 0 and min_length > 0, "Not a valid field length: ({}-{})", min_length, max_length)
+            check_argument(max_length > 0 and min_length > 0, "Not a valid field length: ({}-{})", min_length,
+                           max_length)
             self.field.min_length = min_length
             self.field.max_length = max_length
             return self

@@ -13,8 +13,9 @@
    Copyright 2022, HSPyLib team
 """
 from argparse import ArgumentParser
-from hspylib.modules.application.parser_action import ParserAction
 from typing import Any
+
+from hspylib.modules.application.parser_action import ParserAction
 
 
 class OptionsBuilder:

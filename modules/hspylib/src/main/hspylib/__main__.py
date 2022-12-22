@@ -13,6 +13,8 @@
 
    Copyright 2022, HSPyLib team
 """
+import sys
+
 from hspylib.__classpath__ import _Classpath
 from hspylib.addons.appman.appman import AppManager
 from hspylib.addons.appman.appman_enums import AppType, Extension
@@ -24,8 +26,6 @@ from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.tui.tui_application import TUIApplication
-
-import sys
 
 
 class Main(TUIApplication):

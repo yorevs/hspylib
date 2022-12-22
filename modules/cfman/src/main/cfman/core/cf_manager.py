@@ -13,22 +13,23 @@
 
    Copyright 2022, HSPyLib team
 """
-from cfman.core.cf import CloudFoundry
-from cfman.core.cf_application import CFApplication
-from cfman.core.cf_endpoint import CFEndpoint
-from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
+import sys
+from time import sleep
+from typing import List, Optional
+
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.tools.commons import file_is_not_empty, str_to_bool, syserr, sysout
 from hspylib.modules.cache.ttl_cache import TTLCache
 from hspylib.modules.cli.tui.mchoose import mchoose
+from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.mselect import mselect
-from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.fetch.fetch import head
-from time import sleep
-from typing import List, Optional
 
-import sys
+from cfman.core.cf import CloudFoundry
+from cfman.core.cf_application import CFApplication
+from cfman.core.cf_endpoint import CFEndpoint
+from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
 
 
 class CFManager:

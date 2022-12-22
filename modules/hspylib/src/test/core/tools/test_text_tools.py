@@ -13,13 +13,13 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.tools.text_tools import *
-from textwrap import dedent
-
 import json
 import string
 import sys
 import unittest
+from textwrap import dedent
+
+from hspylib.core.tools.text_tools import *
 
 
 class TestTextTools(unittest.TestCase):

@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   demo.phonebook.view
+   @package: demo.phonebook.view
       @file: search_view.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,7 +16,7 @@
 from typing import List
 
 from hspylib.core.namespace import Namespace
-from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
@@ -30,7 +29,8 @@ from phonebook.service.person_service import PersonService
 
 
 class SearchView(TUIMenuView):
-    def __init__(self) -> None:
+    def __init__(self, parent: TUIMenu) -> None:
+        super().__init__(parent)
         self.person_service = PersonService()
         self.company_service = CompanyService()
 
@@ -69,8 +69,7 @@ class SearchView(TUIMenuView):
             )
             TUIMenuUtils.wait_keystroke()
         if not persons and not companies:
-            sysout("-=- No results to be displayed -=-%EOL%")
-            TUIMenuUtils.wait_keystroke()
+            TUIMenuUtils.wait_keystroke("-=- No results to be displayed -=-%EOL%")
 
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:

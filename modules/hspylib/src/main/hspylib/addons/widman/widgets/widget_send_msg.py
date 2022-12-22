@@ -23,7 +23,7 @@ from typing import List
 
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.exception.exceptions import WidgetExecutionError
-from hspylib.core.tools.commons import sysout, hook_exit_signals
+from hspylib.core.tools.commons import hook_exit_signals, sysout
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version

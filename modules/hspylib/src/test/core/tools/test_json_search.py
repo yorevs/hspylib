@@ -14,12 +14,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from os import path
-
 import json
 import os
 import sys
 import unittest
+from os import path
 
 from hspylib.core.tools.json_search import JsonSearch
 

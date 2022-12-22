@@ -14,7 +14,12 @@
 
    Copyright 2022, HSPyLib team
 """
+import re
 from concurrent import futures
+from textwrap import dedent
+from time import sleep
+from typing import List
+
 from hspylib.addons.widman.widget import Widget
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.application.exit_status import ExitStatus
@@ -22,11 +27,6 @@ from hspylib.modules.application.version import Version
 from hspylib.modules.cli.icons.font_awesome.widget_icons import WidgetIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.terminal import Terminal
-from textwrap import dedent
-from time import sleep
-from typing import List
-
-import re
 
 
 class WidgetFree(Widget):

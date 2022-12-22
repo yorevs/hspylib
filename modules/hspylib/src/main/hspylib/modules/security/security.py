@@ -13,15 +13,16 @@
    Copyright 2022, HSPyLib team
 """
 
+import base64
+import os
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument, check_state
-
-import base64
-import os
 
 # Please do not modify this value
 DEFAULT_HS_SALT = "HsPyLib"

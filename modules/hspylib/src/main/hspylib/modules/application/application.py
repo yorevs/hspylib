@@ -26,7 +26,7 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_state
-from hspylib.core.tools.commons import log_init, syserr, sysout, hook_exit_signals
+from hspylib.core.tools.commons import hook_exit_signals, log_init, syserr, sysout
 from hspylib.core.tools.text_tools import camelcase
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser

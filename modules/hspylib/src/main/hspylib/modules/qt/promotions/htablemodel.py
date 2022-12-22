@@ -13,14 +13,15 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.collection_filter import CollectionFilter, FilterCondition
-from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
+import collections
+from typing import List, Tuple, Type, TypeVar, Union
+
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt, QVariant
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QTableView
-from typing import List, Tuple, Type, TypeVar, Union
 
-import collections
+from hspylib.core.collection_filter import CollectionFilter, FilterCondition
+from hspylib.core.tools.commons import class_attribute_names, class_attribute_values
 
 T = TypeVar("T")
 
