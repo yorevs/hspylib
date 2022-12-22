@@ -12,15 +12,16 @@
 
    Copyright 2022, HSPyLib team
 """
+import os
 from abc import ABC
-from hspylib.core.preconditions import check_argument, check_state
-from hspylib.core.tools.commons import run_dir
+from typing import Optional, Tuple, Type
+
 from PyQt5 import uic
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
-from typing import Optional, Tuple, Type
 
-import os
+from hspylib.core.preconditions import check_argument, check_state
+from hspylib.core.tools.commons import run_dir
 
 
 class QtView(ABC):

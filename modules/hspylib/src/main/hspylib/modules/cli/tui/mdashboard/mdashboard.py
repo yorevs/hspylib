@@ -21,7 +21,7 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.mdashboard.dashboard_builder import DashboardBuilder
 from hspylib.modules.cli.tui.mdashboard.dashboard_item import DashboardItem
 from hspylib.modules.cli.tui.tui_component import TUIComponent
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, restore_cursor, erase_line, exit_app
+from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
 
 
 def mdashboard(

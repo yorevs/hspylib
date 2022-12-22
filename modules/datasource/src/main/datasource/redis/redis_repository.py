@@ -12,21 +12,22 @@
 
    Copyright 2022, HSPyLib team
 """
+import contextlib
+import logging as log
 from abc import abstractmethod
-from datasource.crud_entity import CrudEntity
-from datasource.db_repository import Connection, Cursor
-from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
-from datasource.redis.redis_configuration import RedisConfiguration
+from typing import Generic, List, Optional, Tuple, TypeVar
+
+import redis
 from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
-from typing import Generic, List, Optional, Tuple, TypeVar
 
-import contextlib
-import logging as log
-import redis
+from datasource.crud_entity import CrudEntity
+from datasource.db_repository import Connection, Cursor
+from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
+from datasource.redis.redis_configuration import RedisConfiguration
 
 E = TypeVar("E", bound=CrudEntity)
 
@@ -134,7 +135,7 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
         """TODO"""
         check_not_none(entities)
         with self.pipeline() as pipe:
-            list(map(lambda e: pipe.set(self.build_key(e), str(e.as_dict())), entities))
+            list(map(lambda e: pipe.set(self.build_key(e), str(e._asdict())), entities))
             count = len(pipe)
             pipe.execute()
             log.debug("%s Executed '%d' pipelined 'SET' command(s)", self.logname, count)

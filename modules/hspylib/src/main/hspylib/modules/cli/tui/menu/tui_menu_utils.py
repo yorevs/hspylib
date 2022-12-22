@@ -2,7 +2,7 @@ from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.minput.minput import minput, MenuInput
+from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
 from hspylib.modules.cli.vt100.vt_utils import clear_screen
 from hspylib.modules.eventbus import eventbus
@@ -39,14 +39,13 @@ class TUIMenuUtils:
         min_length: int = 1,
         max_length: int = 32,
         validator: InputValidator = None) -> Namespace:
-
         form_fields = MenuInput.builder() \
             .field() \
-                .label(label) \
-                .dest(dest or label) \
-                .validator(validator or InputValidator.words(min_length, max_length)) \
-                .min_max_length(min_length, max_length) \
-                .build() \
+            .label(label) \
+            .dest(dest or label) \
+            .validator(validator or InputValidator.words(min_length, max_length)) \
+            .min_max_length(min_length, max_length) \
+            .build() \
             .build()
         ret_val = minput(form_fields)
         cls.render_app_title()

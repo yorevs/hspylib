@@ -14,11 +14,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.exception.exceptions import InvalidArgumentError
-from hspylib.core.tools.commons import sysout
+import re
 from typing import List
 
-import re
+from hspylib.core.exception.exceptions import InvalidArgumentError
+from hspylib.core.tools.commons import sysout
 
 
 class CFApplication:

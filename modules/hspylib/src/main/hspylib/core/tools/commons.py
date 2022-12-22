@@ -19,7 +19,7 @@ import pathlib
 import signal
 import sys
 from datetime import timedelta
-from typing import Optional, Set, Tuple, Type, Callable, Iterable, Any
+from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
@@ -111,9 +111,11 @@ def sysout(*string: str, end: str = os.linesep) -> None:
     :param string: values to be printed to sys.stdout
     :param end: string appended after the last value, default a newline
     """
+
     def sysout_format(text: str) -> str:
         msg = VtColor.colorize(VtCode.decode(f"{text}"))
         return msg
+
     list(map_many(string, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
     print("", file=sys.stdout, flush=True, end=end)
 
@@ -123,9 +125,11 @@ def syserr(*string: Any, end: str = os.linesep) -> None:
     :param string: values to be printed to sys.stderr
     :param end: string appended after the last value, default a newline
     """
+
     def syserr_format(text: Any) -> str:
         msg = VtColor.colorize(VtCode.decode(f"%RED%{VtColor.strip_colors(str(text))}%NC%"))
         return msg
+
     list(map_many(string, syserr_format, lambda s: print(f"{s} ", file=sys.stderr, flush=True, end="")))
     print("", file=sys.stdout, flush=True, end=end)
 

@@ -13,18 +13,19 @@
    Copyright 2022, HSPyLib team
 """
 
+from http.server import HTTPServer
+from random import randint
+from threading import Thread
+from time import sleep
+from typing import Optional, Tuple
+
+from requests.structures import CaseInsensitiveDict
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.content_type import ContentType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.modules.fetch.http_response import HttpResponse
-from http.server import HTTPServer
-from random import randint
-from requests.structures import CaseInsensitiveDict
-from threading import Thread
-from time import sleep
-from typing import Optional, Tuple
-
 from mock.mock_server_handler import MockServerHandler
 
 

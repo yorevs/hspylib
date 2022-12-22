@@ -1,6 +1,6 @@
 from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.tui.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.minput.minput import minput, MenuInput
+from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
 
 
 class ContactForms:
@@ -57,7 +57,6 @@ class ContactForms:
         website: str = '',
         address: str = '',
         cpl: str = '') -> Namespace:
-
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \

@@ -1,8 +1,8 @@
-from typing import Union, List, TypeVar
+from typing import List, TypeVar, Union
 
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
-from hspylib.modules.cli.tui.menu.tui_menu_action import TUIMenuAction, ON_TRIGGER_CB
+from hspylib.modules.cli.tui.menu.tui_menu_action import ON_TRIGGER_CB, TUIMenuAction
 from hspylib.modules.cli.tui.menu.tui_menu_item import TUIMenuItem
 from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
 

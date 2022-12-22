@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
-   @project: hspylib-firebase
-   @package: hspylib.demo.phonebook
+   @project: hspylib-datasource
+   @package: demo.phonebook
       @file: __classpath__.py
    @created: Thu, 03 Jun 2022
-    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
-      @site: "https://github.com/yorevs/hspylib")
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
+      @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
    Copyright 2022, HSPyLib team

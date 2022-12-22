@@ -19,7 +19,7 @@ from hspylib.core.preconditions import check_not_none
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.cli.tui.tui_component import T
-from hspylib.modules.cli.vt100.vt_utils import prepare_render, clear_screen
+from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
 from hspylib.modules.eventbus import eventbus
 from hspylib.modules.eventbus.event import Event
 

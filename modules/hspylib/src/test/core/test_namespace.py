@@ -13,24 +13,35 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.namespace import Namespace
-
 import sys
 import unittest
 
+from hspylib.core.namespace import Namespace
+
 
 class TestNamespace(unittest.TestCase):
-    def test_should_not_allow_private_or_protected_attribute_names(self) -> None:
-        with self.assertRaises(Exception) as context:
-            Namespace("TestNs", _name="John", age=44, active=True)
-        self.assertTrue(NameError, type(context.exception))
-        self.assertTrue("Attribute names can't start with '_' or '__'" in str(context.exception))
 
-    def test_len_should_return_the_numer_of_attributes(self) -> None:
+    def test_should_return_all_attributes_and_values(self) -> None:
         ns = Namespace.of("TestNs", {"name": "John", "age": 44, "active": True, "nested": {"n1": 1, "n2": 2}})
         self.assertEqual(4, len(ns))
         expected_attrs = ["name", "age", "active", "nested"]
+        expected_vals = ["John", 44, True, {"n1": 1, "n2": 2}]
         self.assertCountEqual(expected_attrs, ns.attributes)
+        self.assertCountEqual(expected_vals, ns.values)
+
+    def test_should_not_allow_forbidden_attribute_names(self) -> None:
+        with self.assertRaises(Exception) as context:
+            Namespace("TestNs", items="John")
+            self.assertTrue(NameError, type(context.exception))
+            self.assertTrue("Invalid attribute name" in str(context.exception))
+        with self.assertRaises(Exception) as context:
+            Namespace("TestNs", _name="John")
+            self.assertTrue(NameError, type(context.exception))
+            self.assertTrue("Invalid attribute name" in str(context.exception))
+        with self.assertRaises(Exception) as context:
+            Namespace("TestNs", __name__="John")
+            self.assertTrue(NameError, type(context.exception))
+            self.assertTrue("Invalid attribute name" in str(context.exception))
 
     def test_should_create_namespace_from_kwargs(self) -> None:
         ns = Namespace("TestNs", name="John", age=44, active=True)
@@ -72,6 +83,9 @@ class TestNamespace(unittest.TestCase):
     def test_should_be_iterable(self) -> None:
         ns = Namespace("TestNs", name="John", age=44, active=True)
         expected = [("name", "John"), ("age", 44), ("active", True)]
+        self.assertTrue("name" in ns)
+        self.assertTrue("age" in ns)
+        self.assertTrue("active" in ns)
         for n in ns:
             self.assertTrue(n in expected)
 
@@ -109,13 +123,33 @@ class TestNamespace(unittest.TestCase):
         self.assertEqual("John", ns.name)
         self.assertEqual(44, ns.age)
         self.assertEqual(True, ns.add)
-        self.assertEqual("TestNs.SubNs", ns.__name__)
+        self.assertEqual("TestNs_SubNs", ns.__name__)
 
     def test_should_not_allow_modify_final(self) -> None:
         ns = Namespace("TestNs", True, name="John", age=44)
         self.assertTrue(ns.hasattr("name"))
         self.assertTrue(ns.hasattr("age"))
-        self.assertRaisesRegex(ValueError, "TestNs Namespace is final", lambda: ns.setattr("active", True))
+        self.assertRaisesRegex(
+            ValueError, "Can't set attribute 'active'. 'TestNs' Namespace is final",
+            lambda: ns.setattr("active", True)
+        )
+
+    def test_should_return_namespace_as_dictionary(self) -> None:
+        ns = Namespace("TestNs", name="John", age=44, active=True) + Namespace("SubNs", add=True)
+        dict_ns = ns._asdict()
+        self.assertTrue(isinstance(dict_ns, dict))
+        self.assertFalse("_final" in dict_ns)
+        self.assertFalse("_index" in dict_ns)
+        self.assertTrue("name" in dict_ns)
+        self.assertTrue("age" in dict_ns)
+        self.assertTrue("active" in dict_ns)
+        self.assertTrue("add" in dict_ns)
+
+    def test_should_convert_to_String(self) -> None:
+        ns = Namespace("TestNs", name="John", age=44, active=True) + Namespace("SubNs", add=True)
+        expected_string = "TestNs_SubNs(name=John, age=44, active=True, add=True)"
+        self.assertEqual(expected_string, str(ns))
+        self.assertEqual(expected_string, repr(ns))
 
 
 if __name__ == "__main__":

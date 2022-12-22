@@ -14,9 +14,10 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import List, Optional
+
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.cli.vt100.terminal import Terminal
-from typing import List, Optional
 
 
 class CloudFoundry(metaclass=Singleton):

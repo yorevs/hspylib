@@ -13,13 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-from abc import ABCMeta
-from hspylib.core.exception.exceptions import HSBaseException
-from hspylib.core.preconditions import check_not_none
-from typing import Any, Type, TypeVar, Union
-
 import logging as log
 import sys
+from abc import ABCMeta
+from typing import Any, Type, TypeVar, Union
+
+from hspylib.core.exception.exceptions import HSBaseException
+from hspylib.core.preconditions import check_not_none
 
 SINGLETON = TypeVar("SINGLETON", bound=Union[Type, "Singleton"])
 

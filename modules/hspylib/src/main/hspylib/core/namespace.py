@@ -12,14 +12,17 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Any, Dict, Iterator, List, Optional, Tuple
+
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.dict_tools import merge
-from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 ATTRIBUTE_TYPES = Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]
 
 
 class Namespace:
+    """TODO"""
+
     @staticmethod
     def of(type_name: str, attributes: ATTRIBUTE_TYPES, final: bool = False) -> "Namespace":
         check_not_none(attributes)
@@ -34,8 +37,32 @@ class Namespace:
         list(map(self.setattr, kwargs.keys(), kwargs.values()))
         self._final = final
 
-    def key(self) -> Tuple[Any]:
-        return tuple(self.values)
+    @property
+    def attributes(self) -> Tuple[str]:
+        # fmt: off
+        return tuple(
+            attr for attr in filter(
+                lambda name:
+                    self[name] is not None
+                    and not name.startswith(("_", "__"))
+                    and not name.endswith(("_", "__")),
+                vars(self),
+            )
+        )
+        # fmt: on
+
+    @property
+    def values(self) -> Tuple[Any]:
+        all_values = [self[attr] for attr in self.attributes]
+        # fmt: off
+        return tuple(
+            filter(
+                lambda val:
+                    val is not None,
+                all_values
+            )
+        )
+        # fmt: on
 
     def __str__(self) -> str:
         return f"{self.__name__}({', '.join([f'{a}={av}' for a, av in zip(self.attributes, self.values)])})"
@@ -63,13 +90,13 @@ class Namespace:
 
     def __next__(self) -> Tuple[str, Any]:
         if self._index < len(self):
-            item = self.at(self._index)
+            item = self.item_at(self._index)
             self._index += 1
             return item
         raise StopIteration
 
-    def __contains__(self, attribute: str):
-        return hasattr(self, attribute)
+    def __contains__(self, *attributes: str):
+        return all(hasattr(self, attr) for attr in attributes)
 
     def __iadd__(self, attribute: Dict[str, Any] | "Namespace") -> "Namespace":
         for a, av in attribute.items():
@@ -77,40 +104,51 @@ class Namespace:
         return self
 
     def __add__(self, other: Dict[str, Any] | "Namespace") -> "Namespace":
-        self.__name__ += "." + other.__name__
+        self.__name__ += "_" + other.__name__
         return self.__iadd__(other)
+
+    def key(self) -> Tuple[Any]:
+        return tuple(self.values)
 
     def setattr(self, name: str, value: Any) -> "Namespace":
         if self._final and not hasattr(self, name):
-            raise ValueError(f"{self.__name__} Namespace is final")
-        if name.startswith(("_", "__")) or name.endswith(("_", "__")):
-            raise NameError("Attribute names can't start with '_' or '__'")
+            raise ValueError(f"Can't set attribute '{name}'. '{self.__name__}' Namespace is final")
+        if not not hasattr(self, name):
+            self._check_name(name)
         setattr(self, name, value)
         return self
 
-    def hasattr(self, name: str) -> bool:
-        return hasattr(self, name)
-
-    def at(self, index: int) -> Optional[Tuple[str, Any]]:
-        return (self.attributes[index], self.values[index]) if index < len(self) else None
+    def item_at(self, index: int) -> Optional[Tuple[str, Any]]:
+        # fmt: off
+        return (
+            self.attributes[index], self.values[index]
+        ) if index < len(self) \
+          else None
+        # fmt: on
 
     def items(self) -> Iterator[Tuple[str, Any]]:
         return iter(self)
 
-    @property
-    def attributes(self) -> Tuple[str]:
-        # fmt: off
-        return tuple(
-            a for a in filter(
-                lambda name:
-                    self[name] is not None
-                    and not name.startswith(("_", "__"))
-                    and not name.endswith(("_", "__")),
-                vars(self),
-            )
-        )
-        # fmt: on
+    def hasattr(self, *names: str) -> bool:
+        return self.__contains__(*names)
 
-    @property
-    def values(self) -> Tuple[Any]:
-        return tuple(filter(lambda val: val is not None, [getattr(self, a) for a in self.attributes]))
+    def _asdict(self) -> Dict[str, Any]:
+        """
+        To match the same function name as namedtuple, we used _asdict
+        """
+        return dict(zip(self.attributes, self.values))
+
+    def _check_name(self, name: str) -> None:
+        # fmt: off
+        if not (
+            self.hasattr(name)
+            or (
+                not name.startswith(("_", "__"))
+                and not name.endswith(("_", "__"))
+                and name not in (forbidden := vars(self).keys())
+            )
+        ):
+            raise NameError(
+                f"Invalid attribute name '{name}'. "
+                f"Attributes can't start with '_' or '__' and must not be in {forbidden}")
+        # fmt: on

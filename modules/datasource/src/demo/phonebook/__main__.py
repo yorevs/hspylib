@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-   TODO Purpose of the file
    @project: HSPyLib
-   demo.phonebook
+   @Package: demo.phonebook
       @file: __main__.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -17,9 +16,9 @@ import sys
 
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.tui.tui_application import TUIApplication
 from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
 from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
+from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
@@ -35,7 +34,6 @@ class Main(TUIApplication):
         super().__init__(app_name, version, "A Simple CLI phonebook", resource_dir=str(_Classpath.resource_path()))
 
     def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
-        create_view, edit_view, search_view = CreateView(), EditView(), SearchView()
         # fmt: off
         main_menu = TUIMenuFactory \
             .create_main_menu(self._app_name, 'Access the Main Menu') \
@@ -68,6 +66,7 @@ class Main(TUIApplication):
                 .then() \
             .build()
         # fmt: on
+        create_view, edit_view, search_view = CreateView(main_menu), EditView(main_menu), SearchView(main_menu)
         self._alternate_screen()
         TUIMenuUi(main_menu, self._app_name).execute()
         return ExitStatus.SUCCESS

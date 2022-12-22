@@ -13,13 +13,14 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.zoned_datetime import now_ms
-from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
+import sys
+import unittest
 from time import sleep
 
 import keyring
-import sys
-import unittest
+
+from hspylib.core.zoned_datetime import now_ms
+from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
 
 
 class TestTextTools(unittest.TestCase):

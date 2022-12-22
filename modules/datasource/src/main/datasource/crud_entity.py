@@ -13,23 +13,24 @@
    Copyright 2022, HSPyLib team
 """
 
-from datasource.identity import Identity
-from hspylib.core.namespace import Namespace
-from hspylib.core.preconditions import check_argument
-from typing import Iterable, Optional
+import json
+from typing import Iterable
 from uuid import UUID
 
-import json
+from hspylib.core.namespace import Namespace
+from hspylib.core.preconditions import check_argument
+
+from datasource.identity import Identity
 
 
 class CrudEntity(Namespace):
     """Generic entity type."""
 
-    def __init__(self, entity_id: Optional[Identity] = None, **kwargs):
+    def __init__(self, entity_id: Identity | None = None, **kwargs):
         super().__init__(self.__class__.__name__, **kwargs)
         check_argument(entity_id is None or isinstance(entity_id, Identity))
         self._identity = entity_id if entity_id else Identity.auto()
-        self.__iadd__(self._identity.as_dict())
+        self.__iadd__(self._identity._asdict())
 
     @property
     def identity(self) -> Identity:
@@ -57,7 +58,10 @@ class CrudEntity(Namespace):
         return json.dumps(self.as_dict(), indent=indent)
 
     def as_column_set(
-        self, separator: str = ", ", prefix: Optional[str] = None, exclude: Optional[Iterable[str]] = None
+        self,
+        separator: str = ", ",
+        prefix: str | None = None,
+        exclude: Iterable[str] | None = None
     ) -> str:
         """TODO"""
 

@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'avro_schema', 
-  'avro_type', 
-  'field'
+    'avro_schema',
+    'avro_type',
+    'field'
 ]
 __version__ = '0.9.93'

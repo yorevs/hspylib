@@ -13,10 +13,10 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.preconditions import *
-
 import sys
 import unittest
+
+from hspylib.core.preconditions import *
 
 
 class TestPreconditions(unittest.TestCase):

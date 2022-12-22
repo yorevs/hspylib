@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'producer_config', 
-  'producer_worker'
+    'producer_config',
+    'producer_worker'
 ]
 __version__ = '0.9.93'
