@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.138
+# hspylib v0.11.139
 #
 # Package: test.shared
 """Package initialization."""
 
 __all__ = [
-    'application_test'
+  'application_test'
 ]
-__version__ = '0.11.138'
+__version__ = '0.11.139'

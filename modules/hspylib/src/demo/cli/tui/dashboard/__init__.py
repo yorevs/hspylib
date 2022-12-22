@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.138
+# hspylib v0.11.139
 #
 # Package: demo.cli.tui.dashboard
 """Package initialization."""
 
 __all__ = [
-    'menu_dashboard_demo'
+  'menu_dashboard_demo'
 ]
-__version__ = '0.11.138'
+__version__ = '0.11.139'
