@@ -86,8 +86,10 @@ class MInputUtils(ABC):
     @staticmethod
     def append_masked(value: str, mask: str, keypress_value: chr) -> str:
         """TODO"""
-        masked_value = value
         idx = len(value)
+        if keypress_value == mask[idx]:
+            return f"{value}{keypress_value}|{mask}"
+        masked_value = value
         while idx < len(mask) and mask[idx] not in ["#", "@", "*"]:
             masked_value += mask[idx]
             idx += 1

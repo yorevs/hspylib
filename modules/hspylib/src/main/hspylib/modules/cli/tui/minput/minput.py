@@ -16,10 +16,11 @@ import re
 import time
 from typing import List, Optional
 
+import pyperclip
+
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import syserr, sysout
-from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
@@ -29,7 +30,7 @@ from hspylib.modules.cli.tui.minput.input_type import InputType
 from hspylib.modules.cli.tui.minput.minput_utils import MInputUtils
 from hspylib.modules.cli.tui.tui_component import TUIComponent
 from hspylib.modules.cli.vt100.vt_utils import (
-    get_cursor_position, prepare_render, restore_cursor, restore_terminal, set_enable_echo,
+    get_cursor_position, prepare_render, restore_cursor, set_enable_echo,
 )
 
 
@@ -86,8 +87,7 @@ class MenuInput(TUIComponent):
         if keypress == Keyboard.VK_ENTER:
             form_fields = Namespace("FormFields")
             for field in self.fields:
-                att_name = f"{snakecase(field.label)}"
-                form_fields.setattr(att_name, field.value)
+                form_fields.setattr(field.dest, field.value)
             return form_fields
 
         return None
@@ -152,7 +152,7 @@ class MenuInput(TUIComponent):
         return \
             f"\n{self.prefs.navbar_color.placeholder}" \
             f"[Enter] Submit  [{self.NAV_ICONS}] " \
-            f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %EL0%"
+            f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [^P] Paste  [Esc] Quit %NC%%EL0%%EOL%%EOL%"
 
     def _handle_keypress(self) -> Keyboard:
         """TODO"""
@@ -172,13 +172,15 @@ class MenuInput(TUIComponent):
                         self._display_error("This field is read only !")
                     else:
                         self._handle_backspace()
+                case Keyboard.VK_CTRL_P:
+                    self._handle_ctrl_p()
+                case Keyboard.VK_ENTER:
+                    self._handle_enter()
                 case _ as key if key.isalnum() or key.ispunct() or key == Keyboard.VK_SPACE:
                     if not self.cur_field.can_write():
                         self._display_error("This field is read only !")
                     else:
                         self._handle_input(keypress)
-                case Keyboard.VK_ENTER:
-                    self._handle_enter()
 
         self._re_render = True
 
@@ -244,6 +246,11 @@ class MenuInput(TUIComponent):
                 self.cur_field.value = str(self.cur_field.value)[:-1]
             elif not self.cur_field.can_write():
                 self._display_error("This field is read only !")
+
+    def _handle_ctrl_p(self) -> None:
+        """TODO"""
+        for c in pyperclip.paste():
+            self._handle_input(Keyboard.of_value(c))
 
     def _buffer_pos(self, field_size: int, idx: int) -> None:
         """TODO"""

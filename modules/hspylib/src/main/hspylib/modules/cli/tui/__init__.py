@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.134
+# hspylib v0.11.137
 #
 # Package: main.hspylib.modules.cli.tui
 """Package initialization."""
@@ -12,7 +12,8 @@ __all__ = [
   'minput', 
   'mselect', 
   'table', 
+  'tui_application', 
   'tui_component', 
   'tui_preferences'
 ]
-__version__ = '0.11.134'
+__version__ = '0.11.137'

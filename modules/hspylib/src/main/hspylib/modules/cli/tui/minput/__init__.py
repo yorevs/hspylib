@@ -1,13 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.134
+# hspylib v0.11.137
 #
 # Package: main.hspylib.modules.cli.tui.minput
 """Package initialization."""
 
 __all__ = [
   'access_type', 
-  'field_builder', 
   'form_builder', 
   'form_field', 
   'input_type', 
@@ -15,4 +14,4 @@ __all__ = [
   'minput', 
   'minput_utils'
 ]
-__version__ = '0.11.134'
+__version__ = '0.11.137'

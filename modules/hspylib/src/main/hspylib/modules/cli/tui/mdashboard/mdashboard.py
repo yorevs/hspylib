@@ -133,7 +133,7 @@ class MenuDashBoard(TUIComponent):
             f"{NavIcons.POINTER} %GREEN%{self.items[self.tab_index].tooltip}%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
             f"[Enter] Select  [Enter] "
-            f"Navigate  [{self.NAV_ICONS}]  Next  [{NavIcons.TAB}]  [Esc] Quit %EL0%"
+            f"Navigate  [{self.NAV_ICONS}]  Next  [{NavIcons.TAB}]  [Esc] Quit %NC%%EL0%%EOL%%EOL%"
         )
 
     def _handle_keypress(self) -> Keyboard:

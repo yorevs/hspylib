@@ -53,7 +53,7 @@ class TUIMenu(TUIComponent, ABC):
         return (
             f"%EOL%{self._breadcrumb()}%ED0%%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
-            f"[Enter] Back  [Esc] Quit  "
+            f"[Enter] Back  [Esc] Quit  %NC%%EL0%%EOL%%EOL%"
         )
 
     def _breadcrumb(self) -> str:

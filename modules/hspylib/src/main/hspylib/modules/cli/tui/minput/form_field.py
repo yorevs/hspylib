@@ -15,6 +15,7 @@
 
 from typing import Any
 
+from hspylib.core.tools.text_tools import snakecase
 from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.cli.tui.minput.access_type import AccessType
 from hspylib.modules.cli.tui.minput.input_type import InputType
@@ -27,6 +28,7 @@ class FormField:
     def __init__(
         self,
         label: str = None,
+        dest: str = None,
         itype: InputType = InputType.TEXT,
         min_length: int = 0,
         max_length: int = 30,
@@ -35,12 +37,13 @@ class FormField:
         validator: InputValidator = None,
     ):
 
-        self.value = value
         self.label = label
+        self.dest = dest
         self.itype = itype
         self.min_length = min_length
         self.max_length = max_length
         self.access_type = access_type
+        self.value = value
         self.validator = validator or InputValidator.anything(min_length, max_length)
 
     def __str__(self) -> str:

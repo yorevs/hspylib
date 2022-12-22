@@ -23,7 +23,7 @@ from hspylib.modules.cache.ttl_cache import TTLCache
 from hspylib.modules.cli.tui.mchoose import mchoose
 from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
 from hspylib.modules.cli.tui.mselect import mselect
-from hspylib.modules.cli.tui.menu.menu_utils import MenuUtils
+from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.fetch.fetch import head
 from time import sleep
 from typing import List, Optional
@@ -243,7 +243,7 @@ class CFManager:
                         self._cf.targeted = {"org": None, "space": None, "targeted": False}
                         continue
 
-                    MenuUtils.wait_enter()
+                    TUIMenuUtils.wait_keystroke()
 
     def _display_app_status(self) -> None:
         """Display select apps status"""

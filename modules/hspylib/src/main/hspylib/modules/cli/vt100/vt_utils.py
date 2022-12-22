@@ -12,21 +12,23 @@
 
    Copyright 2022, HSPyLib team
 """
+import atexit
 import os
 import re
 import sys
 import termios
 import tty
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 
-from hspylib.core.tools.commons import hook_exit_signals, is_debugging, sysout
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.tools.commons import is_debugging, sysout
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 def screen_size() -> tuple[int, ...]:
     """Retrieve the size of the terminal"""
     if not sys.stdout.isatty():
-        raise NotImplementedError("screen_size:: Requires a terminal (TTY)")
+        raise NotATerminalError("screen_size:: Requires a terminal (TTY)")
 
     return tuple(map(int, os.popen("stty size").read().split()))
 
@@ -36,7 +38,7 @@ def screen_size() -> tuple[int, ...]:
 def get_cursor_position() -> Optional[Tuple[int, int]]:
     """Get the terminal cursor position"""
     if not sys.stdout.isatty():
-        raise NotImplementedError("get_cursor_position:: Requires a terminal (TTY)")
+        raise NotATerminalError("get_cursor_position:: Requires a terminal (TTY)")
 
     if is_debugging():
         return 0, 0
@@ -66,7 +68,7 @@ def set_enable_echo(enabled: bool = True) -> None:
     :param enabled: whether is enabled or not
     """
     if not sys.stdout.isatty():
-        raise NotImplementedError("set_enable_echo:: Requires a terminal (TTY)")
+        raise NotATerminalError("set_enable_echo:: Requires a terminal (TTY)")
 
     os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
 
@@ -100,11 +102,9 @@ def clear_screen(mode: int = 2) -> None:
     sysout(f"%CUP(0;0)%%ED{mode}%", end="")
 
 
-def restore_cursor(cls: bool = False) -> None:
+def restore_cursor() -> None:
     """Restore cursor position and attributes"""
     sysout(Vt100.restore_cursor(), end="")
-    if cls:
-        clear_screen()
 
 
 def alternate_screen(enable: bool = True) -> None:
@@ -118,21 +118,20 @@ def restore_terminal() -> None:
     set_show_cursor()
     set_enable_echo()
     sysout("%MOD(0)%")
-    alternate_screen(False)
 
 
-def exit_app(exit_code: int = None, frame=None, exit_msg: str = "") -> None:
-    """Exit the application. Commonly hooked to signals"""
-    sysout(str(frame) if frame else "", end="")
+def exit_app(exit_code: int = None, frame: Any = None, exit_msg: str = "") -> None:
+    """Exit the application. Commonly called by hooked signals"""
+    sysout(f"{exit_msg if exit_msg else ''}", end="")
+    sysout("%MOD(0)%")
     restore_terminal()
-    sysout(f"{f'%EOF%{exit_msg}%EOF%' if exit_msg else ''}")
     sys.exit(exit_code)
 
 
 def prepare_render():
     """Prepare the terminal for TUI renderization"""
-    hook_exit_signals(exit_app)
+    atexit.register(restore_terminal)
     set_auto_wrap(False)
     set_show_cursor(False)
-    alternate_screen()
+    clear_screen()
     save_cursor()

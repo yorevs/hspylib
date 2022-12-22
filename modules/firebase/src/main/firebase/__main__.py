@@ -21,7 +21,7 @@ from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.cli_application import CliApplication
+from hspylib.modules.cli.tui.tui_application import TUIApplication
 from textwrap import dedent
 
 import logging as log
@@ -33,7 +33,7 @@ import urllib3
 urllib3.disable_warnings()
 
 
-class Main(CliApplication):
+class Main(TUIApplication):
     """Firebase Agent - Manage your firebase integration"""
 
     # The welcome message
