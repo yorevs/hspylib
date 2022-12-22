@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.19
+# hspylib-datasource v0.9.20
 #
 # Package: test
 """Package initialization."""
 
 __all__ = [
-    'datasource',
-    'shared'
+  'datasource', 
+  'shared'
 ]
-__version__ = '0.9.19'
+__version__ = '0.9.20'

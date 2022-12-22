@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.93
+# hspylib-kafman v0.9.94
 #
 # Package: main.kafman.views.promotions
 """Package initialization."""
 
 __all__ = [
-    'form_area',
-    'form_pane'
+  'form_area', 
+  'form_pane'
 ]
-__version__ = '0.9.93'
+__version__ = '0.9.94'

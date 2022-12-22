@@ -1,17 +1,17 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.138
+# hspylib v0.11.139
 #
 # Package: test.core
 """Package initialization."""
 
 __all__ = [
-    'config',
-    'enums',
-    'metaclass',
-    'test_collection_filter',
-    'test_namespace',
-    'test_preconditions',
-    'tools'
+  'config', 
+  'enums', 
+  'metaclass', 
+  'test_collection_filter', 
+  'test_namespace', 
+  'test_preconditions', 
+  'tools'
 ]
-__version__ = '0.11.138'
+__version__ = '0.11.139'
