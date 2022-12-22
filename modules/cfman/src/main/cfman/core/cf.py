@@ -13,7 +13,7 @@
 
    Copyright 2022, HSPyLib team
 """
-
+import os
 from typing import List, Optional
 
 from hspylib.core.metaclass.singleton import Singleton
@@ -40,10 +40,10 @@ class CloudFoundry(metaclass=Singleton):
             self.connected = result and "FAILED" not in str(result)
         return self.connected
 
-    def api(self, api: str) -> bool:
+    def api(self, api: str | None = None) -> Optional[str]:
         """Set or view target api url"""
-        result = self._exec(f"api {api}")
-        return result and "FAILED" not in str(result)
+        result = self._exec(f"api {api or ''}")
+        return result if "FAILED" not in str(result) else None
 
     def auth(self, username: str, password: str) -> bool:
         """Authorize a CloudFoundry user"""
@@ -53,16 +53,22 @@ class CloudFoundry(metaclass=Singleton):
     def target(self, **kwargs) -> dict:
         """Set or view the targeted org or space"""
         params = ["target"]
-        if "org" in kwargs and kwargs["org"]:
-            params.append("-o")
-            params.append(kwargs["org"])
-            self.targeted["org"] = kwargs["org"]
-        if "space" in kwargs and kwargs["space"]:
-            params.append("-s")
-            params.append(kwargs["space"])
-            self.targeted["space"] = kwargs["space"]
-        result = self._exec(" ".join(params))
-        self.targeted["targeted"] = result and "FAILED" not in str(result)
+        if not kwargs and (parts := self._exec(" ".join(params)).split(os.linesep)):
+            if len(parts) >= 4:
+                org = parts[2].split(":")[1].strip()
+                space = parts[3].split(":")[1].strip()
+                self.targeted = {"org": org, "space": space, "targeted": True}
+        else:
+            if "org" in kwargs and kwargs["org"]:
+                params.append("-o")
+                params.append(kwargs["org"])
+                self.targeted["org"] = kwargs["org"]
+            if "space" in kwargs and kwargs["space"]:
+                params.append("-s")
+                params.append(kwargs["space"])
+                self.targeted["space"] = kwargs["space"]
+            result = self._exec(" ".join(params))
+            self.targeted["targeted"] = result and "FAILED" not in str(result)
 
         return self.targeted
 
@@ -103,7 +109,7 @@ class CloudFoundry(metaclass=Singleton):
 
     def logs(self, **kwargs) -> None:
         """Tail or show recent logs for an app"""
-        return self._exec(f"logs {kwargs['app']} {'--recent' if kwargs['recent'] else ''}")
+        return self._exec(f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}")
 
     def _exec(self, cmd_line: str, pool: bool = False) -> Optional[str]:
         """TODO"""

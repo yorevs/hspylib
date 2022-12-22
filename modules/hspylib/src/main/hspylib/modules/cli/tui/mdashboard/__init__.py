@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.139
+# hspylib v0.11.140
 #
 # Package: main.hspylib.modules.cli.tui.mdashboard
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
   'dashboard_item', 
   'mdashboard'
 ]
-__version__ = '0.11.139'
+__version__ = '0.11.140'

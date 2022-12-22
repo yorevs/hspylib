@@ -13,6 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 from argparse import ArgumentParser
+from functools import partial
 from typing import Any, Union
 
 from hspylib.modules.application.parser_action import ParserAction
@@ -30,17 +31,19 @@ class ArgumentsBuilder:
         help_string: str = None,
         choices: list = None,
         nargs: Union[str, int] = None,
+        action: ParserAction = ParserAction.STORE,
         default: Any = None,
     ) -> "ArgumentsBuilder":
         """TODO"""
 
-        self._arg_parser.add_argument(
-            dest=name,
-            help=help_string or f"the {name}",
-            action=ParserAction.STORE.value,
-            choices=choices,
-            nargs=nargs,
-            default=default,
+        add_arg = partial(
+            self._arg_parser.add_argument,
+            dest=name, help=help_string or f"the {name}",
+            action=action.value, default=default,
         )
+        if action == ParserAction.STORE:
+            add_arg(choices=choices, nargs=nargs)
+        else:
+            add_arg()
 
         return self
