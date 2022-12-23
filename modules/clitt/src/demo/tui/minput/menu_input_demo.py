@@ -59,5 +59,5 @@ if __name__ == "__main__":
         .build()
     # fmt: on
 
-result = minput(form_fields)
-print(result.__dict__ if result else "None")
+    result = minput(form_fields)
+    print(result.__dict__ if result else "None")
