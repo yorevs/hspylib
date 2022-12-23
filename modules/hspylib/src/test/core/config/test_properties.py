@@ -63,6 +63,13 @@ class TestProperties(unittest.TestCase):
         self.assertIsNotNone(properties)
         self.assertEqual(expected_size, len(properties))
 
+    def test_should_load_properties_from_toml_file(self) -> None:
+        expected_size = 9
+        filename = "application.toml"
+        properties = Properties(filename=filename, load_dir=RESOURCE_DIR)
+        self.assertIsNotNone(properties)
+        self.assertEqual(expected_size, len(properties))
+
     def test_properties_should_be_subscriptable(self) -> None:
         expected_size = 6
         properties = Properties(load_dir=RESOURCE_DIR)

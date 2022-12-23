@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.140
+# hspylib v0.11.142
 #
 # Package: main.hspylib.addons
 """Package initialization."""
 
 __all__ = [
-    'appman',
-    'widman'
+  'appman', 
+  'widman'
 ]
-__version__ = '0.11.140'
+__version__ = '0.11.142'
