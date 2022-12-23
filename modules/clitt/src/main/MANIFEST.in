@@ -1,0 +1,3 @@
+include clitt/welcome.txt
+include clitt/.version
+include clitt/addons/appman/templates/*.tpl
