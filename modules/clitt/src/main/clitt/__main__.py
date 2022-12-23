@@ -58,8 +58,10 @@ class Main(TUIApplication):
         """Initialize application parameters and options"""
 
         # fmt: off
-        self._with_chained_args('application', 'the HSPyLib application to run') \
-            .argument(self.Addon.APPMAN.val, 'app Application Manager: Create HSPyLib based python applications') \
+        self._with_chained_args('application', 'the HSPyLib-Clitt addon to run') \
+            .argument(
+                    self.Addon.APPMAN.val,
+                    'app Application Manager: Create HSPyLib-Clitt based python applications') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
@@ -143,4 +145,4 @@ class Main(TUIApplication):
 
 # Application entry point
 if __name__ == "__main__":
-    Main("hspylib").INSTANCE.run(sys.argv[1:])
+    Main("clitt").INSTANCE.run(sys.argv[1:])

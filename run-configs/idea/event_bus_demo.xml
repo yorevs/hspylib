@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="event_bus_demo" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo" nameIsGenerated="true">
+  <configuration default="false" name="event_bus_demo" type="PythonConfigurationType" factoryName="Python" folderName="HSPyLib-Demo" nameIsGenerated="true">
     <module name="HsPyLib.hspylib" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />

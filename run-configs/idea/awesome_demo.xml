@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="awesome_demo" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo">
+  <configuration default="false" name="awesome_demo" type="PythonConfigurationType" factoryName="Python" folderName="Clitt-Demo">
     <module name="HsPyLib.hspylib" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -7,12 +7,12 @@
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/icons/font_awesome" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/clitt/src/demo/icons/font_awesome" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/hspylib/src/demo/cli/icons/font_awesome/awesome_demo.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/clitt/src/demo/icons/font_awesome/awesome_demo.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
