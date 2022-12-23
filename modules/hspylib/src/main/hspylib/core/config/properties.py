@@ -18,8 +18,9 @@ import os
 import re
 from collections import defaultdict
 from configparser import ConfigParser
-from typing import Any, Callable, Iterator, List, Optional, Type
+from typing import Any, Callable, Iterator, List, Optional, Type, Dict, TextIO
 
+import toml
 import yaml
 
 from hspylib.core.enums.charset import Charset
@@ -44,8 +45,8 @@ class Properties:
         return re.sub("[ -.]", "_", property_name).upper()
 
     @staticmethod
-    def read_properties(all_lines: List[str]) -> dict:
-        """Reads a property list (key and element pairs) from the input list."""
+    def read_properties(all_lines: List[str]) -> Dict[str, Any]:
+        """Reads properties from properties file (key and element pairs) from the input list."""
         # fmt: off
         return {
             p[0].strip(): p[1].strip()
@@ -58,8 +59,8 @@ class Properties:
         # fmt: off
 
     @staticmethod
-    def read_cfg_or_ini(all_lines: List[str]):
-        """Reads a cfg or ini list (key and element pairs) from the input list."""
+    def read_cfg_or_ini(all_lines: List[str]) -> Dict[str, Any]:
+        """Reads properties from a cfg or ini file (key and element pairs) from the input list."""
         string = os.linesep.join(all_lines)
         all_cfgs = {}
         cfg = ConfigParser()
@@ -67,6 +68,16 @@ class Properties:
         for section in cfg.sections():
             all_cfgs.update(dict(cfg.items(section)))
         return all_cfgs
+
+    @staticmethod
+    def read_yaml(file_handler: TextIO) -> Dict[str, Any]:
+        """Reads properties from a yaml file (key and element pairs) from the input list."""
+        return flatten_dict(yaml.safe_load(file_handler))
+
+    @staticmethod
+    def read_toml(file_handler: TextIO) -> Dict[str, Any]:
+        """Reads properties from a toml file (key and element pairs) from the input list."""
+        return flatten_dict(toml.load(file_handler))
 
     def __init__(self, filename: str = None, profile: str | None = None, load_dir: str | None = None) -> None:
 
@@ -153,7 +164,9 @@ class Properties:
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
                 all_properties = self.read_properties(all_lines)
             elif ext in [".yml", ".yaml"]:
-                all_properties = flatten_dict(yaml.safe_load(fh_props))
+                all_properties = self.read_yaml(fh_props)
+            elif ext == ".toml":
+                all_properties = self.read_toml(fh_props)
             else:
                 raise NotImplementedError(f"Extension {ext} is not supported")
             self._properties.update(all_properties)
