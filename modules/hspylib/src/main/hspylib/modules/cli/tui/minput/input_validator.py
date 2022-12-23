@@ -23,7 +23,6 @@ class InputValidator(Validator):
     """TODO"""
 
     class PatternType(Enumeration):
-        """TODO"""
         # fmt: off
         LETTERS     = r"^[a-zA-Z]{%min%,%max%}$"
         WORDS       = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
@@ -75,6 +74,7 @@ class InputValidator(Validator):
         return all(self.validate(value) for value in args)
 
     def validate(self, value: str) -> bool:
+        """TODO"""
         regex = self.pattern
         return bool(re.match(regex, value))
 
