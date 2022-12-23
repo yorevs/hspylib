@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Qt Calculator" type="PythonConfigurationType" factoryName="Python" folderName="HsPyLib-Demo">
+  <configuration default="false" name="Qt Calculator" type="PythonConfigurationType" factoryName="Python" folderName="HSPyLib-Demo">
     <module name="HsPyLib.hspylib" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
