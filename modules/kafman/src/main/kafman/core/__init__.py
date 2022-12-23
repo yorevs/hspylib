@@ -1,17 +1,17 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.94
+# hspylib-kafman v0.9.95
 #
 # Package: main.kafman.core
 """Package initialization."""
 
 __all__ = [
-    'constants',
-    'consumer',
-    'exception',
-    'kafka_message',
-    'producer',
-    'schema',
-    'statistics_worker'
+  'constants', 
+  'consumer', 
+  'exception', 
+  'kafka_message', 
+  'producer', 
+  'schema', 
+  'statistics_worker'
 ]
-__version__ = '0.9.94'
+__version__ = '0.9.95'

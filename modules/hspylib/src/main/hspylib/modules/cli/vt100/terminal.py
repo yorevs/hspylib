@@ -66,7 +66,7 @@ class Terminal(ABC):
             syserr(str(err))
 
     @staticmethod
-    def open(filename: str):
+    def open_file(filename: str):
         """Open the specified file using the default editor."""
         my_os = os.environ.get("HHS_MY_OS", platform.system())
         if "Darwin" == my_os:
@@ -74,4 +74,4 @@ class Terminal(ABC):
         elif "Linux" == my_os:
             Terminal.shell_exec(f"xdg-open {filename}")
         else:
-            raise Exception(f"OS '{my_os}' is not supported")
+            raise NotImplementedError(f"OS '{my_os}' is not supported")

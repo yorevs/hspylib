@@ -38,11 +38,11 @@ class FileProcessor(ABC):
         for f_path in file_paths:
             if os.path.exists(f_path):
                 if os.path.isfile(f_path):
-                    sysout(f'Uploading file "{f_path}" to Firebase ...')
+                    sysout(f'%BLUE%Uploading file "{f_path}" to Firebase ...')
                     f_entry = FileProcessor._read_and_encode(f_path)
                     data.append(f_entry)
                 else:
-                    sysout(f'Uploading files from "{f_path}" to Firebase ...')
+                    sysout(f'%BLUE%Uploading files from "{f_path}" to Firebase ...')
                     all_files = next(os.walk(f_path))[2]
                     log.debug("\nGlob: %s \nFiles: %s", glob_exp, all_files)
                     for file in all_files:
@@ -60,7 +60,7 @@ class FileProcessor(ABC):
                 raise HTTPError(f"{response.status_code} - Unable to upload into={url} with json_string={payload}")
             paths = ", \n  |- ".join([f.path for f in data])
 
-            sysout(f"%GREEN%File(s) [\n  |- {paths}\n] successfully uploaded to: {url}%NC%")
+            sysout(f"%EOL%%GREEN%File(s) [\n  |- {paths}\n] successfully uploaded to: {url}%NC%")
 
             return len(data)
 

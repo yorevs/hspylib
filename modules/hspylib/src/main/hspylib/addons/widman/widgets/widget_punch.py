@@ -221,7 +221,7 @@ class WidgetPunch(Widget):
 
     def _edit_punches(self) -> None:
         """Open the default system editor to edit punches."""
-        Terminal.open(self.HHS_PUNCH_FILE)
+        Terminal.open_file(self.HHS_PUNCH_FILE)
 
     def _reset_punches(self) -> None:
         """Rename the punch file as a weekly punch file and reset current punch file."""
