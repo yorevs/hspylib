@@ -23,10 +23,10 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cache.ttl_cache import TTLCache
-from hspylib.modules.cli.tui.mchoose import mchoose
-from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
-from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
-from hspylib.modules.cli.tui.mselect import mselect
+from clitt.core.tui.mchoose import mchoose
+from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
+from clitt.core.tui.minput.minput import MenuInput, minput
+from clitt.core.tui.mselect import mselect
 from hspylib.modules.fetch.fetch import head
 
 from cfman.core.cf import CloudFoundry
