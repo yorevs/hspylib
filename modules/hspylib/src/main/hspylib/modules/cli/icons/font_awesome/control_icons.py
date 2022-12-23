@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
@@ -25,14 +26,15 @@ class ControlIcons(Awesome):
     """
 
     # fmt: off
-    PREVIOUS    = '\uF048'  # 
-    REWIND      = '\uF049'  # 
-    BACKWARD    = '\uF04A'  # 
-    PLAY        = '\uF04B'  # 
-    PAUSE       = '\uF04C'  # 
-    STOP        = '\uF04D'  # 
-    NEXT        = '\uF051'  # 
-    ADVANCE     = '\uF050'  # 
-    FORWARD     = '\uF04E'  # 
-    EJECT       = '\uF052'  # 
+    _CUSTOM         = auto()
+    PREVIOUS        = '\uF048'  # 
+    REWIND          = '\uF049'  # 
+    BACKWARD        = '\uF04A'  # 
+    PLAY            = '\uF04B'  # 
+    PAUSE           = '\uF04C'  # 
+    STOP            = '\uF04D'  # 
+    NEXT            = '\uF051'  # 
+    ADVANCE         = '\uF050'  # 
+    FORWARD         = '\uF04E'  # 
+    EJECT           = '\uF052'  # 
     # fmt: on

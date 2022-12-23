@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
 
 from hspylib.modules.cli.icons.emojis.emojis import Emoji
 
@@ -24,7 +25,7 @@ class FaceSmiling(Emoji):
     """
 
     # fmt: off
-
+    _CUSTOM         = auto()
     DEFAULT         = '\U0001F600'      # 😀
     BEAMING         = '\U0001F601'      # 😁
     TEARS_OF_JOY    = '\U0001F602'      # 😂

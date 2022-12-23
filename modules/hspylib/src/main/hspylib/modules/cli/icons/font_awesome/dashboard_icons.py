@@ -12,6 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
+
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
 
@@ -23,6 +25,7 @@ class DashboardIcons(Awesome):
     """
 
     # fmt: off
+    _CUSTOM         = auto()
     ADJUSTMENTS     = '\uF1DE'  # 
     AGENDA          = '\uF073'  # 
     ALERT           = '\uF071'  # 

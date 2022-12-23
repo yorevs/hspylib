@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
@@ -24,6 +25,7 @@ class FormIcons(Awesome):
     """
 
     # fmt: off
+    _CUSTOM             = auto()
     ARROW_LEFT          = '\uF060'  # 
     ARROW_RIGHT         = '\uF061'  # 
     ARROW_UP            = '\uF062'  # 
