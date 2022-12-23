@@ -148,10 +148,12 @@ class Vt100(ABC):
     @staticmethod
     def alternate_screen(enable: bool = True) -> str:
         """TODO"""
-        if Vt100.TERM == "xterm-256color":
-            return Vt100.sequence(f"?1049{'h' if enable else 'l'}")
-        elif Vt100.TERM == "xterm-color":
-            if enable:
-                return Vt100.escape("7") + Vt100.sequence(f"?47h")
-            else:
-                return Vt100.sequence("2J") + Vt100.sequence(f"?47l") + Vt100.escape("8")
+        match Vt100.TERM:
+            case "xterm-256color":
+                return Vt100.sequence(f"?1049{'h' if enable else 'l'}")
+            case "xterm-color":
+                if enable:
+                    return Vt100.escape("7") + Vt100.sequence("?47h")
+                return Vt100.sequence("2J") + Vt100.sequence("?47l") + Vt100.escape("8")
+            case _:
+                return NotImplemented

@@ -42,25 +42,24 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
 
     if is_debugging():
         return 0, 0
-    else:
-        buf = ""
-        stdin = sys.stdin.fileno()
-        attrs = termios.tcgetattr(stdin)
-        try:
-            tty.setcbreak(stdin, termios.TCSANOW)
-            sys.stdout.write(Vt100.get_cursor_pos())  # Query the terminal
-            sys.stdout.flush()
-            while True:
-                buf += sys.stdin.read(1)
-                if buf[-1] == "R":
-                    break
-            matches = re.match(r"^\x1b\[(\d*);(\d*)R", buf)
-            groups = matches.groups()
-            return int(groups[0]), int(groups[1])
-        except AttributeError:
-            return None
-        finally:
-            termios.tcsetattr(stdin, termios.TCSANOW, attrs)
+    buf = ""
+    stdin = sys.stdin.fileno()
+    attrs = termios.tcgetattr(stdin)
+    try:
+        tty.setcbreak(stdin, termios.TCSANOW)
+        sys.stdout.write(Vt100.get_cursor_pos())  # Query the terminal
+        sys.stdout.flush()
+        while True:
+            buf += sys.stdin.read(1)
+            if buf[-1] == "R":
+                break
+        matches = re.match(r"^\x1b\[(\d*);(\d*)R", buf)
+        groups = matches.groups()
+        return int(groups[0]), int(groups[1])
+    except AttributeError:
+        return None
+    finally:
+        termios.tcsetattr(stdin, termios.TCSANOW, attrs)
 
 
 def set_enable_echo(enabled: bool = True) -> None:

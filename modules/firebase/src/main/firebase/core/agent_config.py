@@ -29,8 +29,8 @@ from firebase.exception.exceptions import FirebaseAuthenticationError
 class AgentConfig(metaclass=Singleton):
     """Holds the firebase agent configurations"""
 
-    def __init__(self) -> None:
-        self.app_configs = AppConfigs()
+    def __init__(self, resource_dir: str) -> None:
+        self.app_configs = AppConfigs(resource_dir)
         self.firebase_configs = None
         if file_is_not_empty(self.filename):
             self._load()

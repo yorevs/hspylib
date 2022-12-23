@@ -64,7 +64,7 @@ class TUIComponent(Generic[T], ABC):
         """TODO"""
 
     @abstractmethod
-    def _navbar(self, *args) -> str:
+    def _navbar(self, **kwargs) -> str:
         """TODO"""
 
     @abstractmethod

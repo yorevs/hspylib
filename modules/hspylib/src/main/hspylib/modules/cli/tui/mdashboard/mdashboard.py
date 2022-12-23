@@ -128,7 +128,7 @@ class MenuDashBoard(TUIComponent):
         elif item_idx + 1 < len(self.items):
             sysout(f"%CUU({num_rows})%%CUF({num_cols})%", end="")  # Continue with the same line
 
-    def _navbar(self) -> str:
+    def _navbar(self, **kwargs) -> str:
         return (
             f"{NavIcons.POINTER} %GREEN%{self.items[self.tab_index].tooltip}%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"

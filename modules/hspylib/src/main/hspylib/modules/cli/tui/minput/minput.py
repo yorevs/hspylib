@@ -148,7 +148,7 @@ class MenuInput(TUIComponent):
         else:
             sysout(fmt.format(field.icon, field_size, field.max_length))
 
-    def _navbar(self) -> str:
+    def _navbar(self, **kwargs) -> str:
         return \
             f"\n{self.prefs.navbar_color.placeholder}" \
             f"[Enter] Submit  [{self.NAV_ICONS}] " \

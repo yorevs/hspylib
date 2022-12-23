@@ -13,13 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List, Optional
+from typing import Any, Optional
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
-from hspylib.modules.cli.tui.tui_component import T
 from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
 from hspylib.modules.eventbus import eventbus
 from hspylib.modules.eventbus.event import Event
@@ -49,7 +48,7 @@ class TUIMenuUi(metaclass=Singleton):
         self._prev_menu: Optional[TUIMenu] = None
         self._next_menu: Optional[TUIMenu] = None
 
-    def execute(self) -> Optional[T | List[T]]:
+    def execute(self) -> Any:
         """TODO"""
 
         prepare_render()

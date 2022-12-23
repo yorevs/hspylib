@@ -14,7 +14,6 @@
 """
 
 import re
-from enum import auto
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.validator import Validator
@@ -32,7 +31,7 @@ class InputValidator(Validator):
         TOKEN       = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
         MASKED      = r".*\|.+"
         ANYTHING    = r"^.{%min%,%max%}$"
-        CUSTOM      = auto()
+        CUSTOM      = ''
         # fmt: on
 
     @classmethod
@@ -66,7 +65,7 @@ class InputValidator(Validator):
 
     def __str__(self) -> str:
         return f'r"{self.pattern}"' \
-            if self == InputValidator.pattern_type == self.PatternType.CUSTOM \
+            if InputValidator.pattern_type == self.PatternType.CUSTOM \
             else self.pattern_type.name
 
     def __repr__(self):

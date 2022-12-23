@@ -58,7 +58,7 @@ class TUIMenuItem(TUIMenu):
         # Wait for user interaction
         while not self._done:
 
-            if not len(self._items):
+            if not self._items:
                 return self._on_trigger(self._parent)
 
             # Menu Renderization
@@ -96,9 +96,9 @@ class TUIMenuItem(TUIMenu):
                 # fmt: on
                 self._draw_line(line_fmt, columns, idx + 1, selector, option_line)
 
-        sysout(self._navbar(length), end="")
+        sysout(self._navbar(to=length), end="")
 
-    def _navbar(self, to: int) -> str:
+    def _navbar(self, **kwargs) -> str:
         menu = get_or_default(self.items, self._sel_index, None)
         tooltip = menu.tooltip if menu else None
         return (
@@ -106,7 +106,7 @@ class TUIMenuItem(TUIMenu):
             f"{tooltip + ' ' if tooltip else ''}%ED0%%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
             f"[Enter] Select  Navigate  [{self.NAV_ICONS}]  "
-            f"[Esc] Quit  [1..{to}] Goto: %NC%%EL0%%EOL%%EOL%"
+            f"[Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%%EOL%%EOL%"
         )
 
     def _handle_keypress(self) -> Keyboard:
