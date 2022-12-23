@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.3
+# hspylib-clitt v0.9.4
 #
 # Package: main.clitt.core.tui.minput
 """Package initialization."""
@@ -14,4 +14,4 @@ __all__ = [
   'minput', 
   'minput_utils'
 ]
-__version__ = '0.9.3'
+__version__ = '0.9.4'
