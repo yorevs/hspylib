@@ -14,8 +14,8 @@
 """
 
 from hspylib.core.namespace import Namespace
-from hspylib.modules.cli.tui.minput.input_validator import InputValidator
-from hspylib.modules.cli.tui.minput.minput import MenuInput, minput
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class ContactForms:
