@@ -16,9 +16,9 @@ import sys
 
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.tui.menu.tui_menu_factory import TUIMenuFactory
-from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
-from hspylib.modules.cli.tui.tui_application import TUIApplication
+from clitt.core.tui.menu.tui_menu_factory import TUIMenuFactory
+from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
+from clitt.core.tui.tui_application import TUIApplication
 
 from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
