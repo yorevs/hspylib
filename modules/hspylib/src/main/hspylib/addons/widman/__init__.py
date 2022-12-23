@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'widget', 
-  'widget_entry', 
-  'widgets', 
-  'widman'
+    'widget',
+    'widget_entry',
+    'widgets',
+    'widman'
 ]
 __version__ = '0.11.140'

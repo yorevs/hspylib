@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'commons', 
-  'dict_tools', 
-  'git_tools', 
-  'json_search', 
-  'text_tools', 
-  'validator'
+    'commons',
+    'dict_tools',
+    'git_tools',
+    'json_search',
+    'text_tools',
+    'validator'
 ]
 __version__ = '0.11.140'

@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'font_awesome'
+    'font_awesome'
 ]
 __version__ = '0.11.140'

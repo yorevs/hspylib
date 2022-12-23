@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'cassandra_configuration', 
-  'cassandra_repository'
+    'cassandra_configuration',
+    'cassandra_repository'
 ]
 __version__ = '0.9.20'

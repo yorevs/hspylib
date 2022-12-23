@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'postgres_repository'
+    'postgres_repository'
 ]
 __version__ = '0.9.20'

@@ -6,11 +6,11 @@
 """Package initialization."""
 
 __all__ = [
-  'dashboard', 
-  'menu', 
-  'menu_choose_demo', 
-  'menu_select_demo', 
-  'minput', 
-  'table'
+    'dashboard',
+    'menu',
+    'menu_choose_demo',
+    'menu_select_demo',
+    'minput',
+    'table'
 ]
 __version__ = '0.11.140'

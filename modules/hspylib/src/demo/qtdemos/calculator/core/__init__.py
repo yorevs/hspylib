@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'calc_operations'
+    'calc_operations'
 ]
 __version__ = '0.11.140'

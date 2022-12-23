@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'app_config', 
-  'properties'
+    'app_config',
+    'properties'
 ]
 __version__ = '0.11.140'

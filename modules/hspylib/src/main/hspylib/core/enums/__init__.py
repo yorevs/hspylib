@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'charset', 
-  'content_type', 
-  'enumeration', 
-  'http_code', 
-  'http_method'
+    'charset',
+    'content_type',
+    'enumeration',
+    'http_code',
+    'http_method'
 ]
 __version__ = '0.11.140'

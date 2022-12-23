@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'mysql_repository'
+    'mysql_repository'
 ]
 __version__ = '0.9.20'

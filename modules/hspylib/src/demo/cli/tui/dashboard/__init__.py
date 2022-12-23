@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'menu_dashboard_demo'
+    'menu_dashboard_demo'
 ]
 __version__ = '0.11.140'

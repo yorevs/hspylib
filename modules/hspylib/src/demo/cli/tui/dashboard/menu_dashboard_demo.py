@@ -18,7 +18,6 @@ from hspylib.modules.cli.tui.mdashboard.mdashboard import mdashboard, MenuDashBo
 from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
-
 if __name__ == "__main__":
     TUIPreferences(
         max_rows=10,

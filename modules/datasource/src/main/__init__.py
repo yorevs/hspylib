@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'datasource'
+    'datasource'
 ]
 __version__ = '0.9.20'

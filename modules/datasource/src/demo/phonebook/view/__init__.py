@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'create_view', 
-  'edit_view', 
-  'search_view'
+    'create_view',
+    'edit_view',
+    'search_view'
 ]
 __version__ = '0.9.20'

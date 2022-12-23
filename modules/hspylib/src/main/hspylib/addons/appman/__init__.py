@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'appman', 
-  'appman_enums'
+    'appman',
+    'appman_enums'
 ]
 __version__ = '0.11.140'
