@@ -16,6 +16,8 @@ import logging as log
 import os
 from typing import Any, Optional
 
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
@@ -70,13 +72,36 @@ class AgentConfig(metaclass=Singleton):
 
     def prompt(self) -> None:
         """Create a new firebase configuration by prompting the user for information."""
+        # fmt: off
+        sysout("%ORANGE%### Firebase setup")
+        sysout("-=" * 15 + "%EOL%%%NC%")
+        form_fields = MenuInput.builder() \
+            .field() \
+                .label('UID') \
+                .validator(InputValidator.words()) \
+                .build() \
+            .field() \
+                .label('PROJECT_ID') \
+                .validator(InputValidator.words()) \
+                .build() \
+            .field() \
+                .label('number') \
+                .validator(InputValidator.numbers()) \
+                .min_max_length(1, 4) \
+                .build() \
+            .field() \
+                .label('masked') \
+                .itype('masked') \
+                .value('|##::##::## @@') \
+                .build() \
+            .build()
+        result = minput(form_fields)
+        # fmt: on
         config = CaseInsensitiveDict()
-        sysout("### Firebase setup")
-        sysout("-=" * 15)
-        config["UID"] = self.uuid
-        config["PROJECT_ID"] = self.project_id
-        config["EMAIL"] = self.email
-        config["DATABASE"] = self.database
+        config["UID"] = self.uid or result.uid
+        config["PROJECT_ID"] = self.project_id or result.project_id
+        config["EMAIL"] = self.email or result.email
+        config["DATABASE"] = self.database or result.database
         self.setup(dirname(self.filename), self.filename, config)
 
     @property
@@ -87,27 +112,27 @@ class AgentConfig(metaclass=Singleton):
 
     @property
     def project_id(self) -> Optional[str]:
-        """Return the firebase project ID."""
+        """Return the firebase Project ID."""
         pid = self.app_configs["hhs.firebase.project.id"]
-        return pid if pid else input("Please type your project ID: ")
+        return pid
 
     @property
-    def uuid(self) -> Optional[str]:
-        """Return the firebase user ID."""
+    def uid(self) -> Optional[str]:
+        """Return the firebase User ID."""
         uid = self.app_configs["hhs.firebase.user.uid"]
-        return uid if uid else input("Please type your user UID: ")
+        return uid
 
     @property
     def email(self) -> Optional[str]:
-        """Return the firebase username."""
-        em = self.app_configs["hhs.firebase.email"]
-        return em if em else input("Please type your Email: ")
+        """Return the firebase user's email."""
+        email = self.app_configs["hhs.firebase.email"]
+        return email
 
     @property
     def database(self) -> Optional[str]:
         """Return the firebase project database name."""
         database = self.app_configs["hhs.firebase.database"]
-        return database if database else input("Please type your database Name: ")
+        return database
 
     def url(self, db_alias: str) -> str:
         """Return the firebase project URL"""
