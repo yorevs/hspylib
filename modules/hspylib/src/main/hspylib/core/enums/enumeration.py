@@ -61,7 +61,7 @@ class Enumeration(Enum):
     def compose(cls, first: E, *others: E) -> E:
         try:
             e = getattr(first.__class__, "_CUSTOM")
-            e._value_ = str(first)
+            e._value_ = str(first)  # pylint: disable=protected-access
             for other in others:
                 e._value_ += str(other)
             return e

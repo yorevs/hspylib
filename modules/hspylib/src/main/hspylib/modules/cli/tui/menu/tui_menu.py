@@ -60,11 +60,11 @@ class TUIMenu(TUIComponent, ABC):
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case Keyboard.VK_ENTER | Keyboard.VK_ESC:
-                    self.done = True
+                    self._done = True
 
         return keypress
 
-    def _navbar(self, *args) -> str:
+    def _navbar(self, **kwargs) -> str:
         return (
             f"%EOL%{self._breadcrumb()}%ED0%%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"

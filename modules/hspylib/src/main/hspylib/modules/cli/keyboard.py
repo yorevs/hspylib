@@ -122,8 +122,8 @@ class Keyboard(Enumeration):
         except (KeyboardInterrupt, AssertionError) as err:
             if not ignore_error_keys:
                 raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
-        except termios.error:
-            raise NotATerminalError("keyboard:: Requires a terminal (TTY)")
+        except termios.error as err:
+            raise NotATerminalError("keyboard:: Requires a terminal (TTY)") from err
         finally:
             sys.stdin.flush()
 

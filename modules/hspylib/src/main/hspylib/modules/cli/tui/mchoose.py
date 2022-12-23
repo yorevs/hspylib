@@ -105,14 +105,14 @@ class MenuChoose(TUIComponent):
             # fmt: on
             self._draw_line(line_fmt, columns, idx + 1, selector, mark, option_line)
 
-        sysout(self._navbar(length), end="")
+        sysout(self._navbar(to=length), end="")
         self._re_render = False
 
-    def _navbar(self, to: int) -> str:
+    def _navbar(self, **kwargs) -> str:
         return (
             f"%EOL%{self.prefs.navbar_color.placeholder}"
             f"[Enter] Accept  [{self.NAV_ICONS}] "
-            f"Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..{to}] Goto: %NC%%EL0%%EOL%%EOL%"
+            f"Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%%EOL%%EOL%"
         )
 
     def _handle_keypress(self) -> Keyboard:

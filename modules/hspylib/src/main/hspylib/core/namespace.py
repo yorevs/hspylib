@@ -113,7 +113,7 @@ class Namespace:
     def setattr(self, name: str, value: Any) -> "Namespace":
         if self._final and not hasattr(self, name):
             raise ValueError(f"Can't set attribute '{name}'. '{self.__name__}' Namespace is final")
-        if not not hasattr(self, name):
+        if not hasattr(self, name):
             self._check_name(name)
         setattr(self, name, value)
         return self

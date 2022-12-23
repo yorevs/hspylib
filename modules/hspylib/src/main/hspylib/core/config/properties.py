@@ -44,17 +44,21 @@ class Properties:
         return re.sub("[ -.]", "_", property_name).upper()
 
     @staticmethod
-    def _read_properties(all_lines: List[str]) -> dict:
+    def read_properties(all_lines: List[str]) -> dict:
         """Reads a property list (key and element pairs) from the input list."""
+        # fmt: off
         return {
             p[0].strip(): p[1].strip()
             for p in [
-                p.split("=", 1) for p in list(filter(lambda l: re.match(r"[a-zA-Z]([.\\-]|\w)* *= *.+", l), all_lines))
+                p.split("=", 1) for p in list(
+                    filter(lambda l: re.match(r"[a-zA-Z]([.\\-]|\w)* *= *.+", l), all_lines)
+                )
             ]
         }
+        # fmt: off
 
     @staticmethod
-    def _read_cfg_or_ini(all_lines: List[str]):
+    def read_cfg_or_ini(all_lines: List[str]):
         """Reads a cfg or ini list (key and element pairs) from the input list."""
         string = os.linesep.join(all_lines)
         all_cfgs = {}
@@ -144,10 +148,10 @@ class Properties:
         with open(filepath, encoding=Charset.UTF_8.val) as fh_props:
             if ext in [".ini", ".cfg"]:
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
-                all_properties = self._read_cfg_or_ini(all_lines)
+                all_properties = self.read_cfg_or_ini(all_lines)
             elif ext == ".properties":
                 all_lines = list(map(str.strip, filter(None, fh_props.readlines())))
-                all_properties = self._read_properties(all_lines)
+                all_properties = self.read_properties(all_lines)
             elif ext in [".yml", ".yaml"]:
                 all_properties = flatten_dict(yaml.safe_load(fh_props))
             else:
