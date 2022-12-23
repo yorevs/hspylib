@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'dynamic_menu_demo'
+    'dynamic_menu_demo'
 ]
 __version__ = '0.11.140'

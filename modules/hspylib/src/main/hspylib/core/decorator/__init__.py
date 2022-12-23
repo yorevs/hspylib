@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'decorators'
+    'decorators'
 ]
 __version__ = '0.11.140'

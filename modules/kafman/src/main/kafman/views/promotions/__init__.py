@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'form_area', 
-  'form_pane'
+    'form_area',
+    'form_pane'
 ]
 __version__ = '0.9.94'

@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'classpath', 
-  'singleton'
+    'classpath',
+    'singleton'
 ]
 __version__ = '0.11.140'

@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'event_bus_demo', 
-  'filter_demo'
+    'event_bus_demo',
+    'filter_demo'
 ]
 __version__ = '0.11.140'

@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'firebase'
+    'firebase'
 ]
 __version__ = '0.9.84'

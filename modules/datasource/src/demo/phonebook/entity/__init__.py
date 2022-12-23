@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'company', 
-  'contact_forms', 
-  'person'
+    'company',
+    'contact_forms',
+    'person'
 ]
 __version__ = '0.9.20'

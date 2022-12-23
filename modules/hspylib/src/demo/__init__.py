@@ -6,8 +6,8 @@
 """Package initialization."""
 
 __all__ = [
-  'cli', 
-  'other', 
-  'qtdemos'
+    'cli',
+    'other',
+    'qtdemos'
 ]
 __version__ = '0.11.140'

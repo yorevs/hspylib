@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'rest_utils', 
-  'soap_utils'
+    'rest_utils',
+    'soap_utils'
 ]
 __version__ = '0.11.140'

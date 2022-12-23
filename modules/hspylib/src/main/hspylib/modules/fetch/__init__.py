@@ -6,9 +6,9 @@
 """Package initialization."""
 
 __all__ = [
-  'fetch', 
-  'http_response', 
-  'uri_builder', 
-  'uri_scheme'
+    'fetch',
+    'http_response',
+    'uri_builder',
+    'uri_scheme'
 ]
 __version__ = '0.11.140'

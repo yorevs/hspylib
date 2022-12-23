@@ -43,7 +43,7 @@ class OptionsBuilder:
             f"-{shortopt.replace('^-', '')[0]}", f"--{longopt.replace('^-*', '')}",
             dest=name, help=help_string or f"the {longopt}", required=required,
             action=action.value, default=default
-         )
+        )
         if action == ParserAction.STORE:
             add_arg(choices=choices, nargs=nargs)
         else:

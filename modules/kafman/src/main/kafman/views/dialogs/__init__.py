@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'filters_dialog', 
-  'settings_dialog'
+    'filters_dialog',
+    'settings_dialog'
 ]
 __version__ = '0.9.94'

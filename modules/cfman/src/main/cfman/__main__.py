@@ -19,9 +19,9 @@ from textwrap import dedent
 
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
+from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 from cfman.__classpath__ import _Classpath
