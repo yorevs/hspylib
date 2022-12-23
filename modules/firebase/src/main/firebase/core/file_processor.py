@@ -76,7 +76,7 @@ class FileProcessor(ABC):
             "Unable find destination directory: {}",
             destination_dir,
         )
-        sysout(f'Downloading files from Firebase into "{destination_dir}" ...')
+        sysout(f'%BLUE%Downloading files from Firebase into "{destination_dir}" ...')
         response = get(url)
         check_not_none(response)
         check_not_none(response.body)
@@ -111,7 +111,7 @@ class FileProcessor(ABC):
         else:
             raise TypeError(f"Downloaded data format is not supported: {type(data)}")
 
-        sysout(f"%GREEN%File(s) [\n  |- {paths}\n] successfully downloaded into: {destination_dir}%NC%")
+        sysout(f'%EOL%%GREEN%File(s) [\n  |- {paths}\n] successfully downloaded into: "{destination_dir}"%NC%')
 
     @staticmethod
     def _to_json(file_data: List[FileEntry]) -> str:
