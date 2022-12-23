@@ -29,8 +29,8 @@ from firebase.exception.exceptions import FirebaseAuthenticationError
 class AgentConfig(metaclass=Singleton):
     """Holds the firebase agent configurations"""
 
-    def __init__(self, resource_dir: str) -> None:
-        self.app_configs = AppConfigs(resource_dir)
+    def __init__(self, filename: str) -> None:
+        self.app_configs = AppConfigs(dirname(filename))
         self.firebase_configs = None
         if file_is_not_empty(self.filename):
             self._load()
@@ -56,13 +56,13 @@ class AgentConfig(metaclass=Singleton):
         :param config_dict: Firebase configuration dictionary
         """
 
-        user = FirebaseAuth.authenticate(config_dict["PROJECT_ID"], config_dict["UUID"])
+        user = FirebaseAuth.authenticate(config_dict["PROJECT_ID"], config_dict["UID"])
         if user:
-            if user.uid != config_dict["UUID"]:
+            if user.uid != config_dict["UID"]:
                 raise FirebaseAuthenticationError(
-                    f"Provided UID: {config_dict['UUID']} is different from retrieved UID: {user.uid}"
+                    f"Provided UID: {config_dict['UID']} is different from retrieved UID: {user.uid}"
                 )
-            config_dict["UUID"] = user.uid
+            config_dict["UID"] = user.uid
             self.firebase_configs = FirebaseConfiguration.of(resource_dir, filename, config_dict)
             self._save()
         else:
@@ -73,10 +73,10 @@ class AgentConfig(metaclass=Singleton):
         config = CaseInsensitiveDict()
         sysout("### Firebase setup")
         sysout("-=" * 15)
-        config["UUID"] = self.uuid
+        config["UID"] = self.uuid
         config["PROJECT_ID"] = self.project_id
-        config["DATABASE"] = self.database
         config["EMAIL"] = self.email
+        config["DATABASE"] = self.database
         self.setup(dirname(self.filename), self.filename, config)
 
     @property

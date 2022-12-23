@@ -35,7 +35,8 @@ class FirebaseAuth(ABC):
     def _credentials(project_id: str) -> credentials.Certificate:
         """TODO"""
 
-        certificate_file = os.environ.get("HHS_FIREBASE_CERT_FILE")
+        certificate_file = os.environ.get(
+            "HHS_FIREBASE_CERT_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json")
         check_not_none(certificate_file, project_id)
         try:
             creds = credentials.Certificate(certificate_file.format(project_id=project_id))
@@ -52,7 +53,7 @@ class FirebaseAuth(ABC):
         try:
             user = auth.get_user(uuid)
             if user:
-                sysout("Firebase authentication succeeded")
+                sysout("%ORANGE%Firebase authentication succeeded%EOL%")
                 return user
             raise FirebaseAuthenticationError("Failed to authenticate to Firebase")
         except UserNotFoundError as err:

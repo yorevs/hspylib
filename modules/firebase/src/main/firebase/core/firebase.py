@@ -15,7 +15,6 @@
 
 import logging as log
 import os
-from os.path import dirname
 from typing import List
 
 from hspylib.core.preconditions import check_argument
@@ -30,8 +29,9 @@ class Firebase:
 
     def __init__(self) -> None:
         self.processor = FileProcessor()
-        resource_dir = dirname(os.environ.get("HHS_FIREBASE_CONFIG_FILE", os.environ.get("HOME", os.curdir)))
-        self.agent_config = AgentConfig(resource_dir)
+        filename = os.environ.get(
+            "HHS_FIREBASE_CONFIG_FILE", f"{os.environ.get('HOME', os.curdir)}/firebase.properties")
+        self.agent_config = AgentConfig(filename)
 
     def __str__(self):
         return str(self.agent_config)
