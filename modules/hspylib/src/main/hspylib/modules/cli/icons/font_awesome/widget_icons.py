@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
@@ -24,13 +25,14 @@ class WidgetIcons(Awesome):
     """
 
     # fmt: off
-    CHART_2     = '\uF200'  # 
-    CHART_1     = '\uF1FE'  # 
-    CLOCK       = '\uF651'  # 
-    CHIP        = '\uFB19'  # ﬙
-    MUSIC       = '\uF3B5'  # 
-    NETWORK     = '\uF819'  # 
-    PUNCH       = '\uF255'  # 
-    SIGN        = '\uF45D'  # 
-    WIDGET      = '\uF198'  # 
+    _CUSTOM         = auto()
+    CHART_2         = '\uF200'  # 
+    CHART_1         = '\uF1FE'  # 
+    CLOCK           = '\uF651'  # 
+    CHIP            = '\uFB19'  # ﬙
+    MUSIC           = '\uF3B5'  # 
+    NETWORK         = '\uF819'  # 
+    PUNCH           = '\uF255'  # 
+    SIGN            = '\uF45D'  # 
+    WIDGET          = '\uF198'  # 
     # fmt: on

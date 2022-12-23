@@ -26,15 +26,15 @@ class NavIcons(Awesome):
     """
 
     # fmt: off
-    _CUSTOM = auto()
-    LEFT        = '\u2190'  # ←
-    UP          = '\u2191'  # ↑
-    RIGHT       = '\u2192'  # →
-    DOWN        = '\u2193'  # ↓
-    ENTER       = '\u21B2'  # ↲
-    TAB         = '\u21B9'  # ↹
-    POINTER     = '\uF432'  # 
-    SELECTED    = '\uF814'  # 
-    UNSELECTED  = '\uF815'  # 
-    BREADCRUMB  = '\uF44A'  # 
+    _CUSTOM         = auto()
+    LEFT            = '\u2190'  # ←
+    UP              = '\u2191'  # ↑
+    RIGHT           = '\u2192'  # →
+    DOWN            = '\u2193'  # ↓
+    ENTER           = '\u21B2'  # ↲
+    TAB             = '\u21B9'  # ↹
+    POINTER         = '\uF432'  # 
+    SELECTED        = '\uF814'  # 
+    UNSELECTED      = '\uF815'  # 
+    BREADCRUMB      = '\uF44A'  # 
     # fmt: on

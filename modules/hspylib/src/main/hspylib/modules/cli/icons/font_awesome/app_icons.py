@@ -12,6 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
+from enum import auto
 
 from hspylib.modules.cli.icons.font_awesome.awesome import Awesome
 
@@ -24,6 +25,7 @@ class AppIcons(Awesome):
     """
 
     # fmt: off
+    _CUSTOM         = auto()
     AMAZON          = '\uF270'  # 
     APPLE           = '\uF179'  # 
     AWS             = '\uF375'  # 
