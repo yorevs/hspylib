@@ -17,32 +17,43 @@ from typing import Any, Optional
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
+from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
-from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
+from hspylib.modules.cli.tui.tui_preferences import TUIPreferences
 from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
-from hspylib.modules.eventbus import eventbus
-from hspylib.modules.eventbus.event import Event
 
 
 class TUIMenuUi(metaclass=Singleton):
     """TODO"""
 
-    _app_title = "Main Menu"
+    app_title = "Main Menu"
 
-    @staticmethod
-    @eventbus.subscribe(bus="tui-menu-ui", event="render-app-title")
-    def render_title(event: Event) -> None:
+    # fmt: off
+    PREFS = TUIPreferences.INSTANCE or TUIPreferences()
+    MENU_LINE = f"{'┅┅' * PREFS.title_line_length}"
+    MENU_TITLE_FMT = (
+        f"{PREFS.title_color}"
+        f"┍{MENU_LINE}┓%EOL%"
+        "┣{title:^" + str(2 * PREFS.title_line_length) + "s}┫%EOL%"
+        f"┕{MENU_LINE}┙%EOL%%NC%"
+    )
+    # fmt: on
+
+    @classmethod
+    def render_app_title(cls) -> None:
         """TODO"""
-        TUIMenuUtils.title(TUIMenuUi._app_title)
+        clear_screen()
+        sysout(cls.MENU_TITLE_FMT.format(title=cls.app_title or "TITLE"))
 
     @staticmethod
     def back(source: TUIMenu) -> TUIMenu:
+        """TODO"""
         return source.parent
 
     def __init__(self, main_menu: TUIMenu, title: str | None):
         check_not_none(main_menu)
         super().__init__()
-        TUIMenuUi._app_title = title or "Main Menu"
+        TUIMenuUi.app_title = title or "Main Menu"
         self._done: bool = False
         self._curr_menu: TUIMenu = main_menu
         self._prev_menu: Optional[TUIMenu] = None
@@ -55,7 +66,6 @@ class TUIMenuUi(metaclass=Singleton):
 
         while not self._done:
             if self._curr_menu:
-                clear_screen()
                 self._next_menu = self._curr_menu.execute()
                 if self._next_menu:
                     self._change_menu(self._next_menu)

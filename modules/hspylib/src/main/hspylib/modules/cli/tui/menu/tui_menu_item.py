@@ -21,8 +21,8 @@ from hspylib.core.tools.dict_tools import get_or_default
 from hspylib.modules.cli.icons.font_awesome.nav_icons import NavIcons
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor, screen_size
-from hspylib.modules.eventbus import eventbus
 
 
 class TUIMenuItem(TUIMenu):
@@ -76,7 +76,7 @@ class TUIMenuItem(TUIMenu):
         length = len(self._items)
         _, columns = screen_size()
         restore_cursor()
-        eventbus.emit("tui-menu-ui", "render-app-title")
+        TUIMenuUi.render_app_title()
         self._re_render = False
 
         if length > 0:

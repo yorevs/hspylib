@@ -14,6 +14,7 @@
 """
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
 
 from datasource.identity import Identity
@@ -43,7 +44,7 @@ class CreateView(TUIMenuView):
             person.address = form.address
             person.complement = form.complement
             self.person_service.save(person)
-            TUIMenuUtils.render_app_title()
+            TUIMenuUi.render_app_title()
             TUIMenuUtils.wait_keystroke("Person successfully saved!%EOL%")
 
     def company(self) -> None:
@@ -58,5 +59,5 @@ class CreateView(TUIMenuView):
             company.address = form.address
             company.complement = form.complement
             self.company_service.save(company)
-            TUIMenuUtils.render_app_title()
+            TUIMenuUi.render_app_title()
             TUIMenuUtils.wait_keystroke("Company successfully saved!%EOL%")

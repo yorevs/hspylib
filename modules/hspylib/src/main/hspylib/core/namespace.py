@@ -111,6 +111,7 @@ class Namespace:
         return tuple(self.values)
 
     def setattr(self, name: str, value: Any) -> "Namespace":
+        """TODO"""
         if self._final and not hasattr(self, name):
             raise ValueError(f"Can't set attribute '{name}'. '{self.__name__}' Namespace is final")
         if not hasattr(self, name):
@@ -119,6 +120,7 @@ class Namespace:
         return self
 
     def item_at(self, index: int) -> Optional[Tuple[str, Any]]:
+        """TODO"""
         # fmt: off
         return (
             self.attributes[index], self.values[index]
@@ -127,9 +129,11 @@ class Namespace:
         # fmt: on
 
     def items(self) -> Iterator[Tuple[str, Any]]:
+        """TODO"""
         return iter(self)
 
     def hasattr(self, *names: str) -> bool:
+        """TODO"""
         return self.__contains__(*names)
 
     def _asdict(self) -> Dict[str, Any]:
@@ -139,6 +143,7 @@ class Namespace:
         return dict(zip(self.attributes, self.values))
 
     def _check_name(self, name: str) -> None:
+        """TODO"""
         # fmt: off
         if not (
             self.hasattr(name)

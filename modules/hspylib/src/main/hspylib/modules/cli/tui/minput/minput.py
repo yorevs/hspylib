@@ -67,7 +67,6 @@ class MenuInput(TUIComponent):
         self.max_detail_length = max(MInputUtils.detail_len(field) for field in fields)
 
     def execute(self) -> Optional[Namespace]:
-        """TODO"""
 
         if len(self.fields) == 0:
             return None
@@ -93,7 +92,6 @@ class MenuInput(TUIComponent):
         return None
 
     def _render(self) -> None:
-        """TODO"""
 
         restore_cursor()
         sysout(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
@@ -116,6 +114,7 @@ class MenuInput(TUIComponent):
 
     def _render_field(self, field: FormField) -> None:
         """Render the form field"""
+
         if field.itype == InputType.TEXT:
             MInputUtils.mi_print(self.max_value_length, field.value)
         elif field.itype == InputType.PASSWORD:
@@ -137,6 +136,7 @@ class MenuInput(TUIComponent):
 
     def _render_details(self, field: FormField, field_size: int) -> None:
         """Render details about total/remaining field characters"""
+
         padding = 1 - len(str(self.max_detail_length / 2))
         fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "}  %NC%"
         if field.itype == InputType.SELECT:
@@ -155,7 +155,6 @@ class MenuInput(TUIComponent):
             f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [^P] Paste  [Esc] Quit %NC%%EL0%%EOL%%EOL%"
 
     def _handle_keypress(self) -> Keyboard:
-        """TODO"""
 
         length = len(self.fields)
 
@@ -263,11 +262,12 @@ class MenuInput(TUIComponent):
 
     def _display_error(self, err_msg) -> None:
         """TODO"""
+
         set_enable_echo(False)
         offset = 16
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + offset
         sysout(f"%CUP({self.cur_row};{err_pos})%", end="")
         syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end="")
-        time.sleep(max(2, int(len(err_msg) / 25)))
+        time.sleep(max(1.5, int(len(err_msg) / 25)))
         set_enable_echo()
         sysout(f"%CUP({self.cur_row};{err_pos})%%EL0%", end="")  # Remove the message after the timeout

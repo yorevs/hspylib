@@ -55,7 +55,6 @@ class MenuDashBoard(TUIComponent):
 
     @classmethod
     def builder(cls) -> DashboardBuilder:
-        """TODO"""
         return DashboardBuilder()
 
     def __init__(self, title: str, items: List[DashboardItem]):
@@ -68,7 +67,6 @@ class MenuDashBoard(TUIComponent):
         )
 
     def execute(self) -> Optional[DashboardItem]:
-        """TODO"""
 
         if len(self.items) == 0:
             return None
@@ -93,7 +91,6 @@ class MenuDashBoard(TUIComponent):
         return selected
 
     def _render(self) -> None:
-        """TODO"""
 
         restore_cursor()
         sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
@@ -137,8 +134,6 @@ class MenuDashBoard(TUIComponent):
         )
 
     def _handle_keypress(self) -> Keyboard:
-        """TODO"""
-
         length = len(self.items)
         if keypress := Keyboard.wait_keystroke():
             match keypress:

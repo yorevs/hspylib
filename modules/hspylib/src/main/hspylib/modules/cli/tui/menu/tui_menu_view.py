@@ -17,9 +17,8 @@ from typing import Callable, Optional
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
-from hspylib.modules.cli.vt100.vt_utils import clear_screen
-from hspylib.modules.eventbus import eventbus
 
 
 class TUIMenuView(TUIMenu):
@@ -49,8 +48,7 @@ class TUIMenuView(TUIMenu):
         return self._on_trigger(self)
 
     def _render(self) -> None:
-        clear_screen()
-        eventbus.emit("tui-menu-ui", "render-app-title")
+        TUIMenuUi.render_app_title()
         self._on_render()
         sysout(self._navbar())
 

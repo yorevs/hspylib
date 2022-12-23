@@ -18,6 +18,7 @@ from typing import List
 from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.tui.menu.tui_menu import TUIMenu
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 from hspylib.modules.cli.tui.menu.tui_menu_view import TUIMenuView
 from hspylib.modules.cli.tui.table.table_renderer import TableRenderer
 
@@ -57,7 +58,7 @@ class SearchView(TUIMenuView):
 
     @staticmethod
     def display_contacts(persons: List[Person], companies: List[Company]) -> None:
-        TUIMenuUtils.render_app_title()
+        TUIMenuUi.render_app_title()
         if persons:
             SearchView.display_table(
                 list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"

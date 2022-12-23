@@ -16,9 +16,9 @@
 from typing import Optional
 
 from hspylib.modules.cli.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
+from hspylib.modules.cli.tui.menu.tui_menu_ui import TUIMenuUi
 from hspylib.modules.cli.tui.menu.tui_menu_utils import TUIMenuUtils
 from hspylib.modules.cli.vt100.vt_utils import restore_cursor
-from hspylib.modules.eventbus import eventbus
 
 
 class TUIMenuAction(TUIMenu):
@@ -33,7 +33,7 @@ class TUIMenuAction(TUIMenu):
 
     def _render(self) -> None:
         restore_cursor()
-        eventbus.emit("tui-menu-ui", "render-app-title")
+        TUIMenuUi.render_app_title()
 
     def __init__(
         self,
