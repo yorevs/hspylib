@@ -18,12 +18,12 @@ import os
 import sys
 from textwrap import dedent
 
+from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import hook_exit_signals, syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault

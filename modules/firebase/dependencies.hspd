@@ -11,6 +11,7 @@
 
 package: hspylib, version: latest, space: global, mode: gt
 package: hspylib-datasource, version: latest, space: global, mode: gt
+package: hspylib-clitt, version: latest, space: global, mode: gt
 
 /* Application dependencies */
 

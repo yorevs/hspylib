@@ -19,12 +19,12 @@ import sys
 from textwrap import dedent
 
 import urllib3
+from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.tui.tui_application import TUIApplication
 
 from firebase.__classpath__ import _Classpath
 from firebase.core.firebase import Firebase
