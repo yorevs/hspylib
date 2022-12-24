@@ -22,6 +22,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from hspylib.core.tools.commons import dirname
+from hspylib.core.tools.dict_tools import get_or_default_by_key
 from hspylib.modules.fetch.fetch import get
 from requests.structures import CaseInsensitiveDict
 
@@ -144,6 +145,11 @@ class FirebaseConfiguration(AppConfigs):
     def base_url(self) -> str:
         return self._base_url or f"{self.scheme}://{self.hostname}:{self.port}/{self.database}"
 
+    def url(self, db_alias: Optional[str] = "") -> str:
+        """Return the url for an element at the Firebase webapp."""
+        final_alias_url = db_alias.replace(" ", "%20").replace(".", "/")
+        return f"{self.base_url}/{final_alias_url}"
+
     def validate_config(self) -> bool:
         """Validate the current configuration"""
         check_not_none(self._uid, "User UID must be defined")
@@ -154,7 +160,9 @@ class FirebaseConfiguration(AppConfigs):
 
         return self._valid
 
-    def url(self, db_alias: Optional[str] = "") -> str:
-        """Return the url for an element at the Firebase webapp."""
-        final_alias_url = db_alias.replace(" ", "%20").replace(".", "/")
-        return f"{self.base_url}/{final_alias_url}"
+    def update(self, configs: dict) -> None:
+        """Update Firebase configurations"""
+        self._uid = get_or_default_by_key(configs, "UID", self.uid)
+        self._project_id = get_or_default_by_key(configs, "PROJECT_ID", self.uid)
+        self._email = get_or_default_by_key(configs, "EMAIL", self.uid)
+        self._database = get_or_default_by_key(configs, "DATABASE", self.uid)
