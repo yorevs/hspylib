@@ -26,6 +26,8 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
+from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
+from clitt.core.icons.font_awesome.form_icons import FormIcons
 from confluent_kafka.cimpl import Consumer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
@@ -33,8 +35,6 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import dirname
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.core.zoned_datetime import now, now_ms
-from hspylib.modules.cli.icons.font_awesome.dashboard_icons import DashboardIcons
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.fetch.fetch import is_reachable
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from hspylib.modules.qt.promotions.htablemodel import HTableModel
