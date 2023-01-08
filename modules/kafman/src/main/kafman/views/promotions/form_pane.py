@@ -16,8 +16,8 @@
 from collections import defaultdict
 from typing import Optional
 
+from clitt.core.icons.font_awesome.form_icons import FormIcons
 from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.modules.cli.icons.font_awesome.form_icons import FormIcons
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hframe import HFrame
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
