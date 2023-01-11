@@ -15,7 +15,7 @@
 import re
 from collections import namedtuple
 from textwrap import dedent
-from typing import Union
+from typing import Union, Optional
 
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
@@ -34,27 +34,21 @@ class VaultEntry(CrudEntity):
         """
     [%BLUE%{}%NC%]:
             Name: %GREEN%{}%NC%
-            Hint: %GREEN%{}%NC%
         Password: %GREEN%{}%NC%
+            Hint: %GREEN%{}%NC%
         Modified: %GREEN%{}%NC%
     """
     )
 
     @staticmethod
-    def prompt(existing_entry: Union['VaultEntry', None] = None) -> 'VaultEntry':
+    def prompt(existing_entry: Union['VaultEntry', None] = None) -> Optional['VaultEntry']:
         """Create a vault entry from a form input"""
         entry = existing_entry or VaultEntry()
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
-                .label('Key') \
-                .validator(InputValidator.words()) \
-                .min_max_length(3, 50) \
-                .value(entry.key) \
-                .build() \
-            .field() \
                 .label('Name') \
-                .validator(InputValidator.words()) \
+                .access_type('read-only') \
                 .min_max_length(3, 50) \
                 .value(entry.name) \
                 .build() \
@@ -68,19 +62,21 @@ class VaultEntry(CrudEntity):
                 .label('Password') \
                 .itype('password') \
                 .validator(InputValidator.anything()) \
-                .min_max_length(1, 50) \
+                .min_max_length(4, 50) \
                 .value(entry.password) \
                 .build() \
             .build()
-        result = minput(form_fields, "Please fill in your Firebase Realtime Database configs")
+        result = minput(form_fields, "Please fill the vault credential details")
         # fmt: on
+
         if result:
             entry.key = result.name
             entry.name = result.name
             entry.hint = result.hint
             entry.password = result.password
             entry.modified = now()
-        return entry
+
+        return entry if result else None
 
     def __init__(
         self, entity_id: Identity = VaultId(Identity.auto().values),
