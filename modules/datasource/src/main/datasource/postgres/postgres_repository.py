@@ -65,13 +65,14 @@ class PostgresRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass
         """TODO"""
         with self._session() as dbs:
             try:
+                args = dict(kwargs)
                 rows = []
                 log.debug(
                     f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                    f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
+                    f"\t|-Arguments: {args}\n"
                     f"\t|-Statement: {sql_statement}"
                 )
-                dbs.execute(sql_statement, **kwargs)
+                dbs.execute(sql_statement, tuple(args.values()))
                 if dbs.description:
                     list(map(rows.append, dbs.fetchall()))
                 return dbs.rowcount, rows

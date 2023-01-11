@@ -70,12 +70,13 @@ class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=A
         """TODO"""
         with self._session() as dbs:
             try:
+                args = dict(kwargs)
                 log.debug(
                     f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                    f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
+                    f"\t|-Arguments: {args}\n"
                     f"\t|-Statement: {sql_statement}"
                 )
-                rows = dbs.execute(sql_statement, **kwargs).fetchall()
+                rows = dbs.execute(sql_statement, tuple(args.values())).fetchall()
                 return dbs.rowcount, rows
             except (sqlite3.ProgrammingError, sqlite3.OperationalError) as err:
                 raise DatabaseError(f"Unable to execute statement => {sql_statement}") from err

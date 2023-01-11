@@ -15,8 +15,10 @@
 import re
 from collections import namedtuple
 from textwrap import dedent
-from typing import List
+from typing import Union
 
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.zoned_datetime import now
@@ -27,33 +29,70 @@ class VaultEntry(CrudEntity):
 
     VaultId = namedtuple("VaultId", ["uuid"])
 
-    @staticmethod
-    def columns() -> List[str]:
-        return ["uuid", "name", "password", "hint", "modified"]
-
-    @classmethod
-    def from_tuple(cls, values: tuple) -> "VaultEntry":
-        return VaultEntry(Identity(cls.VaultId(values[0])), **dict(zip(cls.columns(), values)))
-
     # Vault entry format to be displayed when listing
     _DISPLAY_FORMAT = dedent(
         """
     [%BLUE%{}%NC%]:
             Name: %GREEN%{}%NC%
-        Password: %GREEN%{}%NC%
             Hint: %GREEN%{}%NC%
+        Password: %GREEN%{}%NC%
         Modified: %GREEN%{}%NC%
     """
     )
 
-    def __init__(self, entity_id: Identity, **kwargs):
+    @staticmethod
+    def prompt(existing_entry: Union['VaultEntry', None] = None) -> 'VaultEntry':
+        """Create a vault entry from a form input"""
+        entry = existing_entry or VaultEntry()
+        # fmt: off
+        form_fields = MenuInput.builder() \
+            .field() \
+                .label('Key') \
+                .validator(InputValidator.words()) \
+                .min_max_length(3, 50) \
+                .value(entry.key) \
+                .build() \
+            .field() \
+                .label('Name') \
+                .validator(InputValidator.words()) \
+                .min_max_length(3, 50) \
+                .value(entry.name) \
+                .build() \
+            .field() \
+                .label('Hint') \
+                .validator(InputValidator.anything()) \
+                .min_max_length(3, 50) \
+                .value(entry.hint) \
+                .build() \
+            .field() \
+                .label('Password') \
+                .itype('password') \
+                .validator(InputValidator.anything()) \
+                .min_max_length(1, 50) \
+                .value(entry.password) \
+                .build() \
+            .build()
+        result = minput(form_fields, "Please fill in your Firebase Realtime Database configs")
+        # fmt: on
+        if result:
+            entry.key = result.name
+            entry.name = result.name
+            entry.hint = result.hint
+            entry.password = result.password
+            entry.modified = now()
+        return entry
+
+    def __init__(
+        self, entity_id: Identity = VaultId(Identity.auto().values),
+        key: str = None, name: str = None, password: str = None, hint: str = None, modified: str = None):
+
         self.id = None  # Will be filled later
         super().__init__(entity_id)
-        self.key = kwargs["key"]
-        self.name = kwargs["name"]
-        self.password = kwargs["password"]
-        self.hint = kwargs["hint"]
-        self.modified = kwargs["modified"] if "modified" in kwargs else now()
+        self.key = key
+        self.name = name
+        self.hint = hint
+        self.password = password
+        self.modified = modified or now()
 
     def __str__(self) -> str:
         return str(self.as_dict())
