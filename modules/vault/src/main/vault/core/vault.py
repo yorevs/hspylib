@@ -128,14 +128,13 @@ class Vault:
         """
         check_not_none(key)
         if not self.service.exists(key):
-            while not password:
-                password = getpass.getpass(f"Type the password for '{key}': ").strip()
             entry = VaultEntry(
                 Identity(VaultEntry.VaultId(uuid.uuid4().hex)),
-                key, key, self._encrypt_password(password), hint,
+                key, key, password, hint,
             )
-            self.service.save(entry)
-            sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
+            if entry := VaultEntry.prompt(entry):
+                self.service.save(entry)
+                sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
         else:
             log.error("Attempt to add to Vault failed for key=%s", key)
             syserr(f"### Entry specified by '{key}' already exists in vault")
@@ -148,14 +147,13 @@ class Vault:
         :param password: The vault entry password to be updated
         """
         check_not_none(key)
-        entry: VaultEntry = self.service.get_by_key(key)
-        if entry:
+        if entry := self.service.get_by_key(key):
             entry.hint = hint if hint else entry.hint
             entry.password = password if password else self._decrypt_password(entry.password)
             if not hint or not password:
                 entry = VaultEntry.prompt(entry)
             if entry:
-                entry.password = self._encrypt_password(password)
+                entry.password = self._encrypt_password(entry.password)
                 self.service.save(entry)
                 sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
         else:
