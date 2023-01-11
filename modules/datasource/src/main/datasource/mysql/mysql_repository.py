@@ -66,13 +66,14 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
         """TODO"""
         with self._session() as dbs:
             try:
+                args = dict(kwargs)
                 rows = []
                 log.debug(
                     f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                    f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
+                    f"\t|-Arguments: {args}\n"
                     f"\t|-Statement: {sql_statement}"
                 )
-                if (rows_affected := dbs.execute(sql_statement, **kwargs) or 0) > 0:
+                if (rows_affected := dbs.execute(sql_statement, tuple(args.values())) or 0) > 0:
                     list(map(rows.append, dbs))
                 return rows_affected, rows
             except (pymysql.err.ProgrammingError, pymysql.err.OperationalError) as err:

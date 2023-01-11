@@ -26,6 +26,7 @@ import cryptocode
 import keyring
 from cryptography.fernet import InvalidToken
 from datasource.identity import Identity
+from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
 from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
 from hspylib.modules.security.security import b64_decode, decode_file, decrypt_file, encode_file, encrypt_file
@@ -119,46 +120,46 @@ class Vault:
                 sysout("%YELLOW%\n-=- Vault is empty -=-\n%NC%")
         log.debug("Vault list issued. User=%s", getpass.getuser())
 
-    def add(self, key: str, hint: str, password: str) -> None:
+    def add(self, key: str, hint: str | None, password: str | None) -> None:
         """Add a vault entry
         :param key: The vault entry name to be added
         :param hint: The vault entry hint to be added
         :param password: The vault entry password to be added
         """
-        entry = self.service.get_by_key(key)
-        if not entry:
+        check_not_none(key)
+        if not self.service.exists(key):
             while not password:
                 password = getpass.getpass(f"Type the password for '{key}': ").strip()
             entry = VaultEntry(
                 Identity(VaultEntry.VaultId(uuid.uuid4().hex)),
-                key=key,
-                name=key,
-                password=self._encrypt_password(password),
-                hint=hint,
+                key, key, self._encrypt_password(password), hint,
             )
             self.service.save(entry)
             sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
         else:
-            log.error("Attempt to add to Vault failed for name=%s", key)
+            log.error("Attempt to add to Vault failed for key=%s", key)
             syserr(f"### Entry specified by '{key}' already exists in vault")
         log.debug("Vault add issued. User=%s", getpass.getuser())
 
-    def update(self, key, hint, password) -> None:
+    def update(self, key: str, hint: str | None, password: str | None) -> None:
         """Update a vault entry
         :param key: The vault entry name to be updated
         :param hint: The vault entry hint to be updated
         :param password: The vault entry password to be updated
         """
+        check_not_none(key)
         entry: VaultEntry = self.service.get_by_key(key)
         if entry:
-            while not password:
-                password = getpass.getpass(f"Type a password for '{key}': ").strip()
-            entry.password = self._encrypt_password(password)
-            entry.hint = hint
-            self.service.save(entry)
-            sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
+            entry.hint = hint if hint else entry.hint
+            entry.password = password if password else self._decrypt_password(entry.password)
+            if not hint or not password:
+                entry = VaultEntry.prompt(entry)
+            if entry:
+                entry.password = self._encrypt_password(password)
+                self.service.save(entry)
+                sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
         else:
-            log.error("Attempt to update Vault failed for name=%s", key)
+            log.error("Attempt to update Vault failed for key=%s", key)
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault update issued. User=%s", getpass.getuser())
 
@@ -171,8 +172,8 @@ class Vault:
             entry.password = cryptocode.decrypt(entry.password, self._VAULT_HASHCODE)
             sysout(f"\n{entry.to_string(True, True)}")
         else:
-            log.error("Attempt to get from Vault failed for name=%s", key)
-            syserr(f"### No entry specified by '{key}' was found in vault")
+            log.error("Attempt to get from Vault failed for key=%s", key)
+            syserr(f"### No entry specified by '{key}' was found in vault ###")
         log.debug("Vault get issued. User=%s", getpass.getuser())
 
     def remove(self, key: str) -> None:
@@ -184,12 +185,15 @@ class Vault:
             self.service.remove(entry)
             sysout(f"%GREEN%\n=== Entry removed ===\n\n%NC%{entry.to_string()}")
         else:
-            log.error("Attempt to remove to Vault failed for name=%s", key)
+            log.error("Attempt to remove to Vault failed for key=%s", key)
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault remove issued. User=%s", getpass.getuser())
 
     def _encrypt_password(self, password: str) -> str:
         return cryptocode.encrypt(password, self._VAULT_HASHCODE)
+
+    def _decrypt_password(self, password: str) -> str:
+        return cryptocode.decrypt(password, self._VAULT_HASHCODE)
 
     def _read_passphrase(self) -> str:
         """Retrieve and read the vault passphrase"""

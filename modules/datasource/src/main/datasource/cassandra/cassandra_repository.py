@@ -97,13 +97,14 @@ class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration], m
         """TODO"""
         with self._session() as dbs:
             try:
+                args = dict(kwargs)
                 rows = []
                 log.debug(
                     f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                    f"\t|-Arguments: {str([f'{k}={v}' for k, v in kwargs.items()])}\n"
+                    f"\t|-Arguments: {args}\n"
                     f"\t|-Statement: {sql_statement}"
                 )
-                rs = dbs.execute(sql_statement, **kwargs)
+                rs = dbs.execute(sql_statement, tuple(args.values()))
                 if rs.current_rows:
                     list(map(rows.append, rs.current_rows))
                 return len(rs.current_rows), rows
