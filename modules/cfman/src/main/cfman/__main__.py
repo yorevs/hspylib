@@ -12,25 +12,26 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
+import logging as log
+import os
+import sys
+from textwrap import dedent
 
-from cfman.__classpath__ import _Classpath
-from cfman.core.cf_manager import CFManager
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
+from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
 
-import logging as log
-import os
-import sys
+from cfman.__classpath__ import _Classpath
+from cfman.core.cf_manager import CFManager
 
 
 class Main(TUIApplication):
-    """Cloud Foundry Manager - Manage PCF applications."""
+    """Cloud Foundry Manager - Manage PCF applications.
+    """
 
     # The welcome message
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
@@ -44,7 +45,8 @@ class Main(TUIApplication):
         self._cf_manager = None
 
     def _setup_arguments(self) -> None:
-        """Initialize application parameters and options"""
+        """Initialize application parameters and options.
+        """
         # fmt: off
         self._with_options() \
             .option("api", "a", "api", "the API endpoint to connect to (e.g. https://api.example.com)", nargs="?")\
@@ -64,7 +66,7 @@ class Main(TUIApplication):
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Run the application with the command line arguments
+        """Run the application with the command line arguments.
         """
         self._cf_manager = CFManager(
             self.get_arg("api"),
@@ -88,9 +90,8 @@ class Main(TUIApplication):
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
-        """Execute the application
+        """Execute the application.
         """
-        self._alternate_screen()
         prepare_render()
         self._cf_manager.run()
         clear_screen()

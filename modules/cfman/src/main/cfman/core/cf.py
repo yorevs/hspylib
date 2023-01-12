@@ -17,31 +17,43 @@ from typing import List, Optional
 
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.terminal import Terminal
 
 
 class CloudFoundry(metaclass=Singleton):
-    """Cloud Foundry command line tool python wrapper"""
+    """Cloud Foundry command line tool wrapper.
+    """
 
     INSTANCE = None
 
     def __init__(self) -> None:
-        self.connected = False
-        self.targeted = {"org": None, "space": None, "targeted": False}
-        self.last_result = None
-        self.last_exit_code = None
+        self._connected = False
+        self._targeted = {"org": None, "space": None, "targeted": False}
+        self._last_output = None
+        self._last_exit_code = None
+
+    @property
+    def last_output(self) -> str:
+        return self._last_output
+
+    @property
+    def last_exit_code(self) -> ExitStatus:
+        return self._last_exit_code
 
     def is_targeted(self) -> bool:
-        return self.targeted["org"] and self.targeted["space"] and self.targeted["targeted"]
+        """Return whether it is targeted to any cf api-org-space or not.
+        """
+        return self._targeted["org"] and self._targeted["space"] and self._targeted["targeted"]
 
     # Before getting started:
     def connect(self) -> bool:
         """Attempt to connect to CloudFoundry.
         """
-        if not self.connected:
+        if not self._connected:
             result = self._exec("orgs")
-            self.connected = result and "FAILED" not in str(result)
-        return self.connected
+            self._connected = result and "FAILED" not in str(result)
+        return self._connected
 
     def api(self, url: str | None = None) -> Optional[str]:
         """Set or view target api url.
@@ -68,20 +80,20 @@ class CloudFoundry(metaclass=Singleton):
             if len(parts) >= 4:
                 org = parts[2].split(":")[1].strip()
                 space = parts[3].split(":")[1].strip()
-                self.targeted = {"org": org, "space": space, "targeted": True}
+                self._targeted = {"org": org, "space": space, "targeted": True}
         else:
             if "org" in kwargs and kwargs["org"]:
                 params.append("-o")
                 params.append(kwargs["org"])
-                self.targeted["org"] = kwargs["org"]
+                self._targeted["org"] = kwargs["org"]
             if "space" in kwargs and kwargs["space"]:
                 params.append("-s")
                 params.append(kwargs["space"])
-                self.targeted["space"] = kwargs["space"]
+                self._targeted["space"] = kwargs["space"]
             result = self._exec(" ".join(params))
-            self.targeted["targeted"] = result and "FAILED" not in str(result)
+            self._targeted["targeted"] = result and "FAILED" not in str(result)
 
-        return self.targeted
+        return self._targeted
 
     # Space management
     def spaces(self) -> List[str]:
@@ -161,12 +173,12 @@ class CloudFoundry(metaclass=Singleton):
                      of file descriptors and the output will be continuously printed. If [ENTER] is hit, the polling
                      will terminate.
         """
-        self.last_result = None
+        self._last_output = None
 
         if poll:
             sysout("%YELLOW%%EOL%Press [ENTER] to exit...%EOL%%NC%")
             Terminal.shell_poll(f"cf {cmd_line}")
         else:
-            self.last_result, self.last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")
+            self._last_output, self._last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")
 
-        return self.last_result
+        return self._last_output

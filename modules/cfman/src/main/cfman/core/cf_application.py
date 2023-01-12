@@ -21,23 +21,25 @@ import re
 
 
 class CFApplication:
+    """Represent a PCF application.
+    """
+
     max_name_length = 70
 
     @classmethod
     def of(cls, app_line: str):
-        """TODO"""
+        """Create a cf application entry from the cf apps output line.
+        """
         parts = re.split(r" {2,}", app_line)
         # format: name | state | instances | memory | disk | urls
-        if len(parts) == 6:
+        if len(parts) == 6:  # Old cf command output
             return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(", "))
         # format: name | state | type:i/o | urls
-        if len(parts) == 4:
-            mat = re.search(r"(\w+):(\d+/\d+)", parts[2])
-            if not mat:
-                raise InvalidArgumentError(f"Invalid application line: {app_line}")
+        if len(parts) == 4:  # New cf command output
+            if not (mat := re.search(r"(\w+):(\d+/\d+)", parts[2])):
+                raise InvalidArgumentError(f"Invalid application line: \"{app_line}\"")
             instances = mat.group(2)
-            memory = "-"
-            disk = "-"
+            memory = disk = "-"
             return CFApplication(parts[0], parts[1], instances, memory, disk, parts[3].split(", "))
 
         raise InvalidArgumentError(f"Invalid application line: {app_line}")
@@ -58,9 +60,22 @@ class CFApplication:
     def __repr__(self) -> str:
         return str(self)
 
+    @property
+    def colored_state(self) -> str:
+        """Return the actual application state using colors.
+        """
+        state = self.state.upper()
+        return f"{self.prefs.success_color if self.is_started else self.prefs.error_color:5}{state}" \
+            + self.prefs.text_color.code
+
+    @property
+    def is_started(self) -> bool:
+        return self.state.lower() == 'started'
+
     # pylint: disable=consider-using-f-string
     def print_status(self) -> None:
-        """TODO"""
+        """Print the actual application status line.
+        """
         sysout(
             "%CYAN%{}  {:5}  %NC%{:10}  {:4}  {:4}  {}".format(
                 self.name.ljust(self.max_name_length),
@@ -71,10 +86,3 @@ class CFApplication:
                 self.urls,
             )
         )
-
-    @property
-    def colored_state(self) -> str:
-        """TODO"""
-        state = self.state.upper()
-        return f"{self.prefs.success_color if state == 'STARTED' else self.prefs.error_color:5}{state}" \
-            + self.prefs.text_color.code
