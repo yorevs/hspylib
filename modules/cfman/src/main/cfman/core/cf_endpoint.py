@@ -17,7 +17,8 @@ from typing import Tuple
 
 
 class CFEndpoint:
-    """TODO"""
+    """Represent a cf API endpoint entry.
+    """
 
     def __init__(self, attrs: Tuple[str]):
         self.alias = attrs[0]
