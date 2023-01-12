@@ -121,7 +121,7 @@ class Vault:
 
     def add(self, key: str, hint: str | None, password: str | None) -> None:
         """Add a vault entry
-        :param key: The vault entry name to be added
+        :param key: The vault entry key to be added
         :param hint: The vault entry hint to be added
         :param password: The vault entry password to be added
         """
@@ -143,7 +143,7 @@ class Vault:
 
     def update(self, key: str, hint: str | None, password: str | None) -> None:
         """Update a vault entry
-        :param key: The vault entry name to be updated
+        :param key: The vault entry key to be updated
         :param hint: The vault entry hint to be updated
         :param password: The vault entry password to be updated
         """
@@ -164,7 +164,7 @@ class Vault:
 
     def get(self, key) -> None:
         """Display the vault entry specified by name
-        :param key: The vault entry name to get
+        :param key: The vault entry key to get
         """
         entry = self.service.get_by_key(key)
         if entry:
@@ -177,7 +177,7 @@ class Vault:
 
     def remove(self, key: str) -> None:
         """Remove a vault entry
-        :param key: The vault entry name to be removed
+        :param key: The vault entry key to be removed
         """
         entry = self.service.get_by_key(key)
         if entry:

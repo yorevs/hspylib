@@ -12,6 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
+
 from cfman.__classpath__ import _Classpath
 from cfman.core.cf_manager import CFManager
 from clitt.core.tui.tui_application import TUIApplication
@@ -39,7 +41,7 @@ class Main(TUIApplication):
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
-        self.cfman = None
+        self._cf_manager = None
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options"""
@@ -62,8 +64,9 @@ class Main(TUIApplication):
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Run the application with the command line arguments"""
-        self.cfman = CFManager(
+        """Run the application with the command line arguments
+        """
+        self._cf_manager = CFManager(
             self.get_arg("api"),
             self.get_arg("org"),
             self.get_arg("space"),
@@ -85,8 +88,12 @@ class Main(TUIApplication):
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
-        """Execute the application"""
-        self.cfman.run()
+        """Execute the application
+        """
+        self._alternate_screen()
+        prepare_render()
+        self._cf_manager.run()
+        clear_screen()
         return ExitStatus.SUCCESS
 
 
