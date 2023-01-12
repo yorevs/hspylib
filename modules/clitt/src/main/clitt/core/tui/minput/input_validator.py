@@ -13,10 +13,10 @@
    Copyright 2022, HSPyLib team
 """
 
-import re
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.validator import Validator
+
+import re
 
 
 class InputValidator(Validator):

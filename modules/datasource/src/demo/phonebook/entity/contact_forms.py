@@ -13,9 +13,9 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.namespace import Namespace
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
+from hspylib.core.namespace import Namespace
 
 
 class ContactForms:

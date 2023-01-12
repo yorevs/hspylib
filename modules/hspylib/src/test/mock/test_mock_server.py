@@ -13,16 +13,15 @@
    Copyright 2022, HSPyLib team
 """
 
-import os
-import sys
-import unittest
-
-import requests
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
 from mock.mock_server import MockServer
+
+import os
+import requests
+import sys
+import unittest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

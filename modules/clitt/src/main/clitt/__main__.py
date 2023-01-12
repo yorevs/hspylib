@@ -12,8 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
-import sys
-
+from clitt.__classpath__ import _Classpath
+from clitt.addons.appman.appman import AppManager
+from clitt.addons.appman.appman_enums import AppType, Extension
+from clitt.addons.widman.widman import WidgetManager
+from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
@@ -21,11 +24,7 @@ from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-from clitt.__classpath__ import _Classpath
-from clitt.addons.appman.appman import AppManager
-from clitt.addons.appman.appman_enums import AppType, Extension
-from clitt.addons.widman.widman import WidgetManager
-from clitt.core.tui.tui_application import TUIApplication
+import sys
 
 
 class Main(TUIApplication):

@@ -13,13 +13,11 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, List, Union
-
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_and_get
-
 from kafman.core.schema.json.json_type import JsonType
+from typing import Any, List, Union
 
 
 class Property:

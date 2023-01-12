@@ -12,15 +12,13 @@
 
    Copyright 2022, HSPyLib team
 """
-from functools import cached_property
-from typing import List, Optional, TypeVar
-
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, screen_size
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.keyboard import Keyboard
 from clitt.core.tui.tui_component import TUIComponent
+from functools import cached_property
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, screen_size
+from typing import List, Optional, TypeVar
 
 T = TypeVar("T")
 
@@ -28,7 +26,7 @@ T = TypeVar("T")
 def mchoose(
     items: List[T],
     checked: bool = True,
-    title: str = "Please select one"
+    title: str = "Please choose among the options"
 ) -> Optional[List[T]]:
     """
     TODO

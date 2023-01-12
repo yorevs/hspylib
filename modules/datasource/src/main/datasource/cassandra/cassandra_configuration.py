@@ -12,9 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Optional
-
 from datasource.db_configuration import DBConfiguration
+from typing import Optional
 
 
 class CassandraConfiguration(DBConfiguration):

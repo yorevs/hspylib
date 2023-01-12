@@ -12,18 +12,20 @@
 
    Copyright 2022, HSPyLib team
 """
+from abc import ABC
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import syserr, sysout
+from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import Optional, Tuple
 
 import logging as log
 import os
 import platform
 import select
 import shlex
+import signal
 import subprocess
-from abc import ABC
-from typing import Optional, Tuple
-
-from hspylib.core.tools.commons import syserr
-from hspylib.modules.application.exit_status import ExitStatus
 
 
 class Terminal(ABC):
@@ -33,9 +35,13 @@ class Terminal(ABC):
     def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
         """Execute command with arguments and return it's run status."""
         try:
+            if "stdout" in kwargs:
+                del kwargs["stdout"]  # Deleted since we use our own stream
+            if "stderr" in kwargs:
+                del kwargs["stderr"]  # Deleted since we use our own stream
             log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            output = subprocess.check_output(cmd_args, **kwargs).decode("utf-8")
+            output = subprocess.check_output(cmd_args, **kwargs).decode(Charset.UTF_8.val)
             log.info("Execution result: %s", ExitStatus.SUCCESS)
             return output.strip() if output else None, ExitStatus.SUCCESS
         except subprocess.CalledProcessError as err:
@@ -47,18 +53,23 @@ class Terminal(ABC):
     def shell_poll(cmd_line: str, **kwargs) -> None:
         """Execute command with arguments and continuously poll it's output."""
         if "stdout" in kwargs:
-            del kwargs["stdout"]  # Deleted since we use our own
+            del kwargs["stdout"]  # Deleted since we use our own stream
         if "stderr" in kwargs:
-            del kwargs["stderr"]  # Deleted since we use our own
+            del kwargs["stderr"]  # Deleted since we use our own stream
         try:
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            with (subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)) as file:
+            with (subprocess.Popen(
+                    cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs)) as proc:
                 process = select.poll()
-                process.register(file.stdout)
+                process.register(proc.stdout)
                 while True:
-                    line = bytes(file.stdout.readline()).decode("utf-8").strip()
-                    print("." + line)
+                    if Keyboard.kbhit():
+                        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                        return
+                    if process.poll(0.3):
+                        line = bytes(proc.stdout.readline()).decode(Charset.UTF_8.val).strip()
+                        sysout(line)
         except (InterruptedError, KeyboardInterrupt):
             log.warning("Polling process has been interrupted command='%s'", cmd_line)
         except subprocess.CalledProcessError as err:

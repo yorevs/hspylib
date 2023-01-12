@@ -13,12 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_state
+
 import base64
 import logging as log
 import os
-
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_state
 
 
 class FileEntry:

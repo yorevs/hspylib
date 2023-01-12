@@ -13,12 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-import sys
-import unittest
 from abc import abstractmethod
-
 from hspylib.core.exception.exceptions import HSBaseException
 from hspylib.core.metaclass.singleton import AbstractSingleton, Singleton
+
+import sys
+import unittest
 
 
 class TestClass(unittest.TestCase):

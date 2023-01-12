@@ -12,9 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
-from enum import auto
-
 from clitt.core.icons.emojis.emojis import Emoji
+from enum import auto
 
 
 class FaceSmiling(Emoji):

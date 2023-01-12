@@ -13,15 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any, Optional
-
+from clitt.core.tui.menu.tui_menu import TUIMenu
+from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
-
-from clitt.core.tui.menu.tui_menu import TUIMenu
-from clitt.core.tui.tui_preferences import TUIPreferences
+from typing import Any, Optional
 
 
 class TUIMenuUi(metaclass=Singleton):

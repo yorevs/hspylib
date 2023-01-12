@@ -13,13 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
+from hspylib.core.config.app_config import AppConfigs
+from hspylib.core.tools.commons import dirname
+
 import logging as log
 import os
 import sys
 import unittest
-
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import dirname
 
 TEST_DIR = dirname(__file__)
 

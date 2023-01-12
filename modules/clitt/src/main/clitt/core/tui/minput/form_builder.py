@@ -13,17 +13,15 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import Any
-
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import str_to_bool
-from hspylib.core.tools.text_tools import snakecase
-
 from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput_utils import MInputUtils
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.text_tools import snakecase
+from typing import Any
 
 
 class FormBuilder:

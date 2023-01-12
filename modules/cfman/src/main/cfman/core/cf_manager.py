@@ -12,27 +12,26 @@
 
    Copyright 2022, HSPyLib team
 """
-import sys
+from cfman.core.cf import CloudFoundry
+from cfman.core.cf_application import CFApplication
+from cfman.core.cf_endpoint import CFEndpoint
+from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
+from clitt.core.tui.mchoose import mchoose
+from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
+from clitt.core.tui.minput.minput import MenuInput, minput
+from clitt.core.tui.mselect import mselect
 from functools import partial
-from time import sleep
-from typing import List, Optional, Tuple
-
-import requests
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cache.ttl_cache import TTLCache
-from clitt.core.tui.mchoose import mchoose
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
-from clitt.core.tui.minput.minput import MenuInput, minput
-from clitt.core.tui.mselect import mselect
 from hspylib.modules.fetch.fetch import head
+from time import sleep
+from typing import List, Optional, Tuple
 
-from cfman.core.cf import CloudFoundry
-from cfman.core.cf_application import CFApplication
-from cfman.core.cf_endpoint import CFEndpoint
-from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
+import requests
+import sys
 
 
 class CFManager:

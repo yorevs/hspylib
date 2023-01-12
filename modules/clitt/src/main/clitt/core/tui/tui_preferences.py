@@ -13,14 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-import os
-
+from clitt.core.icons.font_awesome.form_icons import FormIcons
+from clitt.core.icons.font_awesome.nav_icons import Awesome, NavIcons
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.dict_tools import get_or_default_by_key
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
-from clitt.core.icons.font_awesome.form_icons import FormIcons
-from clitt.core.icons.font_awesome.nav_icons import Awesome, NavIcons
+import os
 
 
 class TUIPreferences(metaclass=Singleton):

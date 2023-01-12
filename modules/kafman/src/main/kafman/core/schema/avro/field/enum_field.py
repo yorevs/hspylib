@@ -13,14 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List
-
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
-from PyQt5.QtWidgets import QWidget
-
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.widget_utils import WidgetUtils
+from PyQt5.QtWidgets import QWidget
+from typing import List
 
 
 class EnumField(SchemaField):

@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Any
-
 from avro.schema import Schema
 from hspylib.core.enums.enumeration import Enumeration
+from typing import Any
 
 
 class AvroType(Enumeration):
