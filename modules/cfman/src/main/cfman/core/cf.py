@@ -12,15 +12,18 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.modules.cli.terminal import Terminal
+import os
 from typing import List, Optional
 
-import os
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.terminal import Terminal
 
 
 class CloudFoundry(metaclass=Singleton):
     """Cloud Foundry command line tool python wrapper"""
+
+    INSTANCE = None
 
     def __init__(self) -> None:
         self.connected = False
@@ -33,24 +36,33 @@ class CloudFoundry(metaclass=Singleton):
 
     # Before getting started:
     def connect(self) -> bool:
-        """Attempt to connect to CloudFoundry"""
+        """Attempt to connect to CloudFoundry.
+        """
         if not self.connected:
             result = self._exec("orgs")
             self.connected = result and "FAILED" not in str(result)
         return self.connected
 
-    def api(self, api: str | None = None) -> Optional[str]:
-        """Set or view target api url"""
-        result = self._exec(f"api {api or ''}")
+    def api(self, url: str | None = None) -> Optional[str]:
+        """Set or view target api url.
+        :param url the cf API URL.
+        """
+        result = self._exec(f"api {url or ''}")
         return result if "FAILED" not in str(result) else None
 
     def auth(self, username: str, password: str) -> bool:
-        """Authorize a CloudFoundry user"""
+        """Authorize a CloudFoundry user.
+        """
         result = self._exec(f"auth {username} {password}")
         return result and "FAILED" not in str(result)
 
     def target(self, **kwargs) -> dict:
-        """Set or view the targeted org or space"""
+        """Set or view the targeted org or space.
+        Kwargs:
+              org (str): the organization name.
+            space (str): the space name.
+        :param kwargs arbitrary cf command keyword arguments.
+        """
         params = ["target"]
         if not kwargs and (parts := self._exec(" ".join(params)).split(os.linesep)):
             if len(parts) >= 4:
@@ -73,47 +85,88 @@ class CloudFoundry(metaclass=Singleton):
 
     # Space management
     def spaces(self) -> List[str]:
-        """List all spaces from organization"""
+        """List all spaces from organization.
+        """
         all_spaces = self._exec("spaces").split("\n")
         return all_spaces[3:] if all_spaces and "FAILED" not in str(all_spaces) else None
 
     # Org management
     def orgs(self) -> List[str]:
-        """List all organizations"""
+        """List all organizations.
+        """
         all_orgs = self._exec("orgs").split("\n")
         return all_orgs[3:] if all_orgs and "FAILED" not in str(all_orgs) else None
 
-    # Application lifecycle:
+    # Application lifecycle
     def apps(self) -> List[str]:
-        """List all applications from targeted space"""
+        """List all applications from targeted space.
+        """
         all_apps = self._exec("apps").split("\n")
         return all_apps[4:] if all_apps and "FAILED" not in str(all_apps) else None
 
+    # Application status
     def start(self, **kwargs) -> str:
-        """Start an app"""
+        """Start an app.
+        Kwargs:
+            app (str): the application name.
+        :param kwargs arbitrary cf command keyword arguments.
+        """
         return self._exec(f"start {kwargs['app']}")
 
+    # Application status
     def stop(self, **kwargs) -> str:
-        """Stop an app"""
+        """Stop an app.
+        Kwargs:
+            app (str): the application name.
+        :param kwargs arbitrary cf command keyword arguments.
+        """
         return self._exec(f"stop {kwargs['app']}")
 
+    # Application status
     def restart(self, **kwargs) -> str:
-        """Stop all instances of the app, then start them again. This causes downtime."""
+        """Stop all instances of the app, then start them again. This causes downtime.
+        Kwargs:
+            app (str): the application name.
+        :param kwargs arbitrary cf command keyword arguments.
+        """
         return self._exec(f"restart {kwargs['app']}")
 
+    # Application status
     def restage(self, **kwargs) -> str:
         """Recreate the app's executable artifact using the latest pushed app files and the latest environment
-        (variables, service bindings, buildpack, stack, etc.). This action will cause app downtime."""
+        (variables, service bindings, buildpack, stack, etc.). This action will cause app downtime.
+        Kwargs:
+            app (str): the application name.
+        :param kwargs arbitrary cf command keyword arguments.
+        """
         return self._exec(f"restage {kwargs['app']}")
 
+    # Application logging
     def logs(self, **kwargs) -> None:
-        """Tail or show recent logs for an app"""
-        return self._exec(f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}")
+        """Tail or show recent logs for an app
+        Kwargs:
+            app (str): the application name.
+               recent: dump recent logs instead of tailing.
+        :param kwargs arbitrary cf command keyword arguments.
+        """
+        return self._exec(
+            cmd_line=f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}",
+            poll=True
+        )
 
-    def _exec(self, cmd_line: str, pool: bool = False) -> Optional[str]:
-        """TODO"""
-        if pool:
+    def _exec(self, cmd_line: str, poll: bool = False) -> Optional[str]:
+        """Execute the cf command.
+        :param cmd_line: the cf command line string
+        :param poll: whether to poll or execute the command. If poll is set I/O events can be registered for any number
+                     of file descriptors and the output will be continuously printed. If [ENTER] is hit, the polling
+                     will terminate.
+        """
+        self.last_result = None
+
+        if poll:
+            sysout("%YELLOW%%EOL%Press [ENTER] to exit...%EOL%%NC%")
             Terminal.shell_poll(f"cf {cmd_line}")
-            return None
-        self.last_result, self.last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")
+        else:
+            self.last_result, self.last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")
+
         return self.last_result

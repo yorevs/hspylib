@@ -12,7 +12,7 @@
 
    Copyright 2022, HSPyLib team
 """
-
+from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.tools.commons import sysout
 from typing import List
@@ -43,6 +43,7 @@ class CFApplication:
         raise InvalidArgumentError(f"Invalid application line: {app_line}")
 
     def __init__(self, name: str, state: str, instances: str, memory: str, disk: str, urls: List[str]) -> None:
+        self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
         self.name = name
         self.state = state
         self.instances = instances
@@ -75,4 +76,5 @@ class CFApplication:
     def colored_state(self) -> str:
         """TODO"""
         state = self.state.upper()
-        return f"{'%GREEN%' if state == 'STARTED' else '%RED%':5}{state}%NC%"
+        return f"{self.prefs.success_color if state == 'STARTED' else self.prefs.error_color:5}{state}" \
+            + self.prefs.text_color.code

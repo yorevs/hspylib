@@ -33,12 +33,18 @@ class TUIPreferences(metaclass=Singleton):
             get_or_default_by_key(kwargs, 'max_rows', 15)
         self._items_per_line: int       = \
             get_or_default_by_key(kwargs, 'items_per_line', 5)
-        self._title_color: VtColor      = \
-            get_or_default_by_key(kwargs, 'title_color', VtColor.ORANGE)
         self._title_line_length: int    = \
             get_or_default_by_key(kwargs, 'title_line_length', 30)
+        self._title_color: VtColor      = \
+            get_or_default_by_key(kwargs, 'title_color', VtColor.ORANGE)
         self._text_color: VtColor       = \
-            get_or_default_by_key(kwargs, 'text_color', VtColor.NC)
+            get_or_default_by_key(kwargs, 'text_color', VtColor.WHITE)
+        self._success_color: VtColor       = \
+            get_or_default_by_key(kwargs, 'success_color', VtColor.GREEN)
+        self._warning_color: VtColor       = \
+            get_or_default_by_key(kwargs, 'warning_color', VtColor.YELLOW)
+        self._error_color: VtColor       = \
+            get_or_default_by_key(kwargs, 'error_color', VtColor.RED)
         self._highlight_color: VtColor  = \
             get_or_default_by_key(kwargs, 'highlight_color', VtColor.CYAN)
         self._navbar_color: VtColor     = \
@@ -81,16 +87,28 @@ class TUIPreferences(metaclass=Singleton):
         return max(3, self._items_per_line)
 
     @property
-    def title_color(self) -> VtColor:
-        return self._title_color
-
-    @property
     def title_line_length(self) -> int:
         return self._title_line_length
 
     @property
+    def title_color(self) -> VtColor:
+        return self._title_color
+
+    @property
     def text_color(self) -> VtColor:
         return self._text_color
+
+    @property
+    def success_color(self) -> VtColor:
+        return self._success_color
+
+    @property
+    def warning_color(self) -> VtColor:
+        return self._warning_color
+
+    @property
+    def error_color(self) -> VtColor:
+        return self._error_color
 
     @property
     def highlight_color(self) -> VtColor:

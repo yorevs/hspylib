@@ -86,24 +86,24 @@ class CFManager:
             self._api = self._cf.api()
             target = self._cf.target()
             self._org, self._space = target['org'], target['space']
-            sysout("%GREEN%Already authorized to CloudFoundry!")
+            sysout("Already authorized to CloudFoundry!")
             sysout(f"Targeted to -> ORG=[{self._org}]  SPACE=[{self._space}]  API=[{self._api}]")
-            sleep(2)
+            sleep(1)
         else:
             authorized = False
-            sysout("%YELLOW%Not authorized to CloudFoundry, login required...")
+            sysout("%YELLOW%Unauthorized to CloudFoundry, login required...")
             while not authorized:
                 if not self._api:
-                    sleep(1)
+                    sleep(0.5)
                     self._select_endpoint()
                 if not self._username or not self._password:
-                    sleep(1)
+                    sleep(0.5)
                     self._require_credentials()
                 sysout(f"%GREEN%Authorizing {self._username}@{self._api}...")
                 authorized = self._authorize()
                 if not authorized:
                     self._password = None
-                    sleep(1)
+                    sleep(0.5)
             sysout("%GREEN%Successfully authorized!")
 
         self._loop_actions()

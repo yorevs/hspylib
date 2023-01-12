@@ -47,5 +47,7 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
             self._alternate_screen()
 
     def _alternate_screen(self):
+        """Toggle switch to the alternate/main screen.
+        """
         self._alt_screen = not self._alt_screen
         alternate_screen(self._alt_screen)
