@@ -181,6 +181,10 @@ And many other cool features like repositories, Qt and CRUD helpers, etc...
 
 ### Requirements
 
+#### Python
+
+- Python 3.10 and higher
+
 #### Operating Systems
 
 - Darwin
@@ -199,7 +203,6 @@ The following software are required:
 
 - Git (To clone the github repository)
 - Gradle (To build the HSPyLib project)
-- instantclient-basiclite-macos (To use oracle database repositories)
 
 There are some python dependencies, but they will be automatically downloaded when the build runs.
 

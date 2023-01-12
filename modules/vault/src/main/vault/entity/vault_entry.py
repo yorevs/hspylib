@@ -12,7 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from collections import namedtuple
 from datasource.crud_entity import CrudEntity
@@ -54,14 +53,12 @@ class VaultEntry(CrudEntity):
                 .build() \
             .field() \
                 .label('Hint') \
-                .validator(InputValidator.anything()) \
                 .min_max_length(3, 50) \
                 .value(entry.hint) \
                 .build() \
             .field() \
                 .label('Password') \
                 .itype('password') \
-                .validator(InputValidator.anything()) \
                 .min_max_length(4, 50) \
                 .value(entry.password) \
                 .build() \

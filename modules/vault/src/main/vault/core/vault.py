@@ -114,9 +114,9 @@ class Vault:
                 sysout(entry.to_string())
         else:
             if filter_expr:
-                sysout(f"%YELLOW%\n-=- No results to display containing '{filter_expr}' -=-\n%NC%")
+                sysout(f"%YELLOW%%EOL%-=- No results to display containing '{filter_expr}' -=-%EOL%%NC%")
             else:
-                sysout("%YELLOW%\n-=- Vault is empty -=-\n%NC%")
+                sysout("%YELLOW%%EOL%-=- Vault is empty -=-%EOL%%NC%")
         log.debug("Vault list issued. User=%s", getpass.getuser())
 
     def add(self, key: str, hint: str | None, password: str | None) -> None:
@@ -131,9 +131,11 @@ class Vault:
                 Identity(VaultEntry.VaultId(uuid.uuid4().hex)),
                 key, key, password, hint,
             )
-            if entry := VaultEntry.prompt(entry):
+            if not hint or not password:
+                entry = VaultEntry.prompt(entry)
+            if entry:
                 self.service.save(entry)
-                sysout(f"%GREEN%\n=== Entry added ===\n\n%NC%{entry.to_string()}")
+                sysout(f"%GREEN%%EOL%=== Entry saved ===%EOL%%EOL%%NC%{entry.to_string()}")
         else:
             log.error("Attempt to add to Vault failed for key=%s", key)
             syserr(f"### Entry specified by '{key}' already exists in vault")
@@ -154,7 +156,7 @@ class Vault:
             if entry:
                 entry.password = self._encrypt_password(entry.password)
                 self.service.save(entry)
-                sysout(f"%GREEN%\n=== Entry updated ===\n\n%NC%{entry.to_string()}")
+                sysout(f"%GREEN%%EOL%=== Entry updated ===%EOL%%EOL%%NC%{entry.to_string()}")
         else:
             log.error("Attempt to update Vault failed for key=%s", key)
             syserr(f"### No entry specified by '{key}' was found in vault")
@@ -180,7 +182,7 @@ class Vault:
         entry = self.service.get_by_key(key)
         if entry:
             self.service.remove(entry)
-            sysout(f"%GREEN%\n=== Entry removed ===\n\n%NC%{entry.to_string()}")
+            sysout(f"%GREEN%%EOL%=== Entry removed ===%EOL%%EOL%%NC%{entry.to_string()}")
         else:
             log.error("Attempt to remove to Vault failed for key=%s", key)
             syserr(f"### No entry specified by '{key}' was found in vault")

@@ -29,8 +29,8 @@ class InputValidator(Validator):
         NUMBERS     = r"^[0-9\.\,]{%min%,%max%}$"
         TOKEN       = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
         MASKED      = r".*\|.+"
-        ANYTHING    = r"^.{%min%,%max%}$"
-        CUSTOM      = ''
+        ANYTHING    = r".{%min%,%max%}"
+        CUSTOM      = r''
         # fmt: on
 
     @classmethod
@@ -75,8 +75,7 @@ class InputValidator(Validator):
 
     def validate(self, value: str) -> bool:
         """TODO"""
-        regex = self.pattern
-        return bool(re.match(regex, value))
+        return bool(re.match(self.pattern, value))
 
     @property
     def pattern(self) -> str:
