@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from time import sleep
-
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.vt100.vt_utils import alternate_screen
+from time import sleep
 
 if __name__ == "__main__":
     alternate_screen()

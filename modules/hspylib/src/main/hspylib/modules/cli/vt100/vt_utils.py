@@ -12,17 +12,17 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+from typing import Any, Optional, Tuple
+
 import atexit
 import os
 import re
 import sys
 import termios
 import tty
-from typing import Any, Optional, Tuple
-
-from hspylib.core.exception.exceptions import NotATerminalError
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 def screen_size() -> tuple[int, ...]:

@@ -12,15 +12,14 @@
 
    Copyright 2022, HSPyLib team
 """
-import json
 from abc import abstractmethod
-from typing import Generic, List, Optional, Set, TypeVar
-
-from hspylib.core.metaclass.singleton import AbstractSingleton
-from hspylib.core.namespace import Namespace
-
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
+from typing import Generic, List, Optional, Set, TypeVar
+
+import json
 
 T = TypeVar("T", bound=CrudEntity)
 

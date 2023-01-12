@@ -13,9 +13,8 @@
    Copyright 2022, HSPyLib team
 """
 from enum import auto, Enum
-from typing import Any, List, Tuple, TypeVar
-
 from hspylib.core.preconditions import check_argument, check_not_none
+from typing import Any, List, Tuple, TypeVar
 
 E = TypeVar("E", bound="Enumeration")
 

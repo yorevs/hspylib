@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.tools.dict_tools import get_or_default
-
 from datasource.identity import Identity
 from datasource.postgres.postgres_repository import PostgresRepository
+from hspylib.core.tools.dict_tools import get_or_default
 from shared.entity_test import EntityTest
 
 

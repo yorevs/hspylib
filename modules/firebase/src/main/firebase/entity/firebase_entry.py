@@ -13,13 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-import json
-from typing import List
-
+from firebase.entity.file_entry import FileEntry
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
+from typing import List
 
-from firebase.entity.file_entry import FileEntry
+import json
 
 
 class FirebaseEntry:

@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Tuple
-
 from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.vt100.terminal import Terminal
+from hspylib.modules.cli.terminal import Terminal
+from typing import Tuple
 
 
 class GitTools:

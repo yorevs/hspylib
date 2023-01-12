@@ -12,19 +12,18 @@
 
    Copyright 2022, HSPyLib team
 """
-import logging as log
-from typing import Any, Dict, List, Tuple, Union
-from urllib.error import HTTPError
-
-import requests
-import requests.exceptions as exs
-from retry import retry
-from urllib3.exceptions import NewConnectionError
-
 from hspylib.core.enums.http_method import HttpMethod
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.fetch.http_response import HttpResponse
 from hspylib.modules.fetch.uri_builder import UriBuilder
+from retry import retry
+from typing import Any, Dict, List, Tuple, Union
+from urllib3.exceptions import NewConnectionError
+from urllib.error import HTTPError
+
+import logging as log
+import requests
+import requests.exceptions as exs
 
 RETRYABLE_EXS = (
     NewConnectionError,

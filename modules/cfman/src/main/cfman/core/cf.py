@@ -12,11 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
-import os
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.modules.cli.terminal import Terminal
 from typing import List, Optional
 
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.modules.cli.vt100.terminal import Terminal
+import os
 
 
 class CloudFoundry(metaclass=Singleton):

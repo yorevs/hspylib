@@ -14,13 +14,11 @@
 """
 
 from abc import ABC, abstractmethod
-from textwrap import dedent
-from typing import List
-
+from clitt.core.icons.font_awesome.awesome import Awesome
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-
-from clitt.core.icons.font_awesome.awesome import Awesome
+from textwrap import dedent
+from typing import List
 
 
 class Widget(ABC):

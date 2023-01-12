@@ -13,10 +13,9 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.tools.dict_tools import get_or_default
-
 from datasource.firebase.firebase_repository import FirebaseRepository
 from datasource.identity import Identity
+from hspylib.core.tools.dict_tools import get_or_default
 from shared.entity_test import EntityTest
 
 

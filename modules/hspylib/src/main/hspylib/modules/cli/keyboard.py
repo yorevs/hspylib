@@ -13,15 +13,15 @@
    Copyright 2022, HSPyLib team
 """
 
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.exception.exceptions import KeyboardInputError, NotATerminalError
+from typing import List, Optional
+
+import getkey
 import select
 import string
 import sys
 import termios
-from typing import List, Optional
-
-import getkey
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError, NotATerminalError
 
 
 # pylint: disable=multiple-statements

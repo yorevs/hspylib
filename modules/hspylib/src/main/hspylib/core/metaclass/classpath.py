@@ -12,16 +12,16 @@
 
    Copyright 2022, HSPyLib team
 """
-import logging as log
-import os
-from pathlib import Path
-from textwrap import dedent
-from typing import Optional
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import ResourceNotFoundError, SourceNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
+from pathlib import Path
+from textwrap import dedent
+from typing import Optional
+
+import logging as log
+import os
 
 AnyPath = Path | str | None
 

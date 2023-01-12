@@ -12,17 +12,15 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import List, Optional
-
-from hspylib.core.preconditions import check_state
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.keyboard import Keyboard
 from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder
 from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
+from typing import List, Optional
 
 
 def mdashboard(

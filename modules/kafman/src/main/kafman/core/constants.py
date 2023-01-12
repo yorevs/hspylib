@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 from abc import ABC
-
 from PyQt5.QtGui import QColor
 
 MAX_HISTORY_SIZE_BYTES = 250

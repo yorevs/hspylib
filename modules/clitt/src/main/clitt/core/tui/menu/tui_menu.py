@@ -14,11 +14,10 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Optional, TypeVar
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.keyboard import Keyboard
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import Any, Callable, Optional, TypeVar
 
 ON_TRIGGER_CB = TypeVar('ON_TRIGGER_CB', bound=Callable[['TUIMenu'], Optional['TUIMenu']])
 

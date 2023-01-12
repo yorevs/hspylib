@@ -12,13 +12,13 @@
 
    Copyright 2022, HSPyLib team
 """
-import os
-import re
 from enum import auto
-from typing import Callable, Optional
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
+from typing import Callable, Optional
+
+import os
+import re
 
 
 class VtCode(Enumeration):

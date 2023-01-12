@@ -12,13 +12,12 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.tools.commons import syserr
 from clitt.core.tui.menu.tui_menu import TUIMenu
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
+from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
-
 from datasource.identity import Identity
+from hspylib.core.tools.commons import syserr
 from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService

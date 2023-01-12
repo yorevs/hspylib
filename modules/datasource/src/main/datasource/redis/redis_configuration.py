@@ -12,9 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Optional
-
 from hspylib.core.config.app_config import AppConfigs
+from typing import Optional
 
 
 class RedisConfiguration(AppConfigs):

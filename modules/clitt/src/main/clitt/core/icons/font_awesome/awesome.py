@@ -13,13 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-import re
-import struct
-from typing import TypeVar, Union
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import eol
+from typing import TypeVar, Union
+
+import re
+import struct
 
 AwesomeClass = TypeVar('AwesomeClass')
 
