@@ -3,7 +3,7 @@
 ## Your mature python application
 
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
-[![Release](https://badgen.net/badge/release/v0.11.152/gray)](CHANGELOG.md#unreleased)
+[![Release](https://badgen.net/badge/release/v0.11.154/gray)](CHANGELOG.md#unreleased)
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/yorevs/hspylib)
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
@@ -181,6 +181,10 @@ And many other cool features like repositories, Qt and CRUD helpers, etc...
 
 ### Requirements
 
+#### Python
+
+- Python 3.10 and higher
+
 #### Operating Systems
 
 - Darwin
@@ -199,7 +203,6 @@ The following software are required:
 
 - Git (To clone the github repository)
 - Gradle (To build the HSPyLib project)
-- instantclient-basiclite-macos (To use oracle database repositories)
 
 There are some python dependencies, but they will be automatically downloaded when the build runs.
 

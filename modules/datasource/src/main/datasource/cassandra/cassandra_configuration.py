@@ -13,16 +13,21 @@
    Copyright 2022, HSPyLib team
 """
 from datasource.db_configuration import DBConfiguration
-from typing import Optional
 
 
 class CassandraConfiguration(DBConfiguration):
-    """Represents a Cassandra datasource configuration"""
+    """Represents a Cassandra datasource configuration.
+    """
 
-    def __init__(self, resource_dir: str, filename: Optional[str] = None, profile: Optional[str] = None):
+    def __init__(
+        self,
+        resource_dir: str,
+        filename: str | None = None,
+        profile: str | None = None):
+
         super().__init__(resource_dir, filename, profile)
         self._secure_bundle_path = self["datasource.secure_bundle_path"]
-        self._protocol_version = self["datasource.protocol_version"] or 4
+        self._protocol_version  = self["datasource.protocol_version"] or 4
         self._connect_timeout = self["datasource.connect_timeout"] or 30
         self._default_timeout = self["datasource.default_timeout"] or 60
 

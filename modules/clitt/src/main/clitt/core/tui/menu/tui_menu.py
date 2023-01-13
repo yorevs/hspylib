@@ -13,17 +13,29 @@
    Copyright 2022, HSPyLib team
 """
 
-from abc import ABC, abstractmethod
+from abc import ABC
+from typing import Callable, Optional, TypeVar
+
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.cli.keyboard import Keyboard
+
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.tui_component import TUIComponent
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import Any, Callable, Optional, TypeVar
 
 ON_TRIGGER_CB = TypeVar('ON_TRIGGER_CB', bound=Callable[['TUIMenu'], Optional['TUIMenu']])
 
 
-class TUIMenu(TUIComponent, ABC):
-    """TODO"""
+class TUIMenu(TUIComponent['TUIMenu'], ABC):
+    """Provide a base class for terminal UI menus.
+    """
+
+    @staticmethod
+    def wait_keystroke(wait_message: str = None) -> None:
+        """Wait for a keypress (blocking).
+        :param wait_message: the message to present to the user.
+        """
+        sysout(wait_message or "%YELLOW%%EOL%Press any key to continue%EOL%%NC%")
+        Keyboard.wait_keystroke()
 
     def __init__(
         self,
@@ -50,12 +62,7 @@ class TUIMenu(TUIComponent, ABC):
     def tooltip(self) -> str:
         return self._tooltip
 
-    @abstractmethod
-    def execute(self) -> Optional[Any]:
-        """TODO"""
-
     def _handle_keypress(self) -> Keyboard:
-        """TODO"""
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case Keyboard.VK_ENTER | Keyboard.VK_ESC:
@@ -71,7 +78,8 @@ class TUIMenu(TUIComponent, ABC):
         )
 
     def _breadcrumb(self) -> str:
-        """TODO"""
+        """Provide a breadcrumb of menus for navigation purposes.
+        """
         return (
             f"{self.prefs.breadcrumb_color.placeholder}"
             f" {NavIcons.BREADCRUMB} {self._title} %NC%"
@@ -79,5 +87,7 @@ class TUIMenu(TUIComponent, ABC):
         )
 
     def _default_trigger_cb(self, source: Optional['TUIMenu']) -> Optional['TUIMenu']:
-        """TODO"""
+        """Provide a default trigger callback when a menu is activated. Provided a source menu, returns it's parent.
+        :param source: the source which invoked this menu.
+        """
         return self._parent

@@ -22,16 +22,25 @@ import re
 
 
 class MInputUtils(ABC):
-    """TODO"""
+    """MenuInput utilities.
+    """
 
     @staticmethod
     def detail_len(field: Any) -> int:
+        """Return the length of the details, according to the form field.
+        :param field: the form field to get details.
+        """
         max_len = len(str(field.max_length))
         return 1 + (2 * max_len)
 
     @staticmethod
     def mi_print(size: int = 0, text: str = None, prepend: str = None, end: str = "") -> None:
-        """TODO"""
+        """Special menu input print.
+        :param size: the length of the field.
+        :param text: the text to be printed.
+        :param prepend the text to prepend to the print.
+        :param end: string appended after the last value, default an empty string.
+        """
         fmt = ("{}" if prepend else "") + "{:<" + str(size) + "} : "
         if prepend:
             sysout(fmt.format(prepend, text), end=end)
@@ -40,7 +49,9 @@ class MInputUtils(ABC):
 
     @staticmethod
     def toggle_selected(tokenized_values: str) -> str:
-        """TODO"""
+        """Toggle the 'select' component value. Selects the next value on the token sequence.
+        :param tokenized_values: the 'select' component tokenized values.
+        """
         values = tokenized_values.split("|")
         cur_idx = next((idx for idx, val in enumerate(values) if val.find("<") >= 0), -1)
         if cur_idx < 0:
@@ -60,7 +71,9 @@ class MInputUtils(ABC):
 
     @staticmethod
     def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:
-        """TODO"""
+        """Get the selected value from the 'select' component tokens.
+        :param tokenized_values: the 'select' component tokenized values.
+        """
         values = tokenized_values.split("|")
         # fmt: off
         sel_item = next((
@@ -78,14 +91,20 @@ class MInputUtils(ABC):
 
     @staticmethod
     def unpack_masked(value: str) -> Tuple[str, str]:
-        """TODO"""
+        """Unpack all values of the 'masked' component.
+        :param value: the masked values to unpack.
+        """
         parts = value.split("|")
         check_argument(len(parts) == 2, "Invalid masked value: {}", value)
         return parts[0], parts[1]
 
     @staticmethod
     def append_masked(value: str, mask: str, keypress_value: chr) -> str:
-        """TODO"""
+        """Append a value to the masked field.
+        :param value: the masked field current value.
+        :param mask: the masked field's mask.
+        :param keypress_value: the value to append (it can be a part of the mask itself).
+        """
         idx = len(value)
         if keypress_value == mask[idx]:
             return f"{value}{keypress_value}|{mask}"
@@ -103,13 +122,15 @@ class MInputUtils(ABC):
         return f"{masked_value}|{mask}"
 
     @staticmethod
-    def over_masked(value: str, mask: str) -> str:
-        """TODO"""
-        masked_value = ""
+    def over_masked(value: str, mask: str, placeholder: str = "_") -> str:
+        """Return the value to be printed by a 'masked' input field. A placeholder value will be used for unfilled
+        values.
+        """
+        over_masked_val = ""
         for idx, element in enumerate(mask):
-            if element in ["#", "@", "*"]:
-                masked_value += value[idx] if idx < len(value) else "_"
+            if element in ["#", "@", "*"]:  # Digit, Letter or alphanumeric masks.
+                over_masked_val += value[idx] if idx < len(value) else placeholder
             else:
-                masked_value += element
+                over_masked_val += element
 
-        return masked_value
+        return over_masked_val

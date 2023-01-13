@@ -25,10 +25,10 @@ from typing import Any
 
 
 class FormBuilder:
-    """TODO"""
+    """MenuInput form builder."""
 
     class FieldBuilder:
-        """TODO"""
+        """MenuInput form field builder."""
 
         def __init__(self, parent: Any):
             self.parent = parent

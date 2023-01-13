@@ -16,14 +16,15 @@
 from datasource.identity import Identity
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
-from typing import Iterable
+from typing import Any, Dict, Iterable
 from uuid import UUID
 
 import json
 
 
 class CrudEntity(Namespace):
-    """Generic entity type."""
+    """Generic CRUD entity type.
+    """
 
     def __init__(self, entity_id: Identity | None = None, **kwargs):
         super().__init__(self.__class__.__name__, **kwargs)
@@ -35,8 +36,9 @@ class CrudEntity(Namespace):
     def identity(self) -> Identity:
         return self._identity
 
-    def as_dict(self) -> dict:
-        """TODO"""
+    def as_dict(self) -> Dict[str, Any]:
+        """Convert the entity into a dictionary object.
+        """
 
         ret_dict = {}
         for key, value in zip(self.attributes, self.values):
@@ -53,7 +55,8 @@ class CrudEntity(Namespace):
         return ret_dict
 
     def as_json(self, indent: int = None) -> str:
-        """TODO"""
+        """Convert the entity into a json object.
+        """
         return json.dumps(self.as_dict(), indent=indent)
 
     def as_column_set(
@@ -62,7 +65,11 @@ class CrudEntity(Namespace):
         prefix: str | None = None,
         exclude: Iterable[str] | None = None
     ) -> str:
-        """TODO"""
+        """Return all attributes listed as tokenized 'columns = value'.
+        :param separator: the separator character.
+        :param prefix: an optional column prefix.
+        :param exclude: a list of column names to be excluded.
+        """
 
         column_set = []
         exclude = exclude or []
@@ -76,7 +83,9 @@ class CrudEntity(Namespace):
         return separator.join(column_set)
 
     def as_columns(self, separator: str = ", ") -> str:
-        """TODO"""
+        """Return all attributes listed as tokenized 'columns'.
+        :param separator: the separator character.
+        """
 
         columns = []
         for key in self.attributes:

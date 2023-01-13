@@ -13,40 +13,47 @@
    Copyright 2022, HSPyLib team
 """
 
-from clitt.core.tui.menu.tui_menu import TUIMenu
-from clitt.core.tui.tui_preferences import TUIPreferences
+from typing import Any, Optional
+
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
-from typing import Any, Optional
+
+from clitt.core.tui.menu.tui_menu import TUIMenu
+from clitt.core.tui.tui_preferences import TUIPreferences
 
 
 class TUIMenuUi(metaclass=Singleton):
-    """TODO"""
+    """Provide a menu for terminal UIs. Each sub-item must belong to the TUIMenu class and can be an instance of
+    TUIMenuItem, TUIMenuAction or TUIMenuView.
+    """
 
     app_title = "Main Menu"
 
     # fmt: off
     PREFS = TUIPreferences.INSTANCE or TUIPreferences()
-    MENU_LINE = f"{'┅┅' * PREFS.title_line_length}"
+    MENU_LINE = f"{'--' * PREFS.title_line_length}"
     MENU_TITLE_FMT = (
         f"{PREFS.title_color}"
-        f"┍{MENU_LINE}┓%EOL%"
-        "┣{title:^" + str(2 * PREFS.title_line_length) + "s}┫%EOL%"
-        f"┕{MENU_LINE}┙%EOL%%NC%"
+        f"+{MENU_LINE}+%EOL%"
+        "|{title:^" + str(2 * PREFS.title_line_length) + "s}|%EOL%"
+        f"+{MENU_LINE}+%EOL%%NC%"
     )
     # fmt: on
 
     @classmethod
     def render_app_title(cls) -> None:
-        """TODO"""
+        """Render the application title.
+        """
         clear_screen()
         sysout(cls.MENU_TITLE_FMT.format(title=cls.app_title or "TITLE"))
 
     @staticmethod
     def back(source: TUIMenu) -> TUIMenu:
-        """TODO"""
+        """Return the parent menu from the source of the event.
+        :param source: the source menu of the event.
+        """
         return source.parent
 
     def __init__(self, main_menu: TUIMenu, title: str | None):
@@ -59,7 +66,8 @@ class TUIMenuUi(metaclass=Singleton):
         self._next_menu: Optional[TUIMenu] = None
 
     def execute(self) -> Any:
-        """TODO"""
+        """Execute the terminal menu UI flow.
+        """
 
         prepare_render()
 
@@ -67,7 +75,11 @@ class TUIMenuUi(metaclass=Singleton):
             if self._curr_menu:
                 self._next_menu = self._curr_menu.execute()
                 if self._next_menu:
-                    self._change_menu(self._next_menu)
+                    self._change_menu(
+                        self._next_menu
+                        if isinstance(self._next_menu, TUIMenu)
+                        else next((menu for menu in self._next_menu if menu), None)
+                    )
                 else:
                     self._done = True
             else:

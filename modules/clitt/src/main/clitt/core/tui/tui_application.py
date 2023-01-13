@@ -21,7 +21,7 @@ from hspylib.modules.cli.vt100.vt_utils import alternate_screen
 
 
 class TUIApplication(Application, metaclass=AbstractSingleton):
-    """TODO"""
+    """Terminal UI application base class."""
 
     def __init__(
         self,

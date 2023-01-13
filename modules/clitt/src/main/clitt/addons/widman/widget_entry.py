@@ -18,7 +18,8 @@ import os
 
 
 class WidgetEntry:
-    """Placeholder object for a HSPyLib::Widman Widget and details about it."""
+    """Placeholder object for a HSPyLib::Widman Widget and details about it.
+    """
 
     # fmt: off
     MODULE_PREFIX   = "widget_"

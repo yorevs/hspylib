@@ -3,14 +3,12 @@
 
 import sys
 
-from
-% APP_NAME %.__classpath__
+from %APP_NAME%.__classpath__ import _Classpath
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.version import Version
-
-import _Classpath
 
 HERE = get_path(__file__)
 
@@ -40,6 +38,7 @@ class Main(Application):
   def _main(self, *params, **kwargs) -> ExitStatus:
     """Run the application with the command line arguments"""
     sysout(f'Hello {self._app_name}')
+    return ExitStatus.SUCCESS
 
   def _cleanup(self) -> None:
     """Execute http_code cleanup before exiting"""
@@ -47,4 +46,4 @@ class Main(Application):
 
 if __name__ == "__main__":
   # Application entry point
-  Main('application-name').INSTANCE.run(sys.argv[1:])
+  Main('%APP_NAME%').INSTANCE.run(sys.argv[1:])

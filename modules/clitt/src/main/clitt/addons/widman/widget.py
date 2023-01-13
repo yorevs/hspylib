@@ -14,15 +14,17 @@
 """
 
 from abc import ABC, abstractmethod
-from clitt.core.icons.font_awesome.awesome import Awesome
+from textwrap import dedent
+
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
-from typing import List
+
+from clitt.core.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):
-    """HSPyLib_Widman base class. All widgets must inherit from this class to properly work."""
+    """HSPyLib_Widman base class. All widgets must inherit from this class to properly work.
+    """
 
     _USAGE_FMT = dedent(
         """
@@ -42,27 +44,36 @@ class Widget(ABC):
         self._version = version
 
     @abstractmethod
-    def execute(self, args: List[str] = None) -> ExitStatus:
-        """Execute the widget main flow"""
+    def execute(self, *args) -> ExitStatus:
+        """Execute the widget main flow.
+        :param args the widget arguments
+        """
 
     def cleanup(self) -> None:
-        """Execute the widget cleanup"""
+        """Execute the widget cleanup.
+        """
 
     def icon(self) -> Awesome:
+        """Return the widget icon.
+        """
         return self._icon
 
     def name(self) -> str:
-        """Return the name about the widget"""
+        """Return the name about the widget.
+        """
         return self._name
 
     def tooltip(self) -> str:
-        """Return information about the widget"""
+        """Return a tooltip information about the widget.
+        """
         return self._tooltip
 
     def version(self) -> str:
-        """Return the version of the widget"""
+        """Return the version of the widget.
+        """
         return str(self._version)
 
     def usage(self) -> str:
-        """Return a usage message about the widget"""
+        """Return a usage message about the widget.
+        """
         return self._USAGE_FMT.format(self._name, self._version, self._tooltip, self._usage)

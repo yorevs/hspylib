@@ -2,11 +2,11 @@
 #
 # hspylib-firebase v0.9.92
 #
-# Package: main.firebase.entity
+# Package: main.firebase.domain
 """Package initialization."""
 
 __all__ = [
-  'file_entry', 
-  'firebase_entry'
+    'firebase_dto.py',
+    'firebase_dto.py'
 ]
 __version__ = '0.9.92'

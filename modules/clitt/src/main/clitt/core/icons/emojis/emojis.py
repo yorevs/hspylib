@@ -27,10 +27,15 @@ class Emoji(Enumeration):
 
     @staticmethod
     def emj_print(emoji_str: str, end: str = "") -> None:
+        """Print an emoji
+        :param emoji_str the emoji to be printed.
+        :param end string appended after the last value, default a newline.
+        """
         sysout(f"{emojize(emoji_str)} ", end=end)
 
     def __str__(self) -> str:
         return str(self.value)
 
+    @property
     def placeholder(self) -> str:
         return f":{self.name}:"

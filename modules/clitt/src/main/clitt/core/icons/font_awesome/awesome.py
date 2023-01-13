@@ -13,15 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import eol
-from typing import TypeVar, Union
-
 import re
 import struct
+from typing import Union
 
-AwesomeClass = TypeVar('AwesomeClass')
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.commons import sysout
 
 
 class Awesome(Enumeration):
@@ -33,11 +30,16 @@ class Awesome(Enumeration):
 
     @staticmethod
     def no_icon() -> str:
+        """No awesome icon specified.
+        """
         return ' '
 
     @staticmethod
     def print_unicode(uni_code: Union[str, int], end: str = "") -> None:
-        """TODO"""
+        """Print the specified unicode character.
+        :param uni_code: the unicode to be printed.
+        :param end string appended after the last value, default a newline.
+        """
         if isinstance(uni_code, str) and re.match(r"^[a-fA-F0-9]{1,4}$", uni_code):
             hex_val = bytes.decode(struct.pack("!I", int(uni_code.zfill(4), 16)), "utf_32_be")
             sysout(f"{hex_val:2s}", end=end)
@@ -59,25 +61,3 @@ class Awesome(Enumeration):
     @property
     def unicode(self) -> str:
         return str(self.value)
-
-
-def demo_unicodes(fa_start: int = 0xF000, fa_end: int = 0xFD50, split_columns: int = 16) -> None:
-    """
-     BoxDrawing: demo_unicodes(0x2500, 0x257F)
-    FontAwesome: demo_unicodes(0xF000, 0xFD50)
-    """
-    fa_range = fa_start, fa_end  # Font awesome range unicodes
-    st_base = [f"{hex(x)[2:]}" for x in range(*fa_range)]
-    for n, h in enumerate(st_base):
-        Awesome.print_unicode(h)
-        sysout(f"{h.upper():04}", end=eol(n, split_columns))
-
-
-def demo_icons(awesome: AwesomeClass = Awesome, split_columns: int = 16) -> None:
-    """TODO"""
-    for i, (v, n) in enumerate(zip(awesome.values(), awesome.names())):
-        sysout(f"{n}: {v:2}", end=eol(i, split_columns))
-
-
-if __name__ == '__main__':
-    demo_unicodes()

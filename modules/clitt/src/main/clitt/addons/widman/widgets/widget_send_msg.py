@@ -12,23 +12,23 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
-from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput import MenuInput, minput
+import os
+import socket
+import threading
+from textwrap import dedent
+from time import sleep
+
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import hook_exit_signals, sysout
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.keyboard import Keyboard
-from textwrap import dedent
-from time import sleep
-from typing import List
 
-import os
-import socket
-import threading
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class WidgetSendMsg(Widget):
@@ -74,7 +74,7 @@ class WidgetSendMsg(Widget):
         self.socket = None
         self.counter = 1
 
-    def execute(self, args: List[str] = None) -> ExitStatus:
+    def execute(self, *args) -> ExitStatus:
         hook_exit_signals(self.cleanup)
         if args and args[0] in ["-h", "--help"]:
             sysout(self.usage())
@@ -82,7 +82,7 @@ class WidgetSendMsg(Widget):
         if args and args[0] in ["-v", "--version"]:
             sysout(self.version())
             return ExitStatus.SUCCESS
-        if args and not self._parse_args(args):
+        if args and not self._parse_args(*args):
             return ExitStatus.ERROR
         if not args and not self._prompt():
             return ExitStatus.ERROR
@@ -110,7 +110,8 @@ class WidgetSendMsg(Widget):
         return ExitStatus.SUCCESS
 
     def cleanup(self) -> None:
-        """Stops workers and close socket connection."""
+        """Stops workers and close socket connection.
+        """
         sysout("Terminating threads%NC%")
         self.is_alive = False
         if self.net_type == self.NET_TYPE_TCP:
@@ -118,7 +119,8 @@ class WidgetSendMsg(Widget):
             self.socket.close()
 
     def _prompt(self) -> bool:
-        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info.
+        """
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -168,8 +170,10 @@ class WidgetSendMsg(Widget):
 
         return len(self._args) > 1 if self._args else False
 
-    def _parse_args(self, args: List[str]):
-        """When arguments are passed from the command line, parse them"""
+    def _parse_args(self, *args):
+        """When arguments are passed from the command line, parse them.
+        :param args the widget arguments
+        """
         parser = HSArgumentParser(
             prog="sendmsg", prefix_chars="+", description="Sends TCP/UDP messages (multi-threaded)"
         )
@@ -211,12 +215,13 @@ class WidgetSendMsg(Widget):
             help="The message to be sent. If the message matches a filename, then the file contents sent instead",
         )
         # fmt: on
-        self._args = parser.parse_args(args)
+        self._args = parser.parse_args(*args)
 
         return bool(self._args)
 
     def _init_sockets(self) -> None:
-        """Initialize sockets"""
+        """Initialize sockets.
+        """
         if self.net_type == self.NET_TYPE_UDP:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         else:
@@ -228,7 +233,8 @@ class WidgetSendMsg(Widget):
                 raise WidgetExecutionError("Unable to initialize sockets") from err
 
     def _start_send(self) -> None:
-        """Start sending packets"""
+        """Start sending packets.
+        """
         thread_relief = 0.05
         self._init_sockets()
         sysout(
@@ -248,7 +254,8 @@ class WidgetSendMsg(Widget):
             sleep(2 * thread_relief)
 
     def _send_packet(self, thread_num: int) -> None:
-        """Send a packet"""
+        """Send a packet.
+        """
         lock = threading.Lock()
 
         while self.is_alive and self.packets <= 0 or self.counter <= self.packets:

@@ -33,7 +33,8 @@ E = TypeVar("E", bound=CrudEntity)
 
 
 class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration], metaclass=AbstractSingleton):
-    """Implementation of a data access layer for a cassandra persistence store."""
+    """Implementation of a data access layer for a cassandra persistence store.
+    """
 
     def __init__(self, config: CassandraConfiguration):
         super().__init__(config)
@@ -148,18 +149,18 @@ class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration], m
 
     def find_all(
         self,
-        fields: Optional[Set[str]] = None,
+        columns: Optional[Set[str]] = None,
         filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
         limit: int = 500,
         offset: int = 0,
     ) -> List[E]:
 
-        fields = "*" if not fields else ", ".join(fields)
+        columns = "*" if not columns else ", ".join(columns)
         clauses = list(filter(None, filters.values)) if filters else None
         orders = list(filter(None, order_bys)) if order_bys and clauses else None  # Order by require filters
         sql = (
-            f"SELECT {fields} FROM {self.database}.{self.table_name()} "
+            f"SELECT {columns} FROM {self.database}.{self.table_name()} "
             f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} "
             f"{('ORDER BY ' + ', '.join(orders)) if orders else ''} "
             f"LIMIT {limit}"
@@ -167,11 +168,11 @@ class CassandraRepository(Generic[E], DBRepository[E, CassandraConfiguration], m
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))
 
-    def find_by_id(self, entity_id: Identity, fields: Optional[Set[str]] = None) -> Optional[E]:
+    def find_by_id(self, entity_id: Identity, columns: Optional[Set[str]] = None) -> Optional[E]:
 
-        fields = "*" if not fields else ", ".join(fields)
+        columns = "*" if not columns else ", ".join(columns)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"SELECT {fields} FROM {self.database}.{self.table_name()} " f"WHERE {' AND '.join(clauses)}"
+        sql = f"SELECT {columns} FROM {self.database}.{self.table_name()} " f"WHERE {' AND '.join(clauses)}"
         result = next((e for e in self.execute(sql)[1]), None)
 
         return self.to_entity_type(result) if result else None

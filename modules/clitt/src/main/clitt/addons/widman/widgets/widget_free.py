@@ -12,19 +12,19 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+import re
 from concurrent import futures
+from textwrap import dedent
+from time import sleep
+
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.terminal import Terminal
-from textwrap import dedent
-from time import sleep
-from typing import List
 
-import re
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class WidgetFree(Widget):
@@ -44,7 +44,7 @@ class WidgetFree(Widget):
         self._report_interval = 1.5
         self._exit_code = ExitStatus.SUCCESS
 
-    def execute(self, args: List[str] = None) -> ExitStatus:
+    def execute(self, *args) -> ExitStatus:
         with futures.ThreadPoolExecutor() as executor:
             done = False
             while not done and not Keyboard.kbhit():
@@ -57,7 +57,8 @@ class WidgetFree(Widget):
     # pylint: disable=too-many-locals
     @staticmethod
     def _report_usage() -> bool:
-        """Display the memory usage for the cycle"""
+        """Display the memory usage for the cycle.
+        """
         ps, ec1 = Terminal.shell_exec("ps -caxm -orss,comm")  # Get process info
         vm, ec2 = Terminal.shell_exec("vm_stat")  # Grabbing memory characteristics
 

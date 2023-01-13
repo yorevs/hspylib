@@ -17,14 +17,11 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class AccessType(Enumeration):
-    """TODO"""
+    """MenuInput input field access types.
+    """
 
-    NO_ACCESS = "no-access"
-    READ_ONLY = "read-only"
-    READ_WRITE = "read-write"
-
-    def __str__(self):
-        return str(self.value)
-
-    def __repr__(self):
-        return str(self)
+    # fmt: off
+    NO_ACCESS   = "no-access"
+    READ_ONLY   = "read-only"
+    READ_WRITE  = "read-write"
+    # fmt: on

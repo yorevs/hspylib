@@ -115,12 +115,12 @@ class TestTextTools(unittest.TestCase):
         self.assertEqual(expected_text, screaming_snake_text)
 
     def test_should_title_case(self) -> None:
-        text = "This is just a simple test"
+        text = "That's not just a simple test"
         titled_text = titlecase(text)
-        expected_text = "This Is Just A Simple Test"
+        expected_text = "That's Not Just A Simple Test"
         self.assertEqual(expected_text, titled_text)
-        skipped_titled_text = titlecase(text, skip_length=2)
-        expected_text = "This is Just a Simple Test"
+        skipped_titled_text = titlecase(text, skip_length=3)
+        expected_text = "That's not Just a Simple Test"
         self.assertEqual(expected_text, skipped_titled_text)
 
     def test_should_convert_between_all_cases(self) -> None:

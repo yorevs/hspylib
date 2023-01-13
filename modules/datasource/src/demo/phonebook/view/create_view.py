@@ -14,7 +14,6 @@
 """
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
 from datasource.identity import Identity
 from phonebook.entity.company import Company
@@ -44,7 +43,7 @@ class CreateView(TUIMenuView):
             person.complement = form.complement
             self.person_service.save(person)
             TUIMenuUi.render_app_title()
-            TUIMenuUtils.wait_keystroke("Person successfully saved!%EOL%")
+            TUIMenu.wait_keystroke("Person successfully saved!%EOL%")
 
     def company(self) -> None:
         form = ContactForms.company_form()
@@ -59,4 +58,4 @@ class CreateView(TUIMenuView):
             company.complement = form.complement
             self.company_service.save(company)
             TUIMenuUi.render_app_title()
-            TUIMenuUtils.wait_keystroke("Company successfully saved!%EOL%")
+            TUIMenu.wait_keystroke("Company successfully saved!%EOL%")

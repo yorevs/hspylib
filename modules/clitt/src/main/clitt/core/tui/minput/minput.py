@@ -45,7 +45,8 @@ def minput(
 
 
 class MenuInput(TUIComponent):
-    """TODO"""
+    """Provide a form input for terminal UIs.
+    """
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
@@ -110,7 +111,9 @@ class MenuInput(TUIComponent):
         self._re_render = False
 
     def _render_field(self, field: FormField) -> None:
-        """Render the form field"""
+        """Render the specified form field.
+        :param field: the form field to render.
+        """
 
         if field.itype == InputType.TEXT:
             MInputUtils.mi_print(self.max_value_length, field.value)
@@ -131,8 +134,11 @@ class MenuInput(TUIComponent):
             value, mask = MInputUtils.unpack_masked(str(field.value))
             MInputUtils.mi_print(self.max_value_length, MInputUtils.over_masked(value, mask))
 
-    def _render_details(self, field: FormField, field_size: int) -> None:
-        """Render details about total/remaining field characters"""
+    def _render_details(self, field: FormField, field_size_details: int) -> None:
+        """Render details about total/remaining field characters.
+        :param field: the form field to render.
+        :param field_size_details: details about the form field (total / remaining) size.
+        """
 
         padding = 1 - len(str(self.max_detail_length / 2))
         fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "}  %NC%"
@@ -143,7 +149,7 @@ class MenuInput(TUIComponent):
             value, _ = MInputUtils.unpack_masked(str(field.value))
             sysout(fmt.format(field.icon, len(value), field.max_length))
         else:
-            sysout(fmt.format(field.icon, field_size, field.max_length))
+            sysout(fmt.format(field.icon, field_size_details, field.max_length))
 
     def _navbar(self, **kwargs) -> str:
         return \
@@ -183,7 +189,8 @@ class MenuInput(TUIComponent):
         return keypress
 
     def _handle_enter(self) -> None:
-        """Validate & Save form and exit"""
+        """Handle 'enter' press. Validate & Save form and exit.
+        """
 
         invalid = next((field for field in self.fields if not field.validate(field.value)), None)
         if invalid:
@@ -203,7 +210,9 @@ class MenuInput(TUIComponent):
             self._done = True
 
     def _handle_input(self, keypress: Keyboard) -> None:
-        """TODO"""
+        """Handle a form input.
+        :param keypress: the input provided by the keypress.
+        """
 
         match self.cur_field.itype:
             case InputType.CHECKBOX:
@@ -229,7 +238,8 @@ class MenuInput(TUIComponent):
                             f"This field only accept {self.cur_field.validator} !")
 
     def _handle_backspace(self) -> None:
-        """TODO"""
+        """Handle 'backspace' press. Delete previous input.
+        """
 
         if self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
@@ -244,27 +254,30 @@ class MenuInput(TUIComponent):
                 self._display_error("This field is read only !")
 
     def _handle_ctrl_p(self) -> None:
-        """TODO"""
+        """Handle 'ctrl + p' press. Paste content from clipboard.
+        """
         for c in pyperclip.paste():
             self._handle_input(Keyboard.of_value(c))
 
-    def _buffer_pos(self, field_size: int, idx: int) -> None:
-        """TODO"""
-
-        # Buffering the all positions to avoid calling get_cursor_pos over and over
-        if f_pos := get_cursor_position() if self.positions[idx] == (0, 0) else self.positions[idx]:
-            self.positions[idx] = f_pos
-            if self.tab_index == idx:
+    def _buffer_pos(self, field_size: int, field_index: int) -> None:
+        """Buffer all cursor positions to avoid calling get_cursor_pos over and over because it is a very
+        expensive call.
+        :param field_size: the form field length.
+        :aram idx: the current form field index.
+        """
+        if f_pos := get_cursor_position() if self.positions[field_index] == (0, 0) else self.positions[field_index]:
+            self.positions[field_index] = f_pos
+            if self.tab_index == field_index:
                 self.cur_row, self.cur_col = f_pos[0], f_pos[1] + field_size
 
     def _display_error(self, err_msg) -> None:
-        """TODO"""
-
+        """Display a form filling or submitting error.
+        """
         set_enable_echo(False)
-        offset = 16
+        offset = 16  # Magic number :D . That is the value to best fit the message along with the form.
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + offset
         sysout(f"%CUP({self.cur_row};{err_pos})%", end="")
         syserr(f"{FormIcons.ERROR_CIRCLE}  {err_msg}", end="")
-        time.sleep(max(1.5, int(len(err_msg) / 25)))
+        time.sleep(max(1.5, int(len(err_msg) / 25)))  # This calculation gives a good delay amount.
         set_enable_echo()
         sysout(f"%CUP({self.cur_row};{err_pos})%%EL0%", end="")  # Remove the message after the timeout

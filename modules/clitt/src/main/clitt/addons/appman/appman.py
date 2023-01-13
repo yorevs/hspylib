@@ -12,10 +12,12 @@
 
    Copyright 2022, HSPyLib team
 """
+import os
+import stat
+from textwrap import dedent
+from typing import List
 
-from clitt.addons.appman.appman_enums import AppType, Extension
-from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput import MenuInput, minput
+import urllib3
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
@@ -28,11 +30,10 @@ from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
-from textwrap import dedent
-from typing import List
 
-import os
-import urllib3
+from clitt.addons.appman.appman_enums import AppExtension, AppType
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 
 HERE = get_path(__file__)
 
@@ -42,7 +43,8 @@ WELCOME_MESSAGE = f"My Application v{INITIAL_REVISION}"
 
 
 class AppManager(metaclass=Singleton):
-    """HSPyLib application manager that helps creating HSPyLib based applications and widgets"""
+    """HSPyLib application manager that helps creating HSPyLib based applications and widgets.
+    """
 
     # The directory containing all template files
     TEMPLATES = HERE / "templates"
@@ -64,7 +66,8 @@ class AppManager(metaclass=Singleton):
 
     @staticmethod
     def prompt() -> Namespace:
-        """When no input is provided, prompt the user for the info."""
+        """Prompt for the application info.
+        """
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -105,8 +108,13 @@ class AppManager(metaclass=Singleton):
         self._init_gradle_flag = False
         self._init_git_flag = False
 
-    def create(self, app_name: str, app_type: AppType, app_ext: List[Extension], dest_dir: str) -> None:
-        """Create the application based on the parameters"""
+    def create(self, app_name: str, app_type: AppType, app_ext: List[AppExtension], dest_dir: str) -> None:
+        """Create the application based on the parameters.
+        :param app_name the application name.
+        :param app_type the application type (qt-app, widgets, ...)
+        :param app_ext the application extensions (gradle, git, ...).
+        :param dest_dir the project destination directory (dest_dir/app_name).
+        """
         sysout(f'Creating "{app_name}" at {dest_dir}')
         try:
             check_argument(os.path.exists(dest_dir), "Destination not found: {}", dest_dir)
@@ -128,18 +136,24 @@ class AppManager(metaclass=Singleton):
 
         sysout(f"Successfully created the {app_type.value} {app_name}")
 
-    def _create_app(self, app_name: str, extensions: List[Extension]) -> None:
-        """Create a Simple HSPyLib application"""
+    def _create_app(self, app_name: str, app_ext: List[AppExtension]) -> None:
+        """Create a Simple HSPyLib application.
+        :param app_name the application name.
+        :param app_ext the application extensions (gradle, git, ...).
+        """
         sysout(f"Application: {app_name}")
         self._create_base_app_struct(app_name)
         self._mkfile(
             f"src/main/{self._app_name}/__main__.py",
             (self.TEMPLATES / "main.py.tpl").read_text().replace("%APP_NAME%", self._app_name),
         )
-        self._apply_extensions(extensions, app_name)
+        self._apply_extensions(app_name, app_ext)
 
-    def _create_qt_app(self, app_name: str, extensions: List[Extension]) -> None:
-        """Create an HSPyLib QT application"""
+    def _create_qt_app(self, app_name: str, app_ext: List[AppExtension]) -> None:
+        """Create an HSPyLib QT application.
+        :param app_name the application name.
+        :param app_ext the application extensions (gradle, git, ...).
+        """
         sysout(f"QT Application: {app_name}")
         self._create_base_app_struct(app_name)
         self._mkdir(f"src/main/{self._app_name}/resources/forms")
@@ -156,19 +170,24 @@ class AppManager(metaclass=Singleton):
             f"src/main/{self._app_name}/__main__.py",
             (self.TEMPLATES / "main_qt.py.tpl").read_text().replace("%APP_NAME%", self._app_name),
         )
-        self._apply_extensions(extensions, app_name)
+        self._apply_extensions(app_name, app_ext)
 
     def _create_widget(self, app_name: str) -> None:
-        """Create an HSPyLib Widget application"""
+        """Create an HSPyLib Widget application.
+        :param app_name the application name.
+        """
         widget_name = camelcase(app_name).replace("_", "").replace(" ", "")
         sysout(f"Widget: {widget_name}")
         self._mkfile(
             f"widget_{app_name.lower()}.py",
-            (self.TEMPLATES / "widget.py.tpl").read_text().replace("_WIDGET_NAME_", f"{widget_name}"),
+            (self.TEMPLATES / "widget.py.tpl").read_text()
+            .replace("_WIDGET_NAME_", f"{camelcase(app_name, upper=True)}"),
         )
 
     def _create_base_app_struct(self, app_name: str) -> None:
-        """Create HSPyLib application structure"""
+        """Create a base HSPyLib application structure and files.
+        :param app_name the application name.
+        """
         self._mkdir()
         self._mkfile("README.md", f"# {app_name}")
         self._mkfile("MANIFEST.in")
@@ -186,55 +205,72 @@ class AppManager(metaclass=Singleton):
         self._mkfile(f"src/main/{self._app_name}/resources/application.properties", "# Main application property file")
         self._mkfile(".env", "# Type in here the environment variables your app requires")
         self._mkfile("run.sh", (self.TEMPLATES / "run.sh.tpl").read_text().replace("%APP_NAME%", self._app_name))
+        self._chmod("run.sh")
 
-    def _apply_extensions(self, extensions: List[Extension], app_name: str):
-        """Apply the selected extensions to the app"""
-        result = True
-        if Extension.GRADLE in extensions:
-            sysout("Applying gradle extensions")
-            result = self._init_gradle(app_name)
-        if result and Extension.GIT in extensions:
-            sysout("Initializing git repository")
-            self._init_git()
-
-    def _mkdir(self, dirname: str = "") -> None:
-        """Create a directory from the destination path, or the destination path itself"""
-        dir_path = f"{self._app_dir}/{dirname}"
+    def _mkdir(self, folder_name: str = "") -> None:
+        """Create a directory from the destination path, or the destination path itself.
+        :param folder_name the directory to be created.
+        """
+        dir_path = f"{self._app_dir}/{folder_name}"
         sysout(f"  |- {dir_path}")
         os.mkdir(dir_path)
 
-    def _mkfile(self, filename: str, contents: str = "") -> None:
-        """Create a file from the destination path with the specified contents"""
-        file_path = f"{self._app_dir}/{filename}"
+    def _mkfile(self, file_name: str, file_content: str = "") -> None:
+        """Create a file from the destination path with the specified content.
+        :param file_name the file name.
+        :param file_content the text based content of the file.
+        """
+        file_path = f"{self._app_dir}/{file_name}"
         sysout(f"  |- {file_path}")
         with open(f"{file_path}", "w", encoding=Charset.UTF_8.val) as fh:
-            fh.write(ensure_endswith(contents, os.linesep))
+            fh.write(ensure_endswith(file_content, os.linesep))
 
-    def _download_ext(self, extension: str) -> None:
-        """Download a gradle extension from the HSPyLib repository"""
-        urllib3.disable_warnings()  # Disable this warning because we trust our project repo
-        resp = get(f"https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{extension}")
-        check_argument(resp.status_code == HttpCode.OK, "Unable to download extension: '{}'", extension)
-        self._mkfile(f"gradle/{extension}", resp.body)
+    def _chmod(self, file_name: str) -> None:
+        """Give execute permissions to the file.
+        :param file_name the file name
+        """
+        file_path = f"{self._app_dir}/{file_name}"
+        st = os.stat(file_path)
+        os.chmod(file_path, st.st_mode | stat.S_IEXEC)
+
+    def _apply_extensions(self, app_name: str, app_ext: List[AppExtension]) -> None:
+        """Apply the selected extensions to the app.
+        :param app_name the application name.
+        :param app_ext the application extensions (gradle, git, ...).
+        """
+        result = True
+
+        if result and AppExtension.GIT in app_ext:
+            sysout("Initializing git repository")
+            result &= self._init_git()
+        if result and AppExtension.GRADLE in app_ext:
+            sysout("Applying gradle extensions")
+            result &= self._init_gradle(app_name)
+
+        if result:
+            sysout("All app extensions successfully applied!")
+        else:
+            syserr("Failed to apply app extensions!")
 
     def _init_gradle(self, app_name: str) -> bool:
-        """Initialize the as a gradle project"""
-        sysout("Initializing gradle project [press enter to continue] ...")
+        """Initialize the as a gradle project.
+        :param app_name the application name.
+        """
+        sysout(f"Initializing \"{app_name}\" gradle project [press ENTER to continue] ...")
         output, exit_code = Terminal.shell_exec(
             f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self._app_dir
         )
-        sysout(f"Gradle execution result: {exit_code}")
-        sysout(output)
+        sysout(f"Gradle execution result: {exit_code}%EOL%{output}%EOL%")
 
         if exit_code == ExitStatus.SUCCESS:
             sysout("Downloading gradle extensions ...")
-            self._download_ext("badges.gradle")
-            self._download_ext("build-info.gradle")
-            self._download_ext("dependencies.gradle")
-            self._download_ext("docgen.gradle")
-            self._download_ext("docker.gradle")
-            self._download_ext("pypi-publish.gradle")
-            self._download_ext("python.gradle")
+            self._download_gradle_ext("badges.gradle")
+            self._download_gradle_ext("build-info.gradle")
+            self._download_gradle_ext("dependencies.gradle")
+            self._download_gradle_ext("docgen.gradle")
+            self._download_gradle_ext("docker.gradle")
+            self._download_gradle_ext("pypi-publish.gradle")
+            self._download_gradle_ext("python.gradle")
             sysout("Creating gradle files")
             self._mkfile("gradle.properties", self.GRADLE_PROPS.format(self._app_name, INITIAL_REVISION).strip())
             self._mkfile(
@@ -248,17 +284,25 @@ class AppManager(metaclass=Singleton):
         return exit_code == ExitStatus.SUCCESS
 
     def _init_git(self) -> bool:
-        """Initialize a git repository for the project"""
+        """Initialize a git repository for the project.
+        """
         self._mkfile(".gitignore", (self.TEMPLATES / "gitignore.tpl").read_text())
-        sysout("Initializing git repository")
+        sysout("Initializing git repository ...")
         output, exit_code = Terminal.shell_exec("git init", cwd=self._app_dir)
-        sysout(f"Git init result: {exit_code}")
-        sysout(output)
+        sysout(f"Git init result: {exit_code}%EOL%{output}%EOL%")
         if exit_code:
             sysout("Creating first commit")
             Terminal.shell_exec("git add .", cwd=self._app_dir)
             output, exit_code = Terminal.shell_exec('git commit -m "First commit [@HSPyLib]"', cwd=self._app_dir)
-            sysout(f"Git commit result: {exit_code}")
-            sysout(output)
+            sysout(f"Git commit result: {exit_code}%EOL%{output}%EOL%")
 
         return exit_code == ExitStatus.SUCCESS
+
+    def _download_gradle_ext(self, gradle_ext: str) -> None:
+        """Download a gradle extension from the HSPyLib repository.
+        :param gradle_ext the HSPyLib gradle extension to download.
+        """
+        urllib3.disable_warnings()  # Disable this warning because we trust our project repo
+        resp = get(f"https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{gradle_ext}")
+        check_argument(resp.status_code == HttpCode.OK, "Unable to download extension: '{}'", gradle_ext)
+        self._mkfile(f"gradle/{gradle_ext}", resp.body)

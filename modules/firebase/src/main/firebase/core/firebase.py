@@ -24,7 +24,8 @@ import os
 
 
 class Firebase:
-    """Represents the firebase agent and it's functionalities"""
+    """Provides the firebase application functionalities.
+    """
 
     def __init__(self) -> None:
         self.processor = FileProcessor()
@@ -36,12 +37,17 @@ class Firebase:
         return str(self.agent_config)
 
     def setup(self) -> None:
-        """Setup a firebase creating or reading an existing firebase configuration file"""
+        """Setup a firebase configuration by creating or reading an existing configuration file.
+        """
         self.agent_config.prompt()
         log.debug("New firebase setup: %s", self.agent_config)
 
     def upload(self, db_alias: str, file_paths: List[str], glob_exp: str) -> bool:
-        """Upload files to firebase"""
+        """Upload files to firebase.
+        :param db_alias: the firebase database alias.
+        :param file_paths: the file paths to be uploaded. File paths will be filtered by glob expressions.
+        :param glob_exp: the GLOB expressions to filter the input files/folders.
+        """
         self._authenticate()
         url = f"{self.agent_config.url(db_alias)}.json"
         check_argument(len(file_paths) > 0, "Unable to upload file_paths (zero size).")
@@ -49,17 +55,22 @@ class Firebase:
         return self.processor.upload_files(url, file_paths, glob_exp) > 0
 
     def download(self, db_alias: str, dest_dir: str) -> bool:
-        """Download files from firebase specified by it's aliases"""
+        """Download specified aliased files from firebase.
+        :param db_alias: the database alias to download from.
+        :param dest_dir: the destination directory.
+        """
         self._authenticate()
         url = f"{self.agent_config.url(db_alias)}.json"
         log.debug("Downloading files  alias=%s  dest_dir=%s", db_alias, dest_dir)
         return self.processor.download_files(url, dest_dir or os.environ.get("HOME")) > 0
 
     def is_configured(self) -> bool:
-        """Checks whether firebase is properly configured or not"""
+        """Checks whether firebase is properly configured or not.
+        """
         return self.agent_config is not None and self.agent_config.firebase_configs is not None
 
     def _authenticate(self) -> None:
-        """TODO"""
+        """Authenticate to Firebase using the user UID.
+        """
         configs = self.agent_config.firebase_configs
         FirebaseAuth.authenticate(configs.project_id, configs.uid)

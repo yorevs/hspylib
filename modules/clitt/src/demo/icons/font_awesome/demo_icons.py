@@ -12,13 +12,26 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import TypeVar
+
+from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import eol
 
 from clitt.core.icons.font_awesome.app_icons import AppIcons
-from clitt.core.icons.font_awesome.awesome import demo_icons
+from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+
+AwesomeClass = TypeVar('AwesomeClass')
+
+
+def demo_icons(awesome: AwesomeClass = Awesome, split_columns: int = 16) -> None:
+    """TODO"""
+    for i, (v, n) in enumerate(zip(awesome.values(), awesome.names())):
+        sysout(f"{n}: {v:2}", end=eol(i, split_columns))
+
 
 if __name__ == '__main__':
     print('\nAppIcons ' + '-' * 30)

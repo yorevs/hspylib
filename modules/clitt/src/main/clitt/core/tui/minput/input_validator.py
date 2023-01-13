@@ -20,40 +20,60 @@ import re
 
 
 class InputValidator(Validator):
-    """TODO"""
+    """MenuInput 'input' validator."""
 
     class PatternType(Enumeration):
         # fmt: off
         LETTERS     = r"^[a-zA-Z]{%min%,%max%}$"
         WORDS       = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
         NUMBERS     = r"^[0-9\.\,]{%min%,%max%}$"
-        TOKEN       = r"^\<?[a-zA-Z0-9_\- ]+\>?(\|\<?[a-zA-Z0-9_\- ]+\>?)*$"
-        MASKED      = r".*\|.+"
+        MASKED      = r".*\|.{2,}"
         ANYTHING    = r".{%min%,%max%}"
         CUSTOM      = r''
         # fmt: on
 
     @classmethod
-    def custom(cls, pattern: str) -> 'InputValidator':
+    def custom(cls, pattern: str, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        """Return a custom validator that allows customize the input rules.
+        :param pattern: the custom validator pattern.
+        :param min_length: the minimum length required.
+        :param max_length: the maximum length allowed.
+        """
         pattern_type = cls.PatternType.CUSTOM
-        validator = InputValidator(pattern_type=pattern_type)
+        validator = InputValidator(min_length, max_length, pattern_type=pattern_type)
         validator.pattern = pattern
         return validator
 
     @classmethod
     def letters(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        """Return a validator that allows only letters.
+        :param min_length: the minimum length required.
+        :param max_length: the maximum length allowed.
+        """
         return InputValidator(min_length, max_length, cls.PatternType.LETTERS)
 
     @classmethod
-    def words(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
-        return InputValidator(min_length, max_length, cls.PatternType.WORDS)
-
-    @classmethod
     def numbers(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        """Return a validator that allows only numbers.
+        :param min_length: the minimum length required.
+        :param max_length: the maximum length allowed.
+        """
         return InputValidator(min_length, max_length, cls.PatternType.NUMBERS)
 
     @classmethod
+    def words(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        """Return a validator that allows only words (space, numbers or letters).
+        :param min_length: the minimum length required.
+        :param max_length: the maximum length allowed.
+        """
+        return InputValidator(min_length, max_length, cls.PatternType.WORDS)
+
+    @classmethod
     def anything(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+        """Return a validator that allows any input value.
+        :param min_length: the minimum length required.
+        :param max_length: the maximum length allowed.
+        """
         return InputValidator(min_length, max_length, cls.PatternType.ANYTHING)
 
     def __init__(self, min_length: int = 1, max_length: int = 30, pattern_type: PatternType = PatternType.ANYTHING):
@@ -74,7 +94,8 @@ class InputValidator(Validator):
         return all(self.validate(value) for value in args)
 
     def validate(self, value: str) -> bool:
-        """TODO"""
+        """Validate the value against the validator rules.
+        """
         return bool(re.match(self.pattern, value))
 
     @property

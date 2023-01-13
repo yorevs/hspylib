@@ -12,9 +12,13 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.addons.widman.widget import Widget
-from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+import argparse
+import os
+import re
+import sys
+from textwrap import dedent
+from typing import List
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.zoned_datetime import now
@@ -22,13 +26,10 @@ from hspylib.modules.application.argparse.argument_parser import HSArgumentParse
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.terminal import Terminal
-from textwrap import dedent
-from typing import List
 
-import argparse
-import os
-import re
-import sys
+from clitt.addons.widman.widget import Widget
+from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class WidgetPunch(Widget):
@@ -51,27 +52,31 @@ class WidgetPunch(Widget):
       Notes: '
         When no arguments are provided it will !!PUNCH THE CLOCK!!.'
     """)
-    # fmt: on
 
-    HHS_DIR = os.getenv("HHS_PUNCH_FILE", os.getenv("HOME", "/"))
+    HHS_DIR             = os.getenv("HHS_PUNCH_FILE", os.getenv("HOME", "/"))
 
-    HHS_PUNCH_FILE = os.getenv("HHS_PUNCH_FILE", f"-{HHS_DIR}/.punches")
+    HHS_PUNCH_FILE      = os.getenv("HHS_PUNCH_FILE", f"-{HHS_DIR}/.punches")
 
-    DATE_STAMP = now("%a %d-%m-%Y")
+    DATE_STAMP          = now("%a %d-%m-%Y")
 
-    TIME_STAMP = now("%H:%M")
+    TIME_STAMP          = now("%H:%M")
 
-    WEEK_STAMP = int(now("%V"))
+    WEEK_STAMP          = int(now("%V"))
 
     RE_TODAY_PUNCH_LINE = rf"({DATE_STAMP}).*"
 
-    RE_PUNCH_LINE = r"^((Mon|Tue|Wed|Thu|Fri|Sat|Sun) )(([0-9]+-?)+) =>.*"
+    RE_PUNCH_LINE       = r"^((Mon|Tue|Wed|Thu|Fri|Sat|Sun) )(([0-9]+-?)+) =>.*"
 
-    MAX_PUNCHES = 7  # 7 week days
+    MAX_PUNCHES         = 7  # 7 week days. Do you work on Saturdays and Sundays ?? :~
+
+    # fmt: on
 
     @staticmethod
     def _daily_total(daily_punches: List[str], decimal: bool = False) -> str:
-        """Calculate the total time from the daily punches."""
+        """Calculate the total time from the daily punches.
+        :param daily_punches the list of daily punches.
+        :param decimal return the total as a decimal number.
+        """
         # Up to 3 pairs of timestamps: morning, afternoon and evening
         if (n := len(daily_punches)) > 0 and n % 2 == 0:
             stamps = []
@@ -95,14 +100,14 @@ class WidgetPunch(Widget):
         self._total_hour = self._total_min = 0
         self._week_num = self.WEEK_STAMP
 
-    def execute(self, args: List[str] = None) -> ExitStatus:
+    def execute(self, *args) -> ExitStatus:
 
         # Create the current week punch file if it does not yet exist.
         if not os.path.exists(self.HHS_PUNCH_FILE):
             with open(self.HHS_PUNCH_FILE, "w", encoding=Charset.UTF_8.val) as f_punch:
                 f_punch.write(f"{now('%d-%m-%Y')} => ")
 
-        ret_val = self._parse_args(args)
+        ret_val = self._parse_args(*args)
 
         if not ret_val:
             return ExitStatus.ABORTED
@@ -127,8 +132,10 @@ class WidgetPunch(Widget):
 
         return ExitStatus.SUCCESS
 
-    def _parse_args(self, args: List[str]) -> bool:
-        """Parse command line arguments"""
+    def _parse_args(self, *args) -> bool:
+        """When arguments are passed from the command line, parse them.
+        :param args the widget arguments
+        """
 
         if not args:
             return True
@@ -153,7 +160,9 @@ class WidgetPunch(Widget):
         return bool(self._args)
 
     def _read_punches(self, punch_file: str) -> List[str]:
-        """Read all punches from the punch file."""
+        """Read all punches from the punch file.
+        :param punch_file the punch file path
+        """
         if not os.path.exists(punch_file):
             syserr(f"Punch file '{punch_file}' not found !")
             raise FileNotFoundError(f"Punch file '{punch_file}' not found !")
@@ -168,17 +177,22 @@ class WidgetPunch(Widget):
             return all_punches
 
     def _is_today(self, punch_line: str) -> bool:
-        """Whether the punch line refer to today's date."""
+        """Whether the punch line refer to today's date.
+        :param punch_line a line read from the punch file (following the punch syntax).
+        """
         return bool(re.match(self.RE_TODAY_PUNCH_LINE, punch_line))
 
     def _set_today(self, punch_line: str) -> str:
-        """Set the today's date if the line represents today."""
+        """Set the today's date if the line represents today.
+        :param punch_line a line read from the punch file (following the punch syntax).
+        """
         if not self._today and self._is_today(punch_line):
             self._today = punch_line
         return punch_line
 
     def _do_the_punch(self) -> None:
-        """!!DO THE PUNCH!!"""
+        """Punch the clock.
+        """
         with open(self.HHS_PUNCH_FILE, "w", encoding=Charset.UTF_8.val) as f_punch:
             if not self._today:  # Write the first punch of the day
                 self._today = f"{self.DATE_STAMP} => {self.TIME_STAMP}"
@@ -194,7 +208,8 @@ class WidgetPunch(Widget):
         sysout(f"{re.sub(self.DATE_STAMP, '%GREEN%Today%NC%', self._today)} ")
 
     def _list_punches(self) -> None:
-        """List all punches from the punch file."""
+        """List all punches from the punch file.
+        """
         total = 0, 0
         total_dec = 0, 0
         sysout(f"\n%WHITE%Week-{self._week_num:02d} Punches%NC%")
@@ -220,11 +235,13 @@ class WidgetPunch(Widget):
         sysout(f"%WHITE%Total: ({totals})  Balance: {balance}\n")
 
     def _edit_punches(self) -> None:
-        """Open the default system editor to edit punches."""
+        """Open the default system editor to edit punches.
+        """
         Terminal.open_file(self.HHS_PUNCH_FILE)
 
     def _reset_punches(self) -> None:
-        """Rename the punch file as a weekly punch file and reset current punch file."""
+        """Rename the punch file as a weekly punch file and reset current punch file.
+        """
         punch_dir = os.path.dirname(self.HHS_PUNCH_FILE)
         new_name = f"{punch_dir}/week-{self._week_num:02d}.punch"
         if os.path.exists(new_name):
