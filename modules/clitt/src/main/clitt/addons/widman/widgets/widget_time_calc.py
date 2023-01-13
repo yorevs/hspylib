@@ -13,21 +13,23 @@
    Copyright 2022, HSPyLib team
 """
 
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
-from clitt.core.tui.minput.minput import MenuInput, minput
+import math
+import re
+from typing import Optional, Tuple
+
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from typing import List, Optional, Tuple
 
-import math
-import re
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class WidgetTimeCalc(Widget):
-    """HSPyLib Widget to calculate time based operations"""
+    """HSPyLib Widget to calculate time based operations.
+    """
 
     # fmt: off
     WIDGET_ICON = WidgetIcons.CLOCK
@@ -39,12 +41,16 @@ class WidgetTimeCalc(Widget):
 
     @staticmethod
     def to_decimal(time_raw: int = 0) -> int:
-        """Convert a raw time into decimal"""
+        """Convert a raw time into decimal.
+        :param time_raw the raw time to be converted.
+        """
         return int(round(((time_raw / 60.00) * 100.00)))
 
     @staticmethod
-    def calc_time(args: List[str]) -> Tuple[int, int, int]:
-        """Calculate the time resulted from the specified operations."""
+    def calc_time(*args) -> Tuple[int, int, int]:
+        """Calculate the time resulted from the specified operations.
+        :param args the widget arguments
+        """
         op, total_seconds = "+", 0
         for tm in args:
             if not tm:
@@ -77,8 +83,10 @@ class WidgetTimeCalc(Widget):
         self._decimal = False
         self._args = None
 
-    def _parse_args(self, args: List[str]) -> Optional[ExitStatus]:
-        """Parse command line arguments"""
+    def _parse_args(self, *args) -> Optional[ExitStatus]:
+        """Parse command line arguments.
+        :param args the widget arguments
+        """
 
         if not args and not self._read_args():
             return ExitStatus.ABORTED
@@ -96,14 +104,14 @@ class WidgetTimeCalc(Widget):
 
         return None
 
-    def execute(self, args: List[str] = None) -> ExitStatus:
+    def execute(self, *args) -> ExitStatus:
 
-        ret_val = self._parse_args(args)
+        ret_val = self._parse_args(*args)
 
         if ret_val is not None:
             return ret_val
 
-        hours, minutes, seconds = self.calc_time(self._args)
+        hours, minutes, seconds = self.calc_time(*self._args)
 
         if self._decimal:
             print(f"{hours:02d}.{self.to_decimal(minutes):02d}.{self.to_decimal(seconds):02d}")
@@ -113,7 +121,8 @@ class WidgetTimeCalc(Widget):
         return ExitStatus.SUCCESS
 
     def _read_args(self) -> bool:
-        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info.
+        """
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \

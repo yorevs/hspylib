@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 from clitt.core.icons.emojis.emojis import Emoji
-from enum import auto
 
 
 class FaceSmiling(Emoji):
@@ -24,7 +23,7 @@ class FaceSmiling(Emoji):
     """
 
     # fmt: off
-    _CUSTOM         = auto()
+    _CUSTOM         = ''
     DEFAULT         = '\U0001F600'      # 😀
     BEAMING         = '\U0001F601'      # 😁
     TEARS_OF_JOY    = '\U0001F602'      # 😂
@@ -38,13 +37,4 @@ class FaceSmiling(Emoji):
     SLIGHTLY        = '\U0001F642'      # 🙂
     UPSIDE_DOWN     = '\U0001F643'      # 🙃
     ROFL            = '\U0001F923'      # 🤣
-
     # fmt: on
-
-    @classmethod
-    def demo_emojis(cls) -> None:
-        list(map(Emoji.emj_print, cls.values()))
-
-
-if __name__ == "__main__":
-    FaceSmiling.demo_emojis()

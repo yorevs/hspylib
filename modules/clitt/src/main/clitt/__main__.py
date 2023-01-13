@@ -14,7 +14,7 @@
 """
 from clitt.__classpath__ import _Classpath
 from clitt.addons.appman.appman import AppManager
-from clitt.addons.appman.appman_enums import AppType, Extension
+from clitt.addons.appman.appman_enums import AppType, AppExtension
 from clitt.addons.widman.widman import WidgetManager
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
@@ -38,7 +38,8 @@ class Main(TUIApplication):
     VERSION_DIR = _Classpath.source_path()
 
     class Addon(Enumeration):
-        """HsPyLib addon types."""
+        """HsPyLib addon types.
+        """
 
         # fmt: off
         APPMAN      = 'appman'
@@ -54,7 +55,8 @@ class Main(TUIApplication):
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_arguments(self) -> None:
-        """Initialize application parameters and options"""
+        """Initialize application parameters and options.
+        """
 
         # fmt: off
         self._with_chained_args('application', 'the HSPyLib-Clitt addon to run') \
@@ -90,11 +92,13 @@ class Main(TUIApplication):
                     nargs='*')  # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Main entry point handler"""
+        """Main entry point handler.
+        """
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
-        """Execute the application"""
+        """Execute the application main flow.
+        """
 
         app = self.get_arg("application")
         if app == self.Addon.APPMAN.val:
@@ -102,23 +106,25 @@ class Main(TUIApplication):
         elif app == self.Addon.WIDGETS.val:
             self.start_widman()
         else:
-            syserr(f"### Invalid application: {app}")
+            syserr(f"### Invalid Addon application: {app}")
             self.usage(ExitStatus.FAILED)
 
         return ExitStatus.SUCCESS
 
     def start_widman(self) -> None:
-        """Start the Widman application"""
+        """Start the Widman application.
+        """
         addon = WidgetManager(self)
         widget_name = self.get_arg("widget-name")
         if widget_name:
             widget_args = list(map(strip_linebreaks, self.get_arg("widget-args")))
-            addon.execute(widget_name, widget_args)
+            addon.execute(widget_name, *widget_args)
         else:
             addon.dashboard()
 
     def start_appman(self) -> None:
-        """Start the Appman application"""
+        """Start the Appman application.
+        """
         addon = AppManager(self)
         app_type = self.get_arg("app-type")
         if app_type:
@@ -126,7 +132,7 @@ class Main(TUIApplication):
             addon.create(
                 self.get_arg("app-name"),
                 AppType.of_value(app_type),
-                list(map(Extension.value_of, app_ext)) if app_ext else [],
+                list(map(AppExtension.value_of, app_ext)) if app_ext else [],
                 self.get_arg("dest-dir") or run_dir(),
             )
         else:
@@ -134,9 +140,9 @@ class Main(TUIApplication):
             if args:
                 app_ext = []
                 if args.initialize_gradle:
-                    app_ext.append(Extension.GRADLE)
+                    app_ext.append(AppExtension.GRADLE)
                 if args.initialize_git:
-                    app_ext.append(Extension.GIT)
+                    app_ext.append(AppExtension.GIT)
                 addon.create(
                     args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir()
                 )

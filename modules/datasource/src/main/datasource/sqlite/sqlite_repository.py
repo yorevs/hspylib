@@ -31,7 +31,8 @@ E = TypeVar("E", bound=CrudEntity)
 
 
 class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
-    """Implementation of a data access layer for a SQLite persistence store."""
+    """Implementation of a data access layer for a SQLite persistence store.
+    """
 
     def __init__(self, config: DBConfiguration):
         super().__init__(config)
@@ -66,7 +67,6 @@ class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=A
                 conn.close()
 
     def execute(self, sql_statement: str, **kwargs) -> Tuple[int, Optional[ResultSet]]:
-        """TODO"""
         with self._session() as dbs:
             try:
                 args = dict(kwargs)
@@ -120,18 +120,18 @@ class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=A
 
     def find_all(
         self,
-        fields: Optional[Set[str]] = None,
+        columns: Optional[Set[str]] = None,
         filters: Optional[Namespace] = None,
         order_bys: Optional[List[str]] = None,
         limit: int = 500,
         offset: int = 0,
     ) -> List[E]:
 
-        fields = "*" if not fields else ", ".join(fields)
+        columns = "*" if not columns else ", ".join(columns)
         clauses = list(filter(None, filters.values)) if filters else None
         orders = list(filter(None, order_bys)) if order_bys else None
         sql = (
-            f"SELECT {fields} FROM {self.table_name()} "
+            f"SELECT {columns} FROM {self.table_name()} "
             f"{('WHERE ' + ' AND '.join(clauses)) if clauses else ''} "
             f"{('ORDER BY ' + ', '.join(orders)) if orders else ''} "
             f"LIMIT {limit} OFFSET {offset}"
@@ -139,11 +139,11 @@ class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=A
 
         return list(map(self.to_entity_type, self.execute(sql)[1]))
 
-    def find_by_id(self, entity_id: Identity, fields: Optional[Set[str]] = None) -> Optional[E]:
+    def find_by_id(self, entity_id: Identity, columns: Optional[Set[str]] = None) -> Optional[E]:
 
-        fields = "*" if not fields else ", ".join(fields)
+        columns = "*" if not columns else ", ".join(columns)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
-        sql = f"SELECT {fields} FROM {self.table_name()} " f"WHERE {' AND '.join(clauses)}"
+        sql = f"SELECT {columns} FROM {self.table_name()} " f"WHERE {' AND '.join(clauses)}"
         result = next((e for e in self.execute(sql)[1]), None)
 
         return self.to_entity_type(result) if result else None

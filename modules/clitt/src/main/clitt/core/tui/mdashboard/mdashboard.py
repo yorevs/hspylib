@@ -20,29 +20,34 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
-from typing import List, Optional
+from typing import List, Optional, TypeVar
+
+DashboardMatrix = TypeVar('DashboardMatrix', bound=List[List[str]])
 
 
 def mdashboard(
     items: List[DashboardItem],
     title: str = "Please select one item"
 ) -> Optional[DashboardItem]:
-    """TODO"""
+    """Wrapper for the Menu Dashboard"""
     return MenuDashBoard(title, items).execute()
 
 
 class MenuDashBoard(TUIComponent):
-    """TODO"""
+    """A dashboard is a type of graphical user interface which provides at-a-glance views.
+    """
 
     # fmt: off
-    ICN = "╳"
+    ICN = "x"  # x mars the spot if the icon.
 
+    # Selected cell template.
     CELL_TPL = [
         [" ", " ", " ", " ", " ", " ", " "],
         [" ", " ", " ", ICN, " ", " ", " "],
         [" ", " ", " ", " ", " ", " ", " "],
     ]
 
+    # Unselected cell template.
     SEL_CELL_TPL = [
         [" ", "╭", " ", " ", " ", "╮", " "],
         [" ", " ", " ", ICN, " ", " ", " "],
@@ -50,7 +55,7 @@ class MenuDashBoard(TUIComponent):
     ]
     # fmt: on
 
-    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.RIGHT, NavIcons.DOWN, NavIcons.LEFT)
+    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.LEFT, NavIcons.DOWN, NavIcons.RIGHT)
 
     @classmethod
     def builder(cls) -> DashboardBuilder:
@@ -95,7 +100,7 @@ class MenuDashBoard(TUIComponent):
         sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
 
         for idx, item in enumerate(self.items):
-            self._print_cell(
+            self._print_item(
                 idx, item,
                 MenuDashBoard.CELL_TPL
                 if self.tab_index != idx
@@ -106,14 +111,17 @@ class MenuDashBoard(TUIComponent):
         sysout(self._navbar(), end="")
         self._re_render = False
 
-    def _print_cell(
+    def _print_item(
         self, item_idx: int,
         item: DashboardItem,
-        cell_template: List[List[str]]) -> None:
-        """TODO"""
+        cell_template: DashboardMatrix) -> None:
+        """ Print the specified dashboard item at the given index.
+        :param item_idx: the item index.
+        :param item: the dashboard item.
+        :param cell_template: the template of the dashboard cell (selected or unselected).
+        """
 
         num_cols, num_rows = len(cell_template[0]), len(cell_template)
-
         for row in range(0, num_rows):
             for col in range(0, num_cols):
                 cur_cell = cell_template[row][col]
@@ -128,8 +136,8 @@ class MenuDashBoard(TUIComponent):
         return (
             f"{NavIcons.POINTER} %GREEN%{self.items[self.tab_index].tooltip}%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
-            f"[Enter] Select  [Enter] "
-            f"Navigate  [{self.NAV_ICONS}]  Next  [{NavIcons.TAB}]  [Esc] Quit %NC%%EL0%%EOL%%EOL%"
+            f"[Enter] Select  "
+            f"Navigate  {self.NAV_ICONS}  Next  [Tab]  [Esc] Quit %NC%%EL0%%EOL%%EOL%"
         )
 
     def _handle_keypress(self) -> Keyboard:

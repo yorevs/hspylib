@@ -1,20 +1,14 @@
 {
   "files.exclude": {
-    ".gradle": true,
     ".vscode": true,
-    "**/__pycache__": true,
-    "**/__pycache__.*": true,
-    ".idea": true,
+    ".gradle": true,
     "run-configs": true,
-    "modules/hspylib/src/main/__pycache__": true,
-    "modules/hspylib/src/main/build": true,
-    "modules/hspylib/src/main/hspylib.egg-info": true,
-    "modules/hspylib/src/main/dist": true,
-    "**/*.egg-info": true,
-    "**/dist": true,
-    "**/dist.*": true,
-    "**/build": true,
-    "**/build.*": true
+    ".gitattributes": true,
+    ".gitignore": true,
+    "build-badge.svg": true,
+    ".pylintrc": true,
+    "gradlew": true,
+    "hspylib.code-workspace": true
   },
   "python.linting.pylintEnabled": true
 }

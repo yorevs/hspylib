@@ -12,21 +12,22 @@
 
    Copyright 2022, HSPyLib team
 """
+import contextlib
+import logging as log
 from abc import abstractmethod
-from datasource.crud_entity import CrudEntity
-from datasource.db_repository import Connection, Cursor
-from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
-from datasource.redis.redis_configuration import RedisConfiguration
+from typing import Generic, List, Optional, Tuple, TypeVar
+
+import redis
 from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_not_none
 from redis.client import Pipeline
 from retry import retry
-from typing import Generic, List, Optional, Tuple, TypeVar
 
-import contextlib
-import logging as log
-import redis
+from datasource.crud_entity import CrudEntity
+from datasource.db_repository import Connection, Cursor
+from datasource.exception.exceptions import DatabaseConnectionError, DatabaseError
+from datasource.redis.redis_configuration import RedisConfiguration
 
 E = TypeVar("E", bound=CrudEntity)
 
@@ -48,7 +49,6 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
 
     @property
     def logname(self) -> str:
-        """TODO"""
         return self.__class__.__name__.split("_", maxsplit=1)[0]
 
     @property
@@ -73,7 +73,8 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
 
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        """TODO"""
+        """Connect and create a database session.
+        """
         log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         conn = redis.Redis(ssl=self.ssl, host=self.hostname, port=self.port, password=self.password)
         log.debug("%s Connection info: %s", self.logname, conn.config_get("databases"))
@@ -81,7 +82,8 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
 
     @contextlib.contextmanager
     def pipeline(self) -> Pipeline:
-        """TODO"""
+        """Generator to create a database pipeline and return it.
+        """
         pipe = None
         try:
             _, pipe = self._create_session()
@@ -97,17 +99,11 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
             if pipe:
                 pipe.close()
 
-    def delete(self, *keys: str) -> int:
-        """TODO"""
-        check_not_none(keys)
-        with self.pipeline() as pipe:
-            pipe.delete(*keys)
-            ret_val = pipe.execute() or []
-            log.debug("%s Executed a pipelined 'DEL' command and returned: %s", self.logname, ret_val)
-            return ret_val[0] or 0
-
-    def get(self, *keys: str) -> List[E]:
-        """TODO"""
+    def mget(self, *keys: str) -> List[E]:
+        """Returns the values of all specified keys. For every key that does not hold a string value or does not exist,
+        the special value nil is returned. Because of this, the operation never fails.
+        :param keys: the list of keys to get.
+        """
         check_not_none(keys)
         with self.pipeline() as pipe:
             result = []
@@ -121,8 +117,11 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
             )
             return result
 
-    def get_one(self, key: str) -> Optional[E]:
-        """TODO"""
+    def get(self, key: str) -> Optional[E]:
+        """Get the value of key. If the key does not exist the special value nil is returned. An error is returned if
+        the value stored at key is not a string, because GET only handles string values.
+        :param key: the key to get.
+        """
         check_not_none(key)
         with self.pipeline() as pipe:
             pipe.get(key)
@@ -130,24 +129,41 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
             log.debug("%s Executed a pipelined 'GET' command and returned: %s", self.logname, ret_val)
             return self.to_entity_type(ret_val[0]) if ret_val else None
 
-    def set(self, *entities: E) -> None:
-        """TODO"""
+    def set(self, *entities: E) -> Optional[List[E]]:
+        """Set key to hold the string value. If key already holds a value, it is overwritten, regardless of its type.
+        Any previous time to live associated with the key is discarded on successful SET operation.
+        :param entities the entities to set.
+        """
         check_not_none(entities)
         with self.pipeline() as pipe:
             list(map(lambda e: pipe.set(self.build_key(e), str(e._asdict())), entities))
             count = len(pipe)
-            pipe.execute()
-            log.debug("%s Executed '%d' pipelined 'SET' command(s)", self.logname, count)
+            log.debug("%s Executing '%d' pipelined 'SET' command(s)", self.logname, count)
+            return pipe.execute()
 
-    def flush_all(self) -> None:
-        """TODO"""
+    def delete(self, *keys: str) -> int:
+        """Removes the specified keys. A key is ignored if it does not exist.
+        :param keys: the keys to delete.
+        """
+        check_not_none(keys)
+        with self.pipeline() as pipe:
+            pipe.delete(*keys)
+            ret_val = pipe.execute() or []
+            log.debug("%s Executed a pipelined 'DEL' command and returned: %s", self.logname, ret_val)
+            return ret_val[0] or 0
+
+    def flushdb(self) -> None:
+        """Delete all the keys of the currently selected DB. This command never fails.
+        """
         with self.pipeline() as pipe:
             pipe.flushall()
             pipe.execute()
-            log.debug("%s Executed a FLUSHALL command", self.logname)
+            log.debug("%s Executed a FLUSHDB command", self.logname)
 
     def keys(self, pattern: str) -> List[str]:
-        """TODO"""
+        """Returns all keys matching pattern.
+        :param pattern: the glob-style pattern to match against.
+        """
         with self.pipeline() as pipe:
             pipe.keys(pattern)
             ret_val = list(filter(None, pipe.execute()))
@@ -157,8 +173,12 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
 
     @abstractmethod
     def build_key(self, entity: E) -> str:
-        """TODO"""
+        """Builds an appropriate key for the entity.
+        :param entity: the entity to build a key for.
+        """
 
     @abstractmethod
-    def to_entity_type(self, entity_string: bytes) -> E:
-        """TODO"""
+    def to_entity_type(self, entity_string: str | bytes) -> E:
+        """Convert a string into the CRUD entity.
+        :param entity_string: the entity string or bytes to be converted.
+        """

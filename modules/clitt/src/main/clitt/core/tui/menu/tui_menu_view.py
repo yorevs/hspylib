@@ -13,15 +13,18 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import Callable, Optional
+
+from hspylib.core.tools.commons import sysout
+
 from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
-from hspylib.core.tools.commons import sysout
-from typing import Callable, Optional
 
 
 class TUIMenuView(TUIMenu):
-    """TODO"""
+    """Represent a menu view without submenus. Each view can have a view to be displayed. If no view is provided, it
+    will behave like an action.
+    """
 
     def __init__(
         self,
@@ -53,4 +56,4 @@ class TUIMenuView(TUIMenu):
 
     def _display_content(self) -> None:
         sysout(self._content)
-        TUIMenuUtils.wait_keystroke()
+        TUIMenu.wait_keystroke()

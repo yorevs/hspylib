@@ -48,7 +48,7 @@ class TestClass(unittest.TestCase):
         cls.repository = RedisRepositoryTest(config)
 
     def setUp(self) -> None:
-        self.repository.flush_all()
+        self.repository.flushdb()
 
     # TEST CASES ----------
 
@@ -58,7 +58,7 @@ class TestClass(unittest.TestCase):
         self.repository.set(test_entity)
         test_entity.comment = "Updated My-Test Data"
         self.repository.set(test_entity)
-        result_set = self.repository.get(self.repository.build_key(test_entity))
+        result_set = self.repository.mget(self.repository.build_key(test_entity))
         self.assertIsNotNone(result_set, "Result set is none")
         self.assertEqual(1, len(result_set))
         result_one = result_set[0]
@@ -72,7 +72,7 @@ class TestClass(unittest.TestCase):
         test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.set(test_entity_1, test_entity_2)
-        result_set = self.repository.get(test_entity_1.key(), test_entity_2.key())
+        result_set = self.repository.mget(test_entity_1.key(), test_entity_2.key())
         self.assertIsNotNone(result_set, "Result set is none")
         expected_list = [test_entity_1, test_entity_2]
         self.assertCountEqual(expected_list, result_set)
@@ -82,7 +82,7 @@ class TestClass(unittest.TestCase):
         test_entity_1 = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         test_entity_2 = EntityTest(Identity.auto(), comment="My-Test Data 2", lucky_number=55, is_working=False)
         self.repository.set(test_entity_1, test_entity_2)
-        result_one = self.repository.get_one(test_entity_1.key())
+        result_one = self.repository.get(test_entity_1.key())
         self.assertIsNotNone(result_one, "Result set is none")
         self.assertIsInstance(result_one, EntityTest)
         self.assertEqual(test_entity_1.id, result_one.id)
@@ -94,12 +94,12 @@ class TestClass(unittest.TestCase):
     def test_should_delete_from_postgres(self) -> None:
         test_entity = EntityTest(Identity.auto(), comment="My-Test Data", lucky_number=51, is_working=True)
         self.repository.set(test_entity)
-        result_one = self.repository.get_one(test_entity.key())
+        result_one = self.repository.get(test_entity.key())
         self.assertIsNotNone(result_one, "Result set is none")
         self.assertIsInstance(result_one, EntityTest)
         self.assertEqual(test_entity.id, result_one.id)
         self.repository.delete(test_entity.key())
-        result_one = self.repository.get_one(test_entity.key())
+        result_one = self.repository.get(test_entity.key())
         self.assertIsNone(result_one, "Result set is not empty")
 
     # Test get redis keys by pattern

@@ -21,7 +21,8 @@ from typing import Any
 
 
 class FormField:
-    """TODO"""
+    """Represent a MenuInput form field.
+    """
 
     def __init__(
         self,
@@ -81,13 +82,19 @@ class FormField:
         return icon
 
     def can_write(self) -> bool:
+        """Whether this field value can be set or not.
+        """
         return self.access_type == AccessType.READ_WRITE
 
     def assign(self, value: Any) -> bool:
+        """Assign a value for this field.Must match the input validator, otherwise an exception will be thrown.
+        """
         if self.validate(value):
             self.value = value
             return True
         return False
 
     def validate(self, value: Any = None) -> bool:
+        """Validate the input using the assigned validator.
+        """
         return self.validator.validate(str(value) or str(self.value)) if self.validator else False

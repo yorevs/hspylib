@@ -22,11 +22,13 @@ from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
 
 import contextlib
 
+# fmt: off
 # Stereotypes
-Connection = TypeVar("Connection", bound=Any)
-Cursor = TypeVar("Cursor", bound=Any)
-Session = TypeVar("Session", bound=Any)
-ResultSet = TypeVar("ResultSet", bound=Iterable)
+Connection  = TypeVar("Connection", bound=Any)
+Cursor      = TypeVar("Cursor", bound=Any)
+Session     = TypeVar("Session", bound=Any)
+ResultSet   = TypeVar("ResultSet", bound=Iterable)
+# fmt: on
 
 # Generics
 E = TypeVar("E", bound=CrudEntity)
@@ -34,7 +36,8 @@ C = TypeVar("C", bound=DBConfiguration)
 
 
 class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton):
-    """TODO"""
+    """Interface for generic CRUD operations on a database for a specific type.
+    """
 
     def __init__(self, config: C):
         super().__init__()
@@ -77,17 +80,23 @@ class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton
     @abstractmethod
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        """TODO"""
+        """Generator to create a database session and return it.
+        """
 
     @abstractmethod
     @contextlib.contextmanager
     def _session(self) -> Session:
-        """Create a database session."""
+        """Connect and create a database session.
+        """
 
     @abstractmethod
     def execute(self, sql_statement: str, **kwargs) -> Tuple[int, Optional[ResultSet]]:
-        """Execute a SQL statement."""
+        """Execute the specified SQL statement.
+        :param sql_statement: the SQL statement. Names placeholders can be used to parametrize the SQL.
+        :param kwargs arbitrary arguments to fill SQL placeholders (names must match the placeholder names).
+        """
 
     @abstractmethod
     def table_name(self) -> str:
-        """TODO"""
+        """Return the table name (repository name).
+        """

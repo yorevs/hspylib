@@ -12,6 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
+import string
+
 from hspylib.core.tools.dict_tools import get_or_default
 from typing import Any, List, Optional, Tuple
 
@@ -64,7 +66,9 @@ def lowercase(text: str) -> str:
 def camelcase(text: str, separator: str = " |-|_", upper: bool = False) -> str:
     """Return a copy of the string converted to camel case.
     Ref:https://en.wikipedia.org/wiki/Letter_case :: Camel case"""
-    s = re.sub(rf"({separator})+", " ", text).title().replace(" ", "")
+    s = re.sub(rf"({separator})+", " ", text)
+    s = s.title()
+    s = re.sub(rf"({separator})+", "", s)
     fnc = getattr(s[0], "lower" if not upper else "upper")
     return "".join([fnc(), s[1:]])
 
@@ -74,8 +78,8 @@ def snakecase(text: str, separator: str = "-", screaming: bool = False) -> str:
     Ref:https://en.wikipedia.org/wiki/Letter_case :: Snake case
     """
     s = re.sub("([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", text.replace(separator, " ")))
-    string = "_".join(s.split())
-    fnc = getattr(string, "lower" if not screaming else "upper")
+    text = "_".join(s.split())
+    fnc = getattr(text, "lower" if not screaming else "upper")
     return fnc()
 
 
@@ -84,8 +88,8 @@ def kebabcase(text: str, separator: str = " |-|_", train: bool = False) -> str:
     Ref:https://en.wikipedia.org/wiki/Letter_case :: Kebab case
     """
     s = re.sub("([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", text.replace(separator, " ")))
-    string = "-".join(s.split())
-    fnc = getattr(string, "lower" if not train else "upper")
+    text = "-".join(s.split())
+    fnc = getattr(text, "lower" if not train else "upper")
     return fnc()
 
 
@@ -94,7 +98,7 @@ def titlecase(text: str, separator: str = " |-|_", skip_length: int = 0) -> str:
     Ref:https://en.wikipedia.org/wiki/Letter_case :: Title case
     """
     s = re.sub(rf"({separator})+", " ", text)
-    s = " ".join([word.title() if len(word) > skip_length else word.lower() for word in s.split(" ")])
+    s = " ".join([string.capwords(word) if len(word) > skip_length else word.lower() for word in s.split(" ")])
     return s
 
 
@@ -139,14 +143,14 @@ def eol(current_index: int, split_len: int, line_sep: str = os.linesep, word_sep
     return line_sep if (current_index + 1) % split_len == 0 else word_sep
 
 
-def ensure_endswith(string: str, end_str: str) -> str:
+def ensure_endswith(text: str, end_str: str) -> str:
     """Ensure the string ends with the given end string"""
-    return string if string.endswith(end_str) else string + end_str
+    return text if text.endswith(end_str) else text + end_str
 
 
-def ensure_startswith(string: str, start_str: str) -> str:
+def ensure_startswith(text: str, start_str: str) -> str:
     """Ensure the string starts with the given start string"""
-    return string if string.startswith(start_str) else start_str + string
+    return text if text.startswith(start_str) else start_str + text
 
 
 def quote(value: Any) -> str:

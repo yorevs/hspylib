@@ -30,8 +30,9 @@ class NavIcons(Awesome):
     UP              = '\u2191'  # ↑
     RIGHT           = '\u2192'  # →
     DOWN            = '\u2193'  # ↓
-    ENTER           = '\u21B2'  # ↲
+    ENTER           = '\u21B5'  # ↵
     TAB             = '\u21B9'  # ↹
+    BACKSPACE       = '\u232B'  # ⌫
     POINTER         = '\uF432'  # 
     SELECTED        = '\uF814'  # 
     UNSELECTED      = '\uF815'  # 

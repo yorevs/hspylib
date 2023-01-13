@@ -12,8 +12,23 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import eol
 
-from clitt.core.icons.font_awesome.awesome import demo_unicodes
+from clitt.core.icons.font_awesome.awesome import Awesome
+
+
+def demo_unicodes(fa_start: int = 0xF000, fa_end: int = 0xFD50, split_columns: int = 16) -> None:
+    """
+     BoxDrawing: demo_unicodes(0x2500, 0x257F)
+    FontAwesome: demo_unicodes(0xF000, 0xFD50)
+    """
+    fa_range = fa_start, fa_end  # Font awesome range unicodes
+    st_base = [f"{hex(x)[2:]}" for x in range(*fa_range)]
+    for n, h in enumerate(st_base):
+        Awesome.print_unicode(h)
+        sysout(f"{h.upper():04}", end=eol(n, split_columns))
+
 
 if __name__ == '__main__':
     print('\n\nALL UNICODES ' + '-' * 30)

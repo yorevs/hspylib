@@ -32,29 +32,33 @@ class FirebaseAuth(ABC):
 
     @staticmethod
     def _credentials(project_id: str) -> credentials.Certificate:
-        """TODO"""
+        """Create Firebase credentials based on the configured credentials file.
+        :param project_id: the Firebase Realtime database project ID.
+        """
 
-        certificate_file = os.environ.get(
-            "HHS_FIREBASE_CERT_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json")
-        check_not_none(certificate_file, project_id)
+        creds_file = os.environ.get(
+            "HHS_FIREBASE_CREDS_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json")
+        check_not_none(creds_file, project_id)
         try:
-            creds = credentials.Certificate(certificate_file.format(project_id=project_id))
-        except (IOError, ValueError) as err:
-            raise InvalidFirebaseCredentials("Invalid credentials provided") from err
+            creds = credentials.Certificate(creds_file.format(project_id=project_id))
+        except (IOError, KeyError, ValueError) as err:
+            raise InvalidFirebaseCredentials(f"Invalid credentials or credential file \"{creds_file}\"") from err
 
         return creds
 
     @staticmethod
-    def authenticate(project_id: str, uuid: str) -> Optional[UserRecord]:
-        """TODO"""
+    def authenticate(project_id: str, uid: str) -> Optional[UserRecord]:
+        """Authenticate to Firebase using valid credentials.
+        :param project_id: the Firebase Realtime database project ID.
+        :param uid: the Firebase User ID.
+        """
 
         firebase_admin.initialize_app(FirebaseAuth._credentials(project_id))
         try:
-            user = auth.get_user(uuid)
-            if user:
+            if user := auth.get_user(uid):
                 sysout("%ORANGE%Firebase authentication succeeded%EOL%")
                 return user
-            raise FirebaseAuthenticationError("Failed to authenticate to Firebase")
+            raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase. User ID \"{uid}\" not found.")
         except UserNotFoundError as err:
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:

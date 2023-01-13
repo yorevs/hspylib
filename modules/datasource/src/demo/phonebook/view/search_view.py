@@ -15,7 +15,6 @@
 
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
 from clitt.core.tui.table.table_renderer import TableRenderer
 from datasource.crud_entity import CrudEntity
@@ -34,7 +33,7 @@ class SearchView(TUIMenuView):
         self.company_service = CompanyService()
 
     def by_name(self) -> None:
-        contact = TUIMenuUtils.prompt('Person or Company name', dest='name')
+        contact = TUIMenu.prompt('Person or Company name', dest='name')
         if contact:
             filters = Namespace(uuid=f"name='{contact.name}'")
             all_persons = self.person_service.list(filters=filters)
@@ -42,7 +41,7 @@ class SearchView(TUIMenuView):
             self.display_contacts(all_persons, all_companies)
 
     def by_uuid(self) -> None:
-        contact = TUIMenuUtils.prompt('Person or Company uuid', dest='uuid')
+        contact = TUIMenu.prompt('Person or Company uuid', dest='uuid')
         if contact:
             filters = Namespace(uuid=f"uuid='{contact.uuid}'")
             all_persons = self.person_service.list(filters=filters)
@@ -61,17 +60,17 @@ class SearchView(TUIMenuView):
             SearchView.display_table(
                 list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
             )
-            TUIMenuUtils.wait_keystroke()
+            TUIMenu.wait_keystroke()
         if companies:
             SearchView.display_table(
                 list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
             )
-            TUIMenuUtils.wait_keystroke()
+            TUIMenu.wait_keystroke()
         if not persons and not companies:
-            TUIMenuUtils.wait_keystroke("-=- No results to be displayed -=-%EOL%")
+            TUIMenu.wait_keystroke("-=- No results to be displayed -=-%EOL%")
 
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:
         tr = TableRenderer(headers, entities, title)
-        tr.adjust_sizes_by_largest_cell()
+        tr.adjust_cells_by_largest_cell()
         tr.render()

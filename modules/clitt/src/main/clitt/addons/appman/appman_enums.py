@@ -16,8 +16,9 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class Extension(Enumeration):
-    """Appman available extensions"""
+class AppExtension(Enumeration):
+    """Appman available extensions.
+    """
 
     # fmt: off
     GRADLE  = 'gradle'
@@ -26,7 +27,8 @@ class Extension(Enumeration):
 
 
 class AppType(Enumeration):
-    """Appman supported application types"""
+    """Appman supported application types.
+    """
 
     # fmt: off
     APP     = 'app'

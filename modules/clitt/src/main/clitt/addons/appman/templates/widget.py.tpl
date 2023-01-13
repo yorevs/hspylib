@@ -54,6 +54,6 @@ class Widget_WIDGET_NAME_(Widget):
     pass
 
   def _do_something(self) -> None:
-    sysout(str(self))
-    sysout('My widget is running')
-    sysout('')
+    sysout("I am: ", str(self))
+    sysout("And I'm running ...")
+    sysout('Done.')

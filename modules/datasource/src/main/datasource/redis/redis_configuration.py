@@ -13,17 +13,22 @@
    Copyright 2022, HSPyLib team
 """
 from hspylib.core.config.app_config import AppConfigs
-from typing import Optional
 
 
 class RedisConfiguration(AppConfigs):
-    """Represents a Redis datasource configuration"""
+    """Represents a Redis datasource configuration.
+    """
 
-    def __init__(self, resource_dir: str, filename: Optional[str] = None, profile: Optional[str] = None):
+    def __init__(
+        self,
+        resource_dir: str,
+        filename: str | None = None,
+        profile: str | None = None):
+
         super().__init__(resource_dir, filename, profile)
         self._hostname = self["datasource.hostname"]
         self._database = self["datasource.database"]
-        self._port = self["datasource.port"]
+        self._port = int(self["datasource.port"])
         self._username = self["datasource.username"]
         self._password = self["datasource.password"]
         self._ssl = self["datasource.ssl"] or False

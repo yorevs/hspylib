@@ -25,7 +25,9 @@ from typing import List, Optional
 
 
 class TUIMenuItem(TUIMenu):
-    """TODO"""
+    """Represent a menu item with submenus. Each sub-item must belong to the TUIMenu class and can be an instance of
+    TUIMenuItem, TUIMenuAction or TUIMenuView.
+    """
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
@@ -49,7 +51,8 @@ class TUIMenuItem(TUIMenu):
         return self._items
 
     def add_items(self, *items: TUIMenu) -> None:
-        """TODO"""
+        """Add submenu items to the menu.
+        """
         list(map(self._items.append, items))
 
     def execute(self) -> Optional[TUIMenu]:
@@ -85,7 +88,7 @@ class TUIMenuItem(TUIMenu):
                 option_line = str(self._items[idx])
                 erase_line()
                 # Print the selector if the index is currently selected
-                selector = self._draw_line_color(is_selected=(idx == self._sel_index), set_bg_color=False)
+                selector = self._draw_line_color(is_selected=(idx == self._sel_index), has_bg_color=False)
                 # fmt: off
                 line_fmt = (
                     "  {:>" + f"{len(str(length))}" + "}  "
@@ -109,7 +112,8 @@ class TUIMenuItem(TUIMenu):
         )
 
     def _handle_keypress(self) -> Keyboard:
-        """TODO"""
+        """Handle a keyboard press.
+        """
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case Keyboard.VK_ESC:
@@ -129,7 +133,8 @@ class TUIMenuItem(TUIMenu):
         return keypress
 
     def _handle_key_up(self) -> None:
-        """TODO"""
+        """Handle a key up (arrow up) press.
+        """
         if self._sel_index == self._show_from and self._show_from > 0:
             self._show_from -= 1
             self._show_to -= 1
@@ -138,7 +143,8 @@ class TUIMenuItem(TUIMenu):
             self._re_render = True
 
     def _handle_key_down(self) -> None:
-        """TODO"""
+        """Handle a key down (arrow down) press.
+        """
         length = len(self.items)
         if self._sel_index + 1 == self._show_to and self._show_to < length:
             self._show_from += 1
@@ -148,7 +154,8 @@ class TUIMenuItem(TUIMenu):
             self._re_render = True
 
     def _handle_tab(self) -> None:
-        """TODO"""
+        """Handle a tab keypress.
+        """
         length = len(self.items)
         page_index = min(self._show_to + self._diff_index, length)
         self._show_to = max(page_index, self._diff_index)
@@ -157,7 +164,8 @@ class TUIMenuItem(TUIMenu):
         self._re_render = True
 
     def _handle_shift_tab(self) -> None:
-        """TODO"""
+        """Handle a shift tab keypress.
+        """
         page_index = max(self._show_from - self._diff_index, 0)
         self._show_from = min(page_index, self._diff_index)
         self._show_to = self._show_from + self._diff_index
@@ -165,7 +173,9 @@ class TUIMenuItem(TUIMenu):
         self._re_render = True
 
     def _handle_digit(self, digit: Keyboard) -> None:
-        """TODO"""
+        """Handle a digit keypress.
+        :param digit: the digit pressed.
+        """
         length = len(self._items)
         typed_index = digit.value
         sysout(f"{digit.value}", end="")  # echo the digit typed
@@ -187,7 +197,6 @@ class TUIMenuItem(TUIMenu):
             self._re_render = True
 
     def _default_trigger_cb(self, source: TUIMenu) -> Optional['TUIMenu']:
-        """TODO"""
         return get_or_default(self._items, self._sel_index, self._parent)
 
     @cached_property

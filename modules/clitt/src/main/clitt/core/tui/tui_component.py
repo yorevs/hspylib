@@ -25,10 +25,16 @@ T = TypeVar("T")
 
 
 class TUIComponent(Generic[T], ABC):
+    """Provide a base class for terminal UI components.
+    """
 
     @staticmethod
     def _draw_line(line_fmt: str, max_columns: int, *args: Any) -> None:
-        """TODO"""
+        """TODO
+        :param line_fmt: the line format.
+        :param max_columns: the maximum length of the line. If the text is greater than this limit, it will be elided.
+        :param args: the arguments for the format.
+        """
         sysout(ensure_endswith(elide_text(line_fmt.format(*args), max_columns), "%NC%"))
 
     def __init__(self, title: str = None):
@@ -43,13 +49,17 @@ class TUIComponent(Generic[T], ABC):
 
     @abstractmethod
     def execute(self) -> Optional[T | List[T]]:
-        """TODO"""
+        """Execute the main component flow.
+        """
 
-    def _draw_line_color(self, is_selected: bool = False, set_bg_color: bool = True) -> Awesome:
-        """TODO"""
+    def _draw_line_color(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
+        """TODO
+        :param is_selected: whether to set a selected foreground color or not.
+        :param has_bg_color: whether to set a background or not.
+        """
         if is_selected:
             selector = self.prefs.selected
-            if set_bg_color:
+            if has_bg_color:
                 sysout(self.prefs.sel_bg_color.code, end="")
             sysout(self.prefs.highlight_color.code, end="")
         else:
@@ -60,12 +70,15 @@ class TUIComponent(Generic[T], ABC):
 
     @abstractmethod
     def _render(self) -> None:
-        """TODO"""
+        """Method to render the component.
+        """
 
     @abstractmethod
     def _navbar(self, **kwargs) -> str:
-        """TODO"""
+        """Provide the component navigation bar (if applies).
+        """
 
     @abstractmethod
     def _handle_keypress(self) -> Keyboard:
-        """TODO"""
+        """Handle a keyboard press.
+        """

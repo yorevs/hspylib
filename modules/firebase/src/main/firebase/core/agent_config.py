@@ -15,6 +15,8 @@
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from hspylib.core.enums.charset import Charset
+
 from firebase.core.firebase_auth import FirebaseAuth
 from firebase.exception.exceptions import FirebaseAuthenticationError
 from hspylib.core.config.app_config import AppConfigs
@@ -31,7 +33,8 @@ import os
 
 
 class AgentConfig(metaclass=Singleton):
-    """Holds the firebase agent configurations"""
+    """Holds the firebase agent configurations.
+    """
 
     def __init__(self, filename: str) -> None:
         self.app_configs = AppConfigs(dirname(filename))
@@ -49,15 +52,11 @@ class AgentConfig(metaclass=Singleton):
     def __getitem__(self, item) -> Any:
         return self.app_configs[item]
 
-    @property
-    def hash_str(self) -> str:
-        return "f6680e84-12c0-459c-8cf9-bd469def750d"
-
-    def setup(self, resource_dir: str, filename: str, config_dict: CaseInsensitiveDict) -> None:
+    def setup(self, load_dir: str, filename: str, config_dict: CaseInsensitiveDict) -> None:
         """Setup firebase from a dict configuration
-        :param filename:
-        :param resource_dir:
-        :param config_dict: Firebase configuration dictionary
+        :param load_dir: the directory where to load the configurations from.
+        :param filename: the configuration file name.
+        :param config_dict: firebase configuration dictionary.
         """
 
         user = FirebaseAuth.authenticate(config_dict["PROJECT_ID"], config_dict["UID"])
@@ -68,7 +67,7 @@ class AgentConfig(metaclass=Singleton):
                 )
             config_dict["UID"] = user.uid
             self.firebase_configs = (
-                FirebaseConfiguration.INSTANCE or FirebaseConfiguration.of(resource_dir, filename, config_dict)
+                FirebaseConfiguration.INSTANCE or FirebaseConfiguration.of(load_dir, filename, config_dict)
             )
             self.firebase_configs.update(dict(config_dict))
             self._save()
@@ -76,7 +75,8 @@ class AgentConfig(metaclass=Singleton):
             raise FirebaseAuthenticationError("Unable to authenticate to Firebase (user is None)")
 
     def prompt(self) -> None:
-        """Create a new firebase configuration by prompting the user for information."""
+        """Create a new firebase configuration by prompting the user for information.
+        """
         config = None
         if os.path.exists(self.filename):
             with open(self.filename, "r") as fh_configs:
@@ -128,41 +128,49 @@ class AgentConfig(metaclass=Singleton):
 
     @property
     def filename(self) -> str:
-        """Return the configuration file."""
+        """Return the configuration file.
+        """
         file = self.app_configs["hhs.firebase.config.file"]
         return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase"
 
     @property
     def project_id(self) -> Optional[str]:
-        """Return the firebase Project ID."""
+        """Return the firebase Project ID.
+        """
         return self.firebase_configs.project_id
 
     @property
     def uid(self) -> Optional[str]:
-        """Return the firebase User ID."""
+        """Return the firebase User ID.
+        """
         return self.firebase_configs.uid
 
     @property
     def email(self) -> Optional[str]:
-        """Return the firebase user's email."""
+        """Return the firebase user's email.
+        """
         return self.firebase_configs.email
 
     @property
     def database(self) -> Optional[str]:
-        """Return the firebase project database name."""
+        """Return the firebase project database name.
+        """
         return self.firebase_configs.database
 
     def url(self, db_alias: str) -> str:
-        """Return the firebase project URL"""
+        """Return the firebase project URL.
+        """
         final_alias = db_alias.replace(".", "/")
         return self.firebase_configs.url(final_alias)
 
     def _load(self) -> None:
-        """Load configuration from file"""
+        """Load configurations from file.
+        """
         self.firebase_configs = FirebaseConfiguration.of_file(self.filename)
 
     def _save(self) -> None:
-        """Save current firebase configuration"""
-        with open(self.filename, "w+", encoding="utf-8") as f_config:
+        """Save current firebase configurations to file.
+        """
+        with open(self.filename, "w+", encoding=Charset.UTF_8.val) as f_config:
             f_config.write(str(self))
             sysout(f"Firebase configuration saved => {self.filename} !")
