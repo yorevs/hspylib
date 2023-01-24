@@ -18,7 +18,7 @@ from textwrap import dedent
 from typing import List, Optional
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_repository import VaultRepository
-from vault.entity.vault_entry import VaultEntry
+from vault.domain.vault_entry import VaultEntry
 
 
 class VaultService(CrudService[VaultRepository, VaultEntry]):

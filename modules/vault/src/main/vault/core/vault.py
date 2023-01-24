@@ -22,7 +22,7 @@ from hspylib.modules.security.security import b64_decode, decode_file, decrypt_f
 from typing import List
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_service import VaultService
-from vault.entity.vault_entry import VaultEntry
+from vault.domain.vault_entry import VaultEntry
 from vault.exception.exceptions import VaultCloseError, VaultExecutionException, VaultSecurityException
 
 import binascii
@@ -37,7 +37,8 @@ import uuid
 
 
 class Vault:
-    """Represents the vault and it's functionalities"""
+    """Represents the vault and it's functionalities.
+    """
 
     # Vault hash code
     _VAULT_HASHCODE = os.getenv("VAULT_HASHCODE", "e4f362fd1e02df6bc9c684c9310e3550")
@@ -65,7 +66,8 @@ class Vault:
 
     @contextlib.contextmanager
     def open(self) -> bool:
-        """Open and read the Vault file"""
+        """Open and read the Vault file.
+        """
         try:
             self._sanity_check()
             self._passphrase = self._read_passphrase()
@@ -84,7 +86,8 @@ class Vault:
         return self._is_unlocked
 
     def close(self) -> bool:
-        """Close the Vault file and cleanup temporary file_paths"""
+        """Close the Vault file and cleanup temporary files.
+        """
         try:
             if self._is_unlocked:
                 self._lock_vault()
@@ -100,7 +103,7 @@ class Vault:
 
     def list(self, filter_expr: List[str] = None) -> None:
         """List all vault entries filtered by filter_expr
-        :param filter_expr: The filter expression
+        :param filter_expr: The entry filter expression.
         """
         data = self.service.list_by_key(filter_expr)
         if len(data) > 0:
@@ -121,9 +124,9 @@ class Vault:
 
     def add(self, key: str, hint: str | None, password: str | None) -> None:
         """Add a vault entry
-        :param key: The vault entry key to be added
-        :param hint: The vault entry hint to be added
-        :param password: The vault entry password to be added
+        :param key: the vault entry key to be added.
+        :param hint: the vault entry hint to be added.
+        :param password: the vault entry password to be added.
         """
         check_not_none(key)
         if not self.service.exists(key):
@@ -143,9 +146,9 @@ class Vault:
 
     def update(self, key: str, hint: str | None, password: str | None) -> None:
         """Update a vault entry
-        :param key: The vault entry key to be updated
-        :param hint: The vault entry hint to be updated
-        :param password: The vault entry password to be updated
+        :param key: the vault entry key to be updated.
+        :param hint: the vault entry hint to be updated.
+        :param password: the vault entry password to be updated.
         """
         check_not_none(key)
         if entry := self.service.get_by_key(key):
@@ -164,7 +167,7 @@ class Vault:
 
     def get(self, key) -> None:
         """Display the vault entry specified by name
-        :param key: The vault entry key to get
+        :param key: the vault entry key to get
         """
         entry = self.service.get_by_key(key)
         if entry:

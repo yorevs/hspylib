@@ -12,9 +12,8 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.tools.commons import safe_delete_file
-
 from clitt.core.tui.table.table_renderer import TableRenderer
+from hspylib.core.tools.commons import safe_delete_file
 
 if __name__ == "__main__":
     h = ["string", "number", "boolean", "that`s a big integer column header"]

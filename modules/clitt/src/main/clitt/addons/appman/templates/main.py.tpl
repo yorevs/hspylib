@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
-
 from %APP_NAME%.__classpath__ import _Classpath
-from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path, sysout
 from hspylib.modules.application.application import Application
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
+
+import sys
 
 HERE = get_path(__file__)
 

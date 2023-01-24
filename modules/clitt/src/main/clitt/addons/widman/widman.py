@@ -12,10 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
-import atexit
-import os
-import sys
-
+from clitt.addons.widman.widget import Widget
+from clitt.addons.widman.widget_entry import WidgetEntry
+from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
+from clitt.core.tui.mdashboard.mdashboard import mdashboard
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state
@@ -24,10 +24,9 @@ from hspylib.core.tools.text_tools import camelcase
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 
-from clitt.addons.widman.widget import Widget
-from clitt.addons.widman.widget_entry import WidgetEntry
-from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
-from clitt.core.tui.mdashboard.mdashboard import mdashboard
+import atexit
+import os
+import sys
 
 HERE = get_path(__file__)
 

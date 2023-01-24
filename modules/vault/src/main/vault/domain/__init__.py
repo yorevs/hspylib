@@ -2,10 +2,11 @@
 #
 # hspylib-vault v0.9.78
 #
-# Package: main.vault.entity.validator
+# Package: main.vault.domain
 """Package initialization."""
 
 __all__ = [
-  'entry_validator'
+  'validator',
+  'vault_entry'
 ]
 __version__ = '0.9.78'
