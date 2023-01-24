@@ -16,7 +16,8 @@ from datasource.db_configuration import DBConfiguration
 
 
 class VaultConfig(DBConfiguration):
-    """Holds the vault configurations"""
+    """Holds the vault configurations.
+    """
 
     INSTANCE = None
 

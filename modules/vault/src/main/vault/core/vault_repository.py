@@ -19,7 +19,8 @@ from vault.domain.vault_entry import VaultEntry
 
 
 class VaultRepository(SQLiteRepository[VaultEntry]):
-    """TODO"""
+    """Provide CRUD operations for the Vault application.
+    """
 
     @property
     def database(self) -> str:
