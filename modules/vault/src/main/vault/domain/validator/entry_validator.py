@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib-Vault
-   @package: vault.entity.validator
+   @package: vault.domain.validator
       @file: entry_validator.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -18,7 +18,7 @@ from hspylib.core.constants import RE_COMMON_2_30_NAME
 from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.validator import Validator
 from typing import List, Tuple
-from vault.entity.vault_entry import VaultEntry
+from vault.domain.vault_entry import VaultEntry
 
 
 class EntryValidator(Validator):

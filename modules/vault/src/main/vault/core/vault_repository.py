@@ -15,10 +15,12 @@
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from typing import Optional, Set
-from vault.entity.vault_entry import VaultEntry
+from vault.domain.vault_entry import VaultEntry
 
 
 class VaultRepository(SQLiteRepository[VaultEntry]):
+    """TODO"""
+
     @property
     def database(self) -> str:
         return self._config.database

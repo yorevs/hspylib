@@ -3,7 +3,7 @@
 
 """
    @project: HSPyLib-Vault
-   @package: vault.entity
+   @package: vault.domain
       @file: vault_entry.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -24,7 +24,7 @@ import re
 
 
 class VaultEntry(CrudEntity):
-    """Represents a vault entity"""
+    """Represents a vault domain"""
 
     VaultId = namedtuple("VaultId", ["uuid"])
 

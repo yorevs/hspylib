@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
-
 from %APP_NAME%.__classpath__ import _Classpath
+from %APP_NAME%.view.main_qt_view import MainQtView
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.application.version import Version
 from hspylib.modules.qt.qt_application import QtApplication
 
-from %APP_NAME%.view.main_qt_view import MainQtView
+import sys
 
 HERE = get_path(__file__)
 

@@ -14,7 +14,7 @@
 """
 from clitt.__classpath__ import _Classpath
 from clitt.addons.appman.appman import AppManager
-from clitt.addons.appman.appman_enums import AppType, AppExtension
+from clitt.addons.appman.appman_enums import AppExtension, AppType
 from clitt.addons.widman.widman import WidgetManager
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
