@@ -153,11 +153,11 @@ class Vault:
         check_not_none(key)
         if entry := self.service.get_by_key(key):
             entry.hint = hint if hint else entry.hint
-            entry.password = password if password else self._decrypt_password(entry.password)
+            entry.password = password if password else self._decrypt_passphrase(entry.password)
             if not hint or not password:
                 entry = VaultEntry.prompt(entry)
             if entry:
-                entry.password = self._encrypt_password(entry.password)
+                entry.password = self._encrypt_passphrase(entry.password)
                 self.service.save(entry)
                 sysout(f"%GREEN%%EOL%=== Entry updated ===%EOL%%EOL%%NC%{entry.to_string()}")
         else:
@@ -191,14 +191,21 @@ class Vault:
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault remove issued. User=%s", getpass.getuser())
 
-    def _encrypt_password(self, password: str) -> str:
-        return cryptocode.encrypt(password, self._VAULT_HASHCODE)
+    def _encrypt_passphrase(self, passphrase: str) -> str:
+        """Encrypt current assigned passphrase.
+        :param passphrase: the passphrase to encrypt.
+        """
+        return cryptocode.encrypt(passphrase, self._VAULT_HASHCODE)
 
-    def _decrypt_password(self, password: str) -> str:
-        return cryptocode.decrypt(password, self._VAULT_HASHCODE)
+    def _decrypt_passphrase(self, passphrase: str) -> str:
+        """Decrypt current assigned passphrase.
+        :param passphrase: the passphrase to decrypt.
+        """
+        return cryptocode.decrypt(passphrase, self._VAULT_HASHCODE)
 
     def _read_passphrase(self) -> str:
-        """Retrieve and read the vault passphrase"""
+        """Read and return the vault currently assigned passphrase.
+        """
         passphrase, confirm_passphrase = None, False
         if file_is_not_empty(self._configs.vault_file):
             if self._configs.passphrase:
@@ -206,7 +213,7 @@ class Vault:
         else:
             sysout(f"%ORANGE%### Your Vault '{self._configs.vault_file}' file does not exist ###")
             sysout("%ORANGE%>>> Enter the new passphrase to create a new Vault file <<<")
-            if not (confirm_passphrase := self._create_vault_file()):
+            if not (confirm_passphrase := self._create_new_vault()):
                 raise VaultExecutionException(f"Unable to create vault file: {self._configs.vault_file}")
         while not passphrase:
             passphrase = self._getpass(confirm_passphrase)
@@ -228,7 +235,8 @@ class Vault:
         return f"{self._configs.vault_user}:{passphrase}"
 
     def _lock_vault(self) -> None:
-        """Encode and Encrypt the vault file"""
+        """Lock the vault file (encode & encrypt).
+        """
         if file_is_not_empty(self._configs.unlocked_vault_file):
             encoded = f"{self._configs.unlocked_vault_file}-encoded"
             encode_file(self._configs.unlocked_vault_file, encoded, binary=True)
@@ -241,7 +249,8 @@ class Vault:
         safe_delete_file(self._configs.unlocked_vault_file)
 
     def _unlock_vault(self) -> None:
-        """Decrypt and Decode the vault file"""
+        """Unlock the vault file (decode & decrypt).
+        """
         if file_is_not_empty(self._configs.vault_file):
             encoded = f"{self._configs.unlocked_vault_file}-encoded"
             decrypt_file(self._configs.vault_file, encoded, self._passphrase)
@@ -254,7 +263,8 @@ class Vault:
         safe_delete_file(self._configs.vault_file)
 
     def _sanity_check(self) -> None:
-        """Check existing vault backups and apply a rollback if required."""
+        """Check existing vault backups and apply a rollback if required.
+        """
         vault_file = self._configs.vault_file
         unlocked_vault_file = self._configs.unlocked_vault_file
         backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/.{os.path.basename(vault_file)}.bak"
@@ -278,14 +288,17 @@ class Vault:
                     )
 
     def _getpass(self, skip_cache: bool) -> str:
-        """Prompt for the user password or retrieved the cached one."""
+        """Prompt for the user password or retrieved the cached one if skip cache is not set.
+        :param skip_cache: whether to skip the cached password value or not.
+        """
         if skip_cache or (passwd := keyring.get_password(self._VAULT_CACHE_NAME, self._configs.vault_user)) is None:
             passwd = getpass.getpass("Enter passphrase:").rstrip()
             keyring.set_password(self._VAULT_CACHE_NAME, self._configs.vault_user, passwd)
         return passwd
 
-    def _create_vault_file(self) -> bool:
-        """Create the vault SQLite DB file."""
+    def _create_new_vault(self) -> bool:
+        """Create the vault SQLite DB file.
+        """
         touch_file(self._configs.vault_file)
         self.service.create_vault_db()
         return os.path.exists(self._configs.vault_file)

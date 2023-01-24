@@ -22,30 +22,34 @@ from vault.domain.vault_entry import VaultEntry
 
 
 class VaultService(CrudService[VaultRepository, VaultEntry]):
-    """Provides a CRUD service for the Vault application"""
+    """Provides a CRUD service for the Vault application.
+    """
 
     def __init__(self, vault_config: VaultConfig):
         super().__init__(VaultRepository(vault_config))
 
     def get_by_key(self, key: str) -> Optional[VaultEntry]:
-        """Get a vault entry using the specified key
-        :param key: The vault key to find
+        """Get a vault entry using the specified key.
+        :param key: the vault key to find.
         """
         return self.repository.find_by_key(key)
 
     def exists(self, key: str) -> bool:
         """Return whether the key exists or not in the database
-        :param key: The vault key to check
+        :param key: the vault key to check.
         """
         return self.repository.exists(key)
 
     def list_by_key(self, filter_expr: List[str] = None) -> List[VaultEntry]:
-        """TODO"""
+        """Return a list of vault entries that matches the specified filters.
+        :param filter_expr: the expression
+        """
         filters = " or ".join([f"key like '%{f}%'" for f in filter_expr])
         return self.list(Namespace("Filters", by_key_like=filters), ["key", "modified"])
 
     def create_vault_db(self) -> None:
-        """TODO"""
+        """Create a brand new vault database file.
+        """
         self.repository.execute(
             dedent(
                 """

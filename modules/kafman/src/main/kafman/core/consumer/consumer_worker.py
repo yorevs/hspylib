@@ -19,7 +19,7 @@ from hspylib.core.tools.commons import syserr
 from kafman.core.schema.kafka_schema import KafkaSchema
 from PyQt5.QtCore import pyqtSignal, QThread
 from time import sleep
-from typing import List
+from typing import List, Any, Dict
 
 import threading
 
@@ -44,8 +44,11 @@ class ConsumerWorker(QThread):
         self._schema = None
         self.start()
 
-    def start_consumer(self, settings: dict, schema: KafkaSchema) -> None:
-        """Start the Kafka consumer agent"""
+    def start_consumer(self, settings: Dict[str, Any], schema: KafkaSchema) -> None:
+        """Start the Kafka consumer agent.
+        :param settings: TODO
+        :param schema: TODO
+        """
         if self._consumer is None:
             self._schema = schema
             self._consumer = DeserializingConsumer(settings)
@@ -61,7 +64,8 @@ class ConsumerWorker(QThread):
             self._schema = None
 
     def consume(self, topics: List[str]) -> None:
-        """Start the consumer thread"""
+        """Start the consumer thread.
+        """
         if self._started:
             self._worker_thread = threading.Thread(target=self._consume, args=(topics,))
             self._worker_thread.name = f"kafka-consumer-worker-{hash(self)}"
@@ -69,7 +73,8 @@ class ConsumerWorker(QThread):
             self._worker_thread.start()
 
     def is_started(self) -> bool:
-        """Whether the consumer is started or not"""
+        """Whether the consumer is started or not.
+        """
         return self._started
 
     def run(self) -> None:
@@ -88,7 +93,8 @@ class ConsumerWorker(QThread):
         return self._schema
 
     def _consume(self, topics: List[str]) -> None:
-        """Consume messages from the selected Kafka topics"""
+        """Consume messages from the selected Kafka topics.
+        """
         try:
             self._consumer.subscribe(topics)
             while self._started and self._consumer is not None:

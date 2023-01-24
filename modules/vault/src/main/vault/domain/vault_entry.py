@@ -24,7 +24,8 @@ import re
 
 
 class VaultEntry(CrudEntity):
-    """Represents a vault domain"""
+    """Represents the Vault domain object.
+    """
 
     VaultId = namedtuple("VaultId", ["uuid"])
 
@@ -41,7 +42,9 @@ class VaultEntry(CrudEntity):
 
     @staticmethod
     def prompt(existing_entry: Union['VaultEntry', None] = None) -> Optional['VaultEntry']:
-        """Create a vault entry from a form input"""
+        """Create a vault entry from a form input.
+        """
+
         entry = existing_entry or VaultEntry()
         # fmt: off
         form_fields = MenuInput.builder() \
@@ -63,10 +66,9 @@ class VaultEntry(CrudEntity):
                 .value(entry.password) \
                 .build() \
             .build()
-        result = minput(form_fields, "Please fill the vault credential details")
         # fmt: on
 
-        if result:
+        if result := minput(form_fields, "Please fill the vault credential details"):
             entry.key = result.name
             entry.name = result.name
             entry.hint = result.hint
@@ -76,8 +78,13 @@ class VaultEntry(CrudEntity):
         return entry if result else None
 
     def __init__(
-        self, entity_id: Identity = VaultId(Identity.auto().values),
-        key: str = None, name: str = None, password: str = None, hint: str = None, modified: str = None):
+        self,
+        entity_id: Identity = VaultId(Identity.auto().values),
+        key: str = None,
+        name: str = None,
+        password: str = None,
+        hint: str = None,
+        modified: str = None):
 
         self.id = None  # Will be filled later
         super().__init__(entity_id)
@@ -94,9 +101,9 @@ class VaultEntry(CrudEntity):
         return str(self)
 
     def to_string(self, show_password: bool = False, show_hint: bool = False) -> str:
-        """Return the string representation of this entry
-        :param show_password: Whether to exhibit the password or not
-        :param show_hint: Whether to exhibit the hint or not
+        """Return the string representation of this entry.
+        :param show_password: whether to exhibit the password or not.
+        :param show_hint: whether to exhibit the hint or not.
         """
         password = self.password if show_password else re.sub(".*", "*" * min(len(self.password), 5), self.password)
         hint = self.hint if show_hint else re.sub(".*", "*" * min(len(self.hint), 8), self.hint)
