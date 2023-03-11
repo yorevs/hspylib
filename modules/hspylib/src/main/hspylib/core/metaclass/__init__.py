@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.154
+# hspylib v0.11.155
 #
 # Package: main.hspylib.core.metaclass
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'classpath', 
   'singleton'
 ]
-__version__ = '0.11.154'
+__version__ = '0.11.155'

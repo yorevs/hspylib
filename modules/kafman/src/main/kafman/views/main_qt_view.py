@@ -577,7 +577,7 @@ class MainQtView(QtView):
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #28C941;}")
                 self._display_text(f"Host {url} succeeded", StatusColor.green)
             else:
-                self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR.value)
+                self.ui.tbtn_test_registry_url.setText(FormIcons.ERROR_CIRCLE.value)
                 self.ui.tbtn_test_registry_url.setStyleSheet("QToolButton {color: #FF554D;}")
                 self._display_error(f"Unable to connect to registry server: [{url}]", pop_warn_box=pop_warn_box)
         else:
