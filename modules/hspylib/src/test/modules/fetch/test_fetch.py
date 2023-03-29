@@ -111,6 +111,13 @@ class TestFetch(unittest.TestCase):
         self.assertRaisesRegex(ConnectTimeout, r".*\(connect timeout=1\).*", lambda: get("example.com:9999", timeout=1))
 
     def test_should_be_reachable(self):
+        expected_code = HttpCode.OK
+        self.mock_server.when_request(HttpMethod.OPTIONS, "/example.com").then_return(code=expected_code)
+        # Internal addresses
+        self.assertTrue(is_reachable(f"localhost:{self.mock_server.port}/example.com"))
+        self.assertTrue(is_reachable(f"127.0.0.1:{self.mock_server.port}/example.com"))
+        self.assertTrue(is_reachable(f"0.0.0.0:{self.mock_server.port}/example.com"))
+        # External addresses
         self.assertTrue(is_reachable("example.com"))
         self.assertTrue(is_reachable("http://example.com"))
         self.assertTrue(is_reachable("https://example.com"))

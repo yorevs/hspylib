@@ -17,3 +17,4 @@ package: hspylib-clitt, version: latest, space: global, mode: gt
 
 package: cryptocode, version: latest, space: user
 package: cryptography, version: latest, space: user
+package: keyring, version: latest, space: user

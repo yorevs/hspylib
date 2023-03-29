@@ -22,11 +22,14 @@ class UriScheme(Enumeration):
     """
 
     # fmt: off
-    ABOUT   = 'about'
-    HTTP    = 'http'
-    HTTPS   = 'https'
-    FTP     = 'ftp'
-    FILE    = 'file'
+    ABOUT       = 'about'
+    HTTP        = 'http'
+    HTTPS       = 'https'
+    FTP         = 'ftp'
+    FILE        = 'file'
+    LOCAL       = 'localhost'
+    LOOPBACK    = '127.0.0.1'
+    CATCH_ALL   = '0.0.0.0'
     # fmt: on
 
     @classmethod

@@ -15,6 +15,7 @@ package: hspylib, version: latest, space: global, mode: gt
 
 package: requests, version: latest, space: user
 package: PyQt5, version: latest, space: user
+package: PyQt5-stubs, version: latest, space: user
 package: confluent_kafka, version: latest, space: user
 package: fastavro, version: latest, space: user
 package: jsonschema, version: latest, space: user

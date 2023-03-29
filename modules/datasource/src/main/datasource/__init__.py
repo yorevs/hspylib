@@ -1,12 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.26
+# hspylib-datasource v0.9.27
 #
 # Package: main.datasource
 """Package initialization."""
 
 __all__ = [
-  'cassandra', 
   'crud_entity', 
   'crud_repository', 
   'crud_service', 
@@ -20,4 +19,4 @@ __all__ = [
   'redis', 
   'sqlite'
 ]
-__version__ = '0.9.26'
+__version__ = '0.9.27'
