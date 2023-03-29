@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.26
+# hspylib-datasource v0.9.27
 #
 # Package: test.shared
 """Package initialization."""
@@ -14,4 +14,4 @@ __all__ = [
   'redis_repository_test', 
   'sqlite_repository_test'
 ]
-__version__ = '0.9.26'
+__version__ = '0.9.27'

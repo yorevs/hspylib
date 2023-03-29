@@ -619,10 +619,6 @@ class MainQtView(QtView):
             settings = deepcopy(self._settings())
             settings.update(schema.settings())
             settings = {k: v for k, v in settings.items() if not k.endswith(".deserializer")}
-            brokers = settings[ProducerConfig.BOOTSTRAP_SERVERS]
-            if not is_reachable(brokers):
-                self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box=True)
-                return
             schema_name = f' using schema "{str(self._schema())}"' if self._schema() else ""
             self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._producer.start_producer(settings, schema)
@@ -664,10 +660,6 @@ class MainQtView(QtView):
             settings = deepcopy(self._settings())
             settings.update(schema.settings())
             settings = {k: v for k, v in settings.items() if not k.endswith(".serializer")}
-            brokers = settings[ProducerConfig.BOOTSTRAP_SERVERS]
-            if not is_reachable(brokers):
-                self._display_error(f"Unable to connect to kafka brokers: [{brokers}]", pop_warn_box=True)
-                return
             schema_name = f' using schema "{str(self._schema())}"' if self._schema() else ""
             self.ui.tool_box.setCurrentIndex(StkTools.STATISTICS.value)
             self._consumer.start_consumer(settings, schema)

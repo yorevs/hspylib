@@ -54,7 +54,7 @@ task requirements(type: Task) {
     requirements.setText("###### Requirements file for $project.name ######\n\n")
     deps.each { dep ->
       def mode = modesMap[dep.mode]
-      if ('latest' == dep.version) requirements.append("$dep.package>=$dep.version\n")
+      if ('latest' == dep.version) requirements.append("$dep.package\n")
       else {
         if (mode != null) requirements.append("$dep.package$mode$dep.version\n")
         else requirements.append("$dep.package\n")
