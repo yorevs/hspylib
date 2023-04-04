@@ -89,8 +89,8 @@ class CFBlueGreenChecker:
         :param mapped_apps: The dict containing all CF blue and green apps.
         :return: None
         """
-        sysout('Listing apps grouped by blue/green pairs')
-        sysout('%WHITE%' + '-=' * 60 + '%EOL%')
+        sysout('%EOL%%WHITE%Listing apps grouped by blue/green pairs')
+        sysout('-=' * 60 + '%EOL%')
         sysout(f"{' ':^10}{'STATUS':<7}  {'INSTANCES (MEM)':<25}  Routes: {'ALERTS':>12}  %EOL%")
         for name, app in mapped_apps.items():
             app_green = app['green']

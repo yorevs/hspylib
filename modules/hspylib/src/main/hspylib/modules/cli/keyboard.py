@@ -13,15 +13,16 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError, NotATerminalError
-from typing import List, Optional
-
-import getkey
 import select
 import string
 import sys
 import termios
+from typing import List, Optional
+
+import getkey
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.exception.exceptions import KeyboardInputError, NotATerminalError
 
 
 # pylint: disable=multiple-statements
@@ -91,29 +92,34 @@ class Keyboard(Enumeration):
     # fmt: on
 
     @staticmethod
-    def kbhit() -> bool:
-        """Return when the is any keyboard press."""
-        dr, _, _ = select.select([sys.stdin], [], [], 0)
-        return dr != []
+    def kbhit(wait: bool = False, timeout: float = 0) -> bool:
+        """Return whether there was an ENTER keyboard press."""
+        while dr_list := select.select([sys.stdin], [], [], timeout):
+            if not wait:
+                return dr_list[0] != []
+            elif dr_list[0]:
+                return True
 
-    @staticmethod
-    def getch() -> "Keyboard":
-        """Read and return a character from a keyboard press."""
-        return Keyboard.of_value(sys.stdin.read(1))
+    @classmethod
+    def getch(cls, n: int = 1) -> List["Keyboard"]:
+        """Read and return (a) character(s) from a keyboard press.
+        Method will return after ENTER is pressed.
+        """
+        return list(map(cls.of_value, sys.stdin.read(n)))
 
     @classmethod
     def digits(cls) -> List['Keyboard']:
-        """Return all digits"""
+        """Return all Keyboard digits."""
         return list(map(cls.of_value, filter(lambda v: str(v).isdigit(), cls.values())))
 
     @classmethod
     def letters(cls) -> List['Keyboard']:
-        """Return all digits"""
+        """Return all Keyboard letters."""
         return list(map(cls.of_value, filter(lambda v: str(v).isalpha(), cls.values())))
 
     @classmethod
     def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
-        """TODO"""
+        """Wait until a keypress is detected."""
         try:
             keystroke = getkey.getkey(blocking)
             if keystroke:
@@ -153,3 +159,7 @@ class Keyboard(Enumeration):
     @property
     def val(self) -> str:
         return str(self.value)
+
+
+if __name__ == '__main__':
+    print(Keyboard.getch(3))

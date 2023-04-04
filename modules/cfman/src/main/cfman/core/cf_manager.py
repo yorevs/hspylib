@@ -12,28 +12,30 @@
 
    Copyright 2022, HSPyLib team
 """
+import sys
+from functools import partial
+from time import sleep
+from typing import List, Optional, Tuple
+
+import requests
+from clitt.core.tui.mchoose import mchoose
+from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
+from clitt.core.tui.minput.minput import MenuInput, minput
+from clitt.core.tui.mselect import mselect
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import syserr, sysout
+from hspylib.modules.cache.ttl_cache import TTLCache
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import clear_screen
+from hspylib.modules.fetch.fetch import head
+from retry import retry
+
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
 from cfman.core.cf_endpoint import CFEndpoint
 from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
-from clitt.core.tui.mchoose import mchoose
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
-from clitt.core.tui.minput.minput import MenuInput, minput
-from clitt.core.tui.mselect import mselect
-from functools import partial
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.preconditions import check_state
-from hspylib.core.tools.commons import syserr, sysout
-from hspylib.modules.cache.ttl_cache import TTLCache
-from hspylib.modules.cli.vt100.vt_utils import clear_screen
-from hspylib.modules.fetch.fetch import head
-from retry import retry
-from time import sleep
-from typing import List, Optional, Tuple
-
-import requests
-import sys
 
 
 class CFManager:
@@ -84,7 +86,7 @@ class CFManager:
         space: str,
         username: str,
         password: str,
-        refresh: str,
+        no_cache: str,
         cf_endpoints: str):
 
         self._cf = CloudFoundry()
@@ -94,7 +96,7 @@ class CFManager:
         self._space = space
         self._username = username
         self._password = password
-        self._refresh = refresh or False
+        self._no_cache = no_cache or False
         self._cf_endpoints_file = cf_endpoints
         self._cf_apps = None
         self._done = False
@@ -110,7 +112,7 @@ class CFManager:
         if self._cf.connect():
             self._api = self._cf.api()
             target = self._cf.target()
-            self._org, self._space = target['org'], target['space']
+            self._username, self._org, self._space = target['user'], target['org'], target['space']
             sysout("%YELLOW%Already authorized to CloudFoundry!")
         else:
             authorized = False
@@ -128,8 +130,16 @@ class CFManager:
                     syserr("Not authorized !")
                     self._abort()
             sysout("%GREEN%Successfully authorized!")
-        sysout(f"%WHITE%Targeted to -> ORG=[{self._org}]  SPACE=[{self._space}]  API=[{self._api}]")
-        sleep(2)
+        sysout(
+            f"%WHITE%Targeted at: %EOL%%GREEN%"
+            f"{'-=' * 40} %EOL%"
+            f"{self._api} %EOL%"
+            f"{'--' * 40} %EOL%"
+            f"{'USER:':>6} {self._username} %EOL%"
+            f"{'ORG:':>6} {self._org} %EOL%"
+            f"{'SPACE:':>6} {self._space} %EOL%"
+            f"{'-=' * 40}")
+        TUIMenuUtils.wait_keystroke()
         self._loop_actions()
 
     @retry(exceptions=CFConnectionError, tries=3, delay=2, backoff=3, max_delay=30)
@@ -150,27 +160,30 @@ class CFManager:
                             self._api = selected.host
                         else:
                             syserr(
-                                CFConnectionError(f"Failed to connect to API ({response.status_code}): {selected}"))
+                                CFConnectionError(
+                                    f"Failed to contact CF API %EOL%"
+                                    f"  Status: ({response.status_code}): {selected}"))
                             self._abort()
                     except requests.exceptions.ConnectionError as err:
                         syserr(
                             CFConnectionError(
-                                f"Failed to connect API host: '{selected.host}' "
-                                f"=> {err.__class__.__name__}"))
+                                f"Failed to connect to CloudFoundry API%EOL%"
+                                f"  Host: '{selected.host}'%EOL%"
+                                f"  => {err.__class__.__name__}"))
                         self._abort()
                 else:
                     syserr(
                         CFExecutionError(
-                            f"No endpoint yet configured. Please create the file {self._cf_endpoints_file} "
-                            f"with at least one endpoint configured and try again."))
+                            f"No endpoint yet configured. Please create the file \"{self._cf_endpoints_file}\" "
+                            f"with at least one endpoint and try again!"))
                     self._abort()
-        except (IndexError, FileNotFoundError):
+        except (IndexError, FileNotFoundError) as err:
             syserr(
                 CFExecutionError(
-                    f"\"{self._cf_endpoints_file}\" "
-                    f"has invalid cf endpoints, is empty or does not exist!%EOL%"
-                    f"Make sure it exists and each line follows the syntax:%EOL%"
-                    f"<alias>,<url>,<protected [true|false]>"))
+                    f"Endpoint file \"{self._cf_endpoints_file}\" is invalid: %EOL%"
+                    f"  => {str(err)}! %EOL%"
+                    f"Make sure it exists contains the following: %EOL%"
+                    f"<alias>,<cf_api_url>,<protected [true|false]>%EOL%"))
             self._abort()
 
     def _prompt_credentials(self) -> None:
@@ -225,8 +238,8 @@ class CFManager:
         """Set the active PCF space.
         """
         if not self._space:
-            sysout(f"%BLUE%Retrieving all spaces from org: \"{self._org}\"...")
-            if self._refresh or not (spaces := self._cache.read(f"cf-spaces-{self._org}")):
+            if self._no_cache or not (spaces := self._cache.read(f"cf-spaces-{self._org}")):
+                sysout(f"%BLUE%Retrieving all spaces from org: \"{self._org}\"...")
                 spaces = self._cf.spaces()
                 self._cache.save(f"cf-spaces-{self._org}", spaces)
             if not spaces:
@@ -240,7 +253,7 @@ class CFManager:
     def _get_apps(self) -> List[CFApplication]:
         """Retrieve all cf applications under the targeted org-space.
         """
-        if self._refresh or not (apps := self._cache.read(f"cf-apps-{self._space}")):
+        if self._no_cache or not (apps := self._cache.read(f"cf-apps-{self._space}")):
             sysout(f"%BLUE%Retrieving applications from space: \"{self._space}\"...")
             apps = self._cf.apps()
             sysout(f"%GREEN%Found {len(apps)} apps in space: \"{self._space}\"")
@@ -315,7 +328,9 @@ class CFManager:
     def _display_app_status(self) -> None:
         """Display all PCF space-application statuses.
         """
-        if len(self.apps) > 0:
+        apps = self.apps
+
+        if len(apps) > 0:
             clear_screen()
             sysout(f"%BLUE%Listing all '{self._org}::{self._space}' applications ...%EOL%")
             # fmt: off
@@ -330,7 +345,7 @@ class CFManager:
                 )
             )
             # fmt: on
-            list(map(CFApplication.print_status, self.apps))
+            list(map(CFApplication.print_status, apps))
 
     def _blue_green_check(self) -> None:
         """Display all PCF space-application blue/green check.

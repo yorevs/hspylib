@@ -29,7 +29,7 @@ class CloudFoundry(metaclass=Singleton):
 
     def __init__(self) -> None:
         self._connected = False
-        self._targeted = {"org": None, "space": None, "targeted": False}
+        self._targeted = {"user": None, "org": None, "space": None, "targeted": False}
         self._last_output = None
         self._last_exit_code = None
 
@@ -44,7 +44,10 @@ class CloudFoundry(metaclass=Singleton):
     def is_targeted(self) -> bool:
         """Return whether it is targeted to any cf api-org-space or not.
         """
-        return self._targeted["org"] and self._targeted["space"] and self._targeted["targeted"]
+        return self._targeted["user"] \
+            and self._targeted["org"] \
+            and self._targeted["space"] \
+            and self._targeted["targeted"]
 
     # Before getting started:
     def connect(self) -> bool:
@@ -59,8 +62,8 @@ class CloudFoundry(metaclass=Singleton):
         """Set or view target api url.
         :param url the cf API URL.
         """
-        result = self._exec(f"api {url or ''}")
-        return result if "FAILED" not in str(result) else None
+        result = str(self._exec(f"api {url or ''}"))
+        return result if "FAILED" not in result else None
 
     def auth(self, username: str, password: str) -> bool:
         """Authorize a CloudFoundry user.
@@ -78,9 +81,10 @@ class CloudFoundry(metaclass=Singleton):
         params = ["target"]
         if not kwargs and (parts := self._exec(" ".join(params)).split(os.linesep)):
             if len(parts) >= 4:
-                org = parts[2].split(":")[1].strip()
-                space = parts[3].split(":")[1].strip()
-                self._targeted = {"org": org, "space": space, "targeted": True}
+                user = parts[2].split(":")[1].strip()
+                org = parts[3].split(":")[1].strip()
+                space = parts[4].split(":")[1].strip()
+                self._targeted = {"user": user, "org": org, "space": space, "targeted": True}
         else:
             if "org" in kwargs and kwargs["org"]:
                 params.append("-o")
@@ -114,7 +118,7 @@ class CloudFoundry(metaclass=Singleton):
         """List all applications from targeted space.
         """
         all_apps = self._exec("apps").split("\n")
-        return all_apps[4:] if all_apps and "FAILED" not in str(all_apps) else None
+        return all_apps[3:] if all_apps and "FAILED" not in str(all_apps) else None
 
     # Application status
     def start(self, **kwargs) -> str:

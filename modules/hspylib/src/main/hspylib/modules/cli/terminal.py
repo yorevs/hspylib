@@ -46,7 +46,6 @@ class Terminal(ABC):
             return output.strip() if output else None, ExitStatus.SUCCESS
         except subprocess.CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
-            syserr(str(err))
             return None, ExitStatus.FAILED
 
     @staticmethod
@@ -63,18 +62,16 @@ class Terminal(ABC):
                     cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs)) as proc:
                 process = select.poll()
                 process.register(proc.stdout)
-                while True:
-                    if Keyboard.kbhit():
-                        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
-                        return
-                    if process.poll(0.3):
+                while not Keyboard.kbhit():
+                    if poll_obj := process.poll(0.3):
                         line = bytes(proc.stdout.readline()).decode(Charset.UTF_8.val).strip()
                         sysout(line)
+                        log.debug("Polling returned: %s", str(poll_obj))
+                os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
         except (InterruptedError, KeyboardInterrupt):
             log.warning("Polling process has been interrupted command='%s'", cmd_line)
         except subprocess.CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
-            syserr(str(err))
 
     @staticmethod
     def open_file(filename: str):
