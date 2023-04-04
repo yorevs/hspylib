@@ -14,14 +14,33 @@
 """
 
 from collections import namedtuple
-from hspylib.modules.fetch.uri_scheme import UriScheme
 from typing import Any, Dict, List
 from urllib.parse import parse_qs, SplitResult, urlencode, urlsplit, urlunparse
 
-URI = namedtuple(typename="URI", field_names=["scheme", "netloc", "url", "path", "query", "fragment"])
+from hspylib.modules.fetch.uri_scheme import UriScheme
+
+URI = namedtuple(typename="URI", field_names=[
+    "scheme", "netloc", "url", "path", "query", "fragment"
+])
 
 
 class UriBuilder:
+    """URI template-aware utility class for building URIs from their components.
+        uri: <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
+     netloc: [username[:<password>]@]<domain>[:<port>]
+
+    Breaking this format down syntactically:
+
+      scheme: The protocol name, usually http/https
+      netloc: Contains the network location - which includes the domain itself (and subdomain if present),
+              the port number, along with an optional credentials in form of username:password. Together it
+              may take form of username:password@example.com:80.
+        path: Contains information on how the specified resource needs to be accessed.
+      params: Element which adds fine tuning to path. (optional)
+       query: Another element adding fine grained access to the path in consideration. (optional)
+    fragment: Contains bits of information of the resource being accessed within the path. (optional)
+    """
+
     @classmethod
     def ensure_scheme(cls, url_string: str, scheme: str | UriScheme = UriScheme.HTTP) -> str:
         if not url_string.startswith(tuple(UriScheme.values())):
@@ -29,7 +48,7 @@ class UriBuilder:
         return url_string
 
     @classmethod
-    def of(cls, url_string: str) -> "UriBuilder":
+    def parse(cls, url_string: str) -> "UriBuilder":
         uri_parts: SplitResult = urlsplit(cls.ensure_scheme(url_string))
         return (
             UriBuilder()
@@ -45,7 +64,7 @@ class UriBuilder:
     def __init__(self) -> None:
         self._scheme: UriScheme = UriScheme.HTTP
         self._host: str = "localhost"
-        self._port: int = 80
+        self._port: int = 8080
         self._username: str = ""
         self._password: str = ""
         self._path: List[str] = []
@@ -59,57 +78,58 @@ class UriBuilder:
         return str(self)
 
     def scheme(self, scheme: str | UriScheme) -> "UriBuilder":
-        """TODO"""
+        """Set the URI scheme."""
         self._scheme = scheme if isinstance(scheme, UriScheme) else UriScheme.of(scheme)
         return self
 
     def hostname(self, host: str) -> "UriBuilder":
-        """TODO"""
+        """Set the URI host."""
         self._host = host
         return self
 
     def port(self, port: int) -> "UriBuilder":
-        """TODO"""
+        """Set the URI port."""
         self._port = port
         return self
 
     def user_info(self, username: str, password: str | None = None) -> "UriBuilder":
-        """TODO"""
+        """Set the URI user-info."""
         if username:
             self._username = username
             self._password = password
         return self
 
     def add_path(self, path: str | List[str]) -> "UriBuilder":
-        """TODO"""
+        """Add paths to the existing URI."""
         self._path.extend(path if isinstance(path, List) else [path])
         return self
 
     def path(self, path: str) -> "UriBuilder":
-        """TODO"""
+        """Set the URI path."""
         self._path = [path]
         return self
 
     def add_query(self, key: str, value: Any) -> "UriBuilder":
-        """TODO"""
+        """Add query to the existing URI."""
         self._query.update({key: value})
         return self
 
     def query(self, query: Dict[str, Any]) -> "UriBuilder":
-        """TODO"""
+        """Set the URI query."""
         self._query = query
         return self
 
     def fragment(self, fragment: str) -> "UriBuilder":
-        """TODO"""
+        """Set the URI fragment."""
         self._fragment = fragment
         return self
 
     def build(self) -> str:
-        """TODO"""
+        """Build a URI using the supplied attributes."""
         return urlunparse(self.get_uri())
 
     def get_uri(self) -> URI:
+        """Return a URI object using the supplied attributes."""
         return URI(
             scheme=str(self._scheme),
             netloc=self.get_netloc(),
@@ -120,7 +140,11 @@ class UriBuilder:
         )
 
     def get_netloc(self) -> str:
+        """Return the network location on the form:
+        [username[:<password>]@]<domain>[:<port>]
+        """
         return (
-            f"{self._username}{':' + self._password if self._password else ''}{'@' if self._username else ''}"
+            f"{self._username}{':' + self._password if self._password else ''}"
+            f"{'@' if self._username else ''}"
             f"{self._host}{':' + str(self._port) if self._port else ''}"
         )

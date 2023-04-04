@@ -73,7 +73,7 @@ class Main(TUIApplication):
             self.get_arg("space"),
             self.get_arg("username"),
             self.get_arg("password"),
-            self.get_arg("refresh"),
+            self.get_arg("no-cache"),
             self.get_arg("endpoints") or f"{os.getenv('HOME', os.getcwd())}/.cfman_endpoints.txt",
         )
         log.info(

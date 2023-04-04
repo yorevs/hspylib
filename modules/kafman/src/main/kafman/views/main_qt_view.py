@@ -570,7 +570,6 @@ class MainQtView(QtView):
         url = self.ui.cmb_registry_url.currentText()
         if self._registry.is_valid() and skip_if_tested:
             return url
-
         if url:
             if self._registry.set_url(url):
                 self.ui.tbtn_test_registry_url.setText(FormIcons.CHECK_CIRCLE.value)
