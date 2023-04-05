@@ -13,17 +13,18 @@
    Copyright 2022, HSPyLib team
 """
 
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
-from clitt.core.tui.minput.minput import MenuInput, minput
+import math
+import re
+from typing import Optional, Tuple
+
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from typing import Optional, Tuple
 
-import math
-import re
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class WidgetTimeCalc(Widget):

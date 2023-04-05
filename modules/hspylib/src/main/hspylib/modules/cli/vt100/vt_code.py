@@ -12,13 +12,13 @@
 
    Copyright 2022, HSPyLib team
 """
-from enum import auto
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from typing import Callable, Optional
-
 import os
 import re
+from enum import auto
+from typing import Callable, Optional
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 class VtCode(Enumeration):
@@ -66,7 +66,7 @@ class VtCode(Enumeration):
 
     @staticmethod
     def _vt100_fnc(command: str) -> Optional[Callable]:
-        """TODO"""
+        """Return the corresponding VT100 function specified by command."""
         fnc = None
         match command:
             case "MOD":
@@ -85,14 +85,13 @@ class VtCode(Enumeration):
 
     @classmethod
     def decode(cls, input_string: str) -> str:
-        """Decode the string into a VT_CODE enum"""
+        """Decode the string into a VT_CODE enum."""
         commands = re.findall(r"%([a-zA-Z0-9]+)(\([0-9]+(;[0-9]+)*\))?%", input_string)
         for cmd in commands:
             if (mnemonic := cmd[0]) in VtCode.names():
-                args = cmd[1][1:-1] if cmd[1] else ""
-                if args:  # Command has args, so, we need to invoke the vt100 function
-                    fnc = VtCode.value_of(mnemonic).__call__
-                    if fnc:
+                args = cmd[1][1:-1] if cmd[1] else None
+                if args:  # If has args we need to invoke the vt100 function
+                    if fnc := VtCode.value_of(mnemonic).__call__:
                         input_string = input_string \
                             .replace(f"%{mnemonic + cmd[1]}%", fnc(args) if fnc else "")
                 else:

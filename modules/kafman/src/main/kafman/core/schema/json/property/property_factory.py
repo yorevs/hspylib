@@ -14,8 +14,11 @@
 """
 
 from abc import ABC
+from typing import List, Tuple
+
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
+
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.json.property.array_property import ArrayProperty
 from kafman.core.schema.json.property.enum_property import EnumProperty
@@ -23,7 +26,6 @@ from kafman.core.schema.json.property.object_property import ObjectProperty
 from kafman.core.schema.json.property.primitive_property import PrimitiveProperty
 from kafman.core.schema.json.property.property import Property
 from kafman.core.schema.schema_field import SchemaField
-from typing import List, Tuple
 
 
 class PropertyFactory(ABC):

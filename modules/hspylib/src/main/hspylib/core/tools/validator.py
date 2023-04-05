@@ -13,12 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
+import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from hspylib.core.zoned_datetime import DATETIME_FORMAT
 from typing import Tuple, Type
 
-import re
+from hspylib.core.zoned_datetime import DATETIME_FORMAT
 
 
 class Validator(ABC):

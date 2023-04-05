@@ -12,9 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Optional, Set
+
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
-from typing import Optional, Set
+
 from vault.domain.vault_entry import VaultEntry
 
 

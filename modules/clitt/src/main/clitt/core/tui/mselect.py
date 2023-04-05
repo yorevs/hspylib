@@ -13,13 +13,15 @@
    Copyright 2022, HSPyLib team
 """
 
-from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.tui.tui_component import TUIComponent
 from functools import cached_property
+from typing import List, Optional, TypeVar
+
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, screen_size
-from typing import List, Optional, TypeVar
+
+from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.tui.tui_component import TUIComponent
 
 T = TypeVar("T")
 

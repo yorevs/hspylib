@@ -12,21 +12,38 @@
 
    Copyright 2022, HSPyLib team
 """
+from hspylib.core.tools.commons import str_to_bool
 
-from typing import Tuple
+from cfman.exception.exceptions import CFInvalidEndpoint
 
 
 class CFEndpoint:
     """Represent a cf API endpoint entry.
     """
 
-    def __init__(self, attrs: Tuple[str]):
-        self.alias = attrs[0]
-        self.host = attrs[1]
-        self.protected = attrs[2]
+    def __init__(self, *attrs: str):
+        if len(attrs) != 3:
+            raise CFInvalidEndpoint(
+                f"Invalid endpoint provided: {str(attrs)}\n"
+                f"Expected format is: <alias,host,protected[true/false]>")
+        self._alias = attrs[0]
+        self._host = attrs[1]
+        self._protected = str_to_bool(attrs[2])
 
     def __str__(self) -> str:
         return f"{self.alias}  {self.host}"
 
     def __repr__(self):
         return str(self)
+
+    @property
+    def alias(self) -> str:
+        return self._alias
+
+    @property
+    def host(self) -> str:
+        return self._host
+
+    @property
+    def protected(self) -> bool:
+        return self._protected

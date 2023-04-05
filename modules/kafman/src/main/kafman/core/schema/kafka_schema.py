@@ -12,9 +12,15 @@
 
    Copyright 2022, HSPyLib team
 """
+import json
+import logging as log
 from abc import ABC, abstractmethod
-from avro.schema import SchemaParseException
 from collections import defaultdict
+from json.decoder import JSONDecodeError
+from typing import List, Tuple
+from uuid import uuid4
+
+from avro.schema import SchemaParseException
 from confluent_kafka.schema_registry import Schema, SchemaRegistryClient
 from confluent_kafka.serialization import SerializationContext
 from hspylib.core.enums.charset import Charset
@@ -24,18 +30,13 @@ from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.text_tools import strip_extra_spaces, strip_linebreaks
 from hspylib.modules.fetch.uri_builder import UriBuilder
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from json.decoder import JSONDecodeError
+from PyQt5.QtWidgets import QLabel
+
 from kafman.core.exception.exceptions import InvalidSchemaError
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 from kafman.core.schema.widget_utils import INPUT_WIDGET
 from kafman.views.promotions.form_pane import FormPane
-from PyQt5.QtWidgets import QLabel
-from typing import List, Tuple
-from uuid import uuid4
-
-import json
-import logging as log
 
 
 class KafkaSchema(ABC):

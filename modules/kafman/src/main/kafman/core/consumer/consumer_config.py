@@ -14,7 +14,7 @@
 """
 
 from abc import ABC
-from typing import List, Any, Dict
+from typing import Any, Dict, List
 
 
 class ConsumerConfig(ABC):

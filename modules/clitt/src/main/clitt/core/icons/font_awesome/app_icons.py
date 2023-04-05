@@ -12,8 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.core.icons.font_awesome.awesome import Awesome
 from enum import auto
+
+from clitt.core.icons.font_awesome.awesome import Awesome
 
 
 class AppIcons(Awesome):

@@ -17,9 +17,10 @@ from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
-from datasource.identity import Identity
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import syserr
+
+from datasource.identity import Identity
 from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService

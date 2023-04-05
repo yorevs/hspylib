@@ -14,8 +14,9 @@
 """
 from argparse import ArgumentParser
 from functools import partial
-from hspylib.modules.application.parser_action import ParserAction
 from typing import Any
+
+from hspylib.modules.application.parser_action import ParserAction
 
 
 class OptionsBuilder:

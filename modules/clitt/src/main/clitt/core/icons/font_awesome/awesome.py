@@ -13,12 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import sysout
-from typing import Union
-
 import re
 import struct
+from typing import Union
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.commons import sysout
 
 
 class Awesome(Enumeration):

@@ -26,7 +26,6 @@ from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.modules.cache.ttl_cache import TTLCache
-from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import clear_screen
 from hspylib.modules.fetch.fetch import head
 from retry import retry
@@ -42,7 +41,11 @@ class CFManager:
     """Responsible for the CloudFoundry application functionalities.
     """
 
-    CF_ACTIONS = ["Logs", "Restart", "Restage", "Status", "Start", "Stop", "Target", "Blue-Green-Check"]
+    CFMAN_ACTIONS = [
+        "Information", "Target", "Logs",
+        "Start", "Stop", "Restart", "Restage",
+        "Status", "Blue-Green-Check"
+    ]
 
     @staticmethod
     def _abort():
@@ -55,26 +58,28 @@ class CFManager:
         """Whether the action allows multiple application selection or not.
         :param action the action to check
         """
-        return action.lower() not in ["logs", "target"]
+        return action.lower() in [
+            "start", "stop", "restart", "restage"
+        ]
 
     @staticmethod
     def _is_callable(action: str) -> bool:
         """Whether the provided action is callable or not.
         :param action the action to check
         """
-        return action.lower() not in ["status", "target", 'blue-green-check']
+        return action.lower() in [
+            "logs", "start", "stop", "restart", "restage"
+        ]
 
     @staticmethod
     def required_states(action: str) -> str | Tuple[str, str]:
         """Return the required application statue of the provided action
         :param action the action to check
         """
-        match action.lower():
-            case "logs":
-                return "started"
+        match action:
             case "start":
                 return "stopped"
-            case "stop":
+            case "logs" | "stop" | "restart":
                 return "started"
             case _:
                 return "started", "stopped"
@@ -101,6 +106,20 @@ class CFManager:
         self._cf_apps = None
         self._done = False
 
+    def __str__(self) -> str:
+        return (
+            f"%EOL%%GREEN%"
+            f"{'-=' * 40} %EOL%"
+            f"{self._api} %EOL%"
+            f"{'--' * 40} %EOL%"
+            f"{'USER:':>6} {self._username}%EOL%"
+            f"{'ORG:':>6} {self._org}%EOL%"
+            f"{'SPACE:':>6} {self._space}%EOL%"
+            f"{'-=' * 40}")
+
+    def __repr__(self) -> str:
+        return str(self)
+
     @property
     def apps(self) -> List[CFApplication]:
         return self._get_apps() or []
@@ -109,15 +128,15 @@ class CFManager:
         """Run the main cf manager application flow.
         """
         sysout("%BLUE%Checking CloudFoundry authorization...")
-        if self._cf.connect():
+        if self._cf.is_logged():
             self._api = self._cf.api()
             target = self._cf.target()
-            self._username, self._org, self._space = target['user'], target['org'], target['space']
+            self._username, self._org, self._space = target.user, target.org, target.space
             sysout("%YELLOW%Already authorized to CloudFoundry!")
         else:
             authorized = False
             sysout("%YELLOW%Unauthorized to CloudFoundry, login required...")
-            sleep(1)
+            sleep(2)
             while not authorized:
                 if not self._api:
                     self._select_endpoint()
@@ -130,15 +149,7 @@ class CFManager:
                     syserr("Not authorized !")
                     self._abort()
             sysout("%GREEN%Successfully authorized!")
-        sysout(
-            f"%WHITE%Targeted at: %EOL%%GREEN%"
-            f"{'-=' * 40} %EOL%"
-            f"{self._api} %EOL%"
-            f"{'--' * 40} %EOL%"
-            f"{'USER:':>6} {self._username} %EOL%"
-            f"{'ORG:':>6} {self._org} %EOL%"
-            f"{'SPACE:':>6} {self._space} %EOL%"
-            f"{'-=' * 40}")
+        sysout(f"%HOM%%ED0%%WHITE%--- Target information ---%EOL%{self}")
         TUIMenuUtils.wait_keystroke()
         self._loop_actions()
 
@@ -148,7 +159,7 @@ class CFManager:
         """
         try:
             with open(self._cf_endpoints_file, "r", encoding="utf-8") as f_hosts:
-                endpoints = list(map(lambda l: CFEndpoint(l.split(",")), f_hosts.readlines()))
+                endpoints = list(map(lambda l: CFEndpoint(*l.strip().split(",")), f_hosts.readlines()))
                 if len(endpoints) > 0:
                     selected = mselect(endpoints, title="Please select an endpoint")
                     if not selected:
@@ -288,43 +299,47 @@ class CFManager:
     def _target(self) -> None:
         """Attempt to target to a PCF org-space.
         """
-        sysout(f"%BLUE%Targeting -> ORG=[{self._org}]  SPACE=[{self._space}]...")
-        if not self._cf.target(org=self._org, space=self._space):
+        if not self._cf.target(user=self._username, org=self._org, space=self._space):
             raise CFExecutionError(f"Unable to target ORG: {self._org} => {self._cf.last_output}")
+        sleep(1)
 
     def _loop_actions(self) -> None:
         """Wait for the user interactions.
         """
-        while not self._done:
-            if self._org and self._space and not self._cf.is_targeted():
-                self._target()
-            else:
-                self._set_org()
-                self._set_space()
-
-            if not self._org or not self._space or not self._cf.is_targeted():
-                raise CFExecutionError(
-                    f"Unable to target ORG={self._org}  SPACE={self._space} => {self._cf.last_output}"
-                )
-
-            if not (action := mselect(CFManager.CF_ACTIONS, "Please select an action to perform")):
+        while self._assert_target():
+            if not (action := mselect(CFManager.CFMAN_ACTIONS, "Please select an action to perform")):
                 self._done = True
+                return
+            if self._is_callable(action):
+                self._perform_callable(action)
             else:
-                if self._is_callable(action):
-                    self._perform_callable(action)
-                    continue
-                if action.lower() == "status":
-                    self._display_app_status()
-                elif action.lower() == "target":
-                    self._space = self._org = self._cf_apps = None
-                    self._cf._targeted = {"org": None, "space": None, "targeted": False}
-                    continue
-                elif action.lower() == "blue-green-check":
-                    self._blue_green_check()
+                match action.lower():
+                    case "status":
+                        self._display_app_status()
+                    case "target":
+                        self._space = self._org = self._cf_apps = None
+                        self._cf.clear_target()
+                        continue
+                    case "blue-green-check":
+                        self._blue_green_check()
+                    case "information":
+                        sysout(f"%HOM%%ED0%%WHITE%--- Target information ---%EOL%{self}")
 
                 TUIMenuUtils.wait_keystroke()
 
-    # pylint: disable=consider-using-f-string
+    def _assert_target(self) -> bool:
+        if not self._org:
+            self._set_org()
+        if not self._space:
+            self._set_space()
+        if not self._cf.is_targeted():
+            self._target()
+        if not self._org or not self._space or not self._cf.is_targeted():
+            raise CFExecutionError(
+                f"Unable to target ORG={self._org}  SPACE={self._space} => {self._cf.last_output}"
+            )
+        return not self._done
+
     def _display_app_status(self) -> None:
         """Display all PCF space-application statuses.
         """
@@ -332,20 +347,15 @@ class CFManager:
 
         if len(apps) > 0:
             clear_screen()
-            sysout(f"%BLUE%Listing all '{self._org}::{self._space}' applications ...%EOL%")
             # fmt: off
             sysout(
-                "%WHITE%{}  {}  {}  {}  {}  {}".format(
-                    "Name".ljust(CFApplication.max_name_length),
-                    "State".ljust(7),
-                    "Instances".ljust(10),
-                    "Mem".ljust(4),
-                    "Disk".ljust(4),
-                    "URLs",
-                )
-            )
+                f"%BLUE%Listing '{self._org}::{self._space}' applications ...%EOL%%WHITE%"
+                f"{'-=' * 60 + '%EOL%'}"
+                f"{'Name':{CFApplication.max_name_length + 2}}"
+                f"{'State':<9}{'Instances':<12}{'Mem':<6}{'Disk':<6}Routes%EOL%")
             # fmt: on
             list(map(CFApplication.print_status, apps))
+            sysout('-=' * 60 + '%EOL%')
 
     def _blue_green_check(self) -> None:
         """Display all PCF space-application blue/green check.
@@ -353,19 +363,20 @@ class CFManager:
         if len(self.apps) > 0:
             clear_screen()
             sysout(f"%BLUE%Checking blue/green deployments ...%EOL%")
-            CFBlueGreenChecker.check(self.apps)
+            CFBlueGreenChecker.check(self._org, self._space, self.apps)
 
     def _perform_callable(self, action: str) -> None:
         """Wrapper of the _perform method.
         :param action the action to perform.
         """
-        if self._allow_multiple(action.lower()):
-            apps = self._choose_apps(self.required_states(action))
+        act = action.lower()
+        if self._allow_multiple(act):
+            apps = self._choose_apps(self.required_states(act))
         else:
-            app = self._select_app(self.required_states(action))
+            app = self._select_app(self.required_states(act))
             apps = [app] if app else None
         if apps:
-            perform = partial(self._perform, action=action, org=self._org, space=self._space)
+            perform = partial(self._perform, action=act, org=self._org, space=self._space)
             list(map(lambda a: perform(app=a.name), apps))
 
     def _perform(self, action: str, **kwargs) -> None:
@@ -376,7 +387,7 @@ class CFManager:
         :param kwargs arbitrary PCF action arguments.
         :param action the action to perform.
         """
-        sysout(f"%BLUE%Performing {action.lower()} {str(kwargs)}...")
-        action_method = getattr(self._cf, action.lower())
+        sysout(f"%BLUE%Performing {action} {str(kwargs)}...")
+        action_method = getattr(self._cf, action)
         check_state(callable(action_method))
         sysout(action_method(**kwargs))

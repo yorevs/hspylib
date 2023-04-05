@@ -12,17 +12,18 @@
 
    Copyright 2022, HSPyLib team
 """
+import sys
+
 from clitt.core.tui.menu.tui_menu_factory import TUIMenuFactory
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
+
 from phonebook.__classpath__ import _Classpath
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
-
-import sys
 
 
 class Main(TUIApplication):

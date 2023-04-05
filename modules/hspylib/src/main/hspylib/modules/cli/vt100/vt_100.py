@@ -12,11 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
-from abc import ABC
-from hspylib.core.preconditions import check_argument
-
 import os
 import re
+from abc import ABC
+
+from hspylib.core.preconditions import check_argument
 
 
 class Vt100(ABC):
@@ -107,7 +107,9 @@ class Vt100(ABC):
         """TODO"""
         if not cup_seq:
             return Vt100.sequence("H")
-        check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), f"Invalid cursor position sequence: {cup_seq}")
+        check_argument(
+            bool(re.match(r"[0-9]*;[0-9]*", cup_seq)),
+            f"Invalid cursor position sequence: {cup_seq}")
         return Vt100.sequence(f"{cup_seq}H")
 
     # Esc[<n><A/B/C/D>

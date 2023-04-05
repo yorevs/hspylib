@@ -12,13 +12,6 @@
 
    Copyright 2022, HSPyLib team
 """
-from abc import ABC
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import syserr, sysout
-from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import Optional, Tuple
-
 import logging as log
 import os
 import platform
@@ -26,6 +19,13 @@ import select
 import shlex
 import signal
 import subprocess
+from abc import ABC
+from typing import Optional, Tuple
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.cli.keyboard import Keyboard
 
 
 class Terminal(ABC):

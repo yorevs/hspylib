@@ -12,9 +12,13 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.addons.widman.widget import Widget
-from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+import argparse
+import os
+import re
+import sys
+from textwrap import dedent
+from typing import List
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.zoned_datetime import now
@@ -22,13 +26,10 @@ from hspylib.modules.application.argparse.argument_parser import HSArgumentParse
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.terminal import Terminal
-from textwrap import dedent
-from typing import List
 
-import argparse
-import os
-import re
-import sys
+from clitt.addons.widman.widget import Widget
+from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class WidgetPunch(Widget):

@@ -13,10 +13,10 @@
    Copyright 2022, HSPyLib team
 """
 
-from pyparsing import unicode
+import re
 from typing import Any
 
-import re
+from pyparsing import unicode
 
 
 class JsonSearch:

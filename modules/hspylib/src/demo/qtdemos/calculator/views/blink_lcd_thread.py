@@ -13,10 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.config.app_config import AppConfigs
-from PyQt5.QtWidgets import QLCDNumber
 from threading import Thread
 from time import sleep
+
+from PyQt5.QtWidgets import QLCDNumber
+
+from hspylib.core.config.app_config import AppConfigs
 
 
 class BlinkLcdThread(Thread):

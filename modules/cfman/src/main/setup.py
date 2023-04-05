@@ -15,6 +15,7 @@
 """
 
 import pathlib
+
 import setuptools
 
 HERE = pathlib.Path(__file__).parent

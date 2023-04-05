@@ -12,7 +12,16 @@
 
    Copyright 2022, HSPyLib team
 """
+import argparse
+import atexit
+import logging as log
+import os
+import sys
+import traceback
 from abc import abstractmethod
+from textwrap import dedent
+from typing import Any, Optional, Union
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
@@ -27,15 +36,6 @@ from hspylib.modules.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.application.exit_hooks import ExitHooks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
-from typing import Any, Optional, Union
-
-import argparse
-import atexit
-import logging as log
-import os
-import sys
-import traceback
 
 
 class Application(metaclass=AbstractSingleton):

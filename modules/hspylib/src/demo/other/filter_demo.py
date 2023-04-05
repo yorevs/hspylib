@@ -13,10 +13,10 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.collection_filter import CollectionFilter, FilterCondition
+import collections
 from typing import List
 
-import collections
+from hspylib.core.collection_filter import CollectionFilter, FilterCondition
 
 
 class Record:

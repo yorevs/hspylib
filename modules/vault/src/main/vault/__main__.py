@@ -13,21 +13,22 @@
    Copyright 2022, HSPyLib team
 """
 
+import logging as log
+import os
+import sys
+from textwrap import dedent
+
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import hook_exit_signals, syserr
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
+
 from vault.__classpath__ import _Classpath
 from vault.core.vault import Vault
 from vault.core.vault_config import VaultConfig
 from vault.exception.exceptions import VaultOpenError
-
-import logging as log
-import os
-import sys
 
 
 class Main(TUIApplication):

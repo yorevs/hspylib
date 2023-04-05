@@ -13,19 +13,21 @@
    Copyright 2022, HSPyLib team
 """
 
-from clitt.core.icons.font_awesome.form_icons import FormIcons
 from collections import defaultdict
+from typing import Optional
+
+from clitt.core.icons.font_awesome.form_icons import FormIcons
 from hspylib.core.preconditions import check_argument, check_not_none
 from hspylib.modules.qt.promotions.hcombobox import HComboBox
 from hspylib.modules.qt.promotions.hframe import HFrame
 from hspylib.modules.qt.promotions.hlistwidget import HListWidget
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from kafman.core.schema.widget_utils import INPUT_VALUE, INPUT_WIDGET, WidgetUtils
-from kafman.views.promotions.form_area import FormArea
 from PyQt5.QtWidgets import (
     QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QVBoxLayout, QWidget,
 )
-from typing import Optional
+
+from kafman.core.schema.widget_utils import INPUT_VALUE, INPUT_WIDGET, WidgetUtils
+from kafman.views.promotions.form_area import FormArea
 
 
 class FormPane(HFrame):

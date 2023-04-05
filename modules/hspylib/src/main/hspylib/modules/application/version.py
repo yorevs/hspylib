@@ -12,14 +12,14 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument
-from pathlib import Path
-from typing import Union
-
 import logging as log
 import os
 import re
+from pathlib import Path
+from typing import Union
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument
 
 
 class Version:
