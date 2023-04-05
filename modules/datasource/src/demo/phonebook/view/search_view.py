@@ -13,17 +13,19 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import List
+
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
 from clitt.core.tui.table.table_renderer import TableRenderer
-from datasource.crud_entity import CrudEntity
 from hspylib.core.namespace import Namespace
+
+from datasource.crud_entity import CrudEntity
 from phonebook.entity.company import Company
 from phonebook.entity.person import Person
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
-from typing import List
 
 
 class SearchView(TUIMenuView):

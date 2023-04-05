@@ -13,12 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput import MenuInput, minput
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
+
+from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class TUIMenuUtils:

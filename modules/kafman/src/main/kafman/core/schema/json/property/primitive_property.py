@@ -13,9 +13,10 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import Any
+
 from kafman.core.schema.json.json_type import JsonType
 from kafman.core.schema.schema_field import SchemaField
-from typing import Any
 
 
 class PrimitiveProperty(SchemaField):

@@ -12,9 +12,10 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import Callable, List, Optional
+
 from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
-from typing import Callable, List, Optional
 
 
 class DashboardBuilder:

@@ -12,17 +12,17 @@
 
    Copyright 2022, HSPyLib team
 """
-from hspylib.core.exception.exceptions import NotATerminalError
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from typing import Any, Optional, Tuple
-
 import atexit
 import os
 import re
 import sys
 import termios
 import tty
+from typing import Any, Optional, Tuple
+
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 def screen_size() -> tuple[int, ...]:
@@ -96,9 +96,10 @@ def save_cursor() -> None:
     sysout(Vt100.save_cursor(), end="")
 
 
-def clear_screen(mode: int = 2) -> None:
+def clear_screen() -> None:
     """Clear terminal"""
-    sysout(f"%CUP(0;0)%%ED{mode}%", end="")
+    sysout("%ED2%", end="")
+    sysout("%HOM%", end="")
 
 
 def restore_cursor() -> None:
@@ -116,21 +117,29 @@ def restore_terminal() -> None:
     set_auto_wrap()
     set_show_cursor()
     set_enable_echo()
-    sysout("%MOD(0)%")
 
 
 def exit_app(exit_code: int = None, frame: Any = None, exit_msg: str = "") -> None:
     """Exit the application. Commonly called by hooked signals"""
-    sysout(f"{exit_msg if exit_msg else ''}", end="")
-    sysout("%MOD(0)%")
     restore_terminal()
+    sysout(f"%MOD(0)%" f"{exit_msg if exit_msg else ''}")
     sys.exit(exit_code)
 
 
-def prepare_render():
+def prepare_render(auto_wrap: bool = False, show_cursor: bool = False):
     """Prepare the terminal for TUI renderization"""
     atexit.register(restore_terminal)
-    set_auto_wrap(False)
-    set_show_cursor(False)
+    set_auto_wrap(auto_wrap)
+    set_show_cursor(show_cursor)
     clear_screen()
     save_cursor()
+
+
+if __name__ == '__main__':
+    print('1 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
+    print('2 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
+    print('3 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
+    print('4 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
+    print('5 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
+    clear_screen()
+    exit_app(exit_msg='Done')

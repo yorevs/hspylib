@@ -26,3 +26,7 @@ class CFExecutionError(HSBaseException):
 
 class CFAuthenticationError(HSBaseException):
     """Raised when failed to authenticate to CloudFoundry"""
+
+
+class CFInvalidEndpoint(HSBaseException):
+    """Raised when an invalid endpoint is provided"""

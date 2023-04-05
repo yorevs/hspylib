@@ -12,6 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import List
+
+import avro.schema as schema_parser
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from fastavro.validation import validate as validate_schema
@@ -19,6 +22,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
 from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
+
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.schema.avro.field.field_factory import FieldFactory
@@ -27,9 +31,6 @@ from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 from kafman.views.promotions.form_pane import FormPane
-from typing import List
-
-import avro.schema as schema_parser
 
 
 class AvroSchema(KafkaSchema):

@@ -14,8 +14,10 @@
 """
 
 from abc import abstractmethod
-from hspylib.modules.qt.views.qt_view import QtView
+
 from PyQt5 import uic
+
+from hspylib.modules.qt.views.qt_view import QtView
 
 
 class MainView(QtView):

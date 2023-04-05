@@ -13,13 +13,14 @@
    Copyright 2022, HSPyLib team
 """
 
-from datasource.identity import Identity
-from hspylib.core.namespace import Namespace
-from hspylib.core.preconditions import check_argument
+import json
 from typing import Any, Dict, Iterable
 from uuid import UUID
 
-import json
+from hspylib.core.namespace import Namespace
+from hspylib.core.preconditions import check_argument
+
+from datasource.identity import Identity
 
 
 class CrudEntity(Namespace):

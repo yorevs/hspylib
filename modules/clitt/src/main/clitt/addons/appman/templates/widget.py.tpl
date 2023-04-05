@@ -12,14 +12,16 @@
 
    Copyright 2022, HSPyLib team
 """
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 from concurrent import futures
+from time import sleep
+from typing import List
+
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.keyboard import Keyboard
-from time import sleep
-from typing import List
+
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class Widget_WIDGET_NAME_(Widget):

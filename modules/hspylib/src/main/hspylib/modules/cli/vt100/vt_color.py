@@ -13,6 +13,7 @@
    Copyright 2022, HSPyLib team
 """
 from enum import auto
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 

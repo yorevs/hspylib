@@ -13,13 +13,13 @@
    Copyright 2022, HSPyLib team
 """
 
-from hspylib.core.config.properties import Properties
-from hspylib.core.tools.commons import get_path
-
 import logging as log
 import os
 import sys
 import unittest
+
+from hspylib.core.config.properties import Properties
+from hspylib.core.tools.commons import get_path
 
 TEST_DIR = get_path(__file__)
 

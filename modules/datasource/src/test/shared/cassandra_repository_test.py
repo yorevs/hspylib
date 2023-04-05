@@ -12,10 +12,12 @@
 
    Copyright 2022, HSPyLib team
 """
+from typing import NamedTuple
+
 from datasource.cassandra.cassandra_repository import CassandraRepository
+
 from datasource.identity import Identity
 from shared.entity_test import EntityTest
-from typing import NamedTuple
 
 
 class CassandraRepositoryTest(CassandraRepository):

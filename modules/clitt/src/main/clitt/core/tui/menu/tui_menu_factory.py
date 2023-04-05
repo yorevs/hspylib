@@ -13,12 +13,14 @@
    Copyright 2022, HSPyLib team
 """
 
+from typing import List, TypeVar, Union
+
+from hspylib.core.preconditions import check_not_none
+
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_action import ON_TRIGGER_CB, TUIMenuAction
 from clitt.core.tui.menu.tui_menu_item import TUIMenuItem
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
-from hspylib.core.preconditions import check_not_none
-from typing import List, TypeVar, Union
 
 AnyBuilder = TypeVar(
     'AnyBuilder',
