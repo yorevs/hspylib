@@ -14,10 +14,10 @@
 """
 import os
 import re
-from enum import auto
 from typing import Callable, Optional
 
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.preconditions import check_state
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
@@ -55,12 +55,12 @@ class VtCode(Enumeration):
     # For all commands that take arguments, we need to add to this map, so we can call it.
     # The following entry values must defined as auto(), so they can be invoked as Callable
 
-    MOD = auto()  # ^[[<m1;m2;m3>m  -> Set terminal modes
-    CUP = auto()  # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
-    CUU = auto()  # ^[[<n>A         -> Move cursor up n lines
-    CUD = auto()  # ^[[<n>B         -> Move cursor down n lines
-    CUF = auto()  # ^[[<n>C         -> Move cursor right n lines
-    CUB = auto()  # ^[[<n>D         -> Move cursor left n lines
+    MOD = "MOD"  # ^[[<m1;m2;m3>m  -> Set terminal modes
+    CUP = "CUP"  # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
+    CUU = "CUU"  # ^[[<n>A         -> Move cursor up n lines
+    CUD = "CUD"  # ^[[<n>B         -> Move cursor down n lines
+    CUF = "CUF"  # ^[[<n>C         -> Move cursor right n lines
+    CUB = "CUB"  # ^[[<n>D         -> Move cursor left n lines
 
     # fmt: on
 
@@ -101,7 +101,9 @@ class VtCode(Enumeration):
         return input_string
 
     def __call__(self, *args, **kwargs) -> str:
-        return VtCode._vt100_fnc(self.name)(args[0])
+        fn = VtCode._vt100_fnc(self.name)
+        check_state(fn and callable(fn), f"Could not find a proper function for {self.name}")
+        return fn(*args)
 
     def __str__(self) -> str:
         return str(self.value)

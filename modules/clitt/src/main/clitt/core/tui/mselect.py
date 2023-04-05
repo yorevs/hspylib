@@ -73,6 +73,8 @@ class MenuSelect(TUIComponent):
             # Navigation input
             keypress = self._handle_keypress()
 
+        sysout("%MOD(0)%")
+
         return self.items[self.sel_index] if keypress == Keyboard.VK_ENTER else None
 
     def _render(self) -> None:
@@ -107,7 +109,7 @@ class MenuSelect(TUIComponent):
         return (
             f"%EOL%{self.prefs.navbar_color.placeholder}"
             f"[Enter] Select  [{self.NAV_ICONS}] "
-            f"Navigate  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%%EOL%%EOL%"
+            f"Navigate  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%"
         )
 
     def _handle_keypress(self) -> Keyboard:
