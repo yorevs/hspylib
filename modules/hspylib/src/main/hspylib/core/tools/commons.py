@@ -113,8 +113,7 @@ def sysout(*string: str, end: str = os.linesep) -> None:
     """
 
     def sysout_format(text: str) -> str:
-        msg = VtColor.colorize(VtCode.decode(f"{text}"))
-        return msg
+        return VtColor.colorize(VtCode.decode(text))
 
     list(map_many(string, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
     print("", file=sys.stdout, flush=True, end=end)
