@@ -23,7 +23,7 @@ from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument
+from hspylib.core.preconditions import check_argument, check_not_none
 from hspylib.modules.cli.vt100.vt_code import VtCode
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
@@ -106,31 +106,31 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def sysout(*string: str, end: str = os.linesep) -> None:
+def sysout(*strings: str, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
-    :param string: values to be printed to sys.stdout
+    :param strings: values to be printed to sys.stdout
     :param end: string appended after the last value, default a newline
     """
+    if strings:
+        def sysout_format(text: str) -> str:
+            return VtColor.colorize(
+                VtCode.decode(text or ''))
+        list(map_many(strings, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
+        print("", file=sys.stdout, flush=True, end=end)
 
-    def sysout_format(text: str) -> str:
-        return VtColor.colorize(VtCode.decode(text))
 
-    list(map_many(string, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
-    print("", file=sys.stdout, flush=True, end=end)
-
-
-def syserr(*string: Any, end: str = os.linesep) -> None:
+def syserr(*strings: Any, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
-    :param string: values to be printed to sys.stderr
+    :param strings: values to be printed to sys.stderr
     :param end: string appended after the last value, default a newline
     """
-
-    def syserr_format(text: Any) -> str:
-        msg = VtColor.colorize(VtCode.decode(f"%RED%{VtColor.strip_colors(str(text))}%NC%"))
-        return msg
-
-    list(map_many(string, syserr_format, lambda s: print(f"{s} ", file=sys.stderr, flush=True, end="")))
-    print("", file=sys.stdout, flush=True, end=end)
+    if strings:
+        def syserr_format(text: Any) -> str:
+            plain_text = VtColor.strip_colors(str(text or ''))
+            return VtColor.colorize(
+                VtCode.decode(f"%RED%{plain_text}%NC%"))
+        list(map_many(strings, syserr_format, lambda s: print(s, file=sys.stderr, flush=True, end="")))
+        print("", file=sys.stdout, flush=True, end=end)
 
 
 def hook_exit_signals(handler: Callable) -> None:
@@ -166,14 +166,18 @@ def str_to_bool(string: str, true_values: Set[str] = None) -> bool:
     return string is not None and string.lower() in (true_values or TRUE_VALUES)
 
 
-def map_many(iterable: Iterable, function: Callable, *functions) -> map | None:
+def map_many(iterable: Iterable, function: Callable, *functions) -> Optional[map]:
     """Maps multiple functions to the same iterable
     :param iterable The iterable to map
     :param function The first function to be mapped
     :param functions the other functions to be mapped
     """
+    check_not_none((iterable, function))
     if functions:
+        # Recursively map all functions
         return map_many(map(function, iterable), *functions)
+
+    # Map the single function
     return map(function, iterable)
 
 
