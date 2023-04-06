@@ -17,7 +17,7 @@ import re
 from typing import Callable, Optional
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.preconditions import check_state
+from hspylib.core.preconditions import check_not_none, check_state
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
@@ -86,6 +86,7 @@ class VtCode(Enumeration):
     @classmethod
     def decode(cls, input_string: str) -> str:
         """Decode the string into a VT_CODE enum."""
+        check_not_none(input_string)
         commands = re.findall(r"%([a-zA-Z0-9]+)(\([0-9]+(;[0-9]+)*\))?%", input_string)
         for cmd in commands:
             if (mnemonic := cmd[0]) in VtCode.names():

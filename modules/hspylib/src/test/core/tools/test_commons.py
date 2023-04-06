@@ -15,11 +15,11 @@
 import sys
 import unittest
 
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import str_to_bool, syserr, sysout
 
 
 class TestCommons(unittest.TestCase):
-    def test_should_return_proper_bool_value(self):
+    def test_should_return_proper_bool_value(self) -> None:
         self.assertFalse(str_to_bool(""))
         self.assertFalse(str_to_bool("0"))
         self.assertFalse(str_to_bool("off"))
@@ -33,6 +33,15 @@ class TestCommons(unittest.TestCase):
         self.assertFalse(str_to_bool("good"))
         self.assertTrue(str_to_bool("good", {"good"}))
         self.assertFalse(str_to_bool("bad", {"good"}))
+
+    def test_shouldNotFailIfReceivedNoneValueToSysoutOrSyserr(self) -> None:
+        try:
+            sysout(None)
+            syserr(None)
+            sysout('')
+            syserr('')
+        except TypeError as err:
+            self.fail(f"sysout/syserr raised TypeError unexpectedly => {err}")
 
 
 if __name__ == "__main__":
