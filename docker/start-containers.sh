@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1091
 source "docker-tools-inc.sh"
 
 pushd 'composes/' &> /dev/null || exit 1

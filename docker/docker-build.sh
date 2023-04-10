@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1091
 source "docker-tools-inc.sh"
 
 USAGE="
-    Usage: build.bash <container-name>
+    Usage: $0 <container-name>
 
       Arguments
         - container-name  : The docker container directory name. Must contain a Dockerfile inside.
