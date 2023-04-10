@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1091
 source "docker-tools-inc.sh"
 
 RUNNING_CONTAINERS=$(docker ps --format '{{.Names}}' | tr '\n' ' ')

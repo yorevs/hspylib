@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # VT-100 Terminal colors
 NC=${NC:-'\033[0;0;0m'}
