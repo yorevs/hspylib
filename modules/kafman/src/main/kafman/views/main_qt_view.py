@@ -29,6 +29,10 @@ from typing import List, Optional, Tuple, Union
 from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from confluent_kafka.cimpl import Consumer
+from hqt.promotions.hstacked_widget import HStackedWidget
+from hqt.promotions.htablemodel import HTableModel
+from hqt.stream_capturer import StreamCapturer
+from hqt.views.qt_view import QtView
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
 from hspylib.core.preconditions import check_state
@@ -36,10 +40,6 @@ from hspylib.core.tools.commons import dirname
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.core.zoned_datetime import now, now_ms
 from hspylib.modules.fetch.fetch import is_reachable
-from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
-from hspylib.modules.qt.promotions.htablemodel import HTableModel
-from hspylib.modules.qt.stream_capturer import StreamCapturer
-from hspylib.modules.qt.views.qt_view import QtView
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QFileDialog, QMessageBox

@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import Generic, List, Optional, Set, TypeVar
-
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
+from typing import Generic, List, Optional, Set, TypeVar
 
 from datasource.crud_entity import CrudEntity
 from datasource.crud_repository import CrudRepository

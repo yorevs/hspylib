@@ -10,6 +10,7 @@
 /* Module dependencies */
 
 package: hspylib, version: latest, space: global, mode: gt
+package: hspylib-hqt, version: latest, space: global, mode: gt
 
 /* Application dependencies */
 

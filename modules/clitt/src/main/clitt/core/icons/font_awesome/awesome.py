@@ -15,10 +15,9 @@
 
 import re
 import struct
-from typing import Union
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import sysout
+from typing import Union
 
 
 class Awesome(Enumeration):

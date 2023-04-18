@@ -1,5 +1,5 @@
 from hspylib.core.enums.charset import Charset
-from hspylib.modules.qt.views.qt_view import QtView
+from hqt.views.qt_view import QtView
 
 from %APP_NAME%.__classpath__ import _Classpath
 

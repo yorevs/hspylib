@@ -1,0 +1,68 @@
+plugins {
+  id 'idea'
+  id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
+}
+
+idea {
+  module {
+    settings {
+      rootModuleType = 'PYTHON_MODULE'
+    }
+    sourceDirs += file('src/main')
+    sourceDirs += file('src/demo')
+    testSourceDirs += file('src/test')
+    excludeDirs += file('.idea')
+    excludeDirs += file('.gradle')
+    excludeDirs += file('.vscode')
+    excludeDirs += file('src/main/build')
+    excludeDirs += file('src/main/dist')
+    excludeDirs += file('src/main/hspylib_' + project.name + '.egg-info')
+  }
+}
+
+ext {
+  sourceRoot = "$rootDir/modules/$project.name/src"
+  application = "$sourceRoot/demo/calculator/__main__.py"
+  pythonPath = "$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
+}
+
+apply from: "$rootDir/gradle/dependencies.gradle"
+apply from: "$rootDir/gradle/python.gradle"
+apply from: "$rootDir/gradle/build-info.gradle"
+apply from: "$rootDir/gradle/pypi-publish.gradle"
+apply from: "$rootDir/gradle/docker.gradle"
+apply from: "$rootDir/gradle/oracle.gradle"
+apply from: "$rootDir/gradle/badges.gradle"
+apply from: "$rootDir/gradle/docgen.gradle"
+
+task copyReadme(type: Copy) {
+  group = 'Publish'
+  description = "Copy README into main folder"
+  from(rootDir) {
+    include 'README.md'
+  }
+  into "$sourceRoot/main"
+}
+
+/* Update hspylib version in all subprojects */
+task updateSubprojectsVersion(type: Task) {
+  group = 'Dependencies'
+  description = 'Update hspylib version in all subprojects'
+  doLast {
+    print(sourceRoot)
+    project.file("$rootDir/modules").traverse(type: groovy.io.FileType.DIRECTORIES) { module ->
+      def hspd = new File("${module}/dependencies.hspd")
+      if (hspd.exists()) {
+        ant.replaceregexp(
+          file: "$hspd",
+          match: "hspylib, version: ([0-9]+(.[0-9]+){0,4}),",
+          replace: "hspylib, version: ${app_version},",
+          flags: "g", byline: true
+        )
+      }
+    }
+  }
+}
+
+copyLicense.finalizedBy(copyReadme)
+publish.finalizedBy(updateSubprojectsVersion)

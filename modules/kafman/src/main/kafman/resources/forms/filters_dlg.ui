@@ -225,12 +225,12 @@
     <customwidget>
       <class>HComboBox</class>
       <extends>QComboBox</extends>
-      <header>hspylib.modules.qt.promotions.hcombobox</header>
+      <header>hqt.promotions.hcombobox</header>
     </customwidget>
     <customwidget>
       <class>HListWidget</class>
       <extends>QListWidget</extends>
-      <header>hspylib.modules.qt.promotions.hlistwidget</header>
+      <header>hqt.promotions.hlistwidget</header>
     </customwidget>
   </customwidgets>
   <resources/>

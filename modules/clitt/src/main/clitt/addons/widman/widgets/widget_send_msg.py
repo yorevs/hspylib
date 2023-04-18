@@ -15,15 +15,14 @@
 import os
 import socket
 import threading
-from textwrap import dedent
-from time import sleep
-
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import hook_exit_signals, sysout
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.keyboard import Keyboard
+from textwrap import dedent
+from time import sleep
 
 from clitt.addons.widman.widget import Widget
 from clitt.core.icons.font_awesome.widget_icons import WidgetIcons

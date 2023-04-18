@@ -19,7 +19,5 @@ package: getkey, version: latest, space: user
 package: keyring, version: latest, space: user
 package: pyparsing, version: latest, space: user
 package: pyperclip, version: latest, space: user
-package: PyQt5, version: latest, space: user
-package: PyQt5-stubs, version: latest, space: user
 package: PyYAML, version: latest, space: user
 package: toml, version: latest, space: user

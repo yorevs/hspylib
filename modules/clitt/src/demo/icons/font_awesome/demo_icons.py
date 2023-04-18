@@ -12,10 +12,9 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import TypeVar
-
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import eol
+from typing import TypeVar
 
 from clitt.core.icons.font_awesome.app_icons import AppIcons
 from clitt.core.icons.font_awesome.awesome import Awesome

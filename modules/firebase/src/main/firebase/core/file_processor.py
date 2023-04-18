@@ -17,13 +17,12 @@ import logging as log
 import os
 from abc import ABC
 from fnmatch import fnmatch
-from typing import List
-
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_argument, check_not_none
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.modules.fetch.fetch import get, put
 from requests.exceptions import HTTPError
+from typing import List
 
 from firebase.domain.firebase_dto import FirebaseDto
 

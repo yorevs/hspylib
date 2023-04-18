@@ -14,7 +14,6 @@
 """
 
 import os
-
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.dict_tools import get_or_default_by_key
 from hspylib.modules.cli.vt100.vt_color import VtColor

@@ -14,10 +14,9 @@
 """
 import json
 from abc import abstractmethod
-from typing import Generic, List, Optional, Set, TypeVar
-
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
+from typing import Generic, List, Optional, Set, TypeVar
 
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity

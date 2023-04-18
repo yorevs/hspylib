@@ -17,7 +17,7 @@ import json
 from collections import defaultdict
 from typing import Union
 
-from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
+from hqt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QAbstractScrollArea, QFrame, QScrollArea, QWidget
 

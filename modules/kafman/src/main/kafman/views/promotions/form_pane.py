@@ -17,11 +17,11 @@ from collections import defaultdict
 from typing import Optional
 
 from clitt.core.icons.font_awesome.form_icons import FormIcons
+from hqt.promotions.hcombobox import HComboBox
+from hqt.promotions.hframe import HFrame
+from hqt.promotions.hlistwidget import HListWidget
+from hqt.promotions.hstacked_widget import HStackedWidget
 from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.modules.qt.promotions.hcombobox import HComboBox
-from hspylib.modules.qt.promotions.hframe import HFrame
-from hspylib.modules.qt.promotions.hlistwidget import HListWidget
-from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from PyQt5.QtWidgets import (
     QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QVBoxLayout, QWidget,
 )
