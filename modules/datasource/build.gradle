@@ -14,9 +14,9 @@ idea {
     excludeDirs += file('.idea')
     excludeDirs += file('.gradle')
     excludeDirs += file('.vscode')
-    excludeDirs += file('src/main/build/**')
-    excludeDirs += file('src/main/dist/**')
-    excludeDirs += file('src/main/hspylib_datasource.egg-info/**')
+    excludeDirs += file('src/main/build')
+    excludeDirs += file('src/main/dist')
+    excludeDirs += file('src/main/hspylib_' + project.name + '.egg-info')
   }
 }
 
