@@ -16,6 +16,10 @@ import java.text.SimpleDateFormat
 /* Project file definitions */
 project.ext.build_info_file = 'build-info.properties'
 
+String relPath(String absPath) {
+  return absPath.replace("${project.projectDir}/", '')
+}
+
 /* Tasks ------------------------------------------------------------------- */
 
 task updateBuildInfo(type: Task) {
@@ -103,9 +107,8 @@ task listProperties(type: Task) {
   doLast {
     def regex = /.*=.*$/
     File propsFile = project.file('gradle.properties')
-    File depsFile = project.file('gradle/dependencies.gradle')
     if (propsFile.exists()) {
-      println "\nChecking dependency usage at: $depsFile\n"
+      println "\n[${project.name}] Checking properties from: " + relPath("${propsFile}") + "\n"
       propsFile.eachLine { line ->
         if (line?.trim() && line ==~ regex) {
           // Extract the name and version from line: '<property> = <value>'
@@ -114,6 +117,13 @@ task listProperties(type: Task) {
         }
       }
     }
+    println "".padRight(80, '-')
+    println "SOURCE_ROOT".padRight(40, ' ') + " =>  " \
+      + relPath("${project.ext.sourceRoot}")
+    println "PYTHON_PATH".padRight(40, ' ') + " =>  " \
+      + relPath("${project.ext.pythonPath}").split(':').join(', ')
+    println "Application".padRight(40, ' ') + " =>  " \
+      + relPath("${project.ext.has('application') ? project.ext.application : 'N/A'}")
   }
 }
 
