@@ -2202,32 +2202,32 @@
     <customwidget>
       <class>HComboBox</class>
       <extends>QComboBox</extends>
-      <header>hspylib.modules.qt.promotions.hcombobox</header>
+      <header>hqt.promotions.hcombobox</header>
     </customwidget>
     <customwidget>
       <class>HListWidget</class>
       <extends>QListWidget</extends>
-      <header>hspylib.modules.qt.promotions.hlistwidget</header>
+      <header>hqt.promotions.hlistwidget</header>
     </customwidget>
     <customwidget>
       <class>HTableView</class>
       <extends>QTableView</extends>
-      <header>hspylib.modules.qt.promotions.htableview</header>
+      <header>hqt.promotions.htableview</header>
     </customwidget>
     <customwidget>
       <class>HLabel</class>
       <extends>QLabel</extends>
-      <header>hspylib.modules.qt.promotions.hlabel</header>
+      <header>hqt.promotions.hlabel</header>
     </customwidget>
     <customwidget>
       <class>HConsole</class>
       <extends>QPlainTextEdit</extends>
-      <header>hspylib.modules.qt.promotions.hconsole</header>
+      <header>hqt.promotions.hconsole</header>
     </customwidget>
     <customwidget>
       <class>HStackedWidget</class>
       <extends>QStackedWidget</extends>
-      <header>hspylib.modules.qt.promotions.hstacked_widget</header>
+      <header>hqt.promotions.hstacked_widget</header>
       <container>1</container>
     </customwidget>
     <customwidget>
@@ -2239,7 +2239,7 @@
     <customwidget>
       <class>HToolBox</class>
       <extends>QToolBox</extends>
-      <header>hspylib.modules.qt.promotions.htoolbox</header>
+      <header>hqt.promotions.htoolbox</header>
       <container>1</container>
     </customwidget>
   </customwidgets>

@@ -12,12 +12,11 @@
 
    Copyright 2022, HSPyLib team
 """
-from typing import List, Optional, TypeVar
-
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
+from typing import List, Optional, TypeVar
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder

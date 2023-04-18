@@ -13,13 +13,12 @@
    Copyright 2022, HSPyLib team
 """
 
-from typing import List
-
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
 from clitt.core.tui.table.table_renderer import TableRenderer
 from hspylib.core.namespace import Namespace
+from typing import List
 
 from datasource.crud_entity import CrudEntity
 from phonebook.entity.company import Company

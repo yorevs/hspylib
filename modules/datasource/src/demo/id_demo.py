@@ -1,7 +1,6 @@
 from collections import namedtuple
-from uuid import uuid4
-
 from hspylib.core.namespace import Namespace
+from uuid import uuid4
 
 from datasource.identity import Identity
 

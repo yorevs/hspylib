@@ -15,7 +15,6 @@
 import atexit
 import os
 import sys
-
 from hspylib.core.exception.exceptions import WidgetExecutionError, WidgetNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state

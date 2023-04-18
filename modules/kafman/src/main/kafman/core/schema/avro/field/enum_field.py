@@ -15,7 +15,7 @@
 
 from typing import List
 
-from hspylib.modules.qt.promotions.hcombobox import HComboBox
+from hqt.promotions.hcombobox import HComboBox
 from PyQt5.QtWidgets import QWidget
 
 from kafman.core.schema.avro.avro_type import AvroType

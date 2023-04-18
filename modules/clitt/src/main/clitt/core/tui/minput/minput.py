@@ -12,16 +12,15 @@
 
    Copyright 2022, HSPyLib team
 """
+import pyperclip
 import re
 import time
-from typing import List, Optional
-
-import pyperclip
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, prepare_render, restore_cursor, set_enable_echo
+from typing import List, Optional
 
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons

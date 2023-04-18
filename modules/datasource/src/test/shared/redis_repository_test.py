@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 import ast
-
 from hspylib.core.enums.charset import Charset
 
 from datasource.identity import Identity

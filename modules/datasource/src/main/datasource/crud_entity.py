@@ -14,11 +14,10 @@
 """
 
 import json
-from typing import Any, Dict, Iterable
-from uuid import UUID
-
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
+from typing import Any, Dict, Iterable
+from uuid import UUID
 
 from datasource.identity import Identity
 

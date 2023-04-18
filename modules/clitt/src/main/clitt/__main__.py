@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 import sys
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr

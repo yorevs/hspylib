@@ -16,10 +16,10 @@ from typing import List
 
 from confluent_kafka.schema_registry.json_schema import JSONDeserializer, JSONSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
+from hqt.promotions.hstacked_widget import HStackedWidget
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
-from hspylib.modules.qt.promotions.hstacked_widget import HStackedWidget
 from jsonschema import validate as validate_schema
 
 from kafman.core.consumer.consumer_config import ConsumerConfig

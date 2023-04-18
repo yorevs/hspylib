@@ -17,7 +17,6 @@ import logging as log
 import os
 import sys
 import unittest
-
 from hspylib.core.decorator.decorators import integration_test
 from hspylib.core.tools.commons import log_init
 

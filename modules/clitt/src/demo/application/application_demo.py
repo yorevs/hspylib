@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 import sys
-
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version

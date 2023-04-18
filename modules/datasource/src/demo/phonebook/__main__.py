@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 import sys
-
 from clitt.core.tui.menu.tui_menu_factory import TUIMenuFactory
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.tui_application import TUIApplication

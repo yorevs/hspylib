@@ -13,7 +13,6 @@
    Copyright 2022, HSPyLib team
 """
 import json
-import string
 import sys
 import unittest
 from textwrap import dedent

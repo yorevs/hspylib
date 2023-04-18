@@ -14,9 +14,6 @@
 """
 import logging as log
 import os
-from os.path import basename
-from typing import Any, Optional
-
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
@@ -26,7 +23,9 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, file_is_not_empty, sysout, touch_file
 from hspylib.core.tools.dict_tools import get_or_default_by_key
+from os.path import basename
 from requests.structures import CaseInsensitiveDict
+from typing import Any, Optional
 
 from firebase.core.firebase_auth import FirebaseAuth
 from firebase.exception.exceptions import FirebaseAuthenticationError

@@ -15,11 +15,10 @@
 import os
 import re
 from _ast import keyword
-from typing import List
-
 from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.tools.commons import sysout
+from typing import List
 
 
 class CFApplication:

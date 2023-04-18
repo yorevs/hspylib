@@ -14,10 +14,9 @@
 """
 
 from abc import ABC
-from typing import Callable, Optional, TypeVar
-
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
+from typing import Callable, Optional, TypeVar
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.tui_component import TUIComponent

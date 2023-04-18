@@ -15,9 +15,8 @@
 
 import logging as log
 import os
-from typing import List
-
 from hspylib.core.preconditions import check_argument
+from typing import List
 
 from firebase.core.agent_config import AgentConfig
 from firebase.core.file_processor import FileProcessor

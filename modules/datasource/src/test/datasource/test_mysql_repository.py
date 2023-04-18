@@ -17,12 +17,11 @@ import logging as log
 import os
 import sys
 import unittest
-from textwrap import dedent
-
 from hspylib.core.decorator.decorators import integration_test
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import log_init
 from hspylib.core.tools.text_tools import quote
+from textwrap import dedent
 
 from datasource.db_configuration import DBConfiguration
 from datasource.identity import Identity

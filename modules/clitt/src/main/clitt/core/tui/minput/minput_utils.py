@@ -14,11 +14,10 @@
 """
 import re
 from abc import ABC
-from typing import Any, Optional, Tuple
-
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import sysout
+from typing import Any, Optional, Tuple
 
 
 class MInputUtils(ABC):
