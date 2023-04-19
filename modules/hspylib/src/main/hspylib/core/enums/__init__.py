@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.167
+# hspylib v0.11.168
 #
 # Package: main.hspylib.core.enums
 """Package initialization."""
@@ -12,4 +12,4 @@ __all__ = [
   'http_code', 
   'http_method'
 ]
-__version__ = '0.11.167'
+__version__ = '0.11.168'
