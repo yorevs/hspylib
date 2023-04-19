@@ -12,12 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-import csv
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right, titlecase
 from typing import Iterable, List
+
+import csv
 
 
 class TableRenderer:

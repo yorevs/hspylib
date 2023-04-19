@@ -12,13 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import re
-from typing import Callable, Optional
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_not_none, check_state
 from hspylib.modules.cli.vt100.vt_100 import Vt100
+from typing import Callable, Optional
+
+import os
+import re
 
 
 class VtCode(Enumeration):

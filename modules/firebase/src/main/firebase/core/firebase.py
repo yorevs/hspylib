@@ -13,14 +13,14 @@
    Copyright 2023, HsPyLib team
 """
 
-import logging as log
-import os
-from hspylib.core.preconditions import check_argument
-from typing import List
-
 from firebase.core.agent_config import AgentConfig
 from firebase.core.file_processor import FileProcessor
 from firebase.core.firebase_auth import FirebaseAuth
+from hspylib.core.preconditions import check_argument
+from typing import List
+
+import logging as log
+import os
 
 
 class Firebase:

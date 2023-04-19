@@ -13,13 +13,13 @@
    Copyright 2023, HsPyLib team
 """
 
+from hspylib.core.tools.json_path import JsonPath
+from os import path
+
 import json
 import os
 import sys
 import unittest
-from os import path
-
-from hspylib.core.tools.json_path import JsonPath
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

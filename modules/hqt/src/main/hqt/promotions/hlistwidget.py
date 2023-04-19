@@ -12,12 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional, Union
-
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from PyQt5.QtCore import pyqtSignal, QModelIndex, Qt
 from PyQt5.QtGui import QCursor, QKeyEvent
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QMenu, QWidget
+from typing import List, Optional, Union
 
 
 class HListWidget(QListWidget):

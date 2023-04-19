@@ -12,10 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
+from hspylib.core.namespace import Namespace
+
 import sys
 import unittest
-
-from hspylib.core.namespace import Namespace
 
 
 class TestNamespace(unittest.TestCase):

@@ -3,10 +3,10 @@
 
 from %APP_NAME%.__classpath__ import _Classpath
 from %APP_NAME%.view.main_qt_view import MainQtView
+from hqt.qt_application import QtApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.application.version import Version
-from hqt.qt_application import QtApplication
 
 import sys
 

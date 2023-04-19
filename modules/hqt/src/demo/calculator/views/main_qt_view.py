@@ -13,14 +13,13 @@
    Copyright 2023, HsPyLib team
 """
 
-import logging as log
-
-from hspylib.core.config.app_config import AppConfigs
-from PyQt5.QtCore import Qt
-
 from calculator.core.operations import Operations
 from calculator.views.blink_lcd_thread import BlinkLcdThread
 from hqt.views.qt_view import QtView
+from hspylib.core.config.app_config import AppConfigs
+from PyQt5.QtCore import Qt
+
+import logging as log
 
 
 class MainQtView(QtView):

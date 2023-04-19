@@ -12,13 +12,14 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
 from collections import namedtuple
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.terminal import Terminal
 from typing import List, Optional
+
+import os
 
 CFTarget = namedtuple("CFTarget", ["user", "org", "space", "connected"])
 

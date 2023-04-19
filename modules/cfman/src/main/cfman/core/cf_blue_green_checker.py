@@ -12,11 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
+from cfman.core.cf_application import CFApplication
 from hspylib.core.tools.commons import sysout
 from typing import Dict, List
 
-from cfman.core.cf_application import CFApplication
+import re
 
 
 class CFBlueGreenChecker:

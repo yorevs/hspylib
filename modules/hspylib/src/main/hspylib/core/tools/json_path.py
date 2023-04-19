@@ -13,10 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 
-import re
+from pyparsing import unicode
 from typing import Any, TypeVar
 
-from pyparsing import unicode
+import re
 
 JSON_ELEMENT = TypeVar('JSON_ELEMENT', bound=[list, dict, unicode])
 

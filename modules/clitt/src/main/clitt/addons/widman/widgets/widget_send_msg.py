@@ -12,9 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import socket
-import threading
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import hook_exit_signals, sysout
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
@@ -24,10 +25,9 @@ from hspylib.modules.cli.keyboard import Keyboard
 from textwrap import dedent
 from time import sleep
 
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
-from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput import MenuInput, minput
+import os
+import socket
+import threading
 
 
 class WidgetSendMsg(Widget):

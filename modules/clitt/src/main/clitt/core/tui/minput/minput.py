@@ -12,16 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-import pyperclip
-import re
-import time
-from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.namespace import Namespace
-from hspylib.core.tools.commons import syserr, sysout
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, prepare_render, restore_cursor, set_enable_echo
-from typing import List, Optional
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.minput.form_builder import FormBuilder
@@ -29,6 +19,16 @@ from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.minput_utils import MInputUtils
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.core.exception.exceptions import InvalidInputError
+from hspylib.core.namespace import Namespace
+from hspylib.core.tools.commons import syserr, sysout
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, prepare_render, restore_cursor, set_enable_echo
+from typing import List, Optional
+
+import pyperclip
+import re
+import time
 
 
 def minput(

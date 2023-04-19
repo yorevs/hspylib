@@ -12,13 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-import sys
-
+from calculator.views.main_qt_view import MainQtView
+from hqt.qt_application import QtApplication
 from hspylib.core.tools.commons import get_path
 from hspylib.modules.application.version import Version
 
-from calculator.views.main_qt_view import MainQtView
-from hqt.qt_application import QtApplication
+import sys
 
 HERE = str(get_path(__file__))
 

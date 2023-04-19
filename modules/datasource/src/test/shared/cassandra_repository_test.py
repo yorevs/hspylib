@@ -13,10 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 from datasource.cassandra.cassandra_repository import CassandraRepository
-from typing import NamedTuple
-
 from datasource.identity import Identity
 from shared.entity_test import EntityTest
+from typing import NamedTuple
 
 
 class CassandraRepositoryTest(CassandraRepository):

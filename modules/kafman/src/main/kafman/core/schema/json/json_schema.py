@@ -12,8 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List
-
 from confluent_kafka.schema_registry.json_schema import JSONDeserializer, JSONSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer
 from hqt.promotions.hstacked_widget import HStackedWidget
@@ -21,7 +19,6 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.preconditions import check_not_none
 from jsonschema import validate as validate_schema
-
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.producer.producer_config import ProducerConfig
 from kafman.core.schema.json.json_parser import JsonParser
@@ -31,6 +28,7 @@ from kafman.core.schema.kafka_schema import KafkaSchema
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
 from kafman.views.promotions.form_pane import FormPane
+from typing import List
 
 
 class JsonSchema(KafkaSchema):

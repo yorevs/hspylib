@@ -12,20 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
+from datetime import timedelta
+from hspylib.core.constants import TRUE_VALUES
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument, check_not_none
+from hspylib.modules.cli.vt100.vt_code import VtCode
+from hspylib.modules.cli.vt100.vt_color import VtColor
+from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
+
 import inspect
 import logging as log
 import os
 import pathlib
 import signal
 import sys
-from datetime import timedelta
-from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
-
-from hspylib.core.constants import TRUE_VALUES
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.modules.cli.vt100.vt_code import VtCode
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{}\t{} {} {} {} {} ".format(

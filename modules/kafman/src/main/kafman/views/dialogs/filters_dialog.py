@@ -13,19 +13,18 @@
    Copyright 2023, HsPyLib team
 """
 
-import random
-import string
-from typing import Optional, Union
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from hspylib.core.collection_filter import CollectionFilter, ElementFilter, FilterCondition
 from hspylib.core.preconditions import check_not_none
+from kafman.__classpath__ import _Classpath
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
+from typing import Optional, Union
 
-from kafman.__classpath__ import _Classpath
+import random
+import string
 
 
 class FiltersDialog(QObject):

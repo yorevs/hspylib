@@ -12,7 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 from concurrent import futures
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.application.exit_status import ExitStatus
@@ -22,8 +23,7 @@ from hspylib.modules.cli.terminal import Terminal
 from textwrap import dedent
 from time import sleep
 
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+import re
 
 
 class WidgetFree(Widget):

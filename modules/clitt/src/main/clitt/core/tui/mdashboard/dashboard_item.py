@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Callable, Optional
-
 from clitt.core.icons.font_awesome.awesome import Awesome
+from typing import Callable, Optional
 
 
 class DashboardItem:

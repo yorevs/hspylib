@@ -12,10 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-import json
-import logging as log
-import os
 from abc import ABC
+from firebase.domain.firebase_dto import FirebaseDto
 from fnmatch import fnmatch
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_argument, check_not_none
@@ -24,7 +22,9 @@ from hspylib.modules.fetch.fetch import get, put
 from requests.exceptions import HTTPError
 from typing import List
 
-from firebase.domain.firebase_dto import FirebaseDto
+import json
+import logging as log
+import os
 
 
 class FileProcessor(ABC):

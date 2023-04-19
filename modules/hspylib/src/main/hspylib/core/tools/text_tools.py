@@ -12,13 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
+from hspylib.core.tools.dict_tools import get_or_default
+from typing import Any, List, Optional, Tuple
+
 import os
 import random
 import re
 import string
-from typing import Any, List, Optional, Tuple
-
-from hspylib.core.tools.dict_tools import get_or_default
 
 
 def elide_text(text: str, width: int, elide_with: str = "...") -> str:

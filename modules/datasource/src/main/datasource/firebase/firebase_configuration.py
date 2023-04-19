@@ -12,7 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
@@ -24,6 +23,8 @@ from os.path import basename
 from requests.structures import CaseInsensitiveDict
 from textwrap import dedent
 from typing import Optional
+
+import os
 
 
 class FirebaseConfiguration(AppConfigs):

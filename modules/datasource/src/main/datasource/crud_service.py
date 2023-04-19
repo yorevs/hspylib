@@ -12,13 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.metaclass.singleton import AbstractSingleton
-from hspylib.core.namespace import Namespace
-from typing import Generic, List, Optional, Set, TypeVar
-
 from datasource.crud_entity import CrudEntity
 from datasource.crud_repository import CrudRepository
 from datasource.identity import Identity
+from hspylib.core.metaclass.singleton import AbstractSingleton
+from hspylib.core.namespace import Namespace
+from typing import Generic, List, Optional, Set, TypeVar
 
 E = TypeVar("E", bound=CrudEntity)
 R = TypeVar("R", bound=CrudRepository)

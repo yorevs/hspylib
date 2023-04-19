@@ -13,19 +13,18 @@
    Copyright 2023, HsPyLib team
 """
 
-import os
-
 from hqt.promotions.hlistwidget import HListWidget
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_not_none
+from kafman.__classpath__ import _Classpath
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
 
-from kafman.__classpath__ import _Classpath
+import os
 
 
 class SettingsDialog(QObject):

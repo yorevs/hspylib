@@ -12,14 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-import random
-import string
-import sys
 from collections import namedtuple
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from typing import Any, Dict, Tuple, Type, Union
 from uuid import UUID, uuid4
+
+import random
+import string
+import sys
 
 IDENTITY = Union[Tuple, int, str, UUID]
 

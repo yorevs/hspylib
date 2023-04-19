@@ -13,19 +13,19 @@
    Copyright 2023, HsPyLib team
 """
 
+from datasource.db_configuration import DBConfiguration
+from datasource.identity import Identity
+from hspylib.core.namespace import Namespace
+from hspylib.core.tools.commons import log_init
+from hspylib.core.tools.text_tools import quote
+from shared.entity_test import EntityTest
+from shared.sqlite_repository_test import SQLiteRepositoryTest
+from textwrap import dedent
+
 import logging as log
 import os
 import sys
 import unittest
-from hspylib.core.namespace import Namespace
-from hspylib.core.tools.commons import log_init
-from hspylib.core.tools.text_tools import quote
-from textwrap import dedent
-
-from datasource.db_configuration import DBConfiguration
-from datasource.identity import Identity
-from shared.entity_test import EntityTest
-from shared.sqlite_repository_test import SQLiteRepositoryTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 

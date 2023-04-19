@@ -12,11 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote
+from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
 
 T = TypeVar("T")
 

@@ -12,16 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import eol
-from typing import TypeVar
-
 from clitt.core.icons.font_awesome.app_icons import AppIcons
 from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import eol
+from typing import TypeVar
 
 AwesomeClass = TypeVar('AwesomeClass')
 

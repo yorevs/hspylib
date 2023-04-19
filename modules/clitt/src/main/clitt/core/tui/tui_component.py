@@ -14,13 +14,12 @@
 """
 
 from abc import ABC, abstractmethod
+from clitt.core.icons.font_awesome.awesome import Awesome
+from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import elide_text, ensure_endswith
 from hspylib.modules.cli.keyboard import Keyboard
 from typing import Any, Generic, List, Optional, TypeVar
-
-from clitt.core.icons.font_awesome.awesome import Awesome
-from clitt.core.tui.tui_preferences import TUIPreferences
 
 T = TypeVar("T")
 

@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from enum import auto
-
 from clitt.core.icons.font_awesome.awesome import Awesome
+from enum import auto
 
 
 class WidgetIcons(Awesome):

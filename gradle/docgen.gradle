@@ -65,7 +65,7 @@ task optimizeImports(type: Task) {
   description = 'Optimize python imports'
   doLast {
     exec {
-      commandLine rootProject.python, '-m', 'isort', '--fas', '--profile', 'django', sourceRoot
+      commandLine rootProject.python, '-m', 'isort', '--fas', '--ds', sourceRoot
     }
   }
 }

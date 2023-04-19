@@ -13,15 +13,15 @@
    Copyright 2023, HsPyLib team
 """
 
-import logging as log
-import os
-import re
 from collections import defaultdict
-from typing import Any, Callable, Iterator, List, Optional, Type
-
 from hspylib.core.config.parser_factory import ParserFactory
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, touch_file
+from typing import Any, Callable, Iterator, List, Optional, Type
+
+import logging as log
+import os
+import re
 
 CONVERSION_FN = Type | Callable[[Any], Any]
 

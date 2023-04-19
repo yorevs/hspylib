@@ -15,7 +15,6 @@
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
-
 from datasource.identity import Identity
 from phonebook.entity.company import Company
 from phonebook.entity.contact_forms import ContactForms

@@ -13,6 +13,18 @@
    Copyright 2023, HsPyLib team
 """
 
+from cryptography.fernet import InvalidToken
+from datasource.identity import Identity
+from hspylib.core.preconditions import check_not_none
+from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
+from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
+from hspylib.modules.security.security import b64_decode, decode_file, decrypt_file, encode_file, encrypt_file
+from typing import List
+from vault.core.vault_config import VaultConfig
+from vault.core.vault_service import VaultService
+from vault.domain.vault_entry import VaultEntry
+from vault.exception.exceptions import VaultCloseError, VaultExecutionException, VaultSecurityException
+
 import binascii
 import contextlib
 import cryptocode
@@ -22,18 +34,6 @@ import logging as log
 import os
 import shutil
 import uuid
-from cryptography.fernet import InvalidToken
-from datasource.identity import Identity
-from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
-from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
-from hspylib.modules.security.security import b64_decode, decode_file, decrypt_file, encode_file, encrypt_file
-from typing import List
-
-from vault.core.vault_config import VaultConfig
-from vault.core.vault_service import VaultService
-from vault.domain.vault_entry import VaultEntry
-from vault.exception.exceptions import VaultCloseError, VaultExecutionException, VaultSecurityException
 
 
 class Vault:

@@ -12,12 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-import sys
+from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-from clitt.core.tui.tui_application import TUIApplication
+import sys
 
 APP_NAME = "AppTest"
 

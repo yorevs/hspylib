@@ -13,17 +13,17 @@
    Copyright 2023, HsPyLib team
 """
 
+from datasource.identity import Identity
+from datasource.redis.redis_configuration import RedisConfiguration
+from hspylib.core.decorator.decorators import integration_test
+from hspylib.core.tools.commons import log_init
+from shared.entity_test import EntityTest
+from shared.redis_repository_test import RedisRepositoryTest
+
 import logging as log
 import os
 import sys
 import unittest
-from hspylib.core.decorator.decorators import integration_test
-from hspylib.core.tools.commons import log_init
-
-from datasource.identity import Identity
-from datasource.redis.redis_configuration import RedisConfiguration
-from shared.entity_test import EntityTest
-from shared.redis_repository_test import RedisRepositoryTest
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
