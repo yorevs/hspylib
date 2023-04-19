@@ -5,5 +5,7 @@
 # Package: main.kafman.core.exception
 """Package initialization."""
 
-__all__ = ["exceptions"]
-__version__ = "0.9.106"
+__all__ = [
+  'exceptions'
+]
+__version__ = '0.9.106'

@@ -5,5 +5,10 @@
 # Package: main.clitt.addons.widman.widgets
 """Package initialization."""
 
-__all__ = ["widget_free", "widget_punch", "widget_send_msg", "widget_time_calc"]
-__version__ = "0.9.20"
+__all__ = [
+  'widget_free', 
+  'widget_punch', 
+  'widget_send_msg', 
+  'widget_time_calc'
+]
+__version__ = '0.9.20'

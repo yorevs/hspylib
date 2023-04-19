@@ -5,5 +5,7 @@
 # Package: demo.tui.menu
 """Package initialization."""
 
-__all__ = ["tui_menu_demo"]
-__version__ = "0.9.20"
+__all__ = [
+  'tui_menu_demo'
+]
+__version__ = '0.9.20'

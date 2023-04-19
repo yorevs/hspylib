@@ -5,5 +5,7 @@
 # Package: test.modules.application
 """Package initialization."""
 
-__all__ = ["test_application"]
-__version__ = "0.11.168"
+__all__ = [
+  'test_application'
+]
+__version__ = '0.11.168'

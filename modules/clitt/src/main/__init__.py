@@ -5,5 +5,7 @@
 # Package: main
 """Package initialization."""
 
-__all__ = ["clitt"]
-__version__ = "0.9.20"
+__all__ = [
+  'clitt'
+]
+__version__ = '0.9.20'

@@ -5,5 +5,7 @@
 # Package: main.datasource.postgres
 """Package initialization."""
 
-__all__ = ["postgres_repository"]
-__version__ = "0.9.28"
+__all__ = [
+  'postgres_repository'
+]
+__version__ = '0.9.28'

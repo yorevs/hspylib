@@ -5,5 +5,7 @@
 # Package: main.clitt.core.tui.table
 """Package initialization."""
 
-__all__ = ["table_renderer"]
-__version__ = "0.9.20"
+__all__ = [
+  'table_renderer'
+]
+__version__ = '0.9.20'

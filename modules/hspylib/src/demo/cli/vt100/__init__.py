@@ -5,5 +5,7 @@
 # Package: demo.cli.vt100
 """Package initialization."""
 
-__all__ = ["vt100_demo"]
-__version__ = "0.11.168"
+__all__ = [
+  'vt100_demo'
+]
+__version__ = '0.11.168'
