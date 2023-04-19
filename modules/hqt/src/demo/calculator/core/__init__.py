@@ -6,6 +6,6 @@
 """Package initialization."""
 
 __all__ = [
-  'calc_operations'
+    'operations.py'
 ]
 __version__ = '0.9.1'

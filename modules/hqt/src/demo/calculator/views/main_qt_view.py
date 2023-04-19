@@ -18,28 +18,26 @@ import logging as log
 from hspylib.core.config.app_config import AppConfigs
 from PyQt5.QtCore import Qt
 
-from calculator.core.calc_operations import CalcOperations
+from calculator.core.operations import Operations
 from calculator.views.blink_lcd_thread import BlinkLcdThread
 from hqt.views.qt_view import QtView
 
 
 class MainQtView(QtView):
-    """TODO"""
-
     UI_FILE = "qt_calculator.ui"
 
     def __init__(self):
         super().__init__(self.UI_FILE)
-        self.configs = AppConfigs.INSTANCE
-        self.dec_sep = AppConfigs.INSTANCE["decimal.separator"]
-        self.min_digits = int(AppConfigs.INSTANCE["min.digits"])
-        self.max_digits = int(AppConfigs.INSTANCE["max.digits"])
-        self.wait_operand = self.wait_operand2 = True
-        self.operand = self.operand2 = self.last_operand = None
-        self.memory_rec = None
-        self.keymap = None
-        self.display_text = ""
-        self.op = CalcOperations.NO_OP
+        self._configs = AppConfigs.INSTANCE
+        self._dec_sep = self._configs["decimal.separator"]
+        self._min_digits = int(self._configs["min.digits"])
+        self._max_digits = int(self._configs["max.digits"])
+        self._waiting_operand = self.waiting_operand2 = True
+        self._operand = self._operand2 = self._last_operand = None
+        self._memory_rec = None
+        self._keymap = None
+        self._display_text = ""
+        self._op = Operations.NO_OP
         self._setup_keymap()
         self._setup_ui()
 
@@ -63,13 +61,13 @@ class MainQtView(QtView):
         self.ui.btnPlus.clicked.connect(self._btn_plus_clicked)
         self.ui.btn0.clicked.connect(self._btn0_clicked)
         self.ui.btnDecimal.clicked.connect(self._btn_comma_clicked)
-        self.ui.btnDecimal.setText(self.dec_sep)
+        self.ui.btnDecimal.setText(self._dec_sep)
         self.ui.btnEqual.clicked.connect(self._btn_equal_clicked)
         self.ui.frameMain.keyPressed.connect(self._key_pressed)
 
     def _setup_keymap(self) -> None:
         """Setup the main frame key map callbacks."""
-        self.keymap = {
+        self._keymap = {
             Qt.Key_0: self._btn0_clicked,
             Qt.Key_1: self._btn1_clicked,
             Qt.Key_2: self._btn2_clicked,
@@ -95,182 +93,184 @@ class MainQtView(QtView):
 
     def _key_pressed(self, key: Qt.Key) -> None:
         """Invoked when a key is pressed under the main frame."""
-        callback = self.keymap.get(key, None)
-        if callback:
+        if callback := self._keymap.get(key):
             callback()
 
-    def _display(self, value) -> None:
+    def _display(self, value: str = '0') -> None:
+        """Display the specified value."""
         future_digits = len(str(value)) if value else 0
         digits = self.ui.lcdDisplay.digitCount()
         if future_digits > digits:
-            self.ui.lcdDisplay.setDigitCount(min(future_digits, self.max_digits))
+            self.ui.lcdDisplay.setDigitCount(min(future_digits, self._max_digits))
         elif future_digits <= digits:
-            self.ui.lcdDisplay.setDigitCount(max(future_digits, self.min_digits))
+            self.ui.lcdDisplay.setDigitCount(max(future_digits, self._min_digits))
         self.ui.lcdDisplay.display(value)
 
     def _blink_lcd(self) -> None:
+        """Blink the displayed LCD value."""
         blink = BlinkLcdThread(self.ui.lcdDisplay)
         blink.start()
-        self.display_text = ""
+        self._display_text = ""
 
     def _soft_reset(self) -> None:
-        self.wait_operand = True
-        self.wait_operand2 = True
-        self.last_operand = self.operand2
-        self.operand = 0
-        self.operand2 = 0
-        self.memory_rec = 0
-        self.display_text = ""
+        """Reset the calculator."""
+        self._waiting_operand = True
+        self.waiting_operand2 = True
+        self._last_operand = self._operand2
+        self._operand = 0
+        self._operand2 = 0
+        self._memory_rec = 0
+        self._display_text = ""
 
     def _append_digit(self, digit: int) -> None:
         self.ui.btnAC.setText("C")
-        if not self.display_text or self.display_text == "0":
-            self.display_text = str(digit)
+        if not self._display_text or self._display_text == "0":
+            self._display_text = str(digit)
         else:
-            self.display_text += str(digit)
-        self._display(self.display_text)
+            self._display_text += str(digit)
+        self._display(self._display_text)
 
     def _btn_backspace_clicked(self) -> None:
-        if self.display_text:
-            if len(self.display_text) <= 1:
+        if self._display_text:
+            if len(self._display_text) <= 1:
                 self._btn_escape_clicked()
             else:
-                self.display_text = self.display_text[:-1]
-                self._display(self.display_text)
+                self._display_text = self._display_text[:-1]
+                self._display(self._display_text)
 
     def _calculate(self) -> None:
         result = 0
-        if not self.op or not self.operand:
+        if not self._op or not self._operand:
             return
 
-        if self.op == CalcOperations.SUM:
-            result = self.operand + self.operand2
-        elif self.op == CalcOperations.SUBTRACTION:
-            result = self.operand - self.operand2
-        elif self.op == CalcOperations.MULTIPLICATION:
-            result = self.operand * self.operand2
-        elif self.op == CalcOperations.DIVISION:
-            if self.operand2 == 0:
+        if self._op == Operations.SUM:
+            result = self._operand + self._operand2
+        elif self._op == Operations.SUBTRACTION:
+            result = self._operand - self._operand2
+        elif self._op == Operations.MULTIPLICATION:
+            result = self._operand * self._operand2
+        elif self._op == Operations.DIVISION:
+            if self._operand2 == 0:
                 result = "oo"
             else:
-                result = self.operand / self.operand2
+                result = self._operand / self._operand2
         self._display(result)
-        self.memory_rec = 0
+        self._memory_rec = 0
 
-    def _change_op(self, op: CalcOperations) -> None:
-        self.op = op
-        if self.wait_operand:
-            self.operand = self.ui.lcdDisplay.value()
-            self.memory_rec = self.operand
-            self.wait_operand = False
-        elif self.wait_operand2:
-            self.operand2 = self.ui.lcdDisplay.value()
-            self.wait_operand2 = False
-        if not self.wait_operand and not self.wait_operand2:
+    def _change_op(self, op: Operations) -> None:
+        self._op = op
+        if self._waiting_operand:
+            self._operand = self.ui.lcdDisplay.value()
+            self._memory_rec = self._operand
+            self._waiting_operand = False
+        elif self.waiting_operand2:
+            self._operand2 = self.ui.lcdDisplay.value()
+            self.waiting_operand2 = False
+        if not self._waiting_operand and not self.waiting_operand2:
             self._calculate()
-            self.operand = self.ui.lcdDisplay.value()
-            self.wait_operand2 = True
+            self._operand = self.ui.lcdDisplay.value()
+            self.waiting_operand2 = True
         self._blink_lcd()
 
     def _btn_equal_clicked(self) -> None:
-        log.info("Clicked: =")
-        if self.wait_operand:
-            self.operand = self.ui.lcdDisplay.value()
-            self.operand2 = self.last_operand if self.last_operand else None
-        elif self.wait_operand2:
-            self.operand2 = self.ui.lcdDisplay.value()
-        if self.operand and self.operand2:
+        log.debug("Clicked: =")
+        if self._waiting_operand:
+            self._operand = self.ui.lcdDisplay.value()
+            self._operand2 = self._last_operand if self._last_operand else None
+        elif self.waiting_operand2:
+            self._operand2 = self.ui.lcdDisplay.value()
+        if self._operand and self._operand2:
             self._calculate()
         self._soft_reset()
         self._blink_lcd()
 
     def _btn_escape_clicked(self) -> None:
-        log.info("Clicked: AC")
-        if self.memory_rec:
-            self.memory_rec = 0
+        log.debug("Clicked: AC")
+        if self._memory_rec:
+            self._memory_rec = 0
         else:
-            self.ui.lcdDisplay.setDigitCount(self.min_digits)
-            self._display(0)
+            self.ui.lcdDisplay.setDigitCount(self._min_digits)
+            self._display()
             self._soft_reset()
             self.ui.btnAC.setText("AC")
-        self.display_text = ""
+        self._display_text = ""
         self._blink_lcd()
 
     def _btn_period_clicked(self) -> None:
-        log.info("Clicked: +-")
+        log.debug("Clicked: +-")
         self._display(self.ui.lcdDisplay.value() * -1)
-        self.display_text = str(self.ui.lcdDisplay.value())
+        self._display_text = str(self.ui.lcdDisplay.value())
 
     def _btn_percent_clicked(self) -> None:
-        log.info("Clicked: %")
-        if not self.memory_rec:
+        log.debug("Clicked: %")
+        if not self._memory_rec:
             self._display(self.ui.lcdDisplay.value() / 100)
-            self.display_text = ""
+            self._display_text = ""
         else:
-            operand1 = self.memory_rec
+            operand1 = self._memory_rec
             operand2 = self.ui.lcdDisplay.value()
             self._display(operand1 * (operand2 / 100))
-            self.display_text = str(self.ui.lcdDisplay.value())
-            self.memory_rec = self.ui.lcdDisplay.value()
+            self._display_text = str(self.ui.lcdDisplay.value())
+            self._memory_rec = self.ui.lcdDisplay.value()
 
     def _btn_slash_clicked(self) -> None:
-        log.info("Clicked: /")
-        self._change_op(CalcOperations.DIVISION)
+        log.debug("Clicked: /")
+        self._change_op(Operations.DIVISION)
 
     def _btn7_clicked(self) -> None:
-        log.info("Clicked: 7")
+        log.debug("Clicked: 7")
         self._append_digit(7)
 
     def _btn8_clicked(self) -> None:
-        log.info("Clicked: 8")
+        log.debug("Clicked: 8")
         self._append_digit(8)
 
     def _btn9_clicked(self) -> None:
-        log.info("Clicked: 9")
+        log.debug("Clicked: 9")
         self._append_digit(9)
 
     def _btn_asterisk_clicked(self) -> None:
-        log.info("Clicked: x")
-        self._change_op(CalcOperations.MULTIPLICATION)
+        log.debug("Clicked: x")
+        self._change_op(Operations.MULTIPLICATION)
 
     def _btn4_clicked(self) -> None:
-        log.info("Clicked: 4")
+        log.debug("Clicked: 4")
         self._append_digit(4)
 
     def _btn5_clicked(self) -> None:
-        log.info("Clicked: 5")
+        log.debug("Clicked: 5")
         self._append_digit(5)
 
     def _btn6_clicked(self) -> None:
-        log.info("Clicked: 6")
+        log.debug("Clicked: 6")
         self._append_digit(6)
 
     def _btn_minus_clicked(self) -> None:
-        log.info("Clicked: -")
-        self._change_op(CalcOperations.SUBTRACTION)
+        log.debug("Clicked: -")
+        self._change_op(Operations.SUBTRACTION)
 
     def _btn1_clicked(self) -> None:
-        log.info("Clicked: 1")
+        log.debug("Clicked: 1")
         self._append_digit(1)
 
     def _btn2_clicked(self) -> None:
-        log.info("Clicked: 2")
+        log.debug("Clicked: 2")
         self._append_digit(2)
 
     def _btn3_clicked(self) -> None:
-        log.info("Clicked: 3")
+        log.debug("Clicked: 3")
         self._append_digit(3)
 
     def _btn_plus_clicked(self) -> None:
-        log.info("Clicked: +")
-        self._change_op(CalcOperations.SUM)
+        log.debug("Clicked: +")
+        self._change_op(Operations.SUM)
 
     def _btn0_clicked(self) -> None:
-        log.info("Clicked: 0")
+        log.debug("Clicked: 0")
         self._append_digit(0)
 
     def _btn_comma_clicked(self) -> None:
-        log.info("Clicked: ,")
-        if self.dec_sep not in self.display_text:
-            self.display_text += self.dec_sep if self.display_text else "0" + self.dec_sep
-        self._display(self.display_text)
+        log.debug("Clicked: ,")
+        if self._dec_sep not in self._display_text:
+            self._display_text += self._dec_sep if self._display_text else "0" + self._dec_sep
+        self._display(self._display_text)

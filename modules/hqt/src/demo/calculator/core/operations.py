@@ -4,7 +4,7 @@
 """
    @project: HSPyLib
    @package: demo.qtdemos.calculator.core
-      @file: calc_operations.py
+      @file: operations.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -15,10 +15,12 @@
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class CalcOperations(Enumeration):
-    NO_OP = None
-    DIVISION = "/"
-    MULTIPLICATION = "x"
-    SUBTRACTION = "-"
-    SUM = "+"
-    PERCENT = "%"
+class Operations(Enumeration):
+    # fmt: off
+    NO_OP           = None
+    DIVISION        = '/'
+    MULTIPLICATION  = 'x'
+    SUBTRACTION     = '-'
+    SUM             = '+'
+    PERCENT         = '%'
+    # fmt: on
