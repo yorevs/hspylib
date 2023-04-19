@@ -5,5 +5,7 @@
 # Package: main.hspylib.core.exception
 """Package initialization."""
 
-__all__ = ["exceptions"]
-__version__ = "0.11.168"
+__all__ = [
+  'exceptions'
+]
+__version__ = '0.11.168'

@@ -5,5 +5,7 @@
 # Package: test.core.enums
 """Package initialization."""
 
-__all__ = ["test_enumeration"]
-__version__ = "0.11.168"
+__all__ = [
+  'test_enumeration'
+]
+__version__ = '0.11.168'

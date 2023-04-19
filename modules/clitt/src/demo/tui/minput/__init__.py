@@ -5,5 +5,7 @@
 # Package: demo.tui.minput
 """Package initialization."""
 
-__all__ = ["menu_input_demo"]
-__version__ = "0.9.20"
+__all__ = [
+  'menu_input_demo'
+]
+__version__ = '0.9.20'

@@ -5,5 +5,8 @@
 # Package: demo.other
 """Package initialization."""
 
-__all__ = ["event_bus_demo", "filter_demo"]
-__version__ = "0.11.168"
+__all__ = [
+  'event_bus_demo', 
+  'filter_demo'
+]
+__version__ = '0.11.168'

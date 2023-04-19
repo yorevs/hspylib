@@ -5,5 +5,9 @@
 # Package: main.firebase
 """Package initialization."""
 
-__all__ = ["__classpath__", "__main__", "core", "domain", "exception"]
-__version__ = "0.9.96"
+__all__ = [
+  'core', 
+  'domain', 
+  'exception'
+]
+__version__ = '0.9.96'

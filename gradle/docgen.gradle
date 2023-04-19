@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat
 
 def year = new SimpleDateFormat("yyyy").format(new Date())
 def curDate = new SimpleDateFormat("EEE, d MMM yyyy").format(new Date())
+def apiSrcDir = "${sourceRoot}/main/${project.name}"
 
 ext {
   apiDocsDir = "${rootProject.projectDir}/docs/api"
@@ -67,7 +68,7 @@ String processPythonHeader(File file, String header_template) {
 task autoDocApi(type: Exec) {
   group = 'Documentation'
   description = 'Generate API documentation based on docstrings'
-  commandLine rootProject.python, '-m', 'pdoc', sourceRoot, '-o', apiDocsDir
+  commandLine rootProject.python, '-m', 'pdoc', '-o', apiDocsDir, apiSrcDir
 }
 
 /* Optimize python imports */

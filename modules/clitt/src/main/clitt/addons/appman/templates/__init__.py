@@ -5,5 +5,7 @@
 # Package: main.clitt.addons.appman.templates
 """Package initialization."""
 
-__all__ = []
-__version__ = "0.9.20"
+__all__ = [
+  
+]
+__version__ = '0.9.20'

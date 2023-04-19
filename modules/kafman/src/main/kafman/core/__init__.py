@@ -5,5 +5,13 @@
 # Package: main.kafman.core
 """Package initialization."""
 
-__all__ = ["constants", "consumer", "exception", "kafka_message", "producer", "schema", "statistics_worker"]
-__version__ = "0.9.106"
+__all__ = [
+  'constants', 
+  'consumer', 
+  'exception', 
+  'kafka_message', 
+  'producer', 
+  'schema', 
+  'statistics_worker'
+]
+__version__ = '0.9.106'

@@ -5,5 +5,9 @@
 # Package: demo
 """Package initialization."""
 
-__all__ = ["application", "icons", "tui"]
-__version__ = "0.9.20"
+__all__ = [
+  'application', 
+  'icons', 
+  'tui'
+]
+__version__ = '0.9.20'

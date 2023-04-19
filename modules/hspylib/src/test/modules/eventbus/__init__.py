@@ -5,5 +5,7 @@
 # Package: test.modules.eventbus
 """Package initialization."""
 
-__all__ = ["test_eventbus"]
-__version__ = "0.11.168"
+__all__ = [
+  'test_eventbus'
+]
+__version__ = '0.11.168'

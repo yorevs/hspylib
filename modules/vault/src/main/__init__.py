@@ -5,5 +5,7 @@
 # Package: main
 """Package initialization."""
 
-__all__ = ["vault"]
-__version__ = "0.9.81"
+__all__ = [
+  'vault'
+]
+__version__ = '0.9.81'

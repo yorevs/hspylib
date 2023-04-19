@@ -5,5 +5,7 @@
 # Package: demo.tui.table
 """Package initialization."""
 
-__all__ = ["table_demo"]
-__version__ = "0.9.20"
+__all__ = [
+  'table_demo'
+]
+__version__ = '0.9.20'

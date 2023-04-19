@@ -6,17 +6,17 @@
 """Package initialization."""
 
 __all__ = [
-    "crud_entity",
-    "crud_repository",
-    "crud_service",
-    "db_configuration",
-    "db_repository",
-    "exception",
-    "firebase",
-    "identity",
-    "mysql",
-    "postgres",
-    "redis",
-    "sqlite",
+  'crud_entity', 
+  'crud_repository', 
+  'crud_service', 
+  'db_configuration', 
+  'db_repository', 
+  'exception', 
+  'firebase', 
+  'identity', 
+  'mysql', 
+  'postgres', 
+  'redis', 
+  'sqlite'
 ]
-__version__ = "0.9.28"
+__version__ = '0.9.28'
