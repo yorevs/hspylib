@@ -11,7 +11,6 @@ If it is a feature, explain how it achieves the goal.
 
 ## Please mark what kind of changes you provided
 
-[ ] Widget
 [ ] Improvement
 [ ] Bugfix
 [ ] New feature
@@ -25,12 +24,14 @@ If it is a feature, explain how it achieves the goal.
 ## Did you test you code on
 
 [ ] MacOS
-[ ] Ubuntu
-[ ] CentOS
-[ ] Fedora
-[ ] Other (specify)
+[ ] Linux
 
 ## Did you modify the setup script ?
+
+[ ] Yes
+[ ] No
+
+## Did you add and Python > 3.10 features?
 
 [ ] Yes
 [ ] No
