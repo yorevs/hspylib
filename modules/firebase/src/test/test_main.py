@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Firebase
+   @project: HsPyLib-Firebase
    @package: test
       @file: tpl-test_main.py
    @created: Tue, 1 Jun 2021

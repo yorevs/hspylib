@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.modules.fetch
       @file: fetch.py
    @created: Tue, 4 May 2021

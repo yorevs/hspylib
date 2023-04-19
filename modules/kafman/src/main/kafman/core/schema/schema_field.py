@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Kafman
+   @project: HsPyLib-Kafman
    @package: kafman.core.schema
       @file: schema_field.py
    @created: Thu, 5 Aug 2021

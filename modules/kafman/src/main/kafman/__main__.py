@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Kafman
+   @project: HsPyLib-Kafman
    @package: kafman
       @file: __main__.py
    @created: Fri, 1 Jul 2022

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-CFMan
+   @project: HsPyLib-CFMan
    @package: cfman.core
       @file: cf_application.py
    @created: Tue, 4 May 2021

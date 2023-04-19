@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.core.config
       @file: parser_factory.py
    @created: Wed, 19 May 2023

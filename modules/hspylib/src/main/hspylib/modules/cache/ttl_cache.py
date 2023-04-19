@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.modules.cache
       @file: ttl_cache.py
    @created: Wed, 7 Dec 2022

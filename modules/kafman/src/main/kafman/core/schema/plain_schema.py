@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Kafman
+   @project: HsPyLib-Kafman
    @package: kafman.core.schema
       @file: json_schema.py
    @created: Sun, 18 Jul 2021

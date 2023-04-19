@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.widman
       @file: widman.py
    @created: Thu, 20 May 2021
@@ -32,7 +32,7 @@ HERE = get_path(__file__)
 
 
 class WidgetManager(metaclass=Singleton):
-    """HSPyLib widget manager that handles HSPyLib widgets.
+    """HsPyLib widget manager that handles HsPyLib widgets.
     """
 
     WIDGETS_PATH = HERE / "widgets"

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.core.tui.minput
       @file: input_type.py
    @created: Thu, 20 May 2021

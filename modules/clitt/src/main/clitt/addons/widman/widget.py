@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.widman
       @file: widget.py
    @created: Fri, 29 Jul 2022
@@ -22,12 +22,12 @@ from clitt.core.icons.font_awesome.awesome import Awesome
 
 
 class Widget(ABC):
-    """HSPyLib_Widman base class. All widgets must inherit from this class to properly work.
+    """HsPyLib_Widman base class. All widgets must inherit from this class to properly work.
     """
 
     _USAGE_FMT = dedent(
         """
-    HSPyLib Widget: {} v{}
+    HsPyLib Widget: {} v{}
 
     {}
 

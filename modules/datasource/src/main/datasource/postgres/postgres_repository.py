@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: datasource.postgres
       @file: postgres_repository.py
    @created: Sat, 12 Nov 2022

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.core.enums
       @file: http_method.py
    @created: Tue, 4 May 2021

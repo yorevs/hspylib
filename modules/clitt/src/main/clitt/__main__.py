@@ -28,7 +28,7 @@ from clitt.core.tui.tui_application import TUIApplication
 
 
 class Main(TUIApplication):
-    """HSPyLib CLI Terminal Tools - Create professional CLI applications."""
+    """HsPyLib CLI Terminal Tools - Create professional CLI applications."""
 
     # The welcome message
     DESCRIPTION = _Classpath.get_source_path(
@@ -59,10 +59,10 @@ class Main(TUIApplication):
         """
 
         # fmt: off
-        self._with_chained_args('application', 'the HSPyLib-Clitt addon to run') \
+        self._with_chained_args('application', 'the HsPyLib-Clitt addon to run') \
             .argument(
                     self.Addon.APPMAN.val,
-                    'app Application Manager: Create HSPyLib-Clitt based python applications') \
+                    'app Application Manager: Create HsPyLib-Clitt based python applications') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
@@ -81,7 +81,7 @@ class Main(TUIApplication):
                     '"gradle" is going to initialize you project with gradle (requires gradle). '
                     '"git" is going to initialize a git repository (requires git)',
                     nargs='*') \
-            .argument(self.Addon.WIDGETS.val, 'app Widgets Manager: Execute an HSPyLib widget') \
+            .argument(self.Addon.WIDGETS.val, 'app Widgets Manager: Execute an HsPyLib widget') \
                 .add_parameter(
                     'widget-name',
                     'the name of the widget to be executed. If omitted, all available widgets will be '

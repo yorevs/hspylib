@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    main.addons.appman.templates
       @file: test_main.py.tpl
    @created: Tue, 1 Jun 2021

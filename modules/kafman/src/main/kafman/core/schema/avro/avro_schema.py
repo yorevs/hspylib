@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Kafman
+   @project: HsPyLib-Kafman
    @package: kafman.core.schema.avro
       @file: avro_schema.py
    @created: Sat, 17 Jul 2021

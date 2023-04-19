@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.widman.widgets
       @file: widget_send_msg.py
    @created: Thu, 26 Aug 2017
@@ -31,7 +31,7 @@ from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class WidgetSendMsg(Widget):
-    """HSPyLib Widget to send TCP/UDP messages (multi-threaded)"""
+    """HsPyLib Widget to send TCP/UDP messages (multi-threaded)"""
 
     # fmt: off
     MAX_THREADS     = 1000

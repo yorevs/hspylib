@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.shared
       @file: application_test.py
    @created: Thu, 20 May 2021

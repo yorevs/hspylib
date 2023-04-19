@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Vault
+   @project: HsPyLib-Vault
    @package: vault
       @file: __classpath__.py
    @created: Wed, 8 Jun 2022

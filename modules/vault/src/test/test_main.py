@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Vault
+   @project: HsPyLib-Vault
    @package: test.vault
       @file: tpl-test_main.py
    @created: Tue, 1 Jun 2021

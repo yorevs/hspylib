@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.enum
       @file: test_enumeration.py
    @created: Tue, 4 May 2021

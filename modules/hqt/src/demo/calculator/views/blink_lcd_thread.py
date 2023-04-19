@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: demo.qtdemos.calculator.views
       @file: blink_lcd_thread.py
    @created: Wed, 30 Jun 2021

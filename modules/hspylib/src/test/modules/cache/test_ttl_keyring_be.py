@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.tools
       @file: test_text_tools.py
    @created: Thu, 07 Jul 2022

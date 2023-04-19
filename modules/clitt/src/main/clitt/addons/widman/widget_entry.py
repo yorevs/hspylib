@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.widman
       @file: widget_entry.py
    @created: Fri, 04 Jun 2021
@@ -18,7 +18,7 @@ from hspylib.core.tools.text_tools import camelcase
 
 
 class WidgetEntry:
-    """Placeholder object for a HSPyLib::Widman Widget and details about it.
+    """Placeholder object for a HsPyLib::Widman Widget and details about it.
     """
 
     # fmt: off

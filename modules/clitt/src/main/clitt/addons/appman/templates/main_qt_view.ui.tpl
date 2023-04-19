@@ -39,7 +39,7 @@
         </rect>
       </property>
       <property name="text">
-        <string>Hello HSPyLib Qt Application</string>
+        <string>Hello HsPyLib Qt Application</string>
       </property>
     </widget>
   </widget>

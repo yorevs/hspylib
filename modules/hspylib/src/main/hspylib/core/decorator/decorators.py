@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.core.decorator
       @file: decorators.py
    @created: Tue, 11 May 2021

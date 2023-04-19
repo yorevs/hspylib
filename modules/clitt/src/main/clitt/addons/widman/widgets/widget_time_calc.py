@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.widman.widgets
       @file: widget_time_calc.py
    @created: Thu, 20 May 2021
@@ -27,7 +27,7 @@ from clitt.core.tui.minput.minput import MenuInput, minput
 
 
 class WidgetTimeCalc(Widget):
-    """HSPyLib Widget to calculate time based operations.
+    """HsPyLib Widget to calculate time based operations.
     """
 
     # fmt: off

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.modules.json_search
       @file: test_json_path.py
    @created: Tue, 4 May 2021

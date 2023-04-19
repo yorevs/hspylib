@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Firebase
+   @project: HsPyLib-Firebase
    @package: firebase
       @file: __main__.py
    @created: Tue, 4 May 2021

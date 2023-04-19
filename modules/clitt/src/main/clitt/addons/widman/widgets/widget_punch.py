@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.widman.widgets
       @file: widget_punch.py
    @created: Thu, 20 Sep 2022
@@ -32,7 +32,7 @@ from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class WidgetPunch(Widget):
-    """HSPyLib Widget to Report current system memory usage"""
+    """HsPyLib Widget to Report current system memory usage"""
 
     # fmt: off
     WIDGET_ICON = WidgetIcons.PUNCH

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: main.modules.mock
       @file: mock_server_handler.py
    @created: Tue, 4 May 2021

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Hqt
+   @project: HsPyLib-Hqt
       @file: setup.py
    @created: Tue, 18 Apr 2023
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -33,7 +33,7 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 setuptools.setup(
     name="hspylib-hqt",
     version=VERSION,
-    description="HSPyLib - QT framework extensions",
+    description="HsPyLib - QT framework extensions",
     author="Hugo Saporetti Junior",
     author_email="yorevs@hotmail.com",
     long_description=README,

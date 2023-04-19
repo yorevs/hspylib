@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.core.tui.menu
       @file: tui_menu_item.py
    @created: Tue, 4 May 2021
