@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.19
+# hspylib-clitt v0.9.20
 #
 # Package: main.clitt.addons.widman.widgets
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'widget_send_msg', 
   'widget_time_calc'
 ]
-__version__ = '0.9.19'
+__version__ = '0.9.20'
