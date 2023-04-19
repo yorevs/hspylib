@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Hqt
    @package: demo.qtdemos.calculator
       @file: __main__.py
    @created: Tue, 4 May 2021

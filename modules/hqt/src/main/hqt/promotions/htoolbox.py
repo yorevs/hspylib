@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: hspylib
+   @project: HsPyLib-Hqt
    @package: hqt.promotions
       @file: htoolbox.py
    @created: Fri, 29 Jul 2022

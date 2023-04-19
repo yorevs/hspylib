@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Hqt
    @package: hqt.promotions
       @file: htableview.py
    @created: Wed, 30 Jun 2021
