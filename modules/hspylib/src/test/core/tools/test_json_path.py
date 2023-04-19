@@ -4,7 +4,7 @@
 """
    @project: HSPyLib
    test.modules.json_search
-      @file: test_json_search.py
+      @file: test_json_path.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -19,21 +19,21 @@ import sys
 import unittest
 from os import path
 
-from hspylib.core.tools.json_search import JsonSearch
+from hspylib.core.tools.json_path import JsonPath
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
-SAMPLE_FILE = f"{TEST_DIR}/resources/json_search_sample.json"
+SAMPLE_FILE = f"{TEST_DIR}/resources/json_path_sample.json"
 
 
-class TestJsonSearch(unittest.TestCase):
+class TestJsonPath(unittest.TestCase):
 
     # Setup tests
     def setUp(self):
         self.assertTrue(path.exists(SAMPLE_FILE), "Sample file was not found on {}".format(SAMPLE_FILE))
         with open(SAMPLE_FILE) as f_sample_file:
             self.json_object = json.load(f_sample_file)
-            self.j_utils = JsonSearch()
+            self.j_utils = JsonPath()
 
     # TEST CASES ----------
 
@@ -132,5 +132,5 @@ class TestJsonSearch(unittest.TestCase):
 
 # Program entry point.
 if __name__ == "__main__":
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestJsonSearch)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestJsonPath)
     unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)

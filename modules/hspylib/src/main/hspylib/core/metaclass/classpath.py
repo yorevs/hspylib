@@ -45,28 +45,29 @@ class Classpath(metaclass=Singleton):
 
     @classmethod
     def source_path(cls) -> Path:
-        """TODO"""
+        """Return the source directory of the module."""
         return cls.INSTANCE.source_root
 
     @classmethod
     def run_path(cls) -> Path:
-        """TODO"""
+        """Return the running path of the module."""
         return cls.INSTANCE.run_dir
 
     @classmethod
     def resource_path(cls) -> Path:
-        """TODO"""
+        """Return the resources directory of the module."""
         return cls.INSTANCE.resource_dir
 
     @classmethod
     def log_path(cls) -> Path:
-        """TODO"""
+        """Return the directory where the module logs are stored."""
         return cls.INSTANCE.log_dir
 
     @classmethod
     def list_resources(cls) -> str:
+        """Walk through resources directory and build a list with all files"""
         def list_resources_closure(directory: str | Path, depth: int = 4) -> Optional[str]:
-            """Walk through resources directory and build a list with all files"""
+            """Closure for list_resources method"""
             if os.path.exists(directory):
                 res_str = Classpath._list_files(directory, depth)
                 for root, dirs, _ in os.walk(directory):
@@ -80,7 +81,7 @@ class Classpath(metaclass=Singleton):
 
     @staticmethod
     def _list_files(directory: str | Path, depth: int = 4) -> str:
-        """Walk through directory and build a list with all files"""
+        """Walk through directory and build a list with all files."""
         res_str = ""
         if os.path.exists(directory):
             for filename in os.listdir(directory):
@@ -91,7 +92,7 @@ class Classpath(metaclass=Singleton):
 
     @classmethod
     def get_resource_path(cls, resource: str | Path) -> Path:
-        """Return the path of the given resource"""
+        """Return the path of the given resource."""
         check_not_none(resource, "Must provide a valid resource path")
         resource = Path(f"{cls.resource_path()}/{str(resource)}")
         if not resource.exists():
@@ -100,7 +101,7 @@ class Classpath(metaclass=Singleton):
 
     @classmethod
     def get_source_path(cls, source: str | Path) -> Path:
-        """Return the path of the given source"""
+        """Return the path of the given source."""
         check_not_none(source, "Must provide a valid source path")
         filepath = Path(f"{cls.source_path()}/{str(source)}")
         if not filepath.exists():

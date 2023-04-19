@@ -19,7 +19,8 @@ from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote
 
 T = TypeVar("T")
-FILTER_VALUE = TypeVar("FILTER_VALUE", int, str, bool, float)
+
+FILTER_VALUE = TypeVar("FILTER_VALUE", bound=[int, str, bool, float])
 
 
 class FilterCondition(Enumeration):
@@ -64,7 +65,7 @@ class FilterCondition(Enumeration):
 class ElementFilter:
     """Represent a single filter condition."""
 
-    def __init__(self, name: str, el_name: str, condition: "FilterCondition", el_value: FILTER_VALUE):
+    def __init__(self, name: str, el_name: str, condition: FilterCondition, el_value: FILTER_VALUE):
         self.name = name
         self.el_name = el_name
         self.condition = condition
@@ -76,7 +77,7 @@ class ElementFilter:
     def __repr__(self):
         return str(self)
 
-    def key(self) -> Tuple[str, "FilterCondition", FILTER_VALUE]:
+    def key(self) -> Tuple[str, FilterCondition, FILTER_VALUE]:
         return self.el_name, self.condition, self.el_value
 
     def __hash__(self) -> int:
@@ -124,7 +125,7 @@ class CollectionFilter:
         return len(self._filters)
 
     def apply_filter(
-        self, name: str, el_name: str, condition: "FilterCondition", el_value: Union[int, str, bool, float]
+        self, name: str, el_name: str, condition: FilterCondition, el_value: Union[int, str, bool, float]
     ) -> None:
         """Apply the specified filter."""
 

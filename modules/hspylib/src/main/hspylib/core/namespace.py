@@ -111,7 +111,7 @@ class Namespace:
         return tuple(self.values)
 
     def setattr(self, name: str, value: Any) -> "Namespace":
-        """TODO"""
+        """Set an attribute value"""
         if self._final and not hasattr(self, name):
             raise ValueError(f"Can't set attribute '{name}'. '{self.__name__}' Namespace is final")
         if not hasattr(self, name):
@@ -120,7 +120,7 @@ class Namespace:
         return self
 
     def item_at(self, index: int) -> Optional[Tuple[str, Any]]:
-        """TODO"""
+        """Get the item at the specified index."""
         # fmt: off
         return (
             self.attributes[index], self.values[index]
@@ -129,21 +129,19 @@ class Namespace:
         # fmt: on
 
     def items(self) -> Iterator[Tuple[str, Any]]:
-        """TODO"""
+        """Get all namespace items."""
         return iter(self)
 
     def hasattr(self, *names: str) -> bool:
-        """TODO"""
+        """Check whether the namespace contains the specified attributes."""
         return self.__contains__(*names)
 
     def _asdict(self) -> Dict[str, Any]:
-        """
-        To match the same function name as namedtuple, we used _asdict
-        """
+        """Return this namespace as dictionary. To match the same function name from namedtuple, we used _asdict."""
         return dict(zip(self.attributes, self.values))
 
     def _check_name(self, name: str) -> None:
-        """TODO"""
+        """Return whether the specified is a valid namespace attribute name."""
         # fmt: off
         if not (
             self.hasattr(name)
@@ -155,5 +153,5 @@ class Namespace:
         ):
             raise NameError(
                 f"Invalid attribute name '{name}'. "
-                f"Attributes can't start with '_' or '__' and must not be in {forbidden}")
+                f"Attributes can't start with '_' or '__' and must not match {forbidden}")
         # fmt: on

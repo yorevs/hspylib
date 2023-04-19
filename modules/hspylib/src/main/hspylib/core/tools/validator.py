@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Tuple, Type
 
-from hspylib.core.zoned_datetime import DATETIME_FORMAT
+from hspylib.core.zoned_datetime import SIMPLE_DATETIME_FORMAT
 
 
 class Validator(ABC):
@@ -56,7 +56,7 @@ class Validator(ABC):
         return name.upper() in enum_type.__dict__
 
     @staticmethod
-    def is_date(date_text: str, fmt: str = DATETIME_FORMAT) -> bool:
+    def is_date(date_text: str, fmt: str = SIMPLE_DATETIME_FORMAT) -> bool:
 
         try:
             datetime.strptime(date_text, fmt)

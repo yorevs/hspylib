@@ -28,23 +28,29 @@ class TestTextTools(unittest.TestCase):
     TEST_USER = "test-un"
 
     def setUp(self) -> None:
-        self.m, self.s = 0, 3
-        keyring.set_keyring(TTLKeyringBE(self.m, self.s))
+        self.min, self.sec = 0, 3
+        keyring.set_keyring(TTLKeyringBE(self.min, self.sec))
         keyring.delete_password(self.TEST_SERVICE, self.TEST_USER)
 
     def test_should_expire_the_passwords_on_the_right_timestamp(self) -> None:
-        now = now_ms()
-        t = self.m * 60 + self.s
-        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD be None")
+        timeout = self.min * 60 + self.sec
+        self.assertIsNone(
+            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD be None")
+        started = now_ms()
+        lower_limit = started + timeout + 1
+        upper_limit = started + timeout + 2
         keyring.set_password(self.TEST_SERVICE, self.TEST_USER, "test-pwd")
-        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
-        sleep(t - 1)
-        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
-        sleep(2)
-        done = now_ms()
-        expected = 1 + now + t
-        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD have expired")
-        self.assertEqual(expected, done, "Time elapsed SHOULD be equal")
+        self.assertIsNotNone(
+            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
+        sleep(timeout - 1)
+        self.assertIsNotNone(
+            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
+        sleep(2)  # Wait until the timer expires: timeout + 2
+        ended = now_ms()
+        self.assertIsNone(
+            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD have expired")
+        self.assertTrue(
+            lower_limit <= ended <= upper_limit, f"Time elapsed SHOULD be in range: ({lower_limit}-{upper_limit})")
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ from hspylib.modules.cli.vt100.vt_color import VtColor
 
 class HttpCode(Enumeration):
     """HTTP status code constants defined by the proposed HTTP/1.1 specification at http://www.ietf.org/rfc/rfc2068.txt.
-    Ref:http://www.cs.ait.ac.th/~on/O/oreilly/java-ent/servlet/appc_01.htm
+    Ref:. http://www.cs.ait.ac.th/~on/O/oreilly/java-ent/servlet/appc_01.htm
     """
 
     # fmt: off
