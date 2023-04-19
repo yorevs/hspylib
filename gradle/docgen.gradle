@@ -59,10 +59,34 @@ String processPythonHeader(File file, String header_template) {
 
 /* Tasks ------------------------------------------------------------------- */
 
+/* Optimize python imports */
+task optimizeImports(type: Task) {
+  group = 'Documentation'
+  description = 'Optimize python imports'
+  doLast {
+    exec {
+      commandLine rootProject.python, '-m', 'isort', '--fas', '--profile', 'django', sourceRoot
+    }
+  }
+}
+
+/* Reformat the python code using black */
+task reformatCode(type: Task) {
+  group = 'Documentation'
+  description = 'Reformat the python code using black'
+  finalizedBy optimizeImports
+  doLast {
+    exec {
+      commandLine rootProject.python, '-m', 'black', '--fast', '-C', '-t', 'py310', '-l', 120, sourceRoot
+    }
+  }
+}
+
 /* Synchronize python file headers (doc strings) */
 task syncPythonHeaders(type: Task) {
   group = 'Documentation'
   description = 'Synchronize python file headers (doc strings)'
+  finalizedBy optimizeImports
   doLast {
     def replaceHeaders = project.hasProperty("replaceHeaders")
     println "Synchronizing python headers replace: ${replaceHeaders}"
@@ -101,28 +125,3 @@ task syncPythonHeaders(type: Task) {
     println "Finished processing all python files"
   }
 }
-
-/* Optimize python imports */
-task optimizeImports(type: Task) {
-  group = 'Documentation'
-  description = 'Optimize python imports'
-  doLast {
-    exec {
-      commandLine rootProject.python, '-m', 'isort', '--fas', '--profile', 'django', sourceRoot
-    }
-  }
-}
-
-/* Reformat the python code using black */
-task reformatCode(type: Task) {
-  group = 'Documentation'
-  description = 'Reformat the python code using black'
-  doLast {
-    exec {
-      commandLine rootProject.python, '-m', 'black', '--fast', '-C', '-t', 'py310', '-l', 120, sourceRoot
-    }
-  }
-}
-
-syncPythonHeaders.finalizedBy("optimizeImports")
-reformatCode.finalizedBy("optimizeImports")
