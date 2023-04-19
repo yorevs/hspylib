@@ -5,10 +5,5 @@
 # Package: test
 """Package initialization."""
 
-__all__ = [
-  'core', 
-  'mock', 
-  'modules', 
-  'shared'
-]
-__version__ = '0.11.168'
+__all__ = ["core", "mock", "modules", "shared"]
+__version__ = "0.11.168"

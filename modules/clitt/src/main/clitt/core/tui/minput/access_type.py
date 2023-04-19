@@ -17,8 +17,7 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class AccessType(Enumeration):
-    """MenuInput input field access types.
-    """
+    """MenuInput input field access types."""
 
     # fmt: off
     NO_ACCESS   = "no-access"

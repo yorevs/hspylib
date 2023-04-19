@@ -25,8 +25,7 @@ def subscribe(**kwargs) -> Callable:
     """Method decorator to subscribe to a given bus event."""
 
     def subscribe_closure(func) -> None:
-        check_argument(
-            func.__code__.co_argcount >= 1, "Subscriber callbacks require at least one parameter.")
+        check_argument(func.__code__.co_argcount >= 1, "Subscriber callbacks require at least one parameter.")
         missing = next((p for p in ["bus", "event"] if p not in kwargs), None)
         check_argument(missing is None, f"Missing required parameter: '{missing}: str'.")
         EventBus.get(str(kwargs["bus"])).subscribe(str(kwargs["event"]), func)

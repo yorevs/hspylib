@@ -26,7 +26,6 @@ class Property:
     def __init__(
         self, name: str, title: str, description: str, s_type: JsonType, default: Any = None, required: bool = True
     ):
-
         self.name = name
         self.title = title
         self.description = description

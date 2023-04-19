@@ -20,12 +20,11 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from typing import Callable, Optional, TypeVar
 
-ON_TRIGGER_CB = TypeVar('ON_TRIGGER_CB', bound=Callable[['TUIMenu'], Optional['TUIMenu']])
+ON_TRIGGER_CB = TypeVar("ON_TRIGGER_CB", bound=Callable[["TUIMenu"], Optional["TUIMenu"]])
 
 
-class TUIMenu(TUIComponent['TUIMenu'], ABC):
-    """Provide a base class for terminal UI menus.
-    """
+class TUIMenu(TUIComponent["TUIMenu"], ABC):
+    """Provide a base class for terminal UI menus."""
 
     @staticmethod
     def wait_keystroke(wait_message: str = None) -> None:
@@ -35,15 +34,11 @@ class TUIMenu(TUIComponent['TUIMenu'], ABC):
         sysout(wait_message or "%YELLOW%%EOL%Press any key to continue%EOL%%NC%")
         Keyboard.wait_keystroke()
 
-    def __init__(
-        self,
-        parent: Optional['TUIMenu'] = None,
-        title: Optional[str] = None,
-        tooltip: Optional[str] = None):
-        super().__init__(title or '')
+    def __init__(self, parent: Optional["TUIMenu"] = None, title: Optional[str] = None, tooltip: Optional[str] = None):
+        super().__init__(title or "")
 
-        self._tooltip: str = tooltip or ''
-        self._parent: Optional['TUIMenu'] = parent
+        self._tooltip: str = tooltip or ""
+        self._parent: Optional["TUIMenu"] = parent
         self._on_trigger: ON_TRIGGER_CB = self._default_trigger_cb
 
     def __str__(self) -> str:
@@ -53,7 +48,7 @@ class TUIMenu(TUIComponent['TUIMenu'], ABC):
         return str(self)
 
     @property
-    def parent(self) -> Optional['TUIMenu']:
+    def parent(self) -> Optional["TUIMenu"]:
         return self._parent
 
     @property
@@ -76,15 +71,14 @@ class TUIMenu(TUIComponent['TUIMenu'], ABC):
         )
 
     def _breadcrumb(self) -> str:
-        """Provide a breadcrumb of menus for navigation purposes.
-        """
+        """Provide a breadcrumb of menus for navigation purposes."""
         return (
             f"{self.prefs.breadcrumb_color.placeholder}"
             f" {NavIcons.BREADCRUMB} {self._title} %NC%"
             f"{self.prefs.tooltip_color.placeholder}"
         )
 
-    def _default_trigger_cb(self, source: Optional['TUIMenu']) -> Optional['TUIMenu']:
+    def _default_trigger_cb(self, source: Optional["TUIMenu"]) -> Optional["TUIMenu"]:
         """Provide a default trigger callback when a menu is activated. Provided a source menu, returns it's parent.
         :param source: the source which invoked this menu.
         """

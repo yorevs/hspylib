@@ -26,8 +26,7 @@ IDENTITY = Union[Tuple, int, str, UUID]
 
 
 class Identity(Namespace):
-    """Represent a unique identity of an entity.
-    """
+    """Represent a unique identity of an entity."""
 
     @classmethod
     def auto(cls, field_name: str = "id", id_type: Type = UUID) -> "Identity":
@@ -63,8 +62,7 @@ class Identity(Namespace):
         return self._identity
 
     def _asdict(self) -> Dict[str, Any]:
-        """Return a new dict which maps field names to their values.
-        """
+        """Return a new dict which maps field names to their values."""
         return self._identity._asdict()
 
     def as_column_set(self, separator: str = ",") -> str:

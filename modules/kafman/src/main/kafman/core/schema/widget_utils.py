@@ -88,7 +88,6 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_combo_box(widget: HComboBox, symbols: List[str], tooltip: str = None, default: str = None) -> QWidget:
-
         widget.addItems(symbols or default or [])
         widget.setEditable(True)
         widget.lineEdit().setPlaceholderText(tooltip)
@@ -98,7 +97,6 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_list(widget: HListWidget, tooltip: str = None, all_items: List[str] = None) -> QWidget:
-
         list(map(widget.set_item, all_items or []))
         widget.set_editable()
         widget.set_selectable()
@@ -108,14 +106,12 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_checkbox(widget: QCheckBox, tooltip: str = None, default: Union[int, float] = False) -> QWidget:
-
         widget.setChecked(default or False)
 
         return WidgetUtils.setup_widget_commons(widget, tooltip)
 
     @staticmethod
     def setup_spin_box(widget: QSpinBox, tooltip: str = None, default: int = 0) -> QWidget:
-
         min_val, max_val = 0, 9999
         widget.setMinimum(min_val)
         widget.setMaximum(max_val)
@@ -126,7 +122,6 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_double_spin_box(widget: QDoubleSpinBox, tooltip: str = None, default: float = 0.0) -> QWidget:
-
         min_val, max_val = 0.0, 9999.9999
         widget.setMinimum(min_val)
         widget.setMaximum(max_val)
@@ -137,7 +132,6 @@ class WidgetUtils(ABC):
 
     @staticmethod
     def setup_line_edit(widget: QLineEdit, tooltip: str = None, default: str = "") -> QWidget:
-
         widget.setPlaceholderText(tooltip)
         widget.setText(default or "")
 

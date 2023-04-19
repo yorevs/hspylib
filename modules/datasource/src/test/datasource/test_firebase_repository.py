@@ -29,7 +29,6 @@ import unittest
 
 @integration_test
 class TestClass(unittest.TestCase):
-
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:

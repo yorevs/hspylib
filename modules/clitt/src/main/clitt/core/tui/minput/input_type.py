@@ -16,8 +16,7 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class InputType(Enumeration):
-    """MenuInput input field types.
-    """
+    """MenuInput input field types."""
 
     # fmt: off
     TEXT        = "text"

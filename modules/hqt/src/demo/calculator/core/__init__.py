@@ -5,7 +5,5 @@
 # Package: demo.calculator.core
 """Package initialization."""
 
-__all__ = [
-  'operations'
-]
-__version__ = '0.9.2'
+__all__ = ["operations"]
+__version__ = "0.9.2"

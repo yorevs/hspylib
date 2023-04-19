@@ -109,8 +109,7 @@ class WidgetSendMsg(Widget):
         return ExitStatus.SUCCESS
 
     def cleanup(self) -> None:
-        """Stops workers and close socket connection.
-        """
+        """Stops workers and close socket connection."""
         sysout("Terminating threads%NC%")
         self.is_alive = False
         if self.net_type == self.NET_TYPE_TCP:
@@ -118,8 +117,7 @@ class WidgetSendMsg(Widget):
             self.socket.close()
 
     def _prompt(self) -> bool:
-        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info.
-        """
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -219,8 +217,7 @@ class WidgetSendMsg(Widget):
         return bool(self._args)
 
     def _init_sockets(self) -> None:
-        """Initialize sockets.
-        """
+        """Initialize sockets."""
         if self.net_type == self.NET_TYPE_UDP:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         else:
@@ -232,8 +229,7 @@ class WidgetSendMsg(Widget):
                 raise WidgetExecutionError("Unable to initialize sockets") from err
 
     def _start_send(self) -> None:
-        """Start sending packets.
-        """
+        """Start sending packets."""
         thread_relief = 0.05
         self._init_sockets()
         sysout(
@@ -253,8 +249,7 @@ class WidgetSendMsg(Widget):
             sleep(2 * thread_relief)
 
     def _send_packet(self, thread_num: int) -> None:
-        """Send a packet.
-        """
+        """Send a packet."""
         lock = threading.Lock()
 
         while self.is_alive and self.packets <= 0 or self.counter <= self.packets:

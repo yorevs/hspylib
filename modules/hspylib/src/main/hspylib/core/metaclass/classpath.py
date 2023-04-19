@@ -32,7 +32,6 @@ class Classpath(metaclass=Singleton):
     INSTANCE = None
 
     def __init__(self, source_root: AnyPath = None, run_dir: AnyPath = None, resource_dir: AnyPath = None):
-
         if source_root:
             check_state(Path(str(source_root)).exists(), "source_root must exist")
         if run_dir:
@@ -66,6 +65,7 @@ class Classpath(metaclass=Singleton):
     @classmethod
     def list_resources(cls) -> str:
         """Walk through resources directory and build a list with all files"""
+
         def list_resources_closure(directory: str | Path, depth: int = 4) -> Optional[str]:
             """Closure for list_resources method"""
             if os.path.exists(directory):

@@ -60,7 +60,6 @@ class SettingsDialog(QObject):
     def __init__(
         self, parent: QWidget, settings_type: "SettingsType", current_settings: dict, settings_widget: HListWidget
     ):
-
         super().__init__(parent)
         ui_class, base_class = uic.loadUiType(self.DIALOG_FORM)
         check_not_none((ui_class, base_class))

@@ -93,11 +93,9 @@ class VtCode(Enumeration):
                 args = cmd[1][1:-1] if cmd[1] else None
                 if args:  # If has args we need to invoke the vt100 function
                     if fnc := VtCode.value_of(mnemonic).__call__:
-                        input_string = input_string \
-                            .replace(f"%{mnemonic + cmd[1]}%", fnc(args) if fnc else "")
+                        input_string = input_string.replace(f"%{mnemonic + cmd[1]}%", fnc(args) if fnc else "")
                 else:
-                    input_string = input_string \
-                        .replace(f"%{mnemonic}%", str(VtCode.value_of(mnemonic).value))
+                    input_string = input_string.replace(f"%{mnemonic}%", str(VtCode.value_of(mnemonic).value))
 
         return input_string
 

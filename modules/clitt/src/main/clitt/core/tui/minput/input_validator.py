@@ -33,7 +33,7 @@ class InputValidator(Validator):
         # fmt: on
 
     @classmethod
-    def custom(cls, pattern: str, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+    def custom(cls, pattern: str, min_length: int = 1, max_length: int = 30) -> "InputValidator":
         """Return a custom validator that allows customize the input rules.
         :param pattern: the custom validator pattern.
         :param min_length: the minimum length required.
@@ -45,7 +45,7 @@ class InputValidator(Validator):
         return validator
 
     @classmethod
-    def letters(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+    def letters(cls, min_length: int = 1, max_length: int = 30) -> "InputValidator":
         """Return a validator that allows only letters.
         :param min_length: the minimum length required.
         :param max_length: the maximum length allowed.
@@ -53,7 +53,7 @@ class InputValidator(Validator):
         return InputValidator(min_length, max_length, cls.PatternType.LETTERS)
 
     @classmethod
-    def numbers(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+    def numbers(cls, min_length: int = 1, max_length: int = 30) -> "InputValidator":
         """Return a validator that allows only numbers.
         :param min_length: the minimum length required.
         :param max_length: the maximum length allowed.
@@ -61,7 +61,7 @@ class InputValidator(Validator):
         return InputValidator(min_length, max_length, cls.PatternType.NUMBERS)
 
     @classmethod
-    def words(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+    def words(cls, min_length: int = 1, max_length: int = 30) -> "InputValidator":
         """Return a validator that allows only words (space, numbers or letters).
         :param min_length: the minimum length required.
         :param max_length: the maximum length allowed.
@@ -69,7 +69,7 @@ class InputValidator(Validator):
         return InputValidator(min_length, max_length, cls.PatternType.WORDS)
 
     @classmethod
-    def anything(cls, min_length: int = 1, max_length: int = 30) -> 'InputValidator':
+    def anything(cls, min_length: int = 1, max_length: int = 30) -> "InputValidator":
         """Return a validator that allows any input value.
         :param min_length: the minimum length required.
         :param max_length: the maximum length allowed.
@@ -83,9 +83,9 @@ class InputValidator(Validator):
         self._pattern = pattern_type.value
 
     def __str__(self) -> str:
-        return f'r"{self.pattern}"' \
-            if InputValidator.pattern_type == self.PatternType.CUSTOM \
-            else self.pattern_type.name
+        return (
+            f'r"{self.pattern}"' if InputValidator.pattern_type == self.PatternType.CUSTOM else self.pattern_type.name
+        )
 
     def __repr__(self):
         return str(self)
@@ -94,15 +94,16 @@ class InputValidator(Validator):
         return all(self.validate(value) for value in args)
 
     def validate(self, value: str) -> bool:
-        """Validate the value against the validator rules.
-        """
+        """Validate the value against the validator rules."""
         return bool(re.match(self.pattern, value))
 
     @property
     def pattern(self) -> str:
-        return str(self._pattern) \
-            .replace("%min%", str(self._min_length or 1)) \
+        return (
+            str(self._pattern)
+            .replace("%min%", str(self._min_length or 1))
             .replace("%max%", str(self._max_length or 30))
+        )
 
     @pattern.setter
     def pattern(self, pattern: str) -> None:

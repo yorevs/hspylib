@@ -23,8 +23,7 @@ import json
 
 
 class CrudEntity(Namespace):
-    """Generic CRUD entity type.
-    """
+    """Generic CRUD entity type."""
 
     def __init__(self, entity_id: Identity | None = None, **kwargs):
         super().__init__(self.__class__.__name__, **kwargs)
@@ -37,8 +36,7 @@ class CrudEntity(Namespace):
         return self._identity
 
     def as_dict(self) -> Dict[str, Any]:
-        """Convert the entity into a dictionary object.
-        """
+        """Convert the entity into a dictionary object."""
 
         ret_dict = {}
         for key, value in zip(self.attributes, self.values):
@@ -55,15 +53,11 @@ class CrudEntity(Namespace):
         return ret_dict
 
     def as_json(self, indent: int = None) -> str:
-        """Convert the entity into a json object.
-        """
+        """Convert the entity into a json object."""
         return json.dumps(self.as_dict(), indent=indent)
 
     def as_column_set(
-        self,
-        separator: str = ", ",
-        prefix: str | None = None,
-        exclude: Iterable[str] | None = None
+        self, separator: str = ", ", prefix: str | None = None, exclude: Iterable[str] | None = None
     ) -> str:
         """Return all attributes listed as tokenized 'columns = value'.
         :param separator: the separator character.

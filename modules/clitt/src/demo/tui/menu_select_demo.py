@@ -32,10 +32,7 @@ class SelectableItem:
 
 if __name__ == "__main__":
     TUIPreferences(
-        max_rows=10,
-        highlight_color=VtColor.WHITE,
-        selected=NavIcons.SELECTED,
-        unselected=NavIcons.UNSELECTED,
+        max_rows=10, highlight_color=VtColor.WHITE, selected=NavIcons.SELECTED, unselected=NavIcons.UNSELECTED
     )
     quantity = 22
     digits = len(str(quantity))

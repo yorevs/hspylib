@@ -22,7 +22,7 @@ from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import eol
 from typing import TypeVar
 
-AwesomeClass = TypeVar('AwesomeClass')
+AwesomeClass = TypeVar("AwesomeClass")
 
 
 def demo_icons(awesome: AwesomeClass = Awesome, split_columns: int = 16) -> None:
@@ -31,18 +31,18 @@ def demo_icons(awesome: AwesomeClass = Awesome, split_columns: int = 16) -> None
         sysout(f"{n}: {v:2}", end=eol(i, split_columns))
 
 
-if __name__ == '__main__':
-    print('\nAppIcons ' + '-' * 30)
+if __name__ == "__main__":
+    print("\nAppIcons " + "-" * 30)
     demo_icons(awesome=AppIcons, split_columns=10)
 
-    print('\n\nDashboardIcons ' + '-' * 30)
+    print("\n\nDashboardIcons " + "-" * 30)
     demo_icons(awesome=DashboardIcons, split_columns=10)
 
-    print('\n\nFormIcons ' + '-' * 30)
+    print("\n\nFormIcons " + "-" * 30)
     demo_icons(awesome=FormIcons, split_columns=10)
 
-    print('\n\nNavIcons ' + '-' * 30)
+    print("\n\nNavIcons " + "-" * 30)
     demo_icons(awesome=NavIcons, split_columns=10)
 
-    print('\n\nWidgetIcons ' + '-' * 30)
+    print("\n\nWidgetIcons " + "-" * 30)
     demo_icons(awesome=WidgetIcons, split_columns=10)

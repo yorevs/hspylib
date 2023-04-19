@@ -19,15 +19,10 @@ from hspylib.core.namespace import Namespace
 
 
 class ContactForms:
-
     @staticmethod
     def person_form(
-        name: str = '',
-        age: int = 0,
-        phone: str = '',
-        email: str = '',
-        address: str = '',
-        cpl: str = '') -> Namespace:
+        name: str = "", age: int = 0, phone: str = "", email: str = "", address: str = "", cpl: str = ""
+    ) -> Namespace:
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -62,16 +57,12 @@ class ContactForms:
                 .build() \
             .build()
         # fmt: on
-        return minput(form_fields, 'Please fill the person form below')
+        return minput(form_fields, "Please fill the person form below")
 
     @staticmethod
     def company_form(
-        name: str = '',
-        cnpj: str = '',
-        phone: str = '',
-        website: str = '',
-        address: str = '',
-        cpl: str = '') -> Namespace:
+        name: str = "", cnpj: str = "", phone: str = "", website: str = "", address: str = "", cpl: str = ""
+    ) -> Namespace:
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -106,4 +97,4 @@ class ContactForms:
                 .build() \
             .build()
         # fmt: on
-        return minput(form_fields, 'Please fill the person form below')
+        return minput(form_fields, "Please fill the person form below")

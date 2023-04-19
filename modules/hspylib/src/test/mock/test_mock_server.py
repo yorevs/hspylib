@@ -27,7 +27,6 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestClass(unittest.TestCase):
-
     # Setup tests
     def setUp(self):
         resource_dir = "{}/resources".format(TEST_DIR)

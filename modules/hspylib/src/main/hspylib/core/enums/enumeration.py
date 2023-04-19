@@ -22,7 +22,7 @@ E = TypeVar("E", bound="Enumeration")
 def composable(cls: type):
     """Make the enumeration class, composable"""
     check_argument(issubclass(cls, Enumeration))
-    setattr(cls.__class__, '_CUSTOM', auto())
+    setattr(cls.__class__, "_CUSTOM", auto())
     return cls
 
 

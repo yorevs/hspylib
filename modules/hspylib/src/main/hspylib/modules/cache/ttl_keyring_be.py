@@ -27,7 +27,6 @@ PWD_EXPIRED_CB = Callable[[str], Any]
 
 
 class TTLKeyringBE(ChainerBackend):
-
     priority = 1
 
     def __init__(self, ttl_minutes: int = 15, ttl_seconds: int = 0, cb_expired: PWD_EXPIRED_CB = None) -> None:

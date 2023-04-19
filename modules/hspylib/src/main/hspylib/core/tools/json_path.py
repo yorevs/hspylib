@@ -18,7 +18,7 @@ from typing import Any, TypeVar
 
 import re
 
-JSON_ELEMENT = TypeVar('JSON_ELEMENT', bound=[list, dict, unicode])
+JSON_ELEMENT = TypeVar("JSON_ELEMENT", bound=[list, dict, unicode])
 
 
 class JsonPath:
@@ -28,10 +28,8 @@ class JsonPath:
     RE_JSON_ARRAY_INDEX = "[0-9]{1,}"
 
     def __init__(
-        self,
-        separator: str = ".",
-        json_name_re: str = RE_JSON_NAME,
-        json_array_index_re: str = RE_JSON_ARRAY_INDEX):
+        self, separator: str = ".", json_name_re: str = RE_JSON_NAME, json_array_index_re: str = RE_JSON_ARRAY_INDEX
+    ):
         """Construction"""
 
         self.separator = separator
@@ -43,10 +41,8 @@ class JsonPath:
         self.pat_sub_expr_val = None
 
     def _find_next_element(
-        self, root_element: JSON_ELEMENT,
-        match_name: str,
-        match_value: Any = None,
-        fetch_parent: bool = False) -> JSON_ELEMENT:
+        self, root_element: JSON_ELEMENT, match_name: str, match_value: Any = None, fetch_parent: bool = False
+    ) -> JSON_ELEMENT:
         """Find the next element in the list matching the specified value."""
 
         selected_element = root_element
@@ -78,31 +74,21 @@ class JsonPath:
         return selected_element
 
     def _find_in_sub_expr(
-        self,
-        sub_expr: JSON_ELEMENT,
-        sub_sel_el: JSON_ELEMENT,
-        pat_subst_expr_val: Any,
-        fetch_parent: bool = False) -> JSON_ELEMENT:
+        self, sub_expr: JSON_ELEMENT, sub_sel_el: JSON_ELEMENT, pat_subst_expr_val: Any, fetch_parent: bool = False
+    ) -> JSON_ELEMENT:
         """Find the element in the sub-expressions."""
 
         for nextSubExpr in sub_expr:
-
             if nextSubExpr:
                 sub_parts = re.search(pat_subst_expr_val, nextSubExpr)
                 sub_elem_id = sub_parts.group(1)
                 sub_elem_val = sub_parts.group(3)
-                sub_sel_el = self._find_next_element(
-                    sub_sel_el, sub_elem_id, sub_elem_val, fetch_parent
-                )
+                sub_sel_el = self._find_next_element(sub_sel_el, sub_elem_id, sub_elem_val, fetch_parent)
 
         return sub_sel_el
 
     # pylint: disable=too-many-branches,consider-using-f-string
-    def select(
-        self,
-        root_element: JSON_ELEMENT,
-        search_path: str,
-        fetch_parent: bool = False) -> JSON_ELEMENT:
+    def select(self, root_element: JSON_ELEMENT, search_path: str, fetch_parent: bool = False) -> JSON_ELEMENT:
         """
         Get the json element through it's path. Returned object is either [dict, list or unicode].
 

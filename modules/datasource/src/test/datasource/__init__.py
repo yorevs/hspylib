@@ -6,10 +6,10 @@
 """Package initialization."""
 
 __all__ = [
-  'test_firebase_repository', 
-  'test_mysql_repository', 
-  'test_postgres_repository', 
-  'test_redis_repository', 
-  'test_sqlite_repository'
+    "test_firebase_repository",
+    "test_mysql_repository",
+    "test_postgres_repository",
+    "test_redis_repository",
+    "test_sqlite_repository",
 ]
-__version__ = '0.9.28'
+__version__ = "0.9.28"

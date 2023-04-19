@@ -48,8 +48,10 @@ class ChainedArgumentsBuilder:
 
         add_arg = partial(
             self._current.add_argument,
-            help=help_string or f"the {name}", dest=name,
-            action=action.value, default=default,
+            help=help_string or f"the {name}",
+            dest=name,
+            action=action.value,
+            default=default,
         )
         if action == ParserAction.STORE:
             add_arg(choices=choices, nargs=nargs)
@@ -74,9 +76,13 @@ class ChainedArgumentsBuilder:
 
         add_arg = partial(
             self._current.add_argument,
-            f"-{shortopt.replace('^-', '')[0]}", f"--{longopt.replace('^-*', '')}",
-            dest=name, help=help_string or f"the {longopt}", required=required,
-            action=action.value, default=default
+            f"-{shortopt.replace('^-', '')[0]}",
+            f"--{longopt.replace('^-*', '')}",
+            dest=name,
+            help=help_string or f"the {longopt}",
+            required=required,
+            action=action.value,
+            default=default,
         )
         if action == ParserAction.STORE:
             add_arg(choices=choices, nargs=nargs)

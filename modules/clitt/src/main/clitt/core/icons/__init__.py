@@ -5,8 +5,5 @@
 # Package: main.clitt.core.icons
 """Package initialization."""
 
-__all__ = [
-  'emojis', 
-  'font_awesome'
-]
-__version__ = '0.9.20'
+__all__ = ["emojis", "font_awesome"]
+__version__ = "0.9.20"

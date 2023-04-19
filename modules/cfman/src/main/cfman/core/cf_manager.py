@@ -37,19 +37,23 @@ import sys
 
 
 class CFManager:
-    """Responsible for the CloudFoundry application functionalities.
-    """
+    """Responsible for the CloudFoundry application functionalities."""
 
     CFMAN_ACTIONS = [
-        "Information", "Target", "Logs",
-        "Start", "Stop", "Restart", "Restage",
-        "Status", "Blue-Green-Check"
+        "Information",
+        "Target",
+        "Logs",
+        "Start",
+        "Stop",
+        "Restart",
+        "Restage",
+        "Status",
+        "Blue-Green-Check",
     ]
 
     @staticmethod
     def _abort():
-        """Abort the execution and exit.
-        """
+        """Abort the execution and exit."""
         sys.exit(1)
 
     @staticmethod
@@ -57,18 +61,14 @@ class CFManager:
         """Whether the action allows multiple application selection or not.
         :param action the action to check
         """
-        return action.lower() in [
-            "start", "stop", "restart", "restage"
-        ]
+        return action.lower() in ["start", "stop", "restart", "restage"]
 
     @staticmethod
     def _is_callable(action: str) -> bool:
         """Whether the provided action is callable or not.
         :param action the action to check
         """
-        return action.lower() in [
-            "logs", "start", "stop", "restart", "restage"
-        ]
+        return action.lower() in ["logs", "start", "stop", "restart", "restage"]
 
     @staticmethod
     def required_states(action: str) -> str | Tuple[str, str]:
@@ -83,16 +83,7 @@ class CFManager:
             case _:
                 return "started", "stopped"
 
-    def __init__(
-        self,
-        api: str,
-        org: str,
-        space: str,
-        username: str,
-        password: str,
-        no_cache: str,
-        cf_endpoints: str):
-
+    def __init__(self, api: str, org: str, space: str, username: str, password: str, no_cache: str, cf_endpoints: str):
         self._cf = CloudFoundry()
         self._cache = TTLCache()
         self._api = api
@@ -114,7 +105,8 @@ class CFManager:
             f"{'USER:':>6} {self._username}%EOL%"
             f"{'ORG:':>6} {self._org}%EOL%"
             f"{'SPACE:':>6} {self._space}%EOL%"
-            f"{'-=' * 40}")
+            f"{'-=' * 40}"
+        )
 
     def __repr__(self) -> str:
         return str(self)
@@ -124,8 +116,7 @@ class CFManager:
         return self._get_apps() or []
 
     def run(self) -> None:
-        """Run the main cf manager application flow.
-        """
+        """Run the main cf manager application flow."""
         sysout("%BLUE%Checking CloudFoundry authorization...")
         if self._cf.is_logged():
             self._api = self._cf.api()
@@ -154,8 +145,7 @@ class CFManager:
 
     @retry(exceptions=CFConnectionError, tries=3, delay=2, backoff=3, max_delay=30)
     def _select_endpoint(self) -> None:
-        """Select the PCF endpoint to connect to.
-        """
+        """Select the PCF endpoint to connect to."""
         try:
             with open(self._cf_endpoints_file, "r", encoding="utf-8") as f_hosts:
                 endpoints = list(map(lambda l: CFEndpoint(*l.strip().split(",")), f_hosts.readlines()))
@@ -171,34 +161,40 @@ class CFManager:
                         else:
                             syserr(
                                 CFConnectionError(
-                                    f"Failed to contact CF API %EOL%"
-                                    f"  Status: ({response.status_code}): {selected}"))
+                                    f"Failed to contact CF API %EOL%" f"  Status: ({response.status_code}): {selected}"
+                                )
+                            )
                             self._abort()
                     except requests.exceptions.ConnectionError as err:
                         syserr(
                             CFConnectionError(
                                 f"Failed to connect to CloudFoundry API%EOL%"
                                 f"  Host: '{selected.host}'%EOL%"
-                                f"  => {err.__class__.__name__}"))
+                                f"  => {err.__class__.__name__}"
+                            )
+                        )
                         self._abort()
                 else:
                     syserr(
                         CFExecutionError(
-                            f"No endpoint yet configured. Please create the file \"{self._cf_endpoints_file}\" "
-                            f"with at least one endpoint and try again!"))
+                            f'No endpoint yet configured. Please create the file "{self._cf_endpoints_file}" '
+                            f"with at least one endpoint and try again!"
+                        )
+                    )
                     self._abort()
         except (IndexError, FileNotFoundError) as err:
             syserr(
                 CFExecutionError(
-                    f"Endpoint file \"{self._cf_endpoints_file}\" is invalid: %EOL%"
+                    f'Endpoint file "{self._cf_endpoints_file}" is invalid: %EOL%'
                     f"  => {str(err)}! %EOL%"
                     f"Make sure it exists contains the following: %EOL%"
-                    f"<alias>,<cf_api_url>,<protected [true|false]>%EOL%"))
+                    f"<alias>,<cf_api_url>,<protected [true|false]>%EOL%"
+                )
+            )
             self._abort()
 
     def _prompt_credentials(self) -> None:
-        """Prompt the user for his PCF credentials.
-        """
+        """Prompt the user for his PCF credentials."""
         # fmt: off
         form_fields = (
             MenuInput.builder()
@@ -222,8 +218,7 @@ class CFManager:
             self._abort()
 
     def _authorize(self) -> bool:
-        """Send an authorization request to PCF.
-        """
+        """Send an authorization request to PCF."""
         if not self._cf.api(self._api):
             raise CFExecutionError(f"Unable to set API: => {self._cf.last_output}")
         if not self._cf.auth(self._username, self._password):
@@ -232,10 +227,9 @@ class CFManager:
         return True
 
     def _set_org(self) -> None:
-        """Set the active PCF organization.
-        """
+        """Set the active PCF organization."""
         if not self._org:
-            sysout(f"%BLUE%Retrieving all organizations from api: \"{self._api}\"...")
+            sysout(f'%BLUE%Retrieving all organizations from api: "{self._api}"...')
             if not (orgs := self._cf.orgs()):
                 raise CFExecutionError(f"Unable to retrieve organizations: => {self._cf.last_output}")
             self._org = mselect(orgs, title="Please select the PCF organization")
@@ -245,11 +239,10 @@ class CFManager:
                 self._target()
 
     def _set_space(self) -> None:
-        """Set the active PCF space.
-        """
+        """Set the active PCF space."""
         if not self._space:
             if self._no_cache or not (spaces := self._cache.read(f"cf-spaces-{self._org}")):
-                sysout(f"%BLUE%Retrieving all spaces from org: \"{self._org}\"...")
+                sysout(f'%BLUE%Retrieving all spaces from org: "{self._org}"...')
                 spaces = self._cf.spaces()
                 self._cache.save(f"cf-spaces-{self._org}", spaces)
             if not spaces:
@@ -261,17 +254,16 @@ class CFManager:
                 self._target()
 
     def _get_apps(self) -> List[CFApplication]:
-        """Retrieve all cf applications under the targeted org-space.
-        """
+        """Retrieve all cf applications under the targeted org-space."""
         if self._no_cache or not (apps := self._cache.read(f"cf-apps-{self._space}")):
-            sysout(f"%BLUE%Retrieving applications from space: \"{self._space}\"...")
+            sysout(f'%BLUE%Retrieving applications from space: "{self._space}"...')
             apps = self._cf.apps()
-            sysout(f"%GREEN%Found {len(apps)} apps in space: \"{self._space}\"")
+            sysout(f'%GREEN%Found {len(apps)} apps in space: "{self._space}"')
             self._cache.save(f"cf-apps-{self._space}", apps)
         if not apps:
             if "OK" not in self._cf.last_output:
                 raise CFExecutionError(f"Unable to retrieve applications: => {self._cf.last_output}")
-            syserr(f"%YELLOW%No applications found for space: \"{self._space}\"")
+            syserr(f'%YELLOW%No applications found for space: "{self._space}"')
         cf_apps = list(map(CFApplication.of, apps if apps else []))
         self._cf_apps = cf_apps
 
@@ -296,15 +288,13 @@ class CFManager:
         return mselect(self._cf_apps, title="Please select the application you want to manage")
 
     def _target(self) -> None:
-        """Attempt to target to a PCF org-space.
-        """
+        """Attempt to target to a PCF org-space."""
         if not self._cf.target(user=self._username, org=self._org, space=self._space):
             raise CFExecutionError(f"Unable to target ORG: {self._org} => {self._cf.last_output}")
         sleep(1)
 
     def _loop_actions(self) -> None:
-        """Wait for the user interactions.
-        """
+        """Wait for the user interactions."""
         while self._assert_target():
             if not (action := mselect(CFManager.CFMAN_ACTIONS, "Please select an action to perform")):
                 self._done = True
@@ -334,14 +324,11 @@ class CFManager:
         if not self._cf.is_targeted():
             self._target()
         if not self._org or not self._space or not self._cf.is_targeted():
-            raise CFExecutionError(
-                f"Unable to target ORG={self._org}  SPACE={self._space} => {self._cf.last_output}"
-            )
+            raise CFExecutionError(f"Unable to target ORG={self._org}  SPACE={self._space} => {self._cf.last_output}")
         return not self._done
 
     def _display_app_status(self) -> None:
-        """Display all PCF space-application statuses.
-        """
+        """Display all PCF space-application statuses."""
         apps = self.apps
 
         if len(apps) > 0:
@@ -354,11 +341,10 @@ class CFManager:
                 f"{'State':<9}{'Instances':<12}{'Mem':<6}{'Disk':<6}Routes%EOL%")
             # fmt: on
             list(map(CFApplication.print_status, apps))
-            sysout('-=' * 60 + '%EOL%')
+            sysout("-=" * 60 + "%EOL%")
 
     def _blue_green_check(self) -> None:
-        """Display all PCF space-application blue/green check.
-        """
+        """Display all PCF space-application blue/green check."""
         if len(self.apps) > 0:
             clear_screen()
             sysout(f"%BLUE%Checking blue/green deployments ...%EOL%")

@@ -5,7 +5,5 @@
 # Package: test.core.metaclass
 """Package initialization."""
 
-__all__ = [
-  'test_metaclass'
-]
-__version__ = '0.11.168'
+__all__ = ["test_metaclass"]
+__version__ = "0.11.168"

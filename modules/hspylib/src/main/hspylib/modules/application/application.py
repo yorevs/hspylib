@@ -71,7 +71,6 @@ class Application(metaclass=AbstractSingleton):
         resource_dir: str = None,
         log_dir: str = None,
     ):
-
         log.captureWarnings(True)
         hook_exit_signals(Application.exit)
 

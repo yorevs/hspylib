@@ -5,8 +5,5 @@
 # Package: demo.icons.font_awesome
 """Package initialization."""
 
-__all__ = [
-  'awesome_demo', 
-  'demo_icons'
-]
-__version__ = '0.9.20'
+__all__ = ["awesome_demo", "demo_icons"]
+__version__ = "0.9.20"

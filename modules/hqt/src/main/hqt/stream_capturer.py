@@ -78,7 +78,6 @@ class StreamCapturer(QThread):
         stdout_poll_interval: float = 0.5,
         stderr_poll_interval: float = 0.5,
     ):
-
         check_argument(capture_stderr or capture_stdout, "At least one capturer must be started")
         super().__init__()
         self.setObjectName("stream-capturer")

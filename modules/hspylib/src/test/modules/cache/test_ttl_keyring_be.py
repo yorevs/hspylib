@@ -22,7 +22,6 @@ import unittest
 
 
 class TestTextTools(unittest.TestCase):
-
     TEST_SERVICE = "test-srv"
     TEST_USER = "test-un"
 
@@ -33,23 +32,20 @@ class TestTextTools(unittest.TestCase):
 
     def test_should_expire_the_passwords_on_the_right_timestamp(self) -> None:
         timeout = self.min * 60 + self.sec
-        self.assertIsNone(
-            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD be None")
+        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD be None")
         started = now_ms()
         lower_limit = started + timeout + 1
         upper_limit = started + timeout + 2
         keyring.set_password(self.TEST_SERVICE, self.TEST_USER, "test-pwd")
-        self.assertIsNotNone(
-            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
+        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
         sleep(timeout - 1)
-        self.assertIsNotNone(
-            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
+        self.assertIsNotNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD NOT be None")
         sleep(2)  # Wait until the timer expires: timeout + 2
         ended = now_ms()
-        self.assertIsNone(
-            keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD have expired")
+        self.assertIsNone(keyring.get_password(self.TEST_SERVICE, self.TEST_USER), "Password SHOULD have expired")
         self.assertTrue(
-            lower_limit <= ended <= upper_limit, f"Time elapsed SHOULD be in range: ({lower_limit}-{upper_limit})")
+            lower_limit <= ended <= upper_limit, f"Time elapsed SHOULD be in range: ({lower_limit}-{upper_limit})"
+        )
 
 
 if __name__ == "__main__":

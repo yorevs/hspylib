@@ -23,13 +23,11 @@ import re
 import toml
 import yaml
 
-PROPERTIES = TypeVar('PROPERTIES', bound=[Dict[str, Any]])
+PROPERTIES = TypeVar("PROPERTIES", bound=[Dict[str, Any]])
 
 
 class ParserFactory(ABC):
-
     class PropertyParser:
-
         def __init__(self, parser: Callable[[TextIO], PROPERTIES]):
             self._parser = parser
 

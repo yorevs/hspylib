@@ -5,9 +5,5 @@
 # Package: main.clitt.core.tui.mdashboard
 """Package initialization."""
 
-__all__ = [
-  'dashboard_builder', 
-  'dashboard_item', 
-  'mdashboard'
-]
-__version__ = '0.9.20'
+__all__ = ["dashboard_builder", "dashboard_item", "mdashboard"]
+__version__ = "0.9.20"

@@ -19,7 +19,6 @@ from typing import List, Tuple
 
 
 class Person(CrudEntity):
-
     PersonId = namedtuple("PersonId", ["uuid"])
 
     @staticmethod

@@ -37,7 +37,6 @@ class HTableModel(QAbstractTableModel):
         cell_alignments: List[Qt.AlignmentFlag] = None,
         max_rows: int = 500,
     ):
-
         QAbstractTableModel.__init__(self, parent)
         self._parent = parent
         self._clazz = clazz

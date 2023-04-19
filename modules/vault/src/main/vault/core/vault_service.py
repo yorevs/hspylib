@@ -22,8 +22,7 @@ from vault.domain.vault_entry import VaultEntry
 
 
 class VaultService(CrudService[VaultRepository, VaultEntry]):
-    """Provides a CRUD service for the Vault application.
-    """
+    """Provides a CRUD service for the Vault application."""
 
     def __init__(self, vault_config: VaultConfig):
         super().__init__(VaultRepository(vault_config))
@@ -48,8 +47,7 @@ class VaultService(CrudService[VaultRepository, VaultEntry]):
         return self.list(Namespace("Filters", by_key_like=filters), ["key", "modified"])
 
     def create_vault_db(self) -> None:
-        """Create a brand new vault database file.
-        """
+        """Create a brand new vault database file."""
         self.repository.execute(
             dedent(
                 """

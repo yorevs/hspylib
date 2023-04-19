@@ -42,8 +42,7 @@ WELCOME_MESSAGE = f"My Application v{INITIAL_REVISION}"
 
 
 class AppManager(metaclass=Singleton):
-    """HsPyLib application manager that helps creating HsPyLib based applications and widgets.
-    """
+    """HsPyLib application manager that helps creating HsPyLib based applications and widgets."""
 
     # The directory containing all template files
     TEMPLATES = HERE / "templates"
@@ -65,8 +64,7 @@ class AppManager(metaclass=Singleton):
 
     @staticmethod
     def prompt() -> Namespace:
-        """Prompt for the application info.
-        """
+        """Prompt for the application info."""
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -179,7 +177,8 @@ class AppManager(metaclass=Singleton):
         sysout(f"Widget: {widget_name}")
         self._mkfile(
             f"widget_{app_name.lower()}.py",
-            (self.TEMPLATES / "widget.py.tpl").read_text()
+            (self.TEMPLATES / "widget.py.tpl")
+            .read_text()
             .replace("_WIDGET_NAME_", f"{camelcase(app_name, upper=True)}"),
         )
 
@@ -255,7 +254,7 @@ class AppManager(metaclass=Singleton):
         """Initialize the as a gradle project.
         :param app_name the application name.
         """
-        sysout(f"Initializing \"{app_name}\" gradle project [press ENTER to continue] ...")
+        sysout(f'Initializing "{app_name}" gradle project [press ENTER to continue] ...')
         output, exit_code = Terminal.shell_exec(
             f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self._app_dir
         )
@@ -283,8 +282,7 @@ class AppManager(metaclass=Singleton):
         return exit_code == ExitStatus.SUCCESS
 
     def _init_git(self) -> bool:
-        """Initialize a git repository for the project.
-        """
+        """Initialize a git repository for the project."""
         self._mkfile(".gitignore", (self.TEMPLATES / "gitignore.tpl").read_text())
         sysout("Initializing git repository ...")
         output, exit_code = Terminal.shell_exec("git init", cwd=self._app_dir)

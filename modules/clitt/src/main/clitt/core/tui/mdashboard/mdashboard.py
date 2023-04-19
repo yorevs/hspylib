@@ -22,20 +22,16 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
 from typing import List, Optional, TypeVar
 
-DashboardMatrix = TypeVar('DashboardMatrix', bound=List[List[str]])
+DashboardMatrix = TypeVar("DashboardMatrix", bound=List[List[str]])
 
 
-def mdashboard(
-    items: List[DashboardItem],
-    title: str = "Please select one item"
-) -> Optional[DashboardItem]:
+def mdashboard(items: List[DashboardItem], title: str = "Please select one item") -> Optional[DashboardItem]:
     """Wrapper for the Menu Dashboard"""
     return MenuDashBoard(title, items).execute()
 
 
 class MenuDashBoard(TUIComponent):
-    """A dashboard is a type of graphical user interface which provides at-a-glance views.
-    """
+    """A dashboard is a type of graphical user interface which provides at-a-glance views."""
 
     # fmt: off
     ICN = "x"  # x mars the spot if the icon.
@@ -71,7 +67,6 @@ class MenuDashBoard(TUIComponent):
         )
 
     def execute(self) -> Optional[DashboardItem]:
-
         if len(self.items) == 0:
             return None
 
@@ -95,27 +90,18 @@ class MenuDashBoard(TUIComponent):
         return selected
 
     def _render(self) -> None:
-
         restore_cursor()
         sysout(f"{self.prefs.title_color.placeholder}{self.title}%NC%")
 
         for idx, item in enumerate(self.items):
-            self._print_item(
-                idx, item,
-                MenuDashBoard.CELL_TPL
-                if self.tab_index != idx
-                else MenuDashBoard.SEL_CELL_TPL
-            )
+            self._print_item(idx, item, MenuDashBoard.CELL_TPL if self.tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
 
         erase_line()
         sysout(self._navbar(), end="")
         self._re_render = False
 
-    def _print_item(
-        self, item_idx: int,
-        item: DashboardItem,
-        cell_template: DashboardMatrix) -> None:
-        """ Print the specified dashboard item at the given index.
+    def _print_item(self, item_idx: int, item: DashboardItem, cell_template: DashboardMatrix) -> None:
+        """Print the specified dashboard item at the given index.
         :param item_idx: the item index.
         :param item: the dashboard item.
         :param cell_template: the template of the dashboard cell (selected or unselected).

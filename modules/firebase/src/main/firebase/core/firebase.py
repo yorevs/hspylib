@@ -24,21 +24,20 @@ import os
 
 
 class Firebase:
-    """Provides the firebase application functionalities.
-    """
+    """Provides the firebase application functionalities."""
 
     def __init__(self) -> None:
         self.processor = FileProcessor()
         filename = os.environ.get(
-            "HHS_FIREBASE_CONFIG_FILE", f"{os.environ.get('HOME', os.curdir)}/firebase.properties")
+            "HHS_FIREBASE_CONFIG_FILE", f"{os.environ.get('HOME', os.curdir)}/firebase.properties"
+        )
         self.agent_config = AgentConfig(filename)
 
     def __str__(self):
         return str(self.agent_config)
 
     def setup(self) -> None:
-        """Setup a firebase configuration by creating or reading an existing configuration file.
-        """
+        """Setup a firebase configuration by creating or reading an existing configuration file."""
         self.agent_config.prompt()
         log.debug("New firebase setup: %s", self.agent_config)
 
@@ -65,12 +64,10 @@ class Firebase:
         return self.processor.download_files(url, dest_dir or os.environ.get("HOME")) > 0
 
     def is_configured(self) -> bool:
-        """Checks whether firebase is properly configured or not.
-        """
+        """Checks whether firebase is properly configured or not."""
         return self.agent_config is not None and self.agent_config.firebase_configs is not None
 
     def _authenticate(self) -> None:
-        """Authenticate to Firebase using the user UID.
-        """
+        """Authenticate to Firebase using the user UID."""
         configs = self.agent_config.firebase_configs
         FirebaseAuth.authenticate(configs.project_id, configs.uid)

@@ -15,6 +15,6 @@
 from clitt.core.icons.emojis.emojis import Emoji
 from clitt.core.icons.emojis.face_smiling import FaceSmiling
 
-if __name__ == '__main__':
-    print('\nFace Smiling ' + '-' * 30)
+if __name__ == "__main__":
+    print("\nFace Smiling " + "-" * 30)
     list(map(Emoji.emj_print, FaceSmiling.values()))

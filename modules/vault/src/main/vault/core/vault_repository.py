@@ -19,8 +19,7 @@ from vault.domain.vault_entry import VaultEntry
 
 
 class VaultRepository(SQLiteRepository[VaultEntry]):
-    """Provide CRUD operations for the Vault application.
-    """
+    """Provide CRUD operations for the Vault application."""
 
     @property
     def database(self) -> str:
@@ -47,5 +46,9 @@ class VaultRepository(SQLiteRepository[VaultEntry]):
             return VaultEntry(Identity(VaultEntry.VaultId(entity_dict["uuid"])), **entity_dict)
         return VaultEntry(
             Identity(VaultEntry.VaultId(entity_dict[0])),
-            entity_dict[1], entity_dict[2], entity_dict[3], entity_dict[4], entity_dict[5]
+            entity_dict[1],
+            entity_dict[2],
+            entity_dict[3],
+            entity_dict[4],
+            entity_dict[5],
         )

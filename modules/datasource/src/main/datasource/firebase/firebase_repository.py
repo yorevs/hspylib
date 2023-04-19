@@ -174,8 +174,7 @@ class FirebaseRepository(Generic[E], metaclass=AbstractSingleton):
         return []
 
     def find_by_id(self, entity_id: Identity) -> Optional[E]:
-        """Return the entity specified by ID from the Firebase store, None if no such entry is found.
-        """
+        """Return the entity specified by ID from the Firebase store, None if no such entry is found."""
         ids = ".".join(entity_id.values)
         url = f"{self._config.url(self.table_name())}/{ids}.json"
         log.debug("Fetching firebase entry: \n\t|-Id=%s\n\t|-From %s", entity_id, url)
@@ -200,8 +199,7 @@ class FirebaseRepository(Generic[E], metaclass=AbstractSingleton):
 
     @abstractmethod
     def table_name(self) -> str:
-        """Return the table name (repository name).
-        """
+        """Return the table name (repository name)."""
 
     def to_entity_list(self, json_string: str, filters: Namespace | None = None) -> List[E]:
         """Return filtered entries from the json_string as a list.

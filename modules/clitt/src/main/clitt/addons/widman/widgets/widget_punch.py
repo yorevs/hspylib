@@ -100,7 +100,6 @@ class WidgetPunch(Widget):
         self._week_num = self.WEEK_STAMP
 
     def execute(self, *args) -> ExitStatus:
-
         # Create the current week punch file if it does not yet exist.
         if not os.path.exists(self.HHS_PUNCH_FILE):
             with open(self.HHS_PUNCH_FILE, "w", encoding=Charset.UTF_8.val) as f_punch:
@@ -190,8 +189,7 @@ class WidgetPunch(Widget):
         return punch_line
 
     def _do_the_punch(self) -> None:
-        """Punch the clock.
-        """
+        """Punch the clock."""
         with open(self.HHS_PUNCH_FILE, "w", encoding=Charset.UTF_8.val) as f_punch:
             if not self._today:  # Write the first punch of the day
                 self._today = f"{self.DATE_STAMP} => {self.TIME_STAMP}"
@@ -207,8 +205,7 @@ class WidgetPunch(Widget):
         sysout(f"{re.sub(self.DATE_STAMP, '%GREEN%Today%NC%', self._today)} ")
 
     def _list_punches(self) -> None:
-        """List all punches from the punch file.
-        """
+        """List all punches from the punch file."""
         total = 0, 0
         total_dec = 0, 0
         sysout(f"\n%WHITE%Week-{self._week_num:02d} Punches%NC%")
@@ -234,13 +231,11 @@ class WidgetPunch(Widget):
         sysout(f"%WHITE%Total: ({totals})  Balance: {balance}\n")
 
     def _edit_punches(self) -> None:
-        """Open the default system editor to edit punches.
-        """
+        """Open the default system editor to edit punches."""
         Terminal.open_file(self.HHS_PUNCH_FILE)
 
     def _reset_punches(self) -> None:
-        """Rename the punch file as a weekly punch file and reset current punch file.
-        """
+        """Rename the punch file as a weekly punch file and reset current punch file."""
         punch_dir = os.path.dirname(self.HHS_PUNCH_FILE)
         new_name = f"{punch_dir}/week-{self._week_num:02d}.punch"
         if os.path.exists(new_name):

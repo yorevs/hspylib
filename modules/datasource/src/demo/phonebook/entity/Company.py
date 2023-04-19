@@ -19,7 +19,6 @@ from typing import List, Tuple
 
 
 class Company(CrudEntity):
-
     CompanyId = namedtuple("CompanyId", ["uuid"])
 
     @staticmethod

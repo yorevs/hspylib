@@ -41,7 +41,6 @@ class Properties:
         return re.sub("[ -.]", "_", property_name).upper()
 
     def __init__(self, filename: str = None, profile: str | None = None, load_dir: str | None = None) -> None:
-
         self._filename, self._extension = os.path.splitext(
             filename if filename else f"{self._default_name}{self._default_ext}"
         )

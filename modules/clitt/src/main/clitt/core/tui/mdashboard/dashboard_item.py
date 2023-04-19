@@ -17,8 +17,7 @@ from typing import Callable, Optional
 
 
 class DashboardItem:
-    """Represent a dashboard item.
-    """
+    """Represent a dashboard item."""
 
     def __init__(self, icon: Awesome = None, tooltip: str = None, on_trigger: Optional[Callable] = None):
         self.icon = icon

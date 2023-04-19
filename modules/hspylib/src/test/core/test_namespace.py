@@ -19,7 +19,6 @@ import unittest
 
 
 class TestNamespace(unittest.TestCase):
-
     def test_should_return_all_attributes_and_values(self) -> None:
         ns = Namespace.of("TestNs", {"name": "John", "age": 44, "active": True, "nested": {"n1": 1, "n2": 2}})
         self.assertEqual(4, len(ns))
@@ -129,8 +128,7 @@ class TestNamespace(unittest.TestCase):
         self.assertTrue(ns.hasattr("name"))
         self.assertTrue(ns.hasattr("age"))
         self.assertRaisesRegex(
-            ValueError, "Can't set attribute 'active'. 'TestNs' Namespace is final",
-            lambda: ns.setattr("active", True)
+            ValueError, "Can't set attribute 'active'. 'TestNs' Namespace is final", lambda: ns.setattr("active", True)
         )
 
     def test_should_return_namespace_as_dictionary(self) -> None:

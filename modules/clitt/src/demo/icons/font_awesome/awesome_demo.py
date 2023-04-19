@@ -29,6 +29,6 @@ def demo_unicodes(fa_start: int = 0xF000, fa_end: int = 0xFD50, split_columns: i
         sysout(f"{h.upper():04}", end=eol(n, split_columns))
 
 
-if __name__ == '__main__':
-    print('\n\nALL UNICODES ' + '-' * 30)
+if __name__ == "__main__":
+    print("\n\nALL UNICODES " + "-" * 30)
     demo_unicodes()

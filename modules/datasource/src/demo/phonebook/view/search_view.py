@@ -33,7 +33,7 @@ class SearchView(TUIMenuView):
         self.company_service = CompanyService()
 
     def by_name(self) -> None:
-        contact = TUIMenu.prompt('Person or Company name', dest='name')
+        contact = TUIMenu.prompt("Person or Company name", dest="name")
         if contact:
             filters = Namespace(uuid=f"name='{contact.name}'")
             all_persons = self.person_service.list(filters=filters)
@@ -41,7 +41,7 @@ class SearchView(TUIMenuView):
             self.display_contacts(all_persons, all_companies)
 
     def by_uuid(self) -> None:
-        contact = TUIMenu.prompt('Person or Company uuid', dest='uuid')
+        contact = TUIMenu.prompt("Person or Company uuid", dest="uuid")
         if contact:
             filters = Namespace(uuid=f"uuid='{contact.uuid}'")
             all_persons = self.person_service.list(filters=filters)

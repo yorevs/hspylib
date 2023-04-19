@@ -25,8 +25,7 @@ T = TypeVar("T")
 
 
 class TUIComponent(Generic[T], ABC):
-    """Provide a base class for terminal UI components.
-    """
+    """Provide a base class for terminal UI components."""
 
     @staticmethod
     def _draw_line(line_fmt: str, max_columns: int, *args: Any) -> None:
@@ -49,8 +48,7 @@ class TUIComponent(Generic[T], ABC):
 
     @abstractmethod
     def execute(self) -> Optional[T | List[T]]:
-        """Execute the main component flow.
-        """
+        """Execute the main component flow."""
 
     def _draw_line_color(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
         """TODO
@@ -70,15 +68,12 @@ class TUIComponent(Generic[T], ABC):
 
     @abstractmethod
     def _render(self) -> None:
-        """Method to render the component.
-        """
+        """Method to render the component."""
 
     @abstractmethod
     def _navbar(self, **kwargs) -> str:
-        """Provide the component navigation bar (if applies).
-        """
+        """Provide the component navigation bar (if applies)."""
 
     @abstractmethod
     def _handle_keypress(self) -> Keyboard:
-        """Handle a keyboard press.
-        """
+        """Handle a keyboard press."""

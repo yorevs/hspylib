@@ -29,8 +29,9 @@ class TUIMenuView(TUIMenu):
         parent: TUIMenu,
         title: Optional[str] = None,
         tooltip: Optional[str] = None,
-        display_text: Optional[str] = None):
-        super().__init__(parent, title or 'Menu View', tooltip or f"Access the '{title}' view")
+        display_text: Optional[str] = None,
+    ):
+        super().__init__(parent, title or "Menu View", tooltip or f"Access the '{title}' view")
         self._on_render: ON_TRIGGER_CB = self._display_content
         self._content: str = display_text or f"%ED0%This is a view: {self.title}"
 

@@ -25,8 +25,7 @@ T = TypeVar("T", bound=CrudEntity)
 
 
 class CrudRepository(Generic[T], metaclass=AbstractSingleton):
-    """Interface for generic CRUD operations on a repository for a specific type.
-    """
+    """Interface for generic CRUD operations on a repository for a specific type."""
 
     @property
     def logname(self) -> str:
@@ -34,8 +33,7 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
 
     @abstractmethod
     def count(self) -> int:
-        """Returns the number of entities available.
-        """
+        """Returns the number of entities available."""
 
     @abstractmethod
     def delete(self, entity: T) -> None:

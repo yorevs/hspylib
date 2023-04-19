@@ -25,8 +25,7 @@ CFTarget = namedtuple("CFTarget", ["user", "org", "space", "connected"])
 
 
 class CloudFoundry(metaclass=Singleton):
-    """Cloud Foundry command line tool wrapper.
-    """
+    """Cloud Foundry command line tool wrapper."""
 
     INSTANCE = None
 
@@ -65,8 +64,7 @@ class CloudFoundry(metaclass=Singleton):
 
     # Before getting started
     def is_logged(self) -> bool:
-        """Checks whether it is connected to a CloudFoundry API endpoint.
-        """
+        """Checks whether it is connected to a CloudFoundry API endpoint."""
         if not self._logged:
             result = self._exec("orgs")
             self._logged = self._check_result(result) is not None
@@ -81,8 +79,7 @@ class CloudFoundry(metaclass=Singleton):
 
     # Authorization management
     def auth(self, username: str, password: str) -> bool:
-        """Authorize a CloudFoundry user.
-        """
+        """Authorize a CloudFoundry user."""
         return self._check_result(self._exec(f"auth {username} {password}")) is not None
 
     # Target management
@@ -110,43 +107,36 @@ class CloudFoundry(metaclass=Singleton):
             if space:
                 target_params.append("-s")
                 target_params.append(kwargs["space"])
-            sysout(
-                f"%BLUE%Targeting"
-                f"{'  ORG=' + org if org else ''}"
-                f"{'  SPACE=' + space if space else ''}"
-                '...')
+            sysout(f"%BLUE%Targeting" f"{'  ORG=' + org if org else ''}" f"{'  SPACE=' + space if space else ''}" "...")
             self._target = CFTarget(
                 kwargs["user"] if "user" in kwargs else None,
                 kwargs["org"] if "org" in kwargs else None,
                 kwargs["space"] if "space" in kwargs else None,
-                self._check_result(self._exec(" ".join(target_params))) is not None)
+                self._check_result(self._exec(" ".join(target_params))) is not None,
+            )
 
         return self._target
 
     # Target management
     def clear_target(self) -> None:
-        """Re-target for a new ORG/SPACE target.
-        """
+        """Re-target for a new ORG/SPACE target."""
         self._target = None
 
     # Space management
     def spaces(self) -> Optional[List[str]]:
-        """List all spaces from organization.
-        """
+        """List all spaces from organization."""
         all_spaces = self._exec("spaces")
         return all_spaces.split("\n")[3:] if self._check_result(all_spaces) else None
 
     # Organization management
     def orgs(self) -> Optional[List[str]]:
-        """List all organizations from API endpoint.
-        """
+        """List all organizations from API endpoint."""
         all_orgs = self._exec("orgs")
         return all_orgs.split("\n")[3:] if self._check_result(all_orgs) else None
 
     # Application action: Retrieve apps
     def apps(self) -> Optional[List[str]]:
-        """List all applications from targeted ORG/SPACE.
-        """
+        """List all applications from targeted ORG/SPACE."""
         all_apps = self._exec("apps")
         return all_apps.split("\n")[3:] if self._check_result(all_apps) else None
 
@@ -195,10 +185,7 @@ class CloudFoundry(metaclass=Singleton):
                recent: dump recent logs instead of tailing.
         :param kwargs arbitrary CF command keyword arguments.
         """
-        return self._exec(
-            cmd_line=f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}",
-            poll=True
-        )
+        return self._exec(cmd_line=f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}", poll=True)
 
     # Execution of a CF command
     def _exec(self, cmd_line: str, poll: bool = False) -> Optional[str]:

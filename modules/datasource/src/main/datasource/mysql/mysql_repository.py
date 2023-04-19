@@ -33,8 +33,7 @@ E = TypeVar("E", bound=CrudEntity)
 
 
 class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
-    """Implementation of a data access layer for a MySql persistence store.
-    """
+    """Implementation of a data access layer for a MySql persistence store."""
 
     def __init__(self, config: DBConfiguration):
         super().__init__(config)
@@ -124,7 +123,6 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
         limit: int = 500,
         offset: int = 0,
     ) -> List[E]:
-
         columns = "*" if not columns else ", ".join(columns)
         clauses = list(filter(None, filters.values)) if filters else None
         orders = list(filter(None, order_bys)) if order_bys else None
@@ -138,7 +136,6 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
         return list(map(self.to_entity_type, self.execute(sql)[1]))
 
     def find_by_id(self, entity_id: Identity, columns: Optional[Set[str]] = None) -> Optional[E]:
-
         columns = "*" if not columns else ", ".join(columns)
         clauses = [f"{k} = {quote(v)}" for k, v in zip(entity_id.attributes, entity_id.values)]
         sql = f"SELECT {columns} FROM {self.table_name()} " f"WHERE {' AND '.join(clauses)}"

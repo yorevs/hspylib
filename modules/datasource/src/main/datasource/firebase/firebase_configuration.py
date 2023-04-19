@@ -88,7 +88,6 @@ class FirebaseConfiguration(AppConfigs):
         database: Optional[str] = None,
         profile: Optional[str] = None,
     ):
-
         super().__init__(resource_dir, filename, profile)
         self._valid = None
         self._base_url = self["datasource.base.url"]

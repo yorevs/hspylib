@@ -21,5 +21,11 @@ if __name__ == "__main__":
     print("Attrs/Values: ", i4.attributes, i4.values)
     print("Attrs/Values: ", i5.attributes, i5.values)
     print("As Dict: ", i1._asdict(), i2._asdict(), i3._asdict(), i4._asdict(), i5._asdict())
-    print("As ColSet: ", i1.as_column_set(), i2.as_column_set(), i3.as_column_set(), i4.as_column_set(),
-          i5.as_column_set())
+    print(
+        "As ColSet: ",
+        i1.as_column_set(),
+        i2.as_column_set(),
+        i3.as_column_set(),
+        i4.as_column_set(),
+        i5.as_column_set(),
+    )

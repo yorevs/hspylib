@@ -25,7 +25,6 @@ TEST_DIR = dirname(__file__)
 
 
 class TestAppConfig(unittest.TestCase):
-
     # Setup tests
     def setUp(self):
         resource_dir = "{}/resources".format(TEST_DIR)
