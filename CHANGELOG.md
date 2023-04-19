@@ -65,7 +65,7 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 
 * Improve minput to return an object with the fields instead of a dict
 * Finished SendMsg widget. Improved with argument parser
-* Updated Doc headers, formatting, import optimize and adjustmets on menu extra
+* Updated Doc headers, formatting, import optimize and adjustments on menu extra
 * Additional improvements for menu -> extra
 * Improve SendMsg widget
 * Improve calc widget with masked input
@@ -197,7 +197,7 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 * Moved VERSION to .version per project and subproject
 * Removed app_endpoints.txt
 * Updated apps to use the new app FW.
-* Changed AppConfigs to make it subscriptable.
+* Changed AppConfigs to make it subscript-able.
 * Replaced all escape codes by Vt100 placeholders
 * Moved RegexCommons to a separate file
 * Created repository and service for vault

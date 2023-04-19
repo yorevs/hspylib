@@ -8,9 +8,9 @@ You are welcome to contribute with the project by following the guidelines below
 2. If you write python unittests for your code, it will be approved faster.
 3. Use [PyLint](https://pypi.org/project/pylint/) to make sure your code has a "good smell".
 4. Provide a meaningful help and Docstrings.
-5. Commits to the repository must follow the [commit-templates](doc/COMMIT_TEMPLATE.md).
+5. Commits to the repository must follow the [commit-templates](docs/COMMIT_TEMPLATE.md).
 6. Create a fork or branch with an adequate name.
-8. Follow the [Pull Request Template](doc/PULL_REQUEST_TEMPLATE.md)
+7. Follow the [Pull Request Template](docs/PULL_REQUEST_TEMPLATE.md)
 
 You can contribute in many ways:
 
