@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: demo.other
       @file: filter_demo.py
    @created: Wed, 8 Jun 2022

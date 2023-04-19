@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Firebase
+   @project: HsPyLib-Firebase
    @package: firebase.core
       @file: agent_config.py
    @created: Tue, 4 May 2021

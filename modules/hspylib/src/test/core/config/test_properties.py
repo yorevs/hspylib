@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.config
       @file: test_properties.py
    @created: Tue, 4 May 2021

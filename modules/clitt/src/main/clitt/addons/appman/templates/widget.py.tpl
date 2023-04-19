@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    main.addons.appman.templates
       @file: widget.py.tpl
    @created: Tue, 1 Jun 2021
@@ -24,7 +24,7 @@ from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
 
 
 class Widget_WIDGET_NAME_(Widget):
-  """HSPyLib to do something"""
+  """HsPyLib to do something"""
   WIDGET_ICON = WidgetIcons.WIDGET
   WIDGET_NAME = "_WIDGET_NAME_"
   TOOLTIP = "TODO Widget tooltip"

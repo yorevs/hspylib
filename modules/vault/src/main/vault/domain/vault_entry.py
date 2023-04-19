@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Vault
+   @project: HsPyLib-Vault
    @package: vault.domain
       @file: vault_entry.py
    @created: Tue, 4 May 2021

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Kafman
+   @project: HsPyLib-Kafman
    @package: kafman.views.dialogs
       @file: settings_dialog.py
    @created: Wed, 8 Jun 2022

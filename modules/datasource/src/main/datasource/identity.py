@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: datasource
       @file: identity.py
    @created: Thu, 03 Nov 2022

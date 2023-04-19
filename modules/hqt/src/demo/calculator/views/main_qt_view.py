@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: demo.qtdemos.calculator.views
       @file: main_qt_view.py
    @created: Tue, 4 May 2021

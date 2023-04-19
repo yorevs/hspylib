@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.appman
       @file: appman.py
    @created: Tue, 4 May 2021
@@ -42,7 +42,7 @@ WELCOME_MESSAGE = f"My Application v{INITIAL_REVISION}"
 
 
 class AppManager(metaclass=Singleton):
-    """HSPyLib application manager that helps creating HSPyLib based applications and widgets.
+    """HsPyLib application manager that helps creating HsPyLib based applications and widgets.
     """
 
     # The directory containing all template files
@@ -136,7 +136,7 @@ class AppManager(metaclass=Singleton):
         sysout(f"Successfully created the {app_type.value} {app_name}")
 
     def _create_app(self, app_name: str, app_ext: List[AppExtension]) -> None:
-        """Create a Simple HSPyLib application.
+        """Create a Simple HsPyLib application.
         :param app_name the application name.
         :param app_ext the application extensions (gradle, git, ...).
         """
@@ -149,7 +149,7 @@ class AppManager(metaclass=Singleton):
         self._apply_extensions(app_name, app_ext)
 
     def _create_qt_app(self, app_name: str, app_ext: List[AppExtension]) -> None:
-        """Create an HSPyLib QT application.
+        """Create an HsPyLib QT application.
         :param app_name the application name.
         :param app_ext the application extensions (gradle, git, ...).
         """
@@ -172,7 +172,7 @@ class AppManager(metaclass=Singleton):
         self._apply_extensions(app_name, app_ext)
 
     def _create_widget(self, app_name: str) -> None:
-        """Create an HSPyLib Widget application.
+        """Create an HsPyLib Widget application.
         :param app_name the application name.
         """
         widget_name = camelcase(app_name).replace("_", "").replace(" ", "")
@@ -184,7 +184,7 @@ class AppManager(metaclass=Singleton):
         )
 
     def _create_base_app_struct(self, app_name: str) -> None:
-        """Create a base HSPyLib application structure and files.
+        """Create a base HsPyLib application structure and files.
         :param app_name the application name.
         """
         self._mkdir()
@@ -292,14 +292,14 @@ class AppManager(metaclass=Singleton):
         if exit_code:
             sysout("Creating first commit")
             Terminal.shell_exec("git add .", cwd=self._app_dir)
-            output, exit_code = Terminal.shell_exec('git commit -m "First commit [@HSPyLib]"', cwd=self._app_dir)
+            output, exit_code = Terminal.shell_exec('git commit -m "First commit [@HsPyLib]"', cwd=self._app_dir)
             sysout(f"Git commit result: {exit_code}%EOL%{output}%EOL%")
 
         return exit_code == ExitStatus.SUCCESS
 
     def _download_gradle_ext(self, gradle_ext: str) -> None:
-        """Download a gradle extension from the HSPyLib repository.
-        :param gradle_ext the HSPyLib gradle extension to download.
+        """Download a gradle extension from the HsPyLib repository.
+        :param gradle_ext the HsPyLib gradle extension to download.
         """
         urllib3.disable_warnings()  # Disable this warning because we trust our project repo
         resp = get(f"https://raw.githubusercontent.com/yorevs/hspylib/master/gradle/{gradle_ext}")

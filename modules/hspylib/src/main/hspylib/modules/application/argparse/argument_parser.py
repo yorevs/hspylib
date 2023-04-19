@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.modules.application.argparse
       @file: argument_parser.py
    @created: Thu, 14 Feb 2022
@@ -21,7 +21,7 @@ from hspylib.modules.application.exit_status import ExitStatus
 
 
 class HSArgumentParser(ArgumentParser):
-    """HSPyLib custom argument parser"""
+    """HsPyLib custom argument parser"""
 
     def _check_value(self, action, value: Any):
         if action.choices is not None and value not in action.choices:

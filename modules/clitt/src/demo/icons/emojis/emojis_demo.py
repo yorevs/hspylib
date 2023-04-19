@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: demo.cli.icons.emojis
       @file: demo_emojis.py
    @created: Tue, 13 Jan 2023

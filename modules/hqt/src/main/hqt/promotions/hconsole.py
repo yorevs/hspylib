@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hqt.promotions
       @file: hconsole.py
    @created: Wed, 30 Jun 2021

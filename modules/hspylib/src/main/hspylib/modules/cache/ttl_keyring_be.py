@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.modules.cache
       @file: ttl_keyring_be.py
    @created: Tue, 4 Oct 2022

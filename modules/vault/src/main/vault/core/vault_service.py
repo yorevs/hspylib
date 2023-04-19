@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Vault
+   @project: HsPyLib-Vault
    @package: vault.core
       @file: vault_service.py
    @created: Tue, 4 May 2021

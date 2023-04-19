@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.addons.appman
       @file: appman_enums.py
    @created: Fri, 29 Jul 2022

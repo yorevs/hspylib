@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-CFMan
+   @project: HsPyLib-CFMan
       @file: setup.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -33,7 +33,7 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 setuptools.setup(
     name="hspylib-cfman",
     version=VERSION,
-    description="HSPyLib - CloudFoundry manager",
+    description="HsPyLib - CloudFoundry manager",
     author="Hugo Saporetti Junior",
     author_email="yorevs@hotmail.com",
     long_description=README,

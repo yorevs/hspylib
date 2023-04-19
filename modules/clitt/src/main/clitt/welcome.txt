@@ -6,4 +6,4 @@
 |_| |_|____/|_|    \__, |_____|_|_.__/       \____|_|_|\__|\__|
                    |___/                                       
 
-HSPyLib CLI Terminal Tools v{} - Create professional CLI applications.
+HsPyLib CLI Terminal Tools v{} - Create professional CLI applications.

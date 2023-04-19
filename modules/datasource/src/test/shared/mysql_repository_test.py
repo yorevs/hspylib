@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: test.shared
       @file: mysql_repository_test.py
    @created: Tue, 4 May 2021

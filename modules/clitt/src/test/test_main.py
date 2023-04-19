@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Clitt
+   @project: HsPyLib-Clitt
    @package: test.clitt
       @file: test_main.py
    @created: Fri, 23 Dec 2022

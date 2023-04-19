@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.tools
       @file: test_commons.py
    @created: Thu, 03 Nov 2022

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Vault
+   @project: HsPyLib-Vault
    @package: vault
       @file: __main__.py
    @created: Tue, 4 May 2021
@@ -31,7 +31,7 @@ from vault.exception.exceptions import VaultOpenError
 
 
 class Main(TUIApplication):
-    """HSPyLib Vault - Manage your secrets"""
+    """HsPyLib Vault - Manage your secrets"""
 
     # The welcome message
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)

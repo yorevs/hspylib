@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: demo.cli.tui.minput
       @file: menu_input_demo.py
    @created: Tue, 4 May 2021

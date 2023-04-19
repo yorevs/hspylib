@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: demo.other
       @file: event_bus_demo.py
    @created: Mon, 31 Oct 2022

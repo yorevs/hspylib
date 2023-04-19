@@ -1,4 +1,4 @@
-# HSPyLib - CLI Terminal Tools
+# HsPyLib - CLI Terminal Tools
 
 ## Create professional CLI applications
 

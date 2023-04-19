@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.modules.eventbus
       @file: test_eventbus.py
    @created: Tue, 4 May 2021

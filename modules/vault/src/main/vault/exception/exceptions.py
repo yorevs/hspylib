@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Vault
+   @project: HsPyLib-Vault
    @package: vault.exception
       @file: exceptions.py
    @created: Tue, 4 May 2021

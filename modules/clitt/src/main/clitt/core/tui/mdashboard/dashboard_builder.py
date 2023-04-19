@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.core.tui.mdashboard
       @file: dashboard_builder.py
    @created: Thu, 20 May 2021

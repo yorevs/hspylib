@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
       @file: setup.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -31,7 +31,7 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 setuptools.setup(
     name="hspylib-datasource",
     version=VERSION,
-    description="HSPyLib - Datasource integration",
+    description="HsPyLib - Datasource integration",
     author="Hugo Saporetti Junior",
     author_email="yorevs@hotmail.com",
     long_description=README,

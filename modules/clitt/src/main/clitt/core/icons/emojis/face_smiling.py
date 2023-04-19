@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.core.icons.emojis
       @file: face_smiling.py
    @created: Tue, 4 May 2021

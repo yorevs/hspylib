@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.modules.application.argparse
       @file: arguments_builder.py
    @created: Thu, 14 Feb 2022

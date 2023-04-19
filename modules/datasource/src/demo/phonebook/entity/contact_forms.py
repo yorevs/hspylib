@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: phonebook.entity
       @file: contact_forms.py
    @created: Thu, 22 Dec 2022

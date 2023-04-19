@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: phonebook.view
       @file: create_view.py
    @created: Tue, 4 May 2021

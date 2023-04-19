@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: clitt.core.icons.font_awesome
       @file: widget_icons.py
    @created: Thu, 20 May 2021

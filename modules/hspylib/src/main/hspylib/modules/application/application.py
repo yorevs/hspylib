@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.modules.application
       @file: application.py
    @created: Tue, 4 May 2021
@@ -39,7 +39,7 @@ from hspylib.modules.application.version import Version
 
 
 class Application(metaclass=AbstractSingleton):
-    """HSPyLib application framework. This is the base class for the HSPyLib applications."""
+    """HsPyLib application framework. This is the base class for the HsPyLib applications."""
 
     INSTANCE = None
 

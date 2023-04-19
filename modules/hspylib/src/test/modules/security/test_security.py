@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.modules.security
       @file: test_security.py
    @created: Tue, 4 May 2021

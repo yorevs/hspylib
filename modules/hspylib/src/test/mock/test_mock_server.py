@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.modules.mock
       @file: test_mock_server.py
    @created: Tue, 4 May 2021

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    @package: hspylib.core
       @file: zoned_datetime.py
    @created: Thu, 20 Sep 2022

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-CFMan
+   @project: HsPyLib-CFMan
    @package: cfman.exception
       @file: exceptions.py
    @created: Tue, 11 May 2021

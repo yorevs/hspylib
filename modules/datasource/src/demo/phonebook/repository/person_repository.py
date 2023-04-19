@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: phonebook.repository
       @file: person_repository.py
    @created: Tue, 4 May 2021

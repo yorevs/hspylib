@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Datasource
+   @project: HsPyLib-Datasource
    @package: phonebook
       @file: __classpath__.py
    @created: Thu, 03 Jun 2022

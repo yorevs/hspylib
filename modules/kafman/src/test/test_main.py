@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib-Kafman
+   @project: HsPyLib-Kafman
    @package: test.kafman
       @file: tpl-test_main.py
    @created: Tue, 1 Jun 2021

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HSPyLib
+   @project: HsPyLib
    test.tools
       @file: test_preconditions.py
    @created: Fri, 16 Jul 2021
