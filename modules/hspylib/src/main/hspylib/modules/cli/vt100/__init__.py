@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.165
+# hspylib v0.11.167
 #
 # Package: main.hspylib.modules.cli.vt100
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'vt_color', 
   'vt_utils'
 ]
-__version__ = '0.11.165'
+__version__ = '0.11.167'

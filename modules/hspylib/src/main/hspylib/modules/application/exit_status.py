@@ -55,6 +55,9 @@ class ExitStatus(Enumeration):
     def __str__(self):
         return self.name
 
+    def __int__(self):
+        return self.value
+
     def __repr__(self):
         color = VtColor.GREEN.code if self == ExitStatus.SUCCESS else VtColor.RED.code
         return f"{color}{self.name}({self.value}){VtColor.NC.code}"

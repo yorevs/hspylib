@@ -4,7 +4,7 @@
 """
    @project: HSPyLib
    @package: hspylib.core.tools
-      @file: json_search.py
+      @file: json_path.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -14,18 +14,24 @@
 """
 
 import re
-from typing import Any
+from typing import Any, TypeVar
 
 from pyparsing import unicode
 
+JSON_ELEMENT = TypeVar('JSON_ELEMENT', bound=[list, dict, unicode])
 
-class JsonSearch:
-    """TODO"""
+
+class JsonPath:
+    """Navigate and"""
 
     RE_JSON_NAME = "[a-zA-Z0-9_\\- ]"
     RE_JSON_ARRAY_INDEX = "[0-9]{1,}"
 
-    def __init__(self, separator=".", json_name_re=RE_JSON_NAME, json_array_index_re=RE_JSON_ARRAY_INDEX):
+    def __init__(
+        self,
+        separator: str = ".",
+        json_name_re: str = RE_JSON_NAME,
+        json_array_index_re: str = RE_JSON_ARRAY_INDEX):
         """Construction"""
 
         self.separator = separator
@@ -36,7 +42,11 @@ class JsonSearch:
         self.pat_sub_expr = None
         self.pat_sub_expr_val = None
 
-    def __find_next_element__(self, root_element, match_name, match_value=None, fetch_parent=False) -> Any:
+    def _find_next_element(
+        self, root_element: JSON_ELEMENT,
+        match_name: str,
+        match_value: Any = None,
+        fetch_parent: bool = False) -> JSON_ELEMENT:
         """Find the next element in the list matching the specified value."""
 
         selected_element = root_element
@@ -53,7 +63,7 @@ class JsonSearch:
                 elif isinstance(nextInList, unicode):
                     selected_element = root_element
                 elif isinstance(nextInList, list):
-                    selected_element = self.__find_next_element__(nextInList, match_name, match_value)
+                    selected_element = self._find_next_element(nextInList, match_name, match_value)
         elif isinstance(selected_element, dict):
             el = selected_element.get(match_name)
             if el and (match_value is None or (match_value and el == match_value)):
@@ -67,23 +77,32 @@ class JsonSearch:
 
         return selected_element
 
-    def __find_in_subex__(self, sub_expressions, sub_selected_element, pat_subst_expr_val, fetch_parent=False) -> Any:
+    def _find_in_sub_expr(
+        self,
+        sub_expr: JSON_ELEMENT,
+        sub_sel_el: JSON_ELEMENT,
+        pat_subst_expr_val: Any,
+        fetch_parent: bool = False) -> JSON_ELEMENT:
         """Find the element in the sub-expressions."""
 
-        for nextSubExpr in sub_expressions:
+        for nextSubExpr in sub_expr:
 
             if nextSubExpr:
                 sub_parts = re.search(pat_subst_expr_val, nextSubExpr)
                 sub_elem_id = sub_parts.group(1)
                 sub_elem_val = sub_parts.group(3)
-                sub_selected_element = self.__find_next_element__(
-                    sub_selected_element, sub_elem_id, sub_elem_val, fetch_parent
+                sub_sel_el = self._find_next_element(
+                    sub_sel_el, sub_elem_id, sub_elem_val, fetch_parent
                 )
 
-        return sub_selected_element
+        return sub_sel_el
 
     # pylint: disable=too-many-branches,consider-using-f-string
-    def select(self, root_element, search_path, fetch_parent=False) -> Any:
+    def select(
+        self,
+        root_element: JSON_ELEMENT,
+        search_path: str,
+        fetch_parent: bool = False) -> JSON_ELEMENT:
         """
         Get the json element through it's path. Returned object is either [dict, list or unicode].
 
@@ -100,7 +119,7 @@ class JsonSearch:
          10. elem1.elem2{property<value>}.{property2<value2>}.elem3
         """
 
-        self.pat_elem = "%s+" % self.jsonNameRe
+        self.pat_elem = f"{self.jsonNameRe}+"
         self.pat_sel_elem_val = "(%s)?((\\{(%s)(<(%s)>)?\\})+)(\\[(%s)\\])?" % (
             self.pat_elem,
             self.pat_elem,
@@ -129,7 +148,7 @@ class JsonSearch:
                         # and sub expressions in it.
                         if isinstance(selected_element, list):
                             for nextInList in selected_element:
-                                sub_selected_element = self.__find_in_subex__(
+                                sub_selected_element = self._find_in_sub_expr(
                                     sub_expressions, nextInList, self.pat_sub_expr_val, fetch_parent
                                 )
                                 # It sub_selected_element is not null then we have found what we wanted.

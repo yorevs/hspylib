@@ -14,17 +14,20 @@
 """
 import sys
 import traceback
-from typing import Callable
+from typing import Callable, Optional
 
 from hspylib.core.tools.commons import syserr
 from hspylib.modules.application.exit_status import ExitStatus
 
-CLEANUP_CB = Callable[[], None]
+CLEANUP_CB = Optional[Callable[[], None]]
+
 EXIT_CB = Callable[[int | ExitStatus], None]
+
+EXIT_STATUS = Optional[ExitStatus | int]
 
 
 class ExitHooks:
-    """TODO"""
+    """Provide application exit hooks."""
 
     def __init__(self, cleanup: CLEANUP_CB = None):
         self._orig_exit: EXIT_CB = sys.exit
@@ -36,20 +39,19 @@ class ExitHooks:
         sys.exit = self.exit
 
     def hook(self) -> None:
-        """TODO"""
-        sys.excepthook = self.exception_hook
+        """Set the default system exception hook to this hook."""
+        sys.excepthook = self.except_hook
 
-    def exit(self, code: ExitStatus | int | None) -> None:
-        """TODO"""
-        self._exit_status = ExitStatus.of(code or 0)
+    def exit(self, exit_status: EXIT_STATUS) -> None:
+        """Exit the application with the specified exit status."""
+        self._exit_status = ExitStatus.of(int(exit_status or 0))
         if not self._was_hooked:
-            self._orig_exit(self._exit_status.val)
+            self._orig_exit(int(self._exit_status))
         else:
-            exit(self._exit_status.val)
+            exit(int(self._exit_status))
 
-    def exception_hook(self, exc_type: TypeError | None, exc: BaseException | None, tb: traceback) -> None:
-        """TODO"""
-
+    def except_hook(self, exc_type: TypeError | None, exc: BaseException | None, tb: traceback) -> None:
+        """Handle a system exception."""
         self._was_hooked = True
         self._exception, self._traceback = exc, tb
         tb = "\t".join(traceback.format_exception(exc_type, exc, self._traceback))

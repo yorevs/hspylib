@@ -24,7 +24,8 @@ class HSBaseException(Exception):
     def __init__(self, message: str, cause: Exception = None):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         if exc_type and exc_obj and exc_tb:
-            filename = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            path_parts = os.path.split(exc_tb.tb_frame.f_code.co_filename)
+            filename = path_parts[1] if len(path_parts) >= 2 else path_parts[0]
             err_cause = str(cause) if cause else ""
             fmt_msg = f"### {message} :{err_cause}: (File {filename}, Line {exc_tb.tb_lineno})"
         else:

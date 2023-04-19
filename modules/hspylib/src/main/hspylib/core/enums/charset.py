@@ -17,7 +17,7 @@ from hspylib.core.enums.enumeration import Enumeration
 
 
 class Charset(Enumeration):
-    """Enumeration to wrap all charset/encode types."""
+    """Enumeration to wrap all standard charsets."""
 
     # fmt: off
 

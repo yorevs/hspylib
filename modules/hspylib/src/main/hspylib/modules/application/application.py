@@ -161,15 +161,15 @@ class Application(metaclass=AbstractSingleton):
         return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
 
     def _with_options(self) -> "OptionsBuilder":
-        """TODO"""
+        """Add options to the application."""
         return OptionsBuilder(self._arg_parser)
 
     def _with_arguments(self) -> "ArgumentsBuilder":
-        """TODO"""
+        """Add arguments to the application."""
         return ArgumentsBuilder(self._arg_parser)
 
     def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> "ChainedArgumentsBuilder":
-        """TODO"""
+        """Add chained arguments to the application."""
         return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
 
     @abstractmethod

@@ -17,15 +17,11 @@ import logging as log
 import os
 import re
 from collections import defaultdict
-from configparser import ConfigParser
-from typing import Any, Callable, Dict, Iterator, List, Optional, TextIO, Type
+from typing import Any, Callable, Iterator, List, Optional, Type
 
-import toml
-import yaml
-
+from hspylib.core.config.parser_factory import ParserFactory
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import run_dir, touch_file
-from hspylib.core.tools.dict_tools import flatten_dict
 
 CONVERSION_FN = Type | Callable[[Any], Any]
 
@@ -43,43 +39,6 @@ class Properties:
         :param property_name: the name of the property using space, dot or dash notations
         """
         return re.sub("[ -.]", "_", property_name).upper()
-
-    @staticmethod
-    def read_properties(file_handler: TextIO) -> Dict[str, Any]:
-        """Reads properties from properties file (key and element pairs) from the input list."""
-        all_lines = list(map(str.strip, filter(None, file_handler.readlines())))
-        # fmt: off
-        return {
-            p[0].strip(): p[1].strip()
-            for p in [
-                p.split("=", 1) for p in list(
-                    filter(lambda l: re.match(r"[a-zA-Z]([.\\-]|\w)* *= *.+", l), all_lines)
-                )
-            ]
-        }
-        # fmt: off
-
-    @staticmethod
-    def read_cfg_or_ini(file_handler: TextIO) -> Dict[str, Any]:
-        """Reads properties from a cfg or ini file (key and element pairs) from the input list."""
-        all_lines = list(map(str.strip, filter(None, file_handler.readlines())))
-        string = os.linesep.join(all_lines)
-        all_cfgs = {}
-        cfg = ConfigParser()
-        cfg.read_string(string)
-        for section in cfg.sections():
-            all_cfgs.update(dict(cfg.items(section)))
-        return all_cfgs
-
-    @staticmethod
-    def read_yaml(file_handler: TextIO) -> Dict[str, Any]:
-        """Reads properties from a yaml file (key and element pairs) from the input list."""
-        return flatten_dict(yaml.safe_load(file_handler))
-
-    @staticmethod
-    def read_toml(file_handler: TextIO) -> Dict[str, Any]:
-        """Reads properties from a toml file (key and element pairs) from the input list."""
-        return flatten_dict(toml.load(file_handler))
 
     def __init__(self, filename: str = None, profile: str | None = None, load_dir: str | None = None) -> None:
 
@@ -159,15 +118,6 @@ class Properties:
             touch_file(filepath)
         ext = self._extension.lower()
         with open(filepath, encoding=Charset.UTF_8.val) as fh_props:
-            if ext in [".ini", ".cfg"]:
-                all_properties = self.read_cfg_or_ini(fh_props)
-            elif ext == ".properties":
-                all_properties = self.read_properties(fh_props)
-            elif ext in [".yml", ".yaml"]:
-                all_properties = self.read_yaml(fh_props)
-            elif ext == ".toml":
-                all_properties = self.read_toml(fh_props)
-            else:
-                raise NotImplementedError(f"Extension {ext} is not supported")
-            self._properties.update(all_properties)
+            parser = ParserFactory.create(ext)
+            self._properties.update(parser.parse(fh_props))
         log.debug("Successfully loaded %d properties from: %s", len(self._properties), filepath)
