@@ -12,8 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-import requests
-import sys
+from cfman.core.cf import CloudFoundry
+from cfman.core.cf_application import CFApplication
+from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
+from cfman.core.cf_endpoint import CFEndpoint
+from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
 from clitt.core.tui.mchoose import mchoose
 from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
 from clitt.core.tui.minput.minput import MenuInput, minput
@@ -29,11 +32,8 @@ from retry import retry
 from time import sleep
 from typing import List, Optional, Tuple
 
-from cfman.core.cf import CloudFoundry
-from cfman.core.cf_application import CFApplication
-from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
-from cfman.core.cf_endpoint import CFEndpoint
-from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
+import requests
+import sys
 
 
 class CFManager:

@@ -12,12 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
 from abc import ABC
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import sysout
 from typing import Any, Optional, Tuple
+
+import re
 
 
 class MInputUtils(ABC):

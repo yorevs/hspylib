@@ -13,11 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 
-import logging as log
-import os
-import sys
-import urllib3
 from clitt.core.tui.tui_application import TUIApplication
+from firebase.__classpath__ import _Classpath
+from firebase.core.firebase import Firebase
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
 from hspylib.core.zoned_datetime import now
@@ -25,8 +23,10 @@ from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from textwrap import dedent
 
-from firebase.__classpath__ import _Classpath
-from firebase.core.firebase import Firebase
+import logging as log
+import os
+import sys
+import urllib3
 
 # Disable this warning because we are hitting our own database
 urllib3.disable_warnings()

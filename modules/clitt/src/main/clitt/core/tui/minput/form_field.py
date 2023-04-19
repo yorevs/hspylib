@@ -13,12 +13,11 @@
    Copyright 2023, HsPyLib team
 """
 
-from typing import Any
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
+from typing import Any
 
 
 class FormField:

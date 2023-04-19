@@ -13,12 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 
-import sys
-import unittest
-from unittest.mock import MagicMock
-
 from hspylib.modules.eventbus.event import Event
 from hspylib.modules.eventbus.eventbus import emit, EventBus, subscribe
+from unittest.mock import MagicMock
+
+import sys
+import unittest
 
 
 class TestEventBus(unittest.TestCase):

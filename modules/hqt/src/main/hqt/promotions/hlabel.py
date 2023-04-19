@@ -12,11 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Optional
-
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFontMetrics, QMouseEvent, QResizeEvent, QTextDocument
 from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget
+from typing import Optional
 
 
 class HLabel(QLabel):

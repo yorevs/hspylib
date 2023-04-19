@@ -12,17 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import re
 from abc import ABC
 from configparser import ConfigParser
 from functools import partial
-from typing import TextIO, Any, Dict, Callable, TypeVar
+from hspylib.core.tools.dict_tools import flatten_dict
+from typing import Any, Callable, Dict, TextIO, TypeVar
 
+import os
+import re
 import toml
 import yaml
-
-from hspylib.core.tools.dict_tools import flatten_dict
 
 PROPERTIES = TypeVar('PROPERTIES', bound=[Dict[str, Any]])
 

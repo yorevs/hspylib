@@ -12,10 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.tools.dict_tools import get_or_default
-
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
+from hspylib.core.tools.dict_tools import get_or_default
 from shared.entity_test import EntityTest
 
 

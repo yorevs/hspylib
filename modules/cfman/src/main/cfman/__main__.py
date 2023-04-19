@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-import logging as log
-import os
-import sys
+from cfman.__classpath__ import _Classpath
+from cfman.core.cf_manager import CFManager
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
@@ -24,8 +23,9 @@ from hspylib.modules.application.version import Version
 from hspylib.modules.cli.vt100.vt_utils import clear_screen, prepare_render
 from textwrap import dedent
 
-from cfman.__classpath__ import _Classpath
-from cfman.core.cf_manager import CFManager
+import logging as log
+import os
+import sys
 
 
 class Main(TUIApplication):

@@ -13,13 +13,13 @@
    Copyright 2023, HsPyLib team
 """
 
-import sys
-import unittest
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import safe_delete_file
-from hspylib.modules.security.security import decode_file, decrypt_file, encode_file, encrypt_file, b64_encode, \
-    b64_decode
+from hspylib.modules.security.security import (b64_decode, b64_encode, decode_file, decrypt_file, encode_file,
+                                               encrypt_file)
+
+import sys
+import unittest
 
 PASSPHRASE = "12345"
 SALT = "1234567890"

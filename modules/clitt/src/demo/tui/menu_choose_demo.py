@@ -12,10 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.modules.cli.vt100.vt_color import VtColor
-
 from clitt.core.tui.mchoose import mchoose
 from clitt.core.tui.tui_preferences import TUIPreferences
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class ChooseableItem:

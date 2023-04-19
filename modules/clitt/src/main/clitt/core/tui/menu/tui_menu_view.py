@@ -13,11 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 
-from hspylib.core.tools.commons import sysout
-from typing import Callable, Optional
-
 from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
+from hspylib.core.tools.commons import sysout
+from typing import Callable, Optional
 
 
 class TUIMenuView(TUIMenu):

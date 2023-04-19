@@ -12,12 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-import argparse
-import sys
 from argparse import ArgumentParser
+from hspylib.modules.application.exit_status import ExitStatus
 from typing import Any
 
-from hspylib.modules.application.exit_status import ExitStatus
+import argparse
+import sys
 
 
 class HSArgumentParser(ArgumentParser):

@@ -13,22 +13,11 @@
    Copyright 2023, HsPyLib team
 """
 
-import ast
-import atexit
-import json
-import logging as log
-import os
-import pprint
-import re
-from collections import defaultdict
-from copy import deepcopy
-from json.decoder import JSONDecodeError
-from pathlib import Path
-from typing import List, Optional, Tuple, Union
-
 from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
 from clitt.core.icons.font_awesome.form_icons import FormIcons
+from collections import defaultdict
 from confluent_kafka.cimpl import Consumer
+from copy import deepcopy
 from hqt.promotions.hstacked_widget import HStackedWidget
 from hqt.promotions.htablemodel import HTableModel
 from hqt.stream_capturer import StreamCapturer
@@ -40,10 +29,7 @@ from hspylib.core.tools.commons import dirname
 from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, strip_linebreaks
 from hspylib.core.zoned_datetime import now, now_ms
 from hspylib.modules.fetch.fetch import is_reachable
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-
+from json.decoder import JSONDecodeError
 from kafman.__classpath__ import _Classpath
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer.consumer_config import ConsumerConfig
@@ -64,6 +50,19 @@ from kafman.core.statistics_worker import StatisticsWorker
 from kafman.views.dialogs.filters_dialog import FiltersDialog
 from kafman.views.dialogs.settings_dialog import SettingsDialog
 from kafman.views.indexes import StkProducerEdit, StkTools, Tabs
+from pathlib import Path
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from typing import List, Optional, Tuple, Union
+
+import ast
+import atexit
+import json
+import logging as log
+import os
+import pprint
+import re
 
 
 class MainQtView(QtView):

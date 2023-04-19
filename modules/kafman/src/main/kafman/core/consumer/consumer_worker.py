@@ -13,16 +13,15 @@
    Copyright 2023, HsPyLib team
 """
 
-import threading
-from time import sleep
-from typing import Any, Dict, List
-
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.error import ConsumeError, ValueDeserializationError
 from hspylib.core.tools.commons import syserr
-from PyQt5.QtCore import pyqtSignal, QThread
-
 from kafman.core.schema.kafka_schema import KafkaSchema
+from PyQt5.QtCore import pyqtSignal, QThread
+from time import sleep
+from typing import Any, Dict, List
+
+import threading
 
 
 class ConsumerWorker(QThread):

@@ -12,14 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Optional
-
-from requests.models import CaseInsensitiveDict, Response
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.content_type import ContentType
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.enums.http_method import HttpMethod
+from requests.models import CaseInsensitiveDict, Response
+from typing import Optional
 
 
 class HttpResponse:

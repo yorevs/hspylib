@@ -13,11 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 
-from hspylib.modules.cli.vt100.vt_utils import restore_cursor
-from typing import Optional
-
 from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
+from hspylib.modules.cli.vt100.vt_utils import restore_cursor
+from typing import Optional
 
 
 class TUIMenuAction(TUIMenu):

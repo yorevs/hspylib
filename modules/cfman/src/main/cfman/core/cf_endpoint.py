@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.tools.commons import str_to_bool
-
 from cfman.exception.exceptions import CFInvalidEndpoint
+from hspylib.core.tools.commons import str_to_bool
 
 
 class CFEndpoint:

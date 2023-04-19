@@ -12,7 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
 from clitt.core.tui.minput.minput import MenuInput, minput
 from collections import namedtuple
 from datasource.crud_entity import CrudEntity
@@ -20,6 +19,8 @@ from datasource.identity import Identity
 from hspylib.core.zoned_datetime import now
 from textwrap import dedent
 from typing import Optional, Union
+
+import re
 
 
 class VaultEntry(CrudEntity):

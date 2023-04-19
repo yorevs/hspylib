@@ -13,15 +13,14 @@
    Copyright 2023, HsPyLib team
 """
 
-import json
 from collections import defaultdict
-from typing import Union
-
 from hqt.promotions.hstacked_widget import HStackedWidget
+from kafman.core.schema.widget_utils import INPUT_VALUE
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QAbstractScrollArea, QFrame, QScrollArea, QWidget
+from typing import Union
 
-from kafman.core.schema.widget_utils import INPUT_VALUE
+import json
 
 
 class FormArea(QScrollArea):

@@ -1,8 +1,7 @@
 from collections import namedtuple
+from datasource.identity import Identity
 from hspylib.core.namespace import Namespace
 from uuid import uuid4
-
-from datasource.identity import Identity
 
 if __name__ == "__main__":
     PersonId = namedtuple("PersonId", ["uuid"])

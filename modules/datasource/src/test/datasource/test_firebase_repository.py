@@ -13,18 +13,18 @@
    Copyright 2023, HsPyLib team
 """
 
+from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from datasource.identity import Identity
+from hspylib.core.decorator.decorators import integration_test
+from hspylib.core.tools.commons import log_init
+from hspylib.modules.fetch.fetch import delete
+from shared.entity_test import EntityTest
+from shared.firebase_repository_test import FirebaseRepositoryTest
+
 import logging as log
 import os
 import sys
 import unittest
-from hspylib.core.decorator.decorators import integration_test
-from hspylib.core.tools.commons import log_init
-from hspylib.modules.fetch.fetch import delete
-
-from datasource.firebase.firebase_configuration import FirebaseConfiguration
-from datasource.identity import Identity
-from shared.entity_test import EntityTest
-from shared.firebase_repository_test import FirebaseRepositoryTest
 
 
 @integration_test

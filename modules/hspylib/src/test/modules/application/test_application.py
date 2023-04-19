@@ -12,10 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import sys
-import unittest
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
@@ -24,6 +20,10 @@ from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from shared.application_test import ApplicationTest
+
+import os
+import sys
+import unittest
 
 APP_VERSION = Version.initial()
 

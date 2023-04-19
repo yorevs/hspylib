@@ -12,9 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-
 from hspylib.core.tools.text_tools import camelcase
+
+import os
 
 
 class WidgetEntry:

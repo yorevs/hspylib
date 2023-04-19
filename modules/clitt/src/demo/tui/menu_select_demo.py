@@ -12,11 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.modules.cli.vt100.vt_color import VtColor
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.mselect import mselect
 from clitt.core.tui.tui_preferences import TUIPreferences
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class SelectableItem:

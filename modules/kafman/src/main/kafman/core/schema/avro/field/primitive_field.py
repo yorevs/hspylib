@@ -13,10 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 
-from typing import Any
-
 from kafman.core.schema.avro.avro_type import AvroType
 from kafman.core.schema.schema_field import SchemaField
+from typing import Any
 
 
 class PrimitiveField(SchemaField):

@@ -12,9 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import stat
-import urllib3
+from clitt.addons.appman.appman_enums import AppExtension, AppType
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.minput import MenuInput, minput
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
@@ -30,9 +30,9 @@ from hspylib.modules.fetch.fetch import get
 from textwrap import dedent
 from typing import List
 
-from clitt.addons.appman.appman_enums import AppExtension, AppType
-from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput import MenuInput, minput
+import os
+import stat
+import urllib3
 
 HERE = get_path(__file__)
 

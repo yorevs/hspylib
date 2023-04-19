@@ -13,9 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 
-import json
-import logging as log
 from abc import abstractmethod
+from datasource.crud_entity import CrudEntity
+from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from datasource.identity import Identity
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_not_none
@@ -24,9 +25,8 @@ from hspylib.modules.fetch.http_response import HttpResponse
 from requests.exceptions import HTTPError
 from typing import Any, Generic, List, Optional, TypeVar
 
-from datasource.crud_entity import CrudEntity
-from datasource.firebase.firebase_configuration import FirebaseConfiguration
-from datasource.identity import Identity
+import json
+import logging as log
 
 E = TypeVar("E", bound=CrudEntity)
 

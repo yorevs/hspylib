@@ -13,7 +13,6 @@
    Copyright 2023, HsPyLib team
 """
 from datetime import datetime, timezone
-
 from hspylib.core.enums.enumeration import Enumeration
 
 # fmt: off

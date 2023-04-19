@@ -13,17 +13,16 @@
    Copyright 2023, HsPyLib team
 """
 
-import logging as log
-import sys
-from textwrap import dedent
-
 from hqt.qt_application import QtApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.version import Version
-
 from kafman.__classpath__ import _Classpath
 from kafman.views.main_qt_view import MainQtView
+from textwrap import dedent
+
+import logging as log
+import sys
 
 
 class Main(QtApplication):

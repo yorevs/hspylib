@@ -13,11 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 
-from typing import Any, Callable, Dict, List
-
 from hspylib.core.exception.exceptions import HSBaseException
 from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
+from typing import Any, Callable, Dict, List
 
 EVENT_CALLBACK = Callable[[Event], None]
 

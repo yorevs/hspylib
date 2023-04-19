@@ -12,16 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder
+from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
+from clitt.core.tui.tui_component import TUIComponent
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
 from typing import List, Optional, TypeVar
-
-from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder
-from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
-from clitt.core.tui.tui_component import TUIComponent
 
 DashboardMatrix = TypeVar('DashboardMatrix', bound=List[List[str]])
 

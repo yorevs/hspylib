@@ -12,13 +12,14 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import re
 from _ast import keyword
 from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.tools.commons import sysout
 from typing import List
+
+import os
+import re
 
 
 class CFApplication:

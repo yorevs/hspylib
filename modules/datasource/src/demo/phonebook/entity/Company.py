@@ -13,10 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 from collections import namedtuple
-from typing import List, Tuple
-
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
+from typing import List, Tuple
 
 
 class Company(CrudEntity):
