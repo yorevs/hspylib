@@ -23,14 +23,15 @@ from PyQt5.QtWidgets import QLCDNumber
 class BlinkLcdThread(Thread):
     def __init__(self, lcd: QLCDNumber):
         Thread.__init__(self)
-        self.lcd = lcd
+        self._lcd = lcd
+        self._configs = AppConfigs.INSTANCE
 
     def run(self):
-        palette = self.lcd.palette()
+        palette = self._lcd.palette()
         fg_color = palette.color(palette.WindowText)
         bg_color = palette.color(palette.Background)
         palette.setColor(palette.WindowText, bg_color)
-        self.lcd.setPalette(palette)
-        sleep(float(AppConfigs.INSTANCE["lcd.blink.delay"]))
+        self._lcd.setPalette(palette)
+        sleep(float(self._configs["lcd.blink.delay"]))
         palette.setColor(palette.WindowText, fg_color)
-        self.lcd.setPalette(palette)
+        self._lcd.setPalette(palette)
