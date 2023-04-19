@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Hqt
    @package: hqt.views
       @file: qt_view.py
    @created: Tue, 4 May 2021

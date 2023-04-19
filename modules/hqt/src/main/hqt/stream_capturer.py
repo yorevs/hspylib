@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Hqt
    @package: hqt
       @file: stream_capturer.py
    @created: Wed, 30 Jun 2021

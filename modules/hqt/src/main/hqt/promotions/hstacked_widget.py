@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: hspylib
+   @project: HsPyLib-Hqt
    @package: hqt.promotions
       @file: hstacked_widget.py
    @created: Wed, 8 Jun 2022
