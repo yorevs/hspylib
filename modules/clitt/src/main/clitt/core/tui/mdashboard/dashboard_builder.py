@@ -18,13 +18,11 @@ from typing import Callable, List, Optional
 
 
 class DashboardBuilder:
-    """Dashboard builder.
-    """
+    """Dashboard builder."""
 
     @staticmethod
     class DashboardItemBuilder:
-        """Dashboard item builder.
-        """
+        """Dashboard item builder."""
 
         def __init__(self, parent: "DashboardBuilder"):
             self._parent = parent

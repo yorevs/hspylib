@@ -64,8 +64,7 @@ class ConsumerWorker(QThread):
             self._schema = None
 
     def consume(self, topics: List[str]) -> None:
-        """Start the consumer thread.
-        """
+        """Start the consumer thread."""
         if self._started:
             self._worker_thread = threading.Thread(target=self._consume, args=(topics,))
             self._worker_thread.name = f"kafka-consumer-worker-{hash(self)}"
@@ -73,8 +72,7 @@ class ConsumerWorker(QThread):
             self._worker_thread.start()
 
     def is_started(self) -> bool:
-        """Whether the consumer is started or not.
-        """
+        """Whether the consumer is started or not."""
         return self._started
 
     def run(self) -> None:
@@ -93,8 +91,7 @@ class ConsumerWorker(QThread):
         return self._schema
 
     def _consume(self, topics: List[str]) -> None:
-        """Consume messages from the selected Kafka topics.
-        """
+        """Consume messages from the selected Kafka topics."""
         try:
             self._consumer.subscribe(topics)
             while self._started and self._consumer is not None:

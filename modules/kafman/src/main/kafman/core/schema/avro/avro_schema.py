@@ -107,7 +107,6 @@ class AvroSchema(KafkaSchema):
         return index
 
     def _parse(self) -> None:
-
         self._parsed = schema_parser.parse(self._content_text)
 
         self._schema_name = self._parsed.name

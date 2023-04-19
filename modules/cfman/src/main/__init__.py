@@ -5,7 +5,5 @@
 # Package: main
 """Package initialization."""
 
-__all__ = [
-  'cfman'
-]
-__version__ = '0.9.88'
+__all__ = ["cfman"]
+__version__ = "0.9.88"

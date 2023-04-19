@@ -42,8 +42,7 @@ class TUIMenuUi(metaclass=Singleton):
 
     @classmethod
     def render_app_title(cls) -> None:
-        """Render the application title.
-        """
+        """Render the application title."""
         clear_screen()
         sysout(cls.MENU_TITLE_FMT.format(title=cls.app_title or "TITLE"))
 
@@ -64,8 +63,7 @@ class TUIMenuUi(metaclass=Singleton):
         self._next_menu: Optional[TUIMenu] = None
 
     def execute(self) -> Any:
-        """Execute the terminal menu UI flow.
-        """
+        """Execute the terminal menu UI flow."""
 
         prepare_render()
 

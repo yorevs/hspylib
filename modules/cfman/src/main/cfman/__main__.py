@@ -29,8 +29,7 @@ import sys
 
 
 class Main(TUIApplication):
-    """Cloud Foundry Manager - Manage PCF applications.
-    """
+    """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
@@ -44,8 +43,7 @@ class Main(TUIApplication):
         self._cf_manager = None
 
     def _setup_arguments(self) -> None:
-        """Initialize application parameters and options.
-        """
+        """Initialize application parameters and options."""
         # fmt: off
         self._with_options() \
             .option("api", "a", "api", "the API endpoint to connect to (e.g. https://api.example.com)", nargs="?")\
@@ -65,8 +63,7 @@ class Main(TUIApplication):
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Run the application with the command line arguments.
-        """
+        """Run the application with the command line arguments."""
         self._cf_manager = CFManager(
             self.get_arg("api"),
             self.get_arg("org"),
@@ -89,8 +86,7 @@ class Main(TUIApplication):
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
-        """Execute the application.
-        """
+        """Execute the application."""
         prepare_render()
         self._cf_manager.run()
         clear_screen()

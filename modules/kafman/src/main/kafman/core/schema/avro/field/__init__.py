@@ -5,13 +5,5 @@
 # Package: main.kafman.core.schema.avro.field
 """Package initialization."""
 
-__all__ = [
-  'array_field', 
-  'enum_field', 
-  'field_factory', 
-  'fixed_field', 
-  'map_field', 
-  'primitive_field', 
-  'record_field'
-]
-__version__ = '0.9.106'
+__all__ = ["array_field", "enum_field", "field_factory", "fixed_field", "map_field", "primitive_field", "record_field"]
+__version__ = "0.9.106"

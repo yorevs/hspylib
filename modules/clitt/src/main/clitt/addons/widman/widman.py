@@ -32,8 +32,7 @@ HERE = get_path(__file__)
 
 
 class WidgetManager(metaclass=Singleton):
-    """HsPyLib widget manager that handles HsPyLib widgets.
-    """
+    """HsPyLib widget manager that handles HsPyLib widgets."""
 
     WIDGETS_PATH = HERE / "widgets"
 
@@ -75,8 +74,7 @@ class WidgetManager(metaclass=Singleton):
             raise WidgetExecutionError(f"Unable to execute widget '{widget_name}' -> {err}") from err
 
     def dashboard(self) -> None:
-        """Display all available widgets from the widget lookup paths on a dashboard.
-        """
+        """Display all available widgets from the widget lookup paths on a dashboard."""
 
         items = []
         try:
@@ -93,8 +91,7 @@ class WidgetManager(metaclass=Singleton):
 
     # pylint: disable=cell-var-from-loop
     def _search_widgets(self) -> int:
-        """Search and load all widgets from the widget lookup paths.
-        """
+        """Search and load all widgets from the widget lookup paths."""
 
         for path in self._lookup_paths:
             for root, _, files in os.walk(path):

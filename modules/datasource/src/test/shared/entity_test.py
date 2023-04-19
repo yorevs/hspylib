@@ -21,7 +21,6 @@ from typing import List
 
 
 class EntityTest(CrudEntity):
-
     EntityId = namedtuple("EntityId", ["id"])
 
     @staticmethod

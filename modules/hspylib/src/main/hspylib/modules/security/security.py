@@ -31,11 +31,7 @@ DEFAULT_HS_ITERATIONS: int  = 100000
 # fmt: on
 
 
-def encode_file(
-    in_file: str,
-    out_file: str,
-    binary: bool = False,
-    encoding: str | Charset = Charset.UTF_8) -> int:
+def encode_file(in_file: str, out_file: str, binary: bool = False, encoding: str | Charset = Charset.UTF_8) -> int:
     """Encode file into base64
     :param in_file: The file to be encoded
     :param out_file: The resulting encoded file
@@ -55,11 +51,7 @@ def encode_file(
             return f_out_file.write(str(data, encoding=str(encoding)))
 
 
-def decode_file(
-    in_file: str,
-    out_file: str,
-    binary: bool = False,
-    encoding: str | Charset = Charset.UTF_8) -> int:
+def decode_file(in_file: str, out_file: str, binary: bool = False, encoding: str | Charset = Charset.UTF_8) -> int:
     """Decode file from base64
     :param in_file: The file to be decoded
     :param out_file: The resulting decoded file
@@ -87,7 +79,8 @@ def encrypt_file(
     digest_algo: hashes.HashAlgorithm = hashes.SHA256(),
     length: int = DEFAULT_HS_LENGTH,
     iterations: int = DEFAULT_HS_ITERATIONS,
-    encoding: str | Charset = Charset.UTF_8) -> None:
+    encoding: str | Charset = Charset.UTF_8,
+) -> None:
     """Encrypt file using Fernet cryptography
     :param in_file: The file to be encrypted
     :param out_file: The resulting encrypted file
@@ -123,7 +116,8 @@ def decrypt_file(
     digest_algo: hashes.HashAlgorithm = hashes.SHA256(),
     length: int = DEFAULT_HS_LENGTH,
     iterations: int = DEFAULT_HS_ITERATIONS,
-    encoding: str | Charset = Charset.UTF_8) -> None:
+    encoding: str | Charset = Charset.UTF_8,
+) -> None:
     """Decrypt file using Fernet cryptography
     :param in_file: The file to be decrypted
     :param out_file: The resulting decrypted file
@@ -151,9 +145,7 @@ def decrypt_file(
     check_state(os.path.exists(out_file), 'Unable to decrypt file "{}"', in_file)
 
 
-def b64_encode(
-    text: str,
-    encoding: str | Charset = Charset.UTF_8) -> str:
+def b64_encode(text: str, encoding: str | Charset = Charset.UTF_8) -> str:
     """Encode a text using Base64.
     :param text The text to be encoded
     :param encoding The name of the encoding used to decode or encode the text.
@@ -162,9 +154,7 @@ def b64_encode(
     return str(base64.b64encode(bytes(text, str(encoding))), str(encoding))
 
 
-def b64_decode(
-    text: str,
-    encoding: str | Charset = Charset.UTF_8) -> str:
+def b64_decode(text: str, encoding: str | Charset = Charset.UTF_8) -> str:
     """Decode a Base64 encoded text.
     :param text The text to be decoded
     :param encoding The name of the encoding used to decode or encode the text.

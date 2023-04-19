@@ -22,7 +22,6 @@ from hspylib.modules.cli.keyboard import Keyboard
 
 
 class TUIMenuUtils:
-
     @staticmethod
     def wait_keystroke(wait_message: str = "%YELLOW%%EOL%Press any key to continue%EOL%%NC%") -> None:
         sysout(wait_message)
@@ -30,20 +29,18 @@ class TUIMenuUtils:
 
     @classmethod
     def prompt(
-        cls,
-        label: str,
-        dest: str = None,
-        min_length: int = 1,
-        max_length: int = 32,
-        validator: InputValidator = None) -> Namespace:
-        form_fields = MenuInput.builder() \
-            .field() \
-            .label(label) \
-            .dest(dest or label) \
-            .validator(validator or InputValidator.words(min_length, max_length)) \
-            .min_max_length(min_length, max_length) \
-            .build() \
+        cls, label: str, dest: str = None, min_length: int = 1, max_length: int = 32, validator: InputValidator = None
+    ) -> Namespace:
+        form_fields = (
+            MenuInput.builder()
+            .field()
+            .label(label)
+            .dest(dest or label)
+            .validator(validator or InputValidator.words(min_length, max_length))
+            .min_max_length(min_length, max_length)
             .build()
+            .build()
+        )
         ret_val = minput(form_fields)
         TUIMenuUi.render_app_title()
         return ret_val

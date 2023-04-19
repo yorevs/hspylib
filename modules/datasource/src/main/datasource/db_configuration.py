@@ -19,12 +19,7 @@ from typing import Optional
 class DBConfiguration(AppConfigs):
     """Holds database configurations."""
 
-    def __init__(
-        self,
-        resource_dir: str,
-        filename: str | None = None,
-        profile: str | None = None):
-
+    def __init__(self, resource_dir: str, filename: str | None = None, profile: str | None = None):
         super().__init__(resource_dir, filename, profile)
         self._hostname = self["datasource.hostname"]
         self._port = self.get_int("datasource.port")

@@ -29,7 +29,6 @@ class SchemaField(ABC):
     def __init__(
         self, name: str, doc: str, a_type: Union[AvroType, JsonType], default: Any = None, required: bool = True
     ):
-
         self.name = name
         self.doc = doc
         self.a_type = a_type

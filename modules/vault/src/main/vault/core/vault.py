@@ -37,8 +37,7 @@ import uuid
 
 
 class Vault:
-    """Represents the vault and it's functionalities.
-    """
+    """Represents the vault and it's functionalities."""
 
     # Vault hash code
     _VAULT_HASHCODE = os.getenv("VAULT_HASHCODE", "e4f362fd1e02df6bc9c684c9310e3550")
@@ -66,8 +65,7 @@ class Vault:
 
     @contextlib.contextmanager
     def open(self) -> bool:
-        """Open and read the Vault file.
-        """
+        """Open and read the Vault file."""
         try:
             self._sanity_check()
             self._passphrase = self._read_passphrase()
@@ -86,8 +84,7 @@ class Vault:
         return self._is_unlocked
 
     def close(self) -> bool:
-        """Close the Vault file and cleanup temporary files.
-        """
+        """Close the Vault file and cleanup temporary files."""
         try:
             if self._is_unlocked:
                 self._lock_vault()
@@ -130,10 +127,7 @@ class Vault:
         """
         check_not_none(key)
         if not self.service.exists(key):
-            entry = VaultEntry(
-                Identity(VaultEntry.VaultId(uuid.uuid4().hex)),
-                key, key, password, hint,
-            )
+            entry = VaultEntry(Identity(VaultEntry.VaultId(uuid.uuid4().hex)), key, key, password, hint)
             if not hint or not password:
                 entry = VaultEntry.prompt(entry)
             if entry:
@@ -204,8 +198,7 @@ class Vault:
         return cryptocode.decrypt(passphrase, self._VAULT_HASHCODE)
 
     def _read_passphrase(self) -> str:
-        """Read and return the vault currently assigned passphrase.
-        """
+        """Read and return the vault currently assigned passphrase."""
         passphrase, confirm_passphrase = None, False
         if file_is_not_empty(self._configs.vault_file):
             if self._configs.passphrase:
@@ -235,8 +228,7 @@ class Vault:
         return f"{self._configs.vault_user}:{passphrase}"
 
     def _lock_vault(self) -> None:
-        """Lock the vault file (encode & encrypt).
-        """
+        """Lock the vault file (encode & encrypt)."""
         if file_is_not_empty(self._configs.unlocked_vault_file):
             encoded = f"{self._configs.unlocked_vault_file}-encoded"
             encode_file(self._configs.unlocked_vault_file, encoded, binary=True)
@@ -249,8 +241,7 @@ class Vault:
         safe_delete_file(self._configs.unlocked_vault_file)
 
     def _unlock_vault(self) -> None:
-        """Unlock the vault file (decode & decrypt).
-        """
+        """Unlock the vault file (decode & decrypt)."""
         if file_is_not_empty(self._configs.vault_file):
             encoded = f"{self._configs.unlocked_vault_file}-encoded"
             decrypt_file(self._configs.vault_file, encoded, self._passphrase)
@@ -263,8 +254,7 @@ class Vault:
         safe_delete_file(self._configs.vault_file)
 
     def _sanity_check(self) -> None:
-        """Check existing vault backups and apply a rollback if required.
-        """
+        """Check existing vault backups and apply a rollback if required."""
         vault_file = self._configs.vault_file
         unlocked_vault_file = self._configs.unlocked_vault_file
         backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/.{os.path.basename(vault_file)}.bak"
@@ -297,8 +287,7 @@ class Vault:
         return passwd
 
     def _create_new_vault(self) -> bool:
-        """Create the vault SQLite DB file.
-        """
+        """Create the vault SQLite DB file."""
         touch_file(self._configs.vault_file)
         self.service.create_vault_db()
         return os.path.exists(self._configs.vault_file)

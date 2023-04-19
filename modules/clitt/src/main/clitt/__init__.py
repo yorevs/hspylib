@@ -5,10 +5,5 @@
 # Package: main.clitt
 """Package initialization."""
 
-__all__ = [
-  '__classpath__', 
-  '__main__', 
-  'addons', 
-  'core'
-]
-__version__ = '0.9.20'
+__all__ = ["__classpath__", "__main__", "addons", "core"]
+__version__ = "0.9.20"

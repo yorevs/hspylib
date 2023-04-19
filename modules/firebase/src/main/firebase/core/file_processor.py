@@ -28,8 +28,7 @@ import os
 
 
 class FileProcessor(ABC):
-    """Utility class to upload / download B64-encoded files.
-    """
+    """Utility class to upload / download B64-encoded files."""
 
     @staticmethod
     def upload_files(url: str, file_paths: List[str], glob_exp: str) -> int:
@@ -78,11 +77,7 @@ class FileProcessor(ABC):
         :param url: the URL to download the files.
         :param dest_dir: the destination directory.
         """
-        check_argument(
-            dest_dir and os.path.exists(dest_dir),
-            "Unable find destination directory: {}",
-            dest_dir,
-        )
+        check_argument(dest_dir and os.path.exists(dest_dir), "Unable find destination directory: {}", dest_dir)
         sysout(f'%BLUE%Downloading files from Firebase into "{dest_dir}" ...')
         response = get(url)
         check_not_none(response)
@@ -112,9 +107,7 @@ class FileProcessor(ABC):
         :param data: the file content to be written.
         """
         for entry in data:
-            FirebaseDto.from_file(
-                f"{dest_dir}/{os.path.basename(entry.path)}", entry.data
-            ).decode().save()
+            FirebaseDto.from_file(f"{dest_dir}/{os.path.basename(entry.path)}", entry.data).decode().save()
         paths = ", \n  |- ".join([f.path for f in data])
         sysout(f'%EOL%%GREEN%File(s) [\n  |- {paths}\n] successfully downloaded into: "{dest_dir}"%NC%')
 

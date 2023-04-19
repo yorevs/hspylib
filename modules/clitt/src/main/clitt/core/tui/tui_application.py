@@ -31,7 +31,7 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
         usage: str = None,
         epilog: str = None,
         resource_dir: str = None,
-        log_dir: str = None
+        log_dir: str = None,
     ):
         super().__init__(name, version, description, usage, epilog, resource_dir, log_dir)
         self._alt_screen = False
@@ -47,7 +47,6 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
             self._alternate_screen()
 
     def _alternate_screen(self):
-        """Toggle switch to the alternate/main screen.
-        """
+        """Toggle switch to the alternate/main screen."""
         self._alt_screen = not self._alt_screen
         alternate_screen(self._alt_screen)

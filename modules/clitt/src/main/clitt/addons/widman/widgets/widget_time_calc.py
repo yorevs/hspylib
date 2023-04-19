@@ -27,8 +27,7 @@ import re
 
 
 class WidgetTimeCalc(Widget):
-    """HsPyLib Widget to calculate time based operations.
-    """
+    """HsPyLib Widget to calculate time based operations."""
 
     # fmt: off
     WIDGET_ICON = WidgetIcons.CLOCK
@@ -104,7 +103,6 @@ class WidgetTimeCalc(Widget):
         return None
 
     def execute(self, *args) -> ExitStatus:
-
         ret_val = self._parse_args(*args)
 
         if ret_val is not None:
@@ -120,8 +118,7 @@ class WidgetTimeCalc(Widget):
         return ExitStatus.SUCCESS
 
     def _read_args(self) -> bool:
-        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info.
-        """
+        """When no input is provided (e.g:. when executed from dashboard). Prompt the user for the info."""
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \

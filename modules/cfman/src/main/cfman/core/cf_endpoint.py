@@ -17,14 +17,13 @@ from hspylib.core.tools.commons import str_to_bool
 
 
 class CFEndpoint:
-    """Represent a cf API endpoint entry.
-    """
+    """Represent a cf API endpoint entry."""
 
     def __init__(self, *attrs: str):
         if len(attrs) != 3:
             raise CFInvalidEndpoint(
-                f"Invalid endpoint provided: {str(attrs)}\n"
-                f"Expected format is: <alias,host,protected[true/false]>")
+                f"Invalid endpoint provided: {str(attrs)}\n" f"Expected format is: <alias,host,protected[true/false]>"
+            )
         self._alias = attrs[0]
         self._host = attrs[1]
         self._protected = str_to_bool(attrs[2])

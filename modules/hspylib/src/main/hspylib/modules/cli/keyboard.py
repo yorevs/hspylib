@@ -107,12 +107,12 @@ class Keyboard(Enumeration):
         return list(map(cls.of_value, sys.stdin.read(n)))
 
     @classmethod
-    def digits(cls) -> List['Keyboard']:
+    def digits(cls) -> List["Keyboard"]:
         """Return all Keyboard digits."""
         return list(map(cls.of_value, filter(lambda v: str(v).isdigit(), cls.values())))
 
     @classmethod
-    def letters(cls) -> List['Keyboard']:
+    def letters(cls) -> List["Keyboard"]:
         """Return all Keyboard letters."""
         return list(map(cls.of_value, filter(lambda v: str(v).isalpha(), cls.values())))
 
@@ -160,5 +160,5 @@ class Keyboard(Enumeration):
         return str(self.value)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(Keyboard.getch(3))

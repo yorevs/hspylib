@@ -58,8 +58,9 @@ class Terminal(ABC):
         try:
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            with (subprocess.Popen(
-                    cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs)) as proc:
+            with subprocess.Popen(
+                cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs
+            ) as proc:
                 process = select.poll()
                 process.register(proc.stdout)
                 while not Keyboard.kbhit():

@@ -24,8 +24,7 @@ import re
 
 
 class VaultEntry(CrudEntity):
-    """Represents the Vault domain object.
-    """
+    """Represents the Vault domain object."""
 
     VaultId = namedtuple("VaultId", ["uuid"])
 
@@ -41,9 +40,8 @@ class VaultEntry(CrudEntity):
     )
 
     @staticmethod
-    def prompt(existing_entry: Union['VaultEntry', None] = None) -> Optional['VaultEntry']:
-        """Create a vault entry from a form input.
-        """
+    def prompt(existing_entry: Union["VaultEntry", None] = None) -> Optional["VaultEntry"]:
+        """Create a vault entry from a form input."""
 
         entry = existing_entry or VaultEntry()
         # fmt: off
@@ -84,8 +82,8 @@ class VaultEntry(CrudEntity):
         name: str = None,
         password: str = None,
         hint: str = None,
-        modified: str = None):
-
+        modified: str = None,
+    ):
         self.id = None  # Will be filled later
         super().__init__(entity_id)
         self.key = key

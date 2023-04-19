@@ -32,8 +32,7 @@ import time
 
 
 def minput(
-    form_fields: List[FormField],
-    title: str = "Please fill all fields of the form fields below"
+    form_fields: List[FormField], title: str = "Please fill all fields of the form fields below"
 ) -> Optional[Namespace]:
     """
     TODO
@@ -45,8 +44,7 @@ def minput(
 
 
 class MenuInput(TUIComponent):
-    """Provide a form input for terminal UIs.
-    """
+    """Provide a form input for terminal UIs."""
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
@@ -65,7 +63,6 @@ class MenuInput(TUIComponent):
         self.max_detail_length = max(MInputUtils.detail_len(field) for field in fields)
 
     def execute(self) -> Optional[Namespace]:
-
         if len(self.fields) == 0:
             return None
 
@@ -90,12 +87,10 @@ class MenuInput(TUIComponent):
         return None
 
     def _render(self) -> None:
-
         restore_cursor()
         sysout(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx, field in enumerate(self.fields):
-
             field_size = field.width
             if self.tab_index == idx:
                 MInputUtils.mi_print(self.max_label_length + 2, f"  {field.label}", self.prefs.sel_bg_color.placeholder)
@@ -152,13 +147,13 @@ class MenuInput(TUIComponent):
             sysout(fmt.format(field.icon, field_size_details, field.max_length))
 
     def _navbar(self, **kwargs) -> str:
-        return \
-            f"\n{self.prefs.navbar_color.placeholder}" \
-            f"[Enter] Submit  [{self.NAV_ICONS}] " \
+        return (
+            f"\n{self.prefs.navbar_color.placeholder}"
+            f"[Enter] Submit  [{self.NAV_ICONS}] "
             f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [^P] Paste  [Esc] Quit %NC%%EL0%%EOL%%EOL%"
+        )
 
     def _handle_keypress(self) -> Keyboard:
-
         length = len(self.fields)
 
         if keypress := Keyboard.wait_keystroke():
@@ -189,8 +184,7 @@ class MenuInput(TUIComponent):
         return keypress
 
     def _handle_enter(self) -> None:
-        """Handle 'enter' press. Validate & Save form and exit.
-        """
+        """Handle 'enter' press. Validate & Save form and exit."""
 
         invalid = next((field for field in self.fields if not field.validate(field.value)), None)
         if invalid:
@@ -234,12 +228,10 @@ class MenuInput(TUIComponent):
                     if self.cur_field.validate(keypress.value):
                         self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                     else:
-                        self._display_error(
-                            f"This field only accept {self.cur_field.validator} !")
+                        self._display_error(f"This field only accept {self.cur_field.validator} !")
 
     def _handle_backspace(self) -> None:
-        """Handle 'backspace' press. Delete previous input.
-        """
+        """Handle 'backspace' press. Delete previous input."""
 
         if self.cur_field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(self.cur_field.value))
@@ -254,8 +246,7 @@ class MenuInput(TUIComponent):
                 self._display_error("This field is read only !")
 
     def _handle_ctrl_p(self) -> None:
-        """Handle 'ctrl + p' press. Paste content from clipboard.
-        """
+        """Handle 'ctrl + p' press. Paste content from clipboard."""
         for c in pyperclip.paste():
             self._handle_input(Keyboard.of_value(c))
 
@@ -271,8 +262,7 @@ class MenuInput(TUIComponent):
                 self.cur_row, self.cur_col = f_pos[0], f_pos[1] + field_size
 
     def _display_error(self, err_msg) -> None:
-        """Display a form filling or submitting error.
-        """
+        """Display a form filling or submitting error."""
         set_enable_echo(False)
         offset = 16  # Magic number :D . That is the value to best fit the message along with the form.
         err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + offset

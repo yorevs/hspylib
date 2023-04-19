@@ -112,9 +112,10 @@ def sysout(*strings: str, end: str = os.linesep) -> None:
     :param end: string appended after the last value, default a newline
     """
     if strings:
+
         def sysout_format(text: str) -> str:
-            return VtColor.colorize(
-                VtCode.decode(text or ''))
+            return VtColor.colorize(VtCode.decode(text or ""))
+
         list(map_many(strings, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
         print("", file=sys.stdout, flush=True, end=end)
 
@@ -125,10 +126,11 @@ def syserr(*strings: Any, end: str = os.linesep) -> None:
     :param end: string appended after the last value, default a newline
     """
     if strings:
+
         def syserr_format(text: Any) -> str:
-            plain_text = VtColor.strip_colors(str(text or ''))
-            return VtColor.colorize(
-                VtCode.decode(f"%RED%{plain_text}%NC%"))
+            plain_text = VtColor.strip_colors(str(text or ""))
+            return VtColor.colorize(VtCode.decode(f"%RED%{plain_text}%NC%"))
+
         list(map_many(strings, syserr_format, lambda s: print(s, file=sys.stderr, flush=True, end="")))
         print("", file=sys.stdout, flush=True, end=end)
 
@@ -219,7 +221,7 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
     """
 
     byte_size = float(size_in_bytes)
-    kb, mb, gb, tb = 2 ** 10, 2 ** 20, 2 ** 30, 2 ** 40
+    kb, mb, gb, tb = 2**10, 2**20, 2**30, 2**40
 
     if 0 <= byte_size <= kb:
         ret_val = f"{byte_size:3.2f}"

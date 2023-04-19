@@ -31,15 +31,13 @@ class Main(TUIApplication):
     """HsPyLib CLI Terminal Tools - Create professional CLI applications."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path(
-        "welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
     VERSION_DIR = _Classpath.source_path()
 
     class Addon(Enumeration):
-        """HsPyLib addon types.
-        """
+        """HsPyLib addon types."""
 
         # fmt: off
         APPMAN      = 'appman'
@@ -55,8 +53,7 @@ class Main(TUIApplication):
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
 
     def _setup_arguments(self) -> None:
-        """Initialize application parameters and options.
-        """
+        """Initialize application parameters and options."""
 
         # fmt: off
         self._with_chained_args('application', 'the HsPyLib-Clitt addon to run') \
@@ -92,13 +89,11 @@ class Main(TUIApplication):
                     nargs='*')  # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Main entry point handler.
-        """
+        """Main entry point handler."""
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
-        """Execute the application main flow.
-        """
+        """Execute the application main flow."""
 
         app = self.get_arg("application")
         if app == self.Addon.APPMAN.val:
@@ -112,8 +107,7 @@ class Main(TUIApplication):
         return ExitStatus.SUCCESS
 
     def start_widman(self) -> None:
-        """Start the Widman application.
-        """
+        """Start the Widman application."""
         addon = WidgetManager(self)
         widget_name = self.get_arg("widget-name")
         if widget_name:
@@ -123,8 +117,7 @@ class Main(TUIApplication):
             addon.dashboard()
 
     def start_appman(self) -> None:
-        """Start the Appman application.
-        """
+        """Start the Appman application."""
         addon = AppManager(self)
         app_type = self.get_arg("app-type")
         if app_type:
@@ -143,9 +136,7 @@ class Main(TUIApplication):
                     app_ext.append(AppExtension.GRADLE)
                 if args.initialize_git:
                     app_ext.append(AppExtension.GIT)
-                addon.create(
-                    args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir()
-                )
+                addon.create(args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir())
 
 
 # Application entry point

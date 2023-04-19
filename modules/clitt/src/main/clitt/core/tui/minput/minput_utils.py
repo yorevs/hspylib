@@ -22,8 +22,7 @@ import re
 
 
 class MInputUtils(ABC):
-    """MenuInput utilities.
-    """
+    """MenuInput utilities."""
 
     @staticmethod
     def detail_len(field: Any) -> int:

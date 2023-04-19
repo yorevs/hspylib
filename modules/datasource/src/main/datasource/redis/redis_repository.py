@@ -72,8 +72,7 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
 
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        """Connect and create a database session.
-        """
+        """Connect and create a database session."""
         log.debug("%s Attempt to connect to database: %s", self.logname, str(self))
         conn = redis.Redis(ssl=self.ssl, host=self.hostname, port=self.port, password=self.password)
         log.debug("%s Connection info: %s", self.logname, conn.config_get("databases"))
@@ -81,8 +80,7 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
 
     @contextlib.contextmanager
     def pipeline(self) -> Pipeline:
-        """Generator to create a database pipeline and return it.
-        """
+        """Generator to create a database pipeline and return it."""
         pipe = None
         try:
             _, pipe = self._create_session()
@@ -152,8 +150,7 @@ class RedisRepository(Generic[E], metaclass=AbstractSingleton):
             return ret_val[0] or 0
 
     def flushdb(self) -> None:
-        """Delete all the keys of the currently selected DB. This command never fails.
-        """
+        """Delete all the keys of the currently selected DB. This command never fails."""
         with self.pipeline() as pipe:
             pipe.flushall()
             pipe.execute()

@@ -24,7 +24,7 @@ from phonebook.service.person_service import PersonService
 
 
 class CreateView(TUIMenuView):
-    """ TODO"""
+    """TODO"""
 
     def __init__(self, parent: TUIMenu) -> None:
         super().__init__(parent)
@@ -34,7 +34,7 @@ class CreateView(TUIMenuView):
     def person(self) -> None:
         form = ContactForms.person_form()
         if form:
-            person = Person(Identity.auto(field_name='uuid'))
+            person = Person(Identity.auto(field_name="uuid"))
             person.name = form.name
             person.age = form.age
             person.phone = form.phone
@@ -48,7 +48,7 @@ class CreateView(TUIMenuView):
     def company(self) -> None:
         form = ContactForms.company_form()
         if form:
-            company = Company(Identity.auto(field_name='uuid'))
+            company = Company(Identity.auto(field_name="uuid"))
             company.uuid = form.uuid
             company.name = form.name
             company.cnpj = form.cnpj

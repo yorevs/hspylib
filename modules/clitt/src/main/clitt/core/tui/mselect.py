@@ -24,10 +24,7 @@ from typing import List, Optional, TypeVar
 T = TypeVar("T")
 
 
-def mselect(
-    items: List[T],
-    title: str = "Please select one"
-) -> Optional[T]:
+def mselect(items: List[T], title: str = "Please select one") -> Optional[T]:
     """
     TODO
     :param items:

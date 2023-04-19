@@ -95,7 +95,7 @@ class MainQtView(QtView):
         if callback := self._keymap.get(key):
             callback()
 
-    def _display(self, value: str = '0') -> None:
+    def _display(self, value: str = "0") -> None:
         """Display the specified value."""
         future_digits = len(str(value)) if value else 0
         digits = self.ui.lcdDisplay.digitCount()

@@ -24,8 +24,7 @@ R = TypeVar("R", bound=CrudRepository)
 
 
 class CrudService(Generic[R, E], metaclass=AbstractSingleton):
-    """Provide a service for CRUD operations.
-    """
+    """Provide a service for CRUD operations."""
 
     def __init__(self, repository: R):
         self._repository = repository

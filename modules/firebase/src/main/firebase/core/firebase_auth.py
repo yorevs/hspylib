@@ -36,13 +36,12 @@ class FirebaseAuth(ABC):
         :param project_id: the Firebase Realtime database project ID.
         """
 
-        creds_file = os.environ.get(
-            "HHS_FIREBASE_CREDS_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json")
+        creds_file = os.environ.get("HHS_FIREBASE_CREDS_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json")
         check_not_none(creds_file, project_id)
         try:
             creds = credentials.Certificate(creds_file.format(project_id=project_id))
         except (IOError, KeyError, ValueError) as err:
-            raise InvalidFirebaseCredentials(f"Invalid credentials or credential file \"{creds_file}\"") from err
+            raise InvalidFirebaseCredentials(f'Invalid credentials or credential file "{creds_file}"') from err
 
         return creds
 
@@ -58,7 +57,7 @@ class FirebaseAuth(ABC):
             if user := auth.get_user(uid):
                 sysout("%ORANGE%Firebase authentication succeeded%EOL%")
                 return user
-            raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase. User ID \"{uid}\" not found.")
+            raise FirebaseAuthenticationError(f'Failed to authenticate to Firebase. User ID "{uid}" not found.')
         except UserNotFoundError as err:
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:

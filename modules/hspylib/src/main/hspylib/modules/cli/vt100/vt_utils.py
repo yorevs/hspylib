@@ -135,11 +135,11 @@ def prepare_render(auto_wrap: bool = False, show_cursor: bool = False):
     save_cursor()
 
 
-if __name__ == '__main__':
-    print('1 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
-    print('2 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
-    print('3 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
-    print('4 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
-    print('5 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu')
+if __name__ == "__main__":
+    print("1 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
+    print("2 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
+    print("3 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
+    print("4 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
+    print("5 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
     clear_screen()
-    exit_app(exit_msg='Done')
+    exit_app(exit_msg="Done")

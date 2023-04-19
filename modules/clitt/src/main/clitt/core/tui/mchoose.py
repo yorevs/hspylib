@@ -23,11 +23,7 @@ from typing import List, Optional, TypeVar
 T = TypeVar("T")
 
 
-def mchoose(
-    items: List[T],
-    checked: bool = True,
-    title: str = "Please choose among the options"
-) -> Optional[List[T]]:
+def mchoose(items: List[T], checked: bool = True, title: str = "Please choose among the options") -> Optional[List[T]]:
     """
     TODO
     :param items:
@@ -74,9 +70,7 @@ class MenuChoose(TUIComponent):
         sysout("%MOD(0)%")
 
         return (
-            [
-                op for idx, op in enumerate(self.items) if self.sel_options[idx]
-            ]
+            [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
             if keypress == Keyboard.VK_ENTER
             else None
         )

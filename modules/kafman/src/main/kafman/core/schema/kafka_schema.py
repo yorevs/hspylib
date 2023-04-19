@@ -87,7 +87,6 @@ class KafkaSchema(ABC):
     def __init__(
         self, schema_type: SchemaType, filepath: str = None, registry_url: str = None, charset: Charset = Charset.UTF_8
     ):
-
         self._schema_name = "undefined"
         self._schema_type = schema_type
         self._filepath = filepath

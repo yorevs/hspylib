@@ -21,8 +21,7 @@ from textwrap import dedent
 
 
 class Widget(ABC):
-    """HsPyLib_Widman base class. All widgets must inherit from this class to properly work.
-    """
+    """HsPyLib_Widman base class. All widgets must inherit from this class to properly work."""
 
     _USAGE_FMT = dedent(
         """
@@ -48,30 +47,24 @@ class Widget(ABC):
         """
 
     def cleanup(self) -> None:
-        """Execute the widget cleanup.
-        """
+        """Execute the widget cleanup."""
 
     def icon(self) -> Awesome:
-        """Return the widget icon.
-        """
+        """Return the widget icon."""
         return self._icon
 
     def name(self) -> str:
-        """Return the name about the widget.
-        """
+        """Return the name about the widget."""
         return self._name
 
     def tooltip(self) -> str:
-        """Return a tooltip information about the widget.
-        """
+        """Return a tooltip information about the widget."""
         return self._tooltip
 
     def version(self) -> str:
-        """Return the version of the widget.
-        """
+        """Return the version of the widget."""
         return str(self._version)
 
     def usage(self) -> str:
-        """Return a usage message about the widget.
-        """
+        """Return a usage message about the widget."""
         return self._USAGE_FMT.format(self._name, self._version, self._tooltip, self._usage)

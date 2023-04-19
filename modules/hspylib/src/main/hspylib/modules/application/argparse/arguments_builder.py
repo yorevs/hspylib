@@ -37,8 +37,10 @@ class ArgumentsBuilder:
 
         add_arg = partial(
             self._arg_parser.add_argument,
-            dest=name, help=help_string or f"the {name}",
-            action=action.value, default=default,
+            dest=name,
+            help=help_string or f"the {name}",
+            action=action.value,
+            default=default,
         )
         if action == ParserAction.STORE:
             add_arg(choices=choices, nargs=nargs)

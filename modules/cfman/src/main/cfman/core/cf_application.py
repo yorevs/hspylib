@@ -23,15 +23,13 @@ import re
 
 
 class CFApplication:
-    """Represent a PCF application.
-    """
+    """Represent a PCF application."""
 
     max_name_length = 70
 
     @classmethod
     def of(cls, app_line: str):
-        """Create a cf application entry from the cf apps output line.
-        """
+        """Create a cf application entry from the cf apps output line."""
         parts = re.split(r" {2,}", app_line)
         # format: name | state | instances | memory | disk | urls
         if len(parts) == 6:  # Old CF command output
@@ -39,15 +37,14 @@ class CFApplication:
         # format: name | requested state | processes | routes
         elif len(parts) == 4:  # New CF command output
             if not (mat := re.search(r"(\w+):(\d+/\d+)", parts[2])):
-                raise InvalidArgumentError(f"Invalid application line: \"{app_line}\"")
+                raise InvalidArgumentError(f'Invalid application line: "{app_line}"')
             instances = mat.group(2)
             memory = disk = "-"
             return CFApplication(parts[0], parts[1], instances, memory, disk, parts[3].split(","))
 
         raise InvalidArgumentError(
-            f"Invalid application line: "
-            f"{app_line}"
-            f"Probably CF APPS command changed the command output.")
+            f"Invalid application line: " f"{app_line}" f"Probably CF APPS command changed the command output."
+        )
 
     def __init__(self, name: str, state: str, instances: str, memory: str, disk: str, routes: List[str]) -> None:
         self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
@@ -67,20 +64,20 @@ class CFApplication:
 
     @property
     def colored_state(self) -> str:
-        """Return the actual application state using colors.
-        """
+        """Return the actual application state using colors."""
         state = self.state.upper()
         return (
             f"{self.prefs.success_color if self.is_started else self.prefs.error_color}"
-            f"{state:<9}{self.prefs.text_color.code}")
+            f"{state:<9}{self.prefs.text_color.code}"
+        )
 
     @property
     def is_started(self) -> bool:
-        return self.state.lower() == 'started'
+        return self.state.lower() == "started"
 
     def print_status(self) -> None:
-        """Print the actual application status line.
-        """
+        """Print the actual application status line."""
         sysout(
             f"%CYAN%{self.name:<{self.max_name_length + 2}}"
-            f"{self.colored_state}%NC%{self.instances:<12}{self.memory:<6}{self.disk:<6}{len(self.routes)}")
+            f"{self.colored_state}%NC%{self.instances:<12}{self.memory:<6}{self.disk:<6}{len(self.routes)}"
+        )

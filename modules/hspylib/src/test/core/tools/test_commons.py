@@ -38,8 +38,8 @@ class TestCommons(unittest.TestCase):
         try:
             sysout(None)
             syserr(None)
-            sysout('')
-            syserr('')
+            sysout("")
+            syserr("")
         except TypeError as err:
             self.fail(f"sysout/syserr raised TypeError unexpectedly => {err}")
 

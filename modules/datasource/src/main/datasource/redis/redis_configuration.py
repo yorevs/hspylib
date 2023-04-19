@@ -16,15 +16,9 @@ from hspylib.core.config.app_config import AppConfigs
 
 
 class RedisConfiguration(AppConfigs):
-    """Represents a Redis datasource configuration.
-    """
+    """Represents a Redis datasource configuration."""
 
-    def __init__(
-        self,
-        resource_dir: str,
-        filename: str | None = None,
-        profile: str | None = None):
-
+    def __init__(self, resource_dir: str, filename: str | None = None, profile: str | None = None):
         super().__init__(resource_dir, filename, profile)
         self._hostname = self["datasource.hostname"]
         self._database = self["datasource.database"]

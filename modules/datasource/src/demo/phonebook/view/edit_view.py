@@ -26,14 +26,8 @@ from phonebook.service.person_service import PersonService
 
 
 class EditView(TUIMenuView):
-
     @classmethod
-    def prompt(
-        cls,
-        label: str,
-        dest: str = None,
-        min_length: int = 1,
-        max_length: int = 32) -> Namespace:
+    def prompt(cls, label: str, dest: str = None, min_length: int = 1, max_length: int = 32) -> Namespace:
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
@@ -63,7 +57,8 @@ class EditView(TUIMenuView):
             TUIMenu.wait_keystroke()
         else:
             form = ContactForms.person_form(
-                found.name, found.age, found.phone, found.email, found.address, found.complement)
+                found.name, found.age, found.phone, found.email, found.address, found.complement
+            )
             if form:
                 found.name = form.name
                 found.age = form.age
@@ -85,7 +80,8 @@ class EditView(TUIMenuView):
             TUIMenu.wait_keystroke()
         else:
             form = ContactForms.company_form(
-                found.name, found.cnpj, found.phone, found.website, found.address, found.complement)
+                found.name, found.cnpj, found.phone, found.website, found.address, found.complement
+            )
             if form:
                 found.name = form.name
                 found.cnpj = form.cnpj

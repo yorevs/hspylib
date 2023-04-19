@@ -22,16 +22,12 @@ import csv
 
 
 class TableRenderer:
-    """Utility class to render terminal UI tables.
-    """
+    """Utility class to render terminal UI tables."""
 
     DEFAULT_MINIMUM_CELL_SIZE = 6
 
     @staticmethod
-    def from_csv(
-        filepath: str,
-        caption: str | None = None,
-        delimiter: chr = ',') -> 'TableRenderer':
+    def from_csv(filepath: str, caption: str | None = None, delimiter: chr = ",") -> "TableRenderer":
         """TODO"""
 
         check_argument(file_is_not_empty(filepath), f"File not found: {filepath}")
@@ -48,8 +44,7 @@ class TableRenderer:
         return TableRenderer(headers, data, caption)
 
     class TextAlignment(Enumeration):
-        """Table cell text justification helper.
-        """
+        """Table cell text justification helper."""
 
         # fmt: off
         LEFT    = justified_left
@@ -67,7 +62,7 @@ class TableRenderer:
         self._headers = headers
         self._columns = range(len(self._headers))
         self._data = data if data else []
-        self._caption = caption or ''
+        self._caption = caption or ""
         self._header_alignment = TableRenderer.TextAlignment.CENTER
         self._cell_alignment = TableRenderer.TextAlignment.LEFT
         self._min_cell_size = self.DEFAULT_MINIMUM_CELL_SIZE
@@ -107,7 +102,7 @@ class TableRenderer:
         :param cell_sizes: the list of specific cell sizes.
         :return: None
         """
-        for idx, size in enumerate(cell_sizes[:len(self._column_sizes)]):
+        for idx, size in enumerate(cell_sizes[: len(self._column_sizes)]):
             self._column_sizes[idx] = max(self._min_cell_size, size)
 
     def adjust_cells_by_headers(self) -> None:
@@ -153,26 +148,22 @@ class TableRenderer:
         :return: None
         """
         header_row, data_rows = self._format_header_row(), self._format_data_rows()
-        table_line = "+" + '+'.join(f"{'-' * (self._column_sizes[idx] + 2)}" for idx in self._columns) + '+'
+        table_line = "+" + "+".join(f"{'-' * (self._column_sizes[idx] + 2)}" for idx in self._columns) + "+"
         self._render_table(table_line, header_row, data_rows)
 
     def to_csv(self, filepath: str) -> None:
-        with open(filepath, 'w', encoding="UTF8") as csv_file:
-            writer = csv.writer(csv_file,)
+        with open(filepath, "w", encoding="UTF8") as csv_file:
+            writer = csv.writer(csv_file)
             writer.writerow(self._headers)
             writer.writerows(self._data)
 
     def _format_header_row(self) -> str:
-        """Format the table header using the defined preferences.
-        """
-        header_cols = [
-            self._header_alignment(self._header_text(idx), self._column_sizes[idx]) for idx in self._columns
-        ]
+        """Format the table header using the defined preferences."""
+        header_cols = [self._header_alignment(self._header_text(idx), self._column_sizes[idx]) for idx in self._columns]
         return f"| {' | '.join(header_cols)} |"
 
     def _format_data_rows(self) -> List[str]:
-        """Format the table rows using the defined preferences.
-        """
+        """Format the table rows using the defined preferences."""
         # fmt: off
         return [
             "| " + ' | '.join(
@@ -208,11 +199,11 @@ class TableRenderer:
         """
         line_length, render_line = len(table_line) - 4, f"+{table_line[1:-1]}+"
         empty_line = f"| {'<empty>': ^{line_length}} |"
-        sysout(render_line.replace('+', '-'))
+        sysout(render_line.replace("+", "-"))
         if self._caption:
             sysout(f"| {elide_text(self._caption, line_length): ^{line_length}} |")
             sysout(render_line)
         sysout(header_row)
         sysout(render_line)
         sysout(f"{'%EOL%'.join(data_rows) if data_rows else empty_line}")
-        sysout(render_line.replace('+', '-'))
+        sysout(render_line.replace("+", "-"))

@@ -39,4 +39,4 @@ if __name__ == "__main__":
         .build()
     # fmt: on
 
-    TUIMenuUi(main_menu, 'TUI Main Menu').execute()
+    TUIMenuUi(main_menu, "TUI Main Menu").execute()

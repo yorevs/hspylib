@@ -5,7 +5,5 @@
 # Package: main.firebase.domain
 """Package initialization."""
 
-__all__ = [
-  'firebase_dto'
-]
-__version__ = '0.9.96'
+__all__ = ["firebase_dto"]
+__version__ = "0.9.96"

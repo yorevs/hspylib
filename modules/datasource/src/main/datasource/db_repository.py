@@ -36,8 +36,7 @@ C = TypeVar("C", bound=DBConfiguration)
 
 
 class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton):
-    """Interface for generic CRUD operations on a database for a specific type.
-    """
+    """Interface for generic CRUD operations on a database for a specific type."""
 
     def __init__(self, config: C):
         super().__init__()
@@ -80,14 +79,12 @@ class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton
     @abstractmethod
     @retry(tries=3, delay=2, backoff=3, max_delay=30)
     def _create_session(self) -> Tuple[Connection, Cursor]:
-        """Generator to create a database session and return it.
-        """
+        """Generator to create a database session and return it."""
 
     @abstractmethod
     @contextlib.contextmanager
     def _session(self) -> Session:
-        """Connect and create a database session.
-        """
+        """Connect and create a database session."""
 
     @abstractmethod
     def execute(self, sql_statement: str, **kwargs) -> Tuple[int, Optional[ResultSet]]:
@@ -98,5 +95,4 @@ class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton
 
     @abstractmethod
     def table_name(self) -> str:
-        """Return the table name (repository name).
-        """
+        """Return the table name (repository name)."""

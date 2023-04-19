@@ -20,18 +20,17 @@ import re
 
 
 class CFBlueGreenChecker:
-    """Blue/Green deployment checker.
-    """
+    """Blue/Green deployment checker."""
 
     @staticmethod
     def _is_green(cf_application: CFApplication) -> bool:
         """TODO"""
-        return bool(re.search(r'.*-green', cf_application.name))
+        return bool(re.search(r".*-green", cf_application.name))
 
     @staticmethod
     def _is_blue(cf_application: CFApplication) -> bool:
         """TODO"""
-        return bool(re.search(r'.*-blue', cf_application.name))
+        return bool(re.search(r".*-blue", cf_application.name))
 
     @staticmethod
     def _check_alerts(active_app: CFApplication, idle_app: CFApplication) -> list:
@@ -40,18 +39,18 @@ class CFBlueGreenChecker:
         :return: Any alerts about the active_app.
         """
         alerts = []
-        if active_app is None or not active_app.name.endswith(('-green', '-blue')):
-            alerts.append('  Status: %ORANGE%Invalid Blue/Green Deploy. Missing active app !')
-        elif idle_app is None or not idle_app.name.endswith(('-green', '-blue')):
-            alerts.append('  Status: %ORANGE%Invalid Blue/Green Deploy. Missing idle app !')
+        if active_app is None or not active_app.name.endswith(("-green", "-blue")):
+            alerts.append("  Status: %ORANGE%Invalid Blue/Green Deploy. Missing active app !")
+        elif idle_app is None or not idle_app.name.endswith(("-green", "-blue")):
+            alerts.append("  Status: %ORANGE%Invalid Blue/Green Deploy. Missing idle app !")
         elif not active_app.is_started and not idle_app.is_started:
-            alerts.append('  Status: %ORANGE%Both blue & green stopped!')
+            alerts.append("  Status: %ORANGE%Both blue & green stopped!")
         elif active_app.is_started and len(active_app.routes) < len(idle_app.routes):
-            alerts.append('  Status: %ORANGE%Should be stopped!')
+            alerts.append("  Status: %ORANGE%Should be stopped!")
         elif not active_app.is_started and len(active_app.routes) > len(idle_app.routes):
-            alerts.append('  Status: %ORANGE%Should be started!')
+            alerts.append("  Status: %ORANGE%Should be started!")
         else:
-            alerts.append('  Status: %GREEN%OK')
+            alerts.append("  Status: %GREEN%OK")
 
         return alerts
 
@@ -67,18 +66,18 @@ class CFBlueGreenChecker:
         blue_apps = list(filter(cls._is_blue, apps))
 
         for app_green in green_apps:
-            green_info = list(filter(None, re.split(r'\s{2,}', app_green.name)))
-            app_name = green_info[0].replace('-green', '')
-            mapped_apps[app_name]: dict = mapped_apps[app_name] \
-                if app_name in mapped_apps else {'green': None, 'blue': None}
-            mapped_apps[app_name]['green'] = app_green
+            green_info = list(filter(None, re.split(r"\s{2,}", app_green.name)))
+            app_name = green_info[0].replace("-green", "")
+            mapped_apps[app_name]: dict = (
+                mapped_apps[app_name] if app_name in mapped_apps else {"green": None, "blue": None}
+            )
+            mapped_apps[app_name]["green"] = app_green
 
         for app_blue in blue_apps:
-            blue_info = list(filter(None, re.split(r'\s{2,}', app_blue.name)))
-            app_name = blue_info[0].replace('-blue', '')
-            mapped_apps[app_name] = mapped_apps[app_name] \
-                if app_name in mapped_apps else {'green': None, 'blue': None}
-            mapped_apps[app_name]['blue'] = app_blue
+            blue_info = list(filter(None, re.split(r"\s{2,}", app_blue.name)))
+            app_name = blue_info[0].replace("-blue", "")
+            mapped_apps[app_name] = mapped_apps[app_name] if app_name in mapped_apps else {"green": None, "blue": None}
+            mapped_apps[app_name]["blue"] = app_blue
 
         return mapped_apps
 
@@ -92,22 +91,29 @@ class CFBlueGreenChecker:
         sysout(
             f"%BLUE%Listing '{org}::{space}' applications grouped by blue/green pairs ...%EOL%%WHITE%"
             f"{'-=' * 60 + '%EOL%'}"
-            f"{'Color':^11}{'Status':<10}{'Instances (MEM)':<27}Routes:{'Alerts':>13}%EOL%")
+            f"{'Color':^11}{'Status':<10}{'Instances (MEM)':<27}Routes:{'Alerts':>13}%EOL%"
+        )
         for name, app in mapped_apps.items():
-            app_green = app['green']
-            app_blue = app['blue']
-            sysout(f'%CYAN%\\-{name}')
-            sysout('{} |-GREEN: {}'.format(
-                '%YELLOW%'
-                if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
-                else '%NC%',
-                cls._app_info(app_green, app_blue) if app_green else '%RED%Missing green pair!'))
-            sysout('{} |-BLUE : {}'.format(
-                '%YELLOW%'
-                if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
-                else '%NC%',
-                cls._app_info(app_blue, app_green) if app_blue else '%RED%Missing blue pair!'))
-            sysout('%NC%%EOL%' + '-' * 120)
+            app_green = app["green"]
+            app_blue = app["blue"]
+            sysout(f"%CYAN%\\-{name}")
+            sysout(
+                "{} |-GREEN: {}".format(
+                    "%YELLOW%"
+                    if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
+                    else "%NC%",
+                    cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!",
+                )
+            )
+            sysout(
+                "{} |-BLUE : {}".format(
+                    "%YELLOW%"
+                    if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
+                    else "%NC%",
+                    cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!",
+                )
+            )
+            sysout("%NC%%EOL%" + "-" * 120)
 
     @classmethod
     def _app_info(cls, active_app: CFApplication, idle_app: CFApplication) -> str:
@@ -119,7 +125,7 @@ class CFBlueGreenChecker:
         if not (alerts := cls._check_alerts(active_app, idle_app)):
             alerts_str = "  Status: %GREEN%OK%NC%"
         else:
-            alerts_str = ','.join(alerts)
+            alerts_str = ",".join(alerts)
 
         app_routes = len(active_app.routes)
 

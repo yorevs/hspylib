@@ -30,9 +30,8 @@ class Awesome(Enumeration):
 
     @staticmethod
     def no_icon() -> str:
-        """No awesome icon specified.
-        """
-        return ' '
+        """No awesome icon specified."""
+        return " "
 
     @staticmethod
     def print_unicode(uni_code: Union[str, int], end: str = "") -> None:

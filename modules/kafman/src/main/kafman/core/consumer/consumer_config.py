@@ -18,8 +18,7 @@ from typing import Any, Dict, List
 
 
 class ConsumerConfig(ABC):
-    """Some of the confluence exposed consumer properties.
-    """
+    """Some of the confluence exposed consumer properties."""
 
     # fmt: off
     BOOTSTRAP_SERVERS   = "bootstrap.servers"
@@ -34,9 +33,7 @@ class ConsumerConfig(ABC):
 
     @classmethod
     def required_settings(cls) -> List[str]:
-        return [
-            cls.BOOTSTRAP_SERVERS, cls.GROUP_ID, cls.CLIENT_ID
-        ]
+        return [cls.BOOTSTRAP_SERVERS, cls.GROUP_ID, cls.CLIENT_ID]
 
     @classmethod
     def defaults(cls) -> Dict[str, Any]:

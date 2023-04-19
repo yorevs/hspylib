@@ -26,7 +26,7 @@ class Vt100(ABC):
         - https://espterm.github.io/docs/VT100%20escape%20codes.html
     """
 
-    TERM = os.environ.get('TERM', 'xterm-color')
+    TERM = os.environ.get("TERM", "xterm-color")
 
     # Esc<Sequence>
     @staticmethod
@@ -107,9 +107,7 @@ class Vt100(ABC):
         """TODO"""
         if not cup_seq:
             return Vt100.sequence("H")
-        check_argument(
-            bool(re.match(r"[0-9]*;[0-9]*", cup_seq)),
-            f"Invalid cursor position sequence: {cup_seq}")
+        check_argument(bool(re.match(r"[0-9]*;[0-9]*", cup_seq)), f"Invalid cursor position sequence: {cup_seq}")
         return Vt100.sequence(f"{cup_seq}H")
 
     # Esc[<n><A/B/C/D>

@@ -39,9 +39,13 @@ class OptionsBuilder:
         """TODO"""
         add_arg = partial(
             self._arg_parser.add_argument,
-            f"-{shortopt.replace('^-', '')[0]}", f"--{longopt.replace('^-*', '')}",
-            dest=name, help=help_string or f"the {longopt}", required=required,
-            action=action.value, default=default
+            f"-{shortopt.replace('^-', '')[0]}",
+            f"--{longopt.replace('^-*', '')}",
+            dest=name,
+            help=help_string or f"the {longopt}",
+            required=required,
+            action=action.value,
+            default=default,
         )
         if action == ParserAction.STORE:
             add_arg(choices=choices, nargs=nargs)

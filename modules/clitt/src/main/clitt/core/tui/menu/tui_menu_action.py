@@ -20,8 +20,7 @@ from typing import Optional
 
 
 class TUIMenuAction(TUIMenu):
-    """Represent a menu item action. Each action trigger a callback function.
-    """
+    """Represent a menu item action. Each action trigger a callback function."""
 
     def execute(self) -> Optional[TUIMenu]:
         self._render()
@@ -39,13 +38,12 @@ class TUIMenuAction(TUIMenu):
         parent: TUIMenu,
         title: Optional[str] = None,
         tooltip: Optional[str] = None,
-        on_trigger: ON_TRIGGER_CB = None):
-
+        on_trigger: ON_TRIGGER_CB = None,
+    ):
         super().__init__(parent, title, tooltip)
         self._parent = parent
         self._on_trigger: ON_TRIGGER_CB = on_trigger or super()._default_trigger_cb
 
     def on_trigger(self, cb_on_trigger: ON_TRIGGER_CB) -> None:
-        """Setter for the on_trigger callback. It is called when a menu item is triggered.
-        """
+        """Setter for the on_trigger callback. It is called when a menu item is triggered."""
         self._on_trigger = cb_on_trigger

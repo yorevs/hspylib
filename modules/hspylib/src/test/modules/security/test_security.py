@@ -35,7 +35,6 @@ ENCODED_FILE_CONTENTS = "SG9tZVNldHVwIFNlY3JldHM="
 
 
 class TestSecurity(unittest.TestCase):
-
     # Setup tests
     def setUp(self) -> None:
         with open(SAMPLE_IN_FILE_NAME, "w") as f_out:

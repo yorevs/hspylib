@@ -42,10 +42,10 @@ def snake():
 
         # draw the snake
         for row, col in snake:
-            win.addstr(row, col, '#', curses.color_pair(1))
+            win.addstr(row, col, "#", curses.color_pair(1))
 
         # draw the food
-        win.addstr(food[0], food[1], '$', curses.color_pair(1))
+        win.addstr(food[0], food[1], "$", curses.color_pair(1))
 
         # refresh the screen
         win.refresh()
@@ -87,5 +87,5 @@ def snake():
     curses.endwin()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     snake()

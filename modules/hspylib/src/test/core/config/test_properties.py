@@ -27,7 +27,6 @@ RESOURCE_DIR = f"{TEST_DIR}/resources"
 
 
 class TestProperties(unittest.TestCase):
-
     # Setup tests
     def setUp(self):
         os.environ["ACTIVE_PROFILE"] = ""

@@ -27,7 +27,6 @@ SAMPLE_FILE = f"{TEST_DIR}/resources/json_path_sample.json"
 
 
 class TestJsonPath(unittest.TestCase):
-
     # Setup tests
     def setUp(self):
         self.assertTrue(path.exists(SAMPLE_FILE), "Sample file was not found on {}".format(SAMPLE_FILE))
