@@ -88,7 +88,7 @@ task reformatCode(type: Exec) {
 }
 
 /* Synchronize python file headers (doc strings) */
-task syncPythonHeaders(type: Task) {
+task syncFileHeaders(type: Task) {
   group = 'Documentation'
   description = 'Synchronize python file headers (doc strings)'
   finalizedBy optimizeImports
