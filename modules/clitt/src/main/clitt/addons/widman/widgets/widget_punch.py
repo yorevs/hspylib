@@ -82,7 +82,7 @@ class WidgetPunch(Widget):
             stamps += [daily_punches[1], "-", daily_punches[0], "+"] if n // 2 >= 1 else []  # Morning
             stamps += [daily_punches[3], "-", daily_punches[2], "+"] if n // 2 >= 2 else []  # Afternoon
             stamps += [daily_punches[5], "-", daily_punches[4]] if n // 2 >= 3 else []  # Evening
-            h, m, _ = WidgetTimeCalc.calc_time(stamps)
+            h, m, _ = WidgetTimeCalc.calc_time(*stamps)
             m = WidgetTimeCalc.to_decimal(m) if decimal else m
             return f"{'%GREEN%' if h >= 8 else '%RED%'}{h:02d}{'.' if decimal else ':'}{m:02d}%NC%"
 
@@ -220,12 +220,12 @@ class WidgetPunch(Widget):
             daily_total_dec = self._daily_total(daily_punches, decimal=True)
             if n > 0 and n % 2 == 0:
                 sysout(f" {padding} : Subtotal = {daily_total} -> {daily_total_dec}%NC%")
-                total = WidgetTimeCalc.calc_time([f"{total[0]}:{total[1]}", "+", daily_total[-9:-4]])
+                total = WidgetTimeCalc.calc_time(f"{total[0]}:{total[1]}", "+", daily_total[-9:-4])
                 total_dec = total[0], WidgetTimeCalc.to_decimal(total[1])
             else:
                 sysout(f"{daily_total}%NC%")
         sysout("-" * 82)
-        bh, bm, _ = WidgetTimeCalc.calc_time([f"{total[0]}:{total[1]}", "-", "40:00"])
+        bh, bm, _ = WidgetTimeCalc.calc_time(f"{total[0]}:{total[1]}", "-", "40:00")
         balance = f"{'%BLUE%' if bh >= 0 else '%RED%'}{bh:02d}:{bm:02d}%NC%"
         totals = f"{total[0]:02d}:{total[1]:02d} -> {total_dec[0]:02d}.{total_dec[1]:02d}"
         sysout(f"%WHITE%Total: ({totals})  Balance: {balance}\n")

@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.20
+# hspylib-clitt v0.9.21
 #
 # Package: main.clitt.addons.widman
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'widgets', 
   'widman'
 ]
-__version__ = '0.9.20'
+__version__ = '0.9.21'

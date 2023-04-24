@@ -67,7 +67,7 @@ class WidgetManager(metaclass=Singleton):
         widget = self._import_widget(camelcase(widget_name, upper=True))
         try:
             atexit.register(widget.cleanup)
-            exit_code = widget.execute(widget_args)
+            exit_code = widget.execute(*widget_args)
             if exit_code in [ExitStatus.ERROR, ExitStatus.FAILED]:
                 raise WidgetExecutionError(f"Widget '{widget_name}' failed to execute. exit_code={exit_code}")
         except Exception as err:
