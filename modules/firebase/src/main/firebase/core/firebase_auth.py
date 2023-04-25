@@ -51,11 +51,11 @@ class FirebaseAuth(ABC):
         :param project_id: the Firebase Realtime database project ID.
         :param uid: the Firebase User ID.
         """
-
+        sysout("%BLUE%Authenticating to Firebase ...%NC%")
         firebase_admin.initialize_app(FirebaseAuth._credentials(project_id))
         try:
             if user := auth.get_user(uid):
-                sysout("%ORANGE%Firebase authentication succeeded%EOL%")
+                sysout("%GREEN%Firebase authentication succeeded!")
                 return user
             raise FirebaseAuthenticationError(f'Failed to authenticate to Firebase. User ID "{uid}" not found.')
         except UserNotFoundError as err:

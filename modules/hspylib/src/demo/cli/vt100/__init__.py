@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.170
+# hspylib v0.11.171
 #
 # Package: demo.cli.vt100
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
   'vt100_demo'
 ]
-__version__ = '0.11.170'
+__version__ = '0.11.171'
