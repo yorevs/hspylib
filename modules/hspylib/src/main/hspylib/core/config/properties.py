@@ -14,9 +14,11 @@
 """
 
 from collections import defaultdict
+from os.path import basename
+
 from hspylib.core.config.parser_factory import ParserFactory
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import run_dir, touch_file
+from hspylib.core.tools.commons import dirname, run_dir, touch_file
 from typing import Any, Callable, Iterator, List, Optional, Type
 
 import logging as log
@@ -35,10 +37,17 @@ class Properties:
 
     @staticmethod
     def environ_name(property_name: str) -> str:
-        """Retrieve the environment name of the specified property name
+        """Retrieve the environment name of the specified property name.
         :param property_name: the name of the property using space, dot or dash notations
         """
         return re.sub("[ -.]", "_", property_name).upper()
+
+    @staticmethod
+    def read_properties(filepath: str) -> 'Properties':
+        """Create properties based on absolute existing file path.
+        :param filepath: the path of the file containing the properties
+        """
+        return Properties(load_dir=dirname(filepath), filename=basename(filepath))
 
     def __init__(self, filename: str = None, profile: str | None = None, load_dir: str | None = None) -> None:
         self._filename, self._extension = os.path.splitext(
@@ -77,6 +86,10 @@ class Properties:
         except TypeError:
             log.warning("Unable to convert property '%s' into '%s'", prop_name, cb_to_type)
             return default
+
+    @property
+    def as_dict(self) -> dict:
+        return self._properties
 
     @property
     def values(self) -> List[Any]:
