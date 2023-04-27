@@ -12,7 +12,7 @@
 /* Download and save the generated badge file */
 def badgeGen(subject, status, color, outDir="${project.projectDir}") {
   def url = "https://badgen.net/badge/$subject/$status/$color"
-  def outFile = "$outDir/${subject}-badge.svg"
+  def outFile = "${outDir}/${subject}-badge.svg"
   delete("${outFile}")
   exec {
     executable "curl"
