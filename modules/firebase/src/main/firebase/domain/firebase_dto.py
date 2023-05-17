@@ -64,16 +64,16 @@ class FirebaseDto:
                     log.warning('Nothing to be loaded. File "%s" is empty', self.path)
                 self.size = size
                 return self
-        raise FileNotFoundError(f'The path "{self.path}" does represent an existing file!')
+        raise FileNotFoundError(f'File "{self.path}" could not be loaded because it does not exist!')
 
     def save(self) -> "FirebaseDto":
         """Saves current DTO content (overwrites current file content)."""
         if os.path.exists(self.path):
-            with open(self.path, "w+", encoding=Charset.UTF_8.val) as f_out:
-                f_out.write(self.data)
-                f_out.flush()
-                return self
-        raise FileNotFoundError(f'File could not be save because it\'s path: "{self.path}" was not found!')
+            log.warning('File "%s" exists and will be overwritten', self.path)
+        with open(self.path, "w+", encoding=Charset.UTF_8.val) as f_out:
+            f_out.write(self.data)
+            f_out.flush()
+            return self
 
     def encode(self) -> "FirebaseDto":
         """B64-Encode the entry contents."""
