@@ -36,7 +36,7 @@ def mchoose(
 
     result = MenuChoose(title, items, checked).execute()
 
-    if output:
+    if result and output:
         with open(output, 'w') as f_out:
             f_out.write(' '.join(result))
 

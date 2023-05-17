@@ -36,7 +36,7 @@ def minput(
     """
     result = MenuInput(title, form_fields).execute()
 
-    if output:
+    if result and output:
         with open(output, 'w') as f_out:
             for name, value in zip(result.attributes, result.values):
                 f_out.write(f"{snakecase(name, screaming=True)}={quote(value)}" + os.linesep)
