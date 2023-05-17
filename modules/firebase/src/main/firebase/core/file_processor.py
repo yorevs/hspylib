@@ -41,33 +41,34 @@ class FileProcessor(ABC):
         for f_path in file_paths:
             if os.path.exists(f_path):
                 if os.path.isfile(f_path):
-                    sysout(f'%BLUE%Uploading file "{f_path}" to Firebase ...')
+                    sysout(f'%BLUE%Uploading file  {f_path:.<22} %NC%', end='')
                     dto = FileProcessor._read_and_encode(f_path)
                     data.append(dto)
+                    sysout("[%GREEN%  OK  %NC%]")
                 else:
-                    sysout(f'%BLUE%Uploading files from "{f_path}" to Firebase ...')
+                    sysout(f'%BLUE%Uploading files from directory "{f_path}" ')
                     all_files = next(os.walk(f_path))[2]
                     log.debug("\nGlob: %s \nFiles: %s", glob_exp, all_files)
                     for file in all_files:
                         filename = os.path.join(f_path, file)
                         if os.path.isfile(filename) and fnmatch(file, glob_exp or "*.*"):
+                            sysout(f'%BLUE%Uploading file  {filename:.<22} %NC%', end='')
                             dto = FileProcessor._read_and_encode(filename)
                             data.append(dto)
+                            sysout("[%GREEN%  OK  %NC%]")
             else:
-                syserr(f'Input file "{f_path}" does not exist')
+                syserr(f'Input file "{f_path}" does not exist!')
         if data:
             payload = FileProcessor._create_request(data)
             response = put(url, payload)
             check_not_none(response)
             if response.status_code != HttpCode.OK:
                 raise HTTPError(f"{response.status_code} - Unable to upload into={url} with json_string={payload}")
-            paths = ", \n  |- ".join([f.path for f in data])
-
-            sysout(f"%EOL%%GREEN%File(s) [\n  |- {paths}\n] successfully uploaded to: {url}%NC%")
-
+            paths = " \n  |- ".join([f.path for f in data])
+            sysout(f"%EOL%%GREEN%File(s):%EOL%  |- {paths}%EOL%%EOL%Successfully uploaded to Firebase!%NC%")
             return len(data)
 
-        sysout(f"%ORANGE%No files were uploaded from {file_paths} %NC%")
+        syserr(f"No file has been uploaded from ${file_paths}!")
 
         return 0
 
@@ -89,7 +90,7 @@ class FileProcessor(ABC):
             FileProcessor._decode_and_write(dest_dir, *dto_list)
             return len(dto_list)
 
-        sysout(f"%ORANGE%Database alias was not found in: {url} %NC%")
+        syserr(f"Database alias was not found in: {url} !")
 
         return 0
 
@@ -108,8 +109,8 @@ class FileProcessor(ABC):
         """
         for entry in data:
             FirebaseDto.from_file(f"{dest_dir}/{os.path.basename(entry.path)}", entry.data).decode().save()
-        paths = ", \n  |- ".join([f.path for f in data])
-        sysout(f'%EOL%%GREEN%File(s) [\n  |- {paths}\n] successfully downloaded into: "{dest_dir}"%NC%')
+        paths = " \n  |- ".join([f.path for f in data])
+        sysout(f'%EOL%%GREEN%File(s):%EOL%  |- {paths}%EOL%%EOL%Successfully downloaded into: "{dest_dir}"%NC%')
 
     @staticmethod
     def _create_request(entries: List[FirebaseDto]) -> str:
