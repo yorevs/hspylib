@@ -55,7 +55,7 @@ class FirebaseAuth(ABC):
         firebase_admin.initialize_app(FirebaseAuth._credentials(project_id))
         try:
             if user := auth.get_user(uid):
-                sysout("%GREEN%Firebase authentication succeeded!")
+                sysout("%GREEN%Firebase authentication succeeded!%EOL%")
                 return user
             raise FirebaseAuthenticationError(f'Failed to authenticate to Firebase. User ID "{uid}" not found.')
         except UserNotFoundError as err:
