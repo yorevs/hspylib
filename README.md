@@ -42,7 +42,7 @@ Create an easy to use and code multiple select or choose input method:
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.tui.mselect import mselect
+from clitt.core.tui.mselect.mselect import mselect
 from clitt.core.tui.tui_preferences import TUIPreferences
 
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 ```python
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
-from clitt.core.tui.mchoose import mchoose
+from clitt.core.tui.mchoose.mchoose import mchoose
 from clitt.core.tui.tui_preferences import TUIPreferences
 
 

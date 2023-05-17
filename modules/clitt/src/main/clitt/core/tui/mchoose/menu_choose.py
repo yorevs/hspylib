@@ -3,50 +3,41 @@
 
 """
    @project: HsPyLib
-   @package: hspylib.modules.cli.tui
-      @file: mchoose.py
-   @created: Tue, 4 May 2021
+   @package: clitt.core.tui.mchoose
+      @file: menu_choose.py
+   @created: Wed, 17 May 2023
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.tui.tui_component import TUIComponent
 from functools import cached_property
+from typing import List, Optional, TypeVar
+
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, screen_size
-from typing import List, Optional, TypeVar
+
+from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.tui.tui_component import TUIComponent
 
 T = TypeVar("T")
 
 
-def mchoose(items: List[T], checked: bool = True, title: str = "Please choose among the options") -> Optional[List[T]]:
-    """
-    TODO
-    :param items:
-    :param checked:
-    :param title:
-    :return:
-    """
-    return MenuChoose(title, items, checked).execute()
-
-
 class MenuChoose(TUIComponent):
-    """TODO"""
+    """Terminal UI menu choose input method."""
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
-    def __init__(self, title: str, items: List[T], default_checked: bool):
+    def __init__(self, title: str, items: List[T], checked: bool):
         super().__init__(title)
         self.items = items
         self.show_from = 0
         self.show_to = self.prefs.max_rows
         self.diff_index = self.show_to - self.show_from
         self.sel_index = 0
-        self.sel_options = [1 if default_checked else 0 for _ in range(len(items))]  # Initialize all options
+        self.sel_options = [1 if checked else 0 for _ in range(len(items))]  # Initialize all options
         self.max_line_length = max(len(str(item)) for item in items)
 
     def execute(self) -> Optional[List[T]]:

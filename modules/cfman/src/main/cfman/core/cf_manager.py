@@ -17,10 +17,10 @@ from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
 from cfman.core.cf_endpoint import CFEndpoint
 from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
-from clitt.core.tui.mchoose import mchoose
+from clitt.core.tui.mchoose.mchoose import mchoose
 from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
 from clitt.core.tui.minput.minput import MenuInput, minput
-from clitt.core.tui.mselect import mselect
+from clitt.core.tui.mselect.mselect import mselect
 from functools import partial
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_state

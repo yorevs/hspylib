@@ -2,13 +2,11 @@
 #
 # hspylib-clitt v0.9.24
 #
-# Package: main.clitt.addons.widman
+# Package: main.clitt.core.tui.mselect
 """Package initialization."""
 
 __all__ = [
-  'widget', 
-  'widget_entry', 
-  'widgets', 
-  'widman'
+  'menu_select', 
+  'mselect'
 ]
 __version__ = '0.9.24'
