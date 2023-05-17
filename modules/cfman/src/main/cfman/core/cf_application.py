@@ -12,13 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-from _ast import keyword
 from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.tools.commons import sysout
 from typing import List
 
-import os
 import re
 
 
@@ -68,7 +66,7 @@ class CFApplication:
         state = self.state.upper()
         return (
             f"{self.prefs.success_color if self.is_started else self.prefs.error_color}"
-            f"{state:<9}{self.prefs.text_color.code}"
+            f"{state:<7}{self.prefs.text_color.code}"
         )
 
     @property
@@ -79,5 +77,5 @@ class CFApplication:
         """Print the actual application status line."""
         sysout(
             f"%CYAN%{self.name:<{self.max_name_length + 2}}"
-            f"{self.colored_state}%NC%{self.instances:<12}{self.memory:<6}{self.disk:<6}{len(self.routes)}"
+            f"{self.colored_state:}  %NC%{self.instances:<12}{self.memory:<6}{self.disk:<6}{len(self.routes)}"
         )

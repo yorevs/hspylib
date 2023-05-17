@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib
-   @package: hspylib.modules.cli.tui
+   @package: clitt.core.tui
       @file: tui_application.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

@@ -1,16 +1,16 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.21
+# hspylib-clitt v0.9.24
 #
 # Package: demo.tui
 """Package initialization."""
 
 __all__ = [
   'dashboard', 
+  'mchoose', 
   'menu', 
-  'menu_choose_demo', 
-  'menu_select_demo', 
   'minput', 
+  'mselect', 
   'table'
 ]
-__version__ = '0.9.21'
+__version__ = '0.9.24'

@@ -4,7 +4,7 @@
 """
    @project: HsPyLib
    @package: demo.cli.tui
-      @file: menu_select_demo.py
+      @file: menu_choose_demo.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -12,13 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.tui.mselect import mselect
+from clitt.core.tui.mchoose.mchoose import mchoose
 from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
-class SelectableItem:
+class ChooseableItem:
     def __init__(self, name: str, value: str):
         self.name = name
         self.value = value
@@ -31,11 +30,9 @@ class SelectableItem:
 
 
 if __name__ == "__main__":
-    TUIPreferences(
-        max_rows=10, highlight_color=VtColor.WHITE, selected=NavIcons.SELECTED, unselected=NavIcons.UNSELECTED
-    )
+    TUIPreferences(max_rows=10, highlight_color=VtColor.WHITE)
     quantity = 22
     digits = len(str(quantity))
-    it = [SelectableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
-    sel = mselect(it)
+    it = [ChooseableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
+    sel = mchoose(it)
     print(str(sel))
