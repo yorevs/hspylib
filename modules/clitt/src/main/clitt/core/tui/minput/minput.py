@@ -16,6 +16,7 @@ import os
 from typing import List, Optional
 
 from hspylib.core.namespace import Namespace
+from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote, snakecase
 
 from clitt.core.tui.minput.form_field import FormField
@@ -34,6 +35,7 @@ def minput(
     :param output: optional output file containing the marked items.
     :return: a namespace containing all form values.
     """
+    check_argument(len(form_fields) > 0, 'Must provide at least one form field!')
     result = MenuInput(title, form_fields).execute()
 
     if result and output:

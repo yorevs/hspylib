@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.29
+# hspylib-datasource v0.9.30
 #
 # Package: main.datasource
 """Package initialization."""
@@ -19,4 +19,4 @@ __all__ = [
   'redis', 
   'sqlite'
 ]
-__version__ = '0.9.29'
+__version__ = '0.9.30'

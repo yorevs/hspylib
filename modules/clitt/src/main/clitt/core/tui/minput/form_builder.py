@@ -12,20 +12,28 @@
 
    Copyright 2023, HsPyLib team
 """
+import re
+from typing import Any, List
+
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.core.tools.text_tools import snakecase
 
 from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput_utils import MInputUtils
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import str_to_bool
-from hspylib.core.tools.text_tools import snakecase
-from typing import Any
 
 
 class FormBuilder:
     """MenuInput form builder."""
+
+    @staticmethod
+    def or_else_get(options: tuple | list, index: int, default_value: Any = None) -> Any:
+        """TODO"""
+        return get_or_default(options, index, default_value) or default_value
 
     class FieldBuilder:
         """MenuInput form field builder."""
@@ -47,7 +55,7 @@ class FormBuilder:
             return self
 
         def validator(self, validator: InputValidator) -> "FormBuilder.FieldBuilder":
-            self.field.validator = validator
+            self.field.input_validator = validator
             return self
 
         def min_max_length(self, min_length: int, max_length: int) -> "FormBuilder.FieldBuilder":
@@ -68,7 +76,7 @@ class FormBuilder:
                 not value or self.field.assign(value),
                 'Not a valid value: "{}". Validation pattern="{}"',
                 value,
-                self.field.validator,
+                self.field.input_validator,
             )
             return self
 
@@ -104,6 +112,39 @@ class FormBuilder:
 
     def __init__(self) -> None:
         self.fields = []
+
+    def from_tokenized(self, tokenized_fields: List[str]) -> 'FormBuilder':
+        """Construct the forms based on string tokens.
+
+         Field tokens (in-order):
+              <Label> : The field label. Consisting only of alphanumeric characters and under‐scores.
+               [Mode] : The input mode. One of {[text]|password|checkbox|select}.
+               [Type] : The input type. One of {letters|numbers|words|[anything]}.
+        [Min/Max len] : The minimum and maximum length of characters allowed. Defaults to [0/30].
+               [Perm] : The field permissions. One of {r|[rw]}. Where \"r\" for Read Only ; \"rw\" for Read & Write.
+              [Value] : The initial value of the field. This field may not be blank if the field is read only.
+        """
+        for tk_field in tokenized_fields:
+            parts = list(map(str.strip, tk_field.split('|')))
+            validator_fn = getattr(InputValidator, self.or_else_get(parts, 2, 'anything'))
+            min_max = list(map(int, map(str.strip, self.or_else_get(parts, 3, '1/30').split('/'))))
+            access = re.sub('^rw$', 'read-write', self.or_else_get(parts, 4, 'rw'))
+            access = re.sub('^r$', 'read-only', access)
+            # fmt: off
+            self.field() \
+                .label(self.or_else_get(parts, 0, 'Label')) \
+                .itype(self.or_else_get(parts, 1, 'text')) \
+                .min_max_length(
+                    self.or_else_get(min_max, 0, 1),
+                    self.or_else_get(min_max, 1, 30)
+                ) \
+                .access_type(access) \
+                .validator(validator_fn()) \
+                .value(self.or_else_get(parts, 5, None)) \
+                .build()
+            # fmt: on
+
+        return self
 
     def field(self) -> Any:
         return FormBuilder.FieldBuilder(self)
