@@ -1,9 +1,9 @@
-# HomeSetup Python Library - HsPyLib
+# <img src="https://iili.io/HYBJFA7.png"  width="34" height="34"> HomeSetup Python Library - HsPyLib
 
-## Your mature python application
+## Your Python code is not JUST a script !!
 
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
-[![Release](https://badgen.net/badge/release/v0.11.170/gray)](CHANGELOG.md#unreleased)
+[![Release](https://badgen.net/badge/release/v0.11.171/gray)](docs/CHANGELOG.md#unreleased)
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
 [![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/yorevs/hspylib)
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
@@ -291,7 +291,7 @@ To clone HsPyLib into your local machine type the command:
 
 ## Documentation
 
-TBD
+The API documentation can be found [here](docs/api/index.html)
 
 ## Contact
 
@@ -303,17 +303,17 @@ You can contact us using our [Gitter](https://gitter.im/hspylib/community) commu
 You can support HsPyLib
 by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 or coding. Fell free to contact me for details. When contributing with code change please take a look at our
-[guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+[guidelines](docs/CONTRIBUTING.md) and [code of conduct](docs/CODE_OF_CONDUCT.md).
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 
 ## Links
 
-- Documentation: TBD
+- Documentation: [API](docs/api/index.html)
 - License: [MIT](LICENSE.md)
 - Releases: https://pypi.org/project/hspylib/#history
 - Code: https://github.com/yorevs/hspylib
 - Issue tracker: https://github.com/yorevs/hspylib/issues
 - Official chat: https://gitter.im/hspylib/community
 - Contact: https://www.reddit.com/user/yorevs
-- Mailto: yorevs@hotmail.com
+- Mailto: [Yorevs](mailto:yorevs@hotmail.com)

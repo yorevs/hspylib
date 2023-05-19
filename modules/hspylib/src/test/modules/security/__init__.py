@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.171
+# hspylib v0.11.172
 #
 # Package: test.modules.security
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
   'test_security'
 ]
-__version__ = '0.11.171'
+__version__ = '0.11.172'

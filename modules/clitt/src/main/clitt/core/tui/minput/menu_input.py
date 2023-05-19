@@ -111,8 +111,8 @@ class MenuInput(TUIComponent):
             )
         elif field.itype == InputType.SELECT:
             if field.value:
-                mat = re.search(r".*\|?<(.+)>\|?.*", field.value)
-                sel_value = mat.group(1) if mat else field.value.split("|")[0]
+                mat = re.search(r".*([|,;])?<(.+)>([|,;])?.*", field.value)
+                sel_value = mat.group(2) if mat else re.split("[|,;]", field.value)[0]
                 MInputUtils.mi_print(self.max_value_length, f"{sel_value}")
         elif field.itype == InputType.MASKED:
             value, mask = MInputUtils.unpack_masked(str(field.value))
@@ -128,7 +128,8 @@ class MenuInput(TUIComponent):
         fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "}  %NC%"
         if field.itype == InputType.SELECT:
             idx, _ = MInputUtils.get_selected(field.value)
-            sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, len(field.value.split("|"))))
+            count = len(re.split("[|,;]", field.value))
+            sysout(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
             value, _ = MInputUtils.unpack_masked(str(field.value))
             sysout(fmt.format(field.icon, len(value), field.max_length))
@@ -175,7 +176,10 @@ class MenuInput(TUIComponent):
     def _handle_enter(self) -> None:
         """Handle 'enter' press. Validate & Save form and exit."""
 
-        invalid = next((field for field in self.fields if not field.validate(field.value)), None)
+        # Fixme: Commented because at this point we need to validate the entire form since inputs are already valid
+        # TODO: Find a way to validate the form itself, maybe add a form validator.
+        # invalid = next((field for field in self.fields if not field.validate_input(field.value)), None)
+        invalid = None
         if invalid:
             idx = self.fields.index(invalid)
             self.cur_row = self.positions[idx][0]
@@ -185,7 +189,7 @@ class MenuInput(TUIComponent):
             for idx, field in enumerate(self.fields):
                 match field.itype:
                     case InputType.MASKED:
-                        field.value = field.value.split("|")[0]
+                        field.value = re.split("[|,;]", field.value)[0]
                     case InputType.CHECKBOX:
                         field.value = bool(field.value)
                     case InputType.SELECT:
@@ -214,10 +218,10 @@ class MenuInput(TUIComponent):
                         self._display_error(f"{str(err)}")
             case _:
                 if len(str(self.cur_field.value)) < self.cur_field.max_length:
-                    if self.cur_field.validate(keypress.value):
+                    if self.cur_field.validate_input(keypress.value):
                         self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                     else:
-                        self._display_error(f"This field only accept {self.cur_field.validator} !")
+                        self._display_error(f"This field only accept {self.cur_field.input_validator} !")
 
     def _handle_backspace(self) -> None:
         """Handle 'backspace' press. Delete previous input."""

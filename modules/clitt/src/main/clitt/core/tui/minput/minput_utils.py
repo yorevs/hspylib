@@ -51,7 +51,7 @@ class MInputUtils(ABC):
         """Toggle the 'select' component value. Selects the next value on the token sequence.
         :param tokenized_values: the 'select' component tokenized values.
         """
-        values = tokenized_values.split("|")
+        values = re.split("[|,;]", tokenized_values)
         cur_idx = next((idx for idx, val in enumerate(values) if val.find("<") >= 0), -1)
         if cur_idx < 0:
             if len(values) > 1:
@@ -73,7 +73,7 @@ class MInputUtils(ABC):
         """Get the selected value from the 'select' component tokens.
         :param tokenized_values: the 'select' component tokenized values.
         """
-        values = tokenized_values.split("|")
+        values = re.split("[|,;]", tokenized_values)
         # fmt: off
         sel_item = next((
             val.replace('<', '').replace('>', '')
@@ -93,9 +93,12 @@ class MInputUtils(ABC):
         """Unpack all values of the 'masked' component.
         :param value: the masked values to unpack.
         """
-        parts = value.split("|")
-        check_argument(len(parts) == 2, "Invalid masked value: {}", value)
-        return parts[0], parts[1]
+        if value:
+            parts = re.split("[|,;]", value)
+            check_argument(len(parts) == 2, "Invalid masked value: {}", value)
+            return parts[0], parts[1]
+
+        return '', ''
 
     @staticmethod
     def append_masked(value: str, mask: str, keypress_value: chr) -> str:

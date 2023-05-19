@@ -32,7 +32,7 @@ class FormField:
         max_length: int = 30,
         access_type: AccessType = AccessType.READ_WRITE,
         value: Any = "",
-        validator: InputValidator = None,
+        input_validator: InputValidator = None,
     ):
         self.label = label
         self.dest = dest
@@ -41,7 +41,7 @@ class FormField:
         self.max_length = max_length
         self.access_type = access_type
         self.value = value
-        self.validator = validator or InputValidator.anything(min_length, max_length)
+        self.input_validator = input_validator or InputValidator.anything(min_length, max_length)
 
     def __str__(self) -> str:
         return f"{self.label}: {self.itype}({self.min_length}-{self.max_length}) [{self.access_type}] = '{self.value}'"
@@ -67,11 +67,11 @@ class FormField:
             case InputType.MASKED:
                 icon = FormIcons.MASKED
             case InputType.TEXT:
-                if self.validator.pattern_type == InputValidator.PatternType.NUMBERS:
+                if self.input_validator.pattern_type == InputValidator.PatternType.NUMBERS:
                     icon = FormIcons.NUMBERS
-                elif self.validator.pattern_type == InputValidator.PatternType.LETTERS:
+                elif self.input_validator.pattern_type == InputValidator.PatternType.LETTERS:
                     icon = FormIcons.LETTERS
-                elif self.validator.pattern_type == InputValidator.PatternType.WORDS:
+                elif self.input_validator.pattern_type == InputValidator.PatternType.WORDS:
                     icon = FormIcons.EDITABLE
                 else:
                     icon = FormIcons.EDITABLE
@@ -85,11 +85,11 @@ class FormField:
 
     def assign(self, value: Any) -> bool:
         """Assign a value for this field.Must match the input validator, otherwise an exception will be thrown."""
-        if self.validate(value):
+        if self.validate_input(value):
             self.value = value
             return True
         return False
 
-    def validate(self, value: Any = None) -> bool:
+    def validate_input(self, value: Any = None) -> bool:
         """Validate the input using the assigned validator."""
-        return self.validator.validate(str(value) or str(self.value)) if self.validator else False
+        return self.input_validator.validate(str(value) or str(self.value)) if self.input_validator else False
