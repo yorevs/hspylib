@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Clitt
    @package: clitt.addons.widman
       @file: widman.py
    @created: Thu, 20 May 2021

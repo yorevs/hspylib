@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Clitt
    @package: clitt.addons.appman
       @file: appman.py
    @created: Tue, 4 May 2021

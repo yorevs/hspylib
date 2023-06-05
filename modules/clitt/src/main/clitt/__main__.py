@@ -12,11 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.__classpath__ import _Classpath
-from clitt.addons.appman.appman import AppManager
-from clitt.addons.appman.appman_enums import AppExtension, AppType
-from clitt.addons.widman.widman import WidgetManager
-from clitt.core.tui.tui_application import TUIApplication
+import sys
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
@@ -24,7 +21,13 @@ from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-import sys
+from clitt.__classpath__ import _Classpath
+from clitt.addons.appman.appman import AppManager
+from clitt.addons.appman.appman_enums import AppExtension, AppType
+from clitt.addons.setman.setman import SetMan
+from clitt.addons.setman.setman_enums import SetManOps
+from clitt.addons.widman.widman import WidgetManager
+from clitt.core.tui.tui_application import TUIApplication
 
 
 class Main(TUIApplication):
@@ -42,6 +45,7 @@ class Main(TUIApplication):
         # fmt: off
         APPMAN      = 'appman'
         WIDGETS     = 'widgets'
+        SETMAN      = 'setman'
         # fmt: on
 
         @property
@@ -65,19 +69,15 @@ class Main(TUIApplication):
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
                 .add_parameter(
-                    'app-name',
-                    'the application name', nargs='?') \
+                    'app-name', 'the application name', nargs='?') \
                 .add_parameter(
                     'app-type',
                     'the application type. Appman is going to scaffold a basic application based on the app type',
-                    choices=[
-                        AppType.APP.value, AppType.QT_APP.value, AppType.WIDGET.value
-                    ], nargs='?') \
+                    choices=AppType.choices(), nargs='?') \
                 .add_parameter(
                     'app-ext',
                     '"gradle" is going to initialize you project with gradle (requires gradle). '
-                    '"git" is going to initialize a git repository (requires git)',
-                    nargs='*') \
+                    '"git" is going to initialize a git repository (requires git)', nargs='*') \
             .argument(self.Addon.WIDGETS.val, 'app Widgets Manager: Execute an HsPyLib widget') \
                 .add_parameter(
                     'widget-name',
@@ -85,8 +85,19 @@ class Main(TUIApplication):
                     'presented in a dashboard',
                     nargs='?') \
                 .add_parameter(
-                    'widget-args', "the widget's arguments (if applicable)",
-                    nargs='*')  # fmt: on
+                    'widget-args', "the widget's arguments (if applicable)", nargs='*') \
+            .argument(self.Addon.SETMAN.val, 'app Settings Manager: Manage your terminal settings') \
+                .add_parameter(
+                    'operation',
+                    'the operation to be performed against your settings. ',
+                    choices=SetManOps.choices()) \
+                .add_parameter(
+                    'name',
+                    'the settings name. ', nargs='?') \
+                .add_parameter(
+                    'value',
+                    'the settings value. ', nargs='?') \
+            # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Main entry point handler."""
@@ -100,6 +111,8 @@ class Main(TUIApplication):
             self.start_appman()
         elif app == self.Addon.WIDGETS.val:
             self.start_widman()
+        elif app == self.Addon.SETMAN.val:
+            self.start_setman()
         else:
             syserr(f"### Invalid Addon application: {app}")
             self.usage(ExitStatus.FAILED)
@@ -137,6 +150,14 @@ class Main(TUIApplication):
                 if args.initialize_git:
                     app_ext.append(AppExtension.GIT)
                 addon.create(args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir())
+
+    def start_setman(self) -> None:
+        """Start the Setman application."""
+        addon = SetMan(self)
+        op = self.get_arg("operation")
+        name = self.get_arg("name")
+        value = self.get_arg("value")
+        addon.execute(op, name, value)
 
 
 # Application entry point
