@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Clitt
    @package: clitt.addons.widman
       @file: widget_entry.py
    @created: Fri, 04 Jun 2021

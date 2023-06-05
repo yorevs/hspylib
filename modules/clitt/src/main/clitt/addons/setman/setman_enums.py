@@ -3,9 +3,9 @@
 
 """
    @project: HsPyLib-Clitt
-   @package: clitt.addons.appman
-      @file: appman_enums.py
-   @created: Fri, 29 Jul 2022
+   @package: clitt.addons.setman
+      @file: setman_enums.py
+   @created: Fri, 29 May 2023
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
       @site: "https://github.com/yorevs/hspylib")
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -17,24 +17,18 @@ from typing import List
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class AppExtension(Enumeration):
-    """Appman available extensions."""
+class SetManOps(Enumeration):
+    """Setman operations."""
 
     # fmt: off
-    GRADLE  = 'gradle'
-    GIT     = 'git'
-    # fmt: on
-
-
-class AppType(Enumeration):
-    """Appman supported application types."""
-
-    # fmt: off
-    APP     = 'app'
-    QT_APP  = 'qt-app'
-    WIDGET  = 'widget'
+    GET         = 'get'
+    SET         = 'set'
+    DEL         = 'del'
+    LIST        = 'list'
+    SEARCH      = 'search'
+    TRUNCATE    = 'truncate'
     # fmt: on
 
     @staticmethod
     def choices() -> List[str]:
-        return AppType.values()
+        return SetManOps.values()

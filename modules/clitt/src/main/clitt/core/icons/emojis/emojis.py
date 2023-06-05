@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Clitt
    @package: clitt.core.icons.emojis
       @file: emojis.py
    @created: Tue, 4 May 2021

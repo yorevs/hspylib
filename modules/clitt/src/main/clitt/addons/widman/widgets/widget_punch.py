@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Clitt
    @package: clitt.addons.widman.widgets
       @file: widget_punch.py
    @created: Thu, 20 Sep 2022

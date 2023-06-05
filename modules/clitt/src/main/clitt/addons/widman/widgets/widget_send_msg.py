@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib
+   @project: HsPyLib-Clitt
    @package: clitt.addons.widman.widgets
       @file: widget_send_msg.py
    @created: Thu, 26 Aug 2017
