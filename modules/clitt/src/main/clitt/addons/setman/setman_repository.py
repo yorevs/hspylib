@@ -12,12 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Optional, Set
+from typing import List, Optional, Set
 
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 
 from clitt.addons.setman.setman_entry import SetmanEntry
+from clitt.addons.setman.setman_enums import SettingsType
 
 
 class SetmanRepository(SQLiteRepository[SetmanEntry]):
@@ -34,6 +35,21 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
 
         return self.to_entity_type(result) if result else None
 
+    def search(self, name: str, stype: SettingsType, fields: Set[str] = None) -> List[SetmanEntry]:
+        fields = "*" if not fields else ", ".join(fields)
+        search_name = f"%{name}%"
+        if stype:
+            sql = f"SELECT {fields} FROM {self.table_name()} WHERE name LIKE ? AND stype = ? ORDER BY name"
+            result = self.execute(sql, name=search_name, stype=stype.val)[1] or []
+        else:
+            sql = f"SELECT {fields} FROM {self.table_name()} WHERE name LIKE ? ORDER BY name"
+            result = self.execute(sql, name=search_name)[1] or []
+
+        return list(map(self.to_entity_type, result))
+
+    def truncate(self, table_name: str) -> None:
+        self.execute('DELETE FROM "' + table_name + '"')
+
     def table_name(self) -> str:
         return "SETTINGS"
 
@@ -44,5 +60,6 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
             Identity(SetmanEntry.SetmanId(entity_dict[0])),
             entity_dict[1],
             entity_dict[2],
-            entity_dict[3],
+            SettingsType.of_value(entity_dict[3]),
+            entity_dict[4],
         )

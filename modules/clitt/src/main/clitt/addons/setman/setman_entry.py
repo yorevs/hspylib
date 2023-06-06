@@ -20,6 +20,7 @@ from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.zoned_datetime import now
 
+from clitt.addons.setman.setman_enums import SettingsType
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
 
@@ -33,7 +34,7 @@ class SetmanEntry(CrudEntity):
     _DISPLAY_FORMAT = dedent(
         """
     [%BLUE%{}%NC%]:
-            Name: %GREEN%{}%NC%
+            Type: %GREEN%{}%NC%
            Value: %GREEN%{}%NC%
         Modified: %GREEN%{}%NC%
     """
@@ -56,12 +57,19 @@ class SetmanEntry(CrudEntity):
                 .min_max_length(3, 50) \
                 .value(entry.value) \
                 .build() \
+            .field() \
+                .label('Type') \
+                .itype('select') \
+                .dest('stype') \
+                .value(SettingsType.selectables(existing_entry.stype)) \
+                .build() \
             .build()
         # fmt: on
 
         if result := minput(form_fields, "Please fill the settings details"):
-            entry.key = result.name
             entry.name = result.name
+            entry.value = result.value
+            entry.stype = result.stype
             entry.modified = now()
 
         return entry if result else None
@@ -71,12 +79,13 @@ class SetmanEntry(CrudEntity):
         entity_id: Identity = SetmanId(Identity.auto().values),
         name: str = None,
         value: Any | None = None,
+        stype: SettingsType = None,
         modified: str = now(),
     ):
-        self.id = None  # Will be filled later
         super().__init__(entity_id)
         self.name = name
         self.value = value
+        self.stype = stype.val if stype else SettingsType.PROPERTY
         self.modified = modified
 
     def __str__(self) -> str:
@@ -88,4 +97,4 @@ class SetmanEntry(CrudEntity):
     def to_string(self) -> str:
         """Return the string representation of this entry.
         """
-        return self._DISPLAY_FORMAT.format(self.id, self.name, self.value, self.modified)
+        return self._DISPLAY_FORMAT.format(self.name, self.stype, self.value, self.modified)

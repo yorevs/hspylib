@@ -12,20 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
-from datetime import timedelta
-from hspylib.core.constants import TRUE_VALUES
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.modules.cli.vt100.vt_code import VtCode
-from hspylib.modules.cli.vt100.vt_color import VtColor
-from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
-
 import inspect
 import logging as log
 import os
 import pathlib
 import signal
 import sys
+from datetime import timedelta
+from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
+
+from hspylib.core.constants import TRUE_VALUES
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument, check_not_none
+from hspylib.modules.cli.vt100.vt_code import VtCode
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{}\t{} {} {} {} {} ".format(
@@ -106,18 +106,20 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def sysout(*strings: str, end: str = os.linesep) -> None:
+def sysout(*strings: Any, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
     :param strings: values to be printed to sys.stdout
     :param end: string appended after the last value, default a newline
     """
     if strings:
 
-        def sysout_format(text: str) -> str:
-            return VtColor.colorize(VtCode.decode(text or ""))
+        def sysout_format(obj: Any) -> str:
+            plain_text = str(obj) if obj else ''
+            return VtColor.colorize(VtCode.decode(plain_text))
 
-        list(map_many(strings, sysout_format, lambda s: print(s, file=sys.stdout, flush=True, end="")))
-        print("", file=sys.stdout, flush=True, end=end)
+        stream = sys.stdout
+        list(map_many(strings, sysout_format, lambda s: print(s, file=stream, flush=True, end=" ")))
+        print('', file=stream, flush=True, end=end)
 
 
 def syserr(*strings: Any, end: str = os.linesep) -> None:
@@ -127,12 +129,13 @@ def syserr(*strings: Any, end: str = os.linesep) -> None:
     """
     if strings:
 
-        def syserr_format(text: Any) -> str:
-            plain_text = VtColor.strip_colors(str(text or ""))
+        def syserr_format(obj: Any) -> str:
+            plain_text = VtColor.strip_colors(str(obj)) if obj else ''
             return VtColor.colorize(VtCode.decode(f"%RED%{plain_text}%NC%"))
 
-        list(map_many(strings, syserr_format, lambda s: print(s, file=sys.stderr, flush=True, end="")))
-        print("", file=sys.stdout, flush=True, end=end)
+        stream = sys.stderr
+        list(map_many(strings, syserr_format, lambda s: print(s, file=stream, flush=True, end=" ")))
+        print('', file=stream, flush=True, end=end)
 
 
 def hook_exit_signals(handler: Callable) -> None:

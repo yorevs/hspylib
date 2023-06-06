@@ -13,12 +13,13 @@
    Copyright 2023, HsPyLib team
 """
 from textwrap import dedent
-from typing import Optional
+from typing import List, Optional
 
 from datasource.crud_service import CrudService
 
 from clitt.addons.setman.setman_config import SetmanConfig
 from clitt.addons.setman.setman_entry import SetmanEntry
+from clitt.addons.setman.setman_enums import SettingsType
 from clitt.addons.setman.setman_repository import SetmanRepository
 
 
@@ -28,11 +29,22 @@ class SetmanService(CrudService[SetmanRepository, SetmanEntry]):
     def __init__(self, setman_config: SetmanConfig):
         super().__init__(SetmanRepository(setman_config))
 
-    def get_by_name(self, name: str) -> Optional[SetmanEntry]:
+    def get(self, name: str) -> Optional[SetmanEntry]:
         """Get a setman entry using the specified name.
         :param name: the setman entry name to find.
         """
         return self.repository.find_by_name(name)
+
+    def search(self, name: str, stype: SettingsType = None) -> List[SetmanEntry]:
+        """Get a setman entry using the specified name.
+        :param name: the setman entry name to find.
+        :param stype: the settings type to filter.
+        """
+        return self.repository.search(name, stype)
+
+    def truncate_settings_db(self) -> None:
+        """Truncate the settings table."""
+        self.repository.truncate("SETTINGS")
 
     def create_settings_db(self) -> None:
         """Create a brand new setman database file."""
@@ -44,6 +56,7 @@ class SetmanService(CrudService[SetmanRepository, SetmanEntry]):
             uuid         TEXT       not null,
             name         TEXT       not null,
             value        TEXT       not null,
+            stype        TEXT       not null,
             modified     TEXT       not null,
 
             CONSTRAINT UUID_pk PRIMARY KEY (uuid),
