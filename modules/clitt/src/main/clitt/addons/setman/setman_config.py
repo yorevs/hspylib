@@ -22,19 +22,7 @@ class SetmanConfig(DBConfiguration):
 
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
-        self._setman_user = self["hhs.setman.user"]
-        self._passphrase = self["hhs.setman.passphrase"]
         self._database = self["hhs.setman.database"]
-
-    @property
-    def setman_user(self) -> str:
-        """Return the SetMan user."""
-        return self._setman_user
-
-    @property
-    def passphrase(self) -> str:
-        """Return the SetMan user passphrase."""
-        return self._passphrase
 
     @property
     def database(self) -> str:

@@ -25,7 +25,7 @@ from clitt.__classpath__ import _Classpath
 from clitt.addons.appman.appman import AppManager
 from clitt.addons.appman.appman_enums import AppExtension, AppType
 from clitt.addons.setman.setman import SetMan
-from clitt.addons.setman.setman_enums import SetManOps
+from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
 from clitt.addons.widman.widman import WidgetManager
 from clitt.core.tui.tui_application import TUIApplication
 
@@ -90,13 +90,17 @@ class Main(TUIApplication):
                 .add_parameter(
                     'operation',
                     'the operation to be performed against your settings. ',
-                    choices=SetManOps.choices()) \
-                .add_parameter(
-                    'name',
+                    choices=SetmanOps.choices()) \
+                .add_option(
+                    'name', 'n', '--name'
                     'the settings name. ', nargs='?') \
-                .add_parameter(
-                    'value',
+                .add_option(
+                    'value', 'v', '--value'
                     'the settings value. ', nargs='?') \
+                .add_option(
+                    'stype', 't', '--type'
+                    'the settings type. ',
+                    choices=SettingsType.choices()) \
             # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
@@ -157,7 +161,8 @@ class Main(TUIApplication):
         op = self.get_arg("operation")
         name = self.get_arg("name")
         value = self.get_arg("value")
-        addon.execute(op, name, value)
+        stype = self.get_arg("stype")
+        addon.execute(op, name, value, SettingsType.of_value(stype) if stype else None)
 
 
 # Application entry point

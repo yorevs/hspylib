@@ -17,7 +17,7 @@ from typing import List
 from hspylib.core.enums.enumeration import Enumeration
 
 
-class SetManOps(Enumeration):
+class SetmanOps(Enumeration):
     """Setman operations."""
 
     # fmt: off
@@ -31,4 +31,25 @@ class SetManOps(Enumeration):
 
     @staticmethod
     def choices() -> List[str]:
-        return SetManOps.values()
+        return SetmanOps.values()
+
+
+class SettingsType(Enumeration):
+    """Settings types."""
+
+    # fmt: off
+    ENVIRONMENT = 'environment'
+    PROPERTY    = 'property'
+    # fmt: on
+
+    @staticmethod
+    def choices() -> List[str]:
+        return SettingsType.values()
+
+    @staticmethod
+    def selectables(selected: str = '') -> str:
+        return '|'.join([s if selected != s else f"<{s}>" for s in SettingsType.values()])
+
+    @property
+    def val(self) -> str:
+        return str(self.value)
