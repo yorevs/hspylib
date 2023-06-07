@@ -28,3 +28,11 @@ class SetmanConfig(DBConfiguration):
     def database(self) -> str:
         """Return the SetMan database name."""
         return self._database
+
+    @property
+    def encoded_file(self) -> str:
+        return f"{self.database}-encoded"
+
+    @property
+    def decoded_file(self) -> str:
+        return f"{self.database}-decoded"
