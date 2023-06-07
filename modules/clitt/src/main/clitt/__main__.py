@@ -19,6 +19,7 @@ from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.application.parser_action import ParserAction
 from hspylib.modules.application.version import Version
 
 from clitt.__classpath__ import _Classpath
@@ -92,15 +93,18 @@ class Main(TUIApplication):
                     'the operation to be performed against your settings. ',
                     choices=SetmanOps.choices()) \
                 .add_option(
-                    'name', 'n', '--name'
+                    'name', 'n', 'name',
                     'the settings name. ', nargs='?') \
                 .add_option(
-                    'value', 'v', '--value'
+                    'value', 'v', 'value',
                     'the settings value. ', nargs='?') \
                 .add_option(
-                    'stype', 't', '--type'
+                    'stype', 't', 'type',
                     'the settings type. ',
                     choices=SettingsType.choices()) \
+                .add_option(
+                    'simple', 's', 'simple',
+                    'display without formatting. ', action=ParserAction.STORE_TRUE) \
             # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
@@ -158,11 +162,12 @@ class Main(TUIApplication):
     def start_setman(self) -> None:
         """Start the Setman application."""
         addon = SetMan(self)
-        op = self.get_arg("operation")
+        op = SetmanOps.of_value(self.get_arg("operation"), ignore_case=True)
         name = self.get_arg("name")
         value = self.get_arg("value")
         stype = self.get_arg("stype")
-        addon.execute(op, name, value, SettingsType.of_value(stype) if stype else None)
+        simple_fmt: bool = bool(self.get_arg("simple"))
+        addon.execute(op, name, value, SettingsType.of_value(stype) if stype else None, simple_fmt)
 
 
 # Application entry point

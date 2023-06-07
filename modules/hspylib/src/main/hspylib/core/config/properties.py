@@ -13,17 +13,16 @@
    Copyright 2023, HsPyLib team
 """
 
+import logging as log
+import os
 from collections import defaultdict
 from os.path import basename
+from typing import Any, Callable, Iterator, List, Optional, Type
 
 from hspylib.core.config.parser_factory import ParserFactory
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import dirname, run_dir, touch_file
-from typing import Any, Callable, Iterator, List, Optional, Type
-
-import logging as log
-import os
-import re
+from hspylib.core.tools.text_tools import environ_name
 
 CONVERSION_FN = Type | Callable[[Any], Any]
 
@@ -34,13 +33,6 @@ class Properties:
 
     _default_name: str = "application"
     _default_ext: str = ".properties"
-
-    @staticmethod
-    def environ_name(property_name: str) -> str:
-        """Retrieve the environment name of the specified property name.
-        :param property_name: the name of the property using space, dot or dash notations
-        """
-        return re.sub("[ -.]", "_", property_name).upper()
 
     @staticmethod
     def read_properties(filepath: str) -> 'Properties':
@@ -108,7 +100,7 @@ class Properties:
 
     def _get(self, key: str, default: Any = None) -> Optional[Any]:
         """Get a property value as string or default_value if the property was not found"""
-        if value := os.environ.get(self.environ_name(key), None):
+        if value := os.environ.get(environ_name(key), None):
             return value
         return self._properties[key] if key in self._properties else default
 

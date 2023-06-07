@@ -106,35 +106,35 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def sysout(*strings: Any, end: str = os.linesep) -> None:
+def sysout(*objs: Any, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
-    :param strings: values to be printed to sys.stdout
+    :param objs: values to be printed to sys.stdout
     :param end: string appended after the last value, default a newline
     """
-    if strings:
+    if objs:
 
-        def sysout_format(obj: Any) -> str:
+        def _sysout_format(obj: Any) -> str:
             plain_text = str(obj) if obj else ''
             return VtColor.colorize(VtCode.decode(plain_text))
 
         stream = sys.stdout
-        list(map_many(strings, sysout_format, lambda s: print(s, file=stream, flush=True, end=" ")))
+        list(map_many(objs, _sysout_format, lambda s: print(s, file=stream, flush=True, end='')))
         print('', file=stream, flush=True, end=end)
 
 
-def syserr(*strings: Any, end: str = os.linesep) -> None:
+def syserr(*objs: Any, end: str = os.linesep) -> None:
     """Print the unicode input_string decoding vt100 placeholders
-    :param strings: values to be printed to sys.stderr
+    :param objs: values to be printed to sys.stderr
     :param end: string appended after the last value, default a newline
     """
-    if strings:
+    if objs:
 
-        def syserr_format(obj: Any) -> str:
+        def _syserr_format(obj: Any) -> str:
             plain_text = VtColor.strip_colors(str(obj)) if obj else ''
             return VtColor.colorize(VtCode.decode(f"%RED%{plain_text}%NC%"))
 
         stream = sys.stderr
-        list(map_many(strings, syserr_format, lambda s: print(s, file=stream, flush=True, end=" ")))
+        list(map_many(objs, _syserr_format, lambda s: print(s, file=stream, flush=True, end='')))
         print('', file=stream, flush=True, end=end)
 
 
