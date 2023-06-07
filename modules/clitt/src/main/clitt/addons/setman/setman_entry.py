@@ -65,7 +65,7 @@ class SetmanEntry(CrudEntity):
                 .label('Type') \
                 .itype('select') \
                 .dest('stype') \
-                .value(SettingsType.selectables(entry.stype)) \
+                .value(SettingsType.selectables(entry.stype) if entry.stype else None) \
                 .build() \
             .build()
         # fmt: on
