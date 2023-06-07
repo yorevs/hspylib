@@ -12,7 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
-
+import signal
 from datetime import datetime, timedelta
 from hspylib.core.tools.commons import str_to_bool
 from math import ceil
@@ -54,3 +54,13 @@ def temporized(func: Callable):
         return ret
 
     return temporized_closure
+
+
+def hooksignals(signals: tuple | signal.Signals):
+
+    def helper(func: Callable[[int, Any], None]):
+        # Here, we will see the functionality of the code:
+        sig_numbers: tuple = signals if isinstance(signals, tuple) else (signals,)
+        list(map(lambda s: signal.signal(s, func), sig_numbers))
+
+    return helper

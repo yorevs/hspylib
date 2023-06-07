@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.27
+# hspylib-clitt v0.9.28
 #
 # Package: main.clitt.core.tui.mchoose
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'mchoose', 
   'menu_choose'
 ]
-__version__ = '0.9.27'
+__version__ = '0.9.28'
