@@ -18,6 +18,7 @@ from typing import Any, Optional, Union
 
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
+from hspylib.core.tools.text_tools import environ_name
 from hspylib.core.zoned_datetime import now
 
 from clitt.addons.setman.setman_enums import SettingsType
@@ -26,11 +27,11 @@ from clitt.core.tui.minput.minput import minput
 
 
 class SetmanEntry(CrudEntity):
-    """Represents the SetMan domain object."""
+    """Represents the Setman domain object."""
 
     SetmanId = namedtuple("SetmanId", ["uuid"])
 
-    # SetMan entry format to be displayed when listing
+    # Setman entry display format.
     _DISPLAY_FORMAT = dedent(
         """
     [%BLUE%{}%NC%]:
@@ -40,28 +41,31 @@ class SetmanEntry(CrudEntity):
     """
     )
 
+    # Setman entry simple format.
+    _SIMPLE_FORMAT = "{}={}"
+
     @staticmethod
-    def prompt(existing_entry: Union["SetmanEntry", None] = None) -> Optional["SetmanEntry"]:
+    def prompt(entry: Union["SetmanEntry", None] = None) -> Optional["SetmanEntry"]:
         """Create a vault entry from a form input."""
 
-        entry = existing_entry or SetmanEntry()
+        entry = entry or SetmanEntry()
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label('Name') \
-                .min_max_length(3, 50) \
+                .min_max_length(1, 60) \
                 .value(entry.name) \
                 .build() \
             .field() \
                 .label('Value') \
-                .min_max_length(3, 50) \
+                .min_max_length(1, 60) \
                 .value(entry.value) \
                 .build() \
             .field() \
                 .label('Type') \
                 .itype('select') \
                 .dest('stype') \
-                .value(SettingsType.selectables(existing_entry.stype)) \
+                .value(SettingsType.selectables(entry.stype)) \
                 .build() \
             .build()
         # fmt: on
@@ -85,7 +89,7 @@ class SetmanEntry(CrudEntity):
         super().__init__(entity_id)
         self.name = name
         self.value = value
-        self.stype = stype.val if stype else SettingsType.PROPERTY
+        self.stype = stype.val if stype else SettingsType.PROPERTY.val
         self.modified = modified
 
     def __str__(self) -> str:
@@ -94,7 +98,12 @@ class SetmanEntry(CrudEntity):
     def __repr__(self) -> str:
         return str(self)
 
-    def to_string(self) -> str:
+    def to_string(self, simple: bool = False) -> str:
         """Return the string representation of this entry.
         """
-        return self._DISPLAY_FORMAT.format(self.name, self.stype, self.value, self.modified)
+        if simple:
+            return self._SIMPLE_FORMAT.format(environ_name(self.name), self.value) \
+                if self.stype == SettingsType.ENVIRONMENT.val \
+                else self._SIMPLE_FORMAT.format(self.name, self.value)
+        else:
+            return self._DISPLAY_FORMAT.format(self.name, self.stype, self.value, self.modified)

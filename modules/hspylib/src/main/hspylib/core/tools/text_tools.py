@@ -101,6 +101,13 @@ def titlecase(text: str, separator: str = " |-|_", skip_length: int = 0) -> str:
     return s
 
 
+def environ_name(property_name: str) -> str:
+    """Retrieve the environment name of the specified property name.
+    :param property_name: the name of the property using space, dot or dash notations
+    """
+    return re.sub("[ -.]", "_", property_name).upper()
+
+
 def strip_escapes(text: str) -> str:
     """Return a copy of the string stripping out all ansi escape 'ESC[' codes from it.
     Ref:https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python

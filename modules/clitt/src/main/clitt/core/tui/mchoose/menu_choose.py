@@ -81,7 +81,7 @@ class MenuChoose(TUIComponent):
             option_line = str(self.items[idx])
             erase_line()
             # Print the selector if the index is currently selected
-            selector = self._draw_line_color(idx == self.sel_index)
+            selector = self._draw_cursor_line(idx == self.sel_index)
             mark = self.prefs.marked if self.sel_options[idx] == 1 else self.prefs.unmarked
             # fmt: off
             line_fmt = (

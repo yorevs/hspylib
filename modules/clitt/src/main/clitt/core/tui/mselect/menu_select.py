@@ -40,7 +40,7 @@ class MenuSelect(TUIComponent):
         self.max_line_length = max(len(str(item)) for item in items)
 
     def execute(self) -> Optional[T]:
-        """TODO"""
+        """Execute the component's main flow."""
 
         if (length := len(self.items)) == 0:
             return None
@@ -64,7 +64,7 @@ class MenuSelect(TUIComponent):
         return self.items[self.sel_index] if keypress == Keyboard.VK_ENTER else None
 
     def _render(self) -> None:
-        """TODO"""
+        """Renders the TUI component."""
 
         length = len(self.items)
         _, columns = screen_size()
@@ -78,7 +78,7 @@ class MenuSelect(TUIComponent):
             option_line = str(self.items[idx])
             erase_line()
             # Print the selector if the index is currently selected
-            selector = self._draw_line_color(idx == self.sel_index)
+            selector = self._draw_cursor_line(idx == self.sel_index)
             # fmt: off
             line_fmt = (
                 "  {:>" + f"{len(str(length))}" + "}  "
