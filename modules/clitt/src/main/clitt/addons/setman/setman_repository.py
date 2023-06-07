@@ -29,6 +29,7 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
         return self._config.database
 
     def find_by_name(self, name: str, fields: Set[str] = None) -> Optional[SetmanEntry]:
+        """TODO"""
         fields = "*" if not fields else ", ".join(fields)
         sql = f"SELECT {fields} FROM {self.table_name()} WHERE name = ? ORDER BY name"
         result = next((e for e in self.execute(sql, name=name)[1]), None)
@@ -36,8 +37,9 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
         return self.to_entity_type(result) if result else None
 
     def search(self, name: str, stype: SettingsType, fields: Set[str] = None) -> List[SetmanEntry]:
+        """TODO"""
         fields = "*" if not fields else ", ".join(fields)
-        search_name = f"%{name}%"
+        search_name = f"%{name}%" if name != '%' else name
         if stype:
             sql = f"SELECT {fields} FROM {self.table_name()} WHERE name LIKE ? AND stype = ? ORDER BY name"
             result = self.execute(sql, name=search_name, stype=stype.val)[1] or []
@@ -48,7 +50,8 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
         return list(map(self.to_entity_type, result))
 
     def truncate(self, table_name: str) -> None:
-        self.execute('DELETE FROM "' + table_name + '"')
+        """TODO"""
+        self.execute(f'DELETE FROM "{table_name}"')
 
     def table_name(self) -> str:
         return "SETTINGS"

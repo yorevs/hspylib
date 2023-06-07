@@ -95,7 +95,7 @@ class SetMan(metaclass=Singleton):
                     self._del_setting(name)
                 case SetmanOps.TRUNCATE:
                     self._service.truncate_settings_db()
-                    sysout('All settings have been removed')
+                    sysout('%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%')
 
     @contextlib.contextmanager
     def _open_db(self) -> None:
