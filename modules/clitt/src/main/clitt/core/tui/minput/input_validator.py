@@ -25,11 +25,11 @@ class InputValidator(Validator):
     class PatternType(Enumeration):
         # fmt: off
         CUSTOM      = r'.*'  # It will be set later
-        ANYTHING    = r".{%min%,%max%}"
-        LETTERS     = r"^[a-zA-Z]{%min%,%max%}$"
-        WORDS       = r"^[a-zA-Z0-9 _]{%min%,%max%}$"
-        NUMBERS     = r"^[0-9\.\,]{%min%,%max%}$"
-        MASKED      = CUSTOM
+        ANYTHING    = r'.{%min%,%max%}'
+        LETTERS     = r'^[a-zA-Z]{%min%,%max%}$'
+        WORDS       = r'^[a-zA-Z0-9 _]{%min%,%max%}$'
+        NUMBERS     = r'^[0-9\.\,]{%min%,%max%}$'
+        MASKED      = CUSTOM  # It will be set later
         # fmt: on
 
     @classmethod

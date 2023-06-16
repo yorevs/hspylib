@@ -15,6 +15,7 @@
 
 from clitt.addons.widman.widget import Widget
 from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import sysout

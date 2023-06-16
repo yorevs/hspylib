@@ -20,6 +20,8 @@ from typing import Any, Optional, Tuple
 
 import re
 
+MASK_SYMBOLS = ["#", "@", "%", "*"]
+
 
 class MInputUtils(ABC):
     """MenuInput utilities."""
@@ -111,11 +113,15 @@ class MInputUtils(ABC):
         if keypress_value == mask[idx]:
             return f"{value}{keypress_value}|{mask}"
         masked_value = value
-        while idx < len(mask) and mask[idx] not in ["#", "@", "*"]:
+        while idx < len(mask) and mask[idx] not in MASK_SYMBOLS:
             masked_value += mask[idx]
             idx += 1
         if mask and idx < len(mask):
-            mask_regex = mask[idx].replace("#", "[0-9]").replace("@", "[a-zA-Z]").replace("*", ".")
+            mask_regex = mask[idx] \
+                .replace("#", "[0-9]") \
+                .replace("@", "[a-zA-Z]") \
+                .replace("%", "[a-zA-Z0-9]") \
+                .replace("*", ".")
             if re.search(mask_regex, keypress_value):
                 masked_value += keypress_value
             else:
@@ -130,7 +136,7 @@ class MInputUtils(ABC):
         """
         over_masked_val = ""
         for idx, element in enumerate(mask):
-            if element in ["#", "@", "*"]:  # Digit, Letter or alphanumeric masks.
+            if element in MASK_SYMBOLS:  # Digit, Letter or alphanumeric masks.
                 over_masked_val += value[idx] if idx < len(value) else placeholder
             else:
                 over_masked_val += element
