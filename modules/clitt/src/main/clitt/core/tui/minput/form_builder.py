@@ -73,7 +73,7 @@ class FormBuilder:
 
         def value(self, value: Any | None) -> "FormBuilder.FieldBuilder":
             check_argument(
-                not value or self.field.assign(value),
+                not value or self.field.assign(value, True),
                 'Not a valid value: "{}". Validation pattern="{}"',
                 value,
                 self.field.input_validator,
@@ -92,15 +92,14 @@ class FormBuilder:
             elif self.field.itype == InputType.MASKED:
                 _, mask = MInputUtils.unpack_masked(self.field.value)
                 self.field.min_length = self.field.max_length = len(mask)
-                # fmt: off
                 self.validator(
                     InputValidator.custom(
                         mask
                         .replace("#", "[0-9]")
                         .replace("@", "[a-zA-Z]")
+                        .replace("%", "[a-zA-Z0-9]")
                         .replace("*", ".")
                     ))
-                # fmt: on
             self.field.label = self.field.label or "Field"
             self.field.dest = self.field.dest or f"{snakecase(self.field.label)}"
             self.field.min_length = self.field.min_length or 1

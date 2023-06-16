@@ -83,9 +83,9 @@ class FormField:
         """Whether this field value can be set or not."""
         return self.access_type == AccessType.READ_WRITE
 
-    def assign(self, value: Any) -> bool:
+    def assign(self, value: Any, skip_validation: bool = False) -> bool:
         """Assign a value for this field.Must match the input validator, otherwise an exception will be thrown."""
-        if self.validate_input(value):
+        if skip_validation or self.validate_input(value):
             self.value = value
             return True
         return False

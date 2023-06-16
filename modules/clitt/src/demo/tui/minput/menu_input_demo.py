@@ -34,8 +34,7 @@ if __name__ == "__main__":
         .field() \
             .label('masked') \
             .itype('masked') \
-            .validator(InputValidator.masked()) \
-            .value('|##::##::## @@') \
+            .value('|##::##::%% @@') \
             .build() \
         .field() \
             .label('selectable') \
@@ -49,7 +48,6 @@ if __name__ == "__main__":
         .field() \
             .label('password') \
             .itype('password') \
-            .validator(InputValidator.anything()) \
             .min_max_length(4, 8) \
             .build() \
         .field() \
