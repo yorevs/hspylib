@@ -84,7 +84,7 @@ class TUIMenuItem(TUIMenu):
                 option_line = str(self._items[idx])
                 erase_line()
                 # Print the selector if the index is currently selected
-                selector = self._draw_cursor_line(is_selected=(idx == self._sel_index), has_bg_color=False)
+                selector = self._draw_selector(is_selected=(idx == self._sel_index), has_bg_color=False)
                 # fmt: off
                 line_fmt = (
                     "  {:>" + f"{len(str(length))}" + "}  "

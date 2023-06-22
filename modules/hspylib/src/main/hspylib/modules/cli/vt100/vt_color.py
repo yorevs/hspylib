@@ -41,6 +41,7 @@ class VtColor(Enumeration):
 
     @classmethod
     def colorize(cls, input_string: str) -> str:
+        """TODO"""
         colorized = input_string
         for color in cls.names():
             colorized = cls._replace_all(colorized, color)
@@ -48,6 +49,7 @@ class VtColor(Enumeration):
 
     @classmethod
     def strip_colors(cls, input_string: str) -> str:
+        """TODO"""
         plain = input_string
         for color in cls.names():
             plain = plain.replace(f"%{color}%", "")
@@ -55,6 +57,7 @@ class VtColor(Enumeration):
 
     @classmethod
     def _replace_all(cls, input_string: str, color_name: str) -> str:
+        """TODO"""
         color = VtColor.value_of(color_name.upper())
         return input_string.replace(color.placeholder, color.code)
 

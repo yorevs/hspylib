@@ -17,10 +17,11 @@ from typing import List, Optional, TypeVar
 
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor, screen_size
+from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor, screen_size
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.tui_component import TUIComponent
+from clitt.core.tui.tui_screen import TUIScreen
 
 T = TypeVar("T")
 
@@ -47,7 +48,7 @@ class MenuChoose(TUIComponent):
             return None
 
         keypress = Keyboard.VK_NONE
-        prepare_render()
+        TUIScreen.prepare_render()
 
         # Wait for user interaction
         while not self._done:
@@ -81,7 +82,7 @@ class MenuChoose(TUIComponent):
             option_line = str(self.items[idx])
             erase_line()
             # Print the selector if the index is currently selected
-            selector = self._draw_cursor_line(idx == self.sel_index)
+            selector = self._draw_selector(idx == self.sel_index)
             mark = self.prefs.marked if self.sel_options[idx] == 1 else self.prefs.unmarked
             # fmt: off
             line_fmt = (

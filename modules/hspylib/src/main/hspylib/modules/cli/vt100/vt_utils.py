@@ -12,17 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.exception.exceptions import NotATerminalError
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from typing import Any, Optional, Tuple
-
-import atexit
 import os
 import re
 import sys
 import termios
 import tty
+from typing import Any, Optional, Tuple
+
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
 def screen_size() -> tuple[int, ...]:
@@ -42,9 +41,12 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
 
     if is_debugging():
         return 0, 0
+
     buf = ""
     stdin = sys.stdin.fileno()
     attrs = termios.tcgetattr(stdin)
+    pos = None
+
     try:
         tty.setcbreak(stdin, termios.TCSANOW)
         sys.stdout.write(Vt100.get_cursor_pos())  # Query the terminal
@@ -53,13 +55,13 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
             buf += sys.stdin.read(1)
             if buf[-1] == "R":
                 break
-        matches = re.match(r"^\x1b\[(\d*);(\d*)R", buf)
-        groups = matches.groups()
-        return int(groups[0]), int(groups[1])
-    except AttributeError:
-        return None
+        if matches := re.match(r"^\x1b\[(\d*);(\d*)R", buf):
+            groups = matches.groups()
+            pos = int(groups[0]), int(groups[1])
     finally:
         termios.tcsetattr(stdin, termios.TCSANOW, attrs)
+
+    return pos
 
 
 def set_enable_echo(enabled: bool = True) -> None:
@@ -120,26 +122,7 @@ def restore_terminal() -> None:
 
 
 def exit_app(exit_code: int = None, frame: Any = None, exit_msg: str = "") -> None:
-    """Exit the application. Commonly called by hooked signals"""
+    """Exit the application. Commonly called by hooked signals."""
     restore_terminal()
     sysout(f"%MOD(0)%" f"{exit_msg if exit_msg else ''}")
     sys.exit(exit_code)
-
-
-def prepare_render(auto_wrap: bool = False, show_cursor: bool = False):
-    """Prepare the terminal for TUI renderization"""
-    atexit.register(restore_terminal)
-    set_auto_wrap(auto_wrap)
-    set_show_cursor(show_cursor)
-    clear_screen()
-    save_cursor()
-
-
-if __name__ == "__main__":
-    print("1 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
-    print("2 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
-    print("3 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
-    print("4 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
-    print("5 odiheiwdhewiduhe widuhewiduhewi duhewdi uewhd iweu")
-    clear_screen()
-    exit_app(exit_msg="Done")

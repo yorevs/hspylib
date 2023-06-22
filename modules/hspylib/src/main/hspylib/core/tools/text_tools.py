@@ -168,3 +168,11 @@ def quote(value: Any) -> str:
         if value.startswith("'") and value.endswith("'")
         else f"'{value}'"
     )
+
+
+def last_index_of(text: str, substring: str) -> int:
+    """Return the last index of substring or -1 if substring was not found in text."""
+    try:
+        return text.rindex(substring)
+    except ValueError:
+        return -1
