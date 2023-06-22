@@ -50,7 +50,7 @@ class TUIComponent(Generic[T], ABC):
     def execute(self) -> Optional[T | List[T]]:
         """Execute the main component flow."""
 
-    def _draw_cursor_line(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
+    def _draw_selector(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
         """Draws and highlight the selected component line.
         :param is_selected: whether to set a selected foreground color or not.
         :param has_bg_color: whether to set a background or not.

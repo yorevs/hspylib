@@ -83,6 +83,12 @@ class VtCode(Enumeration):
                 fnc = Vt100.cursor_move_backward
         return fnc
 
+    @staticmethod
+    def strip_codes(input_string: str) -> str:
+        """TODO"""
+        plain = re.sub("%.*%", "", input_string)
+        return plain
+
     @classmethod
     def decode(cls, input_string: str) -> str:
         """Decode the string into a VT_CODE enum."""

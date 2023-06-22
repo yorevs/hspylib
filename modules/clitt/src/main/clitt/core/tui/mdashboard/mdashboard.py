@@ -19,8 +19,10 @@ from clitt.core.tui.tui_component import TUIComponent
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import erase_line, prepare_render, restore_cursor
+from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor
 from typing import List, Optional, TypeVar
+
+from clitt.core.tui.tui_screen import TUIScreen
 
 DashboardMatrix = TypeVar("DashboardMatrix", bound=List[List[str]])
 
@@ -71,7 +73,7 @@ class MenuDashBoard(TUIComponent):
             return None
 
         keypress = Keyboard.VK_NONE
-        prepare_render()
+        TUIScreen.prepare_render()
 
         # Wait for user interaction
         while not self._done:
