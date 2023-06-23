@@ -57,10 +57,10 @@ class VtCode(Enumeration):
 
     MOD = "MOD"  # ^[[<m1;m2;m3>m  -> Set terminal modes
     CUP = "CUP"  # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
-    CUU = "CUU"  # ^[[<n>A         -> Move cursor up n lines
-    CUD = "CUD"  # ^[[<n>B         -> Move cursor down n lines
-    CUF = "CUF"  # ^[[<n>C         -> Move cursor right n lines
-    CUB = "CUB"  # ^[[<n>D         -> Move cursor left n lines
+    CUU = "CUU"  # ^[[<n>A         -> Move cursor up n times
+    CUD = "CUD"  # ^[[<n>B         -> Move cursor down n times
+    CUF = "CUF"  # ^[[<n>C         -> Move cursor right n times
+    CUB = "CUB"  # ^[[<n>D         -> Move cursor left n times
 
     # fmt: on
 
