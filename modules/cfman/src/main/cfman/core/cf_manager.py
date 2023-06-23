@@ -12,28 +12,29 @@
 
    Copyright 2023, HsPyLib team
 """
+import sys
+from functools import partial
+from time import sleep
+from typing import Any, List, Optional, Tuple
+
+import requests
+from clitt.core.tui.mchoose.mchoose import mchoose
+from clitt.core.tui.minput.minput import MenuInput, minput
+from clitt.core.tui.mselect.mselect import mselect
+from clitt.core.tui.tui_screen import TUIScreen
+from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.preconditions import check_state
+from hspylib.modules.cache.ttl_cache import TTLCache
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import clear_screen, set_auto_wrap, set_show_cursor
+from hspylib.modules.fetch.fetch import head
+from retry import retry
+
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
 from cfman.core.cf_endpoint import CFEndpoint
 from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
-from clitt.core.tui.mchoose.mchoose import mchoose
-from clitt.core.tui.menu.tui_menu_utils import TUIMenuUtils
-from clitt.core.tui.minput.minput import MenuInput, minput
-from clitt.core.tui.mselect.mselect import mselect
-from functools import partial
-from hspylib.core.enums.http_code import HttpCode
-from hspylib.core.preconditions import check_state
-from hspylib.core.tools.commons import syserr, sysout
-from hspylib.modules.cache.ttl_cache import TTLCache
-from hspylib.modules.cli.vt100.vt_utils import clear_screen
-from hspylib.modules.fetch.fetch import head
-from retry import retry
-from time import sleep
-from typing import List, Optional, Tuple
-
-import requests
-import sys
 
 
 class CFManager:
@@ -84,7 +85,8 @@ class CFManager:
                 return "started", "stopped"
 
     def __init__(self, api: str, org: str, space: str, username: str, password: str, no_cache: str, cf_endpoints: str):
-        self._cf = CloudFoundry()
+        self._screen = TUIScreen.INSTANCE or TUIScreen()
+        self._cf = CloudFoundry.INSTANCE or CloudFoundry()
         self._cache = TTLCache()
         self._api = api
         self._org = org
@@ -115,33 +117,73 @@ class CFManager:
     def apps(self) -> List[CFApplication]:
         return self._get_apps() or []
 
+    @property
+    def screen(self) -> TUIScreen:
+        return self._screen
+
+    @property
+    def cursor(self) -> TUIScreen.Cursor:
+        return self.screen.cursor
+
+    def write(self, obj: Any) -> None:
+        """Write the string representation of the object to the screen."""
+        self.cursor.write(obj)
+
+    def writeln(self, obj: Any) -> None:
+        """Write the string representation of the object to the screen, appending a new line."""
+        self.cursor.writeln(obj)
+
+    def write_err(self, obj: Any) -> None:
+        """Write the string representation of the object to the screen, appending a new line."""
+        self.cursor.writeln(f"%RED%{str(obj)}%NC%")
+
     def run(self) -> None:
         """Run the main cf manager application flow."""
-        sysout("%BLUE%Checking CloudFoundry authorization...")
+
+        self._prepare_render()
+        self.writeln("%BLUE%Checking CloudFoundry authorization...")
+
         if self._cf.is_logged():
             self._api = self._cf.api()
             target = self._cf.target()
             self._username, self._org, self._space = target.user, target.org, target.space
-            sysout("%YELLOW%Already authorized to CloudFoundry!")
+            self.writeln("%YELLOW%Already authorized to CloudFoundry!")
         else:
             authorized = False
-            sysout("%YELLOW%Unauthorized to CloudFoundry, login required...")
+            self.writeln("%YELLOW%Unauthorized to CloudFoundry, login required...")
             sleep(2)
             while not authorized:
                 if not self._api:
                     self._select_endpoint()
                 if not self._username or not self._password:
                     self._prompt_credentials()
-                sysout(f"%BLUE%Authorizing {self._username}@{self._api}...")
+                self.writeln(f"%BLUE%Authorizing {self._username}@{self._api}...")
                 authorized = self._authorize()
                 if not authorized:
                     self._password = None
-                    syserr("Not authorized !")
+                    self.write_err("Not authorized !")
                     self._abort()
-            sysout("%GREEN%Successfully authorized!")
-        sysout(f"%HOM%%ED0%%WHITE%--- Target information ---%EOL%{self}")
-        TUIMenuUtils.wait_keystroke()
+            self.writeln("%GREEN%Successfully authorized!")
+
+        self.writeln(f"%HOM%%ED0%%WHITE%--- Target information ---%EOL%{self}")
+        self._wait_keystroke()
         self._loop_actions()
+        self.screen.clear()
+        self.cursor.home()
+
+    def _prepare_render(self) -> None:
+        """Prepare the screen for renderization."""
+        set_auto_wrap(False)
+        set_show_cursor(False)
+        self._screen.clear()
+        self.cursor.save()
+
+    def _wait_keystroke(self, wait_message: str = "%YELLOW%%EOL%Press any key to continue%EOL%%NC%") -> None:
+        """Wait for a keypress (blocking).
+        :param wait_message: the message to present to the user.
+        """
+        self.writeln(wait_message)
+        Keyboard.wait_keystroke()
 
     @retry(exceptions=CFConnectionError, tries=3, delay=2, backoff=3, max_delay=30)
     def _select_endpoint(self) -> None:
@@ -153,20 +195,20 @@ class CFManager:
                     selected = mselect(endpoints, title="Please select an endpoint")
                     if not selected:
                         self._abort()
-                    sysout(f"%BLUE%Connecting to endpoint: {selected}...")
+                    self.writeln(f"%BLUE%Connecting to endpoint: {selected}...")
                     try:
                         response = head(selected.host)
                         if response.status_code and HttpCode.OK:
                             self._api = selected.host
                         else:
-                            syserr(
+                            self.write_err(
                                 CFConnectionError(
                                     f"Failed to contact CF API %EOL%" f"  Status: ({response.status_code}): {selected}"
                                 )
                             )
                             self._abort()
                     except requests.exceptions.ConnectionError as err:
-                        syserr(
+                        self.write_err(
                             CFConnectionError(
                                 f"Failed to connect to CloudFoundry API%EOL%"
                                 f"  Host: '{selected.host}'%EOL%"
@@ -175,7 +217,7 @@ class CFManager:
                         )
                         self._abort()
                 else:
-                    syserr(
+                    self.write_err(
                         CFExecutionError(
                             f'No endpoint yet configured. Please create the file "{self._cf_endpoints_file}" '
                             f"with at least one endpoint and try again!"
@@ -183,7 +225,7 @@ class CFManager:
                     )
                     self._abort()
         except (IndexError, FileNotFoundError) as err:
-            syserr(
+            self.write_err(
                 CFExecutionError(
                     f'Endpoint file "{self._cf_endpoints_file}" is invalid: %EOL%'
                     f"  => {str(err)}! %EOL%"
@@ -229,7 +271,7 @@ class CFManager:
     def _set_org(self) -> None:
         """Set the active PCF organization."""
         if not self._org:
-            sysout(f'%BLUE%Retrieving all organizations from api: "{self._api}"...')
+            self.writeln(f'%BLUE%Retrieving all organizations from api: "{self._api}"...')
             if not (orgs := self._cf.orgs()):
                 raise CFExecutionError(f"Unable to retrieve organizations: => {self._cf.last_output}")
             self._org = mselect(orgs, title="Please select the PCF organization")
@@ -242,7 +284,7 @@ class CFManager:
         """Set the active PCF space."""
         if not self._space:
             if self._no_cache or not (spaces := self._cache.read(f"cf-spaces-{self._org}")):
-                sysout(f'%BLUE%Retrieving all spaces from org: "{self._org}"...')
+                self.writeln(f'%BLUE%Retrieving all spaces from org: "{self._org}"...')
                 spaces = self._cf.spaces()
                 self._cache.save(f"cf-spaces-{self._org}", spaces)
             if not spaces:
@@ -256,14 +298,14 @@ class CFManager:
     def _get_apps(self) -> List[CFApplication]:
         """Retrieve all cf applications under the targeted org-space."""
         if self._no_cache or not (apps := self._cache.read(f"cf-apps-{self._space}")):
-            sysout(f'%BLUE%Retrieving applications from space: "{self._space}"...')
+            self.writeln(f'%BLUE%Retrieving applications from space: "{self._space}"...')
             apps = self._cf.apps()
-            sysout(f'%GREEN%Found {len(apps)} apps in space: "{self._space}"')
+            self.writeln(f'%GREEN%Found {len(apps)} apps in space: "{self._space}"')
             self._cache.save(f"cf-apps-{self._space}", apps)
         if not apps:
             if "OK" not in self._cf.last_output:
                 raise CFExecutionError(f"Unable to retrieve applications: => {self._cf.last_output}")
-            syserr(f'%YELLOW%No applications found for space: "{self._space}"')
+            self.write_err(f'%YELLOW%No applications found for space: "{self._space}"')
         cf_apps = list(map(CFApplication.of, apps if apps else []))
         self._cf_apps = cf_apps
 
@@ -312,9 +354,8 @@ class CFManager:
                     case "blue-green-check":
                         self._blue_green_check()
                     case "information":
-                        sysout(f"%HOM%%ED0%%WHITE%--- Target information ---%EOL%{self}")
-
-                TUIMenuUtils.wait_keystroke()
+                        self.writeln(f"%HOM%%ED0%%WHITE%--- Target information ---%EOL%{self}")
+                self._wait_keystroke()
 
     def _assert_target(self) -> bool:
         if not self._org:
@@ -334,20 +375,20 @@ class CFManager:
         if len(apps) > 0:
             clear_screen()
             # fmt: off
-            sysout(
+            self.writeln(
                 f"%BLUE%Listing '{self._org}::{self._space}' applications ...%EOL%%WHITE%"
                 f"{'-=' * 60 + '%EOL%'}"
                 f"{'Name':{CFApplication.max_name_length + 2}}"
                 f"{'State':<9}{'Instances':<12}{'Mem':<6}{'Disk':<6}Routes%EOL%")
             # fmt: on
             list(map(CFApplication.print_status, apps))
-            sysout("-=" * 60 + "%EOL%")
+            self.writeln("-=" * 60 + "%EOL%")
 
     def _blue_green_check(self) -> None:
         """Display all PCF space-application blue/green check."""
         if len(self.apps) > 0:
             clear_screen()
-            sysout(f"%BLUE%Checking blue/green deployments ...%EOL%")
+            self.writeln(f"%BLUE%Checking blue/green deployments ...%EOL%")
             CFBlueGreenChecker.check(self._org, self._space, self.apps)
 
     def _perform_callable(self, action: str) -> None:
@@ -372,7 +413,8 @@ class CFManager:
         :param kwargs arbitrary PCF action arguments.
         :param action the action to perform.
         """
-        sysout(f"%BLUE%Performing {action} {str(kwargs)}...")
+        self.writeln(f"%BLUE%Performing {action} {str(kwargs)}...")
+        sleep(1)
         action_method = getattr(self._cf, action)
         check_state(callable(action_method))
-        sysout(action_method(**kwargs))
+        self.writeln(action_method(**kwargs))

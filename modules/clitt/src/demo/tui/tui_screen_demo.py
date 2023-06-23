@@ -31,8 +31,8 @@ def draw(scr: TUIScreen):
     scr.cursor.write('X')
 
 
-def resized(dimension):
-    print('Resized', dimension)
+def resized():
+    print('Resized')
 
 
 if __name__ == '__main__':

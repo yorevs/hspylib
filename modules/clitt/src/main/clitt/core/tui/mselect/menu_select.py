@@ -15,9 +15,7 @@
 from functools import cached_property
 from typing import List, Optional, TypeVar
 
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor, screen_size
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.tui_component import TUIComponent
@@ -31,77 +29,69 @@ class MenuSelect(TUIComponent):
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
+    ROW_OFFSET = 5
+
     def __init__(self, title: str, items: List[T]):
         super().__init__(title)
-        self.items = items
-        self.show_from = 0
-        self.show_to = self.prefs.max_rows
-        self.diff_index = self.show_to - self.show_from
-        self.sel_index = 0
-        self.max_line_length = max(len(str(item)) for item in items)
+        self._items = items
+        self._show_from = 0
+        self._show_to = self.screen.rows - self.ROW_OFFSET
+        self._diff_index = self._show_to - self._show_from
+        self._sel_index = 0
+        self._max_line_length = max(len(str(item)) for item in items)
+
+    @cached_property
+    def digits(self) -> List[Keyboard]:
+        return Keyboard.digits()
 
     def execute(self) -> Optional[T]:
         """Execute the component's main flow."""
 
-        if (length := len(self.items)) == 0:
+        if (length := len(self._items)) == 0:
             return None
-        if length == 1:  # When only one option is provided, select the element at index 0 and return
-            return self.items[0]
+        elif length == 1:  # When only one option is provided, select the element at index 0 and return
+            return self._items[0]
 
-        keypress = Keyboard.VK_NONE
-        TUIScreen.prepare_render()
+        self._prepare_render()
+        keypress = self._loop()
 
-        # Wait for user interaction
-        while not self._done and keypress not in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
-            # Menu Renderization
-            if self._re_render:
-                self._render()
+        return self._items[self._sel_index] if keypress == Keyboard.VK_ENTER else None
 
-            # Navigation input
-            keypress = self._handle_keypress()
-
-        sysout("%MOD(0)%")
-
-        return self.items[self.sel_index] if keypress == Keyboard.VK_ENTER else None
-
-    def _render(self) -> None:
+    def render(self) -> None:
         """Renders the TUI component."""
 
-        length = len(self.items)
-        _, columns = screen_size()
-        restore_cursor()
-        sysout(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
+        length = len(self._items)
+        self.cursor.restore()
+        self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
-        for idx in range(self.show_from, self.show_to):
+        for idx in range(self._show_from, self._show_to):
             if idx >= length:
-                break  # When the number of items is lower than the max_rows, skip the other lines
+                break  # When the index is greater than the number of items, stop rendering
 
-            option_line = str(self.items[idx])
-            erase_line()
+            option_line = str(self._items[idx])
+            self.cursor.erase(TUIScreen.ScreenPortion.LINE)
             # Print the selector if the index is currently selected
-            selector = self._draw_selector(idx == self.sel_index)
+            selector = self.draw_selector(idx == self._sel_index)
             # fmt: off
             line_fmt = (
                 "  {:>" + f"{len(str(length))}" + "}  "
                 + "{:>" + f"{len(selector)}" + "}  "
-                + "{:<" + f"{self.max_line_length}" + "}  "
+                + "{:<" + f"{self._max_line_length}" + "}  "
             )
             # fmt: on
-            self._draw_line(line_fmt, columns, idx + 1, selector, option_line)
+            self.draw_line(line_fmt, idx + 1, selector, option_line)
 
-        sysout(self._navbar(to=length), end="")
+        self.draw_navbar(self.navbar(to=length))
         self._re_render = False
 
-    def _navbar(self, **kwargs) -> str:
+    def navbar(self, **kwargs) -> str:
         return (
             f"%EOL%{self.prefs.navbar_color.placeholder}"
             f"[Enter] Select  [{self.NAV_ICONS}] "
-            f"Navigate  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%"
+            f"Navigate  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%"
         )
 
-    def _handle_keypress(self) -> Keyboard:
-        """TODO"""
-
+    def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
@@ -114,16 +104,16 @@ class MenuSelect(TUIComponent):
                     self._handle_tab()
                 case Keyboard.VK_SHIFT_TAB:
                     self._handle_shift_tab()
-                case _ as key if key in self._digits:
+                case _ as key if key in self.digits:
                     self._handle_digit(keypress)
 
         return keypress
 
     def _handle_digit(self, digit: Keyboard) -> None:
         """TODO"""
-        length = len(self.items)
+        length = len(self._items)
         typed_index = digit.value
-        sysout(f"{digit.value}", end="")  # echo the digit typed
+        self.cursor.write(f"{digit.value}")  # echo the digit typed
         index_len = 1
         while len(typed_index) < len(str(length)):
             keystroke = Keyboard.wait_keystroke()
@@ -131,52 +121,49 @@ class MenuSelect(TUIComponent):
                 typed_index = None if keystroke != Keyboard.VK_ENTER else typed_index
                 break
             typed_index = f"{typed_index}{keystroke.value if keystroke else ''}"
-            sysout(f"{keystroke.value if keystroke else ''}", end="")
+            self.cursor.write(f"{keystroke.value if keystroke else ''}")
             index_len += 1
         # Erase the index typed by the user
-        sysout(f"%CUB({index_len})%%EL0%", end="")
+        self.cursor.move(index_len, TUIScreen.CursorDirection.LEFT)
+        self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
         if typed_index and 1 <= int(typed_index) <= length:
-            self.show_to = max(int(typed_index), self.diff_index)
-            self.show_from = self.show_to - self.diff_index
-            self.sel_index = int(typed_index) - 1
+            self._show_to = max(int(typed_index), self._diff_index)
+            self._show_from = self._show_to - self._diff_index
+            self._sel_index = int(typed_index) - 1
             self._re_render = True
 
     def _handle_key_up(self) -> None:
         """TODO"""
-        if self.sel_index == self.show_from and self.show_from > 0:
-            self.show_from -= 1
-            self.show_to -= 1
-        if self.sel_index - 1 >= 0:
-            self.sel_index -= 1
+        if self._sel_index == self._show_from and self._show_from > 0:
+            self._show_from -= 1
+            self._show_to -= 1
+        if self._sel_index - 1 >= 0:
+            self._sel_index -= 1
             self._re_render = True
 
     def _handle_key_down(self) -> None:
         """TODO"""
-        length = len(self.items)
-        if self.sel_index + 1 == self.show_to and self.show_to < length:
-            self.show_from += 1
-            self.show_to += 1
-        if self.sel_index + 1 < length:
-            self.sel_index += 1
+        length = len(self._items)
+        if self._sel_index + 1 == self._show_to and self._show_to < length:
+            self._show_from += 1
+            self._show_to += 1
+        if self._sel_index + 1 < length:
+            self._sel_index += 1
             self._re_render = True
 
     def _handle_tab(self) -> None:
         """TODO"""
-        length = len(self.items)
-        page_index = min(self.show_to + self.diff_index, length)
-        self.show_to = max(page_index, self.diff_index)
-        self.show_from = self.show_to - self.diff_index
-        self.sel_index = self.show_from
+        length = len(self._items)
+        page_index = min(self._show_to + self._diff_index, length)
+        self._show_to = max(page_index, self._diff_index)
+        self._show_from = self._show_to - self._diff_index
+        self._sel_index = self._show_from
         self._re_render = True
 
     def _handle_shift_tab(self) -> None:
         """TODO"""
-        page_index = max(self.show_from - self.diff_index, 0)
-        self.show_from = min(page_index, self.diff_index)
-        self.show_to = self.show_from + self.diff_index
-        self.sel_index = self.show_from
+        page_index = max(self._show_from - self._diff_index, 0)
+        self._show_from = min(page_index, self._diff_index)
+        self._show_to = self._show_from + self._diff_index
+        self._sel_index = self._show_from
         self._re_render = True
-
-    @cached_property
-    def _digits(self) -> List[Keyboard]:
-        return Keyboard.digits()

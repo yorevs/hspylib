@@ -13,14 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 
-from clitt.core.tui.menu.tui_menu import TUIMenu
-from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.vt100.vt_utils import clear_screen
-from typing import Any, Optional
+from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
 
+from clitt.core.tui.menu.tui_menu import TUIMenu
+from clitt.core.tui.tui_preferences import TUIPreferences
 from clitt.core.tui.tui_screen import TUIScreen
 
 
@@ -33,7 +31,11 @@ class TUIMenuUi(metaclass=Singleton):
 
     # fmt: off
     PREFS = TUIPreferences.INSTANCE or TUIPreferences()
-    MENU_LINE = f"{'--' * PREFS.title_line_length}"
+
+    SCREEN = TUIScreen.INSTANCE or TUIScreen()
+
+    MENU_LINE = f"{'-=' * PREFS.title_line_length}"
+
     MENU_TITLE_FMT = (
         f"{PREFS.title_color}"
         f"+{MENU_LINE}+%EOL%"
@@ -45,8 +47,8 @@ class TUIMenuUi(metaclass=Singleton):
     @classmethod
     def render_app_title(cls) -> None:
         """Render the application title."""
-        clear_screen()
-        sysout(cls.MENU_TITLE_FMT.format(title=cls.app_title or "TITLE"))
+        cls.SCREEN.clear()
+        cls.SCREEN.cursor.writeln(cls.MENU_TITLE_FMT.format(title=cls.app_title))
 
     @staticmethod
     def back(source: TUIMenu) -> TUIMenu:
@@ -55,19 +57,19 @@ class TUIMenuUi(metaclass=Singleton):
         """
         return source.parent
 
-    def __init__(self, main_menu: TUIMenu, title: str | None):
+    def __init__(self, main_menu: TUIMenu, title: str = "Main Menu"):
         check_not_none(main_menu)
         super().__init__()
-        TUIMenuUi.app_title = title or "Main Menu"
+        TUIMenuUi.app_title = title
         self._done: bool = False
         self._curr_menu: TUIMenu = main_menu
-        self._prev_menu: Optional[TUIMenu] = None
-        self._next_menu: Optional[TUIMenu] = None
+        self._prev_menu = None
+        self._next_menu = None
 
-    def execute(self) -> Any:
+    def execute(self) -> None:
         """Execute the terminal menu UI flow."""
 
-        TUIScreen.prepare_render()
+        self._prepare_render()
 
         while not self._done:
             if self._curr_menu:
@@ -83,9 +85,19 @@ class TUIMenuUi(metaclass=Singleton):
             else:
                 self._done = True
 
-        return None
+        self.SCREEN.cursor.end()
+        self.SCREEN.cursor.write("%MOD(0)%")
 
-    def _change_menu(self, menu: TUIMenu) -> None:
-        """TODO"""
+    def _prepare_render(self) -> None:
+        """Prepare the screen for renderization."""
+        set_auto_wrap(True)
+        set_show_cursor(False)
+        self.SCREEN.clear()
+        self.SCREEN.cursor.save()
+
+    def _change_menu(self, new_menu: TUIMenu) -> None:
+        """Change the current menu and keep track about the previous one.
+        :param new_menu: the menu to be changed to.
+        """
         self._prev_menu = self._curr_menu
-        self._curr_menu = menu
+        self._curr_menu = new_menu

@@ -12,68 +12,141 @@
 
    Copyright 2023, HsPyLib team
 """
-
 from abc import ABC, abstractmethod
+from typing import Any, List, Optional, TypeVar
+
+from hspylib.core.tools.text_tools import elide_text
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
+
 from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.tui.tui_preferences import TUIPreferences
-from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import elide_text, ensure_endswith
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import Any, Generic, List, Optional, TypeVar
+from clitt.core.tui.tui_screen import TUIScreen
 
-T = TypeVar("T")
+T = TypeVar("T", bound=Any)
 
 
-class TUIComponent(Generic[T], ABC):
+class TUIComponent(ABC):
     """Provide a base class for terminal UI components."""
 
-    @staticmethod
-    def _draw_line(line_fmt: str, max_columns: int, *args: Any) -> None:
-        """Draws a formatted component line respecting the specified max_columns.
-        :param line_fmt: the line format.
-        :param max_columns: the maximum length of the line. If the text is greater than this limit, it will be elided.
-        :param args: the arguments for the format.
-        """
-        sysout(ensure_endswith(elide_text(line_fmt.format(*args), max_columns), "%NC%"))
-
-    def __init__(self, title: str = None):
-        self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
-        self._done: bool = False
-        self._re_render: bool = True
-        self._title: str = title
+    def __init__(self, title: str):
+        self._re_render = True
+        self._done = False
+        self._title = title
+        self._screen = TUIScreen.INSTANCE or TUIScreen()
 
     @property
     def title(self) -> str:
         return self._title
 
-    @abstractmethod
-    def execute(self) -> Optional[T | List[T]]:
-        """Execute the main component flow."""
+    @property
+    def rows(self) -> int:
+        return self._screen.rows
 
-    def _draw_selector(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
+    @property
+    def columns(self) -> int:
+        return self._screen.columns
+
+    @property
+    def prefs(self) -> TUIPreferences:
+        return self.screen.preferences
+
+    @property
+    def screen(self) -> TUIScreen:
+        return self._screen
+
+    @property
+    def cursor(self) -> TUIScreen.Cursor:
+        return self._screen.cursor
+
+    def _prepare_render(
+        self,
+        auto_wrap: bool = False,
+        show_cursor: bool = False) -> None:
+        """Prepare the screen for renderization."""
+
+        self._screen.add_watcher(self.invalidate)
+        set_auto_wrap(auto_wrap)
+        set_show_cursor(show_cursor)
+        self._screen.clear()
+        self.cursor.save()
+
+    def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
+        """Loop and await for a keypress. Render the component if required."""
+
+        break_keys = break_keys or [Keyboard.VK_ESC, Keyboard.VK_ENTER]
+        keypress = Keyboard.VK_NONE
+
+        # Wait for user interaction
+        while not self._done and keypress not in break_keys:
+            # Menu Renderization
+            if self._re_render:
+                self.render()
+
+            # Navigation input
+            keypress = self.handle_keypress()
+
+        self.cursor.end()
+        self.writeln("%MOD(0)%%EOL%")
+
+        return keypress
+
+    def draw_line(self, line_fmt: str, *args: Any) -> None:
+        """Draws a formatted component line respecting the specified max_columns.
+        :param line_fmt: the line format.
+        :param args: the format arguments.
+        """
+        self.writeln(elide_text(line_fmt.format(*args), self.columns) + "%NC%")
+
+    def draw_navbar(self, navbar: str) -> None:
+        """Draws the component navigation bar respecting the specified max_columns.
+        :param navbar: the component's navigation bar.
+        """
+        self.write(elide_text(navbar, self.columns) + "%NC%")
+
+    def draw_selector(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
         """Draws and highlight the selected component line.
         :param is_selected: whether to set a selected foreground color or not.
         :param has_bg_color: whether to set a background or not.
         """
+        prefs = TUIPreferences.INSTANCE
         if is_selected:
-            selector = self.prefs.selected
+            selector = prefs.selected
             if has_bg_color:
-                sysout(self.prefs.sel_bg_color.code, end="")
-            sysout(self.prefs.highlight_color.code, end="")
+                self.write(prefs.sel_bg_color.code)
+            self.write(prefs.highlight_color.code)
         else:
-            selector = self.prefs.unselected
-            sysout(self.prefs.text_color.code, end="")
+            selector = prefs.unselected
+            self.write(prefs.text_color.code)
 
         return selector
 
+    def write(self, obj: Any) -> None:
+        """Write the string representation of the object to the screen."""
+        self.cursor.write(obj)
+
+    def writeln(self, obj: Any) -> None:
+        """Write the string representation of the object to the screen, appending a new line."""
+        self.cursor.writeln(obj)
+
+    def invalidate(self) -> None:
+        """Invalidate current TUI renderization."""
+        self.screen.clear()
+        self.cursor.save()
+        self.render()
+
     @abstractmethod
-    def _render(self) -> None:
+    def execute(self) -> Optional[T | List[T]]:
+        """Execute the main TUI component flow."""
+
+    @abstractmethod
+    def render(self) -> None:
         """Renders the TUI component."""
 
     @abstractmethod
-    def _navbar(self, **kwargs) -> str:
-        """Provide the component navigation bar (if applies)."""
+    def navbar(self, **kwargs) -> str:
+        """Get the TUI component's navigation bar (optional)."""
 
     @abstractmethod
-    def _handle_keypress(self) -> Keyboard:
+    def handle_keypress(self) -> Keyboard:
         """Handle a keyboard press."""

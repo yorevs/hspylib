@@ -83,10 +83,12 @@ class VtCode(Enumeration):
                 fnc = Vt100.cursor_move_backward
         return fnc
 
-    @staticmethod
-    def strip_codes(input_string: str) -> str:
+    @classmethod
+    def strip_codes(cls, input_string: str) -> str:
         """TODO"""
-        plain = re.sub("%.*%", "", input_string)
+        plain = input_string
+        for code in cls.names():
+            plain = plain.replace(f"%{code}%", "")
         return plain
 
     @classmethod

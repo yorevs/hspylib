@@ -12,21 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
-from cfman.__classpath__ import _Classpath
-from cfman.core.cf_manager import CFManager
+import logging as log
+import os
+import sys
+from textwrap import dedent
+
 from clitt.core.tui.tui_application import TUIApplication
-from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.vt100.vt_utils import clear_screen
-from textwrap import dedent
 
-import logging as log
-import os
-import sys
+from cfman.__classpath__ import _Classpath
+from cfman.core.cf_manager import CFManager
 
 
 class Main(TUIApplication):
@@ -88,9 +87,7 @@ class Main(TUIApplication):
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application."""
-        TUIScreen.prepare_render()
         self._cf_manager.run()
-        clear_screen()
         return ExitStatus.SUCCESS
 
 
