@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.30
+# hspylib-clitt v0.9.31
 #
 # Package: main.clitt.addons.setman
 """Package initialization."""
@@ -13,4 +13,4 @@ __all__ = [
   'setman_repository', 
   'setman_service'
 ]
-__version__ = '0.9.30'
+__version__ = '0.9.31'

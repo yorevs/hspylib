@@ -15,9 +15,7 @@
 from functools import cached_property
 from typing import List, Optional, TypeVar
 
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor, screen_size
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.tui_component import TUIComponent
@@ -31,35 +29,29 @@ class MenuChoose(TUIComponent):
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
+    ROW_OFFSET = 5
+
     def __init__(self, title: str, items: List[T], checked: bool):
         super().__init__(title)
         self.items = items
         self.show_from = 0
-        self.show_to = self.prefs.max_rows
+        self.show_to = self._max_rows()
         self.diff_index = self.show_to - self.show_from
         self.sel_index = 0
         self.sel_options = [1 if checked else 0 for _ in range(len(items))]  # Initialize all options
         self.max_line_length = max(len(str(item)) for item in items)
 
+    @cached_property
+    def digits(self) -> List[Keyboard]:
+        return Keyboard.digits()
+
     def execute(self) -> Optional[List[T]]:
-        """TODO"""
 
         if len(self.items) == 0:
             return None
 
-        keypress = Keyboard.VK_NONE
-        TUIScreen.prepare_render()
-
-        # Wait for user interaction
-        while not self._done:
-            # Menu Renderization
-            if self._re_render:
-                self._render()
-
-            # Navigation input
-            keypress = self._handle_keypress()
-
-        sysout("%MOD(0)%")
+        self._prepare_render()
+        keypress = self._loop()
 
         return (
             [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
@@ -67,22 +59,20 @@ class MenuChoose(TUIComponent):
             else None
         )
 
-    def _render(self) -> None:
-        """TODO"""
+    def render(self) -> None:
 
         length = len(self.items)
-        _, columns = screen_size()
-        restore_cursor()
-        sysout(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
+        self.cursor.restore()
+        self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx in range(self.show_from, self.show_to):
             if idx >= length:
-                break  # When the number of items is lower than the max_rows, skip the other lines
+                break  # When the index is greater than the number of items, stop rendering
 
             option_line = str(self.items[idx])
-            erase_line()
+            self.cursor.erase(TUIScreen.ScreenPortion.LINE)
             # Print the selector if the index is currently selected
-            selector = self._draw_selector(idx == self.sel_index)
+            selector = self.draw_selector(idx == self.sel_index)
             mark = self.prefs.marked if self.sel_options[idx] == 1 else self.prefs.unmarked
             # fmt: off
             line_fmt = (
@@ -92,21 +82,19 @@ class MenuChoose(TUIComponent):
                 + "{:<" + f"{self.max_line_length}" + "}  "
             )
             # fmt: on
-            self._draw_line(line_fmt, columns, idx + 1, selector, mark, option_line)
+            self.draw_line(line_fmt, idx + 1, selector, mark, option_line)
 
-        sysout(self._navbar(to=length), end="")
+        self.draw_navbar(self.navbar(to=length))
         self._re_render = False
 
-    def _navbar(self, **kwargs) -> str:
+    def navbar(self, **kwargs) -> str:
         return (
             f"%EOL%{self.prefs.navbar_color.placeholder}"
             f"[Enter] Accept  [{self.NAV_ICONS}] "
-            f"Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%"
+            f"Navigate  [Space] Mark  [I] Invert  [Esc] Quit  [1..{kwargs['to']}] Goto: %NC%"
         )
 
-    def _handle_keypress(self) -> Keyboard:
-        """TODO"""
-
+    def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
             match keypress:
                 case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
@@ -122,8 +110,8 @@ class MenuChoose(TUIComponent):
                 case Keyboard.VK_SPACE:
                     self._handle_space()
                 case _ as key if key in [Keyboard.VK_i, Keyboard.VK_I]:
-                    self._handle_i()
-                case _ as key if key in self._digits:
+                    self._handle_key_i()
+                case _ as key if key in self.digits:
                     self._handle_digit(keypress)
 
         return keypress
@@ -132,7 +120,7 @@ class MenuChoose(TUIComponent):
         """TODO"""
         length = len(self.items)
         typed_index = digit.value
-        sysout(f"{digit.value}", end="")  # echo the digit typed
+        self.write(f"{digit.value}")  # echo the digit typed
         index_len = 1
         while len(typed_index) < len(str(length)):
             keystroke = Keyboard.wait_keystroke()
@@ -140,10 +128,11 @@ class MenuChoose(TUIComponent):
                 typed_index = None if keystroke != Keyboard.VK_ENTER else typed_index
                 break
             typed_index = f"{typed_index}{keystroke.value if keystroke else ''}"
-            sysout(f"{keystroke.value if keystroke else ''}", end="")
+            self.write(f"{keystroke.value if keystroke else ''}")
             index_len += 1
         # Erase the index typed by the user
-        sysout(f"%CUB({index_len})%%EL0%", end="")
+        self.cursor.move(index_len, TUIScreen.CursorDirection.LEFT)
+        self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
         if typed_index and 1 <= int(typed_index) <= length:
             self.show_to = max(int(typed_index), self.diff_index)
             self.show_from = self.show_to - self.diff_index
@@ -194,11 +183,11 @@ class MenuChoose(TUIComponent):
             self.sel_options[self.sel_index] = 0
         self._re_render = True
 
-    def _handle_i(self) -> None:
+    def _handle_key_i(self) -> None:
         """TODO"""
         self.sel_options = [(0 if op == 1 else 1) for op in self.sel_options]
         self._re_render = True
 
-    @cached_property
-    def _digits(self) -> List[Keyboard]:
-        return Keyboard.digits()
+    def _max_rows(self) -> int:
+        max_rows = self.screen.rows - self.ROW_OFFSET
+        return max_rows if self.prefs.max_rows > max_rows else self.prefs.max_rows

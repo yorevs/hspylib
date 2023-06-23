@@ -12,14 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
+import os
 from collections import namedtuple
+from typing import List, Optional
+
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.terminal import Terminal
-from typing import List, Optional
-
-import os
+from hspylib.modules.cli.vt100.vt_utils import clear_screen, set_auto_wrap
 
 CFTarget = namedtuple("CFTarget", ["user", "org", "space", "connected"])
 
@@ -185,6 +186,8 @@ class CloudFoundry(metaclass=Singleton):
                recent: dump recent logs instead of tailing.
         :param kwargs arbitrary CF command keyword arguments.
         """
+        clear_screen()
+        set_auto_wrap(True)
         return self._exec(cmd_line=f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}", poll=True)
 
     # Execution of a CF command

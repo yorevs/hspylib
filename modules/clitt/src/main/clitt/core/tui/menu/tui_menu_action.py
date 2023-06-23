@@ -23,13 +23,13 @@ class TUIMenuAction(TUIMenu):
     """Represent a menu item action. Each action trigger a callback function."""
 
     def execute(self) -> Optional[TUIMenu]:
-        self._render()
+        self.render()
         ret_menu = self._on_trigger(self._parent)
         if not ret_menu:
-            TUIMenu.wait_keystroke()
+            self.wait_keystroke()
         return ret_menu if ret_menu else self._default_trigger_cb(self)
 
-    def _render(self) -> None:
+    def render(self) -> None:
         restore_cursor()
         TUIMenuUi.render_app_title()
 

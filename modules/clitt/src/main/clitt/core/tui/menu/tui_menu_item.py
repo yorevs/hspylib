@@ -13,15 +13,16 @@
    Copyright 2023, HsPyLib team
 """
 
+from functools import cached_property
+from typing import List, Optional
+
+from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.modules.cli.keyboard import Keyboard
+
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from functools import cached_property
-from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.dict_tools import get_or_default
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import erase_line, restore_cursor, screen_size
-from typing import List, Optional
+from clitt.core.tui.tui_screen import TUIScreen
 
 
 class TUIMenuItem(TUIMenu):
@@ -29,18 +30,20 @@ class TUIMenuItem(TUIMenu):
     TUIMenuItem, TUIMenuAction or TUIMenuView.
     """
 
+    ROW_OFFSET = 5
+
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.DOWN)
 
     def __init__(
         self,
         parent: Optional[TUIMenu] = None,
-        title: Optional[str] = None,
-        tooltip: Optional[str] = None,
+        title: str = "Sub Menu",
+        tooltip: str = None,
         items: List[TUIMenu] = None,
     ):
-        super().__init__(parent, title or "Sub Menu", tooltip or f"Access the '{title}' menu")
+        super().__init__(parent, title, tooltip or f"Access the '{title}' menu")
         self._show_from: int = 0
-        self._show_to: int = self.prefs.max_rows
+        self._show_to: int = self.screen.rows - self.ROW_OFFSET
         self._diff_index: int = self._show_to - self._show_from
         self._sel_index: int = 0
         self._items: List[TUIMenu] = items or []
@@ -62,29 +65,27 @@ class TUIMenuItem(TUIMenu):
 
             # Menu Renderization
             if self._re_render:
-                self._render()
+                self.render()
 
             # Navigation input
-            if self._handle_keypress() == Keyboard.VK_ENTER:
+            if self.handle_keypress() == Keyboard.VK_ENTER:
                 return self._on_trigger(self._parent)
 
         return None
 
-    def _render(self) -> None:
+    def render(self) -> None:
         length = len(self._items)
-        _, columns = screen_size()
-        restore_cursor()
+        self.cursor.restore()
         TUIMenuUi.render_app_title()
-        self._re_render = False
 
         if length > 0:
             for idx in range(self._show_from, self._show_to):
                 if idx >= length:
                     break  # When the number of items is lower than the max_rows, skip the other lines
                 option_line = str(self._items[idx])
-                erase_line()
+                self.cursor.erase(TUIScreen.ScreenPortion.LINE)
                 # Print the selector if the index is currently selected
-                selector = self._draw_selector(is_selected=(idx == self._sel_index), has_bg_color=False)
+                selector = self.draw_selector(is_selected=(idx == self._sel_index), has_bg_color=False)
                 # fmt: off
                 line_fmt = (
                     "  {:>" + f"{len(str(length))}" + "}  "
@@ -92,22 +93,23 @@ class TUIMenuItem(TUIMenu):
                     + "{:<" + f"{self._max_line_length}" + "}  "
                 )
                 # fmt: on
-                self._draw_line(line_fmt, columns, idx + 1, selector, option_line)
+                self.draw_line(line_fmt, idx + 1, selector, option_line)
 
-        sysout(self._navbar(to=length), end="")
+        self.draw_navbar(self.navbar(to=length))
+        self._re_render = False
 
-    def _navbar(self, **kwargs) -> str:
+    def navbar(self, **kwargs) -> str:
         menu = get_or_default(self.items, self._sel_index, None)
         tooltip = menu.tooltip if menu else None
         return (
-            f"%EOL%%GREEN%{self._breadcrumb()} "
+            f"%EOL%%GREEN%{self.breadcrumb()} "
             f"{tooltip + ' ' if tooltip else ''}%ED0%%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
             f"[Enter] Select  Navigate  [{self.NAV_ICONS}]  "
             f"[Esc] Quit  [1..{kwargs['to']}] Goto: %NC%%EL0%%EOL%%EOL%"
         )
 
-    def _handle_keypress(self) -> Keyboard:
+    def handle_keypress(self) -> Keyboard:
         """Handle a keyboard press."""
         if keypress := Keyboard.wait_keystroke():
             match keypress:
@@ -169,7 +171,7 @@ class TUIMenuItem(TUIMenu):
         """
         length = len(self._items)
         typed_index = digit.value
-        sysout(f"{digit.value}", end="")  # echo the digit typed
+        self.write(digit.value)  # echo the digit typed
         index_len = 1
         while len(typed_index) < len(str(length)):
             keystroke = Keyboard.wait_keystroke()
@@ -177,10 +179,11 @@ class TUIMenuItem(TUIMenu):
                 typed_index = None if keystroke != Keyboard.VK_ENTER else typed_index
                 break
             typed_index = f"{typed_index}{keystroke.value if keystroke else ''}"
-            sysout(f"{keystroke.value if keystroke else ''}", end="")
+            self.write(f"{keystroke.value if keystroke else ''}")
             index_len += 1
         # Erase the index typed by the user
-        sysout(f"%CUB({index_len})%%EL0%", end="")
+        self.cursor.move(index_len, TUIScreen.CursorDirection.LEFT)
+        self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
         if typed_index and 1 <= int(typed_index) <= length:
             self._show_to = max(int(typed_index), self._diff_index)
             self._show_from = self._show_to - self._diff_index

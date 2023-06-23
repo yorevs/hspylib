@@ -29,10 +29,10 @@ class TUIPreferences(metaclass=Singleton):
 
     def __init__(self, **kwargs):
         # fmt: off
-        self._max_rows: int             = \
-            get_or_default_by_key(kwargs, 'max_rows', 15)
+        self._max_rows: int       = \
+            get_or_default_by_key(kwargs, 'max_rows', 10)
         self._items_per_line: int       = \
-            get_or_default_by_key(kwargs, 'items_per_line', 5)
+            get_or_default_by_key(kwargs, 'items_per_line', 6)
         self._title_line_length: int    = \
             get_or_default_by_key(kwargs, 'title_line_length', 30)
         self._title_color: VtColor      = \
@@ -80,7 +80,7 @@ class TUIPreferences(metaclass=Singleton):
 
     @property
     def max_rows(self) -> int:
-        return max(5, self._max_rows)
+        return max(10, self._max_rows)
 
     @property
     def items_per_line(self) -> int:
@@ -145,3 +145,6 @@ class TUIPreferences(metaclass=Singleton):
     @property
     def unmarked(self) -> Awesome:
         return self._unmarked
+
+
+TUIPreferences()

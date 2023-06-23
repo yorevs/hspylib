@@ -13,10 +13,11 @@
    Copyright 2023, HsPyLib team
 """
 
+from typing import Callable, Optional
+
 from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from hspylib.core.tools.commons import sysout
-from typing import Callable, Optional
+from clitt.core.tui.tui_screen import TUIScreen
 
 
 class TUIMenuView(TUIMenu):
@@ -41,18 +42,18 @@ class TUIMenuView(TUIMenu):
             self._on_render = self._display_content
         elif isinstance(on_render, Callable):
             self._on_render = on_render
-            self._content = f"%ED0%This is a view: {self.title}"
+            self._content = f"This is a view: {self.title}"
 
     def execute(self) -> Optional[TUIMenu]:
-        self._render()
-
+        self.render()
         return self._on_trigger(self)
 
-    def _render(self) -> None:
+    def render(self) -> None:
         TUIMenuUi.render_app_title()
         self._on_render()
-        sysout(self._navbar())
+        self.draw_navbar(self.navbar())
 
     def _display_content(self) -> None:
-        sysout(self._content)
-        TUIMenu.wait_keystroke()
+        self.cursor.erase(TUIScreen.CursorDirection.DOWN)
+        self.writeln(self._content)
+        self.wait_keystroke()

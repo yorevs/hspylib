@@ -16,16 +16,17 @@ import atexit
 import os
 import threading
 from threading import Timer
-from typing import Any, Callable, List, Tuple, TypeVar, Union
+from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union
 
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import last_index_of
 from hspylib.modules.cli.vt100.vt_code import VtCode
-from hspylib.modules.cli.vt100.vt_utils import clear_screen, get_cursor_position, restore_terminal, save_cursor, \
-    screen_size, set_auto_wrap, \
-    set_show_cursor
+from hspylib.modules.cli.vt100.vt_color import VtColor
+from hspylib.modules.cli.vt100.vt_utils import clear_screen, get_cursor_position, restore_cursor, restore_terminal, \
+    save_cursor, \
+    screen_size
 
 from clitt.core.tui.tui_preferences import TUIPreferences
 
@@ -33,7 +34,7 @@ DIMENSION = TypeVar('DIMENSION', bound=Tuple[int, ...])
 
 POSITION = TypeVar('POSITION', bound=Tuple[int, int])
 
-CB_RESIZE = TypeVar('CB_RESIZE', bound=Callable[[Tuple[int, ...]], None])
+CB_RESIZE = TypeVar('CB_RESIZE', bound=Callable[[None], None])
 
 MOVE_DIRECTION = TypeVar('MOVE_DIRECTION', bound='TUIScreen.CursorDirection')
 
@@ -45,7 +46,9 @@ ERASE_DIRECTION = TypeVar('ERASE_DIRECTION', bound=Union[
 class TUIScreen(metaclass=Singleton):
     """Provide a base class for terminal UI components."""
 
-    SCREEN_REFRESH_TIME = 0.5
+    INSTANCE = None
+
+    RESIZE_WATCH_INTERVAL = 0.5
 
     class CursorDirection(Enumeration):
         """Provide a base class for the cursor direction."""
@@ -70,7 +73,8 @@ class TUIScreen(metaclass=Singleton):
 
         def __init__(self):
             self._position: POSITION = get_cursor_position() or self.CURSOR_HOME
-            self._bottom: POSITION = self._position
+            self._bottom: POSITION = self.CURSOR_HOME
+            self._saved_attrs = self._position, self._bottom
 
         def __str__(self):
             return f"({', '.join(list(map(str, self._position)))})"
@@ -85,7 +89,7 @@ class TUIScreen(metaclass=Singleton):
         @position.setter
         def position(self, new_position: POSITION) -> None:
             self._bottom = (
-                new_position[0], new_position[1], self._bottom[1]
+                new_position[0], new_position[1]
             ) if new_position >= self._bottom else self._bottom
             self._position = new_position
 
@@ -139,7 +143,8 @@ class TUIScreen(metaclass=Singleton):
         def write(self, obj: Any, end: str = '') -> POSITION:
             """Write the string representation of the object to the screen."""
             sysout(obj, end=end)
-            text = VtCode.strip_codes(str(obj) + end)
+            text = (str(obj) + end).replace('%EOL%', os.linesep)
+            text = VtColor.strip_colors(VtCode.strip_codes(text))
             text_offset = len(text[max(0, last_index_of(text, os.linesep)):])
             self.position = \
                 self.position[0] + text.count(os.linesep), \
@@ -150,29 +155,28 @@ class TUIScreen(metaclass=Singleton):
             """Write the string representation of the object to the screen, appending a new line."""
             return self.write(obj, end=os.linesep)
 
-        def save_position(self) -> POSITION:
-            """Save the current cursor position."""
+        def save(self) -> POSITION:
+            """Save the current cursor position and attributes."""
             save_cursor()
+            self._saved_attrs = self._position, self._bottom
             return self.position
 
-    def __init__(
-        self,
-        auto_wrap: bool = False,
-        show_cursor: bool = False,
-        *cb_watchers: CB_RESIZE):
+        def restore(self) -> POSITION:
+            """Save the current cursor position and attributes."""
+            restore_cursor()
+            self._position = self._saved_attrs[0]
+            self._bottom = self._saved_attrs[1]
+            return self.position
 
-        self._prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
-        self._dimensions: tuple[int, ...] = screen_size()
-        self._cursor = self.Cursor()
-        self._resize_timer = None
-        self._resize_watchers = cb_watchers
+    def __init__(self):
+        self._preferences: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
+        self._dimension: DIMENSION = screen_size()
+        self._cursor: TUIScreen.Cursor = self.Cursor()
+        self._resize_timer: Optional[Timer] = None
+        self._cb_watchers: List[CB_RESIZE] = []
 
         atexit.register(restore_terminal)
-        set_auto_wrap(auto_wrap)
-        set_show_cursor(show_cursor)
-
-        if cb_watchers:
-            self._resize_watcher(list(cb_watchers))
+        self._resize_watcher()
 
     def __str__(self):
         return f"TUIScreen(rows={self.rows}, columns={self.columns}, cursor={self.cursor})"
@@ -182,19 +186,19 @@ class TUIScreen(metaclass=Singleton):
 
     @property
     def preferences(self) -> TUIPreferences:
-        return self._prefs
+        return self._preferences
 
     @property
-    def dimensions(self) -> DIMENSION:
-        return self._dimensions
+    def dimension(self) -> DIMENSION:
+        return self._dimension
 
     @property
     def rows(self) -> int:
-        return self._dimensions[0]
+        return self._dimension[0]
 
     @property
     def columns(self) -> int:
-        return self._dimensions[1]
+        return self._dimension[1]
 
     @property
     def cursor(self) -> Cursor:
@@ -205,12 +209,18 @@ class TUIScreen(metaclass=Singleton):
         clear_screen()
         self._cursor.home()
 
-    def _resize_watcher(self, cb_watchers: List[CB_RESIZE]) -> None:
+    def add_watcher(self, watcher: CB_RESIZE) -> None:
+        """Add a resize watcher."""
+        self._cb_watchers.append(watcher)
+        if not self._resize_timer:
+            self._resize_watcher()
+
+    def _resize_watcher(self) -> None:
         """Add a watcher for screen resizes. If a resize is detected, the callback is called with the new dimension."""
-        if threading.main_thread().is_alive():
+        if self._cb_watchers and threading.main_thread().is_alive():
             dimension: DIMENSION = screen_size()
-            self._resize_timer = Timer(self.SCREEN_REFRESH_TIME, self._resize_watcher, [cb_watchers])
-            if dimension != self._dimensions:
-                list(map(lambda w: w(dimension), cb_watchers))
-                self._dimensions = dimension
+            self._resize_timer = Timer(self.RESIZE_WATCH_INTERVAL, self._resize_watcher)
+            if dimension != self._dimension:
+                list(map(lambda cb_w: cb_w(), self._cb_watchers))
+                self._dimension = dimension
             self._resize_timer.start()

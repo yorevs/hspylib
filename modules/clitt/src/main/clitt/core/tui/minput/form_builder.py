@@ -24,7 +24,7 @@ from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput_utils import MInputUtils
+from clitt.core.tui.minput.minput_utils import unpack_masked
 
 
 class FormBuilder:
@@ -90,7 +90,7 @@ class FormBuilder:
                 self.field.min_length = self.field.max_length = 1
                 self.validator(InputValidator.anything())
             elif self.field.itype == InputType.MASKED:
-                _, mask = MInputUtils.unpack_masked(self.field.value)
+                _, mask = unpack_masked(self.field.value)
                 self.field.min_length = self.field.max_length = len(mask)
                 self.validator(
                     InputValidator.custom(
