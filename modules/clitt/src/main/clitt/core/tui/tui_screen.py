@@ -16,8 +16,9 @@ import atexit
 import os
 import threading
 from threading import Timer
-from typing import Any, Callable, Tuple, TypeVar
+from typing import Any, Callable, List, Tuple, TypeVar, Union
 
+from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import last_index_of
@@ -28,11 +29,17 @@ from hspylib.modules.cli.vt100.vt_utils import clear_screen, get_cursor_position
 
 from clitt.core.tui.tui_preferences import TUIPreferences
 
-SCR_DIMENSION = TypeVar('SCR_DIMENSION', bound=Tuple[int, ...])
+DIMENSION = TypeVar('DIMENSION', bound=Tuple[int, ...])
 
-SCR_POSITION = TypeVar('SCR_POSITION', bound=Tuple[int, int])
+POSITION = TypeVar('POSITION', bound=Tuple[int, int])
 
 CB_RESIZE = TypeVar('CB_RESIZE', bound=Callable[[Tuple[int, ...]], None])
+
+MOVE_DIRECTION = TypeVar('MOVE_DIRECTION', bound='TUIScreen.CursorDirection')
+
+ERASE_DIRECTION = TypeVar('ERASE_DIRECTION', bound=Union[
+    'TUIScreen.CursorDirection', 'TUIScreen.ScreenPortion'
+])
 
 
 class TUIScreen(metaclass=Singleton):
@@ -40,28 +47,30 @@ class TUIScreen(metaclass=Singleton):
 
     SCREEN_REFRESH_TIME = 0.5
 
-    @staticmethod
-    def prepare_render(
-        auto_wrap: bool = False,
-        show_cursor: bool = False,
-        is_clear_screen: bool = True,
-        is_save_screen: bool = True):
-        """Prepare the screen for TUI renderization."""
+    class CursorDirection(Enumeration):
+        """Provide a base class for the cursor direction."""
+        # fmt: off
+        UP          = '%ED1%', '%CUU({n})%'   # Cursor up (line)
+        RIGHT       = '%EL0%', '%CUF({n})%'   # Cursor right (forward)
+        DOWN        = '%ED0%', '%CUD({n})%'   # Cursor down (line)
+        LEFT        = '%EL1%', '%CUB({n})%'   # Cursor left (backward)
+        # fmt: on
 
-        atexit.register(restore_terminal)
-        set_auto_wrap(auto_wrap)
-        set_show_cursor(show_cursor)
+    class ScreenPortion(Enumeration):
+        """Provide a base class for the portions of the screen."""
+        # fmt: off
+        SCREEN      = '%ED2%', ''   # Entire screen (screen)
+        LINE        = '%EL2%', ''   # Entire line (line)
+        # fmt: on
 
-        if is_clear_screen:
-            clear_screen()
-        if is_save_screen:
-            save_cursor()
-
-    class _Cursor(metaclass=Singleton):
+    class Cursor(metaclass=Singleton):
         """Provide a base class for the screen cursor."""
 
+        CURSOR_HOME = 1, 1
+
         def __init__(self):
-            self._position: SCR_POSITION = get_cursor_position() or (1, 1)
+            self._position: POSITION = get_cursor_position() or self.CURSOR_HOME
+            self._bottom: POSITION = self._position
 
         def __str__(self):
             return f"({', '.join(list(map(str, self._position)))})"
@@ -70,46 +79,100 @@ class TUIScreen(metaclass=Singleton):
             return str(self)
 
         @property
-        def position(self) -> SCR_POSITION:
+        def position(self) -> POSITION:
             return self._position
+
+        @position.setter
+        def position(self, new_position: POSITION) -> None:
+            self._bottom = (
+                new_position[0], new_position[1], self._bottom[1]
+            ) if new_position >= self._bottom else self._bottom
+            self._position = new_position
+
+        @property
+        def bottom(self) -> POSITION:
+            return self._bottom
 
         def home(self) -> None:
-            """TODO"""
-            self.move(1, 1)
+            """Move the cursor to home position."""
+            self.move_to(self.CURSOR_HOME[0], self.CURSOR_HOME[1])
 
-        def move(self, row: int = None, column: int = None) -> None:
-            """TODO"""
-            row_pos = max(1, row if row is not None else self._position[0])
-            col_pos = max(1, column if column is not None else self._position[1])
+        def end(self) -> None:
+            """Move the cursor to the bottom most position on the screen."""
+            self.move_to(self.bottom[0], self.bottom[1])
+
+        def move_to(self, row: int = None, column: int = None) -> POSITION:
+            """Move the cursor to the specified position."""
+            row_pos = max(self.CURSOR_HOME[0], row if row is not None else self.position[0])
+            col_pos = max(self.CURSOR_HOME[1], column if column is not None else self.position[1])
             sysout(f"%CUP({row_pos};{col_pos})%", end="")
-            self._position = row_pos, col_pos
+            self.position = row_pos, col_pos
+            return self.position
 
-        def track(self) -> SCR_POSITION:
-            """TODO"""
-            self._position = get_cursor_position() or (self._position[0], self._position[1])
-            return self._position
+        def move(self, amount: int, direction: MOVE_DIRECTION) -> POSITION:
+            """Move the cursor towards the specified direction."""
+            sysout(direction.value[1].format(n=amount), end="")
+            row_pos, col_pos = self.position
+            match direction:
+                case TUIScreen.CursorDirection.UP:
+                    row_pos -= max(0, amount)
+                case TUIScreen.CursorDirection.DOWN:
+                    row_pos += max(0, amount)
+                case TUIScreen.CursorDirection.LEFT:
+                    col_pos -= max(0, amount)
+                case TUIScreen.CursorDirection.RIGHT:
+                    col_pos += max(0, amount)
+            self.position = row_pos, col_pos
+            return self.position
 
-        def write(self, obj: Any, end: str = '') -> SCR_POSITION:
-            """TODO"""
+        def erase(self, direction: ERASE_DIRECTION) -> POSITION:
+            """Erase the screen following the specified direction.
+            Note: It does not move the cursor along the way."""
+            sysout(direction.value[0], end="")
+            return self.position
+
+        def track(self) -> POSITION:
+            """Track the cursor position."""
+            self.position = get_cursor_position() or self.position
+            return self.position
+
+        def write(self, obj: Any, end: str = '') -> POSITION:
+            """Write the string representation of the object to the screen."""
             sysout(obj, end=end)
             text = VtCode.strip_codes(str(obj) + end)
             text_offset = len(text[max(0, last_index_of(text, os.linesep)):])
-            self._position = \
-                self._position[0] + text.count(os.linesep), \
-                text_offset + (self._position[1] if text.count(os.linesep) == 0 else 0)
+            self.position = \
+                self.position[0] + text.count(os.linesep), \
+                text_offset + (self.position[1] if text.count(os.linesep) == 0 else 0)
             return self.position
 
-        def writeln(self, obj: Any) -> SCR_POSITION:
-            """TODO"""
+        def writeln(self, obj: Any) -> POSITION:
+            """Write the string representation of the object to the screen, appending a new line."""
             return self.write(obj, end=os.linesep)
 
-    def __init__(self, cb_resize: CB_RESIZE = None):
+        def save_position(self) -> POSITION:
+            """Save the current cursor position."""
+            save_cursor()
+            return self.position
+
+    def __init__(
+        self,
+        auto_wrap: bool = False,
+        show_cursor: bool = False,
+        *cb_watchers: CB_RESIZE):
+
         self._prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
         self._dimensions: tuple[int, ...] = screen_size()
-        self._cursor = self._Cursor()
+        self._cursor = self.Cursor()
         self._resize_timer = None
-        if cb_resize:
-            self._resize_watcher(cb_resize)
+        self._resize_watchers = cb_watchers
+
+        atexit.register(restore_terminal)
+        set_auto_wrap(auto_wrap)
+        set_show_cursor(show_cursor)
+
+        if cb_watchers:
+            self._resize_watcher(list(cb_watchers))
 
     def __str__(self):
         return f"TUIScreen(rows={self.rows}, columns={self.columns}, cursor={self.cursor})"
@@ -122,7 +185,7 @@ class TUIScreen(metaclass=Singleton):
         return self._prefs
 
     @property
-    def dimensions(self) -> SCR_DIMENSION:
+    def dimensions(self) -> DIMENSION:
         return self._dimensions
 
     @property
@@ -134,30 +197,20 @@ class TUIScreen(metaclass=Singleton):
         return self._dimensions[1]
 
     @property
-    def cursor(self) -> _Cursor:
+    def cursor(self) -> Cursor:
         return self._cursor
 
     def clear(self) -> None:
+        """Clear the entire screen and move the cursor home."""
         clear_screen()
         self._cursor.home()
 
-    def _resize_watcher(self, cb_watcher: CB_RESIZE) -> None:
-        """TODO"""
+    def _resize_watcher(self, cb_watchers: List[CB_RESIZE]) -> None:
+        """Add a watcher for screen resizes. If a resize is detected, the callback is called with the new dimension."""
         if threading.main_thread().is_alive():
-            dimension: SCR_DIMENSION = screen_size()
-            self._resize_timer = Timer(self.SCREEN_REFRESH_TIME, self._resize_watcher, [cb_watcher])
+            dimension: DIMENSION = screen_size()
+            self._resize_timer = Timer(self.SCREEN_REFRESH_TIME, self._resize_watcher, [cb_watchers])
             if dimension != self._dimensions:
-                cb_watcher(dimension)
+                list(map(lambda w: w(dimension), cb_watchers))
                 self._dimensions = dimension
             self._resize_timer.start()
-
-
-if __name__ == '__main__':
-    TUIScreen.prepare_render()
-    screen = TUIScreen()
-    screen.cursor.writeln(screen)
-    screen.cursor.writeln(screen)
-    screen.cursor.move(5, 18)
-    screen.cursor.writeln(screen)
-    screen.cursor.writeln(screen)
-    print(get_cursor_position(), screen.cursor)
