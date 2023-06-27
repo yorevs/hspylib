@@ -33,7 +33,7 @@ class SearchView(TUIMenuView):
         self.company_service = CompanyService()
 
     def by_name(self) -> None:
-        contact = TUIMenu.prompt("Person or Company name", dest="name")
+        contact = self.prompt("Person or Company name", dest="name")
         if contact:
             filters = Namespace(uuid=f"name='{contact.name}'")
             all_persons = self.person_service.list(filters=filters)
@@ -41,7 +41,7 @@ class SearchView(TUIMenuView):
             self.display_contacts(all_persons, all_companies)
 
     def by_uuid(self) -> None:
-        contact = TUIMenu.prompt("Person or Company uuid", dest="uuid")
+        contact = self.prompt("Person or Company uuid", dest="uuid")
         if contact:
             filters = Namespace(uuid=f"uuid='{contact.uuid}'")
             all_persons = self.person_service.list(filters=filters)
@@ -53,21 +53,20 @@ class SearchView(TUIMenuView):
         all_companies = self.company_service.list()
         self.display_contacts(all_persons, all_companies)
 
-    @staticmethod
-    def display_contacts(persons: List[Person], companies: List[Company]) -> None:
+    def display_contacts(self, persons: List[Person], companies: List[Company]) -> None:
         TUIMenuUi.render_app_title()
         if persons:
             SearchView.display_table(
                 list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
             )
-            TUIMenu.wait_keystroke()
+            self.wait_keystroke()
         if companies:
             SearchView.display_table(
                 list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
             )
-            TUIMenu.wait_keystroke()
+            self.wait_keystroke()
         if not persons and not companies:
-            TUIMenu.wait_keystroke("-=- No results to be displayed -=-%EOL%")
+            self.wait_keystroke("-=- No results to be displayed -=-%EOL%")
 
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:

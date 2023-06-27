@@ -16,9 +16,13 @@
 from abc import ABC
 from typing import Callable, Optional, TypeVar
 
+from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.keyboard import Keyboard
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.tui.minput.input_validator import InputValidator
+from clitt.core.tui.minput.menu_input import MenuInput
+from clitt.core.tui.minput.minput import minput
 from clitt.core.tui.tui_component import TUIComponent
 
 ON_TRIGGER_CB = TypeVar("ON_TRIGGER_CB", bound=Callable[["TUIMenu"], Optional["TUIMenu"]])
@@ -75,12 +79,37 @@ class TUIMenu(TUIComponent, ABC):
             f"{self.prefs.tooltip_color.placeholder}"
         )
 
-    def wait_keystroke(self, wait_message: str = "%YELLOW%%EOL%Press any key to continue%EOL%%NC%") -> None:
+    def wait_keystroke(
+        self,
+        wait_message: str = "%YELLOW%%EOL%Press any key to continue%EOL%%NC%") -> None:
         """Wait for a keypress (blocking).
         :param wait_message: the message to present to the user.
         """
         self.writeln(wait_message)
         Keyboard.wait_keystroke()
+
+    def prompt(
+        self,
+        label: str,
+        dest: str = None,
+        min_length: int = 1,
+        max_length: int = 32,
+        validator: InputValidator = None
+    ) -> Optional[Namespace]:
+        # fmt: off
+        form_fields = (
+            MenuInput.builder()
+                .field()
+                .label(label)
+                .dest(dest or label)
+                .validator(validator or InputValidator.words(min_length, max_length))
+                .min_max_length(min_length, max_length)
+                .build()
+            .build()
+        )
+        # fmt: on
+
+        return minput(form_fields)
 
     def _default_trigger_cb(self, source: Optional["TUIMenu"]) -> Optional["TUIMenu"]:
         """Provide a default trigger callback when a menu is activated. Provided a source menu, returns it's parent.

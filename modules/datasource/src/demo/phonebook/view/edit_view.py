@@ -15,32 +15,15 @@
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
-from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput import MenuInput, minput
-from datasource.identity import Identity
-from hspylib.core.namespace import Namespace
 from hspylib.core.tools.commons import syserr
+
+from datasource.identity import Identity
 from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
 
 class EditView(TUIMenuView):
-    @classmethod
-    def prompt(cls, label: str, dest: str = None, min_length: int = 1, max_length: int = 32) -> Namespace:
-        # fmt: off
-        form_fields = MenuInput.builder() \
-            .field() \
-                .label(label) \
-                .dest(dest or label) \
-                .validator(InputValidator.words(min_length, max_length)) \
-                .min_max_length(min_length, max_length) \
-                .build() \
-            .build()
-        # fmt: on
-        ret_val = minput(form_fields)
-        TUIMenuUi.render_app_title()
-        return ret_val
 
     def __init__(self, parent: TUIMenu) -> None:
         super().__init__(parent)
@@ -48,13 +31,11 @@ class EditView(TUIMenuView):
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        uuid = self.prompt("uuid")
-        if not uuid:
+        if not (uuid := self.prompt("uuid")):
             return
-        found = self.person_service.get(Identity(uuid))
-        if not found:
+        if not (found := self.person_service.get(Identity(uuid))):
             syserr(f"Person does not exist: uuid={uuid.uuid}")
-            TUIMenu.wait_keystroke()
+            self.wait_keystroke()
         else:
             form = ContactForms.person_form(
                 found.name, found.age, found.phone, found.email, found.address, found.complement
@@ -68,16 +49,14 @@ class EditView(TUIMenuView):
                 found.complement = form.complement
                 self.person_service.save(found)
                 TUIMenuUi.render_app_title()
-                TUIMenu.wait_keystroke("Person successfully saved!%EOL%")
+                self.wait_keystroke("Person successfully saved!%EOL%")
 
     def company(self) -> None:
-        uuid = self.prompt("uuid")
-        if not uuid:
+        if not (uuid := self.prompt("uuid")):
             return
-        found = self.company_service.get(Identity(uuid))
-        if not found:
+        if not (found := self.company_service.get(Identity(uuid))):
             syserr(f"Company does not exist: uuid={uuid.uuid}")
-            TUIMenu.wait_keystroke()
+            self.wait_keystroke()
         else:
             form = ContactForms.company_form(
                 found.name, found.cnpj, found.phone, found.website, found.address, found.complement
@@ -91,4 +70,4 @@ class EditView(TUIMenuView):
                 found.complement = form.complement
                 self.company_service.save(found)
                 TUIMenuUi.render_app_title()
-                TUIMenu.wait_keystroke("Company successfully saved!%EOL%")
+                self.wait_keystroke("Company successfully saved!%EOL%")
