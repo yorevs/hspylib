@@ -32,8 +32,7 @@ class CreateView(TUIMenuView):
         self.company_service = CompanyService()
 
     def person(self) -> None:
-        form = ContactForms.person_form()
-        if form:
+        if form := ContactForms.person_form():
             person = Person(Identity.auto(field_name="uuid"))
             person.name = form.name
             person.age = form.age
@@ -43,11 +42,10 @@ class CreateView(TUIMenuView):
             person.complement = form.complement
             self.person_service.save(person)
             TUIMenuUi.render_app_title()
-            TUIMenu.wait_keystroke("Person successfully saved!%EOL%")
+            self.wait_keystroke("Person successfully saved!%EOL%")
 
     def company(self) -> None:
-        form = ContactForms.company_form()
-        if form:
+        if form := ContactForms.company_form():
             company = Company(Identity.auto(field_name="uuid"))
             company.uuid = form.uuid
             company.name = form.name
@@ -58,4 +56,4 @@ class CreateView(TUIMenuView):
             company.complement = form.complement
             self.company_service.save(company)
             TUIMenuUi.render_app_title()
-            TUIMenu.wait_keystroke("Company successfully saved!%EOL%")
+            self.wait_keystroke("Company successfully saved!%EOL%")
