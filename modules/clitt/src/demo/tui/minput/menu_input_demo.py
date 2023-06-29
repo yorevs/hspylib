@@ -15,6 +15,7 @@
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 
+
 if __name__ == "__main__":
     # fmt: off
     form_fields = MenuInput.builder() \

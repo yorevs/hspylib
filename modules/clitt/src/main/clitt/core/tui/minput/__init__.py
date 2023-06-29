@@ -1,12 +1,13 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.32
+# hspylib-clitt v0.9.33
 #
 # Package: main.clitt.core.tui.minput
 """Package initialization."""
 
 __all__ = [
   'access_type', 
+  'field_builder', 
   'form_builder', 
   'form_field', 
   'input_type', 
@@ -15,4 +16,4 @@ __all__ = [
   'minput', 
   'minput_utils'
 ]
-__version__ = '0.9.32'
+__version__ = '0.9.33'

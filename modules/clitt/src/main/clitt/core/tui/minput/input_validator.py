@@ -24,69 +24,55 @@ class InputValidator(Validator):
 
     class PatternType(Enumeration):
         # fmt: off
-        CUSTOM      = r'.*'  # It will be set later
-        ANYTHING    = r'.{%min%,%max%}'
-        LETTERS     = r'^[a-zA-Z]{%min%,%max%}$'
-        WORDS       = r'^[a-zA-Z0-9 _]{%min%,%max%}$'
-        NUMBERS     = r'^[0-9\.\,]{%min%,%max%}$'
-        MASKED      = CUSTOM  # It will be set later
+        CUSTOM      = r'.'  # It will be set later
+        ANYTHING    = r'.'
+        LETTERS     = r'[a-zA-Z]'
+        WORDS       = r'[a-zA-Z0-9 _]'
+        NUMBERS     = r'[0-9\.\,]'
+        BINARY      = r'[01]'
         # fmt: on
 
     @classmethod
-    def custom(cls, pattern: str, min_length: int = 1, max_length: int = 50) -> "InputValidator":
+    def custom(cls, pattern: str) -> "InputValidator":
         """Return a custom validator that allows customize the input rules.
         :param pattern: the custom validator pattern.
-        :param min_length: the minimum length required.
-        :param max_length: the maximum length allowed.
         """
         pattern_type = cls.PatternType.CUSTOM
-        validator = InputValidator(min_length, max_length, pattern_type=pattern_type)
+        validator = InputValidator(pattern_type=pattern_type)
         validator.pattern = pattern
         return validator
 
     @classmethod
-    def letters(cls, min_length: int = 1, max_length: int = 50) -> "InputValidator":
+    def letters(cls) -> "InputValidator":
         """Return a validator that allows only letters.
-        :param min_length: the minimum length required.
-        :param max_length: the maximum length allowed.
         """
-        return InputValidator(min_length, max_length, cls.PatternType.LETTERS)
+        return InputValidator(cls.PatternType.LETTERS)
 
     @classmethod
-    def numbers(cls, min_length: int = 1, max_length: int = 50) -> "InputValidator":
+    def numbers(cls) -> "InputValidator":
         """Return a validator that allows only numbers.
-        :param min_length: the minimum length required.
-        :param max_length: the maximum length allowed.
         """
-        return InputValidator(min_length, max_length, cls.PatternType.NUMBERS)
+        return InputValidator(cls.PatternType.NUMBERS)
 
     @classmethod
-    def words(cls, min_length: int = 1, max_length: int = 50) -> "InputValidator":
+    def words(cls) -> "InputValidator":
         """Return a validator that allows only words (space, numbers or letters).
-        :param min_length: the minimum length required.
-        :param max_length: the maximum length allowed.
         """
-        return InputValidator(min_length, max_length, cls.PatternType.WORDS)
+        return InputValidator(cls.PatternType.WORDS)
 
     @classmethod
-    def anything(cls, min_length: int = 1, max_length: int = 50) -> "InputValidator":
+    def anything(cls) -> "InputValidator":
         """Return a validator that allows any input value.
-        :param min_length: the minimum length required.
-        :param max_length: the maximum length allowed.
         """
-        return InputValidator(min_length, max_length, cls.PatternType.ANYTHING)
+        return InputValidator(cls.PatternType.ANYTHING)
 
     @classmethod
-    def masked(cls, min_length: int = 1, max_length: int = 50) -> "InputValidator":
-        """Return a validator that allows masked input values.
-        :param min_length: the minimum length required.
-        :param max_length: the maximum length allowed.
+    def binary(cls) -> "InputValidator":
+        """Return a validator that allows only zero or ones.
         """
-        return InputValidator(min_length, max_length, cls.PatternType.MASKED)
+        return InputValidator(cls.PatternType.BINARY)
 
-    def __init__(self, min_length: int = 1, max_length: int = 50, pattern_type: PatternType = PatternType.ANYTHING):
-        self._min_length = min_length
-        self._max_length = max_length
+    def __init__(self, pattern_type: PatternType = PatternType.ANYTHING):
         self._pattern_type = pattern_type
         self._pattern = pattern_type.value
 
@@ -105,16 +91,12 @@ class InputValidator(Validator):
 
     def validate(self, value: str) -> bool:
         """Validate the value against the validator pattern."""
-        unmasked_value = re.split("[|,;]", value)[0]
+        unmasked_value = re.split("[|,;]", value)[0] if value else ""
         return bool(re.match(self.pattern, unmasked_value))
 
     @property
     def pattern(self) -> str:
-        return (
-            str(self._pattern)
-            .replace("%min%", str(self._min_length or 1))
-            .replace("%max%", str(self._max_length or 30))
-        )
+        return str(self._pattern)
 
     @pattern.setter
     def pattern(self, pattern: str) -> None:

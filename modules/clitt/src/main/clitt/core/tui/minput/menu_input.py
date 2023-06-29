@@ -16,6 +16,7 @@ import time
 from typing import List
 
 import pyperclip
+from hspylib.core.exception.exceptions import InvalidStateError
 from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo, set_show_cursor
@@ -71,17 +72,16 @@ class MenuInput(TUIComponent):
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx, field in enumerate(self.fields):
-            field_size = field.width
+            field_length = field.length
             if self.tab_index == idx:
                 mi_print(
                     self.screen, f"  {field.label}", self.prefs.sel_bg_color.placeholder, self.max_label_length + 2)
                 self.cur_field = field
             else:
                 mi_print(self.screen, f"  {field.label}", field_len=self.max_label_length + 2)
-
-            self._buffer_positions(idx, field_size)
+            self._buffer_positions(idx, field_length)
             self._render_field(field)
-            self._render_details(field, field_size)
+            self._render_details(field, field_length)
 
         self.draw_navbar(self.navbar())
         self._re_render = False
@@ -114,7 +114,7 @@ class MenuInput(TUIComponent):
                 case Keyboard.VK_CTRL_P:
                     self._handle_ctrl_p()
                 case Keyboard.VK_ENTER:
-                    self._handle_enter()
+                    return self._handle_enter()
                 case _ as key if key.isalnum() or key.ispunct() or key == Keyboard.VK_SPACE:
                     if not self.cur_field.can_write():
                         self._display_error("This field is read only !")
@@ -125,19 +125,16 @@ class MenuInput(TUIComponent):
 
         return keypress
 
-    def _handle_enter(self) -> None:
+    def _handle_enter(self) -> Optional[Keyboard]:
         """Handle 'enter' press. Validate & Save form and exit."""
-
-        # Fixme: Commented because at this point we need to validate the entire form since inputs are already valid
-        # TODO: Find a way to validate the form itself, maybe add a form validator.
-        # invalid = next((field for field in self.fields if not field.validate_input(field.value)), None)
-        invalid = None
+        invalid = next((field for field in self.fields if not field.validate_field()), None)
         if invalid:
             idx = self.fields.index(invalid)
             pos = self.positions[idx]
             self.cur_row = pos[0]
             self.tab_index = idx
             self._display_error("Form field is not valid: " + str(invalid))
+            return None
         else:
             for idx, field in enumerate(self.fields):
                 match field.itype:
@@ -148,6 +145,7 @@ class MenuInput(TUIComponent):
                     case InputType.SELECT:
                         _, field.value = get_selected(field.value)
             self._done = True
+            return Keyboard.VK_ENTER
 
     def _handle_input(self, keypress: Keyboard) -> None:
         """Handle a form input.
@@ -157,7 +155,7 @@ class MenuInput(TUIComponent):
         match self.cur_field.itype:
             case InputType.CHECKBOX:
                 if keypress == Keyboard.VK_SPACE:
-                    self.cur_field.value = 1 if not self.cur_field.value else 0
+                    self.cur_field.value = not self.cur_field.value
             case InputType.SELECT:
                 if keypress == Keyboard.VK_SPACE:
                     if self.cur_field.value:
@@ -168,13 +166,16 @@ class MenuInput(TUIComponent):
                     try:
                         self.cur_field.value = append_masked(value, mask, keypress.value)
                     except InvalidInputError as err:
-                        self._display_error(f"{str(err)}")
+                        self._display_error(str(err))
             case _:
                 if len(str(self.cur_field.value)) < self.cur_field.max_length:
                     if self.cur_field.validate_input(keypress.value):
                         self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
                     else:
-                        self._display_error(f"This field only accept {self.cur_field.input_validator} !")
+                        self._display_error(
+                            f"Input '{keypress.value}' is invalid. "
+                            f"This field takes only {self.cur_field.input_validator}!"
+                        )
 
     def _handle_backspace(self) -> None:
         """Handle 'backspace' press. Delete previous input."""
@@ -200,48 +201,33 @@ class MenuInput(TUIComponent):
         """Set the cursor at the right position according to the ATB index."""
         pos = self.positions[self.tab_index]
         self.screen.cursor.move_to(
-            pos[0], pos[1] + self._get_field_len())
-
-    def _get_field_len(self) -> int:
-        """Get the field real length, depending on the field type."""
-        value = self.cur_field.value
-        match self.cur_field.itype:
-            case InputType.CHECKBOX:
-                value = '1'
-            case InputType.SELECT:
-                _, value = get_selected(str(self.cur_field.value))
-            case InputType.MASKED:
-                value, mask = unpack_masked(str(self.cur_field.value))
-                idx = len(value)
-                while idx < len(mask) and mask[idx] not in MASK_SYMBOLS:
-                    idx += 1
-                return idx
-
-        return len(str(value))
+            pos[0], pos[1] + self.cur_field.length)
 
     def _render_field(self, field: FormField) -> None:
         """Render the specified form field.
         :param field: the form field to render.
         """
-        if field.itype == InputType.TEXT:
-            mi_print(self.screen, field.value, field_len=self.max_value_length)
-        elif field.itype == InputType.PASSWORD:
-            mi_print(self.screen, "*" * field.width, field_len=self.max_value_length)
-        elif field.itype == InputType.CHECKBOX:
-            mi_print(
-                self.screen,
-                " ",
-                str(FormIcons.CHECK_SQUARE) if field.value else str(FormIcons.UNCHECK_SQUARE),
-                field_len=self.max_value_length - 1
-            )
-        elif field.itype == InputType.SELECT:
-            if field.value:
-                mat = re.search(rf".*({VALUE_SEPARATORS})?<(.+)>({VALUE_SEPARATORS})?.*", field.value)
-                sel_value = mat.group(2) if mat else re.split(VALUE_SEPARATORS, field.value)[0]
-                mi_print(self.screen, f"{sel_value}", field_len=self.max_value_length)
-        elif field.itype == InputType.MASKED:
-            value, mask = unpack_masked(str(field.value))
-            mi_print(self.screen, over_masked(value, mask), field_len=self.max_value_length)
+        match field.itype:
+            case InputType.TEXT:
+                mi_print(self.screen, str(field.value), field_len=self.max_value_length)
+            case InputType.PASSWORD:
+                mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
+            case InputType.CHECKBOX:
+                mi_print(
+                    self.screen, " ",
+                    FormIcons.CHECK_SQUARE.unicode if field.value else FormIcons.UNCHECK_SQUARE.unicode,
+                    field_len=self.max_value_length - 1
+                )
+            case InputType.SELECT:
+                if str(field.value):
+                    mat = re.search(rf".*({VALUE_SEPARATORS})?<(.+)>({VALUE_SEPARATORS})?.*", str(field.value))
+                    sel_value = mat.group(2) if mat else re.split(VALUE_SEPARATORS, str(field.value))[0]
+                    mi_print(self.screen, f"{sel_value}", field_len=self.max_value_length)
+            case InputType.MASKED:
+                value, mask = unpack_masked(str(field.value))
+                mi_print(self.screen, over_masked(value, mask), field_len=self.max_value_length)
+            case _:
+                raise InvalidStateError(f"Invalid form field type: {field.itype}")
 
     def _render_details(self, field: FormField, field_details: int) -> None:
         """Render details about total/remaining field characters.
@@ -282,9 +268,10 @@ class MenuInput(TUIComponent):
         self.cursor.move_to(self.cur_row, err_pos)
         mi_print_err(self.screen, f"{FormIcons.ERROR_CIRCLE}  {err_msg}")
         # This calculation gives a good delay amount based on the size of the message.
-        time.sleep(max(1.5, int(len(err_msg) / 25)))
+        time.sleep(max(1.8, int(len(err_msg) / 24)))
         set_enable_echo()
-        set_show_cursor()
         # Erase the message after the timeout
         self.cursor.move_to(self.cur_row, err_pos)
         self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
+        set_show_cursor()
+        self._re_render = True
