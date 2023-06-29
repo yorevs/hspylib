@@ -12,17 +12,17 @@
 
    Copyright 2023, HsPyLib team
 """
+import os
 from abc import ABC
-from firebase.exception.exceptions import FirebaseAuthenticationError, FirebaseException, InvalidFirebaseCredentials
+from typing import Optional
+
+import firebase_admin
 from firebase_admin import auth, credentials
 from firebase_admin.auth import UserNotFoundError, UserRecord
 from firebase_admin.exceptions import FirebaseError
 from hspylib.core.preconditions import check_not_none
-from hspylib.core.tools.commons import sysout
-from typing import Optional
 
-import firebase_admin
-import os
+from firebase.exception.exceptions import FirebaseAuthenticationError, InvalidFirebaseCredentials
 
 
 class FirebaseAuth(ABC):
@@ -30,14 +30,17 @@ class FirebaseAuth(ABC):
     Ref: https://www.youtube.com/watch?v=esqNgnayVE8
     """
 
+    APP = None
+
     @staticmethod
     def _credentials(project_id: str) -> credentials.Certificate:
         """Create Firebase credentials based on the configured credentials file.
         :param project_id: the Firebase Realtime database project ID.
         """
-
-        creds_file = os.environ.get("HHS_FIREBASE_CREDS_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json")
-        check_not_none(creds_file, project_id)
+        creds_file = check_not_none(
+            os.environ.get("HHS_FIREBASE_CREDS_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json"),
+            project_id
+        )
         try:
             creds = credentials.Certificate(creds_file.format(project_id=project_id))
         except (IOError, KeyError, ValueError) as err:
@@ -45,20 +48,18 @@ class FirebaseAuth(ABC):
 
         return creds
 
-    @staticmethod
-    def authenticate(project_id: str, uid: str) -> Optional[UserRecord]:
+    @classmethod
+    def authenticate(cls, project_id: str, uid: str) -> Optional[UserRecord]:
         """Authenticate to Firebase using valid credentials.
         :param project_id: the Firebase Realtime database project ID.
         :param uid: the Firebase User ID.
         """
-        sysout("%BLUE%Authenticating to Firebase ...%NC%")
-        firebase_admin.initialize_app(FirebaseAuth._credentials(project_id))
         try:
+            cls.APP = firebase_admin.initialize_app(FirebaseAuth._credentials(project_id)) if not cls.APP else cls.APP
             if user := auth.get_user(uid):
-                sysout("%GREEN%Firebase authentication succeeded!%EOL%")
                 return user
-            raise FirebaseAuthenticationError(f'Failed to authenticate to Firebase. User ID "{uid}" not found.')
+            raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase. User ID '{uid}' not found.")
         except UserNotFoundError as err:
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:
-            raise FirebaseException(f"An error occurred authenticating Firebase user => {err}") from err
+            raise FirebaseAuthenticationError(f"An error occurred authenticating Firebase user => {err}") from err

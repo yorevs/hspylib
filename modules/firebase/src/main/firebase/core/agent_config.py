@@ -25,8 +25,9 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import dirname, file_is_not_empty, sysout, touch_file
+from hspylib.core.tools.commons import dirname, file_is_not_empty, syserr, sysout, touch_file
 from hspylib.core.tools.dict_tools import get_or_default_by_key
+from hspylib.modules.cli.keyboard import Keyboard
 
 from firebase.core.firebase_auth import FirebaseAuth
 from firebase.exception.exceptions import FirebaseAuthenticationError
@@ -34,6 +35,14 @@ from firebase.exception.exceptions import FirebaseAuthenticationError
 
 class AgentConfig(metaclass=Singleton):
     """Holds the firebase agent configurations."""
+
+    @staticmethod
+    def wait_keystroke(wait_message: str = "%YELLOW%%EOL%Press any key to continue%EOL%%NC%") -> None:
+        """Wait for a keypress (blocking).
+        :param wait_message: the message to present to the user.
+        """
+        sysout(wait_message)
+        Keyboard.wait_keystroke()
 
     def __init__(self, filename: str) -> None:
         self.app_configs = AppConfigs(dirname(filename))
@@ -51,29 +60,7 @@ class AgentConfig(metaclass=Singleton):
     def __getitem__(self, item) -> Any:
         return self.app_configs[item]
 
-    def setup(self, load_dir: str, filename: str, config_dict: dict) -> None:
-        """Setup firebase from a dict configuration
-        :param load_dir: the directory where to load the configurations from.
-        :param filename: the configuration file name.
-        :param config_dict: firebase configuration dictionary.
-        """
-
-        user = FirebaseAuth.authenticate(config_dict["PROJECT_ID"], config_dict["UID"])
-        if user:
-            if user.uid != config_dict["UID"]:
-                raise FirebaseAuthenticationError(
-                    f"Provided UID: {config_dict['UID']} is different from retrieved UID: {user.uid}"
-                )
-            config_dict["UID"] = user.uid
-            self.firebase_configs = FirebaseConfiguration.INSTANCE or FirebaseConfiguration.of(
-                load_dir, filename, config_dict
-            )
-            self.firebase_configs.update(dict(config_dict))
-            self._save()
-        else:
-            raise FirebaseAuthenticationError("Unable to authenticate to Firebase (user is None)")
-
-    def prompt(self) -> None:
+    def prompt(self) -> Optional[bool]:
         """Create a new firebase configuration by prompting the user for information."""
         config = None
         if os.path.exists(self.filename):
@@ -81,47 +68,78 @@ class AgentConfig(metaclass=Singleton):
         else:
             touch_file(self.filename)
         config = config.as_dict if config else defaultdict()
-        sysout("%ORANGE%### Firebase setup")
-        sysout("-=" * 15 + "%EOL%%%NC%")
+        title = (
+            "%ORANGE%### Firebase Setup ###%EOL%"
+            f"{'-' * 30} %EOL%"
+            "Please fill in your Realtime Database configurations"
+        )
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label('UID') \
                 .validator(InputValidator.words()) \
-                .min_max_length(30, 30) \
+                .min_max_length(28, 28) \
                 .dest("uid") \
                 .value(get_or_default_by_key(config, 'UID', '')) \
                 .build() \
             .field() \
                 .label('PROJECT_ID') \
                 .validator(InputValidator.anything()) \
-                .min_max_length(1, 50) \
+                .min_max_length(8, 50) \
                 .dest("project_id") \
                 .value(get_or_default_by_key(config, 'PROJECT_ID', '')) \
                 .build() \
             .field() \
                 .label('EMAIL') \
                 .validator(InputValidator.anything()) \
-                .min_max_length(1, 50) \
+                .min_max_length(14, 50) \
                 .dest("email") \
                 .value(get_or_default_by_key(config, 'EMAIL', '')) \
                 .build() \
             .field() \
                 .label('DATABASE') \
                 .validator(InputValidator.anything()) \
-                .min_max_length(1, 50) \
+                .min_max_length(4, 50) \
                 .dest("database") \
                 .value(get_or_default_by_key(config, 'DATABASE', '')) \
                 .build() \
             .build()
-        result = minput(form_fields, "Please fill in your Firebase Realtime Database configs")
         # fmt: on
-        if result:
+        if result := minput(form_fields, title):
             config["UID"] = result.uid
             config["PROJECT_ID"] = result.project_id
             config["EMAIL"] = result.email
             config["DATABASE"] = result.database
-            self.setup(dirname(self.filename), basename(self.filename), config)
+            return self._setup(dirname(self.filename), basename(self.filename), config)
+
+        return None
+
+    def _setup(self, load_dir: str, filename: str, config_dict: dict) -> bool:
+        """Setup firebase from a dict configuration
+        :param load_dir: the directory where to load the configurations from.
+        :param filename: the configuration file name.
+        :param config_dict: firebase configuration dictionary.
+        """
+        try:
+            sysout("%BLUE%Authenticating to Firebase ...%NC%")
+            if user := FirebaseAuth.authenticate(config_dict["PROJECT_ID"], config_dict["UID"]):
+                if user.uid != config_dict["UID"]:
+                    raise FirebaseAuthenticationError(
+                        f"Provided UID: {config_dict['UID']} is invalid!"
+                    )
+                config_dict["UID"] = user.uid
+                self.firebase_configs = FirebaseConfiguration.INSTANCE or FirebaseConfiguration.of(
+                    load_dir, filename, config_dict
+                )
+                self.firebase_configs.update(dict(config_dict))
+                self._save()
+                sysout("%GREEN%Firebase authentication succeeded!%EOL%")
+                return True
+        except FirebaseAuthenticationError as err:
+            syserr(err)
+            self.wait_keystroke()
+
+        return False
 
     @property
     def filename(self) -> str:
@@ -162,4 +180,4 @@ class AgentConfig(metaclass=Singleton):
         """Save current firebase configurations to file."""
         with open(self.filename, "w+", encoding=Charset.UTF_8.val) as f_config:
             f_config.write(str(self))
-            sysout(f"%BLUE%Firebase configuration saved => {self.filename} !%NC%")
+            sysout(f"%GREEN%Firebase configuration saved => {self.filename} !%NC%")

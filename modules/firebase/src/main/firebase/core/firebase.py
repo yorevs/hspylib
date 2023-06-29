@@ -38,7 +38,9 @@ class Firebase:
 
     def setup(self) -> None:
         """Setup a firebase configuration by creating or reading an existing configuration file."""
-        self.agent_config.prompt()
+        status = False
+        while status is not None and not status:
+            status = self.agent_config.prompt()
         log.debug("New firebase setup: %s", self.agent_config)
 
     def upload(self, db_alias: str, file_paths: List[str], glob_exp: str) -> bool:
