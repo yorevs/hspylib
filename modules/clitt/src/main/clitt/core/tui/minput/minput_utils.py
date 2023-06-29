@@ -16,7 +16,6 @@ import re
 from typing import Any, Optional, Tuple
 
 from hspylib.core.exception.exceptions import InvalidInputError
-from hspylib.core.preconditions import check_argument
 
 from clitt.core.tui.tui_screen import TUIScreen
 
@@ -57,7 +56,6 @@ def mi_print_err(screen: TUIScreen, text: str) -> None:
     """Special menu input print error message.
     :param screen: the component's screen.
     :param text: the text to be printed.
-    :param end: string appended after the last value, default an empty string.
     """
     screen.cursor.write(f"%RED%{text}%NC%")
 
@@ -110,8 +108,7 @@ def unpack_masked(value: str) -> Tuple[str, str]:
     """
     if value:
         parts = re.split(VALUE_SEPARATORS, value)
-        check_argument(len(parts) == 2, "Invalid masked value: {}", value)
-        return parts[0], parts[1]
+        return parts[0], parts[1] if len(parts) == 2 else ''
 
     return '', ''
 
@@ -133,36 +130,41 @@ def append_masked(
         masked_value += mask[idx]
         idx += 1
     if mask and idx < len(mask):
-        mask_regex = mask[idx] \
-            .replace("#", "[0-9]") \
-            .replace("@", "[a-zA-Z]") \
-            .replace("%", "[a-zA-Z0-9]") \
-            .replace("*", ".")
-        if re.search(mask_regex, keypress_value):
+        mask_re = mask_regex(mask, idx)
+        if re.search(mask_re, keypress_value):
             masked_value += keypress_value
         else:
-            raise InvalidInputError(f"Value {keypress_value} is not a valid value against mask: {mask}")
+            raise InvalidInputError(f"Value '{keypress_value}' is invalid. Expecting: {mask_re}")
 
     return f"{masked_value}|{mask}"
 
 
 def over_masked(
     value: str,
-    mask: str,
-    placeholder: str = "_") -> str:
+    mask: str) -> str:
     """
     Return the value to be printed by a 'masked' input field. A placeholder value will be used for unfilled values.
     :param value: the masked field current value.
     :param mask: the masked field's mask.
-    :param placeholder: the placeholder character. It's going to be printed if current value is None.
     """
     if value:
         over_masked_val = ""
         for idx, element in enumerate(mask):
-            if element in MASK_SYMBOLS:  # Digit, Letter or alphanumeric masks.
-                over_masked_val += value[idx] if idx < len(value) else placeholder
+            if element in MASK_SYMBOLS:
+                over_masked_val += value[idx] if idx < len(value) else mask[idx]
             else:
                 over_masked_val += element
         return over_masked_val
 
-    return re.sub(f"[{''.join(MASK_SYMBOLS)}]", "_", mask)
+    return mask
+
+
+def mask_regex(
+    mask: str,
+    idx: int) -> str:
+    """Return a regex matching the index of the mask."""
+    return mask[idx] \
+        .replace("#", "[0-9]") \
+        .replace("@", "[a-zA-Z]") \
+        .replace("%", "[a-zA-Z0-9]") \
+        .replace("*", ".")
