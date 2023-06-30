@@ -30,6 +30,7 @@ class InputValidator(Validator):
         WORDS       = r'[a-zA-Z0-9 _]'
         NUMBERS     = r'[0-9\.\,]'
         BINARY      = r'[01]'
+        MASKED      = r'.'
         # fmt: on
 
     @classmethod
@@ -71,6 +72,12 @@ class InputValidator(Validator):
         """Return a validator that allows only zero or ones.
         """
         return InputValidator(cls.PatternType.BINARY)
+
+    @classmethod
+    def masked(cls) -> "InputValidator":
+        """Return a validator that allows masked inputs.
+        """
+        return InputValidator(cls.PatternType.MASKED)
 
     def __init__(self, pattern_type: PatternType = PatternType.ANYTHING):
         self._pattern_type = pattern_type

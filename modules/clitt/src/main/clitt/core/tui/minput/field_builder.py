@@ -12,6 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
+import re
+from functools import reduce
 from typing import Any
 
 from hspylib.core.preconditions import check_argument
@@ -22,7 +24,7 @@ from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.form_field import FIELD_VALIDATOR_FNC, FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
-from clitt.core.tui.minput.minput_utils import unpack_masked
+from clitt.core.tui.minput.minput_utils import get_selected, MASK_SYMBOLS, unpack_masked, VALUE_SEPARATORS
 
 
 class FieldBuilder:
@@ -30,14 +32,18 @@ class FieldBuilder:
 
     @staticmethod
     def _validate_field(field: FormField) -> bool:
-        length, valid = len(str(field.value or '')), True
         match field.itype:
             case InputType.MASKED:
                 value, mask = unpack_masked(field.value)
-                valid = len(value) == len(mask)
+                valid = reduce(lambda n, m: n + m, list(map(lambda s: mask[len(value):].count(s), MASK_SYMBOLS))) == 0
             case InputType.CHECKBOX:
                 valid = isinstance(field.value, bool)
+            case InputType.SELECT:
+                _, value = get_selected(field.value)
+                length = len(str(value or ''))
+                valid = field.min_length <= length <= field.max_length
             case _:
+                length = len(str(field.value or ''))
                 valid = field.min_length <= length <= field.max_length
         return valid
 
@@ -89,9 +95,13 @@ class FieldBuilder:
     def build(self) -> Any:
         if self._itype == InputType.CHECKBOX:
             self._value = str_to_bool(str(self._value))
+        elif self._itype == InputType.SELECT:
+            parts = re.split(VALUE_SEPARATORS, re.sub('[<>]', '', str(self._value or '')))
+            self._min_max_length = len(min(parts, key=len)), len(max(parts, key=len))
         elif self._itype == InputType.MASKED:
             _, mask = unpack_masked(str(self._value))
-            self._min_max_length = len(mask), len(mask)
+            min_max = reduce(lambda n, m: n + m, list(map(lambda s: mask.count(s), MASK_SYMBOLS)))
+            self._min_max_length = min_max, min_max
         self._dest = self._dest or snakecase(self._label)
         self._parent.fields.append(FormField(
             self._label, self._dest, self._itype,
