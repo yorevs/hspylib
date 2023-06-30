@@ -13,6 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 import time
+from functools import reduce
 from typing import List
 
 import pyperclip
@@ -159,18 +160,19 @@ class MenuInput(TUIComponent):
             case InputType.SELECT:
                 if keypress == Keyboard.VK_SPACE:
                     if self.cur_field.value:
-                        self.cur_field.value = toggle_selected(str(self.cur_field.value))
+                        self.cur_field.value = toggle_selected(str(self.cur_field.value or ''))
             case InputType.MASKED:
-                value, mask = unpack_masked(str(self.cur_field.value))
-                if len(value) < self.cur_field.max_length:
-                    try:
-                        self.cur_field.value = append_masked(value, mask, keypress.value)
-                    except InvalidInputError as err:
-                        self._display_error(str(err))
+                value, mask = unpack_masked(str(self.cur_field.value or ''))
+                try:
+                    self.cur_field.value = append_masked(value, mask, keypress.value)
+                except InvalidInputError as err:
+                    self._display_error(str(err))
             case _:
-                if len(str(self.cur_field.value)) < self.cur_field.max_length:
+                if len(str(self.cur_field.value or '')) < self.cur_field.max_length:
                     if self.cur_field.validate_input(keypress.value):
-                        self.cur_field.value = str(self.cur_field.value) + str(keypress.value)
+                        self.cur_field.value = (
+                            str(self.cur_field.value) if self.cur_field.value else ''
+                        ) + str(keypress.value)
                     else:
                         self._display_error(
                             f"Input '{keypress.value}' is invalid. "
@@ -209,7 +211,7 @@ class MenuInput(TUIComponent):
         """
         match field.itype:
             case InputType.TEXT:
-                mi_print(self.screen, str(field.value), field_len=self.max_value_length)
+                mi_print(self.screen, str(field.value or ''), field_len=self.max_value_length)
             case InputType.PASSWORD:
                 mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
             case InputType.CHECKBOX:
@@ -219,7 +221,7 @@ class MenuInput(TUIComponent):
                     field_len=self.max_value_length - 1
                 )
             case InputType.SELECT:
-                if str(field.value):
+                if field.value:
                     mat = re.search(rf".*({VALUE_SEPARATORS})?<(.+)>({VALUE_SEPARATORS})?.*", str(field.value))
                     sel_value = mat.group(2) if mat else re.split(VALUE_SEPARATORS, str(field.value))[0]
                     mi_print(self.screen, f"{sel_value}", field_len=self.max_value_length)
@@ -241,8 +243,12 @@ class MenuInput(TUIComponent):
             count = len(re.split(VALUE_SEPARATORS, field.value))
             self.writeln(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
-            value, _ = unpack_masked(str(field.value))
-            self.writeln(fmt.format(field.icon, len(value), field.max_length))
+            value, mask = unpack_masked(str(field.value or ''))
+            self.writeln(fmt.format(
+                field.icon,
+                reduce(lambda n, m: n + m, list(map(lambda s: mask[:len(value)].count(s), MASK_SYMBOLS))),
+                reduce(lambda n, m: n + m, list(map(lambda s: mask.count(s), MASK_SYMBOLS)))
+            ))
         else:
             self.writeln(fmt.format(field.icon, field_details, field.max_length))
 

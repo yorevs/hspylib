@@ -29,7 +29,11 @@ class FormBuilder:
         self.fields = []
         self._fn_validate = None
 
-    def from_tokenized(self, tokenized_fields: List[str]) -> 'FormBuilder':
+    @staticmethod
+    def get_attr(parts: List[str], index: int, default_value: Any = None) -> str:
+        return get_or_default(parts, index, default_value) or default_value
+
+    def from_tokenized(self, minput_tokens: List[str], separator: str = '|') -> 'FormBuilder':
         """Construct the forms based on string tokens.
 
          Field tokens (in-order):
@@ -40,23 +44,23 @@ class FormBuilder:
                [Perm] : The field permissions. One of {r|[rw]}. Where \"r\" for Read Only ; \"rw\" for Read & Write.
               [Value] : The initial value of the field. This field may not be blank if the field is read only.
         """
-        for tk_field in tokenized_fields:
-            parts = list(map(str.strip, tk_field.split('|')))
-            validator_fn = getattr(InputValidator, get_or_default(parts, 2, 'anything'))
-            min_max = list(map(int, map(str.strip, get_or_default(parts, 3, '5/30').split('/'))))
-            access = re.sub('^rw$', 'read-write', get_or_default(parts, 4, 'rw'))
+        for tk_field in minput_tokens:
+            parts = list(map(str.strip, tk_field.split(separator)))
+            validator_fn = getattr(InputValidator, self.get_attr(parts, 2, 'anything'))
+            min_max = list(map(int, map(str.strip, self.get_attr(parts, 3, '5/30').split('/'))))
+            access = re.sub('^rw$', 'read-write', self.get_attr(parts, 4, 'rw'))
             access = re.sub('^r$', 'read-only', access)
             # fmt: off
             self.field() \
-                .label(get_or_default(parts, 0, 'Label')) \
-                .itype(get_or_default(parts, 1, 'text')) \
+                .label(self.get_attr(parts, 0, 'Label')) \
+                .itype(self.get_attr(parts, 1, 'text')) \
                 .min_max_length(
                     get_or_default(min_max, 0, 5),
                     get_or_default(min_max, 1, 30)
                 ) \
                 .access_type(access) \
                 .validator(validator_fn()) \
-                .value(get_or_default(parts, 5, None)) \
+                .value(self.get_attr(parts, 5, None)) \
                 .build()
             # fmt: on
 

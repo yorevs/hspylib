@@ -21,7 +21,9 @@ from clitt.core.tui.tui_screen import TUIScreen
 
 MASK_SYMBOLS = ["#", "@", "%", "*"]
 
-VALUE_SEPARATORS = "[|,;]"
+VALUE_SEPARATORS = r"[|,;]"
+
+VALUE_SELECTORS = r"[<>]"
 
 
 def detail_len(field: Any) -> int:
@@ -72,7 +74,7 @@ def toggle_selected(tokenized_values: str) -> str:
         else:
             values[0] = f"<{values[0]}>"
         return "|".join(values)
-    unselected = list(map(lambda x: x.replace("<", "").replace(">", ""), values))
+    unselected = list(map(lambda x: re.sub(VALUE_SELECTORS, '', x), values))
     # fmt: off
     return '|'.join([
         f'<{val}>'
@@ -89,7 +91,7 @@ def get_selected(tokenized_values: str) -> Optional[Tuple[int, str]]:
     values = re.split(VALUE_SEPARATORS, tokenized_values)
     # fmt: off
     sel_item = next((
-        val.replace('<', '').replace('>', '')
+        re.sub(VALUE_SELECTORS, '', val)
         for val in values if val.startswith('<') and val.endswith('>')
     ), values[0])
     # fmt: on
@@ -123,18 +125,19 @@ def append_masked(
     :param keypress_value: the value to append (it can be a part of the mask itself).
     """
     idx = len(value)
-    if keypress_value == mask[idx]:
-        return f"{value}{keypress_value}|{mask}"
     masked_value = value
-    while idx < len(mask) and mask[idx] not in MASK_SYMBOLS:
-        masked_value += mask[idx]
-        idx += 1
-    if mask and idx < len(mask):
-        mask_re = mask_regex(mask, idx)
-        if re.search(mask_re, keypress_value):
-            masked_value += keypress_value
-        else:
-            raise InvalidInputError(f"Value '{keypress_value}' is invalid. Expecting: {mask_re}")
+    if idx < len(mask):
+        if keypress_value == mask[idx]:
+            return f"{value}{keypress_value}|{mask}"
+        while idx < len(mask) and mask[idx] not in MASK_SYMBOLS:
+            masked_value += mask[idx]
+            idx += 1
+        if mask and idx < len(mask):
+            mask_re = mask_regex(mask, idx)
+            if re.search(mask_re, keypress_value):
+                masked_value += keypress_value
+            else:
+                raise InvalidInputError(f"Value '{keypress_value}' is invalid. Expecting: {mask_re}")
 
     return f"{masked_value}|{mask}"
 

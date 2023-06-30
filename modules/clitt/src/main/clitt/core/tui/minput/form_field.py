@@ -51,7 +51,10 @@ class FormField:
         self._value = self.assign(value)
 
     def __str__(self) -> str:
-        return f"{self.label}: {self.itype}({self.min_length}-{self.max_length}) [{self.access_type}] = '{self.value}'"
+        return (
+            f"[{self.label}, {self.itype.name}({self.min_length}/{self.max_length})"
+            f"<{self.access_type}> = '{self.value or ''}']"
+        )
 
     def __repr__(self):
         return str(self)
@@ -91,20 +94,20 @@ class FormField:
     @property
     def length(self) -> int:
         """Get the field real length, depending on the field type."""
-        real_length = self.value
+        real_value = str(self.value or '')
         match self.itype:
             case InputType.CHECKBOX:
-                real_length = '1'
+                real_value = '1'
             case InputType.SELECT:
-                _, real_length = get_selected(str(self.value))
+                _, real_value = get_selected(str(self.value))
             case InputType.MASKED:
-                real_length, mask = unpack_masked(str(self.value))
-                idx = len(real_length)
+                real_value, mask = unpack_masked(str(self.value))
+                idx = len(real_value)
                 while idx < len(mask) and mask[idx] not in MASK_SYMBOLS:
                     idx += 1
                 return idx
 
-        return len(str(real_length))
+        return len(real_value)
 
     @property
     def icon(self) -> FormIcons:
