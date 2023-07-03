@@ -13,15 +13,13 @@
    Copyright 2023, HsPyLib team
 """
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional, TypeVar
-
-from hspylib.core.tools.text_tools import elide_text
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
-
 from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.tui.tui_preferences import TUIPreferences
 from clitt.core.tui.tui_screen import TUIScreen
+from hspylib.core.tools.text_tools import elide_text
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
+from typing import Any, List, Optional, TypeVar
 
 T = TypeVar("T", bound=Any)
 
@@ -59,10 +57,7 @@ class TUIComponent(ABC):
     def cursor(self) -> TUIScreen.Cursor:
         return self._screen.cursor
 
-    def _prepare_render(
-        self,
-        auto_wrap: bool = False,
-        show_cursor: bool = False) -> None:
+    def _prepare_render(self, auto_wrap: bool = False, show_cursor: bool = False) -> None:
         """Prepare the screen for renderization."""
 
         self._screen.add_watcher(self.invalidate)

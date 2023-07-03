@@ -13,10 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 
-import re
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.validator import Validator
+
+import re
 
 
 class InputValidator(Validator):
@@ -45,38 +45,32 @@ class InputValidator(Validator):
 
     @classmethod
     def letters(cls) -> "InputValidator":
-        """Return a validator that allows only letters.
-        """
+        """Return a validator that allows only letters."""
         return InputValidator(cls.PatternType.LETTERS)
 
     @classmethod
     def numbers(cls) -> "InputValidator":
-        """Return a validator that allows only numbers.
-        """
+        """Return a validator that allows only numbers."""
         return InputValidator(cls.PatternType.NUMBERS)
 
     @classmethod
     def words(cls) -> "InputValidator":
-        """Return a validator that allows only words (space, numbers or letters).
-        """
+        """Return a validator that allows only words (space, numbers or letters)."""
         return InputValidator(cls.PatternType.WORDS)
 
     @classmethod
     def anything(cls) -> "InputValidator":
-        """Return a validator that allows any input value.
-        """
+        """Return a validator that allows any input value."""
         return InputValidator(cls.PatternType.ANYTHING)
 
     @classmethod
     def binary(cls) -> "InputValidator":
-        """Return a validator that allows only zero or ones.
-        """
+        """Return a validator that allows only zero or ones."""
         return InputValidator(cls.PatternType.BINARY)
 
     @classmethod
     def masked(cls) -> "InputValidator":
-        """Return a validator that allows masked inputs.
-        """
+        """Return a validator that allows masked inputs."""
         return InputValidator(cls.PatternType.MASKED)
 
     def __init__(self, pattern_type: PatternType = PatternType.ANYTHING):
@@ -85,9 +79,7 @@ class InputValidator(Validator):
 
     def __str__(self) -> str:
         return (
-            f'r"{self.pattern}"'
-            if InputValidator.pattern_type == self.PatternType.CUSTOM
-            else self.pattern_type.name
+            f'r"{self.pattern}"' if InputValidator.pattern_type == self.PatternType.CUSTOM else self.pattern_type.name
         )
 
     def __repr__(self):

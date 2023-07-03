@@ -12,14 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-import atexit
-import binascii
-import contextlib
-import logging as log
-import os
-import uuid
-from typing import Any
-
+from clitt.addons.setman.setman_config import SetmanConfig
+from clitt.addons.setman.setman_entry import SetmanEntry
+from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
+from clitt.addons.setman.setman_service import SetmanService
+from clitt.core.tui.table.table_renderer import TableRenderer
 from datasource.identity import Identity
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import ApplicationError
@@ -27,17 +24,18 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
 from hspylib.modules.application.application import Application
 from hspylib.modules.security.security import decode_file, encode_file
+from typing import Any
 
-from clitt.addons.setman.setman_config import SetmanConfig
-from clitt.addons.setman.setman_entry import SetmanEntry
-from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.addons.setman.setman_service import SetmanService
-from clitt.core.tui.table.table_renderer import TableRenderer
+import atexit
+import binascii
+import contextlib
+import logging as log
+import os
+import uuid
 
 
 class SetMan(metaclass=Singleton):
-
-    RESOURCE_DIR = os.environ.get('HHS_DIR', os.environ.get('HOME', '~/'))
+    RESOURCE_DIR = os.environ.get("HHS_DIR", os.environ.get("HOME", "~/"))
 
     SETMAN_CONFIG_FILE = f"setman.properties"
 
@@ -76,8 +74,8 @@ class SetMan(metaclass=Singleton):
         name: str | None,
         value: Any | None,
         stype: SettingsType = None,
-        simple_fmt: bool = False) -> None:
-
+        simple_fmt: bool = False,
+    ) -> None:
         """Execute the specified operation."""
         log.debug(f"{operation} Name: {name or '*'} Value: {value or '-'} SettingsType: {stype or '*'}")
         atexit.register(self._close_db)
@@ -86,7 +84,7 @@ class SetMan(metaclass=Singleton):
                 case SetmanOps.LIST:
                     self._list_settings()
                 case SetmanOps.SEARCH:
-                    self._search_settings(name or '%', stype, simple_fmt)
+                    self._search_settings(name or "%", stype, simple_fmt)
                 case SetmanOps.SET:
                     self._add_setting(name, value, stype)
                 case SetmanOps.GET:
@@ -95,7 +93,7 @@ class SetMan(metaclass=Singleton):
                     self._del_setting(name)
                 case SetmanOps.TRUNCATE:
                     self._service.truncate_settings_db()
-                    sysout('%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%')
+                    sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
 
     @contextlib.contextmanager
     def _open_db(self) -> None:
@@ -165,9 +163,9 @@ class SetMan(metaclass=Singleton):
             found = self._service.get(name)
             if found:
                 self._service.remove(found)
-                sysout('%GREEN%Settings deleted: %ORANGE%', found.name)
+                sysout("%GREEN%Settings deleted: %ORANGE%", found.name)
             else:
-                syserr('Settings not found: ', name)
+                syserr("Settings not found: ", name)
 
     def _get_setting(self, name: str, simple_fmt: bool) -> None:
         """Get the specified setting."""
@@ -176,7 +174,7 @@ class SetMan(metaclass=Singleton):
             if found:
                 sysout(found.to_string(simple_fmt))
             else:
-                syserr('Settings not found: ', name)
+                syserr("Settings not found: ", name)
 
     def _add_setting(self, name: str, value: Any, stype: SettingsType) -> None:
         """Upsert the specified setting."""
@@ -192,7 +190,7 @@ class SetMan(metaclass=Singleton):
         """Create the settings SQLite DB file."""
         touch_file(self.configs.database)
         self._service.create_settings_db()
-        log.info('Settings file has been created')
+        log.info("Settings file has been created")
         self._is_open = True
         return os.path.exists(self.configs.database)
 

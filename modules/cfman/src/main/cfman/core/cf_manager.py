@@ -12,16 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-import sys
-from functools import partial
-from time import sleep
-from typing import Any, List, Optional, Tuple
-
-import requests
+from cfman.core.cf import CloudFoundry
+from cfman.core.cf_application import CFApplication
+from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
+from cfman.core.cf_endpoint import CFEndpoint
+from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
 from clitt.core.tui.mchoose.mchoose import mchoose
 from clitt.core.tui.minput.minput import MenuInput, minput
 from clitt.core.tui.mselect.mselect import mselect
 from clitt.core.tui.tui_screen import TUIScreen
+from functools import partial
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_state
 from hspylib.modules.cache.ttl_cache import TTLCache
@@ -29,12 +29,11 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_utils import clear_screen, set_auto_wrap, set_show_cursor
 from hspylib.modules.fetch.fetch import head
 from retry import retry
+from time import sleep
+from typing import Any, List, Optional, Tuple
 
-from cfman.core.cf import CloudFoundry
-from cfman.core.cf_application import CFApplication
-from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
-from cfman.core.cf_endpoint import CFEndpoint
-from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
+import requests
+import sys
 
 
 class CFManager:

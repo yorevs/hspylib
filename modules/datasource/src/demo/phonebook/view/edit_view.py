@@ -15,16 +15,14 @@
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
-from hspylib.core.tools.commons import syserr
-
 from datasource.identity import Identity
+from hspylib.core.tools.commons import syserr
 from phonebook.entity.contact_forms import ContactForms
 from phonebook.service.company_service import CompanyService
 from phonebook.service.person_service import PersonService
 
 
 class EditView(TUIMenuView):
-
     def __init__(self, parent: TUIMenu) -> None:
         super().__init__(parent)
         self.person_service = PersonService()

@@ -12,17 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Any, Callable, Optional, TypeVar
-
-from hspylib.core.exception.exceptions import InvalidInputError
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput_utils import get_selected, MASK_SYMBOLS, toggle_selected, unpack_masked
+from hspylib.core.exception.exceptions import InvalidInputError
+from typing import Any, Callable, Optional, TypeVar
 
-FIELD_VALIDATOR_FNC = TypeVar("FIELD_VALIDATOR_FNC", bound=Callable[['FormField'], bool])
+FIELD_VALIDATOR_FNC = TypeVar("FIELD_VALIDATOR_FNC", bound=Callable[["FormField"], bool])
 
 
 class FormField:
@@ -38,7 +36,7 @@ class FormField:
         access_type: AccessType = AccessType.READ_WRITE,
         value: Any = "",
         input_validator: InputValidator = InputValidator.anything(),
-        field_validator: FIELD_VALIDATOR_FNC = None
+        field_validator: FIELD_VALIDATOR_FNC = None,
     ):
         self._label = label
         self._dest = dest
@@ -94,10 +92,10 @@ class FormField:
     @property
     def length(self) -> int:
         """Get the field real length, depending on the field type."""
-        real_value = str(self.value or '')
+        real_value = str(self.value or "")
         match self.itype:
             case InputType.CHECKBOX:
-                real_value = '1'
+                real_value = "1"
             case InputType.SELECT:
                 _, real_value = get_selected(str(self.value))
             case InputType.MASKED:
@@ -169,6 +167,5 @@ class FormField:
         return self.input_validator(str(value)) if self.input_validator else True
 
     def validate_field(self) -> bool:
-        """Validate the field using the assigned validator function.
-        """
+        """Validate the field using the assigned validator function."""
         return self.field_validator(self) if self.field_validator else False

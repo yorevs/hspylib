@@ -25,7 +25,7 @@ if __name__ == "__main__":
     tr.render()
     tr.export_csv("sample-out.csv")
 
-    sysout('')
+    sysout("")
 
     tr2 = TableRenderer.import_csv("sample-out.csv", "TableRenderer example of usage from CVS file")
     tr2.adjust_auto_fit()

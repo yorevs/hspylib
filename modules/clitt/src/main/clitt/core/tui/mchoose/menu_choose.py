@@ -12,14 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from functools import cached_property
-from typing import List, Optional, TypeVar
-
-from hspylib.modules.cli.keyboard import Keyboard
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.tui_component import TUIComponent
 from clitt.core.tui.tui_screen import TUIScreen
+from functools import cached_property
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional, TypeVar
 
 T = TypeVar("T")
 
@@ -46,7 +44,6 @@ class MenuChoose(TUIComponent):
         return Keyboard.digits()
 
     def execute(self) -> Optional[List[T]]:
-
         if len(self.items) == 0:
             return None
 
@@ -60,7 +57,6 @@ class MenuChoose(TUIComponent):
         )
 
     def render(self) -> None:
-
         length = len(self.items)
         self.cursor.restore()
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")

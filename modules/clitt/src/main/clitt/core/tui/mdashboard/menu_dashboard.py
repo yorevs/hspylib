@@ -12,16 +12,14 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional, TypeVar
-
-from hspylib.core.preconditions import check_state
-from hspylib.modules.cli.keyboard import Keyboard
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder
 from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
 from clitt.core.tui.tui_component import TUIComponent
 from clitt.core.tui.tui_screen import TUIScreen
+from hspylib.core.preconditions import check_state
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional, TypeVar
 
 DashboardMatrix = TypeVar("DashboardMatrix", bound=List[List[str]])
 
@@ -63,7 +61,6 @@ class MenuDashBoard(TUIComponent):
         )
 
     def execute(self) -> Optional[DashboardItem]:
-
         if (len(self._items)) == 0:
             return None
 
@@ -82,7 +79,8 @@ class MenuDashBoard(TUIComponent):
 
         for idx, item in enumerate(self._items):
             self._print_item(
-                idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
+                idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL
+            )
 
         self.cursor.erase(TUIScreen.ScreenPortion.LINE)
         self.cursor.move_to(column=1)
@@ -115,11 +113,7 @@ class MenuDashBoard(TUIComponent):
 
         return keypress
 
-    def _print_item(
-        self,
-        item_idx: int,
-        item: DashboardItem,
-        cell_template: DashboardMatrix) -> None:
+    def _print_item(self, item_idx: int, item: DashboardItem, cell_template: DashboardMatrix) -> None:
         """Print the specified dashboard item at the given index.
         :param item_idx: the item index.
         :param item: the dashboard item.

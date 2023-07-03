@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-firebase v0.9.104
+# hspylib-firebase v0.9.105
 #
 # Package: main.firebase.domain
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
   'firebase_dto'
 ]
-__version__ = '0.9.104'
+__version__ = '0.9.105'

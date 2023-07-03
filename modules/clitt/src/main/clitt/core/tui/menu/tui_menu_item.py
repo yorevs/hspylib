@@ -13,16 +13,14 @@
    Copyright 2023, HsPyLib team
 """
 
-from functools import cached_property
-from typing import List, Optional
-
-from hspylib.core.tools.dict_tools import get_or_default
-from hspylib.modules.cli.keyboard import Keyboard
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.tui_screen import TUIScreen
+from functools import cached_property
+from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional
 
 
 class TUIMenuItem(TUIMenu):

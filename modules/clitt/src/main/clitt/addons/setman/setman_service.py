@@ -12,15 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-from textwrap import dedent
-from typing import List, Optional
-
-from datasource.crud_service import CrudService
-
 from clitt.addons.setman.setman_config import SetmanConfig
 from clitt.addons.setman.setman_entry import SetmanEntry
 from clitt.addons.setman.setman_enums import SettingsType
 from clitt.addons.setman.setman_repository import SetmanRepository
+from datasource.crud_service import CrudService
+from textwrap import dedent
+from typing import List, Optional
 
 
 class SetmanService(CrudService[SetmanRepository, SetmanEntry]):

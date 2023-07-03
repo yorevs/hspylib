@@ -12,19 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional, TypeVar
-
 from clitt.core.tui.mchoose.menu_choose import MenuChoose
+from typing import List, Optional, TypeVar
 
 T = TypeVar("T")
 
 
 def mchoose(
-    items: List[T],
-    checked: bool = True,
-    title: str = "Please choose among the options",
-    output: str = None
-    ) -> Optional[List[T]]:
+    items: List[T], checked: bool = True, title: str = "Please choose among the options", output: str = None
+) -> Optional[List[T]]:
     """
     Terminal UI menu choose input method.
     :param items: the provided items to choose from.
@@ -37,7 +33,7 @@ def mchoose(
     result = MenuChoose(title, items, checked).execute()
 
     if result and output:
-        with open(output, 'w') as f_out:
-            f_out.write(' '.join(result))
+        with open(output, "w") as f_out:
+            f_out.write(" ".join(result))
 
     return result

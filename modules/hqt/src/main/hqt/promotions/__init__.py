@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hqt v0.9.4
+# hqt v0.9.5
 #
 # Package: main.hqt.promotions
 """Package initialization."""
@@ -16,4 +16,4 @@ __all__ = [
   'htableview', 
   'htoolbox'
 ]
-__version__ = '0.9.4'
+__version__ = '0.9.5'

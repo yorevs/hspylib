@@ -12,15 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-import logging as log
-import os
-from collections import defaultdict
-from os.path import basename
-from typing import Any, Optional
-
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
+from collections import defaultdict
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from firebase.core.firebase_auth import FirebaseAuth
+from firebase.exception.exceptions import FirebaseAuthenticationError
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
@@ -28,9 +25,11 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import dirname, file_is_not_empty, syserr, sysout, touch_file
 from hspylib.core.tools.dict_tools import get_or_default_by_key
 from hspylib.modules.cli.keyboard import Keyboard
+from os.path import basename
+from typing import Any, Optional
 
-from firebase.core.firebase_auth import FirebaseAuth
-from firebase.exception.exceptions import FirebaseAuthenticationError
+import logging as log
+import os
 
 
 class AgentConfig(metaclass=Singleton):
@@ -124,9 +123,7 @@ class AgentConfig(metaclass=Singleton):
             sysout("%BLUE%Authenticating to Firebase ...%NC%")
             if user := FirebaseAuth.authenticate(config_dict["PROJECT_ID"], config_dict["UID"]):
                 if user.uid != config_dict["UID"]:
-                    raise FirebaseAuthenticationError(
-                        f"Provided UID: {config_dict['UID']} is invalid!"
-                    )
+                    raise FirebaseAuthenticationError(f"Provided UID: {config_dict['UID']} is invalid!")
                 config_dict["UID"] = user.uid
                 self.firebase_configs = FirebaseConfiguration.INSTANCE or FirebaseConfiguration.of(
                     load_dir, filename, config_dict

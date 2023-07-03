@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List
-
 from hspylib.core.enums.enumeration import Enumeration
+from typing import List
 
 
 class SetmanOps(Enumeration):
@@ -48,7 +47,7 @@ class SettingsType(Enumeration):
 
     @staticmethod
     def selectables(selected: str = None) -> str:
-        return '|'.join([s if not s or s != selected else f"<{s}>" for s in SettingsType.values()])
+        return "|".join([s if not s or s != selected else f"<{s}>" for s in SettingsType.values()])
 
     @property
     def val(self) -> str:

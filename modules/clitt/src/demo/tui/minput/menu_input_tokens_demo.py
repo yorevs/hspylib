@@ -15,18 +15,16 @@
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     tokens = [
-        'Name|||5/30|rw|',
-        'Age||numbers|1/3||',
-        'Password|password||5|rw|',
-        'Masked|masked|||rw|;##.## @ x',
-        'Role|select|||rw|Admin;<User>;Guest',
-        'Locked||||r|locked value',
-        'Accept Conditions|checkbox||||'
+        "Name|||5/30|rw|",
+        "Age||numbers|1/3||",
+        "Password|password||5|rw|",
+        "Masked|masked|||rw|;##.## @ x",
+        "Role|select|||rw|Admin;<User>;Guest",
+        "Locked||||r|locked value",
+        "Accept Conditions|checkbox||||",
     ]
-    form_fields =  MenuInput.builder() \
-        .from_tokenized(tokens) \
-        .build()
+    form_fields = MenuInput.builder().from_tokenized(tokens).build()
     result = minput(form_fields)
     print(result if result else "None")

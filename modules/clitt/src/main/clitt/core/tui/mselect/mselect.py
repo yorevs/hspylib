@@ -13,18 +13,13 @@
    Copyright 2023, HsPyLib team
 """
 
-from typing import List, Optional, TypeVar
-
 from clitt.core.tui.mselect.menu_select import MenuSelect
+from typing import List, Optional, TypeVar
 
 T = TypeVar("T")
 
 
-def mselect(
-    items: List[T],
-    title: str = "Please select one",
-    output: str = None
-    ) -> Optional[T]:
+def mselect(items: List[T], title: str = "Please select one", output: str = None) -> Optional[T]:
     """
     Terminal UI menu select input method.
     :param items: the provided items to select from.
@@ -35,7 +30,7 @@ def mselect(
     result = MenuSelect(title, items).execute()
 
     if result and output:
-        with open(output, 'w') as f_out:
+        with open(output, "w") as f_out:
             f_out.write(result)
 
     return result
