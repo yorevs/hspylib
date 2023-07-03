@@ -51,8 +51,8 @@ class SetMan(metaclass=Singleton):
         if not file_is_not_empty(self.configs.database):
             self._create_new_database()
         self._is_open = False
-        safe_delete_file(self.configs.encoded_file)
-        safe_delete_file(self.configs.decoded_file)
+        safe_delete_file(self.configs.encoded_db)
+        safe_delete_file(self.configs.decoded_db)
 
     def __str__(self):
         data = set(self._service.list())
@@ -92,8 +92,8 @@ class SetMan(metaclass=Singleton):
                 case SetmanOps.DEL:
                     self._del_setting(name)
                 case SetmanOps.TRUNCATE:
-                    self._service.truncate_settings_db()
-                    sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
+                    if self._service.truncate_settings_db():
+                        sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
 
     @contextlib.contextmanager
     def _open_db(self) -> None:
@@ -155,7 +155,7 @@ class SetMan(metaclass=Singleton):
     def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
         """Display all settings matching the name and settings type."""
         data = list(map(lambda e: e.to_string(simple_fmt), self._service.search(name, stype)))
-        sysout(os.linesep.join(data))
+        sysout(os.linesep.join(data)) if data else sysout(f"%YELLOW%%EOL%No settings found matching '{name}'")
 
     def _del_setting(self, name: str) -> None:
         """Delete the specified setting."""
