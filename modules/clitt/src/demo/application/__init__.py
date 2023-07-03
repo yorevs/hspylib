@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.35
+# hspylib-clitt v0.9.36
 #
 # Package: demo.application
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'application_demo', 
   'snake'
 ]
-__version__ = '0.9.35'
+__version__ = '0.9.36'

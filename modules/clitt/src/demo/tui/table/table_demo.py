@@ -13,7 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.core.tui.table.table_renderer import TableRenderer
-from hspylib.core.tools.commons import safe_delete_file
+from hspylib.core.tools.commons import safe_delete_file, sysout
 
 if __name__ == "__main__":
     h = ["string", "number", "boolean", "that`s a big integer column header"]
@@ -23,9 +23,11 @@ if __name__ == "__main__":
     tr.set_header_alignment(TableRenderer.TextAlignment.CENTER)
     tr.set_cell_alignment(TableRenderer.TextAlignment.LEFT)
     tr.render()
-    tr.to_csv("sample-out.csv")
+    tr.export_csv("sample-out.csv")
 
-    tr2 = TableRenderer.from_csv("sample-out.csv", "TableRenderer example of usage from CVS file")
+    sysout('')
+
+    tr2 = TableRenderer.import_csv("sample-out.csv", "TableRenderer example of usage from CVS file")
     tr2.adjust_auto_fit()
     tr2.render()
 
