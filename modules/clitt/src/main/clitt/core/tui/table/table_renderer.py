@@ -12,13 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
+import csv
+import os
+from typing import Iterable, List
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right, titlecase
-from typing import Iterable, List
 
-import csv
+from clitt.core.tui.tui_screen import TUIScreen
 
 
 class TableRenderer:
@@ -27,20 +30,26 @@ class TableRenderer:
     DEFAULT_MINIMUM_CELL_SIZE = 6
 
     @staticmethod
-    def from_csv(filepath: str, caption: str | None = None, delimiter: chr = ",") -> "TableRenderer":
-        """TODO"""
-
+    def import_csv(
+        filepath: str,
+        caption: str | None = None,
+        has_headers: bool = True,
+        delimiter: chr = ",") -> "TableRenderer":
+        """Render the table based on a CSV file."""
         check_argument(file_is_not_empty(filepath), f"File not found: {filepath}")
         headers, data = None, []
         with open(filepath, encoding="UTF8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=delimiter)
             line_count = 0
             for row in csv_reader:
-                if line_count == 0:
-                    headers = row
-                else:
-                    data.append(row)
                 line_count += 1
+                if line_count == 1:
+                    if has_headers:
+                        headers = row
+                        continue
+                    else:
+                        headers = [f"C{idx}" for idx, _ in enumerate(row)]
+                data.append(row)
         return TableRenderer(headers, data, caption)
 
     class TextAlignment(Enumeration):
@@ -66,14 +75,27 @@ class TableRenderer:
         self._header_alignment = TableRenderer.TextAlignment.CENTER
         self._cell_alignment = TableRenderer.TextAlignment.LEFT
         self._min_cell_size = self.DEFAULT_MINIMUM_CELL_SIZE
+        self._screen = TUIScreen.INSTANCE
+
         if data:
             check_argument(
                 len(min(data, key=len)) == len(self._headers),
                 "Headers and Columns must have the same size: {} vs {}",
-                len(min(data, key=len)),
-                len(self._headers),
+                len(min(data, key=len)), len(self._headers),
             )
+
         self._column_sizes = [self._min_cell_size for _ in self._headers]
+
+    @property
+    def cursor(self) -> TUIScreen.Cursor:
+        return self._screen.cursor
+
+    def write(self, data: str) -> None:
+        """TODO"""
+        if TUIScreen.INSTANCE:
+            self.write(data)
+        else:
+            sysout(data)
 
     def set_header_alignment(self, alignment: TextAlignment) -> None:
         """Set table headers alignment.
@@ -147,14 +169,20 @@ class TableRenderer:
         """Render the table.
         :return: None
         """
-        header_row, data_rows = self._format_header_row(), self._format_data_rows()
+        header_line, data_lines = self._format_header_row(), self._format_data_rows()
         table_line = "+" + "+".join(f"{'-' * (self._column_sizes[idx] + 2)}" for idx in self._columns) + "+"
-        self._render_table(table_line, header_row, data_rows)
+        self._render_table(table_line, header_line, data_lines)
 
-    def to_csv(self, filepath: str) -> None:
+    def export_csv(
+        self,
+        filepath: str,
+        delimiter: chr = ',',
+        has_headers: bool = True) -> None:
+        """TODO"""
         with open(filepath, "w", encoding="UTF8") as csv_file:
-            writer = csv.writer(csv_file)
-            writer.writerow(self._headers)
+            writer = csv.writer(csv_file, delimiter=delimiter)
+            if has_headers:
+                writer.writerow(self._headers)
             writer.writerows(self._data)
 
     def _format_header_row(self) -> str:
@@ -199,11 +227,12 @@ class TableRenderer:
         """
         line_length, render_line = len(table_line) - 4, f"+{table_line[1:-1]}+"
         empty_line = f"| {'<empty>': ^{line_length}} |"
-        sysout(render_line.replace("+", "-"))
         if self._caption:
-            sysout(f"| {elide_text(self._caption, line_length): ^{line_length}} |")
-            sysout(render_line)
-        sysout(header_row)
-        sysout(render_line)
-        sysout(f"{'%EOL%'.join(data_rows) if data_rows else empty_line}")
-        sysout(render_line.replace("+", "-"))
+            border_line = render_line.replace("+", "-")
+            self.write(border_line)
+            self.write(f"| {elide_text(self._caption, line_length): ^{line_length}} |")
+        self.write(render_line)
+        self.write(header_row)
+        self.write(render_line)
+        self.write(f"{os.linesep.join(data_rows) if data_rows else empty_line}")
+        self.write(render_line)

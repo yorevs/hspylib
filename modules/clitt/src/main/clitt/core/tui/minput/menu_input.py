@@ -12,8 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-import time
 from functools import reduce
+from time import sleep
 from typing import List
 
 import pyperclip
@@ -40,6 +40,13 @@ class MenuInput(TUIComponent):
     @classmethod
     def builder(cls) -> FormBuilder:
         return FormBuilder()
+
+    @staticmethod
+    def str_val(field: FormField) -> str:
+        """TODO"""
+        if field.value is None:
+            return ''
+        return str(field.value)
 
     def __init__(self, title: str, fields: List[FormField]):
         super().__init__(title)
@@ -68,6 +75,7 @@ class MenuInput(TUIComponent):
         return None
 
     def render(self) -> None:
+
         set_show_cursor(False)
         self.cursor.restore()
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
@@ -160,15 +168,15 @@ class MenuInput(TUIComponent):
             case InputType.SELECT:
                 if keypress == Keyboard.VK_SPACE:
                     if self.cur_field.value:
-                        self.cur_field.value = toggle_selected(str(self.cur_field.value or ''))
+                        self.cur_field.value = toggle_selected(self.str_val(self.cur_field))
             case InputType.MASKED:
-                value, mask = unpack_masked(str(self.cur_field.value or ''))
+                value, mask = unpack_masked(self.str_val(self.cur_field))
                 try:
                     self.cur_field.value = append_masked(value, mask, keypress.value)
                 except InvalidInputError as err:
                     self._display_error(str(err))
             case _:
-                if len(str(self.cur_field.value or '')) < self.cur_field.max_length:
+                if len(self.str_val(self.cur_field)) < self.cur_field.max_length:
                     if self.cur_field.validate_input(keypress.value):
                         self.cur_field.value = (
                             str(self.cur_field.value) if self.cur_field.value else ''
@@ -211,7 +219,7 @@ class MenuInput(TUIComponent):
         """
         match field.itype:
             case InputType.TEXT:
-                mi_print(self.screen, str(field.value or ''), field_len=self.max_value_length)
+                mi_print(self.screen, self.str_val(field), field_len=self.max_value_length)
             case InputType.PASSWORD:
                 mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
             case InputType.CHECKBOX:
@@ -243,7 +251,7 @@ class MenuInput(TUIComponent):
             count = len(re.split(VALUE_SEPARATORS, field.value))
             self.writeln(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
-            value, mask = unpack_masked(str(field.value or ''))
+            value, mask = unpack_masked(self.str_val(field))
             self.writeln(fmt.format(
                 field.icon,
                 reduce(lambda n, m: n + m, list(map(lambda s: mask[:len(value)].count(s), MASK_SYMBOLS))),
@@ -263,18 +271,18 @@ class MenuInput(TUIComponent):
             if self.tab_index == field_index:
                 self.cur_row, self.cur_col = f_pos[0], f_pos[1] + field_size
 
-    def _display_error(self, err_msg) -> None:
+    def _display_error(self, err_msg: str) -> None:
         """Display a form filling or submitting error.
         :param err_msg: the error message.
         """
         set_enable_echo(False)
         set_show_cursor(False)
-        offset = 16  # Magic number :D . That is the value to best fit the message along with the form.
-        err_pos = self.max_label_length + self.max_value_length + self.max_detail_length + offset
+        offset = 15  # Sum of minput used characters that are not related to the field.
+        err_pos = offset + self.max_label_length + self.max_value_length + self.max_detail_length
         self.cursor.move_to(self.cur_row, err_pos)
-        mi_print_err(self.screen, f"{FormIcons.ERROR_CIRCLE}  {err_msg}")
+        mi_print_err(self.screen, f"{FormIcons.ARROW_LEFT} {err_msg}")
         # This calculation gives a good delay amount based on the size of the message.
-        time.sleep(max(1.8, int(len(err_msg) / 24)))
+        sleep(max(2.0, int(len(err_msg) / 21)))
         set_enable_echo()
         # Erase the message after the timeout
         self.cursor.move_to(self.cur_row, err_pos)

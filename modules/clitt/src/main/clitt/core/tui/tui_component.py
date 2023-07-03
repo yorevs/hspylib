@@ -68,7 +68,7 @@ class TUIComponent(ABC):
         self._screen.add_watcher(self.invalidate)
         set_auto_wrap(auto_wrap)
         set_show_cursor(show_cursor)
-        self._screen.clear()
+        self.screen.clear()
         self.cursor.save()
 
     def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
