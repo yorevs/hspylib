@@ -12,16 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-from functools import reduce
-from time import sleep
-from typing import List
-
-import pyperclip
-from hspylib.core.exception.exceptions import InvalidStateError
-from hspylib.core.namespace import Namespace
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo, set_show_cursor
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.minput.form_builder import FormBuilder
@@ -30,6 +20,15 @@ from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.minput_utils import *
 from clitt.core.tui.tui_component import TUIComponent
 from clitt.core.tui.tui_screen import TUIScreen
+from functools import reduce
+from hspylib.core.exception.exceptions import InvalidStateError
+from hspylib.core.namespace import Namespace
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo, set_show_cursor
+from time import sleep
+from typing import List
+
+import pyperclip
 
 
 class MenuInput(TUIComponent):
@@ -45,7 +44,7 @@ class MenuInput(TUIComponent):
     def str_val(field: FormField) -> str:
         """TODO"""
         if field.value is None:
-            return ''
+            return ""
         return str(field.value)
 
     def __init__(self, title: str, fields: List[FormField]):
@@ -59,7 +58,6 @@ class MenuInput(TUIComponent):
         self.max_detail_length = max(detail_len(field) for field in fields)
 
     def execute(self) -> Optional[Namespace]:
-
         if len(self.fields) == 0:
             return None
 
@@ -75,7 +73,6 @@ class MenuInput(TUIComponent):
         return None
 
     def render(self) -> None:
-
         set_show_cursor(False)
         self.cursor.restore()
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
@@ -84,7 +81,8 @@ class MenuInput(TUIComponent):
             field_length = field.length
             if self.tab_index == idx:
                 mi_print(
-                    self.screen, f"  {field.label}", self.prefs.sel_bg_color.placeholder, self.max_label_length + 2)
+                    self.screen, f"  {field.label}", self.prefs.sel_bg_color.placeholder, self.max_label_length + 2
+                )
                 self.cur_field = field
             else:
                 mi_print(self.screen, f"  {field.label}", field_len=self.max_label_length + 2)
@@ -178,9 +176,9 @@ class MenuInput(TUIComponent):
             case _:
                 if len(self.str_val(self.cur_field)) < self.cur_field.max_length:
                     if self.cur_field.validate_input(keypress.value):
-                        self.cur_field.value = (
-                            str(self.cur_field.value) if self.cur_field.value else ''
-                        ) + str(keypress.value)
+                        self.cur_field.value = (str(self.cur_field.value) if self.cur_field.value else "") + str(
+                            keypress.value
+                        )
                     else:
                         self._display_error(
                             f"Input '{keypress.value}' is invalid. "
@@ -210,8 +208,7 @@ class MenuInput(TUIComponent):
     def _set_cursor_pos(self) -> None:
         """Set the cursor at the right position according to the ATB index."""
         pos = self.positions[self.tab_index]
-        self.screen.cursor.move_to(
-            pos[0], pos[1] + self.cur_field.length)
+        self.screen.cursor.move_to(pos[0], pos[1] + self.cur_field.length)
 
     def _render_field(self, field: FormField) -> None:
         """Render the specified form field.
@@ -224,9 +221,10 @@ class MenuInput(TUIComponent):
                 mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
             case InputType.CHECKBOX:
                 mi_print(
-                    self.screen, " ",
+                    self.screen,
+                    " ",
                     FormIcons.CHECK_SQUARE.unicode if field.value else FormIcons.UNCHECK_SQUARE.unicode,
-                    field_len=self.max_value_length - 1
+                    field_len=self.max_value_length - 1,
                 )
             case InputType.SELECT:
                 if field.value:
@@ -252,11 +250,13 @@ class MenuInput(TUIComponent):
             self.writeln(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
             value, mask = unpack_masked(self.str_val(field))
-            self.writeln(fmt.format(
-                field.icon,
-                reduce(lambda n, m: n + m, list(map(lambda s: mask[:len(value)].count(s), MASK_SYMBOLS))),
-                reduce(lambda n, m: n + m, list(map(lambda s: mask.count(s), MASK_SYMBOLS)))
-            ))
+            self.writeln(
+                fmt.format(
+                    field.icon,
+                    reduce(lambda n, m: n + m, list(map(lambda s: mask[: len(value)].count(s), MASK_SYMBOLS))),
+                    reduce(lambda n, m: n + m, list(map(lambda s: mask.count(s), MASK_SYMBOLS))),
+                )
+            )
         else:
             self.writeln(fmt.format(field.icon, field_details, field.max_length))
 

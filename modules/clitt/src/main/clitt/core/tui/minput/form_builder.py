@@ -12,14 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
-from typing import Any, List
-
-from hspylib.core.tools.dict_tools import get_or_default
-
 from clitt.core.tui.minput.field_builder import FieldBuilder
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_validator import InputValidator
+from hspylib.core.tools.dict_tools import get_or_default
+from typing import Any, List
+
+import re
 
 
 class FormBuilder:
@@ -33,7 +32,7 @@ class FormBuilder:
     def get_attr(parts: List[str], index: int, default_value: Any = None) -> str:
         return get_or_default(parts, index, default_value) or default_value
 
-    def from_tokenized(self, minput_tokens: List[str], separator: str = '|') -> 'FormBuilder':
+    def from_tokenized(self, minput_tokens: List[str], separator: str = "|") -> "FormBuilder":
         """Construct the forms based on string tokens.
 
          Field tokens (in-order):
@@ -46,10 +45,10 @@ class FormBuilder:
         """
         for tk_field in minput_tokens:
             parts = list(map(str.strip, tk_field.split(separator)))
-            validator_fn = getattr(InputValidator, self.get_attr(parts, 2, 'anything'))
-            min_max = list(map(int, map(str.strip, self.get_attr(parts, 3, '5/30').split('/'))))
-            access = re.sub('^rw$', 'read-write', self.get_attr(parts, 4, 'rw'))
-            access = re.sub('^r$', 'read-only', access)
+            validator_fn = getattr(InputValidator, self.get_attr(parts, 2, "anything"))
+            min_max = list(map(int, map(str.strip, self.get_attr(parts, 3, "5/30").split("/"))))
+            access = re.sub("^rw$", "read-write", self.get_attr(parts, 4, "rw"))
+            access = re.sub("^r$", "read-only", access)
             # fmt: off
             self.field() \
                 .label(self.get_attr(parts, 0, 'Label')) \

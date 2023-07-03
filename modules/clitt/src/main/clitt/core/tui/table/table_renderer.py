@@ -12,16 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-import csv
-import os
-from typing import Iterable, List
-
+from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right, titlecase
+from typing import Iterable, List
 
-from clitt.core.tui.tui_screen import TUIScreen
+import csv
+import os
 
 
 class TableRenderer:
@@ -31,10 +30,8 @@ class TableRenderer:
 
     @staticmethod
     def import_csv(
-        filepath: str,
-        caption: str | None = None,
-        has_headers: bool = True,
-        delimiter: chr = ",") -> "TableRenderer":
+        filepath: str, caption: str | None = None, has_headers: bool = True, delimiter: chr = ","
+    ) -> "TableRenderer":
         """Render the table based on a CSV file."""
         check_argument(file_is_not_empty(filepath), f"File not found: {filepath}")
         headers, data = None, []
@@ -81,7 +78,8 @@ class TableRenderer:
             check_argument(
                 len(min(data, key=len)) == len(self._headers),
                 "Headers and Columns must have the same size: {} vs {}",
-                len(min(data, key=len)), len(self._headers),
+                len(min(data, key=len)),
+                len(self._headers),
             )
 
         self._column_sizes = [self._min_cell_size for _ in self._headers]
@@ -173,11 +171,7 @@ class TableRenderer:
         table_line = "+" + "+".join(f"{'-' * (self._column_sizes[idx] + 2)}" for idx in self._columns) + "+"
         self._render_table(table_line, header_line, data_lines)
 
-    def export_csv(
-        self,
-        filepath: str,
-        delimiter: chr = ',',
-        has_headers: bool = True) -> None:
+    def export_csv(self, filepath: str, delimiter: chr = ",", has_headers: bool = True) -> None:
         """TODO"""
         with open(filepath, "w", encoding="UTF8") as csv_file:
             writer = csv.writer(csv_file, delimiter=delimiter)

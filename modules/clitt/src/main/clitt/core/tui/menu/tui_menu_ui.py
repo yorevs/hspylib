@@ -13,13 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.preconditions import check_not_none
-from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
-
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.tui_preferences import TUIPreferences
 from clitt.core.tui.tui_screen import TUIScreen
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.preconditions import check_not_none
+from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
 
 
 class TUIMenuUi(metaclass=Singleton):

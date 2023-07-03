@@ -12,8 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-import sys
-
+from clitt.__classpath__ import _Classpath
+from clitt.addons.appman.appman import AppManager
+from clitt.addons.appman.appman_enums import AppExtension, AppType
+from clitt.addons.setman.setman import SetMan
+from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
+from clitt.addons.widman.widman import WidgetManager
+from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
@@ -22,13 +27,7 @@ from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.parser_action import ParserAction
 from hspylib.modules.application.version import Version
 
-from clitt.__classpath__ import _Classpath
-from clitt.addons.appman.appman import AppManager
-from clitt.addons.appman.appman_enums import AppExtension, AppType
-from clitt.addons.setman.setman import SetMan
-from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.addons.widman.widman import WidgetManager
-from clitt.core.tui.tui_application import TUIApplication
+import sys
 
 
 class Main(TUIApplication):
@@ -104,8 +103,7 @@ class Main(TUIApplication):
                     choices=SettingsType.choices()) \
                 .add_option(
                     'simple', 's', 'simple',
-                    'display without formatting. ', action=ParserAction.STORE_TRUE) \
-            # fmt: on
+                    'display without formatting. ', action=ParserAction.STORE_TRUE)  # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Main entry point handler."""

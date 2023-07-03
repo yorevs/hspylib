@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List
-
 from hspylib.core.enums.enumeration import Enumeration
+from typing import List
 
 
 class AppExtension(Enumeration):

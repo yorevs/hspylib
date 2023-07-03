@@ -12,12 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
+from clitt.core.tui.tui_screen import TUIScreen
+from hspylib.core.exception.exceptions import InvalidInputError
 from typing import Any, Optional, Tuple
 
-from hspylib.core.exception.exceptions import InvalidInputError
-
-from clitt.core.tui.tui_screen import TUIScreen
+import re
 
 MASK_SYMBOLS = ["#", "@", "%", "*"]
 
@@ -34,12 +33,7 @@ def detail_len(field: Any) -> int:
     return 1 + (2 * max_len)
 
 
-def mi_print(
-    screen: TUIScreen,
-    text: str,
-    prefix: str = None,
-    field_len: int = 0,
-    end: str = "") -> None:
+def mi_print(screen: TUIScreen, text: str, prefix: str = None, field_len: int = 0, end: str = "") -> None:
     """Special menu input print.
     :param screen: the component's screen.
     :param text: the text to be printed.
@@ -74,7 +68,7 @@ def toggle_selected(tokenized_values: str) -> str:
         else:
             values[0] = f"<{values[0]}>"
         return "|".join(values)
-    unselected = list(map(lambda x: re.sub(VALUE_SELECTORS, '', x), values))
+    unselected = list(map(lambda x: re.sub(VALUE_SELECTORS, "", x), values))
     # fmt: off
     return '|'.join([
         f'<{val}>'
@@ -110,15 +104,12 @@ def unpack_masked(value: str) -> Tuple[str, str]:
     """
     if value:
         parts = re.split(VALUE_SEPARATORS, value)
-        return parts[0], parts[1] if len(parts) == 2 else ''
+        return parts[0], parts[1] if len(parts) == 2 else ""
 
-    return '', ''
+    return "", ""
 
 
-def append_masked(
-    value: str,
-    mask: str,
-    keypress_value: chr) -> str:
+def append_masked(value: str, mask: str, keypress_value: chr) -> str:
     """Append a value to the masked field.
     :param value: the masked field current value.
     :param mask: the masked field's mask.
@@ -142,9 +133,7 @@ def append_masked(
     return f"{masked_value}|{mask}"
 
 
-def over_masked(
-    value: str,
-    mask: str) -> str:
+def over_masked(value: str, mask: str) -> str:
     """
     Return the value to be printed by a 'masked' input field. A placeholder value will be used for unfilled values.
     :param value: the masked field current value.
@@ -162,12 +151,6 @@ def over_masked(
     return mask
 
 
-def mask_regex(
-    mask: str,
-    idx: int) -> str:
+def mask_regex(mask: str, idx: int) -> str:
     """Return a regex matching the index of the mask."""
-    return mask[idx] \
-        .replace("#", "[0-9]") \
-        .replace("@", "[a-zA-Z]") \
-        .replace("%", "[a-zA-Z0-9]") \
-        .replace("*", ".")
+    return mask[idx].replace("#", "[0-9]").replace("@", "[a-zA-Z]").replace("%", "[a-zA-Z0-9]").replace("*", ".")

@@ -12,13 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional, Set
-
-from datasource.identity import Identity
-from datasource.sqlite.sqlite_repository import SQLiteRepository
-
 from clitt.addons.setman.setman_entry import SetmanEntry
 from clitt.addons.setman.setman_enums import SettingsType
+from datasource.identity import Identity
+from datasource.sqlite.sqlite_repository import SQLiteRepository
+from typing import List, Optional, Set
 
 
 class SetmanRepository(SQLiteRepository[SetmanEntry]):
@@ -39,7 +37,7 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
     def search(self, name: str, stype: SettingsType, fields: Set[str] = None) -> List[SetmanEntry]:
         """TODO"""
         fields = "*" if not fields else ", ".join(fields)
-        search_name = f"%{name}%" if name != '%' else name
+        search_name = f"%{name}%" if name != "%" else name
         if stype:
             sql = f"SELECT {fields} FROM {self.table_name()} WHERE name LIKE ? AND stype = ? ORDER BY name"
             result = self.execute(sql, name=search_name, stype=stype.val)[1] or []

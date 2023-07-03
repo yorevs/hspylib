@@ -12,35 +12,31 @@
 
    Copyright 2023, HsPyLib team
 """
-import atexit
-import os
-import threading
-from threading import Timer
-from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union
-
+from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import last_index_of
 from hspylib.modules.cli.vt100.vt_code import VtCode
 from hspylib.modules.cli.vt100.vt_color import VtColor
-from hspylib.modules.cli.vt100.vt_utils import clear_screen, get_cursor_position, restore_cursor, restore_terminal, \
-    save_cursor, \
-    screen_size
+from hspylib.modules.cli.vt100.vt_utils import (clear_screen, get_cursor_position, restore_cursor, restore_terminal,
+                                                save_cursor, screen_size)
+from threading import Timer
+from typing import Any, Callable, List, Optional, Tuple, TypeVar, Union
 
-from clitt.core.tui.tui_preferences import TUIPreferences
+import atexit
+import os
+import threading
 
-DIMENSION = TypeVar('DIMENSION', bound=Tuple[int, ...])
+DIMENSION = TypeVar("DIMENSION", bound=Tuple[int, ...])
 
-POSITION = TypeVar('POSITION', bound=Tuple[int, int])
+POSITION = TypeVar("POSITION", bound=Tuple[int, int])
 
-CB_RESIZE = TypeVar('CB_RESIZE', bound=Callable[[None], None])
+CB_RESIZE = TypeVar("CB_RESIZE", bound=Callable[[None], None])
 
-MOVE_DIRECTION = TypeVar('MOVE_DIRECTION', bound='TUIScreen.CursorDirection')
+MOVE_DIRECTION = TypeVar("MOVE_DIRECTION", bound="TUIScreen.CursorDirection")
 
-ERASE_DIRECTION = TypeVar('ERASE_DIRECTION', bound=Union[
-    'TUIScreen.CursorDirection', 'TUIScreen.ScreenPortion'
-])
+ERASE_DIRECTION = TypeVar("ERASE_DIRECTION", bound=Union["TUIScreen.CursorDirection", "TUIScreen.ScreenPortion"])
 
 
 class TUIScreen(metaclass=Singleton):
@@ -52,6 +48,7 @@ class TUIScreen(metaclass=Singleton):
 
     class CursorDirection(Enumeration):
         """Provide a base class for the cursor direction."""
+
         # fmt: off
         UP          = '%ED1%', '%CUU({n})%'   # Cursor up (line)
         RIGHT       = '%EL0%', '%CUF({n})%'   # Cursor right (forward)
@@ -61,6 +58,7 @@ class TUIScreen(metaclass=Singleton):
 
     class ScreenPortion(Enumeration):
         """Provide a base class for the portions of the screen."""
+
         # fmt: off
         SCREEN      = '%ED2%', ''   # Entire screen (screen)
         LINE        = '%EL2%', ''   # Entire line (line)
@@ -88,9 +86,7 @@ class TUIScreen(metaclass=Singleton):
 
         @position.setter
         def position(self, new_position: POSITION) -> None:
-            self._bottom = (
-                new_position[0], new_position[1]
-            ) if new_position >= self._bottom else self._bottom
+            self._bottom = (new_position[0], new_position[1]) if new_position >= self._bottom else self._bottom
             self._position = new_position
 
         @property
@@ -140,15 +136,15 @@ class TUIScreen(metaclass=Singleton):
             self.position = get_cursor_position() or self.position
             return self.position
 
-        def write(self, obj: Any, end: str = '') -> POSITION:
+        def write(self, obj: Any, end: str = "") -> POSITION:
             """Write the string representation of the object to the screen."""
             sysout(obj, end=end)
-            text = (str(obj) + end).replace('%EOL%', os.linesep)
+            text = (str(obj) + end).replace("%EOL%", os.linesep)
             text = VtColor.strip_colors(VtCode.strip_codes(text))
-            text_offset = len(text[max(0, last_index_of(text, os.linesep)):])
-            self.position = \
-                self.position[0] + text.count(os.linesep), \
-                text_offset + (self.position[1] if text.count(os.linesep) == 0 else 0)
+            text_offset = len(text[max(0, last_index_of(text, os.linesep)) :])
+            self.position = self.position[0] + text.count(os.linesep), text_offset + (
+                self.position[1] if text.count(os.linesep) == 0 else 0
+            )
             return self.position
 
         def writeln(self, obj: Any) -> POSITION:

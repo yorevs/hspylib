@@ -12,30 +12,28 @@
 
    Copyright 2023, HsPyLib team
 """
-from time import sleep
-
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position
-
 from clitt.core.tui.tui_screen import TUIScreen
+from hspylib.modules.cli.vt100.vt_utils import get_cursor_position
+from time import sleep
 
 
 def draw(scr: TUIScreen):
     scr.cursor.erase(TUIScreen.ScreenPortion.SCREEN)
     scr.cursor.home()
-    scr.cursor.writeln('.' * 40)
-    scr.cursor.writeln('.' * 40)
-    scr.cursor.writeln('.' * 40)
-    scr.cursor.writeln('.' * 40)
-    scr.cursor.writeln('.' * 40)
+    scr.cursor.writeln("." * 40)
+    scr.cursor.writeln("." * 40)
+    scr.cursor.writeln("." * 40)
+    scr.cursor.writeln("." * 40)
+    scr.cursor.writeln("." * 40)
     scr.cursor.move_to(3, 20)
-    scr.cursor.write('X')
+    scr.cursor.write("X")
 
 
 def resized():
-    print('Resized')
+    print("Resized")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     screen = TUIScreen(False, False, resized)
     draw(screen)
     sleep(1)
@@ -57,22 +55,22 @@ if __name__ == '__main__':
     draw(screen)
     screen.cursor.move_to(screen.cursor.bottom[0], screen.cursor.bottom[1])
     sleep(1)
-    screen.cursor.write('123')
+    screen.cursor.write("123")
     screen.cursor.move_to(3, 3)
     sleep(1)
-    screen.cursor.write('@')
+    screen.cursor.write("@")
     sleep(1)
     screen.cursor.move(5, TUIScreen.CursorDirection.RIGHT)
-    screen.cursor.write('#')
+    screen.cursor.write("#")
     sleep(1)
     screen.cursor.move(2, TUIScreen.CursorDirection.DOWN)
-    screen.cursor.write('#')
+    screen.cursor.write("#")
     sleep(1)
     screen.cursor.move(5, TUIScreen.CursorDirection.LEFT)
-    screen.cursor.write('#')
+    screen.cursor.write("#")
     sleep(1)
     screen.cursor.move(2, TUIScreen.CursorDirection.UP)
-    screen.cursor.write('#')
+    screen.cursor.write("#")
     sleep(1)
     screen.cursor.end()
     print(get_cursor_position(), screen.cursor)

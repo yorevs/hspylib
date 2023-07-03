@@ -12,21 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional
-
 from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
 from clitt.core.tui.mdashboard.menu_dashboard import MenuDashBoard
+from typing import List, Optional
 
 
-def mdashboard(
-    items: List[DashboardItem],
-    title: str = "Please select one item") -> Optional[DashboardItem]:
+def mdashboard(items: List[DashboardItem], title: str = "Please select one item") -> Optional[DashboardItem]:
     """
     Wrapper for the Menu Dashboard.
     :param items: the provided dashboard items to select from.
     :param title: the title to be displayed before the options.
     """
     return MenuDashBoard(title, items).execute()
-
-
-

@@ -12,18 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.addons.setman.setman_enums import SettingsType
+from clitt.core.tui.minput.menu_input import MenuInput
+from clitt.core.tui.minput.minput import minput
 from collections import namedtuple
-from textwrap import dedent
-from typing import Any, Optional, Union
-
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.tools.text_tools import environ_name
 from hspylib.core.zoned_datetime import now
-
-from clitt.addons.setman.setman_enums import SettingsType
-from clitt.core.tui.minput.menu_input import MenuInput
-from clitt.core.tui.minput.minput import minput
+from textwrap import dedent
+from typing import Any, Optional, Union
 
 
 class SetmanEntry(CrudEntity):
@@ -99,11 +97,12 @@ class SetmanEntry(CrudEntity):
         return str(self)
 
     def to_string(self, simple: bool = False) -> str:
-        """Return the string representation of this entry.
-        """
+        """Return the string representation of this entry."""
         if simple:
-            return self._SIMPLE_FORMAT.format(environ_name(self.name), self.value) \
-                if self.stype == SettingsType.ENVIRONMENT.val \
+            return (
+                self._SIMPLE_FORMAT.format(environ_name(self.name), self.value)
+                if self.stype == SettingsType.ENVIRONMENT.val
                 else self._SIMPLE_FORMAT.format(self.name, self.value)
+            )
         else:
             return self._DISPLAY_FORMAT.format(self.name, self.stype, self.value, self.modified)

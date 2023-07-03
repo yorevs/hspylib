@@ -12,22 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-from typing import List, Optional
-
+from clitt.core.tui.minput.form_field import FormField
+from clitt.core.tui.minput.menu_input import MenuInput
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote, snakecase
+from typing import List, Optional
 
-from clitt.core.tui.minput.form_field import FormField
-from clitt.core.tui.minput.menu_input import MenuInput
+import os
 
 
 def minput(
-    form_fields: List[FormField],
-    title: str = "Please fill all fields of the form fields below",
-    output: str = None
-    ) -> Optional[Namespace]:
+    form_fields: List[FormField], title: str = "Please fill all fields of the form fields below", output: str = None
+) -> Optional[Namespace]:
     """
     Terminal UI menu form input method.
     :param form_fields: the provided form items to input from.
@@ -35,11 +32,11 @@ def minput(
     :param output: optional output file containing the marked items.
     :return: a namespace containing all form values.
     """
-    check_argument(len(form_fields) > 0, 'Must provide at least one form field!')
+    check_argument(len(form_fields) > 0, "Must provide at least one form field!")
     result = MenuInput(title, form_fields).execute()
 
     if result and output:
-        with open(output, 'w') as f_out:
+        with open(output, "w") as f_out:
             for name, value in zip(result.attributes, result.values):
                 f_out.write(f"{snakecase(name, screaming=True)}={quote(value)}" + os.linesep)
 

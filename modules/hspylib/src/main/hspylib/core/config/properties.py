@@ -13,16 +13,16 @@
    Copyright 2023, HsPyLib team
 """
 
-import logging as log
-import os
 from collections import defaultdict
-from os.path import basename
-from typing import Any, Callable, Iterator, List, Optional, Type
-
 from hspylib.core.config.parser_factory import ParserFactory
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import dirname, run_dir, touch_file
 from hspylib.core.tools.text_tools import environ_name
+from os.path import basename
+from typing import Any, Callable, Iterator, List, Optional, Type
+
+import logging as log
+import os
 
 CONVERSION_FN = Type | Callable[[Any], Any]
 
@@ -35,7 +35,7 @@ class Properties:
     _default_ext: str = ".properties"
 
     @staticmethod
-    def read_properties(filepath: str) -> 'Properties':
+    def read_properties(filepath: str) -> "Properties":
         """Create properties based on absolute existing file path.
         :param filepath: the path of the file containing the properties
         """
