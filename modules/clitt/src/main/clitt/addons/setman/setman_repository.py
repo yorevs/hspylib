@@ -27,29 +27,28 @@ class SetmanRepository(SQLiteRepository[SetmanEntry]):
         return self._config.database
 
     def find_by_name(self, name: str, fields: Set[str] = None) -> Optional[SetmanEntry]:
-        """TODO"""
+        """Find settings by name."""
         fields = "*" if not fields else ", ".join(fields)
         sql = f"SELECT {fields} FROM {self.table_name()} WHERE name = ? ORDER BY name"
         result = next((e for e in self.execute(sql, name=name)[1]), None)
 
         return self.to_entity_type(result) if result else None
 
-    def search(self, name: str, stype: SettingsType, fields: Set[str] = None) -> List[SetmanEntry]:
-        """TODO"""
-        fields = "*" if not fields else ", ".join(fields)
-        search_name = f"%{name}%" if name != "%" else name
+    def search(self, name: str, stype: SettingsType) -> List[SetmanEntry]:
+        """Search settings by settings type."""
+        search_name = name.replace("*", "%") if name else "%"
         if stype:
-            sql = f"SELECT {fields} FROM {self.table_name()} WHERE name LIKE ? AND stype = ? ORDER BY name"
+            sql = f"SELECT * FROM {self.table_name()} WHERE name LIKE ? AND stype = ? ORDER BY name"
             result = self.execute(sql, name=search_name, stype=stype.val)[1] or []
         else:
-            sql = f"SELECT {fields} FROM {self.table_name()} WHERE name LIKE ? ORDER BY name"
+            sql = f"SELECT * FROM {self.table_name()} WHERE name LIKE ? ORDER BY name"
             result = self.execute(sql, name=search_name)[1] or []
 
         return list(map(self.to_entity_type, result))
 
-    def truncate(self, table_name: str) -> None:
+    def truncate(self) -> None:
         """TODO"""
-        self.execute(f'DELETE FROM "{table_name}"')
+        self.execute(f'DELETE FROM "{self.table_name()}"')
 
     def table_name(self) -> str:
         return "SETTINGS"

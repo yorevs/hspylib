@@ -29,6 +29,29 @@ ON_TRIGGER_CB = TypeVar("ON_TRIGGER_CB", bound=Callable[["TUIMenu"], Optional["T
 class TUIMenu(TUIComponent, ABC):
     """Provide a base class for terminal UI menus."""
 
+    @staticmethod
+    def prompt(
+        label: str,
+        dest: str = None,
+        min_length: int = 1,
+        max_length: int = 32,
+        validator: InputValidator = None
+    ) -> Optional[Namespace]:
+        # fmt: off
+        form_fields = (
+            MenuInput.builder()
+                .field()
+                .label(label)
+                .dest(dest or label)
+                .validator(validator or InputValidator.words(min_length, max_length))
+                .min_max_length(min_length, max_length)
+                .build()
+            .build()
+        )
+        # fmt: on
+
+        return minput(form_fields)
+
     def __init__(self, parent: Optional["TUIMenu"] = None, title: str = "", tooltip: str = ""):
         super().__init__(title)
         self._tooltip = tooltip
@@ -78,24 +101,6 @@ class TUIMenu(TUIComponent, ABC):
         """
         self.writeln(wait_message)
         Keyboard.wait_keystroke()
-
-    def prompt(
-        self, label: str, dest: str = None, min_length: int = 1, max_length: int = 32, validator: InputValidator = None
-    ) -> Optional[Namespace]:
-        # fmt: off
-        form_fields = (
-            MenuInput.builder()
-                .field()
-                .label(label)
-                .dest(dest or label)
-                .validator(validator or InputValidator.words(min_length, max_length))
-                .min_max_length(min_length, max_length)
-                .build()
-            .build()
-        )
-        # fmt: on
-
-        return minput(form_fields)
 
     def _default_trigger_cb(self, source: Optional["TUIMenu"]) -> Optional["TUIMenu"]:
         """Provide a default trigger callback when a menu is activated. Provided a source menu, returns it's parent.

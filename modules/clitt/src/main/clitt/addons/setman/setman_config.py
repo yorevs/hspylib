@@ -30,9 +30,11 @@ class SetmanConfig(DBConfiguration):
         return self._database
 
     @property
-    def encoded_file(self) -> str:
+    def encoded_db(self) -> str:
+        """Return the SetMan encoded database name."""
         return f"{self.database}-encoded"
 
     @property
-    def decoded_file(self) -> str:
+    def decoded_db(self) -> str:
+        """Return the SetMan decoded database name."""
         return f"{self.database}-decoded"
