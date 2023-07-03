@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.30
+# hspylib-datasource v0.9.31
 #
 # Package: main.datasource
 """Package initialization."""
@@ -15,8 +15,7 @@ __all__ = [
   'firebase', 
   'identity', 
   'mysql', 
-  'postgres', 
   'redis', 
   'sqlite'
 ]
-__version__ = '0.9.30'
+__version__ = '0.9.31'

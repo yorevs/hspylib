@@ -14,6 +14,5 @@ package: hspylib, version: latest, space: global, mode: gt
 /* Application dependencies */
 
 package: retry, version: latest, space: user
-package: psycopg2, version: latest, space: user
 package: PyMySQL, version: latest, space: user
 package: redis, version: latest, space: user

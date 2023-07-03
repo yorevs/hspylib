@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.107
+# hspylib-kafman v0.9.108
 #
 # Package: main.kafman.core.schema.json
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
   'json_type', 
   'property'
 ]
-__version__ = '0.9.107'
+__version__ = '0.9.108'
