@@ -1,18 +1,18 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="menu_dashboard_demo" type="PythonConfigurationType" factoryName="Python" folderName="Clitt-Demo" nameIsGenerated="true">
-    <module name="HsPyLib.hspylib" />
+  <configuration default="false" name="tui_screen_demo" type="PythonConfigurationType" factoryName="Python" folderName="Clitt-Demo" nameIsGenerated="true">
+    <module name="HsPyLib.clitt" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/clitt/src/demo/tui/mdashboard" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/clitt/src/demo/tui" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/clitt/src/demo/tui/mdashboard/menu_dashboard_demo.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/clitt/src/demo/tui/tui_screen_demo.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
