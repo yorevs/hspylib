@@ -14,12 +14,12 @@
 """
 from argparse import ArgumentParser
 from functools import partial
-from hspylib.modules.application.parser_action import ParserAction
+from hspylib.modules.application.argparse.parser_action import ParserAction
 from typing import Any, Union
 
 
 class ArgumentsBuilder:
-    """TODO"""
+    """Class to provide an argument parser builder."""
 
     def __init__(self, arg_parser: ArgumentParser):
         self._arg_parser = arg_parser
@@ -33,7 +33,7 @@ class ArgumentsBuilder:
         action: ParserAction = ParserAction.STORE,
         default: Any = None,
     ) -> "ArgumentsBuilder":
-        """TODO"""
+        """Assign a new argument to the parser."""
 
         add_arg = partial(
             self._arg_parser.add_argument,

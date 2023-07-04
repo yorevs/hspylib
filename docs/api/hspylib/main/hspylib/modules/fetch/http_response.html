@@ -96,11 +96,11 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="k">class</span> <span class="nc">HttpResponse</span><span class="p">:</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that represents an HTTP status.&quot;&quot;&quot;</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HttpResponse&quot;</span><span class="p">:</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an HTTP status based on a Requests.Response object.&quot;&quot;&quot;</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="n">HttpMethod</span><span class="o">.</span><span class="n">value_of</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">),</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
@@ -148,11 +148,11 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
     </div>
     <a class="headerlink" href="#HttpResponse"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="HttpResponse-24"><a href="#HttpResponse-24"><span class="linenos">24</span></a><span class="k">class</span> <span class="nc">HttpResponse</span><span class="p">:</span>
-</span><span id="HttpResponse-25"><a href="#HttpResponse-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="HttpResponse-25"><a href="#HttpResponse-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that represents an HTTP status.&quot;&quot;&quot;</span>
 </span><span id="HttpResponse-26"><a href="#HttpResponse-26"><span class="linenos">26</span></a>
 </span><span id="HttpResponse-27"><a href="#HttpResponse-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="HttpResponse-28"><a href="#HttpResponse-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HttpResponse&quot;</span><span class="p">:</span>
-</span><span id="HttpResponse-29"><a href="#HttpResponse-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="HttpResponse-29"><a href="#HttpResponse-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an HTTP status based on a Requests.Response object.&quot;&quot;&quot;</span>
 </span><span id="HttpResponse-30"><a href="#HttpResponse-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span>
 </span><span id="HttpResponse-31"><a href="#HttpResponse-31"><span class="linenos">31</span></a>            <span class="n">HttpMethod</span><span class="o">.</span><span class="n">value_of</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">),</span>
 </span><span id="HttpResponse-32"><a href="#HttpResponse-32"><span class="linenos">32</span></a>            <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
@@ -187,7 +187,7 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
 </span></pre></div>
 
 
-            <div class="docstring"><p>TODO</p>
+            <div class="docstring"><p>Class that represents an HTTP status.</p>
 </div>
 
 
@@ -240,7 +240,7 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
     <a class="headerlink" href="#HttpResponse.of"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="HttpResponse.of-27"><a href="#HttpResponse.of-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="HttpResponse.of-28"><a href="#HttpResponse.of-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HttpResponse&quot;</span><span class="p">:</span>
-</span><span id="HttpResponse.of-29"><a href="#HttpResponse.of-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="HttpResponse.of-29"><a href="#HttpResponse.of-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an HTTP status based on a Requests.Response object.&quot;&quot;&quot;</span>
 </span><span id="HttpResponse.of-30"><a href="#HttpResponse.of-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span>
 </span><span id="HttpResponse.of-31"><a href="#HttpResponse.of-31"><span class="linenos">31</span></a>            <span class="n">HttpMethod</span><span class="o">.</span><span class="n">value_of</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">),</span>
 </span><span id="HttpResponse.of-32"><a href="#HttpResponse.of-32"><span class="linenos">32</span></a>            <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
@@ -252,7 +252,7 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
 </span></pre></div>
 
 
-            <div class="docstring"><p>TODO</p>
+            <div class="docstring"><p>Create an HTTP status based on a Requests.Response object.</p>
 </div>
 
 

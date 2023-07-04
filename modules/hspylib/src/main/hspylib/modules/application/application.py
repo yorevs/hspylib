@@ -106,12 +106,11 @@ class Application(metaclass=AbstractSingleton):
         check_state(log_init(self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
 
     def run(self, *params, **kwargs) -> None:
-        """Main entry point handler"""
+        """Main entry point handler."""
         today = now()
         no_exit = "no_exit" in kwargs
         log.info("Application %s started %s", self._app_name, today)
         try:
-            # Perform application cleanup after execution
             atexit.register(self._cleanup)
             self._setup_arguments()
             self._args = self._arg_parser.parse_args(*params)
@@ -123,7 +122,7 @@ class Application(metaclass=AbstractSingleton):
             syserr(f"\n### Error {self._app_name} -> {err}\n\n")
             raise ApplicationError(f"Application failed to execute => {err}") from err
         except Exception as err:
-            _, code, tb = sys.exc_info()
+            _, _, tb = sys.exc_info()
             if tb:
                 traceback.print_exc(file=sys.stderr)
             log.error("Application execution failed %s => %s", today, err)
@@ -132,7 +131,7 @@ class Application(metaclass=AbstractSingleton):
         finally:
             log.info("Application %s finished %s", self._app_name, today)
             if self._exit_code == ExitStatus.NOT_SET:
-                _, code, tb = sys.exc_info()
+                _, code, _ = sys.exc_info()
                 self._exit_code = ExitStatus.of(code)
             if not no_exit:
                 Application.exit(self._exit_code.val)
@@ -148,15 +147,15 @@ class Application(metaclass=AbstractSingleton):
             Application.exit(self._exit_code.val)
 
     def version(self) -> str:
-        """Return the application version"""
+        """Return the application version."""
         return str(self._app_version)
 
     def name(self) -> str:
-        """Return the application name"""
+        """Return the application name."""
         return self._app_name
 
     def get_arg(self, arg_name: str) -> Optional[Union[str, list]]:
-        """Get the argument value named by arg_name"""
+        """Get the argument value named by arg_name."""
         return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
 
     def _with_options(self) -> "OptionsBuilder":
@@ -167,18 +166,18 @@ class Application(metaclass=AbstractSingleton):
         """Add arguments to the application."""
         return ArgumentsBuilder(self._arg_parser)
 
-    def _with_chained_args(self, subcommand_name: str, subcommand_help: str = None) -> "ChainedArgumentsBuilder":
+    def _with_chained_args(self, subcommand: str, subcommand_help: str = None) -> "ChainedArgumentsBuilder":
         """Add chained arguments to the application."""
-        return ChainedArgumentsBuilder(self._arg_parser, subcommand_name, subcommand_help)
+        return ChainedArgumentsBuilder(self._arg_parser, subcommand, subcommand_help)
 
     @abstractmethod
     def _setup_arguments(self) -> None:
-        """Initialize application parameters and options"""
+        """Initialize application parameters and options."""
 
     @abstractmethod
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Execute the application's main statements"""
+        """Execute the application's main statements."""
 
     @abstractmethod
     def _cleanup(self) -> None:
-        """Execute http_code cleanup before exiting"""
+        """Execute http_code cleanup before exiting."""

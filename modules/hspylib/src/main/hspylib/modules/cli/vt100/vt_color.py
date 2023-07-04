@@ -41,23 +41,23 @@ class VtColor(Enumeration):
 
     @classmethod
     def colorize(cls, input_string: str) -> str:
-        """TODO"""
+        """Colorize the input string by replacing the color names by it's actual VT100 code."""
         colorized = input_string
         for color in cls.names():
-            colorized = cls._replace_all(colorized, color)
+            colorized = cls._replace_name(colorized, color)
         return colorized
 
     @classmethod
     def strip_colors(cls, input_string: str) -> str:
-        """TODO"""
+        """Strip all vt_colors from the string."""
         plain = input_string
         for color in cls.names():
             plain = plain.replace(f"%{color}%", "")
         return plain
 
     @classmethod
-    def _replace_all(cls, input_string: str, color_name: str) -> str:
-        """TODO"""
+    def _replace_name(cls, input_string: str, color_name: str) -> str:
+        """Replace a single color name by it's VT100 escape code."""
         color = VtColor.value_of(color_name.upper())
         return input_string.replace(color.placeholder, color.code)
 

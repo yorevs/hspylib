@@ -14,12 +14,12 @@
 """
 from argparse import ArgumentParser
 from functools import partial
-from hspylib.modules.application.parser_action import ParserAction
+from hspylib.modules.application.argparse.parser_action import ParserAction
 from typing import Any
 
 
 class OptionsBuilder:
-    """TODO"""
+    """Class to provide an option parser builder."""
 
     def __init__(self, arg_parser: ArgumentParser):
         self._arg_parser = arg_parser
@@ -36,7 +36,7 @@ class OptionsBuilder:
         nargs: str | int = None,
         default: Any = None,
     ) -> "OptionsBuilder":
-        """TODO"""
+        """Assign a new option to the parser."""
         add_arg = partial(
             self._arg_parser.add_argument,
             f"-{shortopt.replace('^-', '')[0]}",

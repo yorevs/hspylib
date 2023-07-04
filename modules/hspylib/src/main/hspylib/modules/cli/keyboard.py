@@ -69,24 +69,24 @@ class Keyboard(Enumeration):
     VK_H = 'H'; VK_P = 'P'; VK_X = 'X'
 
     # Numbers
-    VK_ZERO         = '0'; VK_FIVE  = '5'
-    VK_ONE          = '1'; VK_SIX   = '6'
-    VK_TWO          = '2'; VK_SEVEN = '7'
-    VK_THREE        = '3'; VK_EIGHT = '8'
-    VK_FOUR         = '4'; VK_NINE  = '9'
+    VK_ZERO          = '0'; VK_FIVE  = '5'
+    VK_ONE           = '1'; VK_SIX   = '6'
+    VK_TWO           = '2'; VK_SEVEN = '7'
+    VK_THREE         = '3'; VK_EIGHT = '8'
+    VK_FOUR          = '4'; VK_NINE  = '9'
 
     # Punctuation
-    VK_BACKTICK     = '`'; VK_OPEN_PARENTHESIS  = '('; VK_PIPE              = '|'
-    VK_TILDE        = '~'; VK_CLOSE_PARENTHESIS = ')'; VK_BACK_SLASH        = '\\'
-    VK_EXCL_MARK    = '!'; VK_MINUS             = '-'; VK_BACK_COLON        = ':'
-    VK_AT           = '@'; VK_UNDERSCORE        = '_'; VK_BACK_SEMI_COLON   = ';'
-    VK_SHARP        = '#'; VK_PLUS              = '+'; VK_QUOTE             = '\''
-    VK_DOLLAR       = '$'; VK_EQUALS            = '='; VK_DOUBLE_QUOTE      = '"'
-    VK_PERCENTAGE   = '%'; VK_LEFT_BRACKET      = '['; VK_LOWER             = '<'
-    VK_CIRCUMFLEX   = '^'; VK_RIGHT_BRACKET     = ']'; VK_GREATER           = '>'
-    VK_AMPERSAND    = '&'; VK_LEFT_BRACE        = '{'; VK_COMMA             = ','
-    VK_ASTERISK     = '*'; VK_RIGHT_BRACE       = '}'; VK_PERIOD            = '.'
-    VK_SLASH        = '/'; VK_QUESTION_MARK     = '?'
+    VK_BACKTICK      = '`'; VK_OPEN_PARENTHESIS  = '('; VK_PIPE              = '|'
+    VK_TILDE         = '~'; VK_CLOSE_PARENTHESIS = ')'; VK_BACK_SLASH        = '\\'
+    VK_EXCL_MARK     = '!'; VK_MINUS             = '-'; VK_BACK_COLON        = ':'
+    VK_AT            = '@'; VK_UNDERSCORE        = '_'; VK_BACK_SEMI_COLON   = ';'
+    VK_SHARP         = '#'; VK_PLUS              = '+'; VK_QUOTE             = '\''
+    VK_DOLLAR        = '$'; VK_EQUALS            = '='; VK_DOUBLE_QUOTE      = '"'
+    VK_PERCENTAGE    = '%'; VK_LEFT_BRACKET      = '['; VK_LOWER             = '<'
+    VK_CIRCUMFLEX    = '^'; VK_RIGHT_BRACKET     = ']'; VK_GREATER           = '>'
+    VK_AMPERSAND     = '&'; VK_LEFT_BRACE        = '{'; VK_COMMA             = ','
+    VK_ASTERISK      = '*'; VK_RIGHT_BRACE       = '}'; VK_PERIOD            = '.'
+    VK_SLASH         = '/'; VK_QUESTION_MARK     = '?'
 
     # fmt: on
 
@@ -139,26 +139,22 @@ class Keyboard(Enumeration):
     def __repr__(self) -> str:
         return str(self)
 
-    def isdigit(self) -> bool:
-        """TODO"""
-        return str(self.value).isdigit()
-
-    def isalpha(self) -> bool:
-        """TODO"""
-        return str(self.value).isalpha()
-
-    def isalnum(self) -> bool:
-        """TODO"""
-        return str(self.value).isalnum()
-
-    def ispunct(self) -> bool:
-        """TODO"""
-        return all(ch in string.punctuation for ch in str(self.value))
-
     @property
     def val(self) -> str:
         return str(self.value)
 
+    def isdigit(self) -> bool:
+        """Return True if the keystroke is a digit string, False otherwise."""
+        return str(self.value).isdigit()
 
-if __name__ == "__main__":
-    print(Keyboard.getch(3))
+    def isalpha(self) -> bool:
+        """Return True if the keystroke is alphabetic string, False otherwise."""
+        return str(self.value).isalpha()
+
+    def isalnum(self) -> bool:
+        """Return True if the keystroke is alpha-numeric string, False otherwise."""
+        return str(self.value).isalnum()
+
+    def ispunct(self) -> bool:
+        """Return True if the keystroke is a punctuation string, False otherwise."""
+        return all(ch in string.punctuation for ch in str(self.value))

@@ -29,7 +29,7 @@ import subprocess
 
 
 class Terminal(ABC):
-    """Utility class to provide execution of commands on a terminal"""
+    """Utility class to provide execution of commands on a terminal."""
 
     @staticmethod
     def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
@@ -65,7 +65,9 @@ class Terminal(ABC):
                 process.register(proc.stdout)
                 while not Keyboard.kbhit():
                     if poll_obj := process.poll(0.3):
-                        line = bytes(proc.stdout.readline()).decode(Charset.UTF_8.val).strip()
+                        line = bytes(proc.stdout.readline()) \
+                            .decode(Charset.UTF_8.val) \
+                            .strip()
                         sysout(line)
                         log.debug("Polling returned: %s", str(poll_obj))
                 os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
@@ -75,7 +77,7 @@ class Terminal(ABC):
             log.error("Command failed: %s => %s", cmd_line, err)
 
     @staticmethod
-    def open_file(filename: str):
+    def open_file(filename: str) -> None:
         """Open the specified file using the default editor."""
         my_os = os.environ.get("HHS_MY_OS", platform.system())
         if "Darwin" == my_os:

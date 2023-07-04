@@ -31,8 +31,8 @@ class UriScheme(Enumeration):
 
     @classmethod
     def of(cls, scheme: str) -> "UriScheme":
+        """Create a URI scheme from a string."""
         try:
-            e = super().of_value(scheme, ignore_case=True)
-            return e
+            return super().of_value(scheme, ignore_case=True)
         except TypeError as err:
             raise NotImplementedError(f"'{scheme}' scheme is not supported") from err

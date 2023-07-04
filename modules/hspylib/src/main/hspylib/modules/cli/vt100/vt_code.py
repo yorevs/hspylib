@@ -28,6 +28,11 @@ class VtCode(Enumeration):
 
     # fmt: off
 
+    EOL = os.linesep                        # Line separator    -> (End Of Line)
+
+    SCA = Vt100.alternate_screen()          # ^[?1049h          -> Switch to alternate screen buffer
+    SCM = Vt100.alternate_screen(False)     # ^[?1049l          -> Switch to main screen buffer
+
     CSV = Vt100.save_cursor()               # ^[7 -> Save cursor position and attributes
     CRE = Vt100.restore_cursor()            # ^[8 -> Restore cursor position and attributes
     RIS = Vt100.reset()                     # ^[c -> Reset terminal to initial state
@@ -47,20 +52,14 @@ class VtCode(Enumeration):
 
     HOM = Vt100.set_cursor_pos()            # ^[[H  -> Move cursor to upper left corner
 
-    SCA = Vt100.alternate_screen()          # ^[?1049h -> Switch to alternate screen buffer
-    SCM = Vt100.alternate_screen(False)     # ^[?1049l -> Switch to main screen buffer
+    # Commands that take arguments. The following entries will be invoked as Callable(args).
 
-    EOL = os.linesep                        # Line separator (eol)
-
-    # For all commands that take arguments, we need to add to this map, so we can call it.
-    # The following entry values must defined as auto(), so they can be invoked as Callable
-
-    MOD = "MOD"  # ^[[<m1;m2;m3>m  -> Set terminal modes
-    CUP = "CUP"  # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
-    CUU = "CUU"  # ^[[<n>A         -> Move cursor up n times
-    CUD = "CUD"  # ^[[<n>B         -> Move cursor down n times
-    CUF = "CUF"  # ^[[<n>C         -> Move cursor right n times
-    CUB = "CUB"  # ^[[<n>D         -> Move cursor left n times
+    MOD = "MOD"                             # ^[[<m1;m2;m3>m  -> Set terminal modes
+    CUP = "CUP"                             # ^[[<v>;<h>H     -> Move cursor to screen location <v,h>
+    CUU = "CUU"                             # ^[[<n>A         -> Move cursor up n times
+    CUD = "CUD"                             # ^[[<n>B         -> Move cursor down n times
+    CUF = "CUF"                             # ^[[<n>C         -> Move cursor right n times
+    CUB = "CUB"                             # ^[[<n>D         -> Move cursor left n times
 
     # fmt: on
 
@@ -85,7 +84,7 @@ class VtCode(Enumeration):
 
     @classmethod
     def strip_codes(cls, input_string: str) -> str:
-        """TODO"""
+        """Strip all vt_codes from the string."""
         plain = input_string
         for code in cls.names():
             plain = plain.replace(f"%{code}%", "")
@@ -117,10 +116,8 @@ class VtCode(Enumeration):
 
     @property
     def code(self) -> str:
-        """Decode the string into a VT_CODE enum"""
         return str(self)
 
     @property
     def placeholder(self) -> str:
-        """Decode the string into a VT_CODE enum"""
         return f"%{self.name}%"

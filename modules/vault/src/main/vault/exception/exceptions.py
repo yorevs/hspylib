@@ -23,6 +23,10 @@ class VaultOpenError(HSBaseException):
     """Raised when opening the vault"""
 
 
+class VaultAuthenticationError(HSBaseException):
+    """Raised when vault authentication has failed"""
+
+
 class VaultSecurityException(HSBaseException):
     """Raised when something unexpected happened to vault file"""
 
