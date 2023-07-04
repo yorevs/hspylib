@@ -12,40 +12,41 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.exception.exceptions import NotATerminalError
-from hspylib.core.tools.commons import is_debugging, sysout
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from typing import Any, Optional, Tuple
-
+import logging as log
 import os
 import re
 import sys
 import termios
 import tty
+from typing import Any, Tuple
+
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.tools.commons import is_debugging, sysout
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 
-def screen_size() -> tuple[int, ...]:
+def screen_size() -> Tuple[int, ...]:
     """Retrieve the size of the terminal"""
     if not sys.stdout.isatty():
-        raise NotATerminalError("screen_size:: Requires a terminal (TTY)")
+        log.error(NotATerminalError("screen_size:: Requires a terminal (TTY)"))
+        return 0, 0
 
     return tuple(map(int, os.popen("stty size").read().split()))
 
 
 # Solution taken from:
 # https://stackoverflow.com/questions/46651602/determine-the-terminal-cursor-position-with-an-ansi-sequence-in-python-3
-def get_cursor_position() -> Optional[Tuple[int, int]]:
+def get_cursor_position() -> Tuple[int, int]:
     """Get the terminal cursor position"""
-    if not sys.stdout.isatty():
-        raise NotATerminalError("get_cursor_position:: Requires a terminal (TTY)")
+    pos = 0, 0
 
-    if is_debugging():
-        return 0, 0
+    if is_debugging() or not sys.stdout.isatty():
+        log.error(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
+        return pos
 
     buf = ""
     stdin = sys.stdin.fileno()
-    attrs = termios.tcgetattr(stdin)
-    pos = None
+    attrs = termios.tcgetattr(stdin)  # Save terminal attributes
 
     try:
         tty.setcbreak(stdin, termios.TCSANOW)
@@ -55,10 +56,12 @@ def get_cursor_position() -> Optional[Tuple[int, int]]:
             buf += sys.stdin.read(1)
             if buf[-1] == "R":
                 break
+        # If the response is 'Esc[r;cR'
         if matches := re.match(r"^\x1b\[(\d*);(\d*)R", buf):
             groups = matches.groups()
             pos = int(groups[0]), int(groups[1])
     finally:
+        # Reset terminal attributes
         termios.tcsetattr(stdin, termios.TCSANOW, attrs)
 
     return pos
@@ -69,7 +72,8 @@ def set_enable_echo(enabled: bool = True) -> None:
     :param enabled: whether is enabled or not
     """
     if not sys.stdout.isatty():
-        raise NotATerminalError("set_enable_echo:: Requires a terminal (TTY)")
+        log.error(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
+        return
 
     os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
 
@@ -78,6 +82,10 @@ def set_auto_wrap(auto_wrap: bool = True) -> None:
     """Set auto-wrap mode in the terminal
     :param auto_wrap: whether auto_wrap is set or not
     """
+    if not sys.stdout.isatty():
+        log.warning(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
+        return
+
     sysout(Vt100.set_auto_wrap(auto_wrap), end="")
 
 
@@ -85,6 +93,10 @@ def set_show_cursor(show_cursor: bool = True) -> None:
     """Show or hide cursor in the terminal
     :param show_cursor: whether to show or hide he cursor
     """
+    if not sys.stdout.isatty():
+        log.warning(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
+        return
+
     sysout(Vt100.set_show_cursor(show_cursor), end="")
 
 

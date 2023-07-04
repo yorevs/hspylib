@@ -30,7 +30,7 @@ T = TypeVar("T")
 
 
 class TTLCache(Generic[T], metaclass=Singleton):
-    """TODO"""
+    """Class to provide a cache with time-to-live timeout."""
 
     CACHE_SERVICE = "HS-CACHE-SERVICE"
 
@@ -40,7 +40,7 @@ class TTLCache(Generic[T], metaclass=Singleton):
         keyring.set_keyring(TTLKeyringBE(ttl_minutes, ttl_seconds, safe_delete_file))
 
     def save(self, key: str, entry: T) -> str:
-        """TODO"""
+        """Save an entry identified by key containing the given value."""
         check_not_none(key, entry)
         with self._lock:
             with tempfile.NamedTemporaryFile(delete=False, mode="w", encoding=Charset.UTF_8.val) as f_temp:
@@ -50,7 +50,7 @@ class TTLCache(Generic[T], metaclass=Singleton):
                 return f_temp.name
 
     def read(self, key: str) -> Optional[T]:
-        """TODO"""
+        """Read an entry identified by key."""
         check_not_none(key)
         with self._lock:
             cache_name = keyring.get_password(self.CACHE_SERVICE, key)
@@ -61,10 +61,11 @@ class TTLCache(Generic[T], metaclass=Singleton):
                     content = b64_decode(f_cache.readline())
                     return ast.literal_eval(content)
             except (ValueError, TypeError, SyntaxError):
-                return None
+                pass  # Just ignore those exceptions.
+        return None
 
     def delete(self, key: str) -> None:
-        """TODO"""
+        """Delete an entry identified by key."""
         check_not_none(key)
         with self._lock:
             keyring.delete_password(self.CACHE_SERVICE, key)

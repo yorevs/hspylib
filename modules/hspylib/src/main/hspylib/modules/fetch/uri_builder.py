@@ -40,12 +40,14 @@ class UriBuilder:
 
     @classmethod
     def ensure_scheme(cls, url_string: str, scheme: str | UriScheme = UriScheme.HTTP) -> str:
+        """Ensure the URL string contains the URI Scheme."""
         if not url_string.startswith(tuple(UriScheme.values())):
             url_string = f"{scheme if isinstance(scheme, str) else str(scheme)}://{url_string}"
         return url_string
 
     @classmethod
     def parse(cls, url_string: str) -> "UriBuilder":
+        """Parse a URL string into a URI builder."""
         uri_parts: SplitResult = urlsplit(cls.ensure_scheme(url_string))
         return (
             UriBuilder()

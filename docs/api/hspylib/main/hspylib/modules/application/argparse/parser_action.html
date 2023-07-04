@@ -78,7 +78,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
 
                         <div class="docstring"><p>@project: HsPyLib
 @package: hspylib.modules.application.argparse
-   @file: argument_chain_builder.py
+   @file: parser_action.py
 @created: hu, 14 Feb 2022
  @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
    @site: <a href="https://github.com/yorevs/hspylib">https://github.com/yorevs/hspylib</a>
@@ -97,7 +97,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">   @project: HsPyLib</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">   @package: hspylib.modules.application.argparse</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">      @file: argument_chain_builder.py</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">      @file: parser_action.py</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">   @created: hu, 14 Feb 2022</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    @author: &lt;B&gt;H&lt;/B&gt;ugo &lt;B&gt;S&lt;/B&gt;aporetti &lt;B&gt;J&lt;/B&gt;unior&quot;</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">      @site: https://github.com/yorevs/hspylib</span>
@@ -109,35 +109,41 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="k">class</span> <span class="nc">ParserAction</span><span class="p">(</span><span class="n">Enumeration</span><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent an argument parser action.&quot;&quot;&quot;</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="c1"># fmt: off</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="c1"># This stores a list, and appends each argument value to the list.</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">APPEND</span>          <span class="o">=</span> <span class="s1">&#39;append&#39;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">APPEND</span> <span class="o">=</span> <span class="s1">&#39;append&#39;</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="c1"># This stores a list, and appends the value specified by the const keyword argument to the list.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">APPEND_CONST</span>    <span class="o">=</span> <span class="s1">&#39;append_const&#39;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">APPEND_CONST</span> <span class="o">=</span> <span class="s1">&#39;append_const&#39;</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="c1"># This counts the number of times a keyword argument occurs.</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">COUNT</span>           <span class="o">=</span> <span class="s1">&#39;count&#39;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">COUNT</span> <span class="o">=</span> <span class="s1">&#39;count&#39;</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="c1"># This just stores the argument’s value.</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">STORE</span>           <span class="o">=</span> <span class="s1">&#39;store&#39;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">STORE</span> <span class="o">=</span> <span class="s1">&#39;store&#39;</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="c1"># This stores the value specified by the const keyword argument.</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="n">STORE_CONST</span>     <span class="o">=</span> <span class="s1">&#39;store_const&#39;</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="n">STORE_CONST</span> <span class="o">=</span> <span class="s1">&#39;store_const&#39;</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="c1"># These is a special cases of &#39;store_const&#39; used for storing True.</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">STORE_TRUE</span>      <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">STORE_TRUE</span> <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
 </span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="c1"># These is a special cases of &#39;store_const&#39; used for storing False.</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">STORE_FALSE</span>     <span class="o">=</span> <span class="s1">&#39;store_false&#39;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">STORE_FALSE</span> <span class="o">=</span> <span class="s1">&#39;store_false&#39;</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
 </span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="c1"># This expects a version= keyword argument, prints version information and exits when invoked.</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">VERSION</span>         <span class="o">=</span> <span class="s1">&#39;version&#39;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;version&#39;</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="c1"># fmt: on</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -154,46 +160,52 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
     </div>
     <a class="headerlink" href="#ParserAction"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ParserAction-19"><a href="#ParserAction-19"><span class="linenos">19</span></a><span class="k">class</span> <span class="nc">ParserAction</span><span class="p">(</span><span class="n">Enumeration</span><span class="p">):</span>
-</span><span id="ParserAction-20"><a href="#ParserAction-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO&quot;&quot;&quot;</span>
+</span><span id="ParserAction-20"><a href="#ParserAction-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent an argument parser action.&quot;&quot;&quot;</span>
 </span><span id="ParserAction-21"><a href="#ParserAction-21"><span class="linenos">21</span></a>
 </span><span id="ParserAction-22"><a href="#ParserAction-22"><span class="linenos">22</span></a>    <span class="c1"># fmt: off</span>
 </span><span id="ParserAction-23"><a href="#ParserAction-23"><span class="linenos">23</span></a>
 </span><span id="ParserAction-24"><a href="#ParserAction-24"><span class="linenos">24</span></a>    <span class="c1"># This stores a list, and appends each argument value to the list.</span>
-</span><span id="ParserAction-25"><a href="#ParserAction-25"><span class="linenos">25</span></a>    <span class="n">APPEND</span>          <span class="o">=</span> <span class="s1">&#39;append&#39;</span>
+</span><span id="ParserAction-25"><a href="#ParserAction-25"><span class="linenos">25</span></a>    <span class="n">APPEND</span> <span class="o">=</span> <span class="s1">&#39;append&#39;</span>
 </span><span id="ParserAction-26"><a href="#ParserAction-26"><span class="linenos">26</span></a>
 </span><span id="ParserAction-27"><a href="#ParserAction-27"><span class="linenos">27</span></a>    <span class="c1"># This stores a list, and appends the value specified by the const keyword argument to the list.</span>
-</span><span id="ParserAction-28"><a href="#ParserAction-28"><span class="linenos">28</span></a>    <span class="n">APPEND_CONST</span>    <span class="o">=</span> <span class="s1">&#39;append_const&#39;</span>
+</span><span id="ParserAction-28"><a href="#ParserAction-28"><span class="linenos">28</span></a>    <span class="n">APPEND_CONST</span> <span class="o">=</span> <span class="s1">&#39;append_const&#39;</span>
 </span><span id="ParserAction-29"><a href="#ParserAction-29"><span class="linenos">29</span></a>
 </span><span id="ParserAction-30"><a href="#ParserAction-30"><span class="linenos">30</span></a>    <span class="c1"># This counts the number of times a keyword argument occurs.</span>
-</span><span id="ParserAction-31"><a href="#ParserAction-31"><span class="linenos">31</span></a>    <span class="n">COUNT</span>           <span class="o">=</span> <span class="s1">&#39;count&#39;</span>
+</span><span id="ParserAction-31"><a href="#ParserAction-31"><span class="linenos">31</span></a>    <span class="n">COUNT</span> <span class="o">=</span> <span class="s1">&#39;count&#39;</span>
 </span><span id="ParserAction-32"><a href="#ParserAction-32"><span class="linenos">32</span></a>
 </span><span id="ParserAction-33"><a href="#ParserAction-33"><span class="linenos">33</span></a>    <span class="c1"># This just stores the argument’s value.</span>
-</span><span id="ParserAction-34"><a href="#ParserAction-34"><span class="linenos">34</span></a>    <span class="n">STORE</span>           <span class="o">=</span> <span class="s1">&#39;store&#39;</span>
+</span><span id="ParserAction-34"><a href="#ParserAction-34"><span class="linenos">34</span></a>    <span class="n">STORE</span> <span class="o">=</span> <span class="s1">&#39;store&#39;</span>
 </span><span id="ParserAction-35"><a href="#ParserAction-35"><span class="linenos">35</span></a>
 </span><span id="ParserAction-36"><a href="#ParserAction-36"><span class="linenos">36</span></a>    <span class="c1"># This stores the value specified by the const keyword argument.</span>
-</span><span id="ParserAction-37"><a href="#ParserAction-37"><span class="linenos">37</span></a>    <span class="n">STORE_CONST</span>     <span class="o">=</span> <span class="s1">&#39;store_const&#39;</span>
+</span><span id="ParserAction-37"><a href="#ParserAction-37"><span class="linenos">37</span></a>    <span class="n">STORE_CONST</span> <span class="o">=</span> <span class="s1">&#39;store_const&#39;</span>
 </span><span id="ParserAction-38"><a href="#ParserAction-38"><span class="linenos">38</span></a>
 </span><span id="ParserAction-39"><a href="#ParserAction-39"><span class="linenos">39</span></a>    <span class="c1"># These is a special cases of &#39;store_const&#39; used for storing True.</span>
-</span><span id="ParserAction-40"><a href="#ParserAction-40"><span class="linenos">40</span></a>    <span class="n">STORE_TRUE</span>      <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span>
+</span><span id="ParserAction-40"><a href="#ParserAction-40"><span class="linenos">40</span></a>    <span class="n">STORE_TRUE</span> <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span>
 </span><span id="ParserAction-41"><a href="#ParserAction-41"><span class="linenos">41</span></a>
 </span><span id="ParserAction-42"><a href="#ParserAction-42"><span class="linenos">42</span></a>    <span class="c1"># These is a special cases of &#39;store_const&#39; used for storing False.</span>
-</span><span id="ParserAction-43"><a href="#ParserAction-43"><span class="linenos">43</span></a>    <span class="n">STORE_FALSE</span>     <span class="o">=</span> <span class="s1">&#39;store_false&#39;</span>
+</span><span id="ParserAction-43"><a href="#ParserAction-43"><span class="linenos">43</span></a>    <span class="n">STORE_FALSE</span> <span class="o">=</span> <span class="s1">&#39;store_false&#39;</span>
 </span><span id="ParserAction-44"><a href="#ParserAction-44"><span class="linenos">44</span></a>
 </span><span id="ParserAction-45"><a href="#ParserAction-45"><span class="linenos">45</span></a>    <span class="c1"># This expects a version= keyword argument, prints version information and exits when invoked.</span>
-</span><span id="ParserAction-46"><a href="#ParserAction-46"><span class="linenos">46</span></a>    <span class="n">VERSION</span>         <span class="o">=</span> <span class="s1">&#39;version&#39;</span>
+</span><span id="ParserAction-46"><a href="#ParserAction-46"><span class="linenos">46</span></a>    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;version&#39;</span>
 </span><span id="ParserAction-47"><a href="#ParserAction-47"><span class="linenos">47</span></a>
 </span><span id="ParserAction-48"><a href="#ParserAction-48"><span class="linenos">48</span></a>    <span class="c1"># fmt: on</span>
+</span><span id="ParserAction-49"><a href="#ParserAction-49"><span class="linenos">49</span></a>
+</span><span id="ParserAction-50"><a href="#ParserAction-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ParserAction-51"><a href="#ParserAction-51"><span class="linenos">51</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="ParserAction-52"><a href="#ParserAction-52"><span class="linenos">52</span></a>
+</span><span id="ParserAction-53"><a href="#ParserAction-53"><span class="linenos">53</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ParserAction-54"><a href="#ParserAction-54"><span class="linenos">54</span></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>TODO</p>
+            <div class="docstring"><p>Represent an argument parser action.</p>
 </div>
 
 
                             <div id="ParserAction.APPEND" class="classattr">
                                 <div class="attr variable">
             <span class="name">APPEND</span>        =
-<span class="default_value">APPEND</span>
+<span class="default_value">append</span>
 
         
     </div>
@@ -205,7 +217,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.APPEND_CONST" class="classattr">
                                 <div class="attr variable">
             <span class="name">APPEND_CONST</span>        =
-<span class="default_value">APPEND_CONST</span>
+<span class="default_value">append_const</span>
 
         
     </div>
@@ -217,7 +229,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.COUNT" class="classattr">
                                 <div class="attr variable">
             <span class="name">COUNT</span>        =
-<span class="default_value">COUNT</span>
+<span class="default_value">count</span>
 
         
     </div>
@@ -229,7 +241,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.STORE" class="classattr">
                                 <div class="attr variable">
             <span class="name">STORE</span>        =
-<span class="default_value">STORE</span>
+<span class="default_value">store</span>
 
         
     </div>
@@ -241,7 +253,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.STORE_CONST" class="classattr">
                                 <div class="attr variable">
             <span class="name">STORE_CONST</span>        =
-<span class="default_value">STORE_CONST</span>
+<span class="default_value">store_const</span>
 
         
     </div>
@@ -253,7 +265,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.STORE_TRUE" class="classattr">
                                 <div class="attr variable">
             <span class="name">STORE_TRUE</span>        =
-<span class="default_value">STORE_TRUE</span>
+<span class="default_value">store_true</span>
 
         
     </div>
@@ -265,7 +277,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.STORE_FALSE" class="classattr">
                                 <div class="attr variable">
             <span class="name">STORE_FALSE</span>        =
-<span class="default_value">STORE_FALSE</span>
+<span class="default_value">store_false</span>
 
         
     </div>
@@ -277,7 +289,7 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
                             <div id="ParserAction.VERSION" class="classattr">
                                 <div class="attr variable">
             <span class="name">VERSION</span>        =
-<span class="default_value">VERSION</span>
+<span class="default_value">version</span>
 
         
     </div>

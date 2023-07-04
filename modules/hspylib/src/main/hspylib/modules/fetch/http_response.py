@@ -21,11 +21,11 @@ from typing import Optional
 
 
 class HttpResponse:
-    """TODO"""
+    """Class that represents an HTTP status."""
 
     @staticmethod
     def of(response: Response) -> "HttpResponse":
-        """TODO"""
+        """Create an HTTP status based on a Requests.Response object."""
         return HttpResponse(
             HttpMethod.value_of(response.request.method),
             response.url,

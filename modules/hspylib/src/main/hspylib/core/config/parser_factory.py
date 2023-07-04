@@ -27,7 +27,10 @@ PROPERTIES = TypeVar("PROPERTIES", bound=[Dict[str, Any]])
 
 
 class ParserFactory(ABC):
+    """Provide a properties parser factory."""
+
     class PropertyParser:
+        """Represent a property parser."""
         def __init__(self, parser: Callable[[TextIO], PROPERTIES]):
             self._parser = parser
 

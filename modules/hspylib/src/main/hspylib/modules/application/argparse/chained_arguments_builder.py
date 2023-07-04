@@ -14,12 +14,12 @@
 """
 from argparse import ArgumentParser
 from functools import partial
-from hspylib.modules.application.parser_action import ParserAction
+from hspylib.modules.application.argparse.parser_action import ParserAction
 from typing import Any, Union
 
 
 class ChainedArgumentsBuilder:
-    """TODO"""
+    """Class to provide chained arguments parser builder."""
 
     def __init__(self, arg_parser: ArgumentParser, subcommand_name: str, subcommand_help: str):
         self._arg_parser = arg_parser
@@ -29,7 +29,7 @@ class ChainedArgumentsBuilder:
         self._current = arg_parser
 
     def argument(self, name: str, help_string: str = None) -> "ChainedArgumentsBuilder":
-        """TODO"""
+        """Assign a new chained argument to the parser."""
 
         self._current = self._subparsers.add_parser(name, help=help_string)
 
@@ -44,7 +44,7 @@ class ChainedArgumentsBuilder:
         action: ParserAction = ParserAction.STORE,
         default: Any = None,
     ) -> "ChainedArgumentsBuilder":
-        """TODO"""
+        """Assign a new chained argument parameter to the parser."""
 
         add_arg = partial(
             self._current.add_argument,
@@ -72,7 +72,7 @@ class ChainedArgumentsBuilder:
         action: ParserAction = ParserAction.STORE,
         default: Any = None,
     ) -> "ChainedArgumentsBuilder":
-        """TODO"""
+        """Assign a new chained option parameter to the parser."""
 
         add_arg = partial(
             self._current.add_argument,

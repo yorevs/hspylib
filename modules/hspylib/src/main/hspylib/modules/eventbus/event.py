@@ -12,19 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
+from typing import Any
 
 from hspylib.core.namespace import Namespace
 
 
 class Event:
-    """TODO"""
+    """Class that represents an EventBus Event."""
 
     def __init__(self, event_name: str, **kwargs):
         self._name = event_name
         self._args = Namespace("EventArgs", True, **kwargs)
 
     def __str__(self) -> str:
-        return f"Event(name={self.name})"
+        return f"Event(name={self.name}  args={str(self.args)})"
 
     def __repr__(self):
         return str(self)
@@ -45,5 +46,5 @@ class Event:
         return self._name
 
     @property
-    def args(self) -> object:
+    def args(self) -> Any:
         return self._args

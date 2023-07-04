@@ -47,6 +47,9 @@ class Vault:
     # Vault keyring cache entry
     _VAULT_CACHE_NAME = "VAULT_KEY_SERVICE"
 
+    # Maximum authentication retries
+    MAX_AUTH_RETRIES = 3
+
     def __init__(self, resource_dir: str) -> None:
         self._is_unlocked = False
         self._passphrase = None
@@ -68,22 +71,25 @@ class Vault:
     @contextlib.contextmanager
     def open(self) -> bool:
         """Open and read the Vault file."""
-        try:
-            self._sanity_check()
+        retries = 0
+        self._sanity_check()
+        while not self._is_unlocked and not self._passphrase and retries < self.MAX_AUTH_RETRIES:
             self._passphrase = self._read_passphrase()
-            if not self._is_unlocked:
-                self._unlock_vault()
-                log.debug("Vault open and unlocked")
-            yield self._is_unlocked or None
-        except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
-            log.error("Authentication failure => %s", err)
-            syserr("Authentication failure!")
-            keyring.delete_password(self._VAULT_CACHE_NAME, self._configs.vault_user)
-        finally:
-            if self._is_unlocked:
-                self.close()
-            else:
-                Application.exit(ExitStatus.FAILED.val)
+            try:
+                if not self._is_unlocked:
+                    self._unlock_vault()
+                    log.debug("Vault open and unlocked")
+                yield self._is_unlocked
+            except (UnicodeDecodeError, InvalidToken, binascii.Error) as err:
+                log.error("Authentication failure => %s", err)
+                syserr("Authentication failure!")
+                keyring.delete_password(self._VAULT_CACHE_NAME, self._configs.vault_user)
+                self._passphrase = None
+                retries += 1
+        if self._is_unlocked:
+            self.close()
+        else:
+            Application.exit(ExitStatus.FAILED.val)
 
         return self._is_unlocked
 

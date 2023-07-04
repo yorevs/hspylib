@@ -21,7 +21,7 @@ import sys
 
 
 class HSArgumentParser(ArgumentParser):
-    """HsPyLib custom argument parser"""
+    """Class to provide a custom argument parser."""
 
     def _check_value(self, action, value: Any):
         if action.choices is not None and value not in action.choices:

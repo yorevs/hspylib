@@ -43,6 +43,12 @@
 
             </li>
             <li>
+                    <a class="class" href="#VaultAuthenticationError">VaultAuthenticationError</a>
+                            <ul class="memberlist">
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#VaultSecurityException">VaultSecurityException</a>
                             <ul class="memberlist">
                 </ul>
@@ -110,12 +116,16 @@ main<wbr>.<a href="./../../vault.html">vault</a><wbr>.<a href="./../exception.ht
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when opening the vault&quot;&quot;&quot;</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="k">class</span> <span class="nc">VaultSecurityException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault file&quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="k">class</span> <span class="nc">VaultAuthenticationError</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when vault authentication has failed&quot;&quot;&quot;</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="k">class</span> <span class="nc">VaultExecutionException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault execution&quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="k">class</span> <span class="nc">VaultSecurityException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault file&quot;&quot;&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="k">class</span> <span class="nc">VaultExecutionException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault execution&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -190,6 +200,41 @@ main<wbr>.<a href="./../../vault.html">vault</a><wbr>.<a href="./../exception.ht
                                 </dl>
                             </div>
                 </section>
+                <section id="VaultAuthenticationError">
+                            <input id="VaultAuthenticationError-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">VaultAuthenticationError</span><wbr>(<span class="base">hspylib.core.exception.exceptions.HSBaseException</span>):
+
+                <label class="view-source-button" for="VaultAuthenticationError-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#VaultAuthenticationError"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VaultAuthenticationError-27"><a href="#VaultAuthenticationError-27"><span class="linenos">27</span></a><span class="k">class</span> <span class="nc">VaultAuthenticationError</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
+</span><span id="VaultAuthenticationError-28"><a href="#VaultAuthenticationError-28"><span class="linenos">28</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when vault authentication has failed&quot;&quot;&quot;</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Raised when vault authentication has failed</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>hspylib.core.exception.exceptions.HSBaseException</dt>
+                                <dd id="VaultAuthenticationError.__init__" class="function">HSBaseException</dd>
+
+            </div>
+            <div><dt>builtins.BaseException</dt>
+                                <dd id="VaultAuthenticationError.with_traceback" class="function">with_traceback</dd>
+                <dd id="VaultAuthenticationError.add_note" class="function">add_note</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="VaultSecurityException">
                             <input id="VaultSecurityException-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
@@ -201,8 +246,8 @@ main<wbr>.<a href="./../../vault.html">vault</a><wbr>.<a href="./../exception.ht
 
     </div>
     <a class="headerlink" href="#VaultSecurityException"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VaultSecurityException-27"><a href="#VaultSecurityException-27"><span class="linenos">27</span></a><span class="k">class</span> <span class="nc">VaultSecurityException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
-</span><span id="VaultSecurityException-28"><a href="#VaultSecurityException-28"><span class="linenos">28</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault file&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VaultSecurityException-31"><a href="#VaultSecurityException-31"><span class="linenos">31</span></a><span class="k">class</span> <span class="nc">VaultSecurityException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
+</span><span id="VaultSecurityException-32"><a href="#VaultSecurityException-32"><span class="linenos">32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault file&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -236,8 +281,8 @@ main<wbr>.<a href="./../../vault.html">vault</a><wbr>.<a href="./../exception.ht
 
     </div>
     <a class="headerlink" href="#VaultExecutionException"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VaultExecutionException-31"><a href="#VaultExecutionException-31"><span class="linenos">31</span></a><span class="k">class</span> <span class="nc">VaultExecutionException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
-</span><span id="VaultExecutionException-32"><a href="#VaultExecutionException-32"><span class="linenos">32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault execution&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VaultExecutionException-35"><a href="#VaultExecutionException-35"><span class="linenos">35</span></a><span class="k">class</span> <span class="nc">VaultExecutionException</span><span class="p">(</span><span class="n">HSBaseException</span><span class="p">):</span>
+</span><span id="VaultExecutionException-36"><a href="#VaultExecutionException-36"><span class="linenos">36</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when something unexpected happened to vault execution&quot;&quot;&quot;</span>
 </span></pre></div>
 
 

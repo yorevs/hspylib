@@ -118,9 +118,9 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="nd">@classmethod</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;UriScheme&quot;</span><span class="p">:</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="n">e</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">of_value</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="k">return</span> <span class="n">e</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a URI scheme from a string.&quot;&quot;&quot;</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">of_value</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">&#39; scheme is not supported&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
 </span></pre></div>
@@ -153,9 +153,9 @@ main<wbr>.<a href="./../../../hspylib.html">hspylib</a><wbr>.<a href="./../../mo
 </span><span id="UriScheme-32"><a href="#UriScheme-32"><span class="linenos">32</span></a>
 </span><span id="UriScheme-33"><a href="#UriScheme-33"><span class="linenos">33</span></a>    <span class="nd">@classmethod</span>
 </span><span id="UriScheme-34"><a href="#UriScheme-34"><span class="linenos">34</span></a>    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;UriScheme&quot;</span><span class="p">:</span>
-</span><span id="UriScheme-35"><a href="#UriScheme-35"><span class="linenos">35</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="UriScheme-36"><a href="#UriScheme-36"><span class="linenos">36</span></a>            <span class="n">e</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">of_value</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="UriScheme-37"><a href="#UriScheme-37"><span class="linenos">37</span></a>            <span class="k">return</span> <span class="n">e</span>
+</span><span id="UriScheme-35"><a href="#UriScheme-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a URI scheme from a string.&quot;&quot;&quot;</span>
+</span><span id="UriScheme-36"><a href="#UriScheme-36"><span class="linenos">36</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="UriScheme-37"><a href="#UriScheme-37"><span class="linenos">37</span></a>            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">of_value</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="UriScheme-38"><a href="#UriScheme-38"><span class="linenos">38</span></a>        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
 </span><span id="UriScheme-39"><a href="#UriScheme-39"><span class="linenos">39</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">&#39; scheme is not supported&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
 </span></pre></div>
@@ -240,15 +240,17 @@ Ref.: <a href="https://en.wikipedia.org/wiki/List_of_URI_schemes">https://en.wik
     <a class="headerlink" href="#UriScheme.of"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="UriScheme.of-33"><a href="#UriScheme.of-33"><span class="linenos">33</span></a>    <span class="nd">@classmethod</span>
 </span><span id="UriScheme.of-34"><a href="#UriScheme.of-34"><span class="linenos">34</span></a>    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;UriScheme&quot;</span><span class="p">:</span>
-</span><span id="UriScheme.of-35"><a href="#UriScheme.of-35"><span class="linenos">35</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="UriScheme.of-36"><a href="#UriScheme.of-36"><span class="linenos">36</span></a>            <span class="n">e</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">of_value</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="UriScheme.of-37"><a href="#UriScheme.of-37"><span class="linenos">37</span></a>            <span class="k">return</span> <span class="n">e</span>
+</span><span id="UriScheme.of-35"><a href="#UriScheme.of-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a URI scheme from a string.&quot;&quot;&quot;</span>
+</span><span id="UriScheme.of-36"><a href="#UriScheme.of-36"><span class="linenos">36</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="UriScheme.of-37"><a href="#UriScheme.of-37"><span class="linenos">37</span></a>            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">of_value</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="UriScheme.of-38"><a href="#UriScheme.of-38"><span class="linenos">38</span></a>        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
 </span><span id="UriScheme.of-39"><a href="#UriScheme.of-39"><span class="linenos">39</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">&#39; scheme is not supported&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Create a URI scheme from a string.</p>
+</div>
+
 
                             </div>
                             <div class="inherited">
