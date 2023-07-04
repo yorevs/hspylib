@@ -13,9 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.addons.setman.setman_config import SetmanConfig
-from clitt.addons.setman.setman_entry import SetmanEntry
+from clitt.addons.setman.settings_entry import SettingsEntry
 from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.addons.setman.setman_service import SetmanService
+from clitt.addons.setman.settings_service import SettingsService
+from clitt.core.tui.table.table_enums import TextAlignment
 from clitt.core.tui.table.table_renderer import TableRenderer
 from datasource.identity import Identity
 from hspylib.core.enums.charset import Charset
@@ -47,7 +48,7 @@ class SetMan(metaclass=Singleton):
         if not file_is_not_empty(cfg_file):
             self._setup_db(cfg_file)
         self._configs = SetmanConfig(self.RESOURCE_DIR, self.SETMAN_CONFIG_FILE)
-        self._service = SetmanService(self.configs)
+        self._service = SettingsService(self.configs)
         if not file_is_not_empty(self.configs.database):
             self._create_new_database()
         self._is_open = False
@@ -148,8 +149,8 @@ class SetMan(metaclass=Singleton):
         data = list(map(lambda e: e.values, self._service.list()))
         tr = TableRenderer(headers, data, "Systems Settings")
         tr.adjust_auto_fit()
-        tr.set_header_alignment(TableRenderer.TextAlignment.CENTER)
-        tr.set_cell_alignment(TableRenderer.TextAlignment.LEFT)
+        tr.set_header_alignment(TextAlignment.CENTER)
+        tr.set_cell_alignment(TextAlignment.LEFT)
         tr.render()
 
     def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
@@ -179,9 +180,9 @@ class SetMan(metaclass=Singleton):
     def _add_setting(self, name: str, value: Any, stype: SettingsType) -> None:
         """Upsert the specified setting."""
         found = self._service.get(name)
-        entry = found or SetmanEntry(Identity(SetmanEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
+        entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
         if not name or not value or not stype:
-            entry = SetmanEntry.prompt(entry)
+            entry = SettingsEntry.prompt(entry)
         if entry:
             self._service.save(entry)
             sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %BLUE%", repr(entry))

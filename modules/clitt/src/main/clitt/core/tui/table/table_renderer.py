@@ -12,15 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.tui.tui_screen import TUIScreen
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import file_is_not_empty, sysout
-from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right, titlecase
-from typing import Any, Iterable, List
-
 import csv
 import os
+from typing import Any, Callable, Iterable, List
+
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import file_is_not_empty
+from hspylib.core.tools.text_tools import elide_text
+
+from clitt.core.tui.table.table_enums import TextAlignment, TextCase
+from clitt.core.tui.tui_screen import TUIScreen
 
 
 class TableRenderer:
@@ -49,31 +50,27 @@ class TableRenderer:
                 data.append(row)
         return TableRenderer(headers, data, caption)
 
-    class TextAlignment(Enumeration):
-        """Table cell text justification helper."""
-
-        # fmt: off
-        LEFT    = justified_left
-        CENTER  = justified_center
-        RIGHT   = justified_right
-        # fmt: on
-
-    def __init__(self, headers: List[str], data: Iterable, caption: str | None = None):
+    def __init__(
+        self,
+        headers: List[str],
+        data: Iterable,
+        caption: str | None = None):
         """
         :param headers: table headers to be displayed.
         :param data: table record set with the selected rows.
         :param caption: table caption to be displayed.
         """
 
+        self._screen = TUIScreen.INSTANCE or TUIScreen()
         self._headers = headers
         self._columns = range(len(self._headers))
         self._data = data if data else []
-        self._caption = caption or ""
-        self._header_alignment = TableRenderer.TextAlignment.CENTER
-        self._cell_alignment = TableRenderer.TextAlignment.LEFT
+        self._caption = caption
         self._min_cell_size = self.DEFAULT_MINIMUM_CELL_SIZE
-        self._screen = TUIScreen.INSTANCE
-
+        self._header_alignment = TextAlignment.CENTER
+        self._cell_alignment: TextAlignment = TextAlignment.LEFT
+        self._header_case: TextCase = TextCase.UPPER
+        check_argument(len(self._headers) >= 1, "Headers are required")
         if data:
             check_argument(
                 len(min(data, key=len)) == len(self._headers),
@@ -81,19 +78,32 @@ class TableRenderer:
                 len(min(data, key=len)),
                 len(self._headers),
             )
+        self._column_sizes = None
+        self.adjust_auto_fit()
 
-        self._column_sizes = [self._min_cell_size for _ in self._headers]
+    @property
+    def screen(self) -> TUIScreen:
+        return self._screen
 
     @property
     def cursor(self) -> TUIScreen.Cursor:
-        return self._screen.cursor
+        return self.screen.cursor
 
-    def write(self, data: Any) -> None:
-        """TODO"""
-        if TUIScreen.INSTANCE:
-            self.cursor.writeln(data)
-        else:
-            sysout(data)
+    @property
+    def data(self) -> Iterable:
+        return self._data
+
+    @property
+    def cell_alignment(self) -> Callable:
+        return self._cell_alignment.val()
+
+    @property
+    def header_alignment(self) -> Callable:
+        return self._header_alignment.val()
+
+    @property
+    def header_case(self) -> Callable:
+        return self._header_case.val()
 
     def set_header_alignment(self, alignment: TextAlignment) -> None:
         """Set table headers alignment.
@@ -102,6 +112,13 @@ class TableRenderer:
         """
         self._header_alignment = alignment
 
+    def set_header_case(self, test_case: TextCase) -> None:
+        """Set table headers alignment.
+        :param test_case: table header text case function.
+        :return:
+        """
+        self._header_case = test_case
+
     def set_cell_alignment(self, alignment: TextAlignment) -> None:
         """Set table cell alignment.
         :param alignment: table cell text alignment function.
@@ -109,34 +126,34 @@ class TableRenderer:
         """
         self._cell_alignment = alignment
 
+    def set_cell_sizes(self, *cell_sizes) -> None:
+        """Render table based on a list of fixed sizes.
+        :param cell_sizes: the list of specific cell sizes.
+        :return: None
+        """
+        for idx, size in enumerate(cell_sizes[:len(self._column_sizes)]):
+            self._column_sizes[idx] = max(self._min_cell_size, size)
+
     def set_min_cell_size(self, size: int) -> None:
         """Set the minimum length of a cell.
         :param size: minimum table cell size.
         :return:
         """
         self._min_cell_size = max(self.DEFAULT_MINIMUM_CELL_SIZE, size)
-        self._column_sizes = [max(self._column_sizes[idx], size) for idx, _ in enumerate(self._headers)]
-
-    def set_cell_sizes(self, *cell_sizes) -> None:
-        """Render table based on a list of fixed sizes.
-        :param cell_sizes: the list of specific cell sizes.
-        :return: None
-        """
-        for idx, size in enumerate(cell_sizes[: len(self._column_sizes)]):
-            self._column_sizes[idx] = max(self._min_cell_size, size)
+        self.set_cell_sizes(*(max(self._column_sizes[idx], size) for idx, _ in enumerate(self._headers)))
 
     def adjust_cells_by_headers(self) -> None:
         """Adjust cell sizes based on the column header length.
         :return: None
         """
-        self._column_sizes = [max(self._min_cell_size, len(header)) for header in self._headers]
+        self.set_cell_sizes(*(max(self._min_cell_size, len(header)) for header in self._headers))
 
     def adjust_cells_by_largest_header(self) -> None:
         """Adjust cell sizes based on the maximum length of a header.
         :return: None
         """
         max_len = len(max(self._headers))
-        self._column_sizes = [max(self._min_cell_size, max_len) for _ in self._headers]
+        self.set_cell_sizes(*(max(self._min_cell_size, max_len) for _ in self._headers))
 
     def adjust_cells_by_largest_cell(self) -> None:
         """Adjust cell sizes based on the maximum length of a cell.
@@ -145,7 +162,7 @@ class TableRenderer:
         max_len = 0
         for idx, row in enumerate(self._data):
             max_len = max(max_len, len(max(list(map(str, row)), key=len)))
-        self._column_sizes = [max_len for _ in self._headers]
+        self.set_cell_sizes(*(max_len for _ in self._headers))
 
     def adjust_cells_by_fixed_size(self, size: int) -> None:
         """Adjust cell sizes to a fixed size.
@@ -172,25 +189,35 @@ class TableRenderer:
         self._render_table(table_line, header_line, data_lines)
 
     def export_csv(self, filepath: str, delimiter: chr = ",", has_headers: bool = True) -> None:
-        """TODO"""
+        """Export the table to CSV format."""
         with open(filepath, "w", encoding="UTF8") as csv_file:
             writer = csv.writer(csv_file, delimiter=delimiter)
             if has_headers:
                 writer.writerow(self._headers)
             writer.writerows(self._data)
 
+    def _display_data(self, data: Any) -> None:
+        """Print out data into the screen."""
+        self.cursor.writeln(data)
+
     def _format_header_row(self) -> str:
         """Format the table header using the defined preferences."""
-        header_cols = [self._header_alignment(self._header_text(idx), self._column_sizes[idx]) for idx in self._columns]
+        header_cols = [
+            self.header_alignment(self._header_text(idx), self._column_sizes[idx])
+            for idx in self._columns
+        ]
         return f"| {' | '.join(header_cols)} |"
 
     def _format_data_rows(self) -> List[str]:
         """Format the table rows using the defined preferences."""
         # fmt: off
         return [
-            "| " + ' | '.join(
-                f"{self._cell_alignment(self._cell_text(row, idx), self._column_sizes[idx])}" for idx in self._columns
-            ) + " |" for row in self._data
+            "| " +
+                ' | '.join(
+                    f"{self.cell_alignment(self._cell_text(row, column), self._column_sizes[column])}"
+                    for column in self._columns
+                ) +
+            " |" for row in self._data
         ]
         # fmt: on
 
@@ -198,7 +225,7 @@ class TableRenderer:
         """Return a header for the specified column.
         :param column the specified table column.
         """
-        return titlecase(elide_text(self._headers[column], self._cell_size(column)), skip_length=1)
+        return self.header_case(elide_text(self._headers[column], self._cell_size(column)))
 
     def _cell_text(self, row: tuple, column: int) -> str:
         """Return a text for the specified cell (row, column).
@@ -223,10 +250,10 @@ class TableRenderer:
         empty_line = f"| {'<empty>': ^{line_length}} |"
         if self._caption:
             border_line = render_line.replace("+", "-")
-            self.write(border_line)
-            self.write(f"| {elide_text(self._caption, line_length): ^{line_length}} |")
-        self.write(render_line)
-        self.write(header_row)
-        self.write(render_line)
-        self.write(f"{os.linesep.join(data_rows) if data_rows else empty_line}")
-        self.write(render_line)
+            self._display_data(border_line)
+            self._display_data(f"| {elide_text(self._caption, line_length): ^{line_length}} |")
+        self._display_data(render_line)
+        self._display_data(header_row)
+        self._display_data(render_line)
+        self._display_data(f"{os.linesep.join(data_rows) if data_rows else empty_line}")
+        self._display_data(render_line)
