@@ -6,6 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-  'table_demo'
+  'table_demo', 
+  'table_enums'
 ]
 __version__ = '0.9.39'

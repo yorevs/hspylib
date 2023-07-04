@@ -4,7 +4,7 @@
 """
    @project: HsPyLib-Clitt
    @package: clitt.addons.setman
-      @file: setman_entry.py
+      @file: settings_entry.py
    @created: Mon, 5 Jun 2023
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -24,8 +24,8 @@ from textwrap import dedent
 from typing import Any, Optional, Union
 
 
-class SetmanEntry(CrudEntity):
-    """Represents the Setman domain object."""
+class SettingsEntry(CrudEntity):
+    """Represents the Settings domain object."""
 
     SetmanId = namedtuple("SetmanId", ["uuid"])
 
@@ -43,10 +43,10 @@ class SetmanEntry(CrudEntity):
     _SIMPLE_FORMAT = "{}={}"
 
     @staticmethod
-    def prompt(entry: Union["SetmanEntry", None] = None) -> Optional["SetmanEntry"]:
-        """Create a vault entry from a form input."""
+    def prompt(entry: Union["SettingsEntry", None] = None) -> Optional["SettingsEntry"]:
+        """Create a settings entry from a form input."""
 
-        entry = entry or SetmanEntry()
+        entry = entry or SettingsEntry()
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \

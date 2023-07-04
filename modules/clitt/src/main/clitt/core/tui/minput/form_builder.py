@@ -32,7 +32,7 @@ class FormBuilder:
     def get_attr(parts: List[str], index: int, default_value: Any = None) -> str:
         return get_or_default(parts, index, default_value) or default_value
 
-    def from_tokenized(self, minput_tokens: List[str], separator: str = "|") -> "FormBuilder":
+    def from_tokenized(self, minput_tokens: List[str], separator: chr = "|") -> "FormBuilder":
         """Construct the forms based on string tokens.
 
          Field tokens (in-order):

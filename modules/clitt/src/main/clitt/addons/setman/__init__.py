@@ -8,9 +8,9 @@
 __all__ = [
   'setman', 
   'setman_config', 
-  'setman_entry', 
   'setman_enums', 
-  'setman_repository', 
-  'setman_service'
+  'settings_entry', 
+  'settings_repository', 
+  'settings_service'
 ]
 __version__ = '0.9.39'

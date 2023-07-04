@@ -72,5 +72,4 @@ class SearchView(TUIMenuView):
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:
         tr = TableRenderer(headers, entities, title)
-        tr.adjust_cells_by_largest_cell()
         tr.render()
