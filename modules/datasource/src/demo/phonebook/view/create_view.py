@@ -47,11 +47,10 @@ class CreateView(TUIMenuView):
     def company(self) -> None:
         if form := ContactForms.company_form():
             company = Company(Identity.auto(field_name="uuid"))
-            company.uuid = form.uuid
             company.name = form.name
             company.cnpj = form.cnpj
             company.phone = form.phone
-            company.website = form.website
+            company.website = form.web_site
             company.address = form.address
             company.complement = form.complement
             self.company_service.save(company)

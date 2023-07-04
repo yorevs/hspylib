@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.37
+# hspylib-clitt v0.9.38
 #
 # Package: demo.icons.emojis
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
   'emojis_demo'
 ]
-__version__ = '0.9.37'
+__version__ = '0.9.38'

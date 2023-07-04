@@ -26,14 +26,14 @@ class TUIMenuUi(metaclass=Singleton):
     TUIMenuItem, TUIMenuAction or TUIMenuView.
     """
 
-    app_title = "Main Menu"
+    APP_TITLE = "Main Menu"
 
     # fmt: off
     PREFS = TUIPreferences.INSTANCE or TUIPreferences()
 
     SCREEN = TUIScreen.INSTANCE or TUIScreen()
 
-    MENU_LINE = f"{'-=' * PREFS.title_line_length}"
+    MENU_LINE = f"{'--' * PREFS.title_line_length}"
 
     MENU_TITLE_FMT = (
         f"{PREFS.title_color}"
@@ -44,10 +44,12 @@ class TUIMenuUi(metaclass=Singleton):
     # fmt: on
 
     @classmethod
-    def render_app_title(cls) -> None:
+    def render_app_title(cls, app_title: str = None) -> None:
         """Render the application title."""
         cls.SCREEN.clear()
-        cls.SCREEN.cursor.writeln(cls.MENU_TITLE_FMT.format(title=cls.app_title))
+        cls.SCREEN.cursor.writeln(
+            cls.MENU_TITLE_FMT.format(title=app_title or cls.APP_TITLE)
+        )
 
     @staticmethod
     def back(source: TUIMenu) -> TUIMenu:
@@ -59,7 +61,7 @@ class TUIMenuUi(metaclass=Singleton):
     def __init__(self, main_menu: TUIMenu, title: str = "Main Menu"):
         check_not_none(main_menu)
         super().__init__()
-        TUIMenuUi.app_title = title
+        TUIMenuUi.APP_TITLE = title
         self._done: bool = False
         self._curr_menu: TUIMenu = main_menu
         self._prev_menu = None
@@ -87,11 +89,16 @@ class TUIMenuUi(metaclass=Singleton):
         self.SCREEN.cursor.end()
         self.SCREEN.cursor.write("%MOD(0)%")
 
-    def _prepare_render(self) -> None:
+    def _prepare_render(
+        self,
+        auto_wrap: bool = True,
+        show_cursor: bool = False,
+        clear_screen: bool = True) -> None:
         """Prepare the screen for renderization."""
-        set_auto_wrap(True)
-        set_show_cursor(False)
-        self.SCREEN.clear()
+        set_auto_wrap(auto_wrap)
+        set_show_cursor(show_cursor)
+        if clear_screen:
+            self.SCREEN.clear()
         self.SCREEN.cursor.save()
 
     def _change_menu(self, new_menu: TUIMenu) -> None:

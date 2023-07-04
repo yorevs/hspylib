@@ -97,7 +97,7 @@ class TUIComponent(ABC):
         """Draws the component navigation bar respecting the specified max_columns.
         :param navbar: the component's navigation bar.
         """
-        self.write(elide_text(navbar, self.columns) + "%NC%")
+        self.write(navbar)
 
     def draw_selector(self, is_selected: bool = False, has_bg_color: bool = True) -> Awesome:
         """Draws and highlight the selected component line.

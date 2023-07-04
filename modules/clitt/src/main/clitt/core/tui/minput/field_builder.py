@@ -70,7 +70,7 @@ class FieldBuilder:
 
     def min_max_length(self, min_length: int, max_length: int) -> "FieldBuilder":
         check_argument(max_length >= min_length, "Invalid field length: ({}-{})", min_length, max_length)
-        check_argument(max_length > 0 and min_length > 0, "Invalid field length: ({}-{})", min_length, max_length)
+        check_argument(max_length > 0 and min_length >= 0, "Invalid field length: ({}-{})", min_length, max_length)
         self._min_max_length = min_length, max_length
         return self
 

@@ -43,7 +43,7 @@ class TUIMenu(TUIComponent, ABC):
                 .field()
                 .label(label)
                 .dest(dest or label)
-                .validator(validator or InputValidator.words(min_length, max_length))
+                .validator(validator or InputValidator.words())
                 .min_max_length(min_length, max_length)
                 .build()
             .build()
@@ -52,11 +52,16 @@ class TUIMenu(TUIComponent, ABC):
 
         return minput(form_fields)
 
-    def __init__(self, parent: Optional["TUIMenu"] = None, title: str = "", tooltip: str = ""):
+    def __init__(
+        self,
+        parent: Optional["TUIMenu"] = None,
+        title: str = "",
+        tooltip: str = "",
+        default_on_trigger_cb: ON_TRIGGER_CB = None):
         super().__init__(title)
         self._tooltip = tooltip
         self._parent = parent
-        self._on_trigger: ON_TRIGGER_CB = self._default_trigger_cb
+        self._on_trigger = default_on_trigger_cb or self._default_trigger_cb
 
     def __str__(self) -> str:
         return self._title
@@ -82,9 +87,9 @@ class TUIMenu(TUIComponent, ABC):
 
     def navbar(self, **kwargs) -> str:
         return (
-            f"%EOL%{self.breadcrumb()}%ED0%%NC%"
+            f"%EOL%{self.breadcrumb()}%ED0%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
-            f"[Enter] Back  [Esc] Quit  %NC%%EL0%%EOL%%EOL%"
+            f"[Enter] Back  [Esc] Quit  %EL0%%EOL%%EOL%%NC%"
         )
 
     def breadcrumb(self) -> str:

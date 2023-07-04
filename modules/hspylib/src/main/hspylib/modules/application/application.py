@@ -102,7 +102,7 @@ class Application(metaclass=AbstractSingleton):
             log.debug('Resource dir "%s" not found. AppConfigs will not be available!', resource_dir or "<none>")
 
         # Initialize application logs
-        self._log_file = f"{log_dir or os.getenv('LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
+        self._log_file = f"{log_dir or os.getenv('HHS_LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
         check_state(log_init(self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
 
     def run(self, *params, **kwargs) -> None:
