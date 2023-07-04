@@ -17,7 +17,7 @@ from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import elide_text, justified_center, justified_left, justified_right, titlecase
-from typing import Iterable, List
+from typing import Any, Iterable, List
 
 import csv
 import os
@@ -88,10 +88,10 @@ class TableRenderer:
     def cursor(self) -> TUIScreen.Cursor:
         return self._screen.cursor
 
-    def write(self, data: str) -> None:
+    def write(self, data: Any) -> None:
         """TODO"""
         if TUIScreen.INSTANCE:
-            self.write(data)
+            self.cursor.writeln(data)
         else:
             sysout(data)
 

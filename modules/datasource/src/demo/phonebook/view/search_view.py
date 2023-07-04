@@ -55,18 +55,19 @@ class SearchView(TUIMenuView):
 
     def display_contacts(self, persons: List[Person], companies: List[Company]) -> None:
         TUIMenuUi.render_app_title()
-        if persons:
-            SearchView.display_table(
-                list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
-            )
-            self.wait_keystroke()
-        if companies:
-            SearchView.display_table(
-                list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
-            )
-            self.wait_keystroke()
         if not persons and not companies:
             self.wait_keystroke("-=- No results to be displayed -=-%EOL%")
+        else:
+            if persons:
+                SearchView.display_table(
+                    list(map(str.upper, Person.columns())), list(map(lambda p: p.values, persons)), "PERSONS"
+                )
+                self.wait_keystroke()
+            if companies:
+                SearchView.display_table(
+                    list(map(str.upper, Company.columns())), list(map(lambda c: c.values, companies)), "COMPANIES"
+                )
+                self.wait_keystroke()
 
     @staticmethod
     def display_table(headers: List[str], entities: List[CrudEntity], title: str) -> None:

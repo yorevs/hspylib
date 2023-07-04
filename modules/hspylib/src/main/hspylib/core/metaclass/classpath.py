@@ -18,12 +18,12 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
+from typing import Optional, TypeVar
 
 import logging as log
 import os
 
-AnyPath = Path | str | None
+AnyPath = TypeVar('AnyPath', bound=[Path | str | None])
 
 
 class Classpath(metaclass=Singleton):
@@ -31,16 +31,22 @@ class Classpath(metaclass=Singleton):
 
     INSTANCE = None
 
-    def __init__(self, source_root: AnyPath = None, run_dir: AnyPath = None, resource_dir: AnyPath = None):
+    def __init__(
+        self,
+        source_root: AnyPath = None,
+        run_dir: AnyPath = None,
+        resource_dir: AnyPath = None):
+
         if source_root:
             check_state(Path(str(source_root)).exists(), "source_root must exist")
+
         if run_dir:
             check_state(Path(str(run_dir)).exists(), "run_dir must exist")
 
         self.source_root = Path(os.getenv("SOURCE_ROOT", str(source_root or os.curdir)))
         self.run_dir = Path(str(run_dir or self.source_root))
         self.resource_dir = Path(str(resource_dir or f"{self.source_root}/resources"))
-        self.log_dir = Path(os.getenv("LOG_DIR", f"{self.run_dir}/log") or self.run_dir)
+        self.log_dir = Path(os.getenv("HHS_LOG_DIR", f"{self.run_dir}/log") or self.run_dir)
 
     @classmethod
     def source_path(cls) -> Path:
@@ -63,7 +69,7 @@ class Classpath(metaclass=Singleton):
         return cls.INSTANCE.log_dir
 
     @classmethod
-    def list_resources(cls) -> str:
+    def list_resources(cls) -> Optional[str]:
         """Walk through resources directory and build a list with all files"""
 
         def list_resources_closure(directory: str | Path, depth: int = 4) -> Optional[str]:
@@ -71,9 +77,9 @@ class Classpath(metaclass=Singleton):
             if os.path.exists(directory):
                 res_str = Classpath._list_files(directory, depth)
                 for root, dirs, _ in os.walk(directory):
-                    for dirname in dirs:
-                        res_str += " " * depth + "|-" + dirname + os.linesep
-                        res_str += list_resources_closure(os.path.join(root, dirname), depth + 2) or ""
+                    for dir_name in dirs:
+                        res_str += " " * depth + "|-" + dir_name + os.linesep
+                        res_str += list_resources_closure(os.path.join(root, dir_name), depth + 2) or ""
                 return res_str
             return None
 

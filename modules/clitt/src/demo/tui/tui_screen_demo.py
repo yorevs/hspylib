@@ -29,12 +29,8 @@ def draw(scr: TUIScreen):
     scr.cursor.write("X")
 
 
-def resized():
-    print("Resized")
-
-
 if __name__ == "__main__":
-    screen = TUIScreen(False, False, resized)
+    screen = TUIScreen()
     draw(screen)
     sleep(1)
     screen.cursor.erase(TUIScreen.CursorDirection.UP)

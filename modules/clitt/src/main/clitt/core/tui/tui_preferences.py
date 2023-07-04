@@ -145,6 +145,3 @@ class TUIPreferences(metaclass=Singleton):
     @property
     def unmarked(self) -> Awesome:
         return self._unmarked
-
-
-TUIPreferences()

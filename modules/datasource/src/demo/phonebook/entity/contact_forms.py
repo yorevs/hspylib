@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+from typing import Optional
 
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
@@ -21,18 +22,25 @@ from hspylib.core.namespace import Namespace
 class ContactForms:
     @staticmethod
     def person_form(
-        name: str = "", age: int = 0, phone: str = "", email: str = "", address: str = "", cpl: str = ""
-    ) -> Namespace:
+        name: str = None,
+        age: int = None,
+        phone: str = None,
+        email: str = None,
+        address: str = None,
+        cpl: str = None
+    ) -> Optional[Namespace]:
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label("Name") \
-                .validator(InputValidator.letters()) \
+                .validator(InputValidator.words()) \
+                .min_max_length(2, 60) \
                 .value(name) \
                 .build() \
             .field() \
                 .label("Age") \
                 .validator(InputValidator.numbers()) \
+                .min_max_length(1, 3) \
                 .value(age) \
                 .build() \
             .field() \
@@ -52,7 +60,8 @@ class ContactForms:
                 .build() \
             .field() \
                 .label("Complement") \
-                .validator(InputValidator.numbers()) \
+                .validator(InputValidator.anything()) \
+                .min_max_length(0, 60) \
                 .value(cpl) \
                 .build() \
             .build()
@@ -61,19 +70,25 @@ class ContactForms:
 
     @staticmethod
     def company_form(
-        name: str = "", cnpj: str = "", phone: str = "", website: str = "", address: str = "", cpl: str = ""
+        name: str = None,
+        cnpj: str = None,
+        phone: str = None,
+        website: str = None,
+        address: str = None,
+        cpl: str = None
     ) -> Namespace:
         # fmt: off
         form_fields = MenuInput.builder() \
             .field() \
                 .label("Name") \
-                .validator(InputValidator.letters()) \
+                .validator(InputValidator.words()) \
+                .min_max_length(2, 60) \
                 .value(name) \
                 .build() \
                 .field() \
             .label("CNPJ") \
-                .validator(InputValidator.anything()) \
-                .value(cnpj) \
+                .itype("masked") \
+                .value(f"{cnpj}|##.###.###/0001-##") \
                 .build() \
                 .field() \
             .label("Phone") \
@@ -84,6 +99,7 @@ class ContactForms:
             .label("WebSite") \
                 .validator(InputValidator.anything()) \
                 .value(website) \
+                .min_max_length(6, 60) \
                 .build() \
                 .field() \
             .label("Address") \
@@ -92,7 +108,8 @@ class ContactForms:
                 .build() \
                 .field() \
             .label("Complement") \
-                .validator(InputValidator.numbers()) \
+                .validator(InputValidator.anything()) \
+                .min_max_length(0, 60) \
                 .value(cpl) \
                 .build() \
             .build()
