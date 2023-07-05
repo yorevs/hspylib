@@ -99,7 +99,7 @@ class SetMan(metaclass=Singleton):
         stype: SettingsType = None,
     ) -> None:
         found, entry = self.settings.upsert(name, value, stype)
-        sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %BLUE%", repr(entry))
+        sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry)
 
     def _get_setting(self, name: str | None, simple_fmt: bool = False) -> None:
         if found := self.settings.get(name):
@@ -109,13 +109,13 @@ class SetMan(metaclass=Singleton):
 
     def _del_setting(self, name: str | None) -> None:
         if found := self.settings.remove(name):
-            sysout("%GREEN%Setting deleted: %WHITE%", found.name)
+            sysout("%GREEN%Setting deleted: %WHITE%", found)
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
 
     def _list_settings(self) -> None:
         """Display all settings."""
-        data = self.settings.list()
+        data = list(map(lambda s: s.values, self.settings.list()))
         headers = ["uuid", "name", "value", "settings type", "modified"]
         tr = TableRenderer(headers, data, "Systems Settings")
         tr.adjust_auto_fit()
