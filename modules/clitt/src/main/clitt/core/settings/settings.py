@@ -77,13 +77,13 @@ class Settings:
         """Decode and open the SQL lite database file. Return the context to manipulate it."""
         try:
             if not self.is_open:
+                self.is_open = True
                 if self.configs.is_db_encoded:
                     self._decode_db_file()
-                self.is_open = True
             yield self
         except (UnicodeDecodeError, binascii.Error) as err:
             err_msg = f"Failed to open settings file => {self.configs.database}"
-            raise ApplicationError(err_msg, err) from err
+            log.error(ApplicationError(err_msg, err))
         except Exception as err:
             err_msg = f"Unable to close settings file => {self.configs.database}"
             raise ApplicationError(err_msg, err) from err
