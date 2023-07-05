@@ -12,16 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional
-
-from datasource.crud_service import CrudService
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.keyboard import Keyboard
-
 from clitt.addons.setman.setman_config import SetmanConfig
 from clitt.addons.setman.setman_enums import SettingsType
 from clitt.addons.setman.settings_entry import SettingsEntry
 from clitt.addons.setman.settings_repository import SettingsRepository
+from datasource.crud_service import CrudService
+from typing import List, Optional
 
 
 class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
@@ -43,15 +39,10 @@ class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
         """
         return self.repository.search(name, stype)
 
-    def truncate_settings_db(self) -> bool:
-        """Truncate the settings table."""
-        sysout("All settings will be removed. Are you sure (y/[n])? ")
-        keystroke = Keyboard.wait_keystroke()
-        if keystroke and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
-            self.repository.truncate()
-            return True
-        return False
+    def clear(self) -> None:
+        """Clear all settings from the settings table."""
+        self.repository.truncate()
 
-    def create_settings_db(self) -> None:
+    def create_db(self) -> None:
         """Create a brand new setman database file."""
         self.repository.create_db()

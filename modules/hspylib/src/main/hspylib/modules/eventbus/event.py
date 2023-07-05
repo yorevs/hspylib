@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Any
-
 from hspylib.core.namespace import Namespace
+from typing import Any
 
 
 class Event:

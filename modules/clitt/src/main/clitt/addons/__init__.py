@@ -5,9 +5,5 @@
 # Package: main.clitt.addons
 """Package initialization."""
 
-__all__ = [
-  'appman', 
-  'setman', 
-  'widman'
-]
-__version__ = '0.9.39'
+__all__ = ["appman", "setman", "widman"]
+__version__ = "0.9.39"

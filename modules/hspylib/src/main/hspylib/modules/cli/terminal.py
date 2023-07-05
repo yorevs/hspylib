@@ -65,9 +65,7 @@ class Terminal(ABC):
                 process.register(proc.stdout)
                 while not Keyboard.kbhit():
                     if poll_obj := process.poll(0.3):
-                        line = bytes(proc.stdout.readline()) \
-                            .decode(Charset.UTF_8.val) \
-                            .strip()
+                        line = bytes(proc.stdout.readline()).decode(Charset.UTF_8.val).strip()
                         sysout(line)
                         log.debug("Polling returned: %s", str(poll_obj))
                 os.killpg(os.getpgid(proc.pid), signal.SIGTERM)

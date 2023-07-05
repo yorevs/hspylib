@@ -31,6 +31,7 @@ class ParserFactory(ABC):
 
     class PropertyParser:
         """Represent a property parser."""
+
         def __init__(self, parser: Callable[[TextIO], PROPERTIES]):
             self._parser = parser
 

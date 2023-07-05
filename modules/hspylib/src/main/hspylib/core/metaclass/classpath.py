@@ -23,7 +23,7 @@ from typing import Optional, TypeVar
 import logging as log
 import os
 
-AnyPath = TypeVar('AnyPath', bound=[Path | str | None])
+AnyPath = TypeVar("AnyPath", bound=[Path | str | None])
 
 
 class Classpath(metaclass=Singleton):
@@ -31,12 +31,7 @@ class Classpath(metaclass=Singleton):
 
     INSTANCE = None
 
-    def __init__(
-        self,
-        source_root: AnyPath = None,
-        run_dir: AnyPath = None,
-        resource_dir: AnyPath = None):
-
+    def __init__(self, source_root: AnyPath = None, run_dir: AnyPath = None, resource_dir: AnyPath = None):
         if source_root:
             check_state(Path(str(source_root)).exists(), "source_root must exist")
 

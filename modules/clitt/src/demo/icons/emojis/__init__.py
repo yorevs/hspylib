@@ -5,7 +5,5 @@
 # Package: demo.icons.emojis
 """Package initialization."""
 
-__all__ = [
-  'emojis_demo'
-]
-__version__ = '0.9.39'
+__all__ = ["emojis_demo"]
+__version__ = "0.9.39"

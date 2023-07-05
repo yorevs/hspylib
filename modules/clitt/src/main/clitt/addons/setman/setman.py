@@ -13,26 +13,20 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.addons.setman.setman_config import SetmanConfig
-from clitt.addons.setman.settings_entry import SettingsEntry
 from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.addons.setman.settings_service import SettingsService
+from clitt.addons.setman.settings import Settings
 from clitt.core.tui.table.table_enums import TextAlignment
 from clitt.core.tui.table.table_renderer import TableRenderer
-from datasource.identity import Identity
 from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
+from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.modules.application.application import Application
-from hspylib.modules.security.security import decode_file, encode_file
+from hspylib.modules.cli.keyboard import Keyboard
 from typing import Any
 
 import atexit
-import binascii
-import contextlib
 import logging as log
 import os
-import uuid
 
 
 class SetMan(metaclass=Singleton):
@@ -46,17 +40,12 @@ class SetMan(metaclass=Singleton):
         self._parent_app = parent_app
         cfg_file = f"{self.RESOURCE_DIR}/{self.SETMAN_CONFIG_FILE}"
         if not file_is_not_empty(cfg_file):
-            self._setup_db(cfg_file)
+            self._setup(cfg_file)
         self._configs = SetmanConfig(self.RESOURCE_DIR, self.SETMAN_CONFIG_FILE)
-        self._service = SettingsService(self.configs)
-        if not file_is_not_empty(self.configs.database):
-            self._create_new_database()
-        self._is_open = False
-        safe_delete_file(self.configs.encoded_db)
-        safe_delete_file(self.configs.decoded_db)
+        self._settings = Settings(self.configs)
 
     def __str__(self):
-        data = set(self._service.list())
+        data = set(self.settings.list())
         vault_str = ""
         for entry in data:
             vault_str += entry.key
@@ -69,6 +58,10 @@ class SetMan(metaclass=Singleton):
     def configs(self) -> SetmanConfig:
         return self._configs
 
+    @property
+    def settings(self) -> Settings:
+        return self._settings
+
     def execute(
         self,
         operation: SetmanOps,
@@ -79,74 +72,27 @@ class SetMan(metaclass=Singleton):
     ) -> None:
         """Execute the specified operation."""
         log.debug(f"{operation} Name: {name or '*'} Value: {value or '-'} SettingsType: {stype or '*'}")
-        atexit.register(self._close_db)
-        with self._open_db():
+        atexit.register(self.settings.close)
+        with self.settings.open():
             match operation:
                 case SetmanOps.LIST:
                     self._list_settings()
                 case SetmanOps.SEARCH:
                     self._search_settings(name or "%", stype, simple_fmt)
                 case SetmanOps.SET:
-                    self._add_setting(name, value, stype)
+                    self.settings.upsert(name, value, stype)
                 case SetmanOps.GET:
-                    self._get_setting(name, simple_fmt)
+                    self.settings.get(name, simple_fmt)
                 case SetmanOps.DEL:
-                    self._del_setting(name)
+                    self.settings.remove(name)
                 case SetmanOps.TRUNCATE:
-                    if self._service.truncate_settings_db():
+                    if self._clear_settings():
                         sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
 
-    @contextlib.contextmanager
-    def _open_db(self) -> None:
-        """Decode and open the SQL lite database file. Return the context to manipulate it."""
-        try:
-            if not self._is_open:
-                self._is_open = True
-                self._decode_db()
-                log.debug("Settings database open")
-            yield self._is_open
-        except (UnicodeDecodeError, binascii.Error) as err:
-            log.error("Failed to open settings file => %s", err)
-            yield None
-        except Exception as err:
-            raise ApplicationError(f"Unable to open settings file => {self.configs.database}", err) from err
-        finally:
-            self._close_db()
-
-    def _close_db(self) -> None:
-        """Encode and open the SQL lite database file. Return the context to manipulate it."""
-        try:
-            if self._is_open:
-                self._is_open = False
-                self._encode_db()
-                log.debug("Settings database closed")
-        except (UnicodeDecodeError, binascii.Error) as err:
-            log.error("Failed to close settings file => %s", err)
-        except Exception as err:
-            raise ApplicationError(f"Unable to close settings file => {self.configs.database}", err) from err
-
-    def _encode_db(self) -> None:
-        """Decode the Base64 encoded database file."""
-        if file_is_not_empty(self.configs.database):
-            encoded = f"{self.configs.database}-encoded"
-            encode_file(self.configs.database, encoded, binary=True)
-            os.rename(encoded, self.configs.database)
-            self._is_open = False
-            log.debug("Settings file is encoded")
-
-    def _decode_db(self) -> None:
-        """Base64 encode the database file."""
-        if file_is_not_empty(self.configs.database):
-            decoded = f"{self.configs.database}-decoded"
-            decode_file(self.configs.database, decoded, binary=True)
-            os.rename(decoded, self.configs.database)
-            self._is_open = True
-            log.debug("Settings file is decoded")
-
     def _list_settings(self) -> None:
-        """List all database settings using as a formatted table."""
+        """Display all settings."""
+        data = self.settings.list()
         headers = ["uuid", "name", "value", "settings type", "modified"]
-        data = list(map(lambda e: e.values, self._service.list()))
         tr = TableRenderer(headers, data, "Systems Settings")
         tr.adjust_auto_fit()
         tr.set_header_alignment(TextAlignment.CENTER)
@@ -154,48 +100,20 @@ class SetMan(metaclass=Singleton):
         tr.render()
 
     def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
-        """Display all settings matching the name and settings type."""
-        data = list(map(lambda e: e.to_string(simple_fmt), self._service.search(name, stype)))
+        """Search all settings matching criteria."""
+        data = self.settings.search(name, stype, simple_fmt)
         sysout(os.linesep.join(data)) if data else sysout(f"%YELLOW%%EOL%No settings found matching '{name}'")
 
-    def _del_setting(self, name: str) -> None:
-        """Delete the specified setting."""
-        if name:
-            found = self._service.get(name)
-            if found:
-                self._service.remove(found)
-                sysout("%GREEN%Settings deleted: %ORANGE%", found.name)
-            else:
-                syserr("Settings not found: ", name)
+    def _clear_settings(self) -> bool:
+        """Clear all settings."""
+        sysout("%ORANGE%All settings will be removed. Are you sure (y/[n])? %NC%")
+        keystroke = Keyboard.wait_keystroke()
+        if keystroke and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
+            self.settings.clear()
+            return True
+        return False
 
-    def _get_setting(self, name: str, simple_fmt: bool) -> None:
-        """Get the specified setting."""
-        if name:
-            found = self._service.get(name)
-            if found:
-                sysout(found.to_string(simple_fmt))
-            else:
-                syserr("Settings not found: ", name)
-
-    def _add_setting(self, name: str, value: Any, stype: SettingsType) -> None:
-        """Upsert the specified setting."""
-        found = self._service.get(name)
-        entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
-        if not name or not value or not stype:
-            entry = SettingsEntry.prompt(entry)
-        if entry:
-            self._service.save(entry)
-            sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %BLUE%", repr(entry))
-
-    def _create_new_database(self) -> bool:
-        """Create the settings SQLite DB file."""
-        touch_file(self.configs.database)
-        self._service.create_settings_db()
-        log.info("Settings file has been created")
-        self._is_open = True
-        return os.path.exists(self.configs.database)
-
-    def _setup_db(self, filepath: str) -> bool:
+    def _setup(self, filepath: str) -> bool:
         """Setup SetMan on the system."""
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_configs:
             f_configs.write(f"hhs.setman.database = {self.SETMAN_DB_FILE} {os.linesep}")

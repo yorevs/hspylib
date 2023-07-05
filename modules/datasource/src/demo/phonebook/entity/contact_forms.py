@@ -12,22 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import Optional
-
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from hspylib.core.namespace import Namespace
+from typing import Optional
 
 
 class ContactForms:
     @staticmethod
     def person_form(
-        name: str = None,
-        age: int = None,
-        phone: str = None,
-        email: str = None,
-        address: str = None,
-        cpl: str = None
+        name: str = None, age: int = None, phone: str = None, email: str = None, address: str = None, cpl: str = None
     ) -> Optional[Namespace]:
         # fmt: off
         form_fields = MenuInput.builder() \
@@ -70,12 +64,7 @@ class ContactForms:
 
     @staticmethod
     def company_form(
-        name: str = None,
-        cnpj: str = None,
-        phone: str = None,
-        website: str = None,
-        address: str = None,
-        cpl: str = None
+        name: str = None, cnpj: str = None, phone: str = None, website: str = None, address: str = None, cpl: str = None
     ) -> Namespace:
         # fmt: off
         form_fields = MenuInput.builder() \

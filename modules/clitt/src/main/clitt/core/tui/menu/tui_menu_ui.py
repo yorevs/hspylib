@@ -47,9 +47,7 @@ class TUIMenuUi(metaclass=Singleton):
     def render_app_title(cls, app_title: str = None) -> None:
         """Render the application title."""
         cls.SCREEN.clear()
-        cls.SCREEN.cursor.writeln(
-            cls.MENU_TITLE_FMT.format(title=app_title or cls.APP_TITLE)
-        )
+        cls.SCREEN.cursor.writeln(cls.MENU_TITLE_FMT.format(title=app_title or cls.APP_TITLE))
 
     @staticmethod
     def back(source: TUIMenu) -> TUIMenu:
@@ -89,11 +87,7 @@ class TUIMenuUi(metaclass=Singleton):
         self.SCREEN.cursor.end()
         self.SCREEN.cursor.write("%MOD(0)%")
 
-    def _prepare_render(
-        self,
-        auto_wrap: bool = True,
-        show_cursor: bool = False,
-        clear_screen: bool = True) -> None:
+    def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = False, clear_screen: bool = True) -> None:
         """Prepare the screen for renderization."""
         set_auto_wrap(auto_wrap)
         set_show_cursor(show_cursor)

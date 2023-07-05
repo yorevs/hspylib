@@ -12,16 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-import csv
-import os
-from typing import Any, Callable, Iterable, List
-
+from clitt.core.tui.table.table_enums import TextAlignment, TextCase
+from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.text_tools import elide_text
+from typing import Any, Callable, Iterable, List
 
-from clitt.core.tui.table.table_enums import TextAlignment, TextCase
-from clitt.core.tui.tui_screen import TUIScreen
+import csv
+import os
 
 
 class TableRenderer:
@@ -50,11 +49,7 @@ class TableRenderer:
                 data.append(row)
         return TableRenderer(headers, data, caption)
 
-    def __init__(
-        self,
-        headers: List[str],
-        data: Iterable,
-        caption: str | None = None):
+    def __init__(self, headers: List[str], data: Iterable, caption: str | None = None):
         """
         :param headers: table headers to be displayed.
         :param data: table record set with the selected rows.
@@ -131,7 +126,7 @@ class TableRenderer:
         :param cell_sizes: the list of specific cell sizes.
         :return: None
         """
-        for idx, size in enumerate(cell_sizes[:len(self._column_sizes)]):
+        for idx, size in enumerate(cell_sizes[: len(self._column_sizes)]):
             self._column_sizes[idx] = max(self._min_cell_size, size)
 
     def set_min_cell_size(self, size: int) -> None:
@@ -202,10 +197,7 @@ class TableRenderer:
 
     def _format_header_row(self) -> str:
         """Format the table header using the defined preferences."""
-        header_cols = [
-            self.header_alignment(self._header_text(idx), self._column_sizes[idx])
-            for idx in self._columns
-        ]
+        header_cols = [self.header_alignment(self._header_text(idx), self._column_sizes[idx]) for idx in self._columns]
         return f"| {' | '.join(header_cols)} |"
 
     def _format_data_rows(self) -> List[str]:

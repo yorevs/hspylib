@@ -6,11 +6,12 @@
 """Package initialization."""
 
 __all__ = [
-  'setman', 
-  'setman_config', 
-  'setman_enums', 
-  'settings_entry', 
-  'settings_repository', 
-  'settings_service'
+    "setman",
+    "setman_config",
+    "setman_enums",
+    "settings",
+    "settings_entry",
+    "settings_repository",
+    "settings_service",
 ]
-__version__ = '0.9.39'
+__version__ = "0.9.39"
