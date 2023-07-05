@@ -128,15 +128,11 @@ class Settings:
             safe_delete_file(self.configs.encoded_db)
             safe_delete_file(self.configs.decoded_db)
 
-    @lru_cache(maxsize=500)
-    def search(self, name: str = None, stype: SettingsType = None) -> List[SettingsEntry]:
-        """Display all settings matching the name and settings type."""
-        check_state(self.is_open, "Settings database is not open")
-        return self._service.search(name, stype, self.limit, self.offset)
-
     @lru_cache
     def get(self, name: str) -> Optional[SettingsEntry]:
-        """Get the specified setting."""
+        """Get setting matching the specified name.
+        :param name: the settings name to get.
+        """
         check_state(self.is_open, "Settings database is not open")
         if name:
             return self._service.get(name)
@@ -147,7 +143,11 @@ class Settings:
         name: str,
         value: Any,
         stype: SettingsType) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
-        """Upsert the specified setting."""
+        """Upsert the specified setting.
+        :param name: the settings name.
+        :param value: the settings value.
+        :param stype: the settings type.
+        """
         check_state(self.is_open, "Settings database is not open")
         found = self._service.get(name)
         entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
@@ -160,7 +160,9 @@ class Settings:
         return found, entry
 
     def remove(self, name: str) -> Optional[SettingsEntry]:
-        """Delete the specified setting."""
+        """Delete the specified setting.
+        :param name: the settings name to delete.
+        """
         check_state(self.is_open, "Settings database is not open")
         if name:
             found = self._service.get(name)
@@ -170,24 +172,25 @@ class Settings:
                 return found
         return None
 
+    @lru_cache(maxsize=500)
+    def search(self, name: str = None, stype: SettingsType = None) -> List[SettingsEntry]:
+        """Display all settings matching the name and settings type.
+        :param name: the setting name to get.
+        :param stype: the settings type to filter.
+        """
+        check_state(self.is_open, "Settings database is not open")
+        return self._service.search(name, stype, self.limit, self.offset)
+
     def clear(self, name: str = None) -> None:
         """Clear all settings from the settings table."""
         check_state(self.is_open, "Settings database is not open")
         self._service.clear(name)
         self._clear_caches()
 
-    def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
-        """Export settings from CSV file into the database."""
-        settings = self.search(name, stype)
-        csv_file = ensure_endswith(filepath, ".csv")
-        with open(csv_file, "w", encoding="UTF8") as f_csv:
-            writer = csv.writer(f_csv, delimiter=',')
-            writer.writerow(self.HEADERS)
-            writer.writerows(list(map(lambda s: s.values, settings)))
-            return len(settings)
-
     def import_csv(self, filepath: str) -> int:
-        """Upsert settings from CSV file into the database."""
+        """Upsert settings from CSV file into the database.
+        :param filepath: the path of the CSV file to be imported.
+        """
         check_argument(file_is_not_empty(filepath), f"File not found: {filepath}")
         count = 0
         csv_file = ensure_endswith(filepath, ".csv")
@@ -201,6 +204,16 @@ class Settings:
                 self._service.save(entry)
             self._clear_caches()
             return count
+
+    def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
+        """Export settings from CSV file into the database."""
+        settings = self.search(name, stype)
+        csv_file = ensure_endswith(filepath, ".csv")
+        with open(csv_file, "w", encoding="UTF8") as f_csv:
+            writer = csv.writer(f_csv, delimiter=',')
+            writer.writerow(self.HEADERS)
+            writer.writerows(list(map(lambda s: s.values, settings)))
+            return len(settings)
 
     def _create_db(self) -> bool:
         """Create the settings SQLite DB file."""

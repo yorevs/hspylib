@@ -32,7 +32,7 @@ from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
 
 
-class SetMan(metaclass=Singleton):
+class Setman(metaclass=Singleton):
     """HsPyLib application that helps managing system settings."""
 
     RESOURCE_DIR = os.environ.get("HHS_DIR", os.environ.get("HOME", "~/"))
@@ -93,32 +93,32 @@ class SetMan(metaclass=Singleton):
                 case SetmanOps.TRUNCATE:
                     self._clear_settings(name)
 
-    def _set_setting(
-        self,
-        name: str | None,
-        value: Any | None,
-        stype: SettingsType = None,
-    ) -> None:
-        """Upsert setting."""
+    def _set_setting(self, name: str | None, value: Any | None, stype: SettingsType | None) -> None:
+        """Upsert the specified setting."""
         found, entry = self.settings.upsert(name, value, stype)
         sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry)
 
-    def _get_setting(self, name: str | None, simple_fmt: bool = False) -> None:
-        """Get specified setting."""
+    def _get_setting(self, name: str, simple_fmt: bool = False) -> None:
+        """Get setting matching the specified name.
+        :param name: the settings name to get.
+        :param simple_fmt: whether to format the setting or not.
+        """
         if found := self.settings.get(name):
             sysout(found.to_string(simple_fmt))
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
 
-    def _del_setting(self, name: str | None) -> None:
-        """Delete specified setting."""
+    def _del_setting(self, name: str) -> None:
+        """Delete specified setting.
+        :param name: the settings name to delete.
+        """
         if found := self.settings.remove(name):
             sysout("%GREEN%Setting deleted: %WHITE%", found)
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
 
-    def _list_settings(self, name: str, stype: SettingsType) -> None:
-        """Display all settings."""
+    def _list_settings(self, name: str | None, stype: SettingsType | None) -> None:
+        """List in a table all settings matching criteria."""
         data = list(map(lambda s: s.values, self.settings.search(name, stype)))
         tr = TableRenderer(self.settings.HEADERS, data, "Systems Settings")
         tr.adjust_auto_fit()
@@ -126,7 +126,7 @@ class SetMan(metaclass=Singleton):
         tr.set_cell_alignment(TextAlignment.LEFT)
         tr.render()
 
-    def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
+    def _search_settings(self, name: str | None, stype: SettingsType | None, simple_fmt: bool) -> None:
         """Search and display all settings matching criteria."""
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
         sysout(os.linesep.join(data)) \

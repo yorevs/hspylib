@@ -12,16 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
+import logging as log
 import sys
-
+from textwrap import dedent
 
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
+from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
 from setman.__classpath__ import _Classpath
+from setman.core.setman import Setman
 from setman.core.setman_enums import SetmanOps, SettingsType
 
 
@@ -37,37 +40,65 @@ class Main(TUIApplication):
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
+        self._setman = Setman(self)
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options."""
 
         # fmt: off
-        self._with_chained_args('operation', 'the operation to execute') \
-            .argument(self.Addon.SETMAN.val, 'app Settings Manager: Manage your terminal settings') \
-                .add_parameter(
-                    'operation',
-                    'the operation to be performed against your settings. ',
-                    choices=SetmanOps.choices()) \
-                .add_option(
-                    'name', 'n', 'name',
-                    'the settings name. ', nargs='?') \
-                .add_option(
-                    'value', 'v', 'value',
-                    'the settings value. ', nargs='?') \
-                .add_option(
-                    'stype', 't', 'type',
-                    'the settings type. ',
-                    choices=SettingsType.choices()) \
-                .add_option(
-                    'simple', 's', 'simple',
-                    'display without formatting. ', action=ParserAction.STORE_TRUE)  # fmt: on
+        self._with_options() \
+            .option(
+                'simple', 's', 'simple',
+                'display without formatting.', action=ParserAction.STORE_TRUE)
+        self._with_chained_args('operation', 'the operation to execute.') \
+            .argument(SetmanOps.GET.val, 'Retrieve the specified setting.') \
+                .add_parameter('name', 'the settings name to get.') \
+            .argument(SetmanOps.SET.val, 'Upsert the specified setting.') \
+                .add_option('name', 'n', 'name', 'the settings name to set.') \
+                .add_option('value', 'v', 'value', 'the settings value to set.') \
+                .add_option('type', 't', 'type', 'the settings type to set.', choices=SettingsType.choices()) \
+            .argument(SetmanOps.DEL.val, 'Delete the specified setting.') \
+                .add_parameter('name', 'the settings name to delete.') \
+            .argument(SetmanOps.LIST.val, 'List in a table all settings matching criteria.') \
+                .add_option('name', 'n', 'name', 'filter settings matching name.') \
+                .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
+            .argument(SetmanOps.SEARCH.val, 'Search and display all settings matching criteria.') \
+                .add_option('name', 'n', 'name', 'filter settings matching name.') \
+                .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
+            .argument(SetmanOps.TRUNCATE.val, 'Clear all settings matching name.') \
+                .add_option('name', 'n', 'name', 'filter settings matching name.') \
+            .argument(SetmanOps.IMPORT.val, 'Import settings from a CSV formatted file.') \
+                .add_parameter('file', 'the path of the CSV file to be imported.') \
+            .argument(SetmanOps.EXPORT.val, 'Export settings to a CSV formatted file.') \
+                .add_parameter('file', 'the path of the CSV file to be exported.') \
+                .add_option('name', 'n', 'name', 'filter settings matching name.') \
+                .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices())
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Main entry point handler."""
+        """Run the application with the command line arguments"""
+        log.info(
+            dedent(
+                f"""
+        {self._app_name} v{self._app_version}
+        Settings ==============================
+                STARTED: {now("%Y-%m-%d %H:%M:%S")}
+        """
+            )
+        )
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application main flow."""
+        op = self.get_arg("operation")
+        st = self.get_arg("type")
+        self._setman.execute(
+            SetmanOps.of_value(op) if op else None,
+            self.get_arg("name"),
+            self.get_arg("value"),
+            SettingsType.of_value(st) if st else None,
+            self.get_arg("simple")
+        )
 
         return ExitStatus.SUCCESS
 

@@ -29,8 +29,8 @@ class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
         super().__init__(SettingsRepository(setman_config))
 
     def get(self, name: str) -> Optional[SettingsEntry]:
-        """Get settings entry using the specified name.
-        :param name: the settings name to get.
+        """Get settings entry matching the specified name.
+        :param name: the setting name to get.
         """
         return self.repository.find_by_name(name)
 
