@@ -85,16 +85,16 @@ class SettingsEntry(CrudEntity):
         modified: str = now(),
     ):
         super().__init__(entity_id)
-        self.name = name
-        self.value = value
-        self.stype = stype.val if stype else SettingsType.PROPERTY.val
-        self.modified = modified
+        self.name: str = name
+        self.value: Any = value
+        self.stype: str = stype.val if stype else SettingsType.PROPERTY.val
+        self.modified: str = modified
 
     def __str__(self) -> str:
         return str(self.as_dict())
 
     def __repr__(self) -> str:
-        return str(self)
+        return self.to_string()
 
     def to_string(self, simple: bool = False) -> str:
         """Return the string representation of this entry."""

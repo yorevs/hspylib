@@ -12,24 +12,28 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.addons.setman.setman_config import SetmanConfig
-from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.addons.setman.settings import Settings
-from clitt.core.tui.table.table_enums import TextAlignment
-from clitt.core.tui.table.table_renderer import TableRenderer
-from hspylib.core.enums.charset import Charset
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import file_is_not_empty, sysout
-from hspylib.modules.application.application import Application
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import Any
-
 import atexit
 import logging as log
 import os
+from typing import Any
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.preconditions import check_state
+from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
+from hspylib.modules.application.application import Application
+from hspylib.modules.cli.keyboard import Keyboard
+
+from clitt.addons.setman.setman_config import SetmanConfig
+from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
+from clitt.core.settings.settings import Settings
+from clitt.core.tui.table.table_enums import TextAlignment
+from clitt.core.tui.table.table_renderer import TableRenderer
 
 
 class SetMan(metaclass=Singleton):
+    """HsPyLib application that helps managing system settings."""
+
     RESOURCE_DIR = os.environ.get("HHS_DIR", os.environ.get("HOME", "~/"))
 
     SETMAN_CONFIG_FILE = f"setman.properties"
@@ -80,14 +84,34 @@ class SetMan(metaclass=Singleton):
                 case SetmanOps.SEARCH:
                     self._search_settings(name or "%", stype, simple_fmt)
                 case SetmanOps.SET:
-                    self.settings.upsert(name, value, stype)
+                    self._set_setting(name, value, stype)
                 case SetmanOps.GET:
-                    self.settings.get(name, simple_fmt)
+                    self._get_setting(name, simple_fmt)
                 case SetmanOps.DEL:
-                    self.settings.remove(name)
+                    self._del_setting(name)
                 case SetmanOps.TRUNCATE:
-                    if self._clear_settings():
-                        sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
+                    self._clear_settings()
+
+    def _set_setting(
+        self,
+        name: str | None,
+        value: Any | None,
+        stype: SettingsType = None,
+    ) -> None:
+        found, entry = self.settings.upsert(name, value, stype)
+        sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %BLUE%", repr(entry))
+
+    def _get_setting(self, name: str | None, simple_fmt: bool = False) -> None:
+        if found := self.settings.get(name):
+            sysout(found.to_string(simple_fmt))
+        else:
+            syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
+
+    def _del_setting(self, name: str | None) -> None:
+        if found := self.settings.remove(name):
+            sysout("%GREEN%Setting deleted: %WHITE%", found.name)
+        else:
+            syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
 
     def _list_settings(self) -> None:
         """Display all settings."""
@@ -102,19 +126,23 @@ class SetMan(metaclass=Singleton):
     def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
         """Search all settings matching criteria."""
         data = self.settings.search(name, stype, simple_fmt)
-        sysout(os.linesep.join(data)) if data else sysout(f"%YELLOW%%EOL%No settings found matching '{name}'")
+        sysout(os.linesep.join(data)) \
+            if data \
+            else sysout(
+            f"%EOL%%YELLOW%No settings found matching: %WHITE%[name={name.replace('%', '*')}, stype={stype}]"
+        )
 
-    def _clear_settings(self) -> bool:
+    def _clear_settings(self) -> None:
         """Clear all settings."""
-        sysout("%ORANGE%All settings will be removed. Are you sure (y/[n])? %NC%")
+        sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
         keystroke = Keyboard.wait_keystroke()
         if keystroke and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
             self.settings.clear()
-            return True
-        return False
+            sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
 
-    def _setup(self, filepath: str) -> bool:
+    def _setup(self, filepath: str) -> None:
         """Setup SetMan on the system."""
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_configs:
             f_configs.write(f"hhs.setman.database = {self.SETMAN_DB_FILE} {os.linesep}")
-        return os.path.exists(filepath)
+            f_configs.write(f"hhs.setman.encode.database = True")
+            check_state(os.path.exists(filepath), "Unable to create Setman configuration file: " + filepath)

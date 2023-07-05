@@ -12,18 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.addons.setman.setman_config import SetmanConfig
-from clitt.addons.setman.setman_enums import SettingsType
-from clitt.addons.setman.settings_entry import SettingsEntry
-from clitt.addons.setman.settings_repository import SettingsRepository
-from datasource.crud_service import CrudService
 from typing import List, Optional
+
+from datasource.crud_service import CrudService
+
+from clitt.addons.setman.setman_enums import SettingsType
+from clitt.core.settings.settings_config import SettingsConfig
+from clitt.core.settings.settings_entry import SettingsEntry
+from clitt.core.settings.settings_repository import SettingsRepository
 
 
 class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
     """Provides a CRUD service for the Setman application."""
 
-    def __init__(self, setman_config: SetmanConfig):
+    def __init__(self, setman_config: SettingsConfig):
         super().__init__(SettingsRepository(setman_config))
 
     def get(self, name: str) -> Optional[SettingsEntry]:

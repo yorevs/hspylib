@@ -12,29 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-from datasource.db_configuration import DBConfiguration
+from hspylib.core.tools.commons import str_to_bool
+
+from clitt.core.settings.settings_config import SettingsConfig
 
 
-class SetmanConfig(DBConfiguration):
+class SetmanConfig(SettingsConfig):
     """Holds the SetMan configurations."""
-
-    INSTANCE = None
 
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
-        self._database = self["hhs.setman.database"]
-
-    @property
-    def database(self) -> str:
-        """Return the SetMan database name."""
-        return self._database
-
-    @property
-    def encoded_db(self) -> str:
-        """Return the SetMan encoded database name."""
-        return f"{self.database}-encoded"
-
-    @property
-    def decoded_db(self) -> str:
-        """Return the SetMan decoded database name."""
-        return f"{self.database}-decoded"
+        self._database: str = self["hhs.setman.database"]
+        self._encode_db: bool = str_to_bool(self["hhs.setman.encode.database"])

@@ -2,10 +2,10 @@
 #
 # hspylib-clitt v0.9.40
 #
-# Package: demo.tui.menu
+# Package: demo.settings
 """Package initialization."""
 
 __all__ = [
-  'tui_menu_demo'
+  'settings_demo'
 ]
 __version__ = '0.9.40'

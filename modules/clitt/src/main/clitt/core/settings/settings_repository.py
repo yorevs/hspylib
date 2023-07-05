@@ -13,11 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.addons.setman.setman_enums import SettingsType
-from clitt.addons.setman.settings_entry import SettingsEntry
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from textwrap import dedent
 from typing import List, Optional
+
+from clitt.core.settings.settings_entry import SettingsEntry
 
 
 class SettingsRepository(SQLiteRepository[SettingsEntry]):
