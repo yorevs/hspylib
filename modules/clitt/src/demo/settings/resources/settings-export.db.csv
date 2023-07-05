@@ -1,0 +1,7 @@
+uuid,name,value,settings type,modified
+1fdfd71e425b4f1d84cf2b3a82561f21,demo.settings.five,VALUE,property,2023-07-05 18:30:13
+5bdb381266ca461191ec2d299cc5630b,demo.settings.four,1,environment,2023-07-05 18:30:13
+bfc81bfa449a4958959486fe0c407fdf,demo.settings.one,1,property,2023-07-05 18:30:13
+fbdbaa5a17464e299063f1c02864cb96,demo.settings.six,0,environment,2023-07-05 18:30:13
+bebb98cfb6e943f49f6730ba03026cf6,demo.settings.three,VALUE,property,2023-07-05 18:30:13
+116aa0d404384e5ba3ee2ee632b2c0a8,demo.settings.two,0,environment,2023-07-05 18:30:13

@@ -49,7 +49,7 @@ class SetMan(metaclass=Singleton):
         self._settings = Settings(self.configs)
 
     def __str__(self):
-        data = set(self.settings.list())
+        data = set(self.settings.search())
         vault_str = ""
         for entry in data:
             vault_str += entry.key
@@ -80,9 +80,9 @@ class SetMan(metaclass=Singleton):
         with self.settings.open():
             match operation:
                 case SetmanOps.LIST:
-                    self._list_settings()
+                    self._list_settings(name, stype)
                 case SetmanOps.SEARCH:
-                    self._search_settings(name or "%", stype, simple_fmt)
+                    self._search_settings(name or "*", stype, simple_fmt)
                 case SetmanOps.SET:
                     self._set_setting(name, value, stype)
                 case SetmanOps.GET:
@@ -90,7 +90,7 @@ class SetMan(metaclass=Singleton):
                 case SetmanOps.DEL:
                     self._del_setting(name)
                 case SetmanOps.TRUNCATE:
-                    self._clear_settings()
+                    self._clear_settings(name)
 
     def _set_setting(
         self,
@@ -116,11 +116,10 @@ class SetMan(metaclass=Singleton):
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
 
-    def _list_settings(self) -> None:
+    def _list_settings(self, name: str, stype: SettingsType) -> None:
         """Display all settings."""
-        data = list(map(lambda s: s.values, self.settings.list()))
-        headers = ["uuid", "name", "value", "settings type", "modified"]
-        tr = TableRenderer(headers, data, "Systems Settings")
+        data = list(map(lambda s: s.values, self.settings.search(name, stype)))
+        tr = TableRenderer(self.settings.HEADERS, data, "Systems Settings")
         tr.adjust_auto_fit()
         tr.set_header_alignment(TextAlignment.CENTER)
         tr.set_cell_alignment(TextAlignment.LEFT)
@@ -128,20 +127,24 @@ class SetMan(metaclass=Singleton):
 
     def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
         """Search and display all settings matching criteria."""
-        data = self.settings.search(name, stype, simple_fmt)
+        data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
         sysout(os.linesep.join(data)) \
             if data \
             else sysout(
             f"%EOL%%YELLOW%No settings found matching: %WHITE%[name={name.replace('%', '*')}, stype={stype}]"
         )
 
-    def _clear_settings(self) -> None:
+    def _clear_settings(self, name: str) -> None:
         """Clear all settings."""
-        sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
-        keystroke = Keyboard.wait_keystroke()
-        if keystroke and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
-            self.settings.clear()
-            sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
+        if not name:
+            sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
+            keystroke = Keyboard.wait_keystroke()
+            if keystroke and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
+                self.settings.clear("*")
+                sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
+        else:
+            self.settings.clear(name)
+            sysout(f"%EOL%%ORANGE%!!! System settings matching [{name}] have been removed !!!%EOL%")
 
     def _setup(self, filepath: str) -> None:
         """Setup SetMan on the system."""

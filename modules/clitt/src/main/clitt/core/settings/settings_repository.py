@@ -35,21 +35,28 @@ class SettingsRepository(SQLiteRepository[SettingsEntry]):
 
         return self.to_entity_type(result) if result else None
 
-    def search(self, name: str, stype: SettingsType) -> List[SettingsEntry]:
+    def search(
+        self,
+        name: str = None,
+        stype: SettingsType = None,
+        limit: int = 500,
+        offset: int = 0) -> List[SettingsEntry]:
         """Search settings by settings type."""
         search_name = name.replace("*", "%") if name else "%"
         if stype:
-            sql = "SELECT * FROM SETTINGS WHERE name LIKE ? AND stype = ? ORDER BY name"
+            sql = f"SELECT * FROM SETTINGS WHERE name LIKE ? AND stype = ? ORDER BY name LIMIT {limit} OFFSET {offset}"
             result = self.execute(sql, name=search_name, stype=stype.val)[1] or []
         else:
-            sql = "SELECT * FROM SETTINGS WHERE name LIKE ? ORDER BY name"
+            sql = f"SELECT * FROM SETTINGS WHERE name LIKE ? ORDER BY name LIMIT {limit} OFFSET {offset}"
             result = self.execute(sql, name=search_name)[1] or []
 
         return list(map(self.to_entity_type, result))
 
-    def truncate(self) -> None:
-        """TODO"""
-        self.execute("DELETE FROM SETTINGS")
+    def clear(self, name: str = None) -> None:
+        """Remove all settings matching prefix."""
+        name = name.replace("*", "%") if name else "%"
+        sql = "DELETE FROM SETTINGS WHERE name LIKE ?"
+        self.execute(sql, name=name)
 
     def create_db(self) -> None:
         """TODO"""

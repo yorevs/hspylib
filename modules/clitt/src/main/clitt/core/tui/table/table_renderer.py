@@ -16,7 +16,7 @@ from clitt.core.tui.table.table_enums import TextAlignment, TextCase
 from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty
-from hspylib.core.tools.text_tools import elide_text
+from hspylib.core.tools.text_tools import elide_text, ensure_endswith
 from typing import Any, Callable, Iterable, List
 
 import csv
@@ -185,7 +185,8 @@ class TableRenderer:
 
     def export_csv(self, filepath: str, delimiter: chr = ",", has_headers: bool = True) -> None:
         """Export the table to CSV format."""
-        with open(filepath, "w", encoding="UTF8") as csv_file:
+        csv_file = ensure_endswith(filepath, ".csv")
+        with open(csv_file, "w", encoding="UTF8") as csv_file:
             writer = csv.writer(csv_file, delimiter=delimiter)
             if has_headers:
                 writer.writerow(self._headers)

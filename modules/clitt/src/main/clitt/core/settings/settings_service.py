@@ -29,21 +29,30 @@ class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
         super().__init__(SettingsRepository(setman_config))
 
     def get(self, name: str) -> Optional[SettingsEntry]:
-        """Get a setman entry using the specified name.
-        :param name: the setman entry name to find.
+        """Get settings entry using the specified name.
+        :param name: the settings name to get.
         """
         return self.repository.find_by_name(name)
 
-    def search(self, name: str, stype: SettingsType = None) -> List[SettingsEntry]:
-        """Get a setman entry using the specified name.
-        :param name: the setman entry name to find.
+    def search(
+        self,
+        name: str,
+        stype: SettingsType = None,
+        limit: int = 500,
+        offset: int = 0) -> List[SettingsEntry]:
+        """Search settings matching the specified name.
+        :param name: the settings name to search.
         :param stype: the settings type to filter.
+        :param limit: the max amount of records to search.
+        :param offset: the records offset from which to search.
         """
-        return self.repository.search(name, stype)
+        return self.repository.search(name, stype, limit, offset)
 
-    def clear(self) -> None:
-        """Clear all settings from the settings table."""
-        self.repository.truncate()
+    def clear(self, name: str = None) -> None:
+        """Clear all settings from the settings table matching the specified name.
+        :param name: the settings name to search.
+        """
+        self.repository.clear(name)
 
     def create_db(self) -> None:
         """Create a brand new setman database file."""

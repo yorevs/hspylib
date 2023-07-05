@@ -14,6 +14,7 @@
 """
 import binascii
 import contextlib
+import csv
 import logging as log
 import os
 import uuid
@@ -22,8 +23,9 @@ from typing import Any, List, Optional, Tuple
 
 from datasource.identity import Identity
 from hspylib.core.exception.exceptions import ApplicationError
-from hspylib.core.preconditions import check_state
+from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, touch_file
+from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.security.security import decode_file, encode_file
 
@@ -36,15 +38,19 @@ from clitt.core.settings.settings_service import SettingsService
 class Settings:
     """Class to provide settings interactions."""
 
+    HEADERS = ["uuid", "name", "value", "settings type", "modified"]
+
     def __init__(self, configs: SettingsConfig) -> None:
         self._is_open = False
         self._configs = configs
         self._service = SettingsService(self.configs)
         if not file_is_not_empty(self.configs.database):
             self._create_db()
+        self._limit = 500
+        self._offset = 0
 
     def __str__(self):
-        entries = f",{os.linesep}  ".join(list(map(lambda s: str(s), self.list())))
+        entries = f",{os.linesep}  ".join(list(map(lambda s: str(s), self.search())))
         return (
             f"Settings: [{os.linesep + '  ' if entries else ''}"
             f"{entries}"
@@ -63,6 +69,18 @@ class Settings:
     @property
     def configs(self) -> SettingsConfig:
         return self._configs
+
+    @property
+    def limit(self) -> int:
+        return self._limit
+
+    @property
+    def offset(self) -> int:
+        return self._offset
+
+    @offset.setter
+    def offset(self, new_offset: int) -> None:
+        self._offset = new_offset
 
     @property
     def is_open(self) -> bool:
@@ -85,6 +103,7 @@ class Settings:
         except (UnicodeDecodeError, binascii.Error) as err:
             err_msg = f"Failed to open settings file => {self.configs.database}"
             log.error(ApplicationError(err_msg, err))
+            yield self
         except Exception as err:
             err_msg = f"Unable to close settings file => {self.configs.database}"
             raise ApplicationError(err_msg, err) from err
@@ -110,16 +129,10 @@ class Settings:
             safe_delete_file(self.configs.decoded_db)
 
     @lru_cache(maxsize=500)
-    def list(self) -> List[SettingsEntry]:
-        """List all database settings using as a formatted table."""
-        check_state(self.is_open, "Settings database is not open")
-        return self._service.list()
-
-    @lru_cache(maxsize=500)
-    def search(self, name: str, stype: SettingsType, simple_fmt: bool) -> List[str]:
+    def search(self, name: str = None, stype: SettingsType = None) -> List[SettingsEntry]:
         """Display all settings matching the name and settings type."""
         check_state(self.is_open, "Settings database is not open")
-        return list(map(lambda e: e.to_string(simple_fmt), self._service.search(name, stype)))
+        return self._service.search(name, stype, self.limit, self.offset)
 
     @lru_cache
     def get(self, name: str) -> Optional[SettingsEntry]:
@@ -135,7 +148,6 @@ class Settings:
         value: Any,
         stype: SettingsType) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting."""
-
         check_state(self.is_open, "Settings database is not open")
         found = self._service.get(name)
         entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
@@ -158,11 +170,37 @@ class Settings:
                 return found
         return None
 
-    def clear(self) -> None:
+    def clear(self, name: str = None) -> None:
         """Clear all settings from the settings table."""
         check_state(self.is_open, "Settings database is not open")
-        self._service.clear()
+        self._service.clear(name)
         self._clear_caches()
+
+    def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
+        """Export settings from CSV file into the database."""
+        settings = self.search(name, stype)
+        csv_file = ensure_endswith(filepath, ".csv")
+        with open(csv_file, "w", encoding="UTF8") as f_csv:
+            writer = csv.writer(f_csv, delimiter=',')
+            writer.writerow(self.HEADERS)
+            writer.writerows(list(map(lambda s: s.values, settings)))
+            return len(settings)
+
+    def import_csv(self, filepath: str) -> int:
+        """Upsert settings from CSV file into the database."""
+        check_argument(file_is_not_empty(filepath), f"File not found: {filepath}")
+        count = 0
+        csv_file = ensure_endswith(filepath, ".csv")
+        with open(csv_file, encoding="UTF8") as f_csv:
+            csv_reader = csv.reader(f_csv, delimiter=',')
+            for row in csv_reader:
+                if row == self.HEADERS:
+                    continue
+                uid, name, value, stype = str(row[0]), str(row[1]), str(row[2]), SettingsType.of_value(row[3])
+                entry = SettingsEntry(Identity(SettingsEntry.SetmanId(uid)), name, value, stype)
+                self._service.save(entry)
+            self._clear_caches()
+            return count
 
     def _create_db(self) -> bool:
         """Create the settings SQLite DB file."""
@@ -192,4 +230,3 @@ class Settings:
         """Remove all caches."""
         self.get.cache_clear()
         self.search.cache_clear()
-        self.list.cache_clear()
