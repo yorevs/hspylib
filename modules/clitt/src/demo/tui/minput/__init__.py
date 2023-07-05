@@ -1,9 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.39
+# hspylib-clitt v0.9.40
 #
 # Package: demo.tui.minput
 """Package initialization."""
 
-__all__ = ["menu_input_demo", "menu_input_tokens_demo"]
-__version__ = "0.9.39"
+__all__ = [
+  'menu_input_demo', 
+  'menu_input_tokens_demo'
+]
+__version__ = '0.9.40'
