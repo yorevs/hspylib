@@ -1,8 +1,8 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.43
+# hspylib-setman v0.9.1
 #
-# Package: main.clitt.core.settings
+# Package: main.setman.settings
 """Package initialization."""
 
 __all__ = [
@@ -12,4 +12,4 @@ __all__ = [
   'settings_repository', 
   'settings_service'
 ]
-__version__ = '0.9.43'
+__version__ = '0.9.1'

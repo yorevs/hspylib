@@ -58,6 +58,6 @@ setuptools.setup(
     ],
     python_requires=">=3.10",
     install_requires=REQUIREMENTS,
-    keywords="clit,terminal,tui,manager,application,widgets",
+    keywords="cli,clitt,terminal,tui,manager,application,widgets",
     platforms="Darwin,Linux",
 )

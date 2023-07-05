@@ -29,10 +29,10 @@ from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.security.security import decode_file, encode_file
 
-from clitt.addons.setman.setman_enums import SettingsType
-from clitt.core.settings.settings_config import SettingsConfig
-from clitt.core.settings.settings_entry import SettingsEntry
-from clitt.core.settings.settings_service import SettingsService
+from setman.core.setman_enums import SettingsType
+from setman.settings.settings_config import SettingsConfig
+from setman.settings.settings_entry import SettingsEntry
+from setman.settings.settings_service import SettingsService
 
 
 class Settings:

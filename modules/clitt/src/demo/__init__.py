@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.43
+# hspylib-clitt v0.9.44
 #
 # Package: demo
 """Package initialization."""
@@ -8,7 +8,6 @@
 __all__ = [
   'application', 
   'icons', 
-  'settings', 
   'tui'
 ]
-__version__ = '0.9.43'
+__version__ = '0.9.44'
