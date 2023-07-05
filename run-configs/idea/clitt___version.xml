@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="clitt - version" type="PythonConfigurationType" factoryName="Python" folderName="Clitt">
-    <module name="HsPyLib.hspylib" />
+    <module name="HsPyLib.clitt" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
