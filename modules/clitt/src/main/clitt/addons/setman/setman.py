@@ -98,16 +98,19 @@ class SetMan(metaclass=Singleton):
         value: Any | None,
         stype: SettingsType = None,
     ) -> None:
+        """Upsert setting."""
         found, entry = self.settings.upsert(name, value, stype)
         sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry)
 
     def _get_setting(self, name: str | None, simple_fmt: bool = False) -> None:
+        """Get specified setting."""
         if found := self.settings.get(name):
             sysout(found.to_string(simple_fmt))
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
 
     def _del_setting(self, name: str | None) -> None:
+        """Delete specified setting."""
         if found := self.settings.remove(name):
             sysout("%GREEN%Setting deleted: %WHITE%", found)
         else:
@@ -124,7 +127,7 @@ class SetMan(metaclass=Singleton):
         tr.render()
 
     def _search_settings(self, name: str, stype: SettingsType, simple_fmt: bool) -> None:
-        """Search all settings matching criteria."""
+        """Search and display all settings matching criteria."""
         data = self.settings.search(name, stype, simple_fmt)
         sysout(os.linesep.join(data)) \
             if data \

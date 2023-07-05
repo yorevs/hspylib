@@ -17,6 +17,7 @@ import contextlib
 import logging as log
 import os
 import uuid
+from functools import lru_cache
 from typing import Any, List, Optional, Tuple
 
 from datasource.identity import Identity
@@ -108,26 +109,19 @@ class Settings:
             safe_delete_file(self.configs.encoded_db)
             safe_delete_file(self.configs.decoded_db)
 
+    @lru_cache(maxsize=500)
     def list(self) -> List[SettingsEntry]:
         """List all database settings using as a formatted table."""
         check_state(self.is_open, "Settings database is not open")
         return self._service.list()
 
+    @lru_cache(maxsize=500)
     def search(self, name: str, stype: SettingsType, simple_fmt: bool) -> List[str]:
         """Display all settings matching the name and settings type."""
         check_state(self.is_open, "Settings database is not open")
         return list(map(lambda e: e.to_string(simple_fmt), self._service.search(name, stype)))
 
-    def remove(self, name: str) -> Optional[SettingsEntry]:
-        """Delete the specified setting."""
-        check_state(self.is_open, "Settings database is not open")
-        if name:
-            found = self._service.get(name)
-            if found:
-                self._service.remove(found)
-                return found
-        return None
-
+    @lru_cache
     def get(self, name: str) -> Optional[SettingsEntry]:
         """Get the specified setting."""
         check_state(self.is_open, "Settings database is not open")
@@ -150,12 +144,25 @@ class Settings:
         if entry:
             entry.modified = now()
             self._service.save(entry)
+            self._clear_caches()
         return found, entry
+
+    def remove(self, name: str) -> Optional[SettingsEntry]:
+        """Delete the specified setting."""
+        check_state(self.is_open, "Settings database is not open")
+        if name:
+            found = self._service.get(name)
+            if found:
+                self._service.remove(found)
+                self._clear_caches()
+                return found
+        return None
 
     def clear(self) -> None:
         """Clear all settings from the settings table."""
         check_state(self.is_open, "Settings database is not open")
         self._service.clear()
+        self._clear_caches()
 
     def _create_db(self) -> bool:
         """Create the settings SQLite DB file."""
@@ -180,3 +187,9 @@ class Settings:
             decode_file(self.configs.database, decoded, binary=True)
             os.rename(decoded, self.configs.database)
             log.debug("Settings file is decoded")
+
+    def _clear_caches(self) -> None:
+        """Remove all caches."""
+        self.get.cache_clear()
+        self.search.cache_clear()
+        self.list.cache_clear()
