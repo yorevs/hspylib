@@ -24,11 +24,12 @@ from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.application.application import Application
 from hspylib.modules.cli.keyboard import Keyboard
 
-from clitt.addons.setman.setman_config import SetmanConfig
-from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.core.settings.settings import Settings
 from clitt.core.tui.table.table_enums import TextAlignment
 from clitt.core.tui.table.table_renderer import TableRenderer
+
+from setman.core.setman_config import SetmanConfig
+from setman.core.setman_enums import SetmanOps, SettingsType
+from setman.settings.settings import Settings
 
 
 class SetMan(metaclass=Singleton):

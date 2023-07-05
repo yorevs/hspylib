@@ -14,7 +14,7 @@
 """
 from hspylib.core.tools.commons import str_to_bool
 
-from clitt.core.settings.settings_config import SettingsConfig
+from setman.settings.settings_config import SettingsConfig
 
 
 class SetmanConfig(SettingsConfig):

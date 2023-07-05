@@ -12,22 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.__classpath__ import _Classpath
-from clitt.addons.appman.appman import AppManager
-from clitt.addons.appman.appman_enums import AppExtension, AppType
-from clitt.addons.setman.setman import SetMan
-from clitt.addons.setman.setman_enums import SetmanOps, SettingsType
-from clitt.addons.widman.widman import WidgetManager
-from clitt.core.tui.tui_application import TUIApplication
+import sys
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
-from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-import sys
+from clitt.__classpath__ import _Classpath
+from clitt.addons.appman.appman import AppManager
+from clitt.addons.appman.appman_enums import AppExtension, AppType
+from clitt.addons.widman.widman import WidgetManager
+from clitt.core.tui.tui_application import TUIApplication
 
 
 class Main(TUIApplication):
@@ -45,7 +43,6 @@ class Main(TUIApplication):
         # fmt: off
         APPMAN      = 'appman'
         WIDGETS     = 'widgets'
-        SETMAN      = 'setman'
         # fmt: on
 
         @property
@@ -85,25 +82,7 @@ class Main(TUIApplication):
                     'presented in a dashboard',
                     nargs='?') \
                 .add_parameter(
-                    'widget-args', "the widget's arguments (if applicable)", nargs='*') \
-            .argument(self.Addon.SETMAN.val, 'app Settings Manager: Manage your terminal settings') \
-                .add_parameter(
-                    'operation',
-                    'the operation to be performed against your settings. ',
-                    choices=SetmanOps.choices()) \
-                .add_option(
-                    'name', 'n', 'name',
-                    'the settings name. ', nargs='?') \
-                .add_option(
-                    'value', 'v', 'value',
-                    'the settings value. ', nargs='?') \
-                .add_option(
-                    'stype', 't', 'type',
-                    'the settings type. ',
-                    choices=SettingsType.choices()) \
-                .add_option(
-                    'simple', 's', 'simple',
-                    'display without formatting. ', action=ParserAction.STORE_TRUE)  # fmt: on
+                    'widget-args', "the widget's arguments (if applicable)", nargs='*')
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Main entry point handler."""
@@ -117,8 +96,6 @@ class Main(TUIApplication):
             self.start_appman()
         elif app == self.Addon.WIDGETS.val:
             self.start_widman()
-        elif app == self.Addon.SETMAN.val:
-            self.start_setman()
         else:
             syserr(f"### Invalid Addon application: {app}")
             self.usage(ExitStatus.FAILED)
@@ -156,16 +133,6 @@ class Main(TUIApplication):
                 if args.initialize_git:
                     app_ext.append(AppExtension.GIT)
                 addon.create(args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir())
-
-    def start_setman(self) -> None:
-        """Start the Setman application."""
-        addon = SetMan(self)
-        op = SetmanOps.of_value(self.get_arg("operation"), ignore_case=True)
-        name = self.get_arg("name")
-        value = self.get_arg("value")
-        stype = self.get_arg("stype")
-        simple_fmt: bool = bool(self.get_arg("simple"))
-        addon.execute(op, name, value, SettingsType.of_value(stype) if stype else None, simple_fmt)
 
 
 # Application entry point

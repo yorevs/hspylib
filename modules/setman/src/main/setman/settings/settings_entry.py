@@ -12,7 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.addons.setman.setman_enums import SettingsType
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
 from collections import namedtuple
@@ -22,6 +21,8 @@ from hspylib.core.tools.text_tools import environ_name
 from hspylib.core.zoned_datetime import now
 from textwrap import dedent
 from typing import Any, Optional, Union
+
+from setman.core.setman_enums import SettingsType
 
 
 class SettingsEntry(CrudEntity):
