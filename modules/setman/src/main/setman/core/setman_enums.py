@@ -34,6 +34,10 @@ class SetmanOps(Enumeration):
     def choices() -> List[str]:
         return SetmanOps.values()
 
+    @property
+    def val(self) -> str:
+        return str(self.value)
+
 
 class SettingsType(Enumeration):
     """Settings types."""
