@@ -23,8 +23,8 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import run_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
-from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.argparse.parser_action import ParserAction
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
 import sys

@@ -31,11 +31,7 @@ DEFAULT_HS_ITERATIONS: int  = 100000
 # fmt: on
 
 
-def encode_file(
-    in_file: str,
-    out_file: str,
-    binary: bool = False,
-    encoding: str | Charset = Charset.UTF_8) -> int:
+def encode_file(in_file: str, out_file: str, binary: bool = False, encoding: str | Charset = Charset.UTF_8) -> int:
     """Encode file into base64
     :param in_file: The file to be encoded
     :param out_file: The resulting encoded file
@@ -54,11 +50,7 @@ def encode_file(
             return f_out_file.write(str(data, encoding=str(encoding)))
 
 
-def decode_file(
-    in_file: str,
-    out_file: str,
-    binary: bool = False,
-    encoding: str | Charset = Charset.UTF_8) -> int:
+def decode_file(in_file: str, out_file: str, binary: bool = False, encoding: str | Charset = Charset.UTF_8) -> int:
     """Decode file from base64
     :param in_file: The file to be decoded
     :param out_file: The resulting decoded file
@@ -85,7 +77,8 @@ def encrypt_file(
     digest_algo: hashes.HashAlgorithm = hashes.SHA256(),
     length: int = DEFAULT_HS_LENGTH,
     iterations: int = DEFAULT_HS_ITERATIONS,
-    encoding: str | Charset = Charset.UTF_8) -> None:
+    encoding: str | Charset = Charset.UTF_8,
+) -> None:
     """Encrypt file using Fernet cryptography
     :param in_file: The file to be encrypted
     :param out_file: The resulting encrypted file
@@ -121,7 +114,8 @@ def decrypt_file(
     digest_algo: hashes.HashAlgorithm = hashes.SHA256(),
     length: int = DEFAULT_HS_LENGTH,
     iterations: int = DEFAULT_HS_ITERATIONS,
-    encoding: str | Charset = Charset.UTF_8) -> None:
+    encoding: str | Charset = Charset.UTF_8,
+) -> None:
     """Decrypt file using Fernet cryptography
     :param in_file: The file to be decrypted
     :param out_file: The resulting decrypted file

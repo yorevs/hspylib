@@ -5,8 +5,5 @@
 # Package: test
 """Package initialization."""
 
-__all__ = [
-  'datasource', 
-  'shared'
-]
-__version__ = '0.9.36'
+__all__ = ["datasource", "shared"]
+__version__ = "0.9.36"

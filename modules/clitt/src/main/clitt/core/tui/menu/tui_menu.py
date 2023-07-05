@@ -31,11 +31,7 @@ class TUIMenu(TUIComponent, ABC):
 
     @staticmethod
     def prompt(
-        label: str,
-        dest: str = None,
-        min_length: int = 1,
-        max_length: int = 32,
-        validator: InputValidator = None
+        label: str, dest: str = None, min_length: int = 1, max_length: int = 32, validator: InputValidator = None
     ) -> Optional[Namespace]:
         # fmt: off
         form_fields = (
@@ -57,7 +53,8 @@ class TUIMenu(TUIComponent, ABC):
         parent: Optional["TUIMenu"] = None,
         title: str = "",
         tooltip: str = "",
-        default_on_trigger_cb: ON_TRIGGER_CB = None):
+        default_on_trigger_cb: ON_TRIGGER_CB = None,
+    ):
         super().__init__(title)
         self._tooltip = tooltip
         self._parent = parent
