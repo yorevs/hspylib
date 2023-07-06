@@ -13,11 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 from hspylib.core.tools.commons import sysout
-from hspylib.modules.cli.vt100.vt_utils import alternate_screen
 from time import sleep
 
 if __name__ == "__main__":
-    alternate_screen()
     sysout("%CSV%Cursor saved")
     sleep(1)
     sysout("%MOD(1;31)%RED%MOD(0)%")
@@ -37,4 +35,3 @@ if __name__ == "__main__":
     sysout("%CRE%%EL0%", end="")
     sysout("Done")
     sysout("%ED0%", end="")
-    alternate_screen(False)

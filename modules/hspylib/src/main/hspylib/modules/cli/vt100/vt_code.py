@@ -28,10 +28,10 @@ class VtCode(Enumeration):
 
     # fmt: off
 
-    EOL = os.linesep                        # Line separator    -> (End Of Line)
+    EOL = os.linesep                        # Line separator -> (End Of Line)
 
-    SCA = Vt100.alternate_screen()          # ^[?1049h          -> Switch to alternate screen buffer
-    SCM = Vt100.alternate_screen(False)     # ^[?1049l          -> Switch to main screen buffer
+    SCA = Vt100.alternate_screen()          # ^[?1049h -> Switch to alternate screen buffer
+    SCM = Vt100.alternate_screen(False)     # ^[?1049l -> Switch to main screen buffer
 
     CSV = Vt100.save_cursor()               # ^[7 -> Save cursor position and attributes
     CRE = Vt100.restore_cursor()            # ^[8 -> Restore cursor position and attributes
@@ -42,13 +42,13 @@ class VtCode(Enumeration):
     SSC = Vt100.set_show_cursor(True)       # ^[?25h -> Set show cursor
     USC = Vt100.set_show_cursor(False)      # ^[?25l -> Unset show cursor
 
-    ED0 = Vt100.clear_screen()              # ^[[J  -> Clear screen from cursor down
-    ED1 = Vt100.clear_screen(1)             # ^[[1J -> Clear screen from cursor up
-    ED2 = Vt100.clear_screen(2)             # ^[[2J -> Clear entire screen
+    ED0 = Vt100.clear_screen()              # ^[[J  -> Erase screen from cursor down
+    ED1 = Vt100.clear_screen(1)             # ^[[1J -> Erase screen from cursor up
+    ED2 = Vt100.clear_screen(2)             # ^[[2J -> Erase the entire screen
 
-    EL0 = Vt100.clear_line()                # ^[[K  -> Clear line from cursor right
-    EL1 = Vt100.clear_line(1)               # ^[[1K -> Clear line from cursor left
-    EL2 = Vt100.clear_line(2)               # ^[[2K -> Clear entire line
+    EL0 = Vt100.clear_line()                # ^[[K  -> Erase line from cursor right
+    EL1 = Vt100.clear_line(1)               # ^[[1K -> Erase line from cursor left
+    EL2 = Vt100.clear_line(2)               # ^[[2K -> Erase the entire line
 
     HOM = Vt100.set_cursor_pos()            # ^[[H  -> Move cursor to upper left corner
 

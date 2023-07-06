@@ -3,8 +3,8 @@
 
 """
    @project: HsPyLib
-   @package: hspylib.core.tools
-      @file: git_tools.py
+   @package: clitt.utils
+      @file: git_utils.py
    @created: Nov 14, 2019
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
@@ -13,8 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.terminal import Terminal
 from typing import Tuple
+
+from clitt.core.terminal import Terminal
 
 
 class GitTools:

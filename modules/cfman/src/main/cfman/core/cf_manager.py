@@ -12,6 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from clitt.core.term.terminal import Terminal
+
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
@@ -20,13 +24,11 @@ from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError,
 from clitt.core.tui.mchoose.mchoose import mchoose
 from clitt.core.tui.minput.minput import MenuInput, minput
 from clitt.core.tui.mselect.mselect import mselect
-from clitt.core.tui.tui_screen import TUIScreen
 from functools import partial
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_state
 from hspylib.modules.cache.ttl_cache import TTLCache
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import clear_screen, set_auto_wrap, set_show_cursor
 from hspylib.modules.fetch.fetch import head
 from retry import retry
 from time import sleep
@@ -83,8 +85,16 @@ class CFManager:
             case _:
                 return "started", "stopped"
 
-    def __init__(self, api: str, org: str, space: str, username: str, password: str, no_cache: str, cf_endpoints: str):
-        self._screen = TUIScreen.INSTANCE or TUIScreen()
+    def __init__(
+        self, api: str,
+        org: str,
+        space: str,
+        username: str,
+        password: str,
+        no_cache: str,
+        cf_endpoints: str):
+
+        self._terminal = Terminal.INSTANCE
         self._cf = CloudFoundry.INSTANCE or CloudFoundry()
         self._cache = TTLCache()
         self._api = api
@@ -117,11 +127,11 @@ class CFManager:
         return self._get_apps() or []
 
     @property
-    def screen(self) -> TUIScreen:
-        return self._screen
+    def screen(self) -> Screen:
+        return self._terminal.screen
 
     @property
-    def cursor(self) -> TUIScreen.Cursor:
+    def cursor(self) -> Cursor:
         return self.screen.cursor
 
     def write(self, obj: Any) -> None:
@@ -172,9 +182,9 @@ class CFManager:
 
     def _prepare_render(self) -> None:
         """Prepare the screen for renderization."""
-        set_auto_wrap(False)
-        set_show_cursor(False)
-        self._screen.clear()
+        Terminal.set_auto_wrap(False)
+        Terminal.set_show_cursor(False)
+        self.screen.clear()
         self.cursor.save()
 
     def _wait_keystroke(self, wait_message: str = "%YELLOW%%EOL%Press any key to continue%EOL%%NC%") -> None:
@@ -372,7 +382,7 @@ class CFManager:
         apps = self.apps
 
         if len(apps) > 0:
-            clear_screen()
+            self.screen.clear()
             # fmt: off
             self.writeln(
                 f"%BLUE%Listing '{self._org}::{self._space}' applications ...%EOL%%WHITE%"
@@ -386,7 +396,7 @@ class CFManager:
     def _blue_green_check(self) -> None:
         """Display all PCF space-application blue/green check."""
         if len(self.apps) > 0:
-            clear_screen()
+            self.screen.clear()
             self.writeln(f"%BLUE%Checking blue/green deployments ...%EOL%")
             CFBlueGreenChecker.check(self._org, self._space, self.apps)
 

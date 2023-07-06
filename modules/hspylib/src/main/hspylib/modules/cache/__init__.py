@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.187
+# hspylib v0.11.191
 #
 # Package: main.hspylib.modules.cache
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
   'ttl_cache', 
   'ttl_keyring_be'
 ]
-__version__ = '0.11.187'
+__version__ = '0.11.191'

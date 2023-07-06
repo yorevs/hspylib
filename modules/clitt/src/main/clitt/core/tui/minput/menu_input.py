@@ -12,23 +12,25 @@
 
    Copyright 2023, HsPyLib team
 """
+from functools import reduce
+from time import sleep
+from typing import List
+
+import pyperclip
+from hspylib.core.exception.exceptions import InvalidStateError
+from hspylib.core.namespace import Namespace
+from hspylib.modules.cli.keyboard import Keyboard
+
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.term.commons import get_cursor_position
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.minput.form_builder import FormBuilder
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.minput_utils import *
 from clitt.core.tui.tui_component import TUIComponent
-from clitt.core.tui.tui_screen import TUIScreen
-from functools import reduce
-from hspylib.core.exception.exceptions import InvalidStateError
-from hspylib.core.namespace import Namespace
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position, set_enable_echo, set_show_cursor
-from time import sleep
-from typing import List
-
-import pyperclip
 
 
 class MenuInput(TUIComponent):
@@ -73,7 +75,7 @@ class MenuInput(TUIComponent):
         return None
 
     def render(self) -> None:
-        set_show_cursor(False)
+        Terminal.set_show_cursor(False)
         self.cursor.restore()
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
@@ -93,7 +95,7 @@ class MenuInput(TUIComponent):
         self.draw_navbar(self.navbar())
         self._re_render = False
         self._set_cursor_pos()
-        set_show_cursor()
+        Terminal.set_show_cursor()
 
     def navbar(self, **kwargs) -> str:
         return (
@@ -266,7 +268,9 @@ class MenuInput(TUIComponent):
         :param field_index: the current form field index.
         :param field_size: the form field length.
         """
-        if f_pos := get_cursor_position() if self.positions[field_index] == (0, 0) else self.positions[field_index]:
+        if f_pos := get_cursor_position() \
+            if self.positions[field_index] == (0, 0) \
+            else self.positions[field_index]:
             self.positions[field_index] = f_pos
             if self.tab_index == field_index:
                 self.cur_row, self.cur_col = f_pos[0], f_pos[1] + field_size
@@ -275,17 +279,17 @@ class MenuInput(TUIComponent):
         """Display a form filling or submitting error.
         :param err_msg: the error message.
         """
-        set_enable_echo(False)
-        set_show_cursor(False)
+        Terminal.set_enable_echo(False)
+        Terminal.set_show_cursor(False)
         offset = 15  # Sum of minput used characters that are not related to the field.
         err_pos = offset + self.max_label_length + self.max_value_length + self.max_detail_length
         self.cursor.move_to(self.cur_row, err_pos)
         mi_print_err(self.screen, f"{FormIcons.ARROW_LEFT} {err_msg}")
         # This calculation gives a good delay amount based on the size of the message.
         sleep(max(2.0, int(len(err_msg) / 21)))
-        set_enable_echo()
+        Terminal.set_enable_echo()
         # Erase the message after the timeout
         self.cursor.move_to(self.cur_row, err_pos)
-        self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
-        set_show_cursor()
+        self.cursor.erase(Cursor.Direction.RIGHT)
+        Terminal.set_show_cursor()
         self._re_render = True

@@ -13,13 +13,16 @@
    Copyright 2023, HsPyLib team
 """
 from abc import ABC, abstractmethod
-from clitt.core.icons.font_awesome.awesome import Awesome
-from clitt.core.tui.tui_preferences import TUIPreferences
-from clitt.core.tui.tui_screen import TUIScreen
+from typing import Any, List, Optional, TypeVar
+
 from hspylib.core.tools.text_tools import elide_text
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
-from typing import Any, List, Optional, TypeVar
+
+from clitt.core.icons.font_awesome.awesome import Awesome
+from clitt.core.term.terminal import Terminal
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from clitt.core.tui.tui_preferences import TUIPreferences
 
 T = TypeVar("T", bound=Any)
 
@@ -31,7 +34,19 @@ class TUIComponent(ABC):
         self._re_render = True
         self._done = False
         self._title = title
-        self._screen = TUIScreen.INSTANCE or TUIScreen()
+        self._terminal = Terminal.INSTANCE
+
+    @property
+    def terminal(self) -> Terminal:
+        return self._terminal
+
+    @property
+    def screen(self) -> Screen:
+        return self.terminal.screen
+
+    @property
+    def cursor(self) -> Cursor:
+        return self.terminal.screen.cursor
 
     @property
     def title(self) -> str:
@@ -39,30 +54,22 @@ class TUIComponent(ABC):
 
     @property
     def rows(self) -> int:
-        return self._screen.rows
+        return self.screen.lines
 
     @property
     def columns(self) -> int:
-        return self._screen.columns
+        return self.screen.columns
 
     @property
     def prefs(self) -> TUIPreferences:
         return self.screen.preferences
 
-    @property
-    def screen(self) -> TUIScreen:
-        return self._screen
-
-    @property
-    def cursor(self) -> TUIScreen.Cursor:
-        return self._screen.cursor
-
     def _prepare_render(self, auto_wrap: bool = False, show_cursor: bool = False) -> None:
         """Prepare the screen for renderization."""
 
-        self._screen.add_watcher(self.invalidate)
-        set_auto_wrap(auto_wrap)
-        set_show_cursor(show_cursor)
+        self.screen.add_watcher(self.invalidate)
+        Terminal.set_auto_wrap(auto_wrap)
+        Terminal.set_show_cursor(show_cursor)
         self.screen.clear()
         self.cursor.save()
 
@@ -118,11 +125,11 @@ class TUIComponent(ABC):
 
     def write(self, obj: Any) -> None:
         """Write the string representation of the object to the screen."""
-        self.cursor.write(obj)
+        self.terminal.echo(obj, end='')
 
     def writeln(self, obj: Any) -> None:
         """Write the string representation of the object to the screen, appending a new line."""
-        self.cursor.writeln(obj)
+        self.terminal.echo(obj)
 
     def invalidate(self) -> None:
         """Invalidate current TUI renderization."""

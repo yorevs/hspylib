@@ -12,11 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.exception.exceptions import InvalidInputError
 from typing import Any, Optional, Tuple
 
 import re
+
+from clitt.core.term.screen import Screen
 
 MASK_SYMBOLS = ["#", "@", "%", "*"]
 
@@ -33,7 +34,7 @@ def detail_len(field: Any) -> int:
     return 1 + (2 * max_len)
 
 
-def mi_print(screen: TUIScreen, text: str, prefix: str = None, field_len: int = 0, end: str = "") -> None:
+def mi_print(screen: Screen, text: str, prefix: str = None, field_len: int = 0, end: str = "") -> None:
     """Special menu input print.
     :param screen: the component's screen.
     :param text: the text to be printed.
@@ -48,7 +49,7 @@ def mi_print(screen: TUIScreen, text: str, prefix: str = None, field_len: int = 
         screen.cursor.write(fmt.format(text or ""), end=end)
 
 
-def mi_print_err(screen: TUIScreen, text: str) -> None:
+def mi_print_err(screen: Screen, text: str) -> None:
     """Special menu input print error message.
     :param screen: the component's screen.
     :param text: the text to be printed.

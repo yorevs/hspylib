@@ -13,8 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
 from clitt.core.tui.tui_component import TUIComponent
-from clitt.core.tui.tui_screen import TUIScreen
 from functools import cached_property
 from hspylib.modules.cli.keyboard import Keyboard
 from typing import List, Optional, TypeVar
@@ -33,7 +34,7 @@ class MenuSelect(TUIComponent):
         super().__init__(title)
         self._items = items
         self._show_from = 0
-        self._show_to = self.screen.rows - self.ROW_OFFSET
+        self._show_to = self.screen.lines - self.ROW_OFFSET
         self._diff_index = self._show_to - self._show_from
         self._sel_index = 0
         self._max_line_length = max(len(str(item)) for item in items)
@@ -67,7 +68,7 @@ class MenuSelect(TUIComponent):
                 break  # When the index is greater than the number of items, stop rendering
 
             option_line = str(self._items[idx])
-            self.cursor.erase(TUIScreen.ScreenPortion.LINE)
+            self.cursor.erase(Screen.Portion.LINE)
             # Print the selector if the index is currently selected
             selector = self.draw_selector(idx == self._sel_index)
             # fmt: off
@@ -122,8 +123,8 @@ class MenuSelect(TUIComponent):
             self.cursor.write(f"{keystroke.value if keystroke else ''}")
             index_len += 1
         # Erase the index typed by the user
-        self.cursor.move(index_len, TUIScreen.CursorDirection.LEFT)
-        self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
+        self.cursor.move(index_len, Cursor.Direction.LEFT)
+        self.cursor.erase(Cursor.Direction.RIGHT)
         if typed_index and 1 <= int(typed_index) <= length:
             self._show_to = max(int(typed_index), self._diff_index)
             self._show_from = self._show_to - self._diff_index

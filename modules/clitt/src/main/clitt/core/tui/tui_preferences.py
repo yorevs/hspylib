@@ -145,3 +145,6 @@ class TUIPreferences(metaclass=Singleton):
     @property
     def unmarked(self) -> Awesome:
         return self._unmarked
+
+
+assert TUIPreferences().INSTANCE is not None, "Failed to create TUIPreferences instance"

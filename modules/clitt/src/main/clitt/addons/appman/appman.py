@@ -13,6 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.addons.appman.appman_enums import AppExtension, AppType
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from hspylib.core.enums.charset import Charset
@@ -25,7 +26,6 @@ from hspylib.core.tools.text_tools import camelcase, ensure_endswith
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.terminal import Terminal
 from hspylib.modules.fetch.fetch import get
 from textwrap import dedent
 from typing import List

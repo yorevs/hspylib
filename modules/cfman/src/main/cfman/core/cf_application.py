@@ -12,9 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.exception.exceptions import InvalidArgumentError
-from hspylib.core.tools.commons import sysout
 from typing import List
 
 import re
@@ -45,7 +45,7 @@ class CFApplication:
         )
 
     def __init__(self, name: str, state: str, instances: str, memory: str, disk: str, routes: List[str]) -> None:
-        self.prefs: TUIPreferences = TUIPreferences.INSTANCE or TUIPreferences()
+        self.prefs: TUIPreferences = TUIPreferences.INSTANCE
         self.name = name
         self.state = state
         self.instances = instances
@@ -75,7 +75,7 @@ class CFApplication:
 
     def print_status(self) -> None:
         """Print the actual application status line."""
-        sysout(
+        Terminal.echo(
             f"%CYAN%{self.name:<{self.max_name_length + 2}}"
             f"{self.colored_state:}  %NC%{self.instances:<12}{self.memory:<6}{self.disk:<6}{len(self.routes)}"
         )

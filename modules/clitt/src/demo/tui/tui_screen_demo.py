@@ -12,13 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.tui.tui_screen import TUIScreen
-from hspylib.modules.cli.vt100.vt_utils import get_cursor_position
 from time import sleep
 
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.terminal import Terminal
+from clitt.core.term.screen import Screen
 
-def draw(scr: TUIScreen):
-    scr.cursor.erase(TUIScreen.ScreenPortion.SCREEN)
+
+def draw(scr: Screen):
+    scr.cursor.erase(Screen.Portion.SCREEN)
     scr.cursor.home()
     scr.cursor.writeln("." * 40)
     scr.cursor.writeln("." * 40)
@@ -30,43 +32,43 @@ def draw(scr: TUIScreen):
 
 
 if __name__ == "__main__":
-    screen = TUIScreen()
+    screen = Screen()
     draw(screen)
-    sleep(1)
-    screen.cursor.erase(TUIScreen.CursorDirection.UP)
-    sleep(1)
+    sleep(0.5)
+    screen.cursor.erase(Cursor.Direction.UP)
+    sleep(0.5)
     draw(screen)
-    sleep(1)
-    screen.cursor.erase(TUIScreen.CursorDirection.DOWN)
-    sleep(1)
+    sleep(0.5)
+    screen.cursor.erase(Cursor.Direction.DOWN)
+    sleep(0.5)
     draw(screen)
-    screen.cursor.erase(TUIScreen.CursorDirection.LEFT)
-    sleep(1)
+    screen.cursor.erase(Cursor.Direction.LEFT)
+    sleep(0.5)
     draw(screen)
-    screen.cursor.erase(TUIScreen.CursorDirection.RIGHT)
-    sleep(1)
+    screen.cursor.erase(Cursor.Direction.RIGHT)
+    sleep(0.5)
     draw(screen)
-    screen.cursor.erase(TUIScreen.ScreenPortion.LINE)
-    sleep(1)
+    screen.cursor.erase(Screen.Portion.LINE)
+    sleep(0.5)
     draw(screen)
     screen.cursor.move_to(screen.cursor.bottom[0], screen.cursor.bottom[1])
-    sleep(1)
+    sleep(0.5)
     screen.cursor.write("123")
     screen.cursor.move_to(3, 3)
-    sleep(1)
+    sleep(0.5)
     screen.cursor.write("@")
-    sleep(1)
-    screen.cursor.move(5, TUIScreen.CursorDirection.RIGHT)
+    sleep(0.5)
+    screen.cursor.move(5, Cursor.Direction.RIGHT)
     screen.cursor.write("#")
-    sleep(1)
-    screen.cursor.move(2, TUIScreen.CursorDirection.DOWN)
+    sleep(0.5)
+    screen.cursor.move(2, Cursor.Direction.DOWN)
     screen.cursor.write("#")
-    sleep(1)
-    screen.cursor.move(5, TUIScreen.CursorDirection.LEFT)
+    sleep(0.5)
+    screen.cursor.move(5, Cursor.Direction.LEFT)
     screen.cursor.write("#")
-    sleep(1)
-    screen.cursor.move(2, TUIScreen.CursorDirection.UP)
+    sleep(0.5)
+    screen.cursor.move(2, Cursor.Direction.UP)
     screen.cursor.write("#")
-    sleep(1)
+    sleep(0.5)
     screen.cursor.end()
-    print(get_cursor_position(), screen.cursor)
+    print(Terminal.get_cursor_position(), screen.cursor)

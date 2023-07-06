@@ -5,5 +5,7 @@
 # Package: main.datasource.mysql
 """Package initialization."""
 
-__all__ = ["mysql_repository"]
-__version__ = "0.9.36"
+__all__ = [
+  'mysql_repository'
+]
+__version__ = '0.9.36'

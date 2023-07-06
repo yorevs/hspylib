@@ -13,11 +13,10 @@
    Copyright 2023, HsPyLib team
 """
 from collections import namedtuple
+
+from clitt.core.term.terminal import Terminal
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.terminal import Terminal
-from hspylib.modules.cli.vt100.vt_utils import clear_screen, set_auto_wrap
 from typing import List, Optional
 
 import os
@@ -108,7 +107,11 @@ class CloudFoundry(metaclass=Singleton):
             if space:
                 target_params.append("-s")
                 target_params.append(kwargs["space"])
-            sysout(f"%BLUE%Targeting" f"{'  ORG=' + org if org else ''}" f"{'  SPACE=' + space if space else ''}" "...")
+            Terminal.echo(
+                f"%BLUE%Targeting"
+                f"{'  ORG=' + org if org else ''}"
+                f"{'  SPACE=' + space if space else ''}" "..."
+            )
             self._target = CFTarget(
                 kwargs["user"] if "user" in kwargs else None,
                 kwargs["org"] if "org" in kwargs else None,
@@ -186,8 +189,8 @@ class CloudFoundry(metaclass=Singleton):
                recent: dump recent logs instead of tailing.
         :param kwargs arbitrary CF command keyword arguments.
         """
-        clear_screen()
-        set_auto_wrap(True)
+        Terminal.clear()
+        Terminal.set_auto_wrap(True)
         return self._exec(cmd_line=f"logs {kwargs['app']} {'--recent' if 'recent' in kwargs else ''}", poll=True)
 
     # Execution of a CF command
@@ -199,9 +202,8 @@ class CloudFoundry(metaclass=Singleton):
                      will terminate.
         """
         self._last_output = None
-
         if poll:
-            sysout("%YELLOW%%EOL%Press [ENTER] to exit...%EOL%%NC%")
+            Terminal.echo("%YELLOW%%EOL%Press [ENTER] to exit...%EOL%%NC%")
             Terminal.shell_poll(f"cf {cmd_line}")
         else:
             self._last_output, self._last_exit_code = Terminal.shell_exec(f"cf {cmd_line}")

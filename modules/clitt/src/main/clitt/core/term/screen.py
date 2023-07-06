@@ -1,0 +1,97 @@
+import threading
+from threading import Timer
+from typing import Optional, List
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+
+from clitt.core.term.commons import DIMENSION, CB_RESIZE, get_dimensions
+from clitt.core.term.cursor import Cursor
+from clitt.core.tui.tui_preferences import TUIPreferences
+
+
+class Screen(metaclass=Singleton):
+    """Provide a base class for terminal UI components."""
+
+    INSTANCE = None
+
+    RESIZE_WATCH_INTERVAL = 0.5
+
+    class Portion(Enumeration):
+        """Provide a base class for the portions of the screen."""
+        # fmt: off
+        SCREEN      = '%ED2%', ''   # Entire screen (screen)
+        LINE        = '%EL2%', ''   # Entire line (line)
+        # fmt: on
+
+    def __init__(self):
+        self._preferences: TUIPreferences = TUIPreferences.INSTANCE
+        self._dimension: DIMENSION = get_dimensions()
+        self._cursor: Cursor = Cursor.INSTANCE or Cursor()
+        self._resize_timer: Optional[Timer] = None
+        self._cb_watchers: List[CB_RESIZE] = []
+        self._alternate: bool = False
+        self._resize_watcher()
+
+    def __str__(self):
+        return f"Terminal.Screen(rows={self.lines}, columns={self.columns}, cursor={self.cursor})"
+
+    def __repr__(self):
+        return str(self)
+
+    @property
+    def preferences(self) -> TUIPreferences:
+        return self._preferences
+
+    @property
+    def dimension(self) -> DIMENSION:
+        return self._dimension
+
+    @property
+    def lines(self) -> int:
+        return self._dimension[0]
+
+    @property
+    def columns(self) -> int:
+        return self._dimension[1]
+
+    @property
+    def cursor(self) -> Cursor:
+        return self._cursor
+
+    @property
+    def alternate(self) -> bool:
+        return self._alternate
+
+    @alternate.setter
+    def alternate(self, enable: bool) -> None:
+        """Switch to the alternate screen buffer.
+        :param enable: alternate enable on/off.
+        """
+        if enable != self._alternate:
+            self._alternate = enable
+            sysout(f"%SC{'A' if enable else 'M'}%", end="")
+            self.cursor.track()
+
+    def clear(self) -> None:
+        """Clear terminal and move the cursor to HOME position (0, 0)."""
+        self.cursor.home()
+        self.cursor.erase(Screen.Portion.SCREEN)
+
+    def add_watcher(self, watcher: CB_RESIZE) -> None:
+        """Add a resize watcher."""
+        self._cb_watchers.append(watcher)
+        if not self._resize_timer:
+            self._resize_watcher()
+
+    def _resize_watcher(self) -> None:
+        """Add a watcher for screen resizes. If a resize is detected, the callback is called with the
+        new dimension."""
+        if self._cb_watchers and threading.main_thread().is_alive():
+            dimension: DIMENSION = get_dimensions()
+            self._resize_timer = Timer(self.RESIZE_WATCH_INTERVAL, self._resize_watcher)
+            if dimension != self._dimension:
+                list(map(lambda cb_w: cb_w(), self._cb_watchers))
+                self._dimension = dimension
+            self._resize_timer.start()
