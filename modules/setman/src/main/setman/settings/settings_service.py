@@ -41,18 +41,19 @@ class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
         limit: int = 500,
         offset: int = 0) -> List[SettingsEntry]:
         """Search settings matching the specified name.
-        :param name: the settings name to search.
+        :param name: the settings name to filter.
         :param stype: the settings type to filter.
         :param limit: the max amount of records to search.
         :param offset: the records offset from which to search.
         """
         return self.repository.search(name, stype, limit, offset)
 
-    def clear(self, name: str = None) -> None:
+    def clear(self, name: str | None = None, stype: SettingsType | None = None) -> None:
         """Clear all settings from the settings table matching the specified name.
-        :param name: the settings name to search.
+        :param name: the settings name to filter.
+        :param stype: the settings type to filter.
         """
-        self.repository.clear(name)
+        self.repository.clear(name, stype)
 
     def create_db(self) -> None:
         """Create a brand new setman database file."""

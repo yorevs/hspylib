@@ -1,19 +1,19 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="settings_demo" type="PythonConfigurationType" factoryName="Python" folderName="Setman-Demo" nameIsGenerated="true">
-    <module name="HsPyLib.clitt" />
+  <configuration default="false" name="setman - export" type="PythonConfigurationType" factoryName="Python" folderName="Setman">
+    <module name="HsPyLib.setman" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/setman/src/demo/settings" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/setman/src" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/setman/src/demo/settings/settings_demo.py" />
-    <option name="PARAMETERS" value="" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules/setman/src/main/setman/__main__.py" />
+    <option name="PARAMETERS" value="export demo/settings/resources/settings-export.db.csv" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />

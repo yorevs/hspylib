@@ -140,9 +140,9 @@ class Settings:
 
     def upsert(
         self,
-        name: str,
-        value: Any,
-        stype: SettingsType) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
+        name: str | None = None,
+        value: Any | None = None,
+        stype: SettingsType | None = None) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
         :param name: the settings name.
         :param value: the settings value.
@@ -151,7 +151,7 @@ class Settings:
         check_state(self.is_open, "Settings database is not open")
         found = self._service.get(name)
         entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
-        if not name or value is None or not stype:
+        if not name or not value or not stype:
             entry = SettingsEntry.prompt(entry)
         if entry:
             entry.modified = now()
@@ -173,18 +173,21 @@ class Settings:
         return None
 
     @lru_cache(maxsize=500)
-    def search(self, name: str = None, stype: SettingsType = None) -> List[SettingsEntry]:
-        """Display all settings matching the name and settings type.
-        :param name: the setting name to get.
+    def search(self, name: str | None = None, stype: SettingsType | None = None) -> List[SettingsEntry]:
+        """Search all settings matching criteria.
+        :param name: the settings name to filter.
         :param stype: the settings type to filter.
         """
         check_state(self.is_open, "Settings database is not open")
         return self._service.search(name, stype, self.limit, self.offset)
 
-    def clear(self, name: str = None) -> None:
-        """Clear all settings from the settings table."""
+    def clear(self, name: str | None = None, stype: SettingsType | None = None) -> None:
+        """Clear all settings from the settings table.
+        :param name: the settings name to filter.
+        :param stype: the settings type to filter.
+        """
         check_state(self.is_open, "Settings database is not open")
-        self._service.clear(name)
+        self._service.clear(name, stype)
         self._clear_caches()
 
     def import_csv(self, filepath: str) -> int:
@@ -206,7 +209,11 @@ class Settings:
             return count
 
     def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
-        """Export settings from CSV file into the database."""
+        """Export settings from CSV file into the database.
+        :param filepath: the path of the CSV file to be exported.
+        :param name: the settings name to filter.
+        :param stype: the settings type to filter.
+        """
         dest_dir, csv_file = dirname(filepath), ensure_endswith(filepath, ".csv")
         check_argument(os.path.exists(dest_dir), "Destination dir does not exist: " + dest_dir)
         settings = self.search(name, stype)

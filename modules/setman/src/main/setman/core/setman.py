@@ -17,6 +17,8 @@ import logging as log
 import os
 from typing import Any
 
+from clitt.core.tui.table.table_enums import TextAlignment
+from clitt.core.tui.table.table_renderer import TableRenderer
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.metaclass.singleton import Singleton
@@ -24,9 +26,6 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.application.application import Application
 from hspylib.modules.cli.keyboard import Keyboard
-
-from clitt.core.tui.table.table_enums import TextAlignment
-from clitt.core.tui.table.table_renderer import TableRenderer
 
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
@@ -93,7 +92,7 @@ class Setman(metaclass=Singleton):
                 case SetmanOps.DEL:
                     self._del_setting(name)
                 case SetmanOps.TRUNCATE:
-                    self._clear_settings(name)
+                    self._clear_settings(name, stype)
                 case SetmanOps.IMPORT:
                     self._import_settings(filepath)
                 case SetmanOps.EXPORT:
@@ -102,7 +101,11 @@ class Setman(metaclass=Singleton):
                     raise InvalidArgumentError(f"Operation not supported: {operation}")
 
     def _set_setting(self, name: str | None, value: Any | None, stype: SettingsType | None) -> None:
-        """Upsert the specified setting."""
+        """Upsert the specified setting.
+        :param name: the settings name.
+        :param value: the settings value.
+        :param stype: the settings type.
+        """
         found, entry = self.settings.upsert(name, value, stype)
         sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry, "%EOL%")
 
@@ -126,7 +129,10 @@ class Setman(metaclass=Singleton):
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name, "%EOL%")
 
     def _list_settings(self, name: str | None, stype: SettingsType | None) -> None:
-        """List in a table all settings matching criteria."""
+        """List in a table all settings matching criteria.
+        :param name: the settings name to filter.
+        :param stype: the settings type to filter.
+        """
         data = list(map(lambda s: s.values, self.settings.search(name, stype)))
         tr = TableRenderer(self.settings.HEADERS, data, "Systems Settings")
         tr.adjust_auto_fit()
@@ -135,27 +141,31 @@ class Setman(metaclass=Singleton):
         tr.render()
 
     def _search_settings(self, name: str | None, stype: SettingsType | None, simple_fmt: bool) -> None:
-        """Search and display all settings matching criteria."""
+        """Search and display all settings matching criteria.
+        :param name: the settings name to filter.
+        :param stype: the settings type to filter.
+        :param simple_fmt: whether to display simple or formatted.
+        """
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
         sysout(os.linesep.join(data)) \
             if data \
             else sysout(
-            f"%EOL%%YELLOW%No settings found matching: %WHITE%[name={name.replace('%', '*')}, stype={stype}] %EOL%"
-        )
+            f"%EOL%%YELLOW%No settings found matching: "
+            f"%WHITE%[name={name}, stype={stype}] %EOL%")
 
-    def _clear_settings(self, name: str | None) -> None:
+    def _clear_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """Clear all settings.
         :param name: clear settings matching name.
         """
-        if not name:
+        if not name and not stype:
             sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
-            keystroke = Keyboard.wait_keystroke()
-            if keystroke and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
-                self.settings.clear("*")
-                sysout("%EOL%%ORANGE%!!! All system settings have been removed !!!%EOL%")
+            if (keystroke := Keyboard.wait_keystroke()) and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
+                self.settings.clear("*", stype)
+                sysout("%EOL%%ORANGE%!!! All settings have been removed !!!%EOL%")
         else:
-            self.settings.clear(name)
-            sysout(f"%EOL%%ORANGE%!!! System settings matching [{name}] have been removed !!!%EOL%")
+            self.settings.clear(name, stype)
+            sysout(f"%EOL%%ORANGE%Removed settings matching: "
+                   f"%WHITE%[name={name}, stype={stype}] %EOL%")
 
     def _import_settings(self, filepath: str) -> None:
         """Import settings from CSV file."""
