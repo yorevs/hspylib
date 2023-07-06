@@ -14,9 +14,10 @@
 """
 from hspylib.core.tools.commons import sysout
 
-from clitt.addons.setman.setman_enums import SettingsType
-from clitt.core.settings.settings import Settings
-from clitt.core.settings.settings_config import SettingsConfig
+from setman.core.setman_enums import SettingsType
+from setman.settings.settings import Settings
+from setman.settings.settings_config import SettingsConfig
+
 
 if __name__ == "__main__":
     configs = SettingsConfig("resources", "settings-demo.properties")
