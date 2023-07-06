@@ -67,6 +67,7 @@ class Main(TUIApplication):
                 .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
             .argument(SetmanOps.TRUNCATE.val, 'Clear all settings matching name.') \
                 .add_option('name', 'n', 'name', 'filter settings matching name.') \
+                .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
             .argument(SetmanOps.IMPORT.val, 'Import settings from a CSV formatted file.') \
                 .add_parameter('file', 'the path of the CSV file to be imported.') \
             .argument(SetmanOps.EXPORT.val, 'Export settings to a CSV formatted file.') \
