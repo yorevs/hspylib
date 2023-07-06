@@ -19,31 +19,22 @@ class ParserAction(Enumeration):
     """Represent an argument parser action."""
 
     # fmt: off
-
     # This stores a list, and appends each argument value to the list.
-    APPEND = 'append'
-
+    APPEND          = 'append'
     # This stores a list, and appends the value specified by the const keyword argument to the list.
-    APPEND_CONST = 'append_const'
-
+    APPEND_CONST    = 'append_const'
     # This counts the number of times a keyword argument occurs.
-    COUNT = 'count'
-
+    COUNT           = 'count'
     # This just stores the argument’s value.
-    STORE = 'store'
-
+    STORE           = 'store'
     # This stores the value specified by the const keyword argument.
-    STORE_CONST = 'store_const'
-
+    STORE_CONST     = 'store_const'
     # These is a special cases of 'store_const' used for storing True.
-    STORE_TRUE = 'store_true'
-
+    STORE_TRUE      = 'store_true'
     # These is a special cases of 'store_const' used for storing False.
-    STORE_FALSE = 'store_false'
-
+    STORE_FALSE     = 'store_false'
     # This expects a version= keyword argument, prints version information and exits when invoked.
-    VERSION = 'version'
-
+    VERSION         = 'version'
     # fmt: on
 
     def __str__(self):

@@ -149,9 +149,8 @@ class Setman(metaclass=Singleton):
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
         sysout(os.linesep.join(data)) \
             if data \
-            else sysout(
-            f"%EOL%%YELLOW%No settings found matching: "
-            f"%WHITE%[name={name}, stype={stype}] %EOL%")
+            else sysout("%EOL%%YELLOW%No settings found matching: %WHITE%",
+                        f"[name={name or '*'}, stype={stype or '*'}]", "%EOL%")
 
     def _clear_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """Clear all settings.
@@ -164,8 +163,8 @@ class Setman(metaclass=Singleton):
                 sysout("%EOL%%ORANGE%!!! All settings have been removed !!!%EOL%")
         else:
             self.settings.clear(name, stype)
-            sysout(f"%EOL%%ORANGE%Removed settings matching: "
-                   f"%WHITE%[name={name}, stype={stype}] %EOL%")
+            sysout("%EOL%%ORANGE%Removed settings matching: %WHITE%",
+                   f"[name={name or '*'}, stype={stype or '*'}]", "%EOL%")
 
     def _import_settings(self, filepath: str) -> None:
         """Import settings from CSV file."""

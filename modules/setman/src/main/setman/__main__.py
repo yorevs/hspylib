@@ -77,7 +77,7 @@ class Main(TUIApplication):
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Run the application with the command line arguments"""
+        """Run the application with the command line arguments."""
         log.info(
             dedent(
                 f"""

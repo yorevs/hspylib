@@ -37,7 +37,8 @@ class OptionsBuilder:
         default: Any = None,
     ) -> "OptionsBuilder":
         """Assign a new option to the parser."""
-        add_arg = partial(
+
+        add_argument = partial(
             self._arg_parser.add_argument,
             f"-{shortopt.replace('^-', '')[0]}",
             f"--{longopt.replace('^-*', '')}",
@@ -45,11 +46,11 @@ class OptionsBuilder:
             help=help_string or f"the {longopt}",
             required=required,
             action=action.value,
-            default=default,
-        )
+            default=default)
+
         if action == ParserAction.STORE:
-            add_arg(choices=choices, nargs=nargs)
+            add_argument(choices=choices, nargs=nargs)
         else:
-            add_arg()
+            add_argument()
 
         return self
