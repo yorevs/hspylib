@@ -18,6 +18,7 @@ import os
 from typing import Any
 
 from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
@@ -74,6 +75,7 @@ class Setman(metaclass=Singleton):
         value: Any | None,
         stype: SettingsType = None,
         simple_fmt: bool = False,
+        filepath: str = None
     ) -> None:
         """Execute the specified operation."""
         log.debug(f"{operation} Name: {name or '*'} Value: {value or '-'} SettingsType: {stype or '*'}")
@@ -92,11 +94,17 @@ class Setman(metaclass=Singleton):
                     self._del_setting(name)
                 case SetmanOps.TRUNCATE:
                     self._clear_settings(name)
+                case SetmanOps.IMPORT:
+                    self._import_settings(filepath)
+                case SetmanOps.EXPORT:
+                    self._export_settings(filepath, name, stype)
+                case _:
+                    raise InvalidArgumentError(f"Operation not supported: {operation}")
 
     def _set_setting(self, name: str | None, value: Any | None, stype: SettingsType | None) -> None:
         """Upsert the specified setting."""
         found, entry = self.settings.upsert(name, value, stype)
-        sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry)
+        sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry, "%EOL%")
 
     def _get_setting(self, name: str, simple_fmt: bool = False) -> None:
         """Get setting matching the specified name.
@@ -106,16 +114,16 @@ class Setman(metaclass=Singleton):
         if found := self.settings.get(name):
             sysout(found.to_string(simple_fmt))
         else:
-            syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
+            syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name, "%EOL%")
 
     def _del_setting(self, name: str) -> None:
         """Delete specified setting.
         :param name: the settings name to delete.
         """
         if found := self.settings.remove(name):
-            sysout("%GREEN%Setting deleted: %WHITE%", found)
+            sysout("%GREEN%Setting deleted: %WHITE%", found, "%EOL%")
         else:
-            syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name)
+            syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name, "%EOL%")
 
     def _list_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """List in a table all settings matching criteria."""
@@ -132,11 +140,13 @@ class Setman(metaclass=Singleton):
         sysout(os.linesep.join(data)) \
             if data \
             else sysout(
-            f"%EOL%%YELLOW%No settings found matching: %WHITE%[name={name.replace('%', '*')}, stype={stype}]"
+            f"%EOL%%YELLOW%No settings found matching: %WHITE%[name={name.replace('%', '*')}, stype={stype}] %EOL%"
         )
 
-    def _clear_settings(self, name: str) -> None:
-        """Clear all settings."""
+    def _clear_settings(self, name: str | None) -> None:
+        """Clear all settings.
+        :param name: clear settings matching name.
+        """
         if not name:
             sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
             keystroke = Keyboard.wait_keystroke()
@@ -146,6 +156,16 @@ class Setman(metaclass=Singleton):
         else:
             self.settings.clear(name)
             sysout(f"%EOL%%ORANGE%!!! System settings matching [{name}] have been removed !!!%EOL%")
+
+    def _import_settings(self, filepath: str) -> None:
+        """Import settings from CSV file."""
+        count = self.settings.import_csv(filepath)
+        sysout(f"%EOL%%GREEN%Imported {count} settings from {filepath}! %EOL%")
+
+    def _export_settings(self, filepath: str, name: str | None = None, stype: SettingsType | None = None) -> None:
+        """Import settings from CSV file."""
+        count = self.settings.export_csv(filepath, name, stype)
+        sysout(f"%EOL%%GREEN%Exported {count} settings to {filepath}! %EOL%")
 
     def _setup(self, filepath: str) -> None:
         """Setup SetMan on the system."""

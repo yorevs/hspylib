@@ -97,7 +97,8 @@ class Main(TUIApplication):
             self.get_arg("name"),
             self.get_arg("value"),
             SettingsType.of_value(st) if st else None,
-            self.get_arg("simple")
+            self.get_arg("simple"),
+            self.get_arg("file")
         )
 
         return ExitStatus.SUCCESS
