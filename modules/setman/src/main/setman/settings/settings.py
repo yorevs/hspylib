@@ -24,7 +24,7 @@ from typing import Any, List, Optional, Tuple
 from datasource.identity import Identity
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.preconditions import check_argument, check_state
-from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, touch_file
+from hspylib.core.tools.commons import dirname, file_is_not_empty, safe_delete_file, touch_file
 from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.security.security import decode_file, encode_file
@@ -191,9 +191,8 @@ class Settings:
         """Upsert settings from CSV file into the database.
         :param filepath: the path of the CSV file to be imported.
         """
-        check_argument(file_is_not_empty(filepath), f"File not found: {filepath}")
-        count = 0
-        csv_file = ensure_endswith(filepath, ".csv")
+        count, csv_file = 0, ensure_endswith(filepath, ".csv")
+        check_argument(os.path.exists(filepath), "CSV file does not exist: " + csv_file)
         with open(csv_file, encoding="UTF8") as f_csv:
             csv_reader = csv.reader(f_csv, delimiter=',')
             for row in csv_reader:
@@ -202,13 +201,15 @@ class Settings:
                 uid, name, value, stype = str(row[0]), str(row[1]), str(row[2]), SettingsType.of_value(row[3])
                 entry = SettingsEntry(Identity(SettingsEntry.SetmanId(uid)), name, value, stype)
                 self._service.save(entry)
+                count += 1
             self._clear_caches()
             return count
 
     def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
         """Export settings from CSV file into the database."""
+        dest_dir, csv_file = dirname(filepath), ensure_endswith(filepath, ".csv")
+        check_argument(os.path.exists(dest_dir), "Destination dir does not exist: " + dest_dir)
         settings = self.search(name, stype)
-        csv_file = ensure_endswith(filepath, ".csv")
         with open(csv_file, "w", encoding="UTF8") as f_csv:
             writer = csv.writer(f_csv, delimiter=',')
             writer.writerow(self.HEADERS)
