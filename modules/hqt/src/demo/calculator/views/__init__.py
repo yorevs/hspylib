@@ -5,5 +5,8 @@
 # Package: demo.calculator.views
 """Package initialization."""
 
-__all__ = ["blink_lcd_thread", "main_qt_view"]
-__version__ = "0.9.5"
+__all__ = [
+  'blink_lcd_thread', 
+  'main_qt_view'
+]
+__version__ = '0.9.5'

@@ -12,15 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.tui.table.table_enums import TextAlignment, TextCase
-from clitt.core.tui.tui_screen import TUIScreen
+import csv
+import os
+from typing import Any, Callable, Iterable, List
+
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.text_tools import elide_text, ensure_endswith
-from typing import Any, Callable, Iterable, List
 
-import csv
-import os
+from clitt.core.term.terminal import Terminal
+from clitt.core.tui.table.table_enums import TextAlignment, TextCase
 
 
 class TableRenderer:
@@ -56,7 +57,7 @@ class TableRenderer:
         :param caption: table caption to be displayed.
         """
 
-        self._screen = TUIScreen.INSTANCE or TUIScreen()
+        self._terminal = Terminal.INSTANCE
         self._headers = headers
         self._columns = range(len(self._headers))
         self._data = data if data else []
@@ -77,12 +78,8 @@ class TableRenderer:
         self.adjust_auto_fit()
 
     @property
-    def screen(self) -> TUIScreen:
-        return self._screen
-
-    @property
-    def cursor(self) -> TUIScreen.Cursor:
-        return self.screen.cursor
+    def terminal(self) -> Terminal:
+        return self._terminal
 
     @property
     def data(self) -> Iterable:
@@ -194,7 +191,7 @@ class TableRenderer:
 
     def _display_data(self, data: Any) -> None:
         """Print out data into the screen."""
-        self.cursor.writeln(data)
+        self.terminal.cursor.writeln(data)
 
     def _format_header_row(self) -> str:
         """Format the table header using the defined preferences."""

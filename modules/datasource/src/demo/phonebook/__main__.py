@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.menu.tui_menu_factory import TUIMenuFactory
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.tui_application import TUIApplication
@@ -66,7 +67,7 @@ class Main(TUIApplication):
             .build()
         # fmt: on
         create_view, edit_view, search_view = CreateView(main_menu), EditView(main_menu), SearchView(main_menu)
-        self._alternate_screen()
+        Terminal.alternate_screen(True)
         TUIMenuUi(main_menu, self._app_name).execute()
         return ExitStatus.SUCCESS
 

@@ -14,9 +14,10 @@
 """
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from clitt.core.tui.tui_screen import TUIScreen
 from functools import cached_property
 from hspylib.core.tools.dict_tools import get_or_default
 from hspylib.modules.cli.keyboard import Keyboard
@@ -41,7 +42,7 @@ class TUIMenuItem(TUIMenu):
     ):
         super().__init__(parent, title, tooltip or f"Access the '{title}' menu")
         self._show_from: int = 0
-        self._show_to: int = self.screen.rows - self.ROW_OFFSET
+        self._show_to: int = self.screen.lines - self.ROW_OFFSET
         self._diff_index: int = self._show_to - self._show_from
         self._sel_index: int = 0
         self._items: List[TUIMenu] = items or []
@@ -81,7 +82,7 @@ class TUIMenuItem(TUIMenu):
                 if idx >= length:
                     break  # When the number of items is lower than the max_rows, skip the other lines
                 option_line = str(self._items[idx])
-                self.cursor.erase(TUIScreen.ScreenPortion.LINE)
+                self.cursor.erase(Screen.Portion.LINE)
                 # Print the selector if the index is currently selected
                 selector = self.draw_selector(is_selected=(idx == self._sel_index), has_bg_color=False)
                 # fmt: off
@@ -180,8 +181,8 @@ class TUIMenuItem(TUIMenu):
             self.write(f"{keystroke.value if keystroke else ''}")
             index_len += 1
         # Erase the index typed by the user
-        self.cursor.move(index_len, TUIScreen.CursorDirection.LEFT)
-        self.cursor.erase(TUIScreen.CursorDirection.RIGHT)
+        self.cursor.move(index_len, Cursor.Direction.LEFT)
+        self.cursor.erase(Cursor.Direction.RIGHT)
         if typed_index and 1 <= int(typed_index) <= length:
             self._show_to = max(int(typed_index), self._diff_index)
             self._show_from = self._show_to - self._diff_index

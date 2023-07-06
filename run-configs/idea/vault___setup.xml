@@ -8,9 +8,10 @@
       <env name="HHS_VAULT_USER" value="test" />
       <env name="HHS_VAULT_FILE" value="resources/sample.vault" />
     </envs>
-    <option name="SDK_HOME" value="" />
+    <option name="SDK_HOME" value="/usr/local/bin/python3.11" />
+    <option name="SDK_NAME" value="Python 3.11" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules/vault/src/main/vault" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />

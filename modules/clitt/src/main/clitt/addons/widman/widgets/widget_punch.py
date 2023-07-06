@@ -21,7 +21,6 @@ from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.terminal import Terminal
 from textwrap import dedent
 from typing import List
 
@@ -29,6 +28,8 @@ import argparse
 import os
 import re
 import sys
+
+from clitt.core.terminal import Terminal
 
 
 class WidgetPunch(Widget):
@@ -232,7 +233,7 @@ class WidgetPunch(Widget):
 
     def _edit_punches(self) -> None:
         """Open the default system editor to edit punches."""
-        Terminal.open_file(self.HHS_PUNCH_FILE)
+        Terminal.open(self.HHS_PUNCH_FILE)
 
     def _reset_punches(self) -> None:
         """Rename the punch file as a weekly punch file and reset current punch file."""

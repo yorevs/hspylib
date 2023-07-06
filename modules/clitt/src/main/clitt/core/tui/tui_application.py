@@ -12,12 +12,17 @@
 
    Copyright 2023, HsPyLib team
 """
+import os
+import sys
 
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from hspylib.modules.cli.vt100.vt_utils import alternate_screen
+
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from clitt.core.term.terminal import Terminal
 
 
 class TUIApplication(Application, metaclass=AbstractSingleton):
@@ -25,16 +30,29 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
 
     def __init__(
         self,
-        name: str,
-        version: Version,
+        name: str | None,
+        version: Version = Version.initial(),
         description: str = None,
         usage: str = None,
         epilog: str = None,
         resource_dir: str = None,
-        log_dir: str = None,
-    ):
+        log_dir: str = None):
+
         super().__init__(name, version, description, usage, epilog, resource_dir, log_dir)
-        self._alt_screen = False
+        self._terminal = Terminal.INSTANCE
+        self._app_name = os.path.basename(sys.argv[0]) if name is None else name
+
+    @property
+    def terminal(self) -> Terminal():
+        return self._terminal
+
+    @property
+    def screen(self) -> Screen():
+        return self.terminal.screen
+
+    @property
+    def cursor(self) -> Cursor:
+        return self.terminal.cursor
 
     def _setup_arguments(self) -> None:
         pass
@@ -43,10 +61,6 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
         pass
 
     def _cleanup(self) -> None:
-        if self._alt_screen and self._exit_code == ExitStatus.SUCCESS:
-            self._alternate_screen()
-
-    def _alternate_screen(self):
-        """Toggle switch to the alternate/main screen."""
-        self._alt_screen = not self._alt_screen
-        alternate_screen(self._alt_screen)
+        if self.screen.alternate and self._exit_code == ExitStatus.SUCCESS:
+            self.screen.alternate = not self.screen.alternate
+        self.terminal.restore()

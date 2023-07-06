@@ -19,11 +19,12 @@ from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.terminal import Terminal
 from textwrap import dedent
 from time import sleep
 
 import re
+
+from clitt.core.terminal import Terminal
 
 
 class WidgetFree(Widget):

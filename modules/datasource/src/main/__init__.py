@@ -5,5 +5,7 @@
 # Package: main
 """Package initialization."""
 
-__all__ = ["datasource"]
-__version__ = "0.9.36"
+__all__ = [
+  'datasource'
+]
+__version__ = '0.9.36'

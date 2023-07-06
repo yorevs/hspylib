@@ -12,10 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
-
+from clitt.core.term.cursor import Cursor
 from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
-from clitt.core.tui.tui_screen import TUIScreen
 from typing import Callable, Optional
 
 
@@ -53,6 +52,6 @@ class TUIMenuView(TUIMenu):
         self.draw_navbar(self.navbar())
 
     def _display_content(self) -> None:
-        self.cursor.erase(TUIScreen.CursorDirection.DOWN)
+        self.cursor.erase(Cursor.Direction.DOWN)
         self.writeln(self._content)
         self.wait_keystroke()

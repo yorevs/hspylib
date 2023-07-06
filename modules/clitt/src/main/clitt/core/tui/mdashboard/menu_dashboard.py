@@ -13,10 +13,11 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
 from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder
 from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
 from clitt.core.tui.tui_component import TUIComponent
-from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.preconditions import check_state
 from hspylib.modules.cli.keyboard import Keyboard
 from typing import List, Optional, TypeVar
@@ -82,7 +83,7 @@ class MenuDashBoard(TUIComponent):
                 idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL
             )
 
-        self.cursor.erase(TUIScreen.ScreenPortion.LINE)
+        self.cursor.erase(Screen.Portion.LINE)
         self.cursor.move_to(column=1)
         self.draw_navbar(self.navbar())
         self._re_render = False
@@ -119,7 +120,6 @@ class MenuDashBoard(TUIComponent):
         :param item: the dashboard item.
         :param cell_template: the template of the dashboard cell (selected or unselected).
         """
-
         num_cols, num_rows = len(cell_template[0]), len(cell_template)
         for row in range(0, num_rows):
             for col in range(0, num_cols):
@@ -127,13 +127,13 @@ class MenuDashBoard(TUIComponent):
                 # Print current cell
                 self.write(f"{item.icon if cur_cell == self.ICN else cur_cell}")
             # Move to the next the next row
-            self.cursor.move(1, TUIScreen.CursorDirection.DOWN)
-            self.cursor.move(num_cols, TUIScreen.CursorDirection.LEFT)
+            self.cursor.move(1, Cursor.Direction.DOWN)
+            self.cursor.move(num_cols, Cursor.Direction.LEFT)
         if item_idx > 0 and (item_idx + 1) % self.prefs.items_per_line == 0:
             # Break the line
-            self.cursor.move(1, TUIScreen.CursorDirection.DOWN)
-            self.cursor.move(num_cols * self.prefs.items_per_line, TUIScreen.CursorDirection.LEFT)
+            self.cursor.move(1, Cursor.Direction.DOWN)
+            self.cursor.move(num_cols * self.prefs.items_per_line, Cursor.Direction.LEFT)
         elif item_idx + 1 < len(self._items):
             # Continue on the same line
-            self.cursor.move(num_rows, TUIScreen.CursorDirection.UP)
-            self.cursor.move(num_cols, TUIScreen.CursorDirection.RIGHT)
+            self.cursor.move(num_rows, Cursor.Direction.UP)
+            self.cursor.move(num_cols, Cursor.Direction.RIGHT)

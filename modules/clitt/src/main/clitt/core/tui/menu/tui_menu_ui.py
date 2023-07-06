@@ -12,13 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.menu.tui_menu import TUIMenu
 from clitt.core.tui.tui_preferences import TUIPreferences
-from clitt.core.tui.tui_screen import TUIScreen
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_not_none
-from hspylib.modules.cli.vt100.vt_utils import set_auto_wrap, set_show_cursor
 
 
 class TUIMenuUi(metaclass=Singleton):
@@ -29,9 +27,9 @@ class TUIMenuUi(metaclass=Singleton):
     APP_TITLE = "Main Menu"
 
     # fmt: off
-    PREFS = TUIPreferences.INSTANCE or TUIPreferences()
+    PREFS = TUIPreferences.INSTANCE
 
-    SCREEN = TUIScreen.INSTANCE or TUIScreen()
+    SCREEN = Terminal.INSTANCE.screen
 
     MENU_LINE = f"{'--' * PREFS.title_line_length}"
 
@@ -89,8 +87,8 @@ class TUIMenuUi(metaclass=Singleton):
 
     def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = False, clear_screen: bool = True) -> None:
         """Prepare the screen for renderization."""
-        set_auto_wrap(auto_wrap)
-        set_show_cursor(show_cursor)
+        Terminal.set_auto_wrap(auto_wrap)
+        Terminal.set_show_cursor(show_cursor)
         if clear_screen:
             self.SCREEN.clear()
         self.SCREEN.cursor.save()

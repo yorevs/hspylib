@@ -12,8 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.terminal import Terminal
+
 from cfman.core.cf_application import CFApplication
-from hspylib.core.tools.commons import sysout
 from typing import Dict, List
 
 import re
@@ -88,7 +89,7 @@ class CFBlueGreenChecker:
         :param mapped_apps: The dict containing all CF blue and green apps.
         :return: None
         """
-        sysout(
+        Terminal.echo(
             f"%BLUE%Listing '{org}::{space}' applications grouped by blue/green pairs ...%EOL%%WHITE%"
             f"{'-=' * 60 + '%EOL%'}"
             f"{'Color':^11}{'Status':<10}{'Instances (MEM)':<27}Routes:{'Alerts':>13}%EOL%"
@@ -96,8 +97,8 @@ class CFBlueGreenChecker:
         for name, app in mapped_apps.items():
             app_green = app["green"]
             app_blue = app["blue"]
-            sysout(f"%CYAN%\\-{name}")
-            sysout(
+            Terminal.echo(f"%CYAN%\\-{name}")
+            Terminal.echo(
                 "{} |-GREEN: {}".format(
                     "%YELLOW%"
                     if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
@@ -105,7 +106,7 @@ class CFBlueGreenChecker:
                     cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!",
                 )
             )
-            sysout(
+            Terminal.echo(
                 "{} |-BLUE : {}".format(
                     "%YELLOW%"
                     if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
@@ -113,7 +114,7 @@ class CFBlueGreenChecker:
                     cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!",
                 )
             )
-            sysout("%NC%%EOL%" + "-" * 120)
+            Terminal.echo("%NC%%EOL%" + "-" * 120)
 
     @classmethod
     def _app_info(cls, active_app: CFApplication, idle_app: CFApplication) -> str:

@@ -5,5 +5,10 @@
 # Package: demo.phonebook
 """Package initialization."""
 
-__all__ = ["entity", "repository", "service", "view"]
-__version__ = "0.9.36"
+__all__ = [
+  'entity', 
+  'repository', 
+  'service', 
+  'view'
+]
+__version__ = '0.9.36'
