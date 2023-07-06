@@ -12,7 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
+import argparse
+import atexit
+import logging as log
+import os
+import sys
+import traceback
 from abc import abstractmethod
+from textwrap import dedent
+from typing import Any, Optional
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
@@ -27,21 +36,20 @@ from hspylib.modules.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.application.exit_hooks import ExitHooks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
-from typing import Any, Optional, Union
-
-import argparse
-import atexit
-import logging as log
-import os
-import sys
-import traceback
 
 
 class Application(metaclass=AbstractSingleton):
     """HsPyLib application framework. This is the base class for the HsPyLib applications."""
 
     INSTANCE = None
+
+    @staticmethod
+    def _help_formatter(prog) -> argparse.HelpFormatter:
+        return argparse.RawDescriptionHelpFormatter(
+            prog,
+            indent_increment=2,
+            max_help_position=27
+        )
 
     @staticmethod
     def exit(signum: int = 0, frame: Any = None, clear_screen: bool = False) -> None:
@@ -86,7 +94,7 @@ class Application(metaclass=AbstractSingleton):
             exit_on_error=False,
             prog=name,
             allow_abbrev=False,
-            formatter_class=argparse.RawDescriptionHelpFormatter,
+            formatter_class=self._help_formatter,
             description=dedent(description or ""),
             usage=usage,
             epilog=dedent(epilog or ""),
@@ -154,9 +162,11 @@ class Application(metaclass=AbstractSingleton):
         """Return the application name."""
         return self._app_name
 
-    def get_arg(self, arg_name: str) -> Optional[Union[str, list]]:
-        """Get the argument value named by arg_name."""
-        return getattr(self._args, arg_name) if self._args and hasattr(self._args, arg_name) else None
+    def get_arg(self, name: str) -> Optional[Any]:
+        """Get the argument value specified by name."""
+        return getattr(self._args, name) \
+            if self._args and hasattr(self._args, name) \
+            else None
 
     def _with_options(self) -> "OptionsBuilder":
         """Add options to the application."""
@@ -166,9 +176,9 @@ class Application(metaclass=AbstractSingleton):
         """Add arguments to the application."""
         return ArgumentsBuilder(self._arg_parser)
 
-    def _with_chained_args(self, subcommand: str, subcommand_help: str = None) -> "ChainedArgumentsBuilder":
+    def _with_chained_args(self, arg: str, arg_help: str = None) -> "ChainedArgumentsBuilder":
         """Add chained arguments to the application."""
-        return ChainedArgumentsBuilder(self._arg_parser, subcommand, subcommand_help)
+        return ChainedArgumentsBuilder(self._arg_parser, arg, arg_help)
 
     @abstractmethod
     def _setup_arguments(self) -> None:
