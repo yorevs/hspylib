@@ -14,13 +14,15 @@
 """
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
+from setman.settings.settings_config import SettingsConfig
+
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_entry import SettingsEntry
 from textwrap import dedent
 from typing import List, Optional
 
 
-class SettingsRepository(SQLiteRepository[SettingsEntry]):
+class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
     """Provide CRUD operations for the Settings."""
 
     @property
@@ -29,7 +31,7 @@ class SettingsRepository(SQLiteRepository[SettingsEntry]):
 
     def find_by_name(self, name: str) -> Optional[SettingsEntry]:
         """Find settings by name."""
-        sql = f"SELECT * FROM SETTINGS WHERE name = ? ORDER BY name"
+        sql = "SELECT * FROM SETTINGS WHERE name = ? ORDER BY name"
         result = next((e for e in self.execute(sql, name=name)[1]), None)
 
         return self.to_entity_type(result) if result else None

@@ -28,14 +28,6 @@ class DatabaseError(HSBaseException):
     """Raised when database failed to execute/create-session"""
 
 
-class InvalidArgumentError(Exception):
-    """Raised when an invalid argument is received by the application"""
-
-
-class InvalidStateError(Exception):
-    """Raised when an invalid state is detected by the application"""
-
-
 class ProgrammingError(HSBaseException):
     """Exception raised for programming errors, e.g. table not found
     or already exists, syntax error in the SQL statement, wrong number

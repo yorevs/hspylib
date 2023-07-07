@@ -24,8 +24,6 @@ from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QDialogButtonBox, QWidget
 
-import os
-
 
 class SettingsDialog(QObject):
     """TODO"""
@@ -102,8 +100,8 @@ class SettingsDialog(QObject):
 
     def _fill_settings(self) -> None:
         """TODO"""
-        all_settings = self._settings_type.settings().split(os.linesep)
-        self._settings.update(Properties._read_properties(all_settings))
+        all_settings = self._settings_type.settings().splitlines()
+        self._settings.update(Properties.read_properties(all_settings))
         self.ui.cmb_settings.addItems({k: v for (k, v) in self._settings.items() if k not in self._forbidden_settings})
 
     def _change_setting(self, setting_name: str) -> None:

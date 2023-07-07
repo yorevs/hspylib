@@ -1,9 +1,13 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.36
+# hspylib-datasource v0.9.37
 #
 # Package: demo.phonebook.view
 """Package initialization."""
 
-__all__ = ["create_view", "edit_view", "search_view"]
-__version__ = "0.9.36"
+__all__ = [
+  'create_view', 
+  'edit_view', 
+  'search_view'
+]
+__version__ = '0.9.37'

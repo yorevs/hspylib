@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+from abc import abstractmethod
 from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import DBRepository, ResultSet, Session
@@ -30,9 +31,10 @@ import logging as log
 import pymysql
 
 E = TypeVar("E", bound=CrudEntity)
+C = TypeVar("C", bound=DBConfiguration)
 
 
-class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
+class MySqlRepository(Generic[E, C], DBRepository[E, C], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a MySql persistence store."""
 
     def __init__(self, config: DBConfiguration):
@@ -67,9 +69,11 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
                 args = dict(kwargs)
                 rows = []
                 log.debug(
-                    f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                    f"\t|-Arguments: {args}\n"
-                    f"\t|-Statement: {sql_statement}"
+                    "%s Executing SQL statement [ssid=%s]:\n" "\t|-Arguments: %s\n" "\t|-Statement: %s",
+                    self.logname,
+                    hash(dbs),
+                    args,
+                    sql_statement,
                 )
                 if (rows_affected := dbs.execute(sql_statement, tuple(args.values())) or 0) > 0:
                     list(map(rows.append, dbs))
@@ -148,3 +152,11 @@ class MySqlRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=Ab
         sql = f"SELECT EXISTS(SELECT 1 FROM {self.table_name()} WHERE {' AND '.join(clauses)})"
 
         return self.execute(sql)[1][0][0] > 0
+
+    @abstractmethod
+    def table_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def to_entity_type(self, entity_dict: dict | tuple) -> E:
+        pass

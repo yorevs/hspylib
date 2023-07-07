@@ -12,10 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.exception.exceptions import NotATerminalError
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.screen import Screen
 from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import NotATerminalError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
@@ -70,9 +70,7 @@ class Terminal(metaclass=Singleton):
         try:
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            with subprocess.Popen(
-                cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
-            ) as proc:
+            with subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs) as proc:
                 process = select.poll()
                 process.register(proc.stdout)
                 process.register(proc.stderr)

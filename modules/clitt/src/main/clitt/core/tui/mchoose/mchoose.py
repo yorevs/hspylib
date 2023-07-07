@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.enums.charset import Charset
-
 from clitt.core.tui.mchoose.menu_choose import MenuChoose
+from hspylib.core.enums.charset import Charset
 from typing import List, Optional, TypeVar
 
 T = TypeVar("T")

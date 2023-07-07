@@ -14,7 +14,7 @@
 """
 
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError, NotATerminalError
+from hspylib.core.exception.exceptions import KeyboardInputError
 from typing import List, Optional
 
 import getkey
@@ -120,14 +120,13 @@ class Keyboard(Enumeration):
     def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
         """Wait until a keypress is detected."""
         try:
-            keystroke = getkey.getkey(blocking)
-            if keystroke:
+            if keystroke := getkey.getkey(blocking):
                 return cls.of_value(keystroke)
         except (KeyboardInterrupt, AssertionError) as err:
             if not ignore_error_keys:
                 raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
         except termios.error as err:
-            raise NotATerminalError("keyboard:: Requires a terminal (TTY)") from err
+            raise KeyboardInputError("keyboard:: Requires a terminal (TTY)") from err
         finally:
             sys.stdin.flush()
 

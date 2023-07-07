@@ -1,4 +1,4 @@
-from hspylib.core.exception.exceptions import NotATerminalError
+from clitt.core.exception.exceptions import NotATerminalError
 from hspylib.core.tools.commons import is_debugging
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from shutil import get_terminal_size
@@ -36,7 +36,7 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
     """Get the terminal cursor position.
     :return line, column
     """
-    pos, buf = fallback, ""
+    pos, buf, re_query_resp = fallback, "", r"^\x1b\[(\d*);(\d*)R"
 
     if not sys.stdout.isatty():
         log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
@@ -54,7 +54,7 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
         sys.stdout.flush()
         while not buf or buf[-1] != "R":
             buf += sys.stdin.read(1)
-        if matches := re.match(r"^\x1b\[(\d*);(\d*)R", buf):  # If the response is 'Esc[r;cR'
+        if matches := re.match(re_query_resp, buf):  # If the response is 'Esc[r;cR'
             groups = matches.groups()
             pos = int(groups[0]), int(groups[1])
     finally:

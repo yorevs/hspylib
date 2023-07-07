@@ -15,10 +15,12 @@
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from typing import Optional, Set
+
+from vault.core.vault_config import VaultConfig
 from vault.domain.vault_entry import VaultEntry
 
 
-class VaultRepository(SQLiteRepository[VaultEntry]):
+class VaultRepository(SQLiteRepository[VaultEntry, VaultConfig]):
     """Provide CRUD operations for the Vault application."""
 
     @property

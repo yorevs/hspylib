@@ -36,7 +36,7 @@ class Setman(metaclass=Singleton):
 
     RESOURCE_DIR = os.environ.get("HHS_DIR", os.environ.get("HOME", "~/"))
 
-    SETMAN_CONFIG_FILE = f"setman.properties"
+    SETMAN_CONFIG_FILE = "setman.properties"
 
     SETMAN_DB_FILE = f"{RESOURCE_DIR}/.setman-db"
 
@@ -76,7 +76,7 @@ class Setman(metaclass=Singleton):
         filepath: str = None,
     ) -> None:
         """Execute the specified operation."""
-        log.debug(f"{operation} Name: {name or '*'} Value: {value or '-'} SettingsType: {stype or '*'}")
+        log.debug("%s Name: %s Value: %s SettingsType: %s", operation, name or "*", "-", stype or "*")
         atexit.register(self.settings.close)
         with self.settings.open():
             match operation:
@@ -146,8 +146,10 @@ class Setman(metaclass=Singleton):
         :param simple_fmt: whether to display simple or formatted.
         """
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
-        sysout(os.linesep.join(data)) if data else sysout(
-            "%EOL%%YELLOW%No settings found matching: %WHITE%", f"[name={name or '*'}, stype={stype or '*'}]", "%EOL%"
+        sysout(
+            os.linesep.join(data) if data else "%EOL%%YELLOW%No settings found matching: %WHITE%",
+            f"[name={name or '*'}, stype={stype or '*'}]",
+            "%EOL%",
         )
 
     def _clear_settings(self, name: str | None, stype: SettingsType | None) -> None:
@@ -181,5 +183,5 @@ class Setman(metaclass=Singleton):
         """Setup SetMan on the system."""
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_configs:
             f_configs.write(f"hhs.setman.database = {self.SETMAN_DB_FILE} {os.linesep}")
-            f_configs.write(f"hhs.setman.encode.database = True")
+            f_configs.write("hhs.setman.encode.database = True")
             check_state(os.path.exists(filepath), "Unable to create Setman configuration file: " + filepath)

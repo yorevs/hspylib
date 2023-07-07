@@ -12,19 +12,18 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
+from clitt.addons.widman.widget import Widget
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.term.terminal import Terminal
 from concurrent import futures
-from textwrap import dedent
-from time import sleep
-
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from hspylib.modules.cli.keyboard import Keyboard
+from textwrap import dedent
+from time import sleep
 
-from clitt.addons.widman.widget import Widget
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
-from clitt.core.term.terminal import Terminal
+import re
 
 
 class WidgetFree(Widget):

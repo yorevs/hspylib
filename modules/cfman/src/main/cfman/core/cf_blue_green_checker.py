@@ -12,12 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
+from cfman.core.cf_application import CFApplication
+from clitt.core.term.terminal import Terminal
 from typing import Dict, List, Tuple
 
-from clitt.core.term.terminal import Terminal
-
-from cfman.core.cf_application import CFApplication
+import re
 
 
 class CFBlueGreenChecker:
@@ -130,7 +129,7 @@ class CFBlueGreenChecker:
             "%YELLOW%"
             if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
             else "%NC%",
-            cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!"
+            cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!",
         )
 
     @classmethod
@@ -139,5 +138,5 @@ class CFBlueGreenChecker:
             "%YELLOW%"
             if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
             else "%NC%",
-            cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!"
+            cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!",
         )

@@ -12,28 +12,28 @@
 
    Copyright 2023, HsPyLib team
 """
-import re
-from operator import add
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import get_cursor_position
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.terminal import Terminal
+from clitt.core.tui.minput import minput_utils as mu
 from clitt.core.tui.minput.form_builder import FormBuilder
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
-from clitt.core.tui.minput import minput_utils as mu
 from clitt.core.tui.minput.minput_utils import MASK_SYMBOLS, VALUE_SEPARATORS
 from clitt.core.tui.tui_component import TUIComponent
 from functools import reduce
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
 from hspylib.core.namespace import Namespace
+from hspylib.core.tools.text_tools import xstr
 from hspylib.modules.cli.keyboard import Keyboard
+from operator import add
 from time import sleep
 from typing import List, Optional
 
 import pyperclip
+import re
 
 
 class MenuInput(TUIComponent):
@@ -44,13 +44,6 @@ class MenuInput(TUIComponent):
     @classmethod
     def builder(cls) -> FormBuilder:
         return FormBuilder()
-
-    @staticmethod
-    def str_val(field: FormField) -> str:
-        """TODO"""
-        if field.value is None:
-            return ""
-        return str(field.value)
 
     def __init__(self, title: str, fields: List[FormField]):
         super().__init__(title)
@@ -171,15 +164,15 @@ class MenuInput(TUIComponent):
             case InputType.SELECT:
                 if keypress == Keyboard.VK_SPACE:
                     if self.cur_field.value:
-                        self.cur_field.value = mu.toggle_selected(self.str_val(self.cur_field))
+                        self.cur_field.value = mu.toggle_selected(xstr(self.cur_field))
             case InputType.MASKED:
-                value, mask = mu.unpack_masked(self.str_val(self.cur_field))
+                value, mask = mu.unpack_masked(xstr(self.cur_field))
                 try:
                     self.cur_field.value = mu.append_masked(value, mask, keypress.value)
                 except InvalidInputError as err:
                     self._display_error(str(err))
             case _:
-                if len(self.str_val(self.cur_field)) < self.cur_field.max_length:
+                if len(xstr(self.cur_field)) < self.cur_field.max_length:
                     if self.cur_field.validate_input(keypress.value):
                         self.cur_field.value = (str(self.cur_field.value) if self.cur_field.value else "") + str(
                             keypress.value
@@ -221,7 +214,7 @@ class MenuInput(TUIComponent):
         """
         match field.itype:
             case InputType.TEXT:
-                mu.mi_print(self.screen, self.str_val(field), field_len=self.max_value_length)
+                mu.mi_print(self.screen, xstr(field), field_len=self.max_value_length)
             case InputType.PASSWORD:
                 mu.mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
             case InputType.CHECKBOX:
@@ -254,11 +247,11 @@ class MenuInput(TUIComponent):
             count = len(re.split(VALUE_SEPARATORS, field.value))
             self.writeln(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
-            value, mask = mu.unpack_masked(self.str_val(field))
+            value, mask = mu.unpack_masked(xstr(field))
             self.writeln(
                 fmt.format(
                     field.icon,
-                    reduce(add, list(map(mask[:len(value)].count, MASK_SYMBOLS))),
+                    reduce(add, list(map(mask[: len(value)].count, MASK_SYMBOLS))),
                     reduce(add, list(map(mask.count, MASK_SYMBOLS))),
                 )
             )
