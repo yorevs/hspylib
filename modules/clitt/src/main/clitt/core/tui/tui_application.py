@@ -12,17 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-import sys
-
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from clitt.core.term.terminal import Terminal
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
-from clitt.core.term.terminal import Terminal
+import os
+import sys
 
 
 class TUIApplication(Application, metaclass=AbstractSingleton):
@@ -36,8 +35,8 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
         usage: str = None,
         epilog: str = None,
         resource_dir: str = None,
-        log_dir: str = None):
-
+        log_dir: str = None,
+    ):
         super().__init__(name, version, description, usage, epilog, resource_dir, log_dir)
         self._terminal = Terminal.INSTANCE
         self._app_name = os.path.basename(sys.argv[0]) if name is None else name

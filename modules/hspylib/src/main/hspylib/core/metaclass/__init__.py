@@ -5,8 +5,5 @@
 # Package: main.hspylib.core.metaclass
 """Package initialization."""
 
-__all__ = [
-  'classpath', 
-  'singleton'
-]
-__version__ = '0.11.191'
+__all__ = ["classpath", "singleton"]
+__version__ = "0.11.191"

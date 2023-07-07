@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.term.terminal import Terminal
-
 from cfman.core.cf_application import CFApplication
+from clitt.core.term.terminal import Terminal
 from typing import Dict, List
 
 import re

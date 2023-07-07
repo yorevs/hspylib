@@ -12,20 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
-import logging as log
-import sys
-from textwrap import dedent
-
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-
 from setman.__classpath__ import _Classpath
 from setman.core.setman import Setman
 from setman.core.setman_enums import SetmanOps, SettingsType
+from textwrap import dedent
+
+import logging as log
+import sys
 
 
 class Main(TUIApplication):
@@ -99,7 +98,7 @@ class Main(TUIApplication):
             self.get_arg("value"),
             SettingsType.of_value(st) if st else None,
             self.get_arg("simple"),
-            self.get_arg("file")
+            self.get_arg("file"),
         )
 
         return ExitStatus.SUCCESS

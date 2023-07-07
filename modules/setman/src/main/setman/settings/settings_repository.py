@@ -14,11 +14,10 @@
 """
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
-from textwrap import dedent
-from typing import List, Optional
-
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_entry import SettingsEntry
+from textwrap import dedent
+from typing import List, Optional
 
 
 class SettingsRepository(SQLiteRepository[SettingsEntry]):
@@ -36,11 +35,8 @@ class SettingsRepository(SQLiteRepository[SettingsEntry]):
         return self.to_entity_type(result) if result else None
 
     def search(
-        self,
-        name: str | None = None,
-        stype: SettingsType | None = None,
-        limit: int = 500,
-        offset: int = 0) -> List[SettingsEntry]:
+        self, name: str | None = None, stype: SettingsType | None = None, limit: int = 500, offset: int = 0
+    ) -> List[SettingsEntry]:
         """Search settings by settings type."""
         search_name = name.replace("*", "%") if name else "%"
         if stype:

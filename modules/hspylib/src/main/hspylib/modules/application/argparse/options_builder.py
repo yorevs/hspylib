@@ -46,7 +46,8 @@ class OptionsBuilder:
             help=help_string or f"the {longopt}",
             required=required,
             action=action.value,
-            default=default)
+            default=default,
+        )
 
         if action == ParserAction.STORE:
             add_argument(choices=choices, nargs=nargs)

@@ -12,6 +12,17 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+from typing import Any, Optional, Tuple
+
 import atexit
 import logging as log
 import os
@@ -21,18 +32,6 @@ import shlex
 import signal
 import subprocess
 import sys
-from typing import Optional, Tuple, Any
-
-from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import NotATerminalError
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
 
 
 class Terminal(metaclass=Singleton):
@@ -72,14 +71,15 @@ class Terminal(metaclass=Singleton):
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             with subprocess.Popen(
-                cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs) as proc:
+                cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs
+            ) as proc:
                 process = select.poll()
                 process.register(proc.stdout)
                 process.register(proc.stderr)
                 while not Keyboard.kbhit():
                     if poll_obj := process.poll(0.5):
                         line = proc.stdout.readline()
-                        sysout(line.decode(Charset.UTF_8.val) if isinstance(line, bytes) else line.strip(), end='')
+                        sysout(line.decode(Charset.UTF_8.val) if isinstance(line, bytes) else line.strip(), end="")
                         log.debug("Polling returned: %s", str(poll_obj))
                 os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
         except (InterruptedError, KeyboardInterrupt):

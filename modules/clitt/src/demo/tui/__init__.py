@@ -5,13 +5,5 @@
 # Package: demo.tui
 """Package initialization."""
 
-__all__ = [
-  'mchoose', 
-  'mdashboard', 
-  'menu', 
-  'minput', 
-  'mselect', 
-  'table', 
-  'tui_screen_demo'
-]
-__version__ = '0.9.54'
+__all__ = ["mchoose", "mdashboard", "menu", "minput", "mselect", "table", "tui_screen_demo"]
+__version__ = "0.9.54"

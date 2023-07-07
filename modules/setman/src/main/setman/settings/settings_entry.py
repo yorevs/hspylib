@@ -19,10 +19,9 @@ from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.tools.text_tools import environ_name
 from hspylib.core.zoned_datetime import now
+from setman.core.setman_enums import SettingsType
 from textwrap import dedent
 from typing import Any, Optional, Union
-
-from setman.core.setman_enums import SettingsType
 
 
 class SettingsEntry(CrudEntity):

@@ -1,14 +1,13 @@
-import threading
-from threading import Timer
-from typing import Optional, List
-
+from clitt.core.term.commons import CB_RESIZE, DIMENSION, get_dimensions
+from clitt.core.term.cursor import Cursor
+from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
+from threading import Timer
+from typing import List, Optional
 
-from clitt.core.term.commons import DIMENSION, CB_RESIZE, get_dimensions
-from clitt.core.term.cursor import Cursor
-from clitt.core.tui.tui_preferences import TUIPreferences
+import threading
 
 
 class Screen(metaclass=Singleton):
@@ -20,6 +19,7 @@ class Screen(metaclass=Singleton):
 
     class Portion(Enumeration):
         """Provide a base class for the portions of the screen."""
+
         # fmt: off
         SCREEN      = '%ED2%', ''   # Entire screen (screen)
         LINE        = '%EL2%', ''   # Entire line (line)

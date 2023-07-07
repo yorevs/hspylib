@@ -14,6 +14,7 @@
 """
 from clitt.addons.widman.widget import Widget
 from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.terminal import Terminal
 from concurrent import futures
 from hspylib.core.tools.commons import human_readable_bytes, sysout
 from hspylib.modules.application.exit_status import ExitStatus
@@ -23,8 +24,6 @@ from textwrap import dedent
 from time import sleep
 
 import re
-
-from clitt.core.terminal import Terminal
 
 
 class WidgetFree(Widget):

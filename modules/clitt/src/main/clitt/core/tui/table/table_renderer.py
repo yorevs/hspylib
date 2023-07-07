@@ -12,16 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-import csv
-import os
-from typing import Any, Callable, Iterable, List
-
+from clitt.core.term.terminal import Terminal
+from clitt.core.tui.table.table_enums import TextAlignment, TextCase
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.core.tools.text_tools import elide_text, ensure_endswith
+from typing import Any, Callable, Iterable, List
 
-from clitt.core.term.terminal import Terminal
-from clitt.core.tui.table.table_enums import TextAlignment, TextCase
+import csv
+import os
 
 
 class TableRenderer:

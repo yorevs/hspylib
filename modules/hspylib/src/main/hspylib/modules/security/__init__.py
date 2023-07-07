@@ -5,7 +5,5 @@
 # Package: main.hspylib.modules.security
 """Package initialization."""
 
-__all__ = [
-  'security'
-]
-__version__ = '0.11.191'
+__all__ = ["security"]
+__version__ = "0.11.191"

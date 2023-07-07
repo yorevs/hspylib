@@ -12,11 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
-from time import sleep
-
 from clitt.core.term.cursor import Cursor
-from clitt.core.term.terminal import Terminal
 from clitt.core.term.screen import Screen
+from clitt.core.term.terminal import Terminal
+from time import sleep
 
 
 def draw(scr: Screen):

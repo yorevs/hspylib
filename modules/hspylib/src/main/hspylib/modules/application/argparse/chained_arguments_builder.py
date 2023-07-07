@@ -41,14 +41,13 @@ class ChainedArgumentsBuilder:
         help_string: str = None,
         choices: list = None,
         nargs: Union[str, int] = None,
-        action: ParserAction = ParserAction.STORE) -> "ChainedArgumentsBuilder":
+        action: ParserAction = ParserAction.STORE,
+    ) -> "ChainedArgumentsBuilder":
         """Assign a new chained argument parameter to the parser."""
 
         add_argument = partial(
-            self._current.add_argument,
-            help=help_string or f"the {name}",
-            dest=name,
-            action=action.value)
+            self._current.add_argument, help=help_string or f"the {name}", dest=name, action=action.value
+        )
 
         if action == ParserAction.STORE:
             add_argument(choices=choices, nargs=nargs)

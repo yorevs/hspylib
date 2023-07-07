@@ -15,8 +15,8 @@
 from clitt.core.term.commons import get_cursor_position
 from clitt.core.term.terminal import Terminal
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     t = Terminal.INSTANCE
-    Terminal.echo("Hello terminal!", end='')
-    Terminal.echo(get_cursor_position(), end='')
-    Terminal.echo(t.cursor, end='')
+    Terminal.echo("Hello terminal!", end="")
+    Terminal.echo(get_cursor_position(), end="")
+    Terminal.echo(t.cursor, end="")
