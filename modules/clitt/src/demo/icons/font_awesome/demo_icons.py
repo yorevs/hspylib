@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib
-   @package: demo.cli.icons.font_awesome
+   @package: demo.icons.font_awesome
       @file: demo_icons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

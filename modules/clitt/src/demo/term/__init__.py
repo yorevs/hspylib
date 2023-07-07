@@ -2,13 +2,10 @@
 #
 # hspylib-clitt v0.9.54
 #
-# Package: demo
+# Package: demo.term
 """Package initialization."""
 
 __all__ = [
-  'application', 
-  'icons', 
-  'term', 
-  'tui'
+  'terminal_demo'
 ]
 __version__ = '0.9.54'

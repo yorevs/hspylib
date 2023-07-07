@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib
-   @package: demo.cli.icons.emojis
+   @package: demo.icons.emojis
       @file: demo_emojis.py
    @created: Tue, 13 Jan 2023
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
