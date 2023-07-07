@@ -111,7 +111,7 @@ class Terminal(metaclass=Singleton):
         :param enabled: whether is enabled or not.
         """
         if not cls.is_a_tty():
-            log.error(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
+            log.warning(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
             return
 
         os.popen(f"stty {'echo -raw' if enabled else 'raw -echo min 0'}").read()
@@ -122,7 +122,7 @@ class Terminal(metaclass=Singleton):
         :param auto_wrap: whether auto_wrap is set or not.
         """
         if not cls.is_a_tty():
-            log.warning(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
+            log.warning(NotATerminalError("set_auto_wrap:: Requires a terminal (TTY)"))
             return
 
         sysout(Vt100.set_auto_wrap(auto_wrap), end="")
@@ -133,7 +133,7 @@ class Terminal(metaclass=Singleton):
         :param show_cursor: whether to show or hide he cursor.
         """
         if not cls.is_a_tty():
-            log.warning(NotATerminalError("set_enable_echo:: Requires a terminal (TTY)"))
+            log.warning(NotATerminalError("set_show_cursor:: Requires a terminal (TTY)"))
             return
 
         sysout(Vt100.set_show_cursor(show_cursor), end="")

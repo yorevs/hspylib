@@ -26,7 +26,7 @@ def get_dimensions(fallback: Tuple[int, int] = (24, 80)) -> Tuple[int, int]:
     :return lines, columns
     """
     if not sys.stdout.isatty():
-        log.error(NotATerminalError("screen_size:: Requires a terminal (TTY)"))
+        log.warning(NotATerminalError("get_dimensions:: Requires a terminal (TTY)"))
         return fallback
     dim = get_terminal_size((fallback[1], fallback[0]))
     return dim.lines, dim.columns
@@ -39,7 +39,7 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
     pos, buf = fallback, ""
 
     if not sys.stdout.isatty():
-        log.error(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
+        log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
         return pos
 
     if is_debugging():
