@@ -17,7 +17,7 @@ from clitt.core.tui.minput.minput import minput
 from collections import namedtuple
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
-from hspylib.core.tools.text_tools import environ_name
+from hspylib.core.tools.text_tools import environ_name, xstr
 from hspylib.core.zoned_datetime import now
 from setman.core.setman_enums import SettingsType
 from textwrap import dedent
@@ -57,7 +57,7 @@ class SettingsEntry(CrudEntity):
             .field() \
                 .label('Value') \
                 .min_max_length(1, 60) \
-                .value(entry.value) \
+                .value(xstr(entry.value)) \
                 .build() \
             .field() \
                 .label('Type') \

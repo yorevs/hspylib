@@ -48,7 +48,11 @@ class Main(TUIApplication):
         self._with_options() \
             .option(
                 'simple', 's', 'simple',
-                'display without formatting.', action=ParserAction.STORE_TRUE)
+                'display without formatting.', action=ParserAction.STORE_TRUE) \
+            .option(
+                'preserve', 'p', 'preserve', 'whether to preserve (no overwrite) existing settings.',
+                action=ParserAction.STORE_TRUE)
+
         self._with_chained_args('operation', 'the operation to execute.') \
             .argument(SetmanOps.GET.val, 'Retrieve the specified setting.') \
                 .add_parameter('name', 'the settings name to get.') \
@@ -98,6 +102,7 @@ class Main(TUIApplication):
             self.get_arg("value"),
             SettingsType.of_value(st) if st else None,
             self.get_arg("simple"),
+            self.get_arg("preserve"),
             self.get_arg("file"),
         )
 
