@@ -5,7 +5,5 @@
 # Package: demo.tui.mdashboard
 """Package initialization."""
 
-__all__ = [
-  'menu_dashboard_demo'
-]
-__version__ = '0.9.54'
+__all__ = ["menu_dashboard_demo"]
+__version__ = "0.9.54"

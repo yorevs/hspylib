@@ -12,11 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-import atexit
-import logging as log
-import os
-from typing import Any
-
 from clitt.core.tui.table.table_enums import TextAlignment
 from clitt.core.tui.table.table_renderer import TableRenderer
 from hspylib.core.enums.charset import Charset
@@ -26,10 +21,14 @@ from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.application.application import Application
 from hspylib.modules.cli.keyboard import Keyboard
-
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
+from typing import Any
+
+import atexit
+import logging as log
+import os
 
 
 class Setman(metaclass=Singleton):
@@ -74,7 +73,7 @@ class Setman(metaclass=Singleton):
         value: Any | None,
         stype: SettingsType = None,
         simple_fmt: bool = False,
-        filepath: str = None
+        filepath: str = None,
     ) -> None:
         """Execute the specified operation."""
         log.debug(f"{operation} Name: {name or '*'} Value: {value or '-'} SettingsType: {stype or '*'}")
@@ -147,10 +146,9 @@ class Setman(metaclass=Singleton):
         :param simple_fmt: whether to display simple or formatted.
         """
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
-        sysout(os.linesep.join(data)) \
-            if data \
-            else sysout("%EOL%%YELLOW%No settings found matching: %WHITE%",
-                        f"[name={name or '*'}, stype={stype or '*'}]", "%EOL%")
+        sysout(os.linesep.join(data)) if data else sysout(
+            "%EOL%%YELLOW%No settings found matching: %WHITE%", f"[name={name or '*'}, stype={stype or '*'}]", "%EOL%"
+        )
 
     def _clear_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """Clear all settings.
@@ -163,8 +161,11 @@ class Setman(metaclass=Singleton):
                 sysout("%EOL%%ORANGE%!!! All settings have been removed !!!%EOL%")
         else:
             self.settings.clear(name, stype)
-            sysout("%EOL%%ORANGE%Removed settings matching: %WHITE%",
-                   f"[name={name or '*'}, stype={stype or '*'}]", "%EOL%")
+            sysout(
+                "%EOL%%ORANGE%Removed settings matching: %WHITE%",
+                f"[name={name or '*'}, stype={stype or '*'}]",
+                "%EOL%",
+            )
 
     def _import_settings(self, filepath: str) -> None:
         """Import settings from CSV file."""

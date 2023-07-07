@@ -12,15 +12,14 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
-from clitt.core.term.terminal import Terminal
-
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
 from cfman.core.cf_endpoint import CFEndpoint
 from cfman.exception.exceptions import CFAuthenticationError, CFConnectionError, CFExecutionError
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.mchoose.mchoose import mchoose
 from clitt.core.tui.minput.minput import MenuInput, minput
 from clitt.core.tui.mselect.mselect import mselect
@@ -85,15 +84,7 @@ class CFManager:
             case _:
                 return "started", "stopped"
 
-    def __init__(
-        self, api: str,
-        org: str,
-        space: str,
-        username: str,
-        password: str,
-        no_cache: str,
-        cf_endpoints: str):
-
+    def __init__(self, api: str, org: str, space: str, username: str, password: str, no_cache: str, cf_endpoints: str):
         self._terminal = Terminal.INSTANCE
         self._cf = CloudFoundry.INSTANCE or CloudFoundry()
         self._cache = TTLCache()

@@ -5,7 +5,5 @@
 # Package: test.modules.security
 """Package initialization."""
 
-__all__ = [
-  'test_security'
-]
-__version__ = '0.11.191'
+__all__ = ["test_security"]
+__version__ = "0.11.191"

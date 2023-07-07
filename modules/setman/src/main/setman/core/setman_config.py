@@ -13,7 +13,6 @@
    Copyright 2023, HsPyLib team
 """
 from hspylib.core.tools.commons import str_to_bool
-
 from setman.settings.settings_config import SettingsConfig
 
 

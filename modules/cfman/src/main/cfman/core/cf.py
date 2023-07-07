@@ -12,9 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from collections import namedtuple
-
 from clitt.core.term.terminal import Terminal
+from collections import namedtuple
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.application.exit_status import ExitStatus
 from typing import List, Optional
@@ -108,9 +107,7 @@ class CloudFoundry(metaclass=Singleton):
                 target_params.append("-s")
                 target_params.append(kwargs["space"])
             Terminal.echo(
-                f"%BLUE%Targeting"
-                f"{'  ORG=' + org if org else ''}"
-                f"{'  SPACE=' + space if space else ''}" "..."
+                f"%BLUE%Targeting" f"{'  ORG=' + org if org else ''}" f"{'  SPACE=' + space if space else ''}" "..."
             )
             self._target = CFTarget(
                 kwargs["user"] if "user" in kwargs else None,

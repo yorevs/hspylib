@@ -12,12 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.screen import Screen
 from hspylib.core.exception.exceptions import InvalidInputError
 from typing import Any, Optional, Tuple
 
 import re
-
-from clitt.core.term.screen import Screen
 
 MASK_SYMBOLS = ["#", "@", "%", "*"]
 

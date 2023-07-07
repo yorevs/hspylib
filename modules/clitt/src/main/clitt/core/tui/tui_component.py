@@ -13,16 +13,14 @@
    Copyright 2023, HsPyLib team
 """
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional, TypeVar
-
-from hspylib.core.tools.text_tools import elide_text
-from hspylib.modules.cli.keyboard import Keyboard
-
 from clitt.core.icons.font_awesome.awesome import Awesome
-from clitt.core.term.terminal import Terminal
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.screen import Screen
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_preferences import TUIPreferences
+from hspylib.core.tools.text_tools import elide_text
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import Any, List, Optional, TypeVar
 
 T = TypeVar("T", bound=Any)
 
@@ -125,7 +123,7 @@ class TUIComponent(ABC):
 
     def write(self, obj: Any) -> None:
         """Write the string representation of the object to the screen."""
-        self.terminal.echo(obj, end='')
+        self.terminal.echo(obj, end="")
 
     def writeln(self, obj: Any) -> None:
         """Write the string representation of the object to the screen, appending a new line."""

@@ -12,27 +12,26 @@
 
    Copyright 2023, HsPyLib team
 """
-import binascii
-import contextlib
-import csv
-import logging as log
-import os
-import uuid
-from functools import lru_cache
-from typing import Any, List, Optional, Tuple
-
 from datasource.identity import Identity
+from functools import lru_cache
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.preconditions import check_argument, check_state
 from hspylib.core.tools.commons import dirname, file_is_not_empty, safe_delete_file, touch_file
 from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.security.security import decode_file, encode_file
-
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_config import SettingsConfig
 from setman.settings.settings_entry import SettingsEntry
 from setman.settings.settings_service import SettingsService
+from typing import Any, List, Optional, Tuple
+
+import binascii
+import contextlib
+import csv
+import logging as log
+import os
+import uuid
 
 
 class Settings:
@@ -51,11 +50,7 @@ class Settings:
 
     def __str__(self):
         entries = f",{os.linesep}  ".join(list(map(lambda s: str(s), self.search())))
-        return (
-            f"Settings: [{os.linesep + '  ' if entries else ''}"
-            f"{entries}"
-            f"{os.linesep if entries else ''}]"
-        )
+        return f"Settings: [{os.linesep + '  ' if entries else ''}" f"{entries}" f"{os.linesep if entries else ''}]"
 
     def __repr__(self):
         return str(self)
@@ -139,10 +134,8 @@ class Settings:
         return None
 
     def upsert(
-        self,
-        name: str | None = None,
-        value: Any | None = None,
-        stype: SettingsType | None = None) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
+        self, name: str | None = None, value: Any | None = None, stype: SettingsType | None = None
+    ) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
         :param name: the settings name.
         :param value: the settings value.
@@ -197,7 +190,7 @@ class Settings:
         count, csv_file = 0, ensure_endswith(filepath, ".csv")
         check_argument(os.path.exists(filepath), "CSV file does not exist: " + csv_file)
         with open(csv_file, encoding="UTF8") as f_csv:
-            csv_reader = csv.reader(f_csv, delimiter=',')
+            csv_reader = csv.reader(f_csv, delimiter=",")
             for row in csv_reader:
                 if row == self.HEADERS:
                     continue
@@ -218,7 +211,7 @@ class Settings:
         check_argument(os.path.exists(dest_dir), "Destination dir does not exist: " + dest_dir)
         settings = self.search(name, stype)
         with open(csv_file, "w", encoding="UTF8") as f_csv:
-            writer = csv.writer(f_csv, delimiter=',')
+            writer = csv.writer(f_csv, delimiter=",")
             writer.writerow(self.HEADERS)
             writer.writerows(list(map(lambda s: s.values, settings)))
             return len(settings)

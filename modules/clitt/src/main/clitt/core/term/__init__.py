@@ -5,10 +5,5 @@
 # Package: main.clitt.core.term
 """Package initialization."""
 
-__all__ = [
-  'commons', 
-  'cursor', 
-  'screen', 
-  'terminal'
-]
-__version__ = '0.9.54'
+__all__ = ["commons", "cursor", "screen", "terminal"]
+__version__ = "0.9.54"

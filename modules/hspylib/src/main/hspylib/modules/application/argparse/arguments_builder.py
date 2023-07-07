@@ -30,14 +30,13 @@ class ArgumentsBuilder:
         help_string: str = None,
         choices: list = None,
         nargs: Union[str, int] = None,
-        action: ParserAction = ParserAction.STORE) -> "ArgumentsBuilder":
+        action: ParserAction = ParserAction.STORE,
+    ) -> "ArgumentsBuilder":
         """Assign a new argument to the parser."""
 
         add_argument = partial(
-            self._arg_parser.add_argument,
-            dest=name,
-            help=help_string or f"the {name}",
-            action=action.value)
+            self._arg_parser.add_argument, dest=name, help=help_string or f"the {name}", action=action.value
+        )
 
         if action == ParserAction.STORE:
             add_argument(choices=choices, nargs=nargs)

@@ -6,14 +6,14 @@
 """Package initialization."""
 
 __all__ = [
-  'access_type', 
-  'field_builder', 
-  'form_builder', 
-  'form_field', 
-  'input_type', 
-  'input_validator', 
-  'menu_input', 
-  'minput', 
-  'minput_utils'
+    "access_type",
+    "field_builder",
+    "form_builder",
+    "form_field",
+    "input_type",
+    "input_validator",
+    "menu_input",
+    "minput",
+    "minput_utils",
 ]
-__version__ = '0.9.54'
+__version__ = "0.9.54"

@@ -5,7 +5,5 @@
 # Package: test
 """Package initialization."""
 
-__all__ = [
-  'test_main'
-]
-__version__ = '0.9.98'
+__all__ = ["test_main"]
+__version__ = "0.9.98"

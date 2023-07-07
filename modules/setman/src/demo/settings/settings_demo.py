@@ -13,11 +13,9 @@
    Copyright 2023, HsPyLib team
 """
 from hspylib.core.tools.commons import sysout
-
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings import Settings
 from setman.settings.settings_config import SettingsConfig
-
 
 if __name__ == "__main__":
     configs = SettingsConfig("resources", "settings-demo.properties")

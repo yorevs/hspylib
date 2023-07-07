@@ -15,6 +15,7 @@
 from clitt.addons.widman.widget import Widget
 from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
 from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.terminal import Terminal
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.zoned_datetime import now
@@ -28,8 +29,6 @@ import argparse
 import os
 import re
 import sys
-
-from clitt.core.terminal import Terminal
 
 
 class WidgetPunch(Widget):

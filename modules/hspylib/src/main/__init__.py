@@ -5,7 +5,5 @@
 # Package: main
 """Package initialization."""
 
-__all__ = [
-  'hspylib'
-]
-__version__ = '0.11.191'
+__all__ = ["hspylib"]
+__version__ = "0.11.191"

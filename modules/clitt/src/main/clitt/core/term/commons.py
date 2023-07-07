@@ -1,14 +1,14 @@
+from hspylib.core.exception.exceptions import NotATerminalError
+from hspylib.core.tools.commons import is_debugging
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+from shutil import get_terminal_size
+from typing import Callable, Tuple, TypeVar, Union
+
 import logging as log
 import re
 import sys
 import termios
 import tty
-from shutil import get_terminal_size
-from typing import TypeVar, Tuple, Callable, Union
-
-from hspylib.core.exception.exceptions import NotATerminalError
-from hspylib.core.tools.commons import is_debugging
-from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 DIMENSION = TypeVar("DIMENSION", bound=Tuple[int, int])
 

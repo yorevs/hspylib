@@ -5,9 +5,5 @@
 # Package: main.clitt.core
 """Package initialization."""
 
-__all__ = [
-  'icons', 
-  'term', 
-  'tui'
-]
-__version__ = '0.9.54'
+__all__ = ["icons", "term", "tui"]
+__version__ = "0.9.54"

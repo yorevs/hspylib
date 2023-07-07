@@ -12,16 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
-import argparse
-import atexit
-import logging as log
-import os
-import sys
-import traceback
 from abc import abstractmethod
-from textwrap import dedent
-from typing import Any, Optional
-
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import AbstractSingleton
@@ -36,6 +27,15 @@ from hspylib.modules.application.argparse.options_builder import OptionsBuilder
 from hspylib.modules.application.exit_hooks import ExitHooks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
+from textwrap import dedent
+from typing import Any, Optional
+
+import argparse
+import atexit
+import logging as log
+import os
+import sys
+import traceback
 
 
 class Application(metaclass=AbstractSingleton):
@@ -45,11 +45,7 @@ class Application(metaclass=AbstractSingleton):
 
     @staticmethod
     def _help_formatter(prog) -> argparse.HelpFormatter:
-        return argparse.RawDescriptionHelpFormatter(
-            prog,
-            indent_increment=2,
-            max_help_position=27
-        )
+        return argparse.RawDescriptionHelpFormatter(prog, indent_increment=2, max_help_position=27)
 
     @staticmethod
     def exit(signum: int = 0, frame: Any = None, clear_screen: bool = False) -> None:
@@ -164,9 +160,7 @@ class Application(metaclass=AbstractSingleton):
 
     def get_arg(self, name: str) -> Optional[Any]:
         """Get the argument value specified by name."""
-        return getattr(self._args, name) \
-            if self._args and hasattr(self._args, name) \
-            else None
+        return getattr(self._args, name) if self._args and hasattr(self._args, name) else None
 
     def _with_options(self) -> "OptionsBuilder":
         """Add options to the application."""

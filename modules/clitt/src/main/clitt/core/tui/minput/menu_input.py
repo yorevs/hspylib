@@ -12,15 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-from functools import reduce
-from time import sleep
-from typing import List
-
-import pyperclip
-from hspylib.core.exception.exceptions import InvalidStateError
-from hspylib.core.namespace import Namespace
-from hspylib.modules.cli.keyboard import Keyboard
-
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import get_cursor_position
@@ -31,6 +22,14 @@ from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.minput_utils import *
 from clitt.core.tui.tui_component import TUIComponent
+from functools import reduce
+from hspylib.core.exception.exceptions import InvalidStateError
+from hspylib.core.namespace import Namespace
+from hspylib.modules.cli.keyboard import Keyboard
+from time import sleep
+from typing import List
+
+import pyperclip
 
 
 class MenuInput(TUIComponent):
@@ -268,9 +267,7 @@ class MenuInput(TUIComponent):
         :param field_index: the current form field index.
         :param field_size: the form field length.
         """
-        if f_pos := get_cursor_position() \
-            if self.positions[field_index] == (0, 0) \
-            else self.positions[field_index]:
+        if f_pos := get_cursor_position() if self.positions[field_index] == (0, 0) else self.positions[field_index]:
             self.positions[field_index] = f_pos
             if self.tab_index == field_index:
                 self.cur_row, self.cur_col = f_pos[0], f_pos[1] + field_size

@@ -12,14 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from typing import List, Optional
-
 from datasource.crud_service import CrudService
-
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_config import SettingsConfig
 from setman.settings.settings_entry import SettingsEntry
 from setman.settings.settings_repository import SettingsRepository
+from typing import List, Optional
 
 
 class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
@@ -34,12 +32,7 @@ class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
         """
         return self.repository.find_by_name(name)
 
-    def search(
-        self,
-        name: str,
-        stype: SettingsType = None,
-        limit: int = 500,
-        offset: int = 0) -> List[SettingsEntry]:
+    def search(self, name: str, stype: SettingsType = None, limit: int = 500, offset: int = 0) -> List[SettingsEntry]:
         """Search settings matching the specified name.
         :param name: the settings name to filter.
         :param stype: the settings type to filter.

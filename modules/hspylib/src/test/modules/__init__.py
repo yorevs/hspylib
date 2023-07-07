@@ -5,11 +5,5 @@
 # Package: test.modules
 """Package initialization."""
 
-__all__ = [
-  'application', 
-  'cache', 
-  'eventbus', 
-  'fetch', 
-  'security'
-]
-__version__ = '0.11.191'
+__all__ = ["application", "cache", "eventbus", "fetch", "security"]
+__version__ = "0.11.191"
