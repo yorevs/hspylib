@@ -164,15 +164,15 @@ class MenuInput(TUIComponent):
             case InputType.SELECT:
                 if keypress == Keyboard.VK_SPACE:
                     if self.cur_field.value:
-                        self.cur_field.value = mu.toggle_selected(xstr(self.cur_field))
+                        self.cur_field.value = mu.toggle_selected(xstr(self.cur_field.value))
             case InputType.MASKED:
-                value, mask = mu.unpack_masked(xstr(self.cur_field))
+                value, mask = mu.unpack_masked(xstr(self.cur_field.value))
                 try:
                     self.cur_field.value = mu.append_masked(value, mask, keypress.value)
                 except InvalidInputError as err:
                     self._display_error(str(err))
             case _:
-                if len(xstr(self.cur_field)) < self.cur_field.max_length:
+                if len(xstr(self.cur_field.value)) < self.cur_field.max_length:
                     if self.cur_field.validate_input(keypress.value):
                         self.cur_field.value = (str(self.cur_field.value) if self.cur_field.value else "") + str(
                             keypress.value
@@ -214,7 +214,7 @@ class MenuInput(TUIComponent):
         """
         match field.itype:
             case InputType.TEXT:
-                mu.mi_print(self.screen, xstr(field), field_len=self.max_value_length)
+                mu.mi_print(self.screen, xstr(field.value), field_len=self.max_value_length)
             case InputType.PASSWORD:
                 mu.mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
             case InputType.CHECKBOX:
@@ -247,7 +247,7 @@ class MenuInput(TUIComponent):
             count = len(re.split(VALUE_SEPARATORS, field.value))
             self.writeln(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
-            value, mask = mu.unpack_masked(xstr(field))
+            value, mask = mu.unpack_masked(xstr(field.value))
             self.writeln(
                 fmt.format(
                     field.icon,

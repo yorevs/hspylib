@@ -13,138 +13,88 @@
    Copyright 2023, HsPyLib team
 """
 
-from clitt.core.icons.font_awesome.form_icons import FormIcons
-from clitt.core.icons.font_awesome.nav_icons import Awesome, NavIcons
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.dict_tools import get_or_default_by_key
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
-import os
+from clitt.core.icons.font_awesome.form_icons import FormIcons
+from clitt.core.icons.font_awesome.nav_icons import Awesome, NavIcons
+from clitt.core.preferences import Preferences
 
 
-class TUIPreferences(metaclass=Singleton):
-    """TODO"""
+class TUIPreferences(Preferences):
+    """Terminal UI Preferences class."""
 
     INSTANCE = None
 
-    def __init__(self, **kwargs):
-        # fmt: off
-        self._max_rows: int       = \
-            get_or_default_by_key(kwargs, 'max_rows', 10)
-        self._items_per_line: int       = \
-            get_or_default_by_key(kwargs, 'items_per_line', 6)
-        self._title_line_length: int    = \
-            get_or_default_by_key(kwargs, 'title_line_length', 30)
-        self._title_color: VtColor      = \
-            get_or_default_by_key(kwargs, 'title_color', VtColor.ORANGE)
-        self._text_color: VtColor       = \
-            get_or_default_by_key(kwargs, 'text_color', VtColor.WHITE)
-        self._success_color: VtColor       = \
-            get_or_default_by_key(kwargs, 'success_color', VtColor.GREEN)
-        self._warning_color: VtColor       = \
-            get_or_default_by_key(kwargs, 'warning_color', VtColor.YELLOW)
-        self._error_color: VtColor       = \
-            get_or_default_by_key(kwargs, 'error_color', VtColor.RED)
-        self._highlight_color: VtColor  = \
-            get_or_default_by_key(kwargs, 'highlight_color', VtColor.CYAN)
-        self._navbar_color: VtColor     = \
-            get_or_default_by_key(kwargs, 'navbar_color', VtColor.YELLOW)
-        self._tooltip_color: VtColor    = \
-            get_or_default_by_key(kwargs, 'tooltip_color', VtColor.GREEN)
-        self._breadcrumb_color: VtColor = \
-            get_or_default_by_key(kwargs, 'breadcrumb_color', VtColor.compose(VtColor.BG_BLUE, VtColor.WHITE))
-        self._sel_bg_color: VtColor     = \
-            get_or_default_by_key(kwargs, 'sel_bg_color', VtColor.BG_BLUE)
-        self._selected: Awesome         = \
-            get_or_default_by_key(kwargs, 'selected', NavIcons.POINTER)
-        self._unselected: Awesome       = \
-            get_or_default_by_key(kwargs, 'unselected', Awesome.no_icon())
-        self._marked: Awesome           = \
-            get_or_default_by_key(kwargs, 'marked', FormIcons.MARKED)
-        self._unmarked: Awesome         = \
-            get_or_default_by_key(kwargs, 'unmarked', FormIcons.UNMARKED)
-        # fmt: on
-
-    def __str__(self):
-        # fmt: off
-        return (
-            f"Terminal UI Preferences{os.linesep}"
-            f"{'-=' * 20}{os.linesep}"
-            + os.linesep.join([f"|-{p[1:]:<16}: {getattr(self, p)}" for p in vars(self)])
-            + f"{os.linesep}{'-=' * 20}{os.linesep}"
-        )
-        # fmt: on
-
-    def __repr__(self):
-        return str(self)
+    def __init__(self):
+        super().__init__("hhs.clitt")
 
     @property
     def max_rows(self) -> int:
-        return max(10, self._max_rows)
+        return max(5, self.get_preference("max.rows", 10))
 
     @property
     def items_per_line(self) -> int:
-        return max(3, self._items_per_line)
+        return max(3, self.get_preference("items.per.line", 6))
 
     @property
     def title_line_length(self) -> int:
-        return self._title_line_length
+        return max(3, 15, self.get_preference("title.line.len", 30))
 
     @property
     def title_color(self) -> VtColor:
-        return self._title_color
+        return self.get_preference("title.color", VtColor.ORANGE)
 
     @property
     def text_color(self) -> VtColor:
-        return self._text_color
+        return self.get_preference("text.color", VtColor.WHITE)
 
     @property
     def success_color(self) -> VtColor:
-        return self._success_color
+        return self.get_preference("success.color", VtColor.GREEN)
 
     @property
     def warning_color(self) -> VtColor:
-        return self._warning_color
+        return self.get_preference("warning.color", VtColor.YELLOW)
 
     @property
     def error_color(self) -> VtColor:
-        return self._error_color
+        return self.get_preference("error.color", VtColor.RED)
 
     @property
     def highlight_color(self) -> VtColor:
-        return self._highlight_color
+        return self.get_preference("highlight.color", VtColor.CYAN)
 
     @property
     def navbar_color(self) -> VtColor:
-        return self._navbar_color
+        return self.get_preference("navbar.color", VtColor.YELLOW)
 
     @property
     def tooltip_color(self) -> VtColor:
-        return self._tooltip_color
+        return self.get_preference("tooltip.color", VtColor.GREEN)
 
     @property
     def breadcrumb_color(self) -> VtColor:
-        return self._breadcrumb_color
+        return self.get_preference("breadcrumb.color", VtColor.compose(VtColor.BG_BLUE, VtColor.WHITE))
 
     @property
     def sel_bg_color(self) -> VtColor:
-        return self._sel_bg_color
+        return self.get_preference("sel.bg.color", VtColor.BLUE)
 
     @property
-    def selected(self) -> Awesome:
-        return self._selected
+    def selected_icon(self) -> Awesome:
+        return self.get_preference("selected.icon", NavIcons.POINTER)
 
     @property
-    def unselected(self) -> Awesome:
-        return self._unselected
+    def unselected_icon(self) -> Awesome:
+        return self.get_preference("unselected.icon", Awesome.no_icon())
 
     @property
-    def marked(self) -> Awesome:
-        return self._marked
+    def checked_icon(self) -> Awesome:
+        return self.get_preference("checked.icon", FormIcons.MARKED)
 
     @property
-    def unmarked(self) -> Awesome:
-        return self._unmarked
+    def unchecked_icon(self) -> Awesome:
+        return self.get_preference("unchecked.icon", FormIcons.UNMARKED)
 
 
 assert TUIPreferences().INSTANCE is not None, "Failed to create TUIPreferences instance"

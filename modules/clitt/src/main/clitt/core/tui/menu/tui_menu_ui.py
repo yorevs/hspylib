@@ -82,9 +82,6 @@ class TUIMenuUi(metaclass=Singleton):
             else:
                 self._done = True
 
-        self.SCREEN.cursor.end()
-        self.SCREEN.cursor.write("%MOD(0)%")
-
     def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = False, clear_screen: bool = True) -> None:
         """Prepare the screen for renderization."""
         Terminal.set_auto_wrap(auto_wrap)

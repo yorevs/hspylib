@@ -13,12 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import sysout
-from typing import Union
-
 import re
 import struct
+from typing import Union
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.commons import sysout
 
 
 class Awesome(Enumeration):
@@ -28,10 +28,23 @@ class Awesome(Enumeration):
       - https://fontawesome.com/cheatsheet?from=io
     """
 
-    @staticmethod
-    def no_icon() -> str:
+    @classmethod
+    def no_icon(cls) -> "Awesome":
         """No awesome icon specified."""
-        return " "
+        def _str(self) -> str:
+            return ' '
+
+        def _len(self) -> int:
+            return 1
+
+        def _fmt(self, fmt) -> str:
+            return ' '
+
+        no_icon_cls = type('NoIcon', (object,), {'name': 'NO_ICON', 'value': ''})
+        setattr(no_icon_cls, '__str__', _str)
+        setattr(no_icon_cls, '__len__', _len)
+        setattr(no_icon_cls, '__format__', _fmt)
+        return no_icon_cls()
 
     @staticmethod
     def print_unicode(uni_code: Union[str, int], end: str = "") -> None:
