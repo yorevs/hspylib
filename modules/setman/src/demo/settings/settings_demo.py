@@ -22,8 +22,8 @@ if __name__ == "__main__":
     settings = Settings(configs)
     with settings.open() as s:
         s.clear()
-        s.upsert("demo.settings.one", True, SettingsType.PROPERTY)
-        s.upsert("demo.settings.two", False, SettingsType.ENVIRONMENT)
+        s.put("demo.settings.one", True, SettingsType.PROPERTY)
+        s.put("demo.settings.two", False, SettingsType.ENVIRONMENT)
         s["demo.settings.three"] = "VALUE", SettingsType.PROPERTY
         sysout(s["demo.settings.one"].to_string())
         s.import_csv("resources/settings.db")

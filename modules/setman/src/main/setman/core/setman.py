@@ -73,11 +73,13 @@ class Setman(metaclass=Singleton):
         value: Any | None,
         stype: SettingsType = None,
         simple_fmt: bool = False,
+        preserve: bool = False,
         filepath: str = None,
     ) -> None:
         """Execute the specified operation."""
         log.debug("%s Name: %s Value: %s SettingsType: %s", operation, name or "*", "-", stype or "*")
         atexit.register(self.settings.close)
+        self._settings.preserve = preserve
         with self.settings.open():
             match operation:
                 case SetmanOps.LIST:
@@ -99,14 +101,17 @@ class Setman(metaclass=Singleton):
                 case _:
                     raise InvalidArgumentError(f"Operation not supported: {operation}")
 
-    def _set_setting(self, name: str | None, value: Any | None, stype: SettingsType | None) -> None:
+    def _set_setting(
+        self, name: str | None, value: Any | None, stype: SettingsType | None
+     ) -> None:
         """Upsert the specified setting.
         :param name: the settings name.
         :param value: the settings value.
         :param stype: the settings type.
         """
-        found, entry = self.settings.upsert(name, value, stype)
-        sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry, "%EOL%")
+        found, entry = self.settings.put(name, value, stype)
+        if entry:
+            sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry, "%EOL%")
 
     def _get_setting(self, name: str, simple_fmt: bool = False) -> None:
         """Get setting matching the specified name.

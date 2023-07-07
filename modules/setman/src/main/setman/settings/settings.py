@@ -39,9 +39,10 @@ class Settings:
 
     HEADERS = ["uuid", "name", "value", "settings type", "modified"]
 
-    def __init__(self, configs: SettingsConfig) -> None:
+    def __init__(self, configs: SettingsConfig, preserve: bool = False) -> None:
         self._is_open = False
         self._configs = configs
+        self._preserve = preserve
         self._service = SettingsService(self.configs)
         if not file_is_not_empty(self.configs.database):
             self._create_db()
@@ -59,7 +60,7 @@ class Settings:
         return self.get(name)
 
     def __setitem__(self, name: str, item: Tuple[Any, SettingsType]) -> None:
-        self.upsert(name, item[0], item[1])
+        self.put(name, item[0], item[1])
 
     @property
     def configs(self) -> SettingsConfig:
@@ -76,6 +77,14 @@ class Settings:
     @offset.setter
     def offset(self, new_offset: int) -> None:
         self._offset = new_offset
+
+    @property
+    def preserve(self) -> bool:
+        return self._preserve
+
+    @preserve.setter
+    def preserve(self, new_preserve: bool) -> None:
+        self._preserve = new_preserve
 
     @property
     def is_open(self) -> bool:
@@ -133,7 +142,7 @@ class Settings:
             return self._service.get_by_name(name)
         return None
 
-    def upsert(
+    def put(
         self, name: str | None = None, value: Any | None = None, stype: SettingsType | None = None
     ) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
@@ -142,14 +151,20 @@ class Settings:
         :param stype: the settings type.
         """
         check_state(self.is_open, "Settings database is not open")
-        found = self._service.get_by_name(name)
-        entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
-        if not name or not value or not stype:
-            entry = SettingsEntry.prompt(entry)
-        if entry:
-            entry.modified = now()
-            self._service.save(entry)
-            self._clear_caches()
+        if (found := self._service.get_by_name(name)) and self._preserve:
+            return None, None
+        entry = (
+            found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
+        )
+        if any(a is None for a in [name, value, stype]):
+            if not (entry := SettingsEntry.prompt(entry)):
+                return None, None
+        entry.stype = stype.val
+        entry.value = value
+        entry.modified = now()
+        self._service.save(entry)
+        self._clear_caches()
+
         return found, entry
 
     def remove(self, name: str) -> Optional[SettingsEntry]:
@@ -195,6 +210,9 @@ class Settings:
                 if row == self.HEADERS:
                     continue
                 uid, name, value, stype = str(row[0]), str(row[1]), str(row[2]), SettingsType.of_value(row[3])
+                found = self._service.get_by_name(name)
+                if found and self._preserve:
+                    continue
                 entry = SettingsEntry(Identity(SettingsEntry.SetmanId(uid)), name, value, stype)
                 self._service.save(entry)
                 count += 1
