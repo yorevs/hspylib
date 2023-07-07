@@ -64,7 +64,6 @@ class TUIComponent(ABC):
 
     def _prepare_render(self, auto_wrap: bool = False, show_cursor: bool = False) -> None:
         """Prepare the screen for renderization."""
-
         self.screen.add_watcher(self.invalidate)
         Terminal.set_auto_wrap(auto_wrap)
         Terminal.set_show_cursor(show_cursor)
@@ -111,12 +110,12 @@ class TUIComponent(ABC):
         """
         prefs = TUIPreferences.INSTANCE
         if is_selected:
-            selector = prefs.selected
+            selector = prefs.selected_icon
             if has_bg_color:
                 self.write(prefs.sel_bg_color.code)
             self.write(prefs.highlight_color.code)
         else:
-            selector = prefs.unselected
+            selector = prefs.unselected_icon
             self.write(prefs.text_color.code)
 
         return selector

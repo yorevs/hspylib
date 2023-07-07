@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+from clitt.core.term.commons import get_cursor_position
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.screen import Screen
 from clitt.core.term.terminal import Terminal
@@ -70,4 +71,4 @@ if __name__ == "__main__":
     screen.cursor.write("#")
     sleep(0.5)
     screen.cursor.end()
-    print(Terminal.get_cursor_position(), screen.cursor)
+    print(get_cursor_position(), screen.cursor)

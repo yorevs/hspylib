@@ -70,7 +70,7 @@ class MenuChoose(TUIComponent):
             self.cursor.erase(Screen.Portion.LINE)
             # Print the selector if the index is currently selected
             selector = self.draw_selector(idx == self.sel_index)
-            mark = self.prefs.marked if self.sel_options[idx] == 1 else self.prefs.unmarked
+            mark = self.prefs.checked_icon if self.sel_options[idx] == 1 else self.prefs.unchecked_icon
             # fmt: off
             line_fmt = (
                 "  {:>" + f"{len(str(length))}" + "}  "
