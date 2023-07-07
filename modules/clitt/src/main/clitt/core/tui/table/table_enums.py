@@ -14,9 +14,8 @@
 """
 from enum import auto
 from hspylib.core.enums.enumeration import Enumeration
-from typing import Callable
-
 from hspylib.core.tools import text_tools
+from typing import Callable
 
 
 class TextAlignment(Enumeration):

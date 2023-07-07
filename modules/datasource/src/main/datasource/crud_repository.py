@@ -21,10 +21,10 @@ from typing import Generic, List, Optional, Set, TypeVar
 
 import json
 
-T = TypeVar("T", bound=CrudEntity)
+E = TypeVar("E", bound=CrudEntity)
 
 
-class CrudRepository(Generic[T], metaclass=AbstractSingleton):
+class CrudRepository(Generic[E], metaclass=AbstractSingleton):
     """Interface for generic CRUD operations on a repository for a specific type."""
 
     @property
@@ -36,7 +36,7 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
         """Returns the number of entities available."""
 
     @abstractmethod
-    def delete(self, entity: T) -> None:
+    def delete(self, entity: E) -> None:
         """Deletes a given entity.
         :param entity: the entity to delete.
         """
@@ -48,19 +48,19 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
         """
 
     @abstractmethod
-    def delete_all(self, entities: List[T]) -> None:
+    def delete_all(self, entities: List[E]) -> None:
         """Deletes all given entities.
         :param entities: the entities to be deleted.
         """
 
     @abstractmethod
-    def save(self, entity: T) -> None:
+    def save(self, entity: E) -> None:
         """Saves a given entity.
         :param entity: the entity to save.
         """
 
     @abstractmethod
-    def save_all(self, entities: List[T]) -> None:
+    def save_all(self, entities: List[E]) -> None:
         """Saves all given entities.
         :param entities: the entities to be saved.
         """
@@ -73,7 +73,7 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
         order_bys: Set[str] | None = None,
         limit: int = 500,
         offset: int = 0,
-    ) -> List[T]:
+    ) -> List[E]:
         """Returns all entities of the type.
         :param columns: the column names to select.
         :param filters: entry filters.
@@ -83,7 +83,7 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
         """
 
     @abstractmethod
-    def find_by_id(self, entity_id: Identity, columns: Set[str] | None = None) -> Optional[T]:
+    def find_by_id(self, entity_id: Identity, columns: Set[str] | None = None) -> Optional[E]:
         """Retrieves an entity by its id.
         :param entity_id: the entity ID.
         :param columns: the column names to select.
@@ -95,12 +95,12 @@ class CrudRepository(Generic[T], metaclass=AbstractSingleton):
         """
 
     @abstractmethod
-    def to_entity_type(self, entity_dict: dict | tuple) -> T:
+    def to_entity_type(self, entity_dict: dict | tuple) -> E:
         """Convert a dict or tuple, generally from a result set, into the CRUD entity.
         :param entity_dict: the entity dict or tuple to be converted.
         """
 
-    def to_entity_list(self, json_string: str, filters: Namespace | None = None) -> List[T]:
+    def to_entity_list(self, json_string: str, filters: Namespace | None = None) -> List[E]:
         """Return filtered entries from the json_string as a list.
         :param json_string: the json string to be parsed.
         :param filters: entry filters.

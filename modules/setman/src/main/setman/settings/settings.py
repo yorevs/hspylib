@@ -49,7 +49,7 @@ class Settings:
         self._offset = 0
 
     def __str__(self):
-        entries = f",{os.linesep}  ".join(list(map(lambda s: str(s), self.search())))
+        entries = f",{os.linesep}  ".join(list(map(str, self.search())))
         return f"Settings: [{os.linesep + '  ' if entries else ''}" f"{entries}" f"{os.linesep if entries else ''}]"
 
     def __repr__(self):
@@ -84,7 +84,7 @@ class Settings:
     @is_open.setter
     def is_open(self, new_is_open: bool) -> None:
         self._is_open = new_is_open
-        log.debug(f"Settings database open: {self.configs.database}")
+        log.debug("Settings database open: %s", self.configs.database)
 
     @contextlib.contextmanager
     def open(self) -> None:
@@ -112,7 +112,7 @@ class Settings:
                 if self.configs.is_db_encoded:
                     self._encode_db_file()
                 self._is_open = False
-                log.debug(f"Settings database closed: {self.configs.database}")
+                log.debug("Settings database closed: %s", self.configs.database)
         except (UnicodeDecodeError, binascii.Error) as err:
             err_msg = f"Failed to close settings file => {self.configs.database}"
             raise ApplicationError(err_msg, err) from err
@@ -130,7 +130,7 @@ class Settings:
         """
         check_state(self.is_open, "Settings database is not open")
         if name:
-            return self._service.get(name)
+            return self._service.get_by_name(name)
         return None
 
     def upsert(
@@ -142,7 +142,7 @@ class Settings:
         :param stype: the settings type.
         """
         check_state(self.is_open, "Settings database is not open")
-        found = self._service.get(name)
+        found = self._service.get_by_name(name)
         entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
         if not name or not value or not stype:
             entry = SettingsEntry.prompt(entry)
@@ -158,7 +158,7 @@ class Settings:
         """
         check_state(self.is_open, "Settings database is not open")
         if name:
-            found = self._service.get(name)
+            found = self._service.get_by_name(name)
             if found:
                 self._service.remove(found)
                 self._clear_caches()

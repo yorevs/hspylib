@@ -104,5 +104,4 @@ class SettingsEntry(CrudEntity):
                 if self.stype == SettingsType.ENVIRONMENT.val
                 else self._SIMPLE_FORMAT.format(self.name, self.value)
             )
-        else:
-            return self._DISPLAY_FORMAT.format(self.name, self.stype, self.value, self.modified)
+        return self._DISPLAY_FORMAT.format(self.name, self.stype, self.value, self.modified)

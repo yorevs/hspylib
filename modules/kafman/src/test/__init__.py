@@ -1,9 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.109
+# hspylib-kafman v0.9.110
 #
 # Package: test
 """Package initialization."""
 
-__all__ = ["test_main"]
-__version__ = "0.9.109"
+__all__ = [
+  'test_main'
+]
+__version__ = '0.9.110'

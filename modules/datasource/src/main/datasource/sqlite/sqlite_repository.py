@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+from abc import abstractmethod
 from datasource.crud_entity import CrudEntity
 from datasource.db_configuration import DBConfiguration
 from datasource.db_repository import Connection, Cursor, DBRepository, ResultSet, Session
@@ -28,13 +29,11 @@ import logging as log
 import sqlite3
 
 E = TypeVar("E", bound=CrudEntity)
+C = TypeVar("C", bound=DBConfiguration)
 
 
-class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=AbstractSingleton):
+class SQLiteRepository(Generic[E, C], DBRepository[E, C], metaclass=AbstractSingleton):
     """Implementation of a data access layer for a SQLite persistence store."""
-
-    def __init__(self, config: DBConfiguration):
-        super().__init__(config)
 
     @property
     def database(self) -> str:
@@ -70,9 +69,11 @@ class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=A
             try:
                 args = dict(kwargs)
                 log.debug(
-                    f"{self.logname} Executing SQL statement {sql_statement} [ssid={hash(dbs)}]:\n"
-                    f"\t|-Arguments: {args}\n"
-                    f"\t|-Statement: {sql_statement}"
+                    "%s Executing SQL statement [ssid=%s]:\n" "\t|-Arguments: %s\n" "\t|-Statement: %s",
+                    self.logname,
+                    hash(dbs),
+                    args,
+                    sql_statement,
                 )
                 rows = dbs.execute(sql_statement, tuple(args.values())).fetchall()
                 return dbs.rowcount, rows
@@ -150,3 +151,11 @@ class SQLiteRepository(Generic[E], DBRepository[E, DBConfiguration], metaclass=A
         sql = f"SELECT EXISTS(SELECT 1 FROM {self.table_name()} WHERE {' AND '.join(clauses)})"
 
         return self.execute(sql)[1][0][0] > 0
+
+    @abstractmethod
+    def table_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def to_entity_type(self, entity_dict: dict | tuple) -> E:
+        pass

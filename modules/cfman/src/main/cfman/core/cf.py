@@ -18,8 +18,6 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.modules.application.exit_status import ExitStatus
 from typing import List, Optional
 
-import os
-
 CFTarget = namedtuple("CFTarget", ["user", "org", "space", "connected"])
 
 
@@ -91,7 +89,7 @@ class CloudFoundry(metaclass=Singleton):
         :param kwargs arbitrary CF command keyword arguments.
         """
         target_params = ["target"]
-        if not kwargs and (parts := self._exec("target").split(os.linesep)):
+        if not kwargs and (parts := self._exec("target").splitlines()):
             if len(parts) >= 4:
                 user = self._get_part(parts, 2)
                 org = self._get_part(parts, 3)

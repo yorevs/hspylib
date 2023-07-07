@@ -12,16 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
-from typing import List, Optional
-
+from clitt.core.tui.minput.form_field import FormField
+from clitt.core.tui.minput.menu_input import MenuInput
 from hspylib.core.enums.charset import Charset
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote, snakecase
+from typing import List, Optional
 
-from clitt.core.tui.minput.form_field import FormField
-from clitt.core.tui.minput.menu_input import MenuInput
+import os
 
 
 def minput(

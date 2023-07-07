@@ -12,8 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-from operator import add
-
 from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.form_field import FIELD_VALIDATOR_FNC, FormField
 from clitt.core.tui.minput.input_type import InputType
@@ -23,6 +21,7 @@ from functools import reduce
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import str_to_bool
 from hspylib.core.tools.text_tools import snakecase
+from operator import add
 from typing import Any
 
 import re
@@ -36,7 +35,7 @@ class FieldBuilder:
         match field.itype:
             case InputType.MASKED:
                 value, mask = unpack_masked(field.value)
-                valid = reduce(add, list(map(mask[len(value):].count, MASK_SYMBOLS))) == 0
+                valid = reduce(add, list(map(mask[len(value) :].count, MASK_SYMBOLS))) == 0
             case InputType.CHECKBOX:
                 valid = isinstance(field.value, bool)
             case InputType.SELECT:

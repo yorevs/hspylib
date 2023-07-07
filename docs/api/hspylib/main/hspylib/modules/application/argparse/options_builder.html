@@ -121,14 +121,15 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>            <span class="n">help</span><span class="o">=</span><span class="n">help_string</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;the </span><span class="si">{</span><span class="n">longopt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>            <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">ParserAction</span><span class="o">.</span><span class="n">STORE</span><span class="p">:</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>            <span class="n">add_argument</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>            <span class="n">add_argument</span><span class="p">()</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>            <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">,</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="p">)</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">ParserAction</span><span class="o">.</span><span class="n">STORE</span><span class="p">:</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>            <span class="n">add_argument</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="n">add_argument</span><span class="p">()</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span></pre></div>
 
 
@@ -172,14 +173,15 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
 </span><span id="OptionsBuilder-47"><a href="#OptionsBuilder-47"><span class="linenos">47</span></a>            <span class="n">help</span><span class="o">=</span><span class="n">help_string</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;the </span><span class="si">{</span><span class="n">longopt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
 </span><span id="OptionsBuilder-48"><a href="#OptionsBuilder-48"><span class="linenos">48</span></a>            <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span>
 </span><span id="OptionsBuilder-49"><a href="#OptionsBuilder-49"><span class="linenos">49</span></a>            <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="OptionsBuilder-50"><a href="#OptionsBuilder-50"><span class="linenos">50</span></a>            <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
-</span><span id="OptionsBuilder-51"><a href="#OptionsBuilder-51"><span class="linenos">51</span></a>
-</span><span id="OptionsBuilder-52"><a href="#OptionsBuilder-52"><span class="linenos">52</span></a>        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">ParserAction</span><span class="o">.</span><span class="n">STORE</span><span class="p">:</span>
-</span><span id="OptionsBuilder-53"><a href="#OptionsBuilder-53"><span class="linenos">53</span></a>            <span class="n">add_argument</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">)</span>
-</span><span id="OptionsBuilder-54"><a href="#OptionsBuilder-54"><span class="linenos">54</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="OptionsBuilder-55"><a href="#OptionsBuilder-55"><span class="linenos">55</span></a>            <span class="n">add_argument</span><span class="p">()</span>
-</span><span id="OptionsBuilder-56"><a href="#OptionsBuilder-56"><span class="linenos">56</span></a>
-</span><span id="OptionsBuilder-57"><a href="#OptionsBuilder-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="OptionsBuilder-50"><a href="#OptionsBuilder-50"><span class="linenos">50</span></a>            <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">,</span>
+</span><span id="OptionsBuilder-51"><a href="#OptionsBuilder-51"><span class="linenos">51</span></a>        <span class="p">)</span>
+</span><span id="OptionsBuilder-52"><a href="#OptionsBuilder-52"><span class="linenos">52</span></a>
+</span><span id="OptionsBuilder-53"><a href="#OptionsBuilder-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">ParserAction</span><span class="o">.</span><span class="n">STORE</span><span class="p">:</span>
+</span><span id="OptionsBuilder-54"><a href="#OptionsBuilder-54"><span class="linenos">54</span></a>            <span class="n">add_argument</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">)</span>
+</span><span id="OptionsBuilder-55"><a href="#OptionsBuilder-55"><span class="linenos">55</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="OptionsBuilder-56"><a href="#OptionsBuilder-56"><span class="linenos">56</span></a>            <span class="n">add_argument</span><span class="p">()</span>
+</span><span id="OptionsBuilder-57"><a href="#OptionsBuilder-57"><span class="linenos">57</span></a>
+</span><span id="OptionsBuilder-58"><a href="#OptionsBuilder-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span></pre></div>
 
 
@@ -238,14 +240,15 @@ main<wbr>.<a href="./../../../../hspylib.html">hspylib</a><wbr>.<a href="./../..
 </span><span id="OptionsBuilder.option-47"><a href="#OptionsBuilder.option-47"><span class="linenos">47</span></a>            <span class="n">help</span><span class="o">=</span><span class="n">help_string</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;the </span><span class="si">{</span><span class="n">longopt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
 </span><span id="OptionsBuilder.option-48"><a href="#OptionsBuilder.option-48"><span class="linenos">48</span></a>            <span class="n">required</span><span class="o">=</span><span class="n">required</span><span class="p">,</span>
 </span><span id="OptionsBuilder.option-49"><a href="#OptionsBuilder.option-49"><span class="linenos">49</span></a>            <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="OptionsBuilder.option-50"><a href="#OptionsBuilder.option-50"><span class="linenos">50</span></a>            <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
-</span><span id="OptionsBuilder.option-51"><a href="#OptionsBuilder.option-51"><span class="linenos">51</span></a>
-</span><span id="OptionsBuilder.option-52"><a href="#OptionsBuilder.option-52"><span class="linenos">52</span></a>        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">ParserAction</span><span class="o">.</span><span class="n">STORE</span><span class="p">:</span>
-</span><span id="OptionsBuilder.option-53"><a href="#OptionsBuilder.option-53"><span class="linenos">53</span></a>            <span class="n">add_argument</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">)</span>
-</span><span id="OptionsBuilder.option-54"><a href="#OptionsBuilder.option-54"><span class="linenos">54</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="OptionsBuilder.option-55"><a href="#OptionsBuilder.option-55"><span class="linenos">55</span></a>            <span class="n">add_argument</span><span class="p">()</span>
-</span><span id="OptionsBuilder.option-56"><a href="#OptionsBuilder.option-56"><span class="linenos">56</span></a>
-</span><span id="OptionsBuilder.option-57"><a href="#OptionsBuilder.option-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="OptionsBuilder.option-50"><a href="#OptionsBuilder.option-50"><span class="linenos">50</span></a>            <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">,</span>
+</span><span id="OptionsBuilder.option-51"><a href="#OptionsBuilder.option-51"><span class="linenos">51</span></a>        <span class="p">)</span>
+</span><span id="OptionsBuilder.option-52"><a href="#OptionsBuilder.option-52"><span class="linenos">52</span></a>
+</span><span id="OptionsBuilder.option-53"><a href="#OptionsBuilder.option-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="n">ParserAction</span><span class="o">.</span><span class="n">STORE</span><span class="p">:</span>
+</span><span id="OptionsBuilder.option-54"><a href="#OptionsBuilder.option-54"><span class="linenos">54</span></a>            <span class="n">add_argument</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">choices</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">)</span>
+</span><span id="OptionsBuilder.option-55"><a href="#OptionsBuilder.option-55"><span class="linenos">55</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="OptionsBuilder.option-56"><a href="#OptionsBuilder.option-56"><span class="linenos">56</span></a>            <span class="n">add_argument</span><span class="p">()</span>
+</span><span id="OptionsBuilder.option-57"><a href="#OptionsBuilder.option-57"><span class="linenos">57</span></a>
+</span><span id="OptionsBuilder.option-58"><a href="#OptionsBuilder.option-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span></pre></div>
 
 

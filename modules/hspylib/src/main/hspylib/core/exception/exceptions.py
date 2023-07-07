@@ -76,7 +76,3 @@ class InvalidArgumentError(Exception):
 
 class InvalidStateError(Exception):
     """Raised when an invalid state is detected by the application"""
-
-
-class NotATerminalError(NotImplementedError):
-    """Raised when a TTY terminal is required"""

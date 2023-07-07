@@ -78,11 +78,7 @@ class InputValidator(Validator):
         self._pattern = pattern_type.value
 
     def __str__(self) -> str:
-        return (
-            f'r"{self.pattern}"'
-            if self.pattern_type == self.PatternType.CUSTOM
-            else self.pattern_type.name
-        )
+        return f'r"{self.pattern}"' if self.pattern_type == self.PatternType.CUSTOM else self.pattern_type.name
 
     def __repr__(self):
         return str(self)
