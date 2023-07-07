@@ -388,7 +388,7 @@ class CFManager:
         """Display all PCF space-application blue/green check."""
         if len(self.apps) > 0:
             self.screen.clear()
-            self.writeln(f"%BLUE%Checking blue/green deployments ...%EOL%")
+            self.writeln("%BLUE%Checking blue/green deployments ...%EOL%")
             CFBlueGreenChecker.check(self._org, self._space, self.apps)
 
     def _perform_callable(self, action: str) -> None:

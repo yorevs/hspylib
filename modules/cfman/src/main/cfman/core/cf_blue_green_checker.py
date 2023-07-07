@@ -12,11 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
-from cfman.core.cf_application import CFApplication
-from clitt.core.term.terminal import Terminal
-from typing import Dict, List
-
 import re
+from typing import Dict, List, Tuple
+
+from clitt.core.term.terminal import Terminal
+
+from cfman.core.cf_application import CFApplication
 
 
 class CFBlueGreenChecker:
@@ -97,22 +98,10 @@ class CFBlueGreenChecker:
             app_green = app["green"]
             app_blue = app["blue"]
             Terminal.echo(f"%CYAN%\\-{name}")
-            Terminal.echo(
-                "{} |-GREEN: {}".format(
-                    "%YELLOW%"
-                    if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
-                    else "%NC%",
-                    cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!",
-                )
-            )
-            Terminal.echo(
-                "{} |-BLUE : {}".format(
-                    "%YELLOW%"
-                    if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
-                    else "%NC%",
-                    cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!",
-                )
-            )
+            color, info = cls._match_green(app_green, app_blue)
+            Terminal.echo(f"{color} |-GREEN: {info}")
+            color, info = cls._match_blue(app_blue, app_green)
+            Terminal.echo(f"{color} |-BLUE : {info}")
             Terminal.echo("%NC%%EOL%" + "-" * 120)
 
     @classmethod
@@ -133,4 +122,22 @@ class CFBlueGreenChecker:
             f"{active_app.colored_state:<16}  "
             f"{active_app.instances + f' ({active_app.memory})':<25}  "
             f"ROUTES: ({app_routes}) {alerts_str:^2}"
+        )
+
+    @classmethod
+    def _match_green(cls, app_green: CFApplication, app_blue: CFApplication) -> Tuple[str, str]:
+        return (
+            "%YELLOW%"
+            if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
+            else "%NC%",
+            cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!"
+        )
+
+    @classmethod
+    def _match_blue(cls, app_blue: CFApplication, app_green: CFApplication) -> Tuple[str, str]:
+        return (
+            "%YELLOW%"
+            if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
+            else "%NC%",
+            cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!"
         )

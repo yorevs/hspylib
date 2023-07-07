@@ -12,6 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
+from operator import add
+
 from clitt.core.tui.minput.access_type import AccessType
 from clitt.core.tui.minput.form_field import FIELD_VALIDATOR_FNC, FormField
 from clitt.core.tui.minput.input_type import InputType
@@ -34,7 +36,7 @@ class FieldBuilder:
         match field.itype:
             case InputType.MASKED:
                 value, mask = unpack_masked(field.value)
-                valid = reduce(lambda n, m: n + m, list(map(lambda s: mask[len(value) :].count(s), MASK_SYMBOLS))) == 0
+                valid = reduce(add, list(map(mask[len(value):].count, MASK_SYMBOLS))) == 0
             case InputType.CHECKBOX:
                 valid = isinstance(field.value, bool)
             case InputType.SELECT:
@@ -96,7 +98,7 @@ class FieldBuilder:
             self._min_max_length = len(min(parts, key=len)), len(max(parts, key=len))
         elif self._itype == InputType.MASKED:
             _, mask = unpack_masked(str(self._value))
-            min_max = reduce(lambda n, m: n + m, list(map(lambda s: mask.count(s), MASK_SYMBOLS)))
+            min_max = reduce(add, list(map(mask.count, MASK_SYMBOLS)))
             self._min_max_length = min_max, min_max
         self._dest = self._dest or snakecase(self._label)
         self._parent.fields.append(

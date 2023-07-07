@@ -12,14 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.tui.minput.form_field import FormField
-from clitt.core.tui.minput.menu_input import MenuInput
+import os
+from typing import List, Optional
+
+from hspylib.core.enums.charset import Charset
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote, snakecase
-from typing import List, Optional
 
-import os
+from clitt.core.tui.minput.form_field import FormField
+from clitt.core.tui.minput.menu_input import MenuInput
 
 
 def minput(
@@ -36,7 +38,7 @@ def minput(
     result = MenuInput(title, form_fields).execute()
 
     if result and output:
-        with open(output, "w") as f_out:
+        with open(output, "w", encoding=Charset.UTF_8.val) as f_out:
             for name, value in zip(result.attributes, result.values):
                 f_out.write(f"{snakecase(name, screaming=True)}={quote(value)}" + os.linesep)
 

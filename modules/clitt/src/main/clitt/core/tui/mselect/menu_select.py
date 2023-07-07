@@ -48,7 +48,7 @@ class MenuSelect(TUIComponent):
 
         if (length := len(self._items)) == 0:
             return None
-        elif length == 1:  # When only one option is provided, select the element at index 0 and return
+        if length == 1:  # When only one option is provided, select the element at index 0 and return
             return self._items[0]
 
         self._prepare_render()

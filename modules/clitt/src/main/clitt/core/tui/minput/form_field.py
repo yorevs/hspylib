@@ -151,7 +151,7 @@ class FormField:
                 case InputType.CHECKBOX:
                     valid = isinstance(value, bool)
                 case _:
-                    valid = all([self.validate_input(val) for val in str(value)])
+                    valid = all(self.validate_input(val) for val in str(value))
 
         if not valid:
             raise InvalidInputError(f"Value {value} is invalid!")

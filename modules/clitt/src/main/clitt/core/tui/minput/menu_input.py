@@ -12,6 +12,9 @@
 
    Copyright 2023, HsPyLib team
 """
+import re
+from operator import add
+
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import get_cursor_position
@@ -20,14 +23,15 @@ from clitt.core.term.terminal import Terminal
 from clitt.core.tui.minput.form_builder import FormBuilder
 from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
-from clitt.core.tui.minput.minput_utils import *
+from clitt.core.tui.minput import minput_utils as mu
+from clitt.core.tui.minput.minput_utils import MASK_SYMBOLS, VALUE_SEPARATORS
 from clitt.core.tui.tui_component import TUIComponent
 from functools import reduce
-from hspylib.core.exception.exceptions import InvalidStateError
+from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
 from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.keyboard import Keyboard
 from time import sleep
-from typing import List
+from typing import List, Optional
 
 import pyperclip
 
@@ -56,7 +60,7 @@ class MenuInput(TUIComponent):
         self.cur_row = self.cur_col = self.tab_index = 0
         self.max_label_length = max(len(field.label) for field in fields)
         self.max_value_length = max(field.max_length for field in fields)
-        self.max_detail_length = max(detail_len(field) for field in fields)
+        self.max_detail_length = max(mu.detail_len(field) for field in fields)
 
     def execute(self) -> Optional[Namespace]:
         if len(self.fields) == 0:
@@ -81,12 +85,12 @@ class MenuInput(TUIComponent):
         for idx, field in enumerate(self.fields):
             field_length = field.length
             if self.tab_index == idx:
-                mi_print(
+                mu.mi_print(
                     self.screen, f"  {field.label}", self.prefs.sel_bg_color.placeholder, self.max_label_length + 2
                 )
                 self.cur_field = field
             else:
-                mi_print(self.screen, f"  {field.label}", field_len=self.max_label_length + 2)
+                mu.mi_print(self.screen, f"  {field.label}", field_len=self.max_label_length + 2)
             self._buffer_positions(idx, field_length)
             self._render_field(field)
             self._render_details(field, field_length)
@@ -143,17 +147,17 @@ class MenuInput(TUIComponent):
             self.tab_index = idx
             self._display_error("Form field is not valid: " + str(invalid))
             return None
-        else:
-            for idx, field in enumerate(self.fields):
-                match field.itype:
-                    case InputType.MASKED:
-                        field.value = re.split(VALUE_SEPARATORS, field.value)[0]
-                    case InputType.CHECKBOX:
-                        field.value = bool(field.value)
-                    case InputType.SELECT:
-                        _, field.value = get_selected(field.value)
-            self._done = True
-            return Keyboard.VK_ENTER
+
+        for idx, field in enumerate(self.fields):
+            match field.itype:
+                case InputType.MASKED:
+                    field.value = re.split(VALUE_SEPARATORS, field.value)[0]
+                case InputType.CHECKBOX:
+                    field.value = bool(field.value)
+                case InputType.SELECT:
+                    _, field.value = mu.get_selected(field.value)
+        self._done = True
+        return Keyboard.VK_ENTER
 
     def _handle_input(self, keypress: Keyboard) -> None:
         """Handle a form input.
@@ -167,11 +171,11 @@ class MenuInput(TUIComponent):
             case InputType.SELECT:
                 if keypress == Keyboard.VK_SPACE:
                     if self.cur_field.value:
-                        self.cur_field.value = toggle_selected(self.str_val(self.cur_field))
+                        self.cur_field.value = mu.toggle_selected(self.str_val(self.cur_field))
             case InputType.MASKED:
-                value, mask = unpack_masked(self.str_val(self.cur_field))
+                value, mask = mu.unpack_masked(self.str_val(self.cur_field))
                 try:
-                    self.cur_field.value = append_masked(value, mask, keypress.value)
+                    self.cur_field.value = mu.append_masked(value, mask, keypress.value)
                 except InvalidInputError as err:
                     self._display_error(str(err))
             case _:
@@ -190,7 +194,7 @@ class MenuInput(TUIComponent):
         """Handle 'backspace' press. Delete previous input."""
 
         if self.cur_field.itype == InputType.MASKED:
-            value, mask = unpack_masked(str(self.cur_field.value))
+            value, mask = mu.unpack_masked(str(self.cur_field.value))
             value = value[:-1]
             while mask[len(value) - 1] not in MASK_SYMBOLS:
                 value = value[:-1]
@@ -217,11 +221,11 @@ class MenuInput(TUIComponent):
         """
         match field.itype:
             case InputType.TEXT:
-                mi_print(self.screen, self.str_val(field), field_len=self.max_value_length)
+                mu.mi_print(self.screen, self.str_val(field), field_len=self.max_value_length)
             case InputType.PASSWORD:
-                mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
+                mu.mi_print(self.screen, "*" * field.length, field_len=self.max_value_length)
             case InputType.CHECKBOX:
-                mi_print(
+                mu.mi_print(
                     self.screen,
                     " ",
                     FormIcons.CHECK_SQUARE.unicode if field.value else FormIcons.UNCHECK_SQUARE.unicode,
@@ -231,10 +235,10 @@ class MenuInput(TUIComponent):
                 if field.value:
                     mat = re.search(rf".*({VALUE_SEPARATORS})?<(.+)>({VALUE_SEPARATORS})?.*", str(field.value))
                     sel_value = mat.group(2) if mat else re.split(VALUE_SEPARATORS, str(field.value))[0]
-                    mi_print(self.screen, f"{sel_value}", field_len=self.max_value_length)
+                    mu.mi_print(self.screen, f"{sel_value}", field_len=self.max_value_length)
             case InputType.MASKED:
-                value, mask = unpack_masked(str(field.value))
-                mi_print(self.screen, over_masked(value, mask), field_len=self.max_value_length)
+                value, mask = mu.unpack_masked(str(field.value))
+                mu.mi_print(self.screen, mu.over_masked(value, mask), field_len=self.max_value_length)
             case _:
                 raise InvalidStateError(f"Invalid form field type: {field.itype}")
 
@@ -246,16 +250,16 @@ class MenuInput(TUIComponent):
         padding = 1 - len(str(self.max_detail_length / 2))
         fmt = "{:<3}{:>" + str(padding) + "}/{:<" + str(padding) + "}  %NC%"
         if field.itype == InputType.SELECT:
-            idx, _ = get_selected(field.value)
+            idx, _ = mu.get_selected(field.value)
             count = len(re.split(VALUE_SEPARATORS, field.value))
             self.writeln(fmt.format(field.icon, idx + 1 if idx >= 0 else 1, count))
         elif field.itype == InputType.MASKED:
-            value, mask = unpack_masked(self.str_val(field))
+            value, mask = mu.unpack_masked(self.str_val(field))
             self.writeln(
                 fmt.format(
                     field.icon,
-                    reduce(lambda n, m: n + m, list(map(lambda s: mask[: len(value)].count(s), MASK_SYMBOLS))),
-                    reduce(lambda n, m: n + m, list(map(lambda s: mask.count(s), MASK_SYMBOLS))),
+                    reduce(add, list(map(mask[:len(value)].count, MASK_SYMBOLS))),
+                    reduce(add, list(map(mask.count, MASK_SYMBOLS))),
                 )
             )
         else:
@@ -281,7 +285,7 @@ class MenuInput(TUIComponent):
         offset = 15  # Sum of minput used characters that are not related to the field.
         err_pos = offset + self.max_label_length + self.max_value_length + self.max_detail_length
         self.cursor.move_to(self.cur_row, err_pos)
-        mi_print_err(self.screen, f"{FormIcons.ARROW_LEFT} {err_msg}")
+        mu.mi_print_err(self.screen, f"{FormIcons.ARROW_LEFT} {err_msg}")
         # This calculation gives a good delay amount based on the size of the message.
         sleep(max(2.0, int(len(err_msg) / 21)))
         Terminal.set_enable_echo()

@@ -44,8 +44,7 @@ class TableRenderer:
                     if has_headers:
                         headers = row
                         continue
-                    else:
-                        headers = [f"C{idx}" for idx, _ in enumerate(row)]
+                    headers = [f"C{idx}" for idx, _ in enumerate(row)]
                 data.append(row)
         return TableRenderer(headers, data, caption)
 
@@ -151,7 +150,7 @@ class TableRenderer:
         :return: None
         """
         max_len = 0
-        for idx, row in enumerate(self._data):
+        for row in self._data:
             max_len = max(max_len, len(max(list(map(str, row)), key=len)))
         self.set_cell_sizes(*(max_len for _ in self._headers))
 
@@ -167,7 +166,7 @@ class TableRenderer:
         :return: None
         """
         max_len = max(0, int(len(self._caption) / len(self._headers)) - 2)
-        for idx, row in enumerate(self._data):
+        for row in self._data:
             max_len = max(max_len, len(max(list(map(str, row)), key=len)))
         self._column_sizes = [max(max_len, len(header)) for header in self._headers]
 
