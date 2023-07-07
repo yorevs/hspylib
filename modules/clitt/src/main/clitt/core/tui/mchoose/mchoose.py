@@ -12,6 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
+from hspylib.core.enums.charset import Charset
+
 from clitt.core.tui.mchoose.menu_choose import MenuChoose
 from typing import List, Optional, TypeVar
 
@@ -33,7 +35,7 @@ def mchoose(
     result = MenuChoose(title, items, checked).execute()
 
     if result and output:
-        with open(output, "w") as f_out:
+        with open(output, "w", encoding=Charset.UTF_8.val) as f_out:
             f_out.write(" ".join(result))
 
     return result

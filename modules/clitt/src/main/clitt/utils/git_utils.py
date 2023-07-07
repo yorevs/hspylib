@@ -12,9 +12,10 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.terminal import Terminal
 from hspylib.modules.application.exit_status import ExitStatus
 from typing import Tuple
+
+from clitt.core.term.terminal import Terminal
 
 
 class GitTools:

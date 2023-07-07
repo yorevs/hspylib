@@ -12,23 +12,25 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.addons.widman.widget import Widget
-from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
-from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
-from clitt.core.terminal import Terminal
+import argparse
+import os
+import re
+import sys
+from textwrap import dedent
+from typing import List
+
 from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import WidgetExecutionError
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.argument_parser import HSArgumentParser
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
-from typing import List
 
-import argparse
-import os
-import re
-import sys
+from clitt.addons.widman.widget import Widget
+from clitt.addons.widman.widgets.widget_time_calc import WidgetTimeCalc
+from clitt.core.icons.font_awesome.widget_icons import WidgetIcons
+from clitt.core.term.terminal import Terminal
 
 
 class WidgetPunch(Widget):
@@ -199,7 +201,7 @@ class WidgetPunch(Widget):
                 if mat := re.match(pat, self._today):
                     self._today = re.sub(pat, f"{mat.group(1)} => {mat.group(2)} {self.TIME_STAMP} ", self._today)
                 else:
-                    raise Exception("Invalid punch file")
+                    raise WidgetExecutionError("Invalid punch file!")
                 self._punches[-1] = self._today
             list(map(f_punch.write, [f"{punch.strip()}\n" for punch in self._punches]))
         sysout(f"{re.sub(self.DATE_STAMP, '%GREEN%Today%NC%', self._today)} ")

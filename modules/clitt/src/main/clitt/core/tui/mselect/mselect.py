@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+from hspylib.core.enums.charset import Charset
 
 from clitt.core.tui.mselect.menu_select import MenuSelect
 from typing import List, Optional, TypeVar
@@ -30,7 +31,7 @@ def mselect(items: List[T], title: str = "Please select one", output: str = None
     result = MenuSelect(title, items).execute()
 
     if result and output:
-        with open(output, "w") as f_out:
+        with open(output, "w", encoding=Charset.UTF_8.val) as f_out:
             f_out.write(result)
 
     return result

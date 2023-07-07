@@ -14,17 +14,18 @@
 """
 from enum import auto
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.text_tools import *
 from typing import Callable
+
+from hspylib.core.tools import text_tools
 
 
 class TextAlignment(Enumeration):
     """Table cell/header text justification helper."""
 
     # fmt: off
-    LEFT    = auto(), justified_left
-    CENTER  = auto(), justified_center
-    RIGHT   = auto(), justified_right
+    LEFT    = auto(), text_tools.justified_left
+    CENTER  = auto(), text_tools.justified_center
+    RIGHT   = auto(), text_tools.justified_right
     # fmt: on
 
     def val(self) -> Callable:
@@ -35,12 +36,12 @@ class TextCase(Enumeration):
     """Table cell/header text case helper."""
 
     # fmt: off
-    TITLE   = auto(), titlecase
-    SNAKE   = auto(), snakecase
-    CAMEL   = auto(), camelcase
-    KEBAB   = auto(), kebabcase
-    LOWER   = auto(), lowercase
-    UPPER   = auto(), uppercase
+    TITLE   = auto(), text_tools.titlecase
+    SNAKE   = auto(), text_tools.snakecase
+    CAMEL   = auto(), text_tools.camelcase
+    KEBAB   = auto(), text_tools.kebabcase
+    LOWER   = auto(), text_tools.lowercase
+    UPPER   = auto(), text_tools.uppercase
     # fmt: on
 
     def val(self) -> Callable:

@@ -33,7 +33,7 @@ class CFApplication:
         if len(parts) == 6:  # Old CF command output
             return CFApplication(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].split(", "))
         # format: name | requested state | processes | routes
-        elif len(parts) == 4:  # New CF command output
+        if len(parts) == 4:  # New CF command output
             if not (mat := re.search(r"(\w+):(\d+/\d+)", parts[2])):
                 raise InvalidArgumentError(f'Invalid application line: "{app_line}"')
             instances = mat.group(2)

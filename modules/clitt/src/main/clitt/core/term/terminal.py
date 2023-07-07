@@ -71,7 +71,7 @@ class Terminal(metaclass=Singleton):
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             with subprocess.Popen(
-                cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid, **kwargs
+                cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
             ) as proc:
                 process = select.poll()
                 process.register(proc.stdout)

@@ -23,7 +23,7 @@ if __name__ == "__main__":
     tr.adjust_auto_fit()
     # tr.adjust_cells_by_headers()
     # tr.adjust_cells_by_largest_header()
-    # tr.adjust_cells_by_largest_cell()
+    tr.adjust_cells_by_largest_cell()
     # tr.adjust_cells_by_fixed_size(15)
     tr.set_header_alignment(TextAlignment.CENTER)
     tr.set_header_case(TextCase.KEBAB)
