@@ -50,8 +50,8 @@ class Main(TUIApplication):
                 'simple', 's', 'simple',
                 'display without formatting.', action=ParserAction.STORE_TRUE) \
             .option(
-                'preserve', 'p', 'preserve', 'whether to preserve (no overwrite) existing settings.',
-                action=ParserAction.STORE_TRUE)
+                'preserve', 'p', 'preserve',
+            'whether to preserve (no overwrite) existing settings.', action=ParserAction.STORE_TRUE)
 
         self._with_chained_args('operation', 'the operation to execute.') \
             .argument(SetmanOps.GET.val, 'Retrieve the specified setting.') \

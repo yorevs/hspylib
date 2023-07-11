@@ -19,13 +19,12 @@ from setman.settings.settings_config import SettingsConfig
 
 if __name__ == "__main__":
     configs = SettingsConfig("resources", "settings-demo.properties")
-    settings = Settings(configs)
-    with settings.open() as s:
-        s.clear()
-        s.put("demo.settings.one", True, SettingsType.PROPERTY)
-        s.put("demo.settings.two", False, SettingsType.ENVIRONMENT)
-        s["demo.settings.three"] = "VALUE", SettingsType.PROPERTY
-        sysout(s["demo.settings.one"].to_string())
-        s.import_csv("resources/settings.db")
-        sysout(s)
-        s.export_csv("resources/settings-export.db")
+    s = Settings(configs)
+    s.clear()
+    s.put("demo.settings.one", True, SettingsType.PROPERTY)
+    s.put("demo.settings.two", False, SettingsType.ENVIRONMENT)
+    s["demo.settings.three"] = "VALUE", SettingsType.PROPERTY
+    sysout(s["demo.settings.one"].to_string())
+    s.import_csv("resources/settings.db")
+    sysout(s)
+    s.export_csv("resources/settings-export.db")

@@ -12,26 +12,23 @@
 
    Copyright 2023, HsPyLib team
 """
-from datasource.identity import Identity
-from functools import lru_cache
-from hspylib.core.exception.exceptions import ApplicationError
-from hspylib.core.preconditions import check_argument, check_state
-from hspylib.core.tools.commons import dirname, file_is_not_empty, safe_delete_file, touch_file
-from hspylib.core.tools.text_tools import ensure_endswith
-from hspylib.core.zoned_datetime import now
-from hspylib.modules.security.security import decode_file, encode_file
-from setman.core.setman_enums import SettingsType
-from setman.settings.settings_config import SettingsConfig
-from setman.settings.settings_entry import SettingsEntry
-from setman.settings.settings_service import SettingsService
-from typing import Any, List, Optional, Tuple
-
-import binascii
-import contextlib
 import csv
 import logging as log
 import os
 import uuid
+from functools import lru_cache
+from typing import Any, List, Optional, Tuple
+
+from datasource.identity import Identity
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import dirname, file_is_not_empty, touch_file
+from hspylib.core.tools.text_tools import ensure_endswith
+from hspylib.core.zoned_datetime import now
+
+from setman.core.setman_enums import SettingsType
+from setman.settings.settings_config import SettingsConfig
+from setman.settings.settings_entry import SettingsEntry
+from setman.settings.settings_service import SettingsService
 
 
 class Settings:
@@ -40,7 +37,6 @@ class Settings:
     HEADERS = ["uuid", "name", "value", "settings type", "modified"]
 
     def __init__(self, configs: SettingsConfig, preserve: bool = False) -> None:
-        self._is_open = False
         self._configs = configs
         self._preserve = preserve
         self._service = SettingsService(self.configs)
@@ -86,58 +82,11 @@ class Settings:
     def preserve(self, new_preserve: bool) -> None:
         self._preserve = new_preserve
 
-    @property
-    def is_open(self) -> bool:
-        return self._is_open
-
-    @is_open.setter
-    def is_open(self, new_is_open: bool) -> None:
-        self._is_open = new_is_open
-        log.debug("Settings database open: %s", self.configs.database)
-
-    @contextlib.contextmanager
-    def open(self) -> None:
-        """Decode and open the SQL lite database file. Return the context to manipulate it."""
-        try:
-            if not self.is_open:
-                self.is_open = True
-                if self.configs.is_db_encoded:
-                    self._decode_db_file()
-            yield self
-        except (UnicodeDecodeError, binascii.Error) as err:
-            err_msg = f"Failed to open settings file => {self.configs.database}"
-            log.error(ApplicationError(err_msg, err))
-            yield self
-        except Exception as err:
-            err_msg = f"Unable to close settings file => {self.configs.database}"
-            raise ApplicationError(err_msg, err) from err
-        finally:
-            self.close()
-
-    def close(self) -> None:
-        """Encode and open the SQL lite database file. Return the context to manipulate it."""
-        try:
-            if self._is_open:
-                if self.configs.is_db_encoded:
-                    self._encode_db_file()
-                self._is_open = False
-                log.debug("Settings database closed: %s", self.configs.database)
-        except (UnicodeDecodeError, binascii.Error) as err:
-            err_msg = f"Failed to close settings file => {self.configs.database}"
-            raise ApplicationError(err_msg, err) from err
-        except Exception as err:
-            err_msg = f"Unable to close settings file => {self.configs.database}"
-            raise ApplicationError(err_msg, err) from err
-        finally:
-            safe_delete_file(self.configs.encoded_db)
-            safe_delete_file(self.configs.decoded_db)
-
     @lru_cache
     def get(self, name: str) -> Optional[SettingsEntry]:
         """Get setting matching the specified name.
         :param name: the settings name to get.
         """
-        check_state(self.is_open, "Settings database is not open")
         if name:
             return self._service.get_by_name(name)
         return None
@@ -150,8 +99,8 @@ class Settings:
         :param value: the settings value.
         :param stype: the settings type.
         """
-        check_state(self.is_open, "Settings database is not open")
         if (found := self._service.get_by_name(name)) and self._preserve:
+            log.debug("Setting preserved, and not overwritten: '%s'", found.name)
             return None, None
         entry = (
             found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
@@ -163,6 +112,7 @@ class Settings:
         entry.value = value
         entry.modified = now()
         self._service.save(entry)
+        log.debug("Setting saved: '%s'", entry.name)
         self._clear_caches()
 
         return found, entry
@@ -171,7 +121,6 @@ class Settings:
         """Delete the specified setting.
         :param name: the settings name to delete.
         """
-        check_state(self.is_open, "Settings database is not open")
         if name:
             found = self._service.get_by_name(name)
             if found:
@@ -186,7 +135,6 @@ class Settings:
         :param name: the settings name to filter.
         :param stype: the settings type to filter.
         """
-        check_state(self.is_open, "Settings database is not open")
         return self._service.search(name, stype, self.limit, self.offset)
 
     def clear(self, name: str | None = None, stype: SettingsType | None = None) -> None:
@@ -194,7 +142,6 @@ class Settings:
         :param name: the settings name to filter.
         :param stype: the settings type to filter.
         """
-        check_state(self.is_open, "Settings database is not open")
         self._service.clear(name, stype)
         self._clear_caches()
 
@@ -239,24 +186,7 @@ class Settings:
         touch_file(self.configs.database)
         self._service.create_db()
         log.info("Settings file has been created")
-        self._is_open = True
         return os.path.exists(self.configs.database)
-
-    def _encode_db_file(self) -> None:
-        """Decode the Base64 encoded database file."""
-        if file_is_not_empty(self.configs.database):
-            encoded = f"{self.configs.database}-encoded"
-            encode_file(self.configs.database, encoded, binary=True)
-            os.rename(encoded, self.configs.database)
-            log.debug("Settings file is encoded")
-
-    def _decode_db_file(self) -> None:
-        """Base64 encode the database file."""
-        if file_is_not_empty(self.configs.database):
-            decoded = f"{self.configs.database}-decoded"
-            decode_file(self.configs.database, decoded, binary=True)
-            os.rename(decoded, self.configs.database)
-            log.debug("Settings file is decoded")
 
     def _clear_caches(self) -> None:
         """Remove all caches."""
