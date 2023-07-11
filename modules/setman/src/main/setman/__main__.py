@@ -76,8 +76,10 @@ class Main(TUIApplication):
             .argument(SetmanOps.EXPORT.val, 'Export settings to a CSV formatted file.') \
                 .add_parameter('file', 'the path of the CSV file to be exported.') \
                 .add_option('name', 'n', 'name', 'filter settings matching name.') \
-                .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices())
-        # fmt: on
+                .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
+            .argument(SetmanOps.SOURCE.val, 'Source (bash export) all environment settings to current shell.') \
+                .add_option('name', 'n', 'name', 'filter settings matching name.') \
+            # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments."""

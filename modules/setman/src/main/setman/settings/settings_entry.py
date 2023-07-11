@@ -96,11 +96,16 @@ class SettingsEntry(CrudEntity):
     def __repr__(self) -> str:
         return self.to_string()
 
+    @property
+    def environ_name(self) -> str:
+        """Return the environment variable representation name of this entry."""
+        return environ_name(self.name)
+
     def to_string(self, simple: bool = False) -> str:
         """Return the string representation of this entry."""
         if simple:
             return (
-                self._SIMPLE_FORMAT.format(environ_name(self.name), self.value)
+                self._SIMPLE_FORMAT.format(self.environ_name, self.value)
                 if self.stype == SettingsType.ENVIRONMENT.val
                 else self._SIMPLE_FORMAT.format(self.name, self.value)
             )
