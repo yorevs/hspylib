@@ -25,12 +25,14 @@ from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
+from hspylib.core.tools.text_tools import ensure_endswith, xstr
 from hspylib.modules.application.application import Application
 from hspylib.modules.cli.keyboard import Keyboard
 
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
+from setman.settings.settings_entry import SettingsEntry
 
 
 class Setman(metaclass=Singleton):
@@ -56,6 +58,12 @@ class Setman(metaclass=Singleton):
         if not (result := minput(form_fields)):
             exit(1)
         return result
+
+    @staticmethod
+    def _export_environ(setting: SettingsEntry) -> None:
+        """Export variable to current shell."""
+        os.environ[setting.environ_name] = xstr(setting.value)
+        sysout("export ", setting.to_string(True))
 
     def __init__(self, parent_app: Application) -> None:
         self._parent_app = parent_app
@@ -121,6 +129,8 @@ class Setman(metaclass=Singleton):
                 self._import_settings(filepath)
             case SetmanOps.EXPORT:
                 self._export_settings(filepath, name, stype)
+            case SetmanOps.SOURCE:
+                self._source_settings(name)
 
     def _set_setting(
         self, name: str | None, value: Any | None, stype: SettingsType | None
@@ -205,9 +215,14 @@ class Setman(metaclass=Singleton):
         count = self.settings.export_csv(filepath, name, stype)
         sysout(f"%EOL%%GREEN%Exported {count} settings to {filepath}! %EOL%")
 
+    def _source_settings(self, name: str | None) -> None:
+        """Source (bash export) all environment settings to current shell."""
+        prefixed = ensure_endswith((name or "").replace("*", "%"), "%")
+        data = self.settings.search(prefixed, SettingsType.ENVIRONMENT)
+        list(map(self._export_environ, data))
+
     def _setup(self, filepath: str) -> None:
         """Setup SetMan on the system."""
-
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_configs:
             result = self._prompt(f"{self.RESOURCE_DIR}/setman-db")
             f_configs.write(f"hhs.setman.database = {result.db_file} {os.linesep}")

@@ -28,6 +28,7 @@ class SetmanOps(Enumeration):
     TRUNCATE    = 'truncate'
     IMPORT      = 'import'
     EXPORT      = 'export'
+    SOURCE      = 'source'
     # fmt: on
 
     @staticmethod
