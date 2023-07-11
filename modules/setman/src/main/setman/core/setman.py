@@ -12,23 +12,25 @@
 
    Copyright 2023, HsPyLib team
 """
+import logging as log
+import os
+from typing import Any, Optional
+
+from clitt.core.tui.minput.menu_input import MenuInput
+from clitt.core.tui.minput.minput import minput
 from clitt.core.tui.table.table_enums import TextAlignment
 from clitt.core.tui.table.table_renderer import TableRenderer
 from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import InvalidArgumentError
 from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import file_is_not_empty, syserr, sysout
 from hspylib.modules.application.application import Application
 from hspylib.modules.cli.keyboard import Keyboard
+
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
-from typing import Any
-
-import atexit
-import logging as log
-import os
 
 
 class Setman(metaclass=Singleton):
@@ -38,7 +40,22 @@ class Setman(metaclass=Singleton):
 
     SETMAN_CONFIG_FILE = "setman.properties"
 
-    SETMAN_DB_FILE = f"{RESOURCE_DIR}/.setman-db"
+    @staticmethod
+    def _prompt(db_file: str) -> Optional[Namespace]:
+        # fmt: off
+        form_fields = (
+            MenuInput.builder()
+                .field()
+                    .label("Settings File")
+                    .dest("db_file")
+                    .min_max_length(1, 80)
+                    .value(db_file)
+                    .build()
+            .build()
+        )
+        if not (result := minput(form_fields)):
+            exit(1)
+        return result
 
     def __init__(self, parent_app: Application) -> None:
         self._parent_app = parent_app
@@ -74,32 +91,36 @@ class Setman(metaclass=Singleton):
         stype: SettingsType = None,
         simple_fmt: bool = False,
         preserve: bool = False,
-        filepath: str = None,
+        filepath: str | None = None
     ) -> None:
-        """Execute the specified operation."""
+        """Execute the specified operation.
+        :param operation: the operation to execute against the settings.
+        :param name: the settings name.
+        :param value: the settings value.
+        :param stype: the settings type.
+        :param simple_fmt: whether to format the setting when searching.
+        :param preserve: whether to preserve (no overwrite) existing settings.
+        :param filepath: the path of the CSV file to be imported/exported.
+        """
         log.debug("%s Name: %s Value: %s SettingsType: %s", operation, name or "*", "-", stype or "*")
-        atexit.register(self.settings.close)
         self._settings.preserve = preserve
-        with self.settings.open():
-            match operation:
-                case SetmanOps.LIST:
-                    self._list_settings(name, stype)
-                case SetmanOps.SEARCH:
-                    self._search_settings(name or "*", stype, simple_fmt)
-                case SetmanOps.SET:
-                    self._set_setting(name, value, stype)
-                case SetmanOps.GET:
-                    self._get_setting(name, simple_fmt)
-                case SetmanOps.DEL:
-                    self._del_setting(name)
-                case SetmanOps.TRUNCATE:
-                    self._clear_settings(name, stype)
-                case SetmanOps.IMPORT:
-                    self._import_settings(filepath)
-                case SetmanOps.EXPORT:
-                    self._export_settings(filepath, name, stype)
-                case _:
-                    raise InvalidArgumentError(f"Operation not supported: {operation}")
+        match operation:
+            case SetmanOps.LIST:
+                self._list_settings(name, stype)
+            case SetmanOps.SEARCH:
+                self._search_settings(name or "*", stype, simple_fmt)
+            case SetmanOps.SET:
+                self._set_setting(name, value, stype)
+            case SetmanOps.GET:
+                self._get_setting(name, simple_fmt)
+            case SetmanOps.DEL:
+                self._del_setting(name)
+            case SetmanOps.TRUNCATE:
+                self._clear_settings(name, stype)
+            case SetmanOps.IMPORT:
+                self._import_settings(filepath)
+            case SetmanOps.EXPORT:
+                self._export_settings(filepath, name, stype)
 
     def _set_setting(
         self, name: str | None, value: Any | None, stype: SettingsType | None
@@ -186,7 +207,8 @@ class Setman(metaclass=Singleton):
 
     def _setup(self, filepath: str) -> None:
         """Setup SetMan on the system."""
+
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_configs:
-            f_configs.write(f"hhs.setman.database = {self.SETMAN_DB_FILE} {os.linesep}")
-            f_configs.write("hhs.setman.encode.database = True")
+            result = self._prompt(f"{self.RESOURCE_DIR}/setman-db")
+            f_configs.write(f"hhs.setman.database = {result.db_file} {os.linesep}")
             check_state(os.path.exists(filepath), "Unable to create Setman configuration file: " + filepath)
