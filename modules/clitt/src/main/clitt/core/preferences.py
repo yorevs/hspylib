@@ -71,7 +71,7 @@ class Preferences(metaclass=AbstractSingleton):
             type_attr = type(value)
             try:
                 if isinstance(value, Enum):
-                    value = type_attr[str_value]
+                    value = type_attr[str_value.upper()]
                 else:
                     value = type_attr(str_value)
             except (KeyError, TypeError, ValueError):

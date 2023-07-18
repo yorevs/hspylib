@@ -108,8 +108,9 @@ class Settings:
         if any(a is None for a in [name, value, stype]):
             if not (entry := SettingsEntry.prompt(entry)):
                 return None, None
-        entry.stype = stype.val
-        entry.value = value
+        else:
+            entry.stype = stype.val
+            entry.value = value
         entry.modified = now()
         self._service.save(entry)
         log.debug("Setting saved: '%s'", entry.name)
@@ -180,6 +181,13 @@ class Settings:
             writer.writerow(self.HEADERS)
             writer.writerows(list(map(lambda s: s.values, settings)))
             return len(settings)
+
+    def as_environ(self, name: str | None) -> List[str]:
+        """Return all settings formatted as bash export environment variables.
+        :param name: the settings name to filter.
+        """
+        data = self.search(name, SettingsType.ENVIRONMENT)
+        return list(map(SettingsEntry.to_environ, data))
 
     def _create_db(self) -> bool:
         """Create the settings SQLite DB file."""

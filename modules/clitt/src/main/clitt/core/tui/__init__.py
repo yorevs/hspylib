@@ -1,19 +1,19 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.60
+# hspylib-clitt v0.9.62
 #
 # Package: main.clitt.core.tui
 """Package initialization."""
 
 __all__ = [
-  'mchoose', 
-  'mdashboard', 
-  'menu', 
-  'minput', 
-  'mselect', 
-  'table', 
-  'tui_application', 
-  'tui_component', 
-  'tui_preferences'
+    'mchoose', 
+    'mdashboard', 
+    'menu', 
+    'minput', 
+    'mselect', 
+    'table', 
+    'tui_application', 
+    'tui_component', 
+    'tui_preferences'
 ]
-__version__ = '0.9.60'
+__version__ = '0.9.62'

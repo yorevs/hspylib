@@ -30,6 +30,8 @@ class MenuChoose(TUIComponent):
 
     ROW_OFFSET = 5
 
+    MIN_ROWS = 3
+
     def __init__(self, title: str, items: List[T], checked: bool):
         super().__init__(title)
         self.items = items
@@ -186,5 +188,5 @@ class MenuChoose(TUIComponent):
         self._re_render = True
 
     def _max_rows(self) -> int:
-        max_rows = self.screen.lines - self.ROW_OFFSET
-        return max_rows if self.prefs.max_rows > max_rows else self.prefs.max_rows
+        screen_lines = self.screen.lines - self.ROW_OFFSET
+        return min(self.prefs.max_rows, screen_lines)

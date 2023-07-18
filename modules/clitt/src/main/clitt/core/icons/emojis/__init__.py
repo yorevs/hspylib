@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.60
+# hspylib-clitt v0.9.62
 #
 # Package: main.clitt.core.icons.emojis
 """Package initialization."""
 
 __all__ = [
-  'emojis', 
-  'face_smiling'
+    'emojis', 
+    'face_smiling'
 ]
-__version__ = '0.9.60'
+__version__ = '0.9.62'

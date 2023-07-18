@@ -30,15 +30,15 @@ class TUIPreferences(Preferences):
 
     @property
     def max_rows(self) -> int:
-        return max(5, self.get_preference("max.rows", 10))
+        return max(3, self.get_preference("max.rows", 10))
 
     @property
     def items_per_line(self) -> int:
-        return max(3, self.get_preference("items.per.line", 6))
+        return max(2, self.get_preference("items.per.line", 6))
 
     @property
     def title_line_length(self) -> int:
-        return max(3, 15, self.get_preference("title.line.len", 30))
+        return max(15, self.get_preference("title.line.len", 30))
 
     @property
     def title_color(self) -> VtColor:

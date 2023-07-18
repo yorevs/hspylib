@@ -12,7 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.tools.commons import str_to_bool
 from setman.settings.settings_config import SettingsConfig
 
 
@@ -22,4 +21,3 @@ class SetmanConfig(SettingsConfig):
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
         self._database: str = self["hhs.setman.database"]
-        self._encode_db: bool = str_to_bool(self["hhs.setman.encode.database"])

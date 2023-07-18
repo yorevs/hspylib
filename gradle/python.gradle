@@ -156,8 +156,8 @@ task syncPythonPackages(type: Task) {
           .replaceAll("%package%", pkg)
           .replaceAll("%modules%", modules.sort().toString())
           .replaceAll("%version%", cur_version)
-          .replaceAll("\\[", "\\[\n  ")
-          .replaceAll(", ", ", \n  ")
+          .replaceAll("\\[", "\\[\n    ")
+          .replaceAll(", ", ", \n    ")
           .replaceAll("\\]", "\n]")
       }
     }
