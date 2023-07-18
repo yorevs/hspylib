@@ -1,14 +1,14 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.60
+# hspylib-clitt v0.9.62
 #
 # Package: main.clitt.core.tui.mdashboard
 """Package initialization."""
 
 __all__ = [
-  'dashboard_builder', 
-  'dashboard_item', 
-  'mdashboard', 
-  'menu_dashboard'
+    'dashboard_builder', 
+    'dashboard_item', 
+    'mdashboard', 
+    'menu_dashboard'
 ]
-__version__ = '0.9.60'
+__version__ = '0.9.62'

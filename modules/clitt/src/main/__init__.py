@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.60
+# hspylib-clitt v0.9.62
 #
 # Package: main
 """Package initialization."""
 
 __all__ = [
-  'clitt'
+    'clitt'
 ]
-__version__ = '0.9.60'
+__version__ = '0.9.62'

@@ -79,6 +79,7 @@ class Main(TUIApplication):
                 .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
             .argument(SetmanOps.SOURCE.val, 'Source (bash export) all environment settings to current shell.') \
                 .add_option('name', 'n', 'name', 'filter settings matching name.') \
+                .add_option('file', 'f', 'file', 'the output file containing the bash exports.') \
             # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
@@ -98,7 +99,7 @@ class Main(TUIApplication):
         """Execute the application main flow."""
         op = self.get_arg("operation")
         st = self.get_arg("type")
-        self._setman.execute(
+        return self._setman.execute(
             SetmanOps.of_value(op) if op else None,
             self.get_arg("name"),
             self.get_arg("value"),
@@ -107,8 +108,6 @@ class Main(TUIApplication):
             self.get_arg("preserve"),
             self.get_arg("file"),
         )
-
-        return ExitStatus.SUCCESS
 
 
 # Application entry point

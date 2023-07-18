@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.60
+# hspylib-clitt v0.9.62
 #
 # Package: demo.tui.menu
 """Package initialization."""
 
 __all__ = [
-  'tui_menu_demo'
+    'tui_menu_demo'
 ]
-__version__ = '0.9.60'
+__version__ = '0.9.62'

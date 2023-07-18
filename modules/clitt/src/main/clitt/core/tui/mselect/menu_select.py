@@ -30,11 +30,13 @@ class MenuSelect(TUIComponent):
 
     ROW_OFFSET = 5
 
+    MIN_ROWS = 3
+
     def __init__(self, title: str, items: List[T]):
         super().__init__(title)
         self._items = items
         self._show_from = 0
-        self._show_to = self.screen.lines - self.ROW_OFFSET
+        self._show_to = self._max_rows()
         self._diff_index = self._show_to - self._show_from
         self._sel_index = 0
         self._max_line_length = max(len(str(item)) for item in items)
@@ -166,3 +168,7 @@ class MenuSelect(TUIComponent):
         self._show_to = self._show_from + self._diff_index
         self._sel_index = self._show_from
         self._re_render = True
+
+    def _max_rows(self) -> int:
+        screen_lines = self.screen.lines - self.ROW_OFFSET
+        return min(self.prefs.max_rows, screen_lines)

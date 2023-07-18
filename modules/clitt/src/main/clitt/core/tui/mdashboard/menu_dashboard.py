@@ -48,6 +48,10 @@ class MenuDashBoard(TUIComponent):
 
     NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.LEFT, NavIcons.DOWN, NavIcons.RIGHT)
 
+    COLUMN_OFFSET = 10
+
+    MIN_COLUMNS = 2
+
     @classmethod
     def builder(cls) -> DashboardBuilder:
         return DashboardBuilder()
@@ -102,9 +106,9 @@ class MenuDashBoard(TUIComponent):
                 case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
                     self._done = True
                 case Keyboard.VK_UP:
-                    self._tab_index = max(0, self._tab_index - self.prefs.items_per_line)
+                    self._tab_index = max(0, self._tab_index - self._items_per_line())
                 case Keyboard.VK_DOWN:
-                    self._tab_index = min(length - 1, self._tab_index + self.prefs.items_per_line)
+                    self._tab_index = min(length - 1, self._tab_index + self._items_per_line())
                 case _ as key if key in [Keyboard.VK_LEFT, Keyboard.VK_SHIFT_TAB]:
                     self._tab_index = max(0, self._tab_index - 1)
                 case _ as key if key in [Keyboard.VK_RIGHT, Keyboard.VK_TAB]:
@@ -129,11 +133,15 @@ class MenuDashBoard(TUIComponent):
             # Move to the next the next row
             self.cursor.move(1, Cursor.Direction.DOWN)
             self.cursor.move(num_cols, Cursor.Direction.LEFT)
-        if item_idx > 0 and (item_idx + 1) % self.prefs.items_per_line == 0:
+        if item_idx > 0 and (item_idx + 1) % self._items_per_line() == 0:
             # Break the line
             self.cursor.move(1, Cursor.Direction.DOWN)
-            self.cursor.move(num_cols * self.prefs.items_per_line, Cursor.Direction.LEFT)
+            self.cursor.move(num_cols * self._items_per_line(), Cursor.Direction.LEFT)
         elif item_idx + 1 < len(self._items):
             # Continue on the same line
             self.cursor.move(num_rows, Cursor.Direction.UP)
             self.cursor.move(num_cols, Cursor.Direction.RIGHT)
+
+    def _items_per_line(self) -> int:
+        screen_columns = self.screen.columns - self.COLUMN_OFFSET
+        return max(self.MIN_COLUMNS, min(self.prefs.items_per_line, screen_columns))
