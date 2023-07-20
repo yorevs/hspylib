@@ -46,7 +46,7 @@ class MenuDashBoard(TUIComponent):
     ]
     # fmt: on
 
-    NAV_ICONS = NavIcons.compose(NavIcons.UP, NavIcons.LEFT, NavIcons.DOWN, NavIcons.RIGHT)
+    NAV_ICONS = NavIcons.compose(NavIcons.LEFT, NavIcons.DOWN, NavIcons.UP, NavIcons.RIGHT)
 
     COLUMN_OFFSET = 10
 

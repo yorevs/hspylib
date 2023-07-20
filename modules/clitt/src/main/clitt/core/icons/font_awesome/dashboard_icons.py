@@ -84,7 +84,8 @@ class DashboardIcons(Awesome):
     SETTINGS        = '\uF013'  # 
     SHOPPING_CART   = '\uF60F'  # 
     TERMINAL        = '\uF120'  # 
-    UN_MUTE         = '\uF86E'  # 
+    PROMPT          = '\uF054'  # 
+    UN_MUTE         = '\uF86E'  # 
     UNPLUGGED       = '\uF701'  # 
     USER            = '\uF007'  # 
     VERIFIED        = '\uF4A1'  # 
