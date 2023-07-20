@@ -4,7 +4,7 @@
 """
    @project: HsPyLib-Clitt
    @package: clitt.core.icons.font_awesome
-      @file: app_icons.py
+      @file: nav_icons.py
    @created: Tue, 4 May 2021
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -26,10 +26,12 @@ class NavIcons(Awesome):
 
     # fmt: off
     _CUSTOM         = auto()
-    LEFT            = '\u2190'  # ←
     UP              = '\u2191'  # ↑
     RIGHT           = '\u2192'  # →
     DOWN            = '\u2193'  # ↓
+    LEFT            = '\u2190'  # ←
+    UP_DOWN         = '\uF9E1'  # 李
+    LEFT_RIGHT      = '\uF9E0'  # 易
     ENTER           = '\u21B5'  # ↵
     TAB             = '\u21B9'  # ↹
     BACKSPACE       = '\u232B'  # ⌫
