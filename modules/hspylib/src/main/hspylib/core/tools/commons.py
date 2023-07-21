@@ -30,7 +30,7 @@ from hspylib.modules.cli.vt100.vt_color import VtColor
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
     "%(asctime)s.%(msecs)03d",
-    "%(levelname)-5.5s",
+    "%(levelname)-7.7s",
     "%(threadName)12.12s",
     "%(process)-5d",
     "%(lineno)05d",
@@ -39,7 +39,7 @@ FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
 )
 
 CONSOLE_LOG_FMT = "{} [{}] (@Line:{}) {} : {}".format(
-    "%(levelname)-5.5s",
+    "%(levelname)-7.7s",
     "%(threadName)12.12s",
     "%(lineno)05d",
     "%(filename)-30.30s",
