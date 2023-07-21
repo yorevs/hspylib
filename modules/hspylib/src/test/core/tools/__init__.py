@@ -1,13 +1,13 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.192
+# hspylib v0.11.194
 #
 # Package: test.core.tools
 """Package initialization."""
 
 __all__ = [
-  'test_commons', 
-  'test_json_path', 
-  'test_text_tools'
+    'test_commons', 
+    'test_json_path', 
+    'test_text_tools'
 ]
-__version__ = '0.11.192'
+__version__ = '0.11.194'

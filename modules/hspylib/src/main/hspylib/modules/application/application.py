@@ -107,7 +107,7 @@ class Application(metaclass=AbstractSingleton):
 
         # Initialize application logs
         self._log_file = f"{log_dir or os.getenv('HHS_LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
-        check_state(log_init(self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
+        check_state(log_init(filename=self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler."""
