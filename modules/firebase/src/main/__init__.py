@@ -1,11 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-firebase v0.9.108
+# hspylib-firebase v0.9.109
 #
 # Package: main
 """Package initialization."""
 
 __all__ = [
-  'firebase'
+    'firebase'
 ]
-__version__ = '0.9.108'
+__version__ = '0.9.109'

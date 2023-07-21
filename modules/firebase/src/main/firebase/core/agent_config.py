@@ -76,14 +76,14 @@ class AgentConfig(metaclass=Singleton):
         form_fields = MenuInput.builder() \
             .field() \
                 .label('UID') \
-                .validator(InputValidator.words()) \
+                .validator(InputValidator.custom(r'[a-zA-Z0-9\-]')) \
                 .min_max_length(28, 28) \
                 .dest("uid") \
                 .value(get_or_default_by_key(config, 'UID', '')) \
                 .build() \
             .field() \
                 .label('PROJECT_ID') \
-                .validator(InputValidator.anything()) \
+                .validator(InputValidator.custom(r'[a-zA-Z0-9\-\_]')) \
                 .min_max_length(8, 50) \
                 .dest("project_id") \
                 .value(get_or_default_by_key(config, 'PROJECT_ID', '')) \
@@ -97,7 +97,7 @@ class AgentConfig(metaclass=Singleton):
                 .build() \
             .field() \
                 .label('DATABASE') \
-                .validator(InputValidator.anything()) \
+                .validator(InputValidator.custom(r'[a-zA-Z0-9\-\_]')) \
                 .min_max_length(4, 50) \
                 .dest("database") \
                 .value(get_or_default_by_key(config, 'DATABASE', '')) \
