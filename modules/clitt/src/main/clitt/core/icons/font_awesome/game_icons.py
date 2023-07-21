@@ -50,4 +50,9 @@ class GameIcons(Awesome):
     HOT                 = '\uF490'  # 
     DAY                 = '\uFAA7'  # 盛
     NIGHT               = '\uFA93'  # 望
+    TREE                = '\uF904'  # 滑
+    KEY                 = '\uF80A'  # 
+    SLEEP               = '\uF9B1'  # 鈴
+    LUCK                = '\uFD14'  # ﴔ
+    ANIMAL              = '\uF8E8'  # 
     # fmt: on
