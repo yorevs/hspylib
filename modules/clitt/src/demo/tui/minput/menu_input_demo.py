@@ -32,6 +32,9 @@ if __name__ == "__main__":
             .min_max_length(1, 4) \
             .build() \
         .field() \
+            .label('anything') \
+            .build() \
+        .field() \
             .label('masked') \
             .itype('masked') \
             .value('|##::##::%% @@') \

@@ -52,6 +52,7 @@ class GameIcons(Awesome):
     NIGHT               = '\uFA93'  # 望
     TREE                = '\uF904'  # 滑
     KEY                 = '\uF80A'  # 
+    OLD_KEY             = '\uF084'  # 
     SLEEP               = '\uF9B1'  # 鈴
     LUCK                = '\uFD14'  # ﴔ
     ANIMAL              = '\uF8E8'  # 

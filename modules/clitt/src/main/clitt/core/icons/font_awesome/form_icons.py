@@ -64,4 +64,6 @@ class FormIcons(Awesome):
     MINUS               = '\uF068'  # 
     NUMBERS             = '\uF162'  # 
     LETTERS             = '\uF15D'  # 
+    WORDS               = '\uF161'  # 
+    CUSTOM              = '\uF45E'  # 
     # fmt: on
