@@ -20,6 +20,8 @@ from clitt.core.tui.minput.minput_utils import get_selected, MASK_SYMBOLS, toggl
 from hspylib.core.exception.exceptions import InvalidInputError
 from typing import Any, Callable, Optional, TypeVar
 
+from hspylib.core.tools.text_tools import xstr
+
 FIELD_VALIDATOR_FNC = TypeVar("FIELD_VALIDATOR_FNC", bound=Callable[["FormField"], bool])
 
 
@@ -37,8 +39,10 @@ class FormField:
         value: Any = "",
         input_validator: InputValidator = InputValidator.anything(),
         field_validator: FIELD_VALIDATOR_FNC = None,
+        tooltip: str = None,
     ):
         self._label = label
+        self._tooltip = tooltip
         self._dest = dest
         self._itype = itype
         self._min_length = min_length
@@ -60,6 +64,10 @@ class FormField:
     @property
     def label(self) -> str:
         return self._label
+
+    @property
+    def tooltip(self) -> str:
+        return self._tooltip
 
     @property
     def dest(self) -> str:
@@ -126,7 +134,9 @@ class FormField:
                 elif self.input_validator.pattern_type == InputValidator.PatternType.LETTERS:
                     icon = FormIcons.LETTERS
                 elif self.input_validator.pattern_type == InputValidator.PatternType.WORDS:
-                    icon = FormIcons.EDITABLE
+                    icon = FormIcons.WORDS
+                elif self.input_validator.pattern_type == InputValidator.PatternType.CUSTOM:
+                    icon = FormIcons.CUSTOM
                 else:
                     icon = FormIcons.EDITABLE
             case _:
@@ -151,7 +161,7 @@ class FormField:
                 case InputType.CHECKBOX:
                     valid = isinstance(value, bool)
                 case _:
-                    valid = all(self.validate_input(val) for val in str(value))
+                    valid = all(self.validate_input(val) for val in xstr(value))
 
         if not valid:
             raise InvalidInputError(f"Value {value} is invalid!")

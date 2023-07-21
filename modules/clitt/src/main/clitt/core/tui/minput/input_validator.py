@@ -24,13 +24,12 @@ class InputValidator(Validator):
 
     class PatternType(Enumeration):
         # fmt: off
-        CUSTOM      = r'.'  # It will be set later
+        CUSTOM      = r''  # It will be set later
         ANYTHING    = r'.'
         LETTERS     = r'[a-zA-Z]'
         WORDS       = r'[a-zA-Z0-9 _]'
         NUMBERS     = r'[0-9\.\,]'
-        BINARY      = r'[01]'
-        MASKED      = r'.'
+        MASKED      = r'[a-zA-Z0-9]'
         # fmt: on
 
     @classmethod
@@ -62,11 +61,6 @@ class InputValidator(Validator):
     def anything(cls) -> "InputValidator":
         """Return a validator that allows any input value."""
         return InputValidator(cls.PatternType.ANYTHING)
-
-    @classmethod
-    def binary(cls) -> "InputValidator":
-        """Return a validator that allows only zero or ones."""
-        return InputValidator(cls.PatternType.BINARY)
 
     @classmethod
     def masked(cls) -> "InputValidator":

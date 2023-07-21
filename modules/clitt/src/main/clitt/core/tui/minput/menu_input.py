@@ -16,6 +16,7 @@ from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import get_cursor_position
 from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.minput import minput_utils as mu
 from clitt.core.tui.minput.form_builder import FormBuilder
@@ -88,6 +89,7 @@ class MenuInput(TUIComponent):
             self._render_field(field)
             self._render_details(field, field_length)
 
+        self.cursor.erase(Cursor.Direction.DOWN)
         self.draw_navbar(self.navbar())
         self._re_render = False
         self._set_cursor_pos()
@@ -95,7 +97,8 @@ class MenuInput(TUIComponent):
 
     def navbar(self, **kwargs) -> str:
         return (
-            f"\n{self.prefs.navbar_color.placeholder}"
+            f"%EOL%{NavIcons.POINTER} %GREEN%{self.cur_field.tooltip or f'the {self.cur_field.label.lower()}'}%NC%"
+            f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
             f"[Enter] Submit  [{self.NAV_ICONS}] "
             f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [^P] Paste  [Esc] Quit %NC%"
         )

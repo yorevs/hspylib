@@ -13,3 +13,5 @@ package: hspylib, version: latest, space: global, mode: gt
 
 /* Application dependencies */
 
+package: pyperclip, version: latest, space: global, mode: gt
+
