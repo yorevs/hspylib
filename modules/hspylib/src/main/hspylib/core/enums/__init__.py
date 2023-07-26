@@ -5,11 +5,5 @@
 # Package: main.hspylib.core.enums
 """Package initialization."""
 
-__all__ = [
-    'charset', 
-    'content_type', 
-    'enumeration', 
-    'http_code', 
-    'http_method'
-]
-__version__ = '0.11.195'
+__all__ = ["charset", "content_type", "enumeration", "http_code", "http_method"]
+__version__ = "0.11.195"

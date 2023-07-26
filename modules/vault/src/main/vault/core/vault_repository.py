@@ -15,7 +15,6 @@
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from typing import Optional, Set
-
 from vault.core.vault_config import VaultConfig
 from vault.domain.vault_entry import VaultEntry
 

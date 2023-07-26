@@ -5,7 +5,5 @@
 # Package: main.vault.exception
 """Package initialization."""
 
-__all__ = [
-  'exceptions'
-]
-__version__ = '0.9.90'
+__all__ = ["exceptions"]
+__version__ = "0.9.90"

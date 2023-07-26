@@ -13,12 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 
-import re
-import struct
-from typing import Union
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import sysout
+from typing import Union
+
+import re
+import struct
 
 
 class Awesome(Enumeration):
@@ -31,19 +31,20 @@ class Awesome(Enumeration):
     @classmethod
     def no_icon(cls) -> "Awesome":
         """No awesome icon specified."""
+
         def _str(self) -> str:
-            return ' '
+            return " "
 
         def _len(self) -> int:
             return 1
 
         def _fmt(self, fmt) -> str:
-            return ' '
+            return " "
 
-        no_icon_cls = type('NoIcon', (object,), {'name': 'NO_ICON', 'value': ''})
-        setattr(no_icon_cls, '__str__', _str)
-        setattr(no_icon_cls, '__len__', _len)
-        setattr(no_icon_cls, '__format__', _fmt)
+        no_icon_cls = type("NoIcon", (object,), {"name": "NO_ICON", "value": ""})
+        setattr(no_icon_cls, "__str__", _str)
+        setattr(no_icon_cls, "__len__", _len)
+        setattr(no_icon_cls, "__format__", _fmt)
         return no_icon_cls()
 
     @staticmethod

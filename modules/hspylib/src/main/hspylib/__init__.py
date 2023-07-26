@@ -5,8 +5,5 @@
 # Package: main.hspylib
 """Package initialization."""
 
-__all__ = [
-    'core', 
-    'modules'
-]
-__version__ = '0.11.195'
+__all__ = ["core", "modules"]
+__version__ = "0.11.195"

@@ -79,8 +79,8 @@ class Main(TUIApplication):
                 .add_option('type', 't', 'type', 'filter settings matching type.', choices=SettingsType.choices()) \
             .argument(SetmanOps.SOURCE.val, 'Source (bash export) all environment settings to current shell.') \
                 .add_option('name', 'n', 'name', 'filter settings matching name.') \
-                .add_option('file', 'f', 'file', 'the output file containing the bash exports.') \
-            # fmt: on
+                .add_option('file', 'f', 'file', 'the output file containing the bash exports.')
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments."""

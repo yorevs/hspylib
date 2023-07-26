@@ -14,9 +14,8 @@
 """
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
-from setman.settings.settings_config import SettingsConfig
-
 from setman.core.setman_enums import SettingsType
+from setman.settings.settings_config import SettingsConfig
 from setman.settings.settings_entry import SettingsEntry
 from textwrap import dedent
 from typing import List, Optional

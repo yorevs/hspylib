@@ -5,7 +5,5 @@
 # Package: main.datasource.exception
 """Package initialization."""
 
-__all__ = [
-  'exceptions'
-]
-__version__ = '0.9.37'
+__all__ = ["exceptions"]
+__version__ = "0.9.37"

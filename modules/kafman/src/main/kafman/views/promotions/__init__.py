@@ -5,8 +5,5 @@
 # Package: main.kafman.views.promotions
 """Package initialization."""
 
-__all__ = [
-  'form_area', 
-  'form_pane'
-]
-__version__ = '0.9.110'
+__all__ = ["form_area", "form_pane"]
+__version__ = "0.9.110"
