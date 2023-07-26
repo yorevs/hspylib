@@ -44,25 +44,4 @@ task copyReadme(type: Copy) {
   into "$sourceRoot/main"
 }
 
-/* Update hspylib version in all subprojects */
-task updateSubprojectsVersion(type: Task) {
-  group = 'Dependencies'
-  description = 'Update hspylib version in all subprojects'
-  doLast {
-    print(sourceRoot)
-    project.file("$rootDir/modules").traverse(type: groovy.io.FileType.DIRECTORIES) { module ->
-      def hspd = new File("${module}/dependencies.hspd")
-      if (hspd.exists()) {
-        ant.replaceregexp(
-          file: "$hspd",
-          match: "hspylib, version: ([0-9]+(.[0-9]+){0,4}),",
-          replace: "hspylib, version: ${app_version},",
-          flags: "g", byline: true
-        )
-      }
-    }
-  }
-}
-
 copyLicense.finalizedBy(copyReadme)
-publish.finalizedBy(updateSubprojectsVersion)

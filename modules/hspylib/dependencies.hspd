@@ -4,21 +4,20 @@
   Created: 15th Jun, 2022
 
   !! Syntax for dependencies !!
-  package: <pkg_name>, version: <latest|versionNum>, space: <user|global>, mode: <gt|ge|eq|ne|compat|none>
+  package: <pkg_name>, version: <latest|versionNum>, mode: <gt|ge|eq|ne|compat|none>
 */
 
 /* Application dependencies */
 
-package: requests, version: latest, space: user
-package: retry, version: latest, space: user
-package: urllib3, version: latest, space: user
-package: cryptocode, version: latest, space: user
-package: cryptography, version: latest, space: user
-package: emoji, version: latest, space: user
-package: getkey, version: latest, space: user
-package: keyring, version: latest, space: user
-package: pyparsing, version: latest, space: user
-package: pyperclip, version: latest, space: user
-package: PyYAML, version: latest, space: user
-package: toml, version: latest, space: user
-package: setuptools, version: latest, space: user
+package: requests
+package: retry
+package: urllib3
+package: cryptocode
+package: cryptography
+package: emoji
+package: getkey
+package: keyring
+package: pyparsing
+package: pyperclip
+package: PyYAML
+package: toml

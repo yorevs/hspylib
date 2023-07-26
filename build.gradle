@@ -93,13 +93,14 @@ task installBuildTools(type: Task) {
       commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
     }
     buildToolsFile.setText("###### Build Tools Files for $project.name ######\n\n")
-    println "Installing ${project.name} build tools: "
+    println "Installing \"${project.name}\" build tools: "
+    println "Packages:"
     rootProject.buildTools.each { tool ->
       println "  |-${tool.trim()}"
       buildToolsFile.append("${tool.trim()}\n")
     }
     exec {
-      commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', '-r', buildToolsFile
+      commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', '-q', '-r', buildToolsFile
     }
   }
 }
