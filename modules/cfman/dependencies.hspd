@@ -17,3 +17,4 @@ package: hspylib-clitt, version: latest, space: global, mode: gt
 package: retry, version: latest, space: user
 package: requests, version: latest, space: user
 package: setuptools, version: latest, space: user
+package: urllib3, version: 1.26.15, space: global, mode: gt

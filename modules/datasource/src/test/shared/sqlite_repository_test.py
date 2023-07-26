@@ -12,13 +12,14 @@
 
    Copyright 2023, HsPyLib team
 """
+from datasource.db_configuration import DBConfiguration
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from hspylib.core.tools.dict_tools import get_or_default
 from shared.entity_test import EntityTest
 
 
-class SQLiteRepositoryTest(SQLiteRepository[EntityTest]):
+class SQLiteRepositoryTest(SQLiteRepository[EntityTest, DBConfiguration]):
     def table_name(self) -> str:
         return "ENTITY_TEST"
 

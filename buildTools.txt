@@ -1,0 +1,10 @@
+###### Build Tools Files for HsPyLib ######
+
+setuptools
+pipenv
+bumpver
+pylint
+twine
+wheel
+isort
+black

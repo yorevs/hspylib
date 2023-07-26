@@ -27,10 +27,13 @@ configurations {
 
 dependencies {
     project(':cfman')
+    project(':clitt')
     project(':datasource')
     project(':firebase')
+    project(':hqt')
     project(':hspylib')
     project(':kafman')
+    project(':setman')
     project(':vault')
 }
 
@@ -38,7 +41,7 @@ subprojects {
 
   tasks.withType(Exec) {
     doFirst {
-      println commandLine
+      println ">>> ${commandLine}"
     }
   }
 
@@ -57,6 +60,8 @@ ext {
   buildTools = "${buildTools}".split(",")
   startTime = System.currentTimeMillis()
   verbose = findProperty('verbose') ?: false
+  modulesDir = "${project.projectDir}/modules/"
+  buildToolsFile = new File("${project.projectDir}/buildTools.txt")
 }
 
 apply from: "$rootDir/gradle/idea.gradle"
@@ -66,13 +71,12 @@ task listModules(type: Task) {
   group = 'Other'
   description = 'List project modules'
   doLast {
-    def projectDir = project.projectDir.toString() + "/modules"
     println("\nListing " + project.name + " modules ...")
-    println("Modules Dir: " + projectDir + "\n")
+    println("Modules Dir: " + modulesDir + "\n")
     subprojects.forEach {
       println(sprintf(
-        "Module: %-12s Version: %-10s SrcRoot: %s",
-        it.name, it.app_version, it.sourceRoot.replaceAll(projectDir + "/", '')
+        "Module: %-12s Version: %-10s Source: %s",
+        it.name, it.app_version, it.sourceRoot.replaceAll(modulesDir, '')
       ))
     }
   }
@@ -88,11 +92,14 @@ task installBuildTools(type: Task) {
       commandLine rootProject.python, '-m', 'ensurepip', '-q', '--upgrade'
       commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
     }
-    println "Installing build tools: [\n\t ${rootProject.buildTools.join(',\n\t')}\n]"
+    buildToolsFile.setText("###### Build Tools Files for $project.name ######\n\n")
+    println "Installing ${project.name} build tools: "
     rootProject.buildTools.each { tool ->
-      exec {
-        commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', tool
-      }
+      println "  |-${tool.trim()}"
+      buildToolsFile.append("${tool.trim()}\n")
+    }
+    exec {
+      commandLine rootProject.python, '-m', 'pip', 'install', '--upgrade', '-r', buildToolsFile
     }
   }
 }

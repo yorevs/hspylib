@@ -129,7 +129,7 @@ task compileQrc(type: Task) {
 
 /* Find and update __init__ files */
 task syncPythonPackages(type: Task) {
-  group = 'Install'
+  group = 'Build'
   description = 'Find and update __init__ files'
   doLast {
     project.file("$sourceRoot").traverse(type: groovy.io.FileType.DIRECTORIES) { directory ->
@@ -297,5 +297,4 @@ tasks.register('build', Task) {
   mustRunAfter compile
   dependsOn check
   mustRunAfter check
-  finalizedBy syncRequirements
 }
