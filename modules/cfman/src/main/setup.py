@@ -53,6 +53,7 @@ setuptools.setup(
         "Environment :: Console",
         "Natural Language :: English",
         "Topic :: Terminals",
+        "Intended Audience :: Developers",
     ],
     python_requires=">=3.10",
     install_requires=REQUIREMENTS,

@@ -51,6 +51,7 @@ setuptools.setup(
         "Environment :: X11 Applications :: Qt",
         "Natural Language :: English",
         "Topic :: Desktop Environment",
+        "Intended Audience :: Developers",
     ],
     python_requires=">=3.10",
     install_requires=REQUIREMENTS,

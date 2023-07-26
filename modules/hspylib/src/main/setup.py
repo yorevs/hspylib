@@ -51,6 +51,7 @@ setuptools.setup(
         "Natural Language :: English",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Libraries :: Application Frameworks",
+        "Intended Audience :: Developers",
     ],
     python_requires=">=3.10",
     install_requires=REQUIREMENTS,

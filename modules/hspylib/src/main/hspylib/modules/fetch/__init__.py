@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v0.11.196
+# hspylib v0.11.198
 #
 # Package: main.hspylib.modules.fetch
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
     'uri_builder', 
     'uri_scheme'
 ]
-__version__ = '0.11.196'
+__version__ = '0.11.198'

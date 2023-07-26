@@ -87,10 +87,12 @@ task installBuildTools(type: Task) {
   group = 'Install'
   description = 'Install hspylib build tools'
   doLast {
-    println "Upgrading pip module to the latest "
+    println "Ensure pip and upgrading to the latest "
     exec {
-      commandLine rootProject.python, '-m', 'ensurepip', '-q', '--upgrade'
-      commandLine rootProject.python, '-m', 'pip', '-q', 'install', '--upgrade', 'pip'
+      commandLine rootProject.python, '-m', 'ensurepip', '--default-pip'
+    }
+    exec {
+      commandLine rootProject.python, '-m', 'pip', 'install', '-q', '--upgrade', 'pip'
     }
     buildToolsFile.setText("###### Build Tools Files for $project.name ######\n\n")
     println "Installing \"${project.name}\" build tools: "
