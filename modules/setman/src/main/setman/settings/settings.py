@@ -12,23 +12,22 @@
 
    Copyright 2023, HsPyLib team
 """
-import csv
-import logging as log
-import os
-import uuid
-from functools import lru_cache
-from typing import Any, List, Optional, Tuple
-
 from datasource.identity import Identity
+from functools import lru_cache
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import dirname, file_is_not_empty, touch_file
 from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.core.zoned_datetime import now
-
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_config import SettingsConfig
 from setman.settings.settings_entry import SettingsEntry
 from setman.settings.settings_service import SettingsService
+from typing import Any, List, Optional, Tuple
+
+import csv
+import logging as log
+import os
+import uuid
 
 
 class Settings:
@@ -102,9 +101,7 @@ class Settings:
         if (found := self._service.get_by_name(name)) and self._preserve:
             log.debug("Setting preserved, and not overwritten: '%s'", found.name)
             return None, None
-        entry = (
-            found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
-        )
+        entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
         if any(a is None for a in [name, value, stype]):
             if not (entry := SettingsEntry.prompt(entry)):
                 return None, None

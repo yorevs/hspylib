@@ -12,14 +12,14 @@
 
    Copyright 2023, HsPyLib team
 """
-import os
 from enum import Enum
-from typing import Any
-
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_argument, check_not_none
 from hspylib.core.tools.dict_tools import get_or_default_by_key
 from hspylib.core.tools.text_tools import ensure_startswith, environ_name
+from typing import Any
+
+import os
 
 
 class Preferences(metaclass=AbstractSingleton):
@@ -43,11 +43,11 @@ class Preferences(metaclass=AbstractSingleton):
         return str(self)
 
     def __getitem__(self, name: str):
-        attr_name = name.replace(self._prefix + '.', '').replace(".", "_")
+        attr_name = name.replace(self._prefix + ".", "").replace(".", "_")
         return getattr(self, attr_name)
 
     def __setitem__(self, name: str, value: Any):
-        attr_name = name.replace(self._prefix + '.', '').replace(".", "_")
+        attr_name = name.replace(self._prefix + ".", "").replace(".", "_")
         curr_val = getattr(self, attr_name)
         t1, t2 = type(curr_val), type(value)
         check_not_none(curr_val, f"Preference {name} does not exist")
@@ -82,4 +82,4 @@ class Preferences(metaclass=AbstractSingleton):
         """TODO
         :param name: TODO
         """
-        return ensure_startswith(name, self._prefix + '.')
+        return ensure_startswith(name, self._prefix + ".")

@@ -5,7 +5,5 @@
 # Package: demo.settings
 """Package initialization."""
 
-__all__ = [
-    'settings_demo'
-]
-__version__ = '0.9.23'
+__all__ = ["settings_demo"]
+__version__ = "0.9.23"

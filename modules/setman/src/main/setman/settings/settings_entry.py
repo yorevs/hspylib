@@ -12,19 +12,17 @@
 
    Copyright 2023, HsPyLib team
 """
-from collections import namedtuple
-from textwrap import dedent
-from typing import Any, Optional, Union
-
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
+from collections import namedtuple
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.tools.text_tools import environ_name, xstr
 from hspylib.core.zoned_datetime import now
-
 from setman.core.setman_enums import SettingsType
+from textwrap import dedent
+from typing import Any, Optional, Union
 
 
 class SettingsEntry(CrudEntity):
@@ -39,7 +37,8 @@ class SettingsEntry(CrudEntity):
             Type: %GREEN%{}%NC%
            Value: %GREEN%{}%NC%
         Modified: %GREEN%{}%NC%
-    """)
+    """
+    )
 
     # Setman entry simple format.
     _SIMPLE_FORMAT = "{}={}"

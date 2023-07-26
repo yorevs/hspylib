@@ -12,11 +12,6 @@
 
    Copyright 2023, HsPyLib team
 """
-import logging as log
-import os
-from os.path import basename
-from typing import Any, Optional
-
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
 from clitt.core.tui.table.table_enums import TextAlignment
@@ -30,10 +25,14 @@ from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.keyboard import Keyboard
-
+from os.path import basename
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
+from typing import Any, Optional
+
+import logging as log
+import os
 
 
 class Setman(metaclass=Singleton):
@@ -43,9 +42,7 @@ class Setman(metaclass=Singleton):
         "HHS_SETMAN_CONFIG_FILE", f"{os.environ.get('HOME', os.curdir)}/setman.properties"
     )
 
-    HHS_SETMAN_DB_FILE = os.environ.get(
-        "HHS_SETMAN_DB_FILE", f"{os.environ.get('HOME', os.curdir)}/setman.db"
-    )
+    HHS_SETMAN_DB_FILE = os.environ.get("HHS_SETMAN_DB_FILE", f"{os.environ.get('HOME', os.curdir)}/setman.db")
 
     @staticmethod
     def _prompt(db_file: str) -> Optional[Namespace]:
@@ -63,7 +60,6 @@ class Setman(metaclass=Singleton):
         return minput(form_fields)
 
     def __init__(self, parent_app: Application) -> None:
-
         self._parent_app = parent_app
         cfg_dir, cfg_file = dirname(self.HHS_SETMAN_CONFIG_FILE), basename(self.HHS_SETMAN_CONFIG_FILE)
         if not file_is_not_empty(self.HHS_SETMAN_CONFIG_FILE):
@@ -100,7 +96,7 @@ class Setman(metaclass=Singleton):
         stype: SettingsType = None,
         simple_fmt: bool = False,
         preserve: bool = False,
-        filepath: str | None = None
+        filepath: str | None = None,
     ) -> ExitStatus:
         """Execute the specified operation.
         :param operation: the operation to execute against the settings.
@@ -137,9 +133,7 @@ class Setman(metaclass=Singleton):
 
         return self._exec_status
 
-    def _set_setting(
-        self, name: str | None, value: Any | None, stype: SettingsType | None
-     ) -> None:
+    def _set_setting(self, name: str | None, value: Any | None, stype: SettingsType | None) -> None:
         """Upsert the specified setting.
         :param name: the settings name.
         :param value: the settings value.
@@ -197,7 +191,7 @@ class Setman(metaclass=Singleton):
             sysout(
                 "%EOL%%YELLOW%No settings found matching: %WHITE%",
                 f"[name={name or '*'}, stype={stype or '*'}]",
-                "%EOL%"
+                "%EOL%",
             )
             self._exec_status = ExitStatus.FAILED
 
@@ -242,7 +236,7 @@ class Setman(metaclass=Singleton):
         prefixed = ensure_endswith((name or "").replace("*", "%"), "%")
         data = os.linesep.join(self.settings.as_environ(prefixed))
         if filepath:
-            with open(filepath, 'a', encoding=Charset.UTF_8.val) as f_exports:
+            with open(filepath, "a", encoding=Charset.UTF_8.val) as f_exports:
                 f_exports.writelines(data)
         else:
             sysout(data)

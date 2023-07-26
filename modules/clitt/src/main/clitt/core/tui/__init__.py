@@ -6,14 +6,14 @@
 """Package initialization."""
 
 __all__ = [
-    'mchoose', 
-    'mdashboard', 
-    'menu', 
-    'minput', 
-    'mselect', 
-    'table', 
-    'tui_application', 
-    'tui_component', 
-    'tui_preferences'
+    "mchoose",
+    "mdashboard",
+    "menu",
+    "minput",
+    "mselect",
+    "table",
+    "tui_application",
+    "tui_component",
+    "tui_preferences",
 ]
-__version__ = '0.9.64'
+__version__ = "0.9.64"

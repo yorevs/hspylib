@@ -5,8 +5,5 @@
 # Package: main.hqt.views
 """Package initialization."""
 
-__all__ = [
-  'main_view', 
-  'qt_view'
-]
-__version__ = '0.9.6'
+__all__ = ["main_view", "qt_view"]
+__version__ = "0.9.6"

@@ -12,20 +12,20 @@
 
    Copyright 2023, HsPyLib team
 """
+from datetime import timedelta
+from hspylib.core.constants import TRUE_VALUES
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument, check_not_none
+from hspylib.modules.cli.vt100.vt_code import VtCode
+from hspylib.modules.cli.vt100.vt_color import VtColor
+from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
+
 import inspect
 import logging as log
 import os
 import pathlib
 import signal
 import sys
-from datetime import timedelta
-from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
-
-from hspylib.core.constants import TRUE_VALUES
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.modules.cli.vt100.vt_code import VtCode
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
@@ -39,11 +39,7 @@ FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
 )
 
 CONSOLE_LOG_FMT = "{} [{}] (@Line:{}) {} : {}".format(
-    "%(levelname)-7.7s",
-    "%(threadName)12.12s",
-    "%(lineno)05d",
-    "%(filename)-30.30s",
-    "%(message)s",
+    "%(levelname)-7.7s", "%(threadName)12.12s", "%(lineno)05d", "%(filename)-30.30s", "%(message)s"
 )
 
 LOG_DATE_FMT = "%Y-%m-%d %H:%M:%S"
@@ -120,6 +116,7 @@ def sysout(*objs: Any, end: str = os.linesep) -> None:
     :param end: string appended after the last value, default a newline
     """
     if objs:
+
         def _sysout_format(obj: Any) -> str:
             plain_text = str(obj) if obj else ""
             return VtColor.colorize(VtCode.decode(plain_text))
@@ -135,6 +132,7 @@ def syserr(*objs: Any, end: str = os.linesep) -> None:
     :param end: string appended after the last value, default a newline
     """
     if objs:
+
         def _syserr_format(obj: Any) -> str:
             plain_text = VtColor.strip_colors(str(obj)) if obj else ""
             return VtColor.colorize(VtCode.decode(f"%RED%{plain_text}%NC%"))
@@ -230,7 +228,7 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
     """
 
     byte_size = float(size_in_bytes)
-    kb, mb, gb, tb = 2 ** 10, 2 ** 20, 2 ** 30, 2 ** 40
+    kb, mb, gb, tb = 2**10, 2**20, 2**30, 2**40
 
     if 0 <= byte_size <= kb:
         ret_val = f"{byte_size:3.2f}"

@@ -5,7 +5,5 @@
 # Package: demo.term
 """Package initialization."""
 
-__all__ = [
-    'terminal_demo'
-]
-__version__ = '0.9.64'
+__all__ = ["terminal_demo"]
+__version__ = "0.9.64"

@@ -5,9 +5,5 @@
 # Package: demo.phonebook.entity
 """Package initialization."""
 
-__all__ = [
-  'company', 
-  'contact_forms', 
-  'person'
-]
-__version__ = '0.9.37'
+__all__ = ["company", "contact_forms", "person"]
+__version__ = "0.9.37"
