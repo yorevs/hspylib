@@ -44,6 +44,21 @@ void readDependencies() {
 
 /* Tasks ------------------------------------------------------------------- */
 
+/* List project dependencies */
+task listDependencies(type: Task) {
+  group = 'Dependencies'
+  description = 'List project dependencies'
+  doLast {
+    println "\nListing dependencies from:\n\t${depsFile}\n"
+    readDependencies()
+    deps.each { dep ->
+      println(
+        "Package: ${dep.package}, Version: ${dep.version}, Space: ${dep.space}, Mode: ${dep.mode}"
+      )
+    }
+  }
+}
+
 /* Gather all project requirements and generate a requirements file */
 task syncRequirements(type: Task) {
   group = 'Dependencies'
@@ -63,35 +78,20 @@ task syncRequirements(type: Task) {
   }
 }
 
-/* List project dependencies */
-task listDependencies(type: Task) {
-  group = 'Dependencies'
-  description = 'List project dependencies'
-  doLast {
-    println "\nListing dependencies from:\n\t${depsFile}\n"
-    readDependencies()
-    deps.each { dep ->
-      println("Package: ${dep.package}, Version: ${dep.version}, Space: ${dep.space}, Mode: ${dep.mode}")
-    }
-  }
-}
-
 /* Install all required python packages */
 task installDependencies(type: Task) {
   group = 'Dependencies'
   description = 'Install all required python packages'
+  dependsOn syncRequirements
   doLast {
-    readDependencies()
-    deps.each { dep ->
-      println "\nInstalling Package: $dep.package  Version: $dep.version  Space: $dep.space"
-      def args = [rootProject.python, '-m', 'pip', 'install']
-      if (! verbose) args << '-q'
-      if ('user' == dep.space) args << '--user'
-      if (!dep.version || 'latest' == dep.version) args << ['--upgrade', dep.package]
-      else args << ['-Iv', "${dep.package}~=${dep.version}"]
-      exec {
-        commandLine args.flatten()
-      }
+    def reqs_file = "${project.ext.sourceRoot}/main/requirements.txt"
+    println "\nInstalling project dependencies ..."
+    println "Requirements file: " + reqs_file
+    def args = [
+      rootProject.python, '-m', 'pip', 'install', '-q', '--upgrade', '-r', reqs_file
+    ]
+    exec {
+      commandLine args.flatten()
     }
   }
 }
@@ -124,7 +124,7 @@ task freezeDependencies(type: Task) {
     }
     println("\nFreezing [$project.name] Dependencies\n")
     deps.each { dep ->
-      println("package: ${dep.package}, version: " + allDeps["${dep.package}"] + ", ${dep.space}: global, mode: ${dep.mode}")
+      println("package: ${dep.package}, version: " + allDeps["${dep.package}"] + ", space: ${dep.space}, mode: ${dep.mode}")
     }
   }
 }
