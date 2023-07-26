@@ -1,9 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hqt v0.9.6
+# hqt v0.9.7
 #
 # Package: test
 """Package initialization."""
 
-__all__ = ["test_main"]
-__version__ = "0.9.6"
+__all__ = [
+    'test_main'
+]
+__version__ = '0.9.7'

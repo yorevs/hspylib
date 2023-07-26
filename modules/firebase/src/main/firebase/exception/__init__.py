@@ -1,9 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-firebase v0.9.109
+# hspylib-firebase v0.9.110
 #
 # Package: main.firebase.exception
 """Package initialization."""
 
-__all__ = ["exceptions"]
-__version__ = "0.9.109"
+__all__ = [
+    'exceptions'
+]
+__version__ = '0.9.110'
