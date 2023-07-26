@@ -4,16 +4,15 @@
   Created: 15th Jun, 2022
 
   !! Syntax for dependencies !!
-  package: <pkg_name>, version: <latest|versionNum>, space: <user|global>, mode: <gt|ge|eq|ne|compat|none>
+  package: <pkg_name>, version: <latest|versionNum>, mode: <gt|ge|eq|ne|compat|none>
 */
 
 /* Module dependencies */
 
-package: hspylib, version: latest, space: global, mode: gt
+package: hspylib
 
 /* Application dependencies */
 
-package: PyQt5, version: latest, space: user
-package: PyQt5-stubs, version: latest, space: user
-package: setuptools, version: latest, space: user
-package: pyperclip, version: latest, space: user
+package: PyQt5
+package: PyQt5-stubs
+package: pyperclip

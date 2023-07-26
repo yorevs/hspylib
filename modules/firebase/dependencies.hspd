@@ -4,18 +4,17 @@
   Created: 15th Jun, 2022
 
   !! Syntax for dependencies !!
-  package: <pkg_name>, version: <latest|versionNum>, space: <user|global>, mode: <gt|ge|eq|ne|compat|none>
+  package: <pkg_name>, version: <latest|versionNum>, mode: <gt|ge|eq|ne|compat|none>
 */
 
 /* Module dependencies */
 
-package: hspylib, version: latest, space: global, mode: gt
-package: hspylib-datasource, version: latest, space: global, mode: gt
-package: hspylib-clitt, version: latest, space: global, mode: gt
+package: hspylib
+package: hspylib-datasource
+package: hspylib-clitt
 
 /* Application dependencies */
 
-package: requests, version: latest, space: user
-package: urllib3, version: latest, space: user
-package: firebase-admin, version: latest, space: user
-package: setuptools, version: latest, space: user
+package: requests
+package: urllib3
+package: firebase-admin

@@ -11,7 +11,12 @@ project.ext.depsFile = "$project.projectDir/dependencies.hspd"
 project.ext.reqsFile = "$project.projectDir/src/main/requirements.txt"
 
 /* Mode Map*/
-def modesMap = [lt: '<', le: '<=', eq: '==', ne: '!=', compat: '~=', gt: '>', ge: '>=', none: null]
+def modesMap = [
+  lt: '<', le: '<=',
+  eq: '==', ne: '!=',
+  gt: '>', ge: '>=',
+  compat: '~=', none: null
+]
 
 /* List of project dependencies*/
 project.ext.deps = []
@@ -22,21 +27,29 @@ void readDependencies() {
   def depsFile = new File(depsFile)
   depsFile.eachLine { line ->
     def dep = null
-    if (dep = line =~ /package: ([a-zA-Z0-9-_.]+), version: (latest|[0-9]+(\.[0-9]+){0,4}), space: (user|global), mode: (lt|le|eq|compat|ne|gt|ge|none)/) {
+     // All fields syntax
+    if (dep = line =~ /package: ([a-zA-Z0-9-_.]+), version: (latest|[0-9]+(\.[0-9]+){0,4}), mode: (lt|le|eq|compat|ne|gt|ge|none)/) {
       dep.each {
-        deps << [package: "${it[1]}", version: "${it[2]}", space: "${it[4]}", mode: "${it[5]}"]
+        deps << [package: "${it[1]}", version: "${it[2]}", mode: "${it[4]}"]
       }
     }
-    else if (dep = line =~ /package: ([a-zA-Z0-9-_.]+), version: (latest|[0-9]+(\.[0-9]+){0,4}), space: (user|global)/) {
+    // All except mode syntax
+    else if (dep = line =~ /package: ([a-zA-Z0-9-_.]+), version: (latest|[0-9]+(\.[0-9]+){0,4})/) {
       dep.each {
-        deps << [package: "${it[1]}", version: "${it[2]}", space: "${it[4]}", mode: "compat"]
+        deps << [package: "${it[1]}", version: "${it[2]}", mode: it[2] && it[2] != "latest" ? "compat" : "gt"]
+      }
+    }
+    // Only package syntax
+    else if (dep = line =~ /package: ([a-zA-Z0-9-_.]+)/) {
+      dep.each {
+        deps << [package: "${it[1]}", version: "latest", mode: "gt"]
       }
     }
     else {
       if ( line.startsWith('package: ') ) {
         throw new GradleException("Invalid hspd syntax $line. Usage: "
-          + "package: <pkg_name>, version: <latest|versionNum>, "
-          + "space: <user|global>, [mode: <lt|le|eq|compat|ne|gt|ge|none>]")
+          + "package: <pkg_name>, version: [<latest>|versionNum], "
+          + "[mode: <lt|le|eq|compat|ne|gt|ge|none>]")
       }
     }
   }
@@ -53,7 +66,7 @@ task listDependencies(type: Task) {
     readDependencies()
     deps.each { dep ->
       println(
-        "Package: ${dep.package}, Version: ${dep.version}, Space: ${dep.space}, Mode: ${dep.mode}"
+        "Package: ${dep.package}, Version: ${dep.version}, Mode: ${dep.mode}"
       )
     }
   }
@@ -84,11 +97,17 @@ task installDependencies(type: Task) {
   description = 'Install all required python packages'
   dependsOn syncRequirements
   doLast {
-    def reqs_file = "${project.ext.sourceRoot}/main/requirements.txt"
-    println "\nInstalling project dependencies ..."
-    println "Requirements file: " + reqs_file
+    def reqs_file = new File("${project.ext.sourceRoot}/main/requirements.txt")
+    println "\nInstalling \"${project.name}\" dependencies"
+    println "Requirements file: \n\t" + reqs_file
+    println "Packages:"
+    reqs_file.each { dep ->
+      if (dep && ! dep.startsWith("#")) {
+        println "  |-" + dep
+      }
+    }
     def args = [
-      rootProject.python, '-m', 'pip', 'install', '-q', '--upgrade', '-r', reqs_file
+      rootProject.python, '-m', 'pip', 'install', '-q', '--upgrade', '-r', reqs_file.toString()
     ]
     exec {
       commandLine args.flatten()
@@ -104,27 +123,28 @@ task freezeDependencies(type: Task) {
     readDependencies()
     def output = new ByteArrayOutputStream()
     exec {
-      commandLine rootProject.python, '-m', 'pip', 'freeze'
+      commandLine rootProject.python, '-m', 'pip', 'freeze', '--all'
       standardOutput = output;
     }
-    def allDeps = [:]
+    def pipDeps = [:]
     output.toString().split('\n').each { line ->
       def dep = null
-      if (dep = line =~ /([a-zA-Z0-9-_.]+)==([0-9]+(\.[0-9]+){0,4})/) {
+      if (dep = line =~ /([a-zA-Z0-9-_.]+)==([0-9]+(\.[0-9]+){0,3})/) {
         dep.each {
-          allDeps["${it[1]}"] = "${it[2]}"
+          pipDeps["${it[1]}"] = "${it[2]}"
         }
       }
+      // Local dependency
       else if (dep = line =~ /([a-zA-Z0-9-_.]+) @ (file:\/{2,3}.+)/) {
         dep.each {
-          println("Local dependency link -> $line.")
-          allDeps["${it[1]}"] = "latest"
+          pipDeps["${it[1]}"] = "latest"
         }
       }
     }
     println("\nFreezing [$project.name] Dependencies\n")
     deps.each { dep ->
-      println("package: ${dep.package}, version: " + allDeps["${dep.package}"] + ", space: ${dep.space}, mode: ${dep.mode}")
+      def pkgVersion = pipDeps["${dep.package}"]
+      println("package: ${dep.package}, version: ${pkgVersion}, mode: ${dep.mode}")
     }
   }
 }
