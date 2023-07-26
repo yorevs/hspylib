@@ -16,3 +16,5 @@ package: hspylib, version: latest, space: global, mode: gt
 package: retry, version: latest, space: user
 package: PyMySQL, version: latest, space: user
 package: redis, version: latest, space: user
+package: requests, version: latest, space: user
+package: setuptools, version: latest, space: user

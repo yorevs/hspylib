@@ -168,7 +168,7 @@ task syncPythonPackages(type: Task) {
 task installModule(type: Task) {
   group = 'Install'
   description = "Install module in editable mode (i.e. setuptools 'develop mode')"
-  dependsOn requirements
+  dependsOn syncRequirements
   doLast {
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
@@ -187,7 +187,7 @@ task installModule(type: Task) {
 task install(type: Task) {
   group = 'Install'
   description = "Installs the python module into the system"
-  dependsOn requirements
+  dependsOn syncRequirements
   doLast {
     fileTree("$sourceRoot").matching {
       include "**/setup.py"
@@ -297,5 +297,5 @@ tasks.register('build', Task) {
   mustRunAfter compile
   dependsOn check
   mustRunAfter check
-  finalizedBy requirements
+  finalizedBy syncRequirements
 }

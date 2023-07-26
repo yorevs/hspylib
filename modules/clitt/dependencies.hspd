@@ -14,4 +14,7 @@ package: hspylib, version: latest, space: global, mode: gt
 /* Application dependencies */
 
 package: pyperclip, version: latest, space: global, mode: gt
+package: emoji, version: latest, space: global, mode: gt
+package: urllib3, version: latest, space: global, mode: gt
+package: setuptools, version: latest, space: global, mode: gt
 

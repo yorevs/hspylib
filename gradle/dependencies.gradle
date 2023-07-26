@@ -45,7 +45,7 @@ void readDependencies() {
 /* Tasks ------------------------------------------------------------------- */
 
 /* Gather all project requirements and generate a requirements file */
-task requirements(type: Task) {
+task syncRequirements(type: Task) {
   group = 'Dependencies'
   description = 'Gather all project requirements and generate a requirements file'
   doLast {
@@ -87,7 +87,7 @@ task installDependencies(type: Task) {
       def args = [rootProject.python, '-m', 'pip', 'install']
       if (! verbose) args << '-q'
       if ('user' == dep.space) args << '--user'
-      if ('latest' == dep.version) args << ['--upgrade', dep.package]
+      if (!dep.version || 'latest' == dep.version) args << ['--upgrade', dep.package]
       else args << ['-Iv', "${dep.package}~=${dep.version}"]
       exec {
         commandLine args.flatten()

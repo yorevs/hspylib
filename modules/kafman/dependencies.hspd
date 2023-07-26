@@ -21,3 +21,4 @@ package: confluent_kafka, version: latest, space: user
 package: fastavro, version: latest, space: user
 package: jsonschema, version: latest, space: user
 package: avro-python3, version: latest, space: user
+package: setuptools, version: latest, space: user

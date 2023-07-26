@@ -63,11 +63,17 @@ apply from: "$rootDir/gradle/idea.gradle"
 
 /* List project modules */
 task listModules(type: Task) {
-  group = 'Build'
-  description = 'Install hspylib build tools'
+  group = 'Other'
+  description = 'List project modules'
   doLast {
+    def projectDir = project.projectDir.toString() + "/modules"
+    println("\nListing " + project.name + " modules ...")
+    println("Modules Dir: " + projectDir + "\n")
     subprojects.forEach {
-      println(sprintf("Module: %-12s Version: %s", it.name, it.app_version))
+      println(sprintf(
+        "Module: %-12s Version: %-10s SrcRoot: %s",
+        it.name, it.app_version, it.sourceRoot.replaceAll(projectDir + "/", '')
+      ))
     }
   }
 }

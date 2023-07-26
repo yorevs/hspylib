@@ -15,3 +15,5 @@ package: hspylib-clitt, version: latest, space: global, mode: gt
 /* Application dependencies */
 
 package: retry, version: latest, space: user
+package: requests, version: latest, space: user
+package: setuptools, version: latest, space: user
