@@ -9,6 +9,7 @@
 import groovy.json.JsonSlurper
 
 ext {
+  pypiTestUrl = "https://test.pypi.org/legacy/${app_name}/json"
   pypiModuleUrl = "https://pypi.org/pypi/${app_name}/json"
   pypiRepoUrl = System.getenv("PYPI_REPOSITORY") ?: 'https://upload.pypi.org/legacy/'
   pypiUsername = System.getenv("PYPI_USERNAME") ?: System.getenv("USER")
@@ -42,33 +43,10 @@ task copyLicense(type: Copy) {
   into "$sourceRoot/main"
 }
 
-/* Generate PyPi distribution files */
-task dist(type: Task) {
-  group = 'Publish'
-  description = 'Generate PyPi distribution files'
-  dependsOn cleanDist
-  dependsOn copyLicense
-  dependsOn patchVersion
-  dependsOn syncRequirements
-  doLast {
-    fileTree("$sourceRoot").matching {
-        include "**/setup.py"
-      }.each { File module ->
-          def moduleDir = dirName(module)
-          println "Generating distribution files -> $moduleDir"
-          exec {
-            workingDir "$moduleDir"
-            commandLine rootProject.python, "setup.py", 'sdist', 'bdist_wheel'
-          }
-        }
-    }
-}
-
 /* Check files created in dist folder */
 task checkDist(type: Task) {
   group = 'Publish'
   description = 'Check files created in dist folder'
-  dependsOn dist
   doLast {
     fileTree(sourceRoot).matching {
         include "**/setup.py"
@@ -84,12 +62,38 @@ task checkDist(type: Task) {
   }
 }
 
+/* Generate PyPi distribution files */
+task sdist(type: Task) {
+  group = 'Publish'
+  description = 'Generate PyPi distribution files'
+  dependsOn copyLicense
+  dependsOn patchVersion
+  dependsOn syncRequirements
+  finalizedBy checkDist
+  doLast {
+    fileTree("$sourceRoot").matching {
+        include "**/setup.py"
+      }.each { File module ->
+          def moduleDir = dirName(module)
+          println "Generating distribution files -> $moduleDir"
+          exec {
+            workingDir "$moduleDir"
+            commandLine rootProject.python, "-m", "build", "--sdist"
+          }
+          exec {
+            workingDir "$moduleDir"
+            commandLine rootProject.python, "-m", "build", "--wheel"
+          }
+        }
+    }
+}
+
 /* Publish the module to PyPi repository */
 task publish(type: Task) {
   group = 'Publish'
   description = "Publish the module to PyPi repository"
-  dependsOn checkDist
-  dependsOn buildOnly
+  dependsOn sdist
+  finalizedBy cleanDist
   def url = project.ext.pypiRepoUrl
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword
@@ -99,14 +103,14 @@ task publish(type: Task) {
       }.each { File module ->
         def moduleDir = dirName(module)
         def distDir = "${moduleDir}/dist"
-        println '--'
+        println "--- ${project.name} details ---"
         println "|-version: ${project.ext.app_version}"
         println "|-setup: ${module}"
         println "|-url: ${url}"
         println "|-user: ${un}"
         println "|-password: __token__"
         println "|-dist: ${distDir}/*"
-        println '--'
+        println '-------------------------------'
         println "Publishing module to PyPi => ${url}"
         exec {
           workingDir moduleDir
