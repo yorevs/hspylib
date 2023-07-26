@@ -18,3 +18,4 @@ package: hspylib-clitt, version: latest, space: global, mode: gt
 package: requests, version: latest, space: user
 package: urllib3, version: latest, space: user
 package: firebase-admin, version: latest, space: user
+package: setuptools, version: latest, space: user

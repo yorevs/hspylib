@@ -15,3 +15,5 @@ package: hspylib, version: latest, space: global, mode: gt
 
 package: PyQt5, version: latest, space: user
 package: PyQt5-stubs, version: latest, space: user
+package: setuptools, version: latest, space: user
+package: pyperclip, version: latest, space: user
