@@ -25,7 +25,7 @@ import os
 class Preferences(metaclass=AbstractSingleton):
     """General purpose bas class to provide preference management."""
 
-    def __init__(self, prefix: str):
+    def __init__(self, prefix: str = ''):
         self._prefix = prefix
         self._overrides = {}
 
@@ -50,8 +50,8 @@ class Preferences(metaclass=AbstractSingleton):
         attr_name = name.replace(self._prefix + ".", "").replace(".", "_")
         curr_val = getattr(self, attr_name)
         t1, t2 = type(curr_val), type(value)
-        check_not_none(curr_val, f"Preference {name} does not exist")
-        check_argument(t1 == t2, f"Preference {name} value must be of type {t1}, not {t2}")
+        check_not_none(curr_val, f"Preference '{name}' does not exist")
+        check_argument(t1 == t2, f"Preference '{name}' value must be of type '{t1}', not '{t2}'")
         self._overrides[self._get_name(name)] = value
 
     def __iter__(self):
@@ -61,9 +61,10 @@ class Preferences(metaclass=AbstractSingleton):
         return len(self._overrides)
 
     def get_preference(self, name: str, default: Any = None) -> Any:
-        """TODO
-        :param name: TODO
-        :param default: TODO
+        """Retrieve preference for the given specified name. If not found, return the default value.
+        :param name: the preference name.
+        :param default: the preference default value.
+        :return the preference value.
         """
         pref_name = self._get_name(name)
         value = get_or_default_by_key(self._overrides, pref_name, default)
@@ -79,7 +80,8 @@ class Preferences(metaclass=AbstractSingleton):
         return value
 
     def _get_name(self, name: str) -> str:
-        """TODO
-        :param name: TODO
+        """Retrieve the preference name based. It uses the specified prefix to compose the actual name.
+        :param name: the preference name.
+        :return the prefixed preference name.
         """
         return ensure_startswith(name, self._prefix + ".")

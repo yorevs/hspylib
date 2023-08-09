@@ -46,6 +46,10 @@ class Setman(metaclass=Singleton):
 
     @staticmethod
     def _prompt(db_file: str) -> Optional[Namespace]:
+        """Prompt the user for the settings setup info.
+        :param db_file: the file that will hold all settings (database file).
+        :return: a Namespace containing all filled input.
+        """
         # fmt: off
         form_fields = (
             MenuInput.builder()
@@ -171,9 +175,8 @@ class Setman(metaclass=Singleton):
         :param name: the settings name to filter when listing.
         :param stype: the settings type to filter when listing.
         """
-        data = list(map(lambda s: s.values, self.settings.search(name, stype)))
-        tr = TableRenderer(self.settings.HEADERS, data, "Systems Settings")
-        tr.adjust_auto_fit()
+        data = list(map(lambda s: s.values[1:], self.settings.search(name, stype)))
+        tr = TableRenderer(self.settings.HEADERS[1:], data, "Systems Settings")
         tr.set_header_alignment(TextAlignment.CENTER)
         tr.set_cell_alignment(TextAlignment.LEFT)
         tr.render()
