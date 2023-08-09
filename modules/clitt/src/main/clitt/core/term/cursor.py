@@ -53,15 +53,23 @@ class Cursor(metaclass=Singleton):
         return self._bottom
 
     def home(self) -> None:
-        """Move the cursor to home position."""
+        """Move the cursor to home position.
+        :return None
+        """
         self.move_to(self.CURSOR_HOME[0], self.CURSOR_HOME[1])
 
     def end(self) -> None:
-        """Move the cursor to the bottom most position on the screen."""
+        """Move the cursor to the bottom most position on the screen.
+        :return None
+        """
         self.move_to(self.bottom[0], self.bottom[1])
 
     def move_to(self, row: int = None, column: int = None) -> POSITION:
-        """Move the cursor to the specified position."""
+        """Move the cursor to the specified position.
+        :param row the specified row to move.
+        :param column the specified column to move.
+        :return the cursor position after moving.
+        """
         row_pos = max(self.CURSOR_HOME[0], row if row is not None else self.position[0])
         col_pos = max(self.CURSOR_HOME[1], column if column is not None else self.position[1])
         sysout(f"%CUP({row_pos};{col_pos})%", end="")
@@ -69,7 +77,11 @@ class Cursor(metaclass=Singleton):
         return self.position
 
     def move(self, amount: int, direction: MOVE_DIRECTION) -> POSITION:
-        """Move the cursor towards the specified direction."""
+        """Move the cursor towards the specified direction.
+        :param amount the amount of columns to move.
+        :param direction the direction to move.
+        :return the cursor position after moving.
+        """
         sysout(direction.value[1].format(n=amount), end="")
         row_pos, col_pos = self.position
         match direction:
@@ -86,17 +98,26 @@ class Cursor(metaclass=Singleton):
 
     def erase(self, direction: ERASE_DIRECTION) -> POSITION:
         """Erase the screen following the specified direction.
-        Note: It does not move the cursor along the way."""
+           Note: It does not move the cursor along the way.
+        :param direction the direction to erase the screen.
+        :return the cursor position after erasing.
+        """
         sysout(direction.value[0], end="")
         return self.position
 
     def track(self) -> POSITION:
-        """Track the cursor position."""
+        """Track the cursor position.
+        :return the tracked cursor position.
+        """
         self.position = get_cursor_position() or self.position
         return self.position
 
     def write(self, obj: Any, end: str = "") -> POSITION:
-        """Write the string representation of the object to the screen."""
+        """Write the string representation of the object to the screen.
+        :param obj the object to be written.
+        :param end string appended after the last value, default a newline.
+        :return the cursor position after writing.
+        """
         sysout(obj, end=end)
         text = (str(obj) + end).replace("%EOL%", os.linesep)
         text = VtColor.strip_colors(VtCode.strip_codes(text))
@@ -107,17 +128,24 @@ class Cursor(metaclass=Singleton):
         return self.position
 
     def writeln(self, obj: Any) -> POSITION:
-        """Write the string representation of the object to the screen, appending a new line."""
+        """Write the string representation of the object to the screen, appending a new line.
+        :param obj the object to be written.
+        :return the cursor position after writing.
+        """
         return self.write(obj, end=os.linesep)
 
     def save(self) -> POSITION:
-        """Save the current cursor position and attributes."""
+        """Save the current cursor position and attributes.
+        :return the actual cursor position.
+        """
         sysout(Vt100.save_cursor(), end="")
         self._saved_attrs = self._position, self._bottom
         return self.position
 
     def restore(self) -> POSITION:
-        """Save the current cursor position and attributes."""
+        """Restore the saved cursor position and attributes.
+        :return the cursor position after restoration.
+        """
         sysout(Vt100.restore_cursor(), end="")
         self._position = self._saved_attrs[0]
         self._bottom = self._saved_attrs[1]

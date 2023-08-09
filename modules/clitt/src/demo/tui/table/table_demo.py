@@ -20,11 +20,12 @@ if __name__ == "__main__":
     h = ["string", "number", "boolean", "that is a big integer column header"]
     data = [("One", 1, True, 2), ("Two", 2, False, 3), ("Three, four and five", 3, True, 3)]
     tr = TableRenderer(h, data, "TableRenderer example of usage")
-    tr.adjust_auto_fit()
+    # tr.adjust_cells_auto()  # this is the default adjustment
     # tr.adjust_cells_by_headers()
     # tr.adjust_cells_by_largest_header()
-    tr.adjust_cells_by_largest_cell()
+    # tr.adjust_cells_by_largest_cell()
     # tr.adjust_cells_by_fixed_size(15)
+    # tr.adjust_cells_to_fit_screen()
     tr.set_header_alignment(TextAlignment.CENTER)
     tr.set_header_case(TextCase.KEBAB)
     tr.set_cell_alignment(TextAlignment.LEFT)

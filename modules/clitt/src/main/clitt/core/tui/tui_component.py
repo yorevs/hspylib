@@ -47,6 +47,10 @@ class TUIComponent(ABC):
         return self.terminal.screen.cursor
 
     @property
+    def prefs(self) -> TUIPreferences:
+        return self.screen.preferences
+
+    @property
     def title(self) -> str:
         return self._title
 
@@ -57,10 +61,6 @@ class TUIComponent(ABC):
     @property
     def columns(self) -> int:
         return self.screen.columns
-
-    @property
-    def prefs(self) -> TUIPreferences:
-        return self.screen.preferences
 
     def _prepare_render(self, auto_wrap: bool = False, show_cursor: bool = False) -> None:
         """Prepare the screen for renderization."""

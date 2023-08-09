@@ -44,6 +44,10 @@ class TUIPreferences(Preferences):
         return self.get_preference("title.color", VtColor.ORANGE)
 
     @property
+    def caption_color(self) -> VtColor:
+        return self.get_preference("caption.color", VtColor.WHITE)
+
+    @property
     def text_color(self) -> VtColor:
         return self.get_preference("text.color", VtColor.WHITE)
 

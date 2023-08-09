@@ -60,7 +60,7 @@ class SettingsEntry(CrudEntity):
                 .build() \
             .field() \
                 .label('Value') \
-                .min_max_length(1, 60) \
+                .min_max_length(1, 120) \
                 .validator(InputValidator.custom(r'[^\"\`]')) \
                 .value(xstr(entry.value)) \
                 .build() \
