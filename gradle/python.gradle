@@ -194,10 +194,11 @@ task install(type: Task) {
       include "**/setup.py"
     }.each { File module ->
         def moduleDir = dirName(module)
-        println "Install $project.name : $moduleDir -> $module.path"
+        println "Installing $project.name : $moduleDir"
+        println "Space: ${rootProject.space}"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '--user', '--upgrade', moduleDir
+          commandLine rootProject.python, '-m', 'pip', 'install', '-q', rootProject.space, '--upgrade', moduleDir
         }
       }
   }

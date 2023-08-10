@@ -77,7 +77,7 @@ class TableRenderer:
         self._header_alignment: TextAlignment = TextAlignment.CENTER
         self._cell_alignment: TextAlignment = TextAlignment.LEFT
         self._header_case: TextCase = TextCase.UPPER
-        self._adjust_cells: Callable = self.adjust_cells_auto
+        self._adjust_cells = None
 
         check_argument(self.columns >= 1, "Headers are required")
         self._cell_sizes = [0 for _ in range(self.columns)]
@@ -107,7 +107,7 @@ class TableRenderer:
 
     @cached_property
     def columns(self) -> int:
-        return len(self._headers)
+        return len(self.headers)
 
     @property
     def cell_alignment(self) -> ALIGNMENT_FN:
@@ -128,6 +128,10 @@ class TableRenderer:
     @property
     def data(self) -> Iterable:
         return self._data
+
+    @property
+    def headers(self) -> List[str]:
+        return self._headers
 
     def set_header_alignment(self, alignment: TextAlignment) -> None:
         """Set table headers alignment.
@@ -165,21 +169,21 @@ class TableRenderer:
         :return None
         """
         self._min_cell_size = max(self.DEFAULT_MINIMUM_CELL_SIZE, size)
-        self.set_cell_sizes(*(max(self._cell_sizes[idx], size) for idx, _ in enumerate(self._headers)))
+        self.set_cell_sizes(*(max(self._cell_sizes[idx], size) for idx, _ in enumerate(self.headers)))
 
     def adjust_cells_by_headers(self) -> None:
         """Adjust cell sizes based on the column header length.
         :return None
         """
-        args = [max(self._min_cell_size, len(header)) for header in self._headers]
+        args = [max(self._min_cell_size, len(header)) for header in self.headers]
         self._adjust_cells = partial(self.set_cell_sizes, args)
 
     def adjust_cells_by_largest_header(self) -> None:
         """Adjust cell sizes based on the maximum length of a header.
         :return None
         """
-        max_len = len(max(self._headers))
-        args = [max(self._min_cell_size, max_len) for _ in self._headers]
+        max_len = len(max(self.headers))
+        args = [max(self._min_cell_size, max_len) for _ in self.headers]
         self._adjust_cells = partial(self.set_cell_sizes, args)
 
     def adjust_cells_by_largest_cell(self) -> None:
@@ -189,7 +193,7 @@ class TableRenderer:
         max_len = 0
         for row in self.data:
             max_len = max(max_len, len(max(list(map(str, row)), key=len)))
-        args = [max_len for _ in self._headers]
+        args = [max_len for _ in self.headers]
         self._adjust_cells = partial(self.set_cell_sizes, args)
 
     def adjust_cells_by_fixed_size(self, size: int) -> None:
@@ -197,7 +201,7 @@ class TableRenderer:
         :param size: the fixed cell size.
         :return None
         """
-        args = [size for _ in self._headers]
+        args = [size for _ in self.headers]
         self._adjust_cells = partial(self.set_cell_sizes, args)
 
     def adjust_cells_to_fit_screen(self) -> None:
@@ -212,10 +216,10 @@ class TableRenderer:
         :return None
         """
         sizes = self._cell_sizes
-        for cell, c_size in zip(self.data, sizes):
+        for cell, c_size in zip(self.data or self.headers, sizes):
             sizes = [
-                max(len(self._headers[idx]), max(sizes[idx], max(c_size, len(str(cell[idx])))))
-                for idx, _ in enumerate(self._headers)
+                max(len(self.headers[idx]), max(sizes[idx], max(c_size, len(str(cell[idx])))))
+                for idx, _ in enumerate(self.headers)
             ]
         args = [size for size in sizes]
         self._adjust_cells = partial(self.set_cell_sizes, args)
@@ -237,7 +241,7 @@ class TableRenderer:
         with open(csv_file, "w", encoding="UTF8") as csv_file:
             writer = csv.writer(csv_file, delimiter=delimiter)
             if has_headers:
-                writer.writerow(self._headers)
+                writer.writerow(self.headers)
             writer.writerows(self.data)
 
     def _format_header_row(self) -> str:
@@ -287,7 +291,7 @@ class TableRenderer:
         :param column the specified table column.
         :return the header text at (row, column).
         """
-        return self.header_case(elide_text(self._headers[column], self._cell_size(column)))
+        return self.header_case(elide_text(self.headers[column], self._cell_size(column)))
 
     def _cell_text(self, row: tuple, column: int) -> str:
         """Return a text for the specified cell (row, column).
