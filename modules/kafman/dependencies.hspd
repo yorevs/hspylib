@@ -14,10 +14,11 @@ package: hspylib-hqt
 
 /* Application dependencies */
 
-package: requests
 package: PyQt5
 package: PyQt5-stubs
 package: confluent_kafka
 package: fastavro
 package: jsonschema
 package: avro-python3
+package: requests
+package: urllib3, version: 2.0.0, mode: lt

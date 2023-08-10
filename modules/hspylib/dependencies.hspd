@@ -9,7 +9,6 @@
 
 /* Application dependencies */
 
-package: requests
 package: retry
 package: urllib3
 package: cryptocode
@@ -21,3 +20,5 @@ package: pyparsing
 package: pyperclip
 package: PyYAML
 package: toml
+package: requests
+package: urllib3, version: 2.0.0, mode: lt

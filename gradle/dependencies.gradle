@@ -97,17 +97,17 @@ task installDependencies(type: Task) {
   description = 'Install all required python packages'
   dependsOn syncRequirements
   doLast {
-    def reqs_file = new File("${project.ext.sourceRoot}/main/requirements.txt")
+    def req_file = new File("${project.ext.sourceRoot}/main/requirements.txt")
     println "\nInstalling \"${project.name}\" dependencies"
-    println "Requirements file: \n\t" + reqs_file
+    println "Requirements file: \n\t" + req_file
     println "Packages:"
-    reqs_file.each { dep ->
+    req_file.each { dep ->
       if (dep && ! dep.startsWith("#")) {
         println "  |-" + dep
       }
     }
     def args = [
-      rootProject.python, '-m', 'pip', 'install', '-q', '--upgrade', '-r', reqs_file.toString()
+      rootProject.python, '-m', 'pip', 'install', '-q', '--user', '--upgrade', '-r', req_file.toString()
     ]
     exec {
       commandLine args.flatten()
