@@ -79,17 +79,15 @@ class TableRenderer:
         self._header_case: TextCase = TextCase.UPPER
         self._adjust_cells: Callable = self.adjust_cells_auto
 
-        c_len = len(min(data, key=len))
         check_argument(self.columns >= 1, "Headers are required")
+        self._cell_sizes = [0 for _ in range(self.columns)]
+        self.adjust_cells_auto()
         if data:
+            c_len = len(min(data, key=len))
             check_argument(
                 c_len == self.columns, "Headers and Columns must have the same size: {} vs {}",
                 c_len, self.columns
             )
-            self._cell_sizes = [0 for _ in range(self.columns)]
-            self.adjust_cells_auto()
-        else:
-            self._cell_sizes = []
 
     @property
     def terminal(self) -> Terminal:

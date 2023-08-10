@@ -17,3 +17,4 @@ package: retry
 package: PyMySQL
 package: redis
 package: requests
+package: urllib3, version: 2.0.0, mode: lt
