@@ -106,8 +106,9 @@ task installDependencies(type: Task) {
         println "  |-" + dep
       }
     }
+    println "Space: ${rootProject.space}"
     def args = [
-      rootProject.python, '-m', 'pip', 'install', '-q', '--user', '--upgrade', '-r', req_file.toString()
+      rootProject.python, '-m', 'pip', 'install', '-q', rootProject.space, '--upgrade', '-r', req_file.toString()
     ]
     exec {
       commandLine args.flatten()
@@ -124,7 +125,7 @@ task freezeDependencies(type: Task) {
     def output = new ByteArrayOutputStream()
     exec {
       commandLine rootProject.python, '-m', 'pip', 'freeze', '--all'
-      standardOutput = output;
+      standardOutput = output
     }
     def pipDeps = [:]
     output.toString().split('\n').each { line ->
