@@ -138,12 +138,14 @@ task pypiShow(type: Task) {
     }
     def json = new JsonSlurper().parseText(new File(outFile).getText())
     println("\n--------------------------------------------------------------------------------")
+    println("|-AppName: ${json.info.package_url}")
     println("|-Summary: ${json.info.summary}")
     println("|-Version: ${json.info.version}")
     println("|-License: ${json.info.license}")
     println("|-Python: ${json.info.requires_python}")
-    println("|-Dependencies: ${json.info.requires_dist}")
-    println("|-Keywords: ${json.info.keywords}")
+    println("|-Keywords: \n  ${json.info.keywords ? '#' + json.info.keywords.split(',').join(' #') : 'None'}")
+    println("|-Classifiers: \n  ${json.info.classifiers ? '|-' + json.info.classifiers.join('\n  |-') : 'None'}")
+    println("|-Dependencies: \n  ${json.info.requires_dist ? '|-' + json.info.requires_dist.join('\n  |-') : 'None'} ")
     println("--------------------------------------------------------------------------------")
   }
 }
