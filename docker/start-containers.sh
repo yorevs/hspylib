@@ -41,6 +41,7 @@ startContainers() {
     fi
   done
 
+  # shellcheck disable=SC2207
   all=($(docker ps --format '{{.Names}}'))
   count=${#all[@]}
   [[ "${count}" -gt 0 ]] && timeout $$ $((count * 60))
