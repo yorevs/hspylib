@@ -321,9 +321,9 @@ Thank you for your support <3 !!
 
 - Documentation: [API](docs/api/index.html)
 - License: [MIT](LICENSE.md)
-- Releases: https://pypi.org/project/hspylib/#history
-- Code: https://github.com/yorevs/hspylib
-- Issue tracker: https://github.com/yorevs/hspylib/issues
-- Official chat: https://gitter.im/hspylib/community
-- Contact: https://www.reddit.com/user/yorevs
-- Mailto: [Yorevs](mailto:yorevs@hotmail.com)
+- Releases: [HSPyLib-Releases](https://pypi.org/project/hspylib/#history)
+- Code: [Github](https://github.com/yorevs/hspylib)
+- Issue tracker: [HSPyLib-Issues](https://github.com/yorevs/hspylib/issues)
+- Official chat: [HSPyLib](https://gitter.im/hspylib/community)
+- Contact: [yorevs](https://www.reddit.com/user/yorevs)
+- Mailto: [yorevs](mailto:yorevs@hotmail.com)
