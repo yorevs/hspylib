@@ -12,15 +12,16 @@
 
    Copyright 2023, HsPyLib team
 """
-from functools import lru_cache
+
+from textwrap import dedent
+from typing import List, Optional
 
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
+
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_config import SettingsConfig
 from setman.settings.settings_entry import SettingsEntry
-from textwrap import dedent
-from typing import List, Optional
 
 
 class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
@@ -30,7 +31,6 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
     def database(self) -> str:
         return self._config.database
 
-    @lru_cache
     def find_by_name(self, name: str) -> Optional[SettingsEntry]:
         """Find settings by name."""
         sql = "SELECT * FROM SETTINGS WHERE name = ? ORDER BY name"
@@ -38,7 +38,6 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
 
         return self.to_entity_type(result) if result else None
 
-    @lru_cache
     def search(
         self, name: str | None = None, stype: SettingsType | None = None, limit: int = 500, offset: int = 0
     ) -> List[SettingsEntry]:
@@ -64,17 +63,18 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
             self.execute(sql, name=search_name)
 
     def create_db(self) -> None:
-        """TODO"""
+        """Create the Settings database."""
         self.execute(
             dedent(
                 """
                 CREATE TABLE IF NOT EXISTS SETTINGS
                 (
-                    uuid         TEXT       not null,
-                    name         TEXT       not null,
-                    value        TEXT       not null,
-                    stype        TEXT       not null,
-                    modified     TEXT       not null,
+                    uuid         TEXT               not null,
+                    name         TEXT               not null,
+                    prefix       TEXT  default ""   not null,
+                    value        TEXT  default ""   not null,
+                    stype        TEXT               not null,
+                    modified     TEXT               not null,
 
                     CONSTRAINT UUID_pk PRIMARY KEY (uuid),
                     CONSTRAINT NAME_uk UNIQUE (name)
@@ -110,6 +110,7 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
             Identity(SettingsEntry.SetmanId(entity_dict[0])),
             entity_dict[1],
             entity_dict[2],
-            SettingsType.of_value(entity_dict[3]),
-            entity_dict[4],
+            entity_dict[3],
+            SettingsType.of_value(entity_dict[4]),
+            entity_dict[5],
         )

@@ -33,7 +33,7 @@ import uuid
 class Settings:
     """Class to provide settings interactions."""
 
-    HEADERS = ["uuid", "name", "value", "settings type", "modified"]
+    HEADERS = ["uuid", "name", "prefix", "value", "settings type", "modified"]
 
     def __init__(self, configs: SettingsConfig, preserve: bool = False) -> None:
         self._configs = configs
@@ -54,8 +54,8 @@ class Settings:
     def __getitem__(self, name: str) -> SettingsEntry:
         return self.get(name)
 
-    def __setitem__(self, name: str, item: Tuple[Any, SettingsType]) -> None:
-        self.put(name, item[0], item[1])
+    def __setitem__(self, name: str, item: Tuple[str, Any, SettingsType]) -> None:
+        self.put(name, item[0], item[1], item[2])
 
     @property
     def configs(self) -> SettingsConfig:
@@ -84,28 +84,34 @@ class Settings:
     @lru_cache
     def get(self, name: str) -> Optional[SettingsEntry]:
         """Get setting matching the specified name.
-        :param name: the settings name to get.
+        :param name the settings name to get.
         """
         if name:
             return self._service.get_by_name(name)
         return None
 
     def put(
-        self, name: str | None = None, value: Any | None = None, stype: SettingsType | None = None
+        self,
+        name: str | None = None,
+        prefix: str | None = None,
+        value: Any | None = None,
+        stype: SettingsType | None = None
     ) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
-        :param name: the settings name.
-        :param value: the settings value.
-        :param stype: the settings type.
+        :param name the settings name.
+        :param prefix the settings prefix.
+        :param value the settings value.
+        :param stype the settings type.
         """
         if (found := self._service.get_by_name(name)) and self._preserve:
             log.debug("Setting preserved, and not overwritten: '%s'", found.name)
             return None, None
-        entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, value, stype)
+        entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, prefix, value, stype)
         if any(a is None for a in [name, value, stype]):
             if not (entry := SettingsEntry.prompt(entry)):
                 return None, None
         else:
+            entry.prefix = prefix
             entry.stype = stype.val
             entry.value = value
         entry.modified = now()
@@ -117,7 +123,7 @@ class Settings:
 
     def remove(self, name: str) -> Optional[SettingsEntry]:
         """Delete the specified setting.
-        :param name: the settings name to delete.
+        :param name the settings name to delete.
         """
         if name:
             found = self._service.get_by_name(name)
@@ -130,22 +136,22 @@ class Settings:
     @lru_cache(maxsize=500)
     def search(self, name: str | None = None, stype: SettingsType | None = None) -> List[SettingsEntry]:
         """Search all settings matching criteria.
-        :param name: the settings name to filter.
-        :param stype: the settings type to filter.
+        :param name the settings name to filter.
+        :param stype the settings type to filter.
         """
         return self._service.search(name, stype, self.limit, self.offset)
 
     def clear(self, name: str | None = None, stype: SettingsType | None = None) -> None:
         """Clear all settings from the settings table.
-        :param name: the settings name to filter.
-        :param stype: the settings type to filter.
+        :param name the settings name to filter.
+        :param stype the settings type to filter.
         """
         self._service.clear(name, stype)
         self._clear_caches()
 
     def import_csv(self, filepath: str) -> int:
         """Upsert settings from CSV file into the database.
-        :param filepath: the path of the CSV file to be imported.
+        :param filepath the path of the CSV file to be imported.
         """
         count, csv_file = 0, ensure_endswith(filepath, ".csv")
         check_argument(os.path.exists(filepath), "CSV file does not exist: " + csv_file)
@@ -154,11 +160,12 @@ class Settings:
             for row in csv_reader:
                 if row == self.HEADERS:
                     continue
-                uid, name, value, stype = str(row[0]), str(row[1]), str(row[2]), SettingsType.of_value(row[3])
+                uid, name, prefix, value, stype = \
+                    str(row[0]), str(row[1]), str(row[2]), str(row[3]), SettingsType.of_value(row[4])
                 found = self._service.get_by_name(name)
                 if found and self._preserve:
                     continue
-                entry = SettingsEntry(Identity(SettingsEntry.SetmanId(uid)), name, value, stype)
+                entry = SettingsEntry(Identity(SettingsEntry.SetmanId(uid)), name, prefix, value, stype)
                 self._service.save(entry)
                 count += 1
             self._clear_caches()
@@ -166,9 +173,9 @@ class Settings:
 
     def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
         """Export settings from CSV file into the database.
-        :param filepath: the path of the CSV file to be exported.
-        :param name: the settings name to filter.
-        :param stype: the settings type to filter.
+        :param filepath the path of the CSV file to be exported.
+        :param name the settings name to filter.
+        :param stype the settings type to filter.
         """
         dest_dir, csv_file = dirname(filepath), ensure_endswith(filepath, ".csv")
         check_argument(os.path.exists(dest_dir), "Destination dir does not exist: " + dest_dir)
@@ -181,7 +188,7 @@ class Settings:
 
     def as_environ(self, name: str | None) -> List[str]:
         """Return all settings formatted as bash export environment variables.
-        :param name: the settings name to filter.
+        :param name the settings name to filter.
         """
         data = self.search(name, SettingsType.ENVIRONMENT)
         return list(map(SettingsEntry.to_env_export, data))

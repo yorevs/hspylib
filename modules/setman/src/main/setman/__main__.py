@@ -58,6 +58,7 @@ class Main(TUIApplication):
                 .add_parameter('name', 'the settings name to get.') \
             .argument(SetmanOps.SET.val, 'Upsert the specified setting.') \
                 .add_option('name', 'n', 'name', 'the settings name to set.') \
+                .add_option('prefix', 'x', 'prefix', 'the settings prefix to set.') \
                 .add_option('value', 'v', 'value', 'the settings value to set.') \
                 .add_option('type', 't', 'type', 'the settings type to set.', choices=SettingsType.choices()) \
             .argument(SetmanOps.DEL.val, 'Delete the specified setting.') \
@@ -102,6 +103,7 @@ class Main(TUIApplication):
         return self._setman.execute(
             SetmanOps.of_value(op) if op else None,
             self.get_arg("name"),
+            self.get_arg("prefix"),
             self.get_arg("value"),
             SettingsType.of_value(st) if st else None,
             self.get_arg("simple"),
