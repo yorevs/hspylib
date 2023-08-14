@@ -94,17 +94,17 @@ task listModules(type: Task) {
   }
 }
 
-/* Install hspylib build tools */
+/* Install hspylib build tools using Global space */
 task installBuildTools(type: Task) {
   group = 'Install'
   description = 'Install hspylib build tools'
   doLast {
     println "Ensure pip and upgrading to the latest "
     exec {
-      commandLine rootProject.python, '-m', 'ensurepip', '--default-pip'
+      commandLine rootProject.python, '-m', 'ensurepip', '-U', '--default-pip'
     }
     exec {
-      commandLine rootProject.python, '-m', 'pip', 'install', '-q', '--upgrade', 'pip'
+      commandLine rootProject.python, '-m', 'pip', 'install', '-q', '--no-warn-script-location', '--upgrade', 'pip'
     }
     buildToolsFile.setText("###### Build Tools Files for $project.name ######\n\n")
     println "Installing \"${project.name}\" build tools: "
@@ -113,7 +113,7 @@ task installBuildTools(type: Task) {
       println "  |-${tool.trim()}"
       buildToolsFile.append("${tool.trim()}\n")
     }
-    println "Space: ${project.ext.space}"
+    println "Space: --global"
     exec {
       commandLine rootProject.python, '-m', 'pip', 'install', '-q', project.ext.space, '--upgrade', '-r', buildToolsFile
     }

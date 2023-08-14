@@ -12,17 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
+from collections import namedtuple
+from textwrap import dedent
+from typing import Any, Optional, Union
+
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
-from collections import namedtuple
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
 from hspylib.core.tools.text_tools import environ_name, xstr
 from hspylib.core.zoned_datetime import now
+
 from setman.core.setman_enums import SettingsType
-from textwrap import dedent
-from typing import Any, Optional, Union
 
 
 class SettingsEntry(CrudEntity):
@@ -36,6 +38,7 @@ class SettingsEntry(CrudEntity):
     [%BLUE%{}%NC%]:
             Type: %GREEN%{}%NC%
            Value: %GREEN%{}%NC%
+        Variable: %GREEN%{}%NC%
         Modified: %GREEN%{}%NC%
     """
     )
@@ -60,7 +63,7 @@ class SettingsEntry(CrudEntity):
                 .build() \
             .field() \
                 .label('Value') \
-                .min_max_length(1, 120) \
+                .min_max_length(1, 90) \
                 .validator(InputValidator.custom(r'[^\"\`]')) \
                 .value(xstr(entry.value)) \
                 .build() \
@@ -90,8 +93,8 @@ class SettingsEntry(CrudEntity):
         modified: str = now(),
     ):
         super().__init__(entity_id)
-        self.name: str = name
-        self.value: Any = value
+        self.name: str = name or ''
+        self.value: Any = value or ''
         self.stype: str = stype.val if stype else SettingsType.PROPERTY.val
         self.modified: str = modified
 
@@ -104,7 +107,7 @@ class SettingsEntry(CrudEntity):
     @property
     def environ_name(self) -> str:
         """Return the environment variable representation name of this entry."""
-        return environ_name(self.name)
+        return environ_name(self.name) if self.stype == SettingsType.ENVIRONMENT.val else self.name
 
     def to_string(self, simple_fmt: bool = False) -> str:
         """Return the string representation of this entry.
@@ -116,8 +119,14 @@ class SettingsEntry(CrudEntity):
                 if self.stype == SettingsType.ENVIRONMENT.val
                 else self._SIMPLE_FORMAT.format(self.name, xstr(self.value))
             )
-        return self._DISPLAY_FORMAT.format(self.name, self.stype, xstr(self.value), self.modified)
+        return self._DISPLAY_FORMAT.format(
+            self.name,
+            self.stype,
+            xstr(self.value),
+            self.environ_name,
+            self.modified
+        )
 
-    def to_environ(self) -> str:
+    def to_env_export(self) -> str:
         """Return the bash export command of this entry."""
         return f'export {self.environ_name}="{xstr(self.value)}"'

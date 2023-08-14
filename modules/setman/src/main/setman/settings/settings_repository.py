@@ -12,6 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
+from functools import lru_cache
+
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from setman.core.setman_enums import SettingsType
@@ -28,6 +30,7 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
     def database(self) -> str:
         return self._config.database
 
+    @lru_cache
     def find_by_name(self, name: str) -> Optional[SettingsEntry]:
         """Find settings by name."""
         sql = "SELECT * FROM SETTINGS WHERE name = ? ORDER BY name"
@@ -35,6 +38,7 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
 
         return self.to_entity_type(result) if result else None
 
+    @lru_cache
     def search(
         self, name: str | None = None, stype: SettingsType | None = None, limit: int = 500, offset: int = 0
     ) -> List[SettingsEntry]:

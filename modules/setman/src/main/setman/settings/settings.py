@@ -184,7 +184,7 @@ class Settings:
         :param name: the settings name to filter.
         """
         data = self.search(name, SettingsType.ENVIRONMENT)
-        return list(map(SettingsEntry.to_environ, data))
+        return list(map(SettingsEntry.to_env_export, data))
 
     def _create_db(self) -> bool:
         """Create the settings SQLite DB file."""
