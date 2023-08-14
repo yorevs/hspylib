@@ -12,6 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
+from functools import lru_cache
+
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
 from clitt.core.tui.table.table_enums import TextAlignment
@@ -149,6 +151,7 @@ class Setman(metaclass=Singleton):
         else:
             self._exec_status = ExitStatus.FAILED
 
+    @lru_cache
     def _get_setting(self, name: str, simple_fmt: bool = False) -> None:
         """Get setting matching the specified name.
         :param name: the settings name to get.
@@ -170,6 +173,7 @@ class Setman(metaclass=Singleton):
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name, "%EOL%")
             self._exec_status = ExitStatus.FAILED
 
+    @lru_cache
     def _list_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """List in a table all settings matching criteria.
         :param name: the settings name to filter when listing.
@@ -181,6 +185,7 @@ class Setman(metaclass=Singleton):
         tr.set_cell_alignment(TextAlignment.LEFT)
         tr.render()
 
+    @lru_cache
     def _search_settings(self, name: str | None, stype: SettingsType | None, simple_fmt: bool) -> None:
         """Search and display all settings matching criteria.
         :param name: the settings name to filter when searching.
