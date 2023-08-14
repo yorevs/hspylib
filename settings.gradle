@@ -1,5 +1,6 @@
 rootProject.name = 'HsPyLib'
 
+// Read all directories from modules and assume it's a gradle module
 file('modules').eachDir { dir ->
   include([dir.name])
   project(":${dir.name}").projectDir = dir

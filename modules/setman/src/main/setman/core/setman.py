@@ -49,7 +49,7 @@ class Setman(metaclass=Singleton):
     @staticmethod
     def _prompt(db_file: str) -> Optional[Namespace]:
         """Prompt the user for the settings setup info.
-        :param db_file: the file that will hold all settings (database file).
+        :param db_file the file that will hold all settings (database file).
         :return: a Namespace containing all filled input.
         """
         # fmt: off
@@ -98,6 +98,7 @@ class Setman(metaclass=Singleton):
         self,
         operation: SetmanOps,
         name: str | None,
+        prefix: str | None,
         value: Any | None,
         stype: SettingsType = None,
         simple_fmt: bool = False,
@@ -105,16 +106,19 @@ class Setman(metaclass=Singleton):
         filepath: str | None = None,
     ) -> ExitStatus:
         """Execute the specified operation.
-        :param operation: the operation to execute against the settings.
-        :param name: the settings name.
-        :param value: the settings value.
-        :param stype: the settings type.
-        :param simple_fmt: whether to format the setting when searching.
-        :param preserve: whether to preserve (no overwrite) existing settings.
-        :param filepath: the path of the CSV file to be imported/exported.
+        :param operation the operation to execute against the settings.
+        :param name the settings name.
+        :param prefix the settings prefix.
+        :param value the settings value.
+        :param stype the settings type.
+        :param simple_fmt whether to format the setting when searching.
+        :param preserve whether to preserve (no overwrite) existing settings.
+        :param filepath the path of the CSV file to be imported/exported.
         """
 
-        log.debug("%s Name: %s Value: %s SettingsType: %s", operation, name or "*", "-", stype or "*")
+        log.debug(
+            "<%s> Name: %s  Prefix: %s  Value: %s  SettingsType: %s",
+            operation, name or "*", prefix or '<none>', "-", stype or "*")
         self._settings.preserve = preserve
 
         match operation:
@@ -123,7 +127,7 @@ class Setman(metaclass=Singleton):
             case SetmanOps.SEARCH:
                 self._search_settings(name or "*", stype, simple_fmt)
             case SetmanOps.SET:
-                self._set_setting(name, value, stype)
+                self._set_setting(name, prefix, value, stype)
             case SetmanOps.GET:
                 self._get_setting(name, simple_fmt)
             case SetmanOps.DEL:
@@ -139,22 +143,27 @@ class Setman(metaclass=Singleton):
 
         return self._exec_status
 
-    def _set_setting(self, name: str | None, value: Any | None, stype: SettingsType | None) -> None:
+    def _set_setting(
+        self, name: str | None,
+        prefix: str | None,
+        value: Any | None,
+        stype: SettingsType | None) -> None:
         """Upsert the specified setting.
-        :param name: the settings name.
-        :param value: the settings value.
-        :param stype: the settings type.
+        :param name the settings name.
+        :param value the settings value.
+        :param stype the settings type.
         """
-        found, entry = self.settings.put(name, value, stype)
+        found, entry = self.settings.put(name, prefix, value, stype)
         if entry:
             sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry, "%EOL%")
         else:
             self._exec_status = ExitStatus.FAILED
+        self._clear_caches()
 
     @lru_cache
     def _get_setting(self, name: str, simple_fmt: bool = False) -> None:
         """Get setting matching the specified name.
-        :param name: the settings name to get.
+        :param name the settings name to get.
         :param simple_fmt: whether to format the setting or not.
         """
         if found := self.settings.get(name):
@@ -165,19 +174,20 @@ class Setman(metaclass=Singleton):
 
     def _del_setting(self, name: str) -> None:
         """Delete specified setting.
-        :param name: the settings name to delete.
+        :param name the settings name to delete.
         """
         if found := self.settings.remove(name):
             sysout("%GREEN%Setting deleted: %WHITE%", found, "%EOL%")
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name, "%EOL%")
             self._exec_status = ExitStatus.FAILED
+        self._clear_caches()
 
     @lru_cache
     def _list_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """List in a table all settings matching criteria.
-        :param name: the settings name to filter when listing.
-        :param stype: the settings type to filter when listing.
+        :param name the settings name to filter when listing.
+        :param stype the settings type to filter when listing.
         """
         data = list(map(lambda s: s.values[1:], self.settings.search(name, stype)))
         tr = TableRenderer(self.settings.HEADERS[1:], data, "Systems Settings")
@@ -188,8 +198,8 @@ class Setman(metaclass=Singleton):
     @lru_cache
     def _search_settings(self, name: str | None, stype: SettingsType | None, simple_fmt: bool) -> None:
         """Search and display all settings matching criteria.
-        :param name: the settings name to filter when searching.
-        :param stype: the settings type to filter when searching.
+        :param name the settings name to filter when searching.
+        :param stype the settings type to filter when searching.
         :param simple_fmt: whether to display simple or formatted.
         """
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
@@ -205,8 +215,8 @@ class Setman(metaclass=Singleton):
 
     def _clear_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """Clear all settings.
-        :param name: the settings name to filter when clearing.
-        :param stype: the settings type to filter when clearing.
+        :param name the settings name to filter when clearing.
+        :param stype the settings type to filter when clearing.
         """
         if not name and not stype:
             sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
@@ -220,26 +230,28 @@ class Setman(metaclass=Singleton):
                 f"[name={name or '*'}, stype={stype or '*'}]",
                 "%EOL%",
             )
+        self._clear_caches()
 
     def _import_settings(self, filepath: str) -> None:
         """Import settings from CSV file.
-        :param filepath: the path of the importing file.
+        :param filepath the path of the importing file.
         """
         count = self.settings.import_csv(filepath)
         sysout(f"%EOL%%GREEN%Imported {count} settings from {filepath}! %EOL%")
+        self._clear_caches()
 
     def _export_settings(self, filepath: str, name: str | None = None, stype: SettingsType | None = None) -> None:
         """Import settings from CSV file.
-        :param filepath: the path of the exporting file.
-        :param name: the settings name to filter when exporting.
-        :param stype: the settings type to filter when exporting.
+        :param filepath the path of the exporting file.
+        :param name the settings name to filter when exporting.
+        :param stype the settings type to filter when exporting.
         """
         count = self.settings.export_csv(filepath, name, stype)
         sysout(f"%EOL%%GREEN%Exported {count} settings to {filepath}! %EOL%")
 
     def _source_settings(self, name: str | None, filepath: str | None) -> None:
         """Source (bash export) all environment settings to current shell.
-        :param name: the settings name to filter when sourcing.
+        :param name the settings name to filter when sourcing.
         """
         prefixed = ensure_endswith((name or "").replace("*", "%"), "%")
         data = os.linesep.join(self.settings.as_environ(prefixed))
@@ -251,7 +263,7 @@ class Setman(metaclass=Singleton):
 
     def _setup(self, filepath: str) -> bool:
         """Setup SetMan on the system.
-        :param filepath: the path of the Setman configuration file.
+        :param filepath the path of the Setman configuration file.
         """
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_configs:
             if result := self._prompt(self.HHS_SETMAN_DB_FILE):
@@ -261,3 +273,9 @@ class Setman(metaclass=Singleton):
                 return True
             safe_delete_file(filepath)
             return False
+
+    def _clear_caches(self) -> None:
+        """Clear all program caches."""
+        self._get_setting.cache_clear()
+        self._search_settings.cache_clear()
+        self._list_settings.cache_clear()

@@ -215,14 +215,17 @@ class TableRenderer:
         """Ensure all cells and headers are visible with the minimum size possible.
         :return None
         """
-        sizes = self._cell_sizes
-        for cell, c_size in zip(self.data or self.headers, sizes):
-            sizes = [
-                max(len(self.headers[idx]), max(sizes[idx], max(c_size, len(str(cell[idx])))))
-                for idx, _ in enumerate(self.headers)
-            ]
-        args = [size for size in sizes]
-        self._adjust_cells = partial(self.set_cell_sizes, args)
+        if not self.data:
+            self.adjust_cells_by_headers()
+        else:
+            sizes = self._cell_sizes
+            for cell, c_size in zip(self.data, sizes):
+                sizes = [
+                    max(len(self.headers[idx]), max(sizes[idx], max(c_size, len(str(cell[idx])))))
+                    for idx, _ in enumerate(self.headers)
+                ]
+            args = [size for size in sizes]
+            self._adjust_cells = partial(self.set_cell_sizes, args)
 
     def render(self) -> None:
         """Render the table.

@@ -1,3 +1,5 @@
-5bdb381266ca461191ec2d299cc5630b,demo.settings.four,1,environment,2023-07-05 17:51:10
-1fdfd71e425b4f1d84cf2b3a82561f21,demo.settings.five,VALUE,property,2023-07-05 17:51:10
-fbdbaa5a17464e299063f1c02864cb96,demo.settings.six,0,environment,2023-07-05 17:51:10
+uuid,name,prefix,value,settings type,modified
+003877fe978a4ade9094b2aa30e95f92,demo.settings.one,,1,property,2023-08-14 19:25:38
+5faf773e34a346e0ab63cbb4cde7897f,demo.settings.three,,VALUE,property,2023-08-14 19:25:38
+a654fb771f0c4ae2a7594e8046d02dc5,demo.settings.two,,0,environment,2023-08-14 19:25:38
+,,,
