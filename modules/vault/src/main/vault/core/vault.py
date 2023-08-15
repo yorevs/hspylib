@@ -269,7 +269,7 @@ class Vault:
         vault_file = self._configs.vault_file
         unlocked_vault_file = self._configs.unlocked_vault_file
         backup_file = ensure_endswith(ensure_startswith(f"{os.path.basename(vault_file)}", '.'), '.bak')
-        backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/{backup_file}"
+        backup_file = f"{os.getenv('HHS_BACKUP_DIR', os.getenv('HOME', os.getenv('TEMP', '/tmp')))}/{backup_file}"
         locked_empty = not file_is_not_empty(vault_file)
         unlocked_empty = not file_is_not_empty(unlocked_vault_file)
         if not locked_empty or not unlocked_empty:
@@ -283,7 +283,7 @@ class Vault:
                     shutil.copyfile(backup_file, vault_file)
                     safe_delete_file(unlocked_vault_file)
                 else:
-                    log.warning("No backups found !")
+                    log.error("No backups found !")
                     raise VaultSecurityException(
                         "Unable to either restore or re-lock the vault file. Please manually "
                         + f' backup your secrets and remove the unlocked file "{unlocked_vault_file}"'
