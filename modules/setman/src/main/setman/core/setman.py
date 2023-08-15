@@ -12,7 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-from functools import lru_cache
+
+import logging as log
+import os
+from os.path import basename
+from typing import Any, Optional
 
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
@@ -27,14 +31,10 @@ from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.keyboard import Keyboard
-from os.path import basename
+
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
-from typing import Any, Optional
-
-import logging as log
-import os
 
 
 class Setman(metaclass=Singleton):
@@ -158,9 +158,7 @@ class Setman(metaclass=Singleton):
             sysout(f"%GREEN%Settings {'added' if not found else 'saved'}: %WHITE%", entry, "%EOL%")
         else:
             self._exec_status = ExitStatus.FAILED
-        self._clear_caches()
 
-    @lru_cache
     def _get_setting(self, name: str, simple_fmt: bool = False) -> None:
         """Get setting matching the specified name.
         :param name the settings name to get.
@@ -181,9 +179,7 @@ class Setman(metaclass=Singleton):
         else:
             syserr("%EOL%%YELLOW%No settings found matching: %WHITE%", name, "%EOL%")
             self._exec_status = ExitStatus.FAILED
-        self._clear_caches()
 
-    @lru_cache
     def _list_settings(self, name: str | None, stype: SettingsType | None) -> None:
         """List in a table all settings matching criteria.
         :param name the settings name to filter when listing.
@@ -195,7 +191,6 @@ class Setman(metaclass=Singleton):
         tr.set_cell_alignment(TextAlignment.LEFT)
         tr.render()
 
-    @lru_cache
     def _search_settings(self, name: str | None, stype: SettingsType | None, simple_fmt: bool) -> None:
         """Search and display all settings matching criteria.
         :param name the settings name to filter when searching.
@@ -204,12 +199,22 @@ class Setman(metaclass=Singleton):
         """
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
         if data:
+            l_data = len(data)
+            diff_offset = self.settings.limit - self.settings.offset
+            sysout(
+                "%YELLOW%{} {}%NC%".format(
+                    f"\n-=- Listing {'top' if l_data > diff_offset else 'all'} {min(l_data, diff_offset)} "
+                    f"system settings matching: ",
+                    f"[name={name or '*'}, stype={stype or '*'}] -=-",
+                    "%EOL%"
+                )
+            )
             sysout(os.linesep.join(data))
         else:
             sysout(
                 "%EOL%%YELLOW%No settings found matching: %WHITE%",
                 f"[name={name or '*'}, stype={stype or '*'}]",
-                "%EOL%",
+                "%EOL%"
             )
             self._exec_status = ExitStatus.FAILED
 
@@ -219,7 +224,7 @@ class Setman(metaclass=Singleton):
         :param stype the settings type to filter when clearing.
         """
         if not name and not stype:
-            sysout("%EOL%%ORANGE%All settings will be removed. Are you sure (y/[n])? ")
+            sysout("%EOL%%YELLOW%All settings will be removed. Are you sure (y/[n])? ")
             if (keystroke := Keyboard.wait_keystroke()) and keystroke in [Keyboard.VK_y, Keyboard.VK_Y]:
                 self.settings.clear("*", stype)
                 sysout("%EOL%%ORANGE%!!! All settings have been removed !!!%EOL%")
@@ -230,7 +235,6 @@ class Setman(metaclass=Singleton):
                 f"[name={name or '*'}, stype={stype or '*'}]",
                 "%EOL%",
             )
-        self._clear_caches()
 
     def _import_settings(self, filepath: str) -> None:
         """Import settings from CSV file.
@@ -238,7 +242,6 @@ class Setman(metaclass=Singleton):
         """
         count = self.settings.import_csv(filepath)
         sysout(f"%EOL%%GREEN%Imported {count} settings from {filepath}! %EOL%")
-        self._clear_caches()
 
     def _export_settings(self, filepath: str, name: str | None = None, stype: SettingsType | None = None) -> None:
         """Import settings from CSV file.
@@ -273,9 +276,3 @@ class Setman(metaclass=Singleton):
                 return True
             safe_delete_file(filepath)
             return False
-
-    def _clear_caches(self) -> None:
-        """Clear all program caches."""
-        self._get_setting.cache_clear()
-        self._search_settings.cache_clear()
-        self._list_settings.cache_clear()

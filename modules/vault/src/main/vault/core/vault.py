@@ -17,6 +17,7 @@ from cryptography.fernet import InvalidToken
 from datasource.identity import Identity
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.commons import file_is_not_empty, safe_delete_file, syserr, sysout, touch_file
+from hspylib.core.tools.text_tools import ensure_startswith, ensure_endswith
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
@@ -267,7 +268,8 @@ class Vault:
         """Check existing vault backups and apply a rollback if required."""
         vault_file = self._configs.vault_file
         unlocked_vault_file = self._configs.unlocked_vault_file
-        backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/.{os.path.basename(vault_file)}.bak"
+        backup_file = ensure_endswith(ensure_startswith(f"{os.path.basename(vault_file)}", '.'), '.bak')
+        backup_file = f"{os.getenv('HOME', os.getenv('TEMP', '/tmp'))}/{backup_file}"
         locked_empty = not file_is_not_empty(vault_file)
         unlocked_empty = not file_is_not_empty(unlocked_vault_file)
         if not locked_empty or not unlocked_empty:
