@@ -199,23 +199,25 @@ class Setman(metaclass=Singleton):
         """
         data = list(map(lambda e: e.to_string(simple_fmt), self.settings.search(name, stype)))
         if data:
-            l_data = len(data)
-            diff_offset = self.settings.limit - self.settings.offset
-            sysout(
-                "%YELLOW%{} {}%NC%".format(
-                    f"\n-=- Listing {'top' if l_data > diff_offset else 'all'} {min(l_data, diff_offset)} "
-                    f"system settings matching: ",
-                    f"[name={name or '*'}, stype={stype or '*'}] -=-",
-                    "%EOL%"
+            if not simple_fmt:
+                l_data = len(data)
+                diff_offset = self.settings.limit - self.settings.offset
+                sysout(
+                    "%YELLOW%{} {}%NC%".format(
+                        f"\n-=- Listing {'top' if l_data > diff_offset else 'all'} {min(l_data, diff_offset)} "
+                        f"system settings matching: ",
+                        f"[name={name or '*'}, stype={stype or '*'}] -=-",
+                        "%EOL%"
+                    )
                 )
-            )
             sysout(os.linesep.join(data))
         else:
-            sysout(
-                "%EOL%%YELLOW%No settings found matching: %WHITE%",
-                f"[name={name or '*'}, stype={stype or '*'}]",
-                "%EOL%"
-            )
+            if not simple_fmt:
+                sysout(
+                    "%EOL%%YELLOW%No settings found matching: %WHITE%",
+                    f"[name={name or '*'}, stype={stype or '*'}]",
+                    "%EOL%"
+                )
             self._exec_status = ExitStatus.FAILED
 
     def _clear_settings(self, name: str | None, stype: SettingsType | None) -> None:
