@@ -88,6 +88,9 @@ class TableRenderer:
                 c_len == self.columns, "Headers and Columns must have the same size: {} vs {}",
                 c_len, self.columns
             )
+            self._footer = f':: Displaying {c_len} of {c_len} records'
+        else:
+            self._footer = ':: No data to display'
 
     @property
     def terminal(self) -> Terminal:
@@ -124,6 +127,14 @@ class TableRenderer:
     @property
     def caption(self) -> str:
         return self._caption
+
+    @property
+    def footer(self) -> str:
+        return self._footer
+
+    @footer.setter
+    def footer(self, other: str) -> None:
+        self._footer = other
 
     @property
     def data(self) -> Iterable:
@@ -320,6 +331,7 @@ class TableRenderer:
         """
         magic_num = 4  # this is the length of the starting and ending characters: '|  |'
         line_length, render_line = len(table_line) - magic_num, f"+{table_line[1:-1]}+"
+        self._display_data('')
         if self.caption:
             border_line = render_line.replace("+", "-")
             self._display_data(border_line)
@@ -331,3 +343,5 @@ class TableRenderer:
         self._display_data(render_line)
         self._display_data(os.linesep.join(data_rows) if data_rows else f"| {'<empty>': ^{line_length}} |")
         self._display_data(render_line)
+        if self.footer:
+            self._display_data(self.footer)
