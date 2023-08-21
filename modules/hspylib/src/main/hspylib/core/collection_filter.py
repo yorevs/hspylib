@@ -12,14 +12,15 @@
 
    Copyright 2023, HsPyLib team
 """
+from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union, TypeAlias
+
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote
-from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union
 
 T = TypeVar("T")
 
-FILTER_VALUE = TypeVar("FILTER_VALUE", bound=[int, str, bool, float])
+FilterValue : TypeAlias = Union[int, str, bool, float]
 
 
 class FilterCondition(Enumeration):
@@ -44,7 +45,7 @@ class FilterCondition(Enumeration):
     def __repr__(self) -> str:
         return str(self)
 
-    def matches(self, param_value: FILTER_VALUE, value: FILTER_VALUE) -> bool:
+    def matches(self, param_value: FilterValue, value: FilterValue) -> bool:
         """Whether this filter value matches the specified param."""
         operator = self.value[0]
         if self.name in ["CONTAINS", "DOES_NOT_CONTAIN"]:
@@ -53,7 +54,7 @@ class FilterCondition(Enumeration):
             expression = f"{quote(param_value)} {operator} {quote(value)}"
         return self._allow_type(value) and eval(expression)  # pylint: disable=eval-used
 
-    def _allow_type(self, value: FILTER_VALUE) -> bool:
+    def _allow_type(self, value: FilterValue) -> bool:
         """Whether this filter condition allows the specified value type."""
         try:
             return isinstance(value, self.value[1])
@@ -64,7 +65,7 @@ class FilterCondition(Enumeration):
 class ElementFilter:
     """Represent a single filter condition."""
 
-    def __init__(self, name: str, el_name: str, condition: FilterCondition, el_value: FILTER_VALUE):
+    def __init__(self, name: str, el_name: str, condition: FilterCondition, el_value: FilterValue):
         self.name = name
         self.el_name = el_name
         self.condition = condition
@@ -76,7 +77,7 @@ class ElementFilter:
     def __repr__(self):
         return str(self)
 
-    def key(self) -> Tuple[str, FilterCondition, FILTER_VALUE]:
+    def key(self) -> Tuple[str, FilterCondition, FilterValue]:
         return self.el_name, self.condition, self.el_value
 
     def __hash__(self) -> int:

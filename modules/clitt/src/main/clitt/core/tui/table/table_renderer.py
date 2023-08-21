@@ -12,24 +12,24 @@
 
    Copyright 2023, HsPyLib team
 """
-import csv
-import os
-from functools import reduce, cached_property, partial
-from operator import add
-from typing import Any, Callable, Iterable, List, TypeVar, Tuple
-
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import file_is_not_empty
-from hspylib.core.tools.text_tools import elide_text, ensure_endswith
-
 from clitt.core.term.screen import Screen
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.table.table_enums import TextAlignment, TextCase
 from clitt.core.tui.tui_preferences import TUIPreferences
+from functools import cached_property, partial, reduce
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import file_is_not_empty
+from hspylib.core.tools.text_tools import elide_text, ensure_endswith
+from operator import add
+from typing import Any, Callable, Iterable, List, Tuple, TypeAlias
 
-ALIGNMENT_FN = TypeVar('ALIGNMENT_FN', bound=Callable[[str, int], str])
+import csv
+import os
 
-TEXT_CASE_FN = TypeVar('TEXT_CASE_FN', bound=Callable[[str], str])
+# fmt: off
+AlignmentFn : TypeAlias = Callable[[str, int], str]
+TestCaseFn  : TypeAlias = Callable[[str], str]
+# fmt: on
 
 
 class TableRenderer:
@@ -57,11 +57,7 @@ class TableRenderer:
                 data.append(row)
         return TableRenderer(headers, data, caption)
 
-    def __init__(
-        self,
-        headers: List[str],
-        data: Iterable,
-        caption: str | None = None):
+    def __init__(self, headers: List[str], data: Iterable, caption: str | None = None):
         """
         :param headers: table headers to be displayed.
         :param data: table record set with the selected rows.
@@ -85,12 +81,11 @@ class TableRenderer:
         if data:
             c_len = len(min(data, key=len))
             check_argument(
-                c_len == self.columns, "Headers and Columns must have the same size: {} vs {}",
-                c_len, self.columns
+                c_len == self.columns, "Headers and Columns must have the same size: {} vs {}", c_len, self.columns
             )
-            self._footer = f':: Displaying {c_len} of {c_len} records'
+            self._footer = f":: Displaying {c_len} of {c_len} records"
         else:
-            self._footer = ':: No data to display'
+            self._footer = ":: No data to display"
 
     @property
     def terminal(self) -> Terminal:
@@ -113,15 +108,15 @@ class TableRenderer:
         return len(self.headers)
 
     @property
-    def cell_alignment(self) -> ALIGNMENT_FN:
+    def cell_alignment(self) -> AlignmentFn:
         return self._cell_alignment.val()
 
     @property
-    def header_alignment(self) -> ALIGNMENT_FN:
+    def header_alignment(self) -> AlignmentFn:
         return self._header_alignment.val()
 
     @property
-    def header_case(self) -> TEXT_CASE_FN:
+    def header_case(self) -> TestCaseFn:
         return self._header_case.val()
 
     @property
@@ -171,7 +166,7 @@ class TableRenderer:
         :return None
         """
         max_cell_size = self.screen.columns if self._fits(sizes) else int(self.screen.columns / self.columns)
-        for idx, size in enumerate(sizes[:self.columns]):
+        for idx, size in enumerate(sizes[: self.columns]):
             self._cell_sizes[idx] = min(max_cell_size, max(self._min_cell_size, size))
 
     def set_min_cell_size(self, size: int) -> None:
@@ -262,10 +257,7 @@ class TableRenderer:
         """Format the table header using the defined preferences.
         :return the formatted header row.
         """
-        header_cols = [
-            self.header_alignment(self._header_text(idx), self._cell_sizes[idx])
-            for idx in self._columns
-        ]
+        header_cols = [self.header_alignment(self._header_text(idx), self._cell_sizes[idx]) for idx in self._columns]
         return f"| {' | '.join(header_cols)} |"
 
     def _format_data_rows(self) -> List[str]:
@@ -331,12 +323,12 @@ class TableRenderer:
         """
         magic_num = 4  # this is the length of the starting and ending characters: '|  |'
         line_length, render_line = len(table_line) - magic_num, f"+{table_line[1:-1]}+"
-        self._display_data('')
+        self._display_data("")
         if self.caption:
             border_line = render_line.replace("+", "-")
             self._display_data(border_line)
-            self._display_data("| " + self.prefs.caption_color.placeholder, end='')
-            self._display_data(f"{elide_text(self.caption, line_length): ^{line_length}}", end='')
+            self._display_data("| " + self.prefs.caption_color.placeholder, end="")
+            self._display_data(f"{elide_text(self.caption, line_length): ^{line_length}}", end="")
             self._display_data("%NC%" + " |")
         self._display_data(render_line)
         self._display_data(header_line)

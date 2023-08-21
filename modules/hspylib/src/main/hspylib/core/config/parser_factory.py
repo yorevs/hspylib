@@ -12,18 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
+import os
+import re
 from abc import ABC
 from configparser import ConfigParser
 from functools import partial
-from hspylib.core.tools.dict_tools import flatten_dict
-from typing import Any, Callable, Dict, TextIO, TypeVar
+from typing import Any, Callable, Dict, TextIO, TypeAlias
 
-import os
-import re
 import toml
 import yaml
 
-PROPERTIES = TypeVar("PROPERTIES", bound=[Dict[str, Any]])
+from hspylib.core.tools.dict_tools import flatten_dict
+
+Properties : TypeAlias = Dict[str, Any]
 
 
 class ParserFactory(ABC):
@@ -32,14 +33,14 @@ class ParserFactory(ABC):
     class PropertyParser:
         """Represent a property parser."""
 
-        def __init__(self, parser: Callable[[TextIO], PROPERTIES]):
+        def __init__(self, parser: Callable[[TextIO], Properties]):
             self._parser = parser
 
-        def parse(self, file_handler: TextIO) -> PROPERTIES:
+        def parse(self, file_handler: TextIO) -> Properties:
             return self._parser(file_handler)
 
     @staticmethod
-    def _read_properties(file_handler: TextIO) -> PROPERTIES:
+    def _read_properties(file_handler: TextIO) -> Properties:
         """Reads properties from properties file (key and element pairs) from the input list."""
         all_lines = list(map(str.strip, filter(None, file_handler.readlines())))
         # fmt: off
@@ -54,7 +55,7 @@ class ParserFactory(ABC):
         # fmt: off
 
     @staticmethod
-    def _read_cfg_or_ini(file_handler: TextIO) -> PROPERTIES:
+    def _read_cfg_or_ini(file_handler: TextIO) -> Properties:
         """Reads properties from a cfg or ini file (key and element pairs) from the input list."""
         all_lines = list(map(str.strip, filter(None, file_handler.readlines())))
         string = os.linesep.join(all_lines)
@@ -66,12 +67,12 @@ class ParserFactory(ABC):
         return all_cfgs
 
     @staticmethod
-    def _read_yaml(file_handler: TextIO) -> PROPERTIES:
+    def _read_yaml(file_handler: TextIO) -> Properties:
         """Reads properties from a yaml file (key and element pairs) from the input list."""
         return flatten_dict(yaml.safe_load(file_handler))
 
     @staticmethod
-    def _read_toml(file_handler: TextIO) -> PROPERTIES:
+    def _read_toml(file_handler: TextIO) -> Properties:
         """Reads properties from a toml file (key and element pairs) from the input list."""
         return flatten_dict(toml.load(file_handler))
 

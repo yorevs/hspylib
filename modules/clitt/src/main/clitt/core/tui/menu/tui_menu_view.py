@@ -12,8 +12,8 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.term.cursor import Cursor
-from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
+from clitt.core.term.commons import Direction
+from clitt.core.tui.menu.tui_menu import OnTrigger_Cb, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from typing import Callable, Optional
 
@@ -31,10 +31,10 @@ class TUIMenuView(TUIMenu):
         display_text: Optional[str] = None,
     ):
         super().__init__(parent, title or "Menu View", tooltip or f"Access the '{title}' view")
-        self._on_render: ON_TRIGGER_CB = self._display_content
+        self._on_render: OnTrigger_Cb = self._display_content
         self._content: str = display_text or f"%ED0%This is a view: {self.title}"
 
-    def on_render(self, on_render: str | ON_TRIGGER_CB) -> None:
+    def on_render(self, on_render: str | OnTrigger_Cb) -> None:
         if isinstance(on_render, str):
             self._content = on_render
             self._on_render = self._display_content
@@ -52,6 +52,6 @@ class TUIMenuView(TUIMenu):
         self.draw_navbar(self.navbar())
 
     def _display_content(self) -> None:
-        self.cursor.erase(Cursor.Direction.DOWN)
+        self.cursor.erase(Direction.DOWN)
         self.writeln(self._content)
         self.wait_keystroke()

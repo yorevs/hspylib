@@ -13,14 +13,15 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
+from clitt.core.term.commons import Direction, Portion
 from clitt.core.tui.tui_component import TUIComponent
 from functools import cached_property
 from hspylib.modules.cli.keyboard import Keyboard
-from typing import List, Optional, TypeVar
+from typing import List, Optional, TypeAlias, TypeVar
 
 T = TypeVar("T")
+
+MChooseItems: TypeAlias = List[T]
 
 
 class MenuChoose(TUIComponent):
@@ -32,7 +33,7 @@ class MenuChoose(TUIComponent):
 
     MIN_ROWS = 3
 
-    def __init__(self, title: str, items: List[T], checked: bool):
+    def __init__(self, title: str, items: MChooseItems, checked: bool):
         super().__init__(title)
         self.items = items
         self.show_from = 0
@@ -46,7 +47,7 @@ class MenuChoose(TUIComponent):
     def digits(self) -> List[Keyboard]:
         return Keyboard.digits()
 
-    def execute(self) -> Optional[List[T]]:
+    def execute(self) -> Optional[MChooseItems]:
         if len(self.items) == 0:
             return None
 
@@ -69,7 +70,7 @@ class MenuChoose(TUIComponent):
                 break  # When the index is greater than the number of items, stop rendering
 
             option_line = str(self.items[idx])
-            self.cursor.erase(Screen.Portion.LINE)
+            self.cursor.erase(Portion.LINE)
             # Print the selector if the index is currently selected
             selector = self.draw_selector(idx == self.sel_index)
             mark = self.prefs.checked_icon if self.sel_options[idx] == 1 else self.prefs.unchecked_icon
@@ -130,8 +131,8 @@ class MenuChoose(TUIComponent):
             self.write(f"{keystroke.value if keystroke else ''}")
             index_len += 1
         # Erase the index typed by the user
-        self.cursor.move(index_len, Cursor.Direction.LEFT)
-        self.cursor.erase(Cursor.Direction.RIGHT)
+        self.cursor.move(index_len, Direction.LEFT)
+        self.cursor.erase(Direction.RIGHT)
         if typed_index and 1 <= int(typed_index) <= length:
             self.show_to = max(int(typed_index), self.diff_index)
             self.show_from = self.show_to - self.diff_index

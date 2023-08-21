@@ -22,10 +22,10 @@ from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import eol
 from typing import TypeVar
 
-AwesomeClass = TypeVar("AwesomeClass")
+C = TypeVar("C")
 
 
-def demo_icons(awesome: AwesomeClass = Awesome, split_columns: int = 16) -> None:
+def demo_icons(awesome: C = Awesome, split_columns: int = 16) -> None:
     """TODO"""
     for i, (v, n) in enumerate(zip(awesome.values(), awesome.names())):
         sysout(f"{n}: {v:2}", end=eol(i, split_columns))

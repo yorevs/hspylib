@@ -12,18 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
+import logging as log
+import os
+from pathlib import Path
+from textwrap import dedent
+from types import NoneType
+from typing import Optional, TypeAlias, Union
+
 from hspylib.core.enums.charset import Charset
 from hspylib.core.exception.exceptions import ResourceNotFoundError, SourceNotFoundError
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
-from pathlib import Path
-from textwrap import dedent
-from typing import Optional, TypeVar
 
-import logging as log
-import os
-
-AnyPath = TypeVar("AnyPath", bound=[Path | str | None])
+AnyPath : TypeAlias = Union[Path, str, NoneType]
 
 
 class Classpath(metaclass=Singleton):
@@ -31,12 +32,16 @@ class Classpath(metaclass=Singleton):
 
     INSTANCE = None
 
-    def __init__(self, source_root: AnyPath = None, run_dir: AnyPath = None, resource_dir: AnyPath = None):
-        if source_root:
-            check_state(Path(str(source_root)).exists(), "source_root must exist")
+    def __init__(
+        self,
+        source_root: AnyPath = None,
+        run_dir: AnyPath = None,
+        resource_dir: AnyPath = None):
 
+        if source_root:
+            check_state(Path(str(source_root)).exists(), "source_root is not an existing path")
         if run_dir:
-            check_state(Path(str(run_dir)).exists(), "run_dir must exist")
+            check_state(Path(str(run_dir)).exists(), "run_dir is not an existing path")
 
         self.source_root = Path(os.getenv("SOURCE_ROOT", str(source_root or os.curdir)))
         self.run_dir = Path(str(run_dir or self.source_root))

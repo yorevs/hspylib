@@ -13,16 +13,15 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
+from clitt.core.term.commons import Direction, Portion
 from clitt.core.tui.mdashboard.dashboard_builder import DashboardBuilder
 from clitt.core.tui.mdashboard.dashboard_item import DashboardItem
 from clitt.core.tui.tui_component import TUIComponent
 from hspylib.core.preconditions import check_state
 from hspylib.modules.cli.keyboard import Keyboard
-from typing import List, Optional, TypeVar
+from typing import List, Optional, TypeAlias
 
-DashboardMatrix = TypeVar("DashboardMatrix", bound=List[List[str]])
+DashboardMatrix: TypeAlias = List[List[str]]
 
 
 class MenuDashBoard(TUIComponent):
@@ -87,7 +86,7 @@ class MenuDashBoard(TUIComponent):
                 idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL
             )
 
-        self.cursor.erase(Screen.Portion.LINE)
+        self.cursor.erase(Portion.LINE)
         self.cursor.move_to(column=1)
         self.draw_navbar(self.navbar())
         self._re_render = False
@@ -131,16 +130,16 @@ class MenuDashBoard(TUIComponent):
                 # Print current cell
                 self.write(f"{item.icon if cur_cell == self.ICN else cur_cell}")
             # Move to the next the next row
-            self.cursor.move(1, Cursor.Direction.DOWN)
-            self.cursor.move(num_cols, Cursor.Direction.LEFT)
+            self.cursor.move(1, Direction.DOWN)
+            self.cursor.move(num_cols, Direction.LEFT)
         if item_idx > 0 and (item_idx + 1) % self._items_per_line() == 0:
             # Break the line
-            self.cursor.move(1, Cursor.Direction.DOWN)
-            self.cursor.move(num_cols * self._items_per_line(), Cursor.Direction.LEFT)
+            self.cursor.move(1, Direction.DOWN)
+            self.cursor.move(num_cols * self._items_per_line(), Direction.LEFT)
         elif item_idx + 1 < len(self._items):
             # Continue on the same line
-            self.cursor.move(num_rows, Cursor.Direction.UP)
-            self.cursor.move(num_cols, Cursor.Direction.RIGHT)
+            self.cursor.move(num_rows, Direction.UP)
+            self.cursor.move(num_cols, Direction.RIGHT)
 
     def _items_per_line(self) -> int:
         screen_columns = self.screen.columns - self.COLUMN_OFFSET

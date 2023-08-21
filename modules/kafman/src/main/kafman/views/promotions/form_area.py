@@ -15,7 +15,7 @@
 
 from collections import defaultdict
 from hqt.promotions.hstacked_widget import HStackedWidget
-from kafman.core.schema.widget_utils import INPUT_VALUE
+from kafman.core.schema.widget_utils import InputValue
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QAbstractScrollArea, QFrame, QScrollArea, QWidget
 from typing import Union
@@ -29,7 +29,7 @@ class FormArea(QScrollArea):
     keyPressed = pyqtSignal(int)
 
     @staticmethod
-    def _is_not_empty(value: Union[INPUT_VALUE, dict]) -> bool:
+    def _is_not_empty(value: Union[InputValue, dict]) -> bool:
         if isinstance(value, (list, dict)):
             return True
         return str(value) != ""

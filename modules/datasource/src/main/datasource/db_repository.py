@@ -18,21 +18,21 @@ from datasource.crud_repository import CrudRepository
 from datasource.db_configuration import DBConfiguration
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from retry import retry
-from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar
+from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar, TypeAlias
 
 import contextlib
 
 # fmt: off
-# Stereotypes
-Connection  = TypeVar("Connection", bound=Any)
-Cursor      = TypeVar("Cursor", bound=Any)
-Session     = TypeVar("Session", bound=Any)
-ResultSet   = TypeVar("ResultSet", bound=Iterable)
-# fmt: on
 
+# Stereotypes
+Connection  : TypeAlias = Any
+Cursor      : TypeAlias = Any
+Session     : TypeAlias = Any
+ResultSet   : TypeAlias = Iterable
 # Generics
-E = TypeVar("E", bound=CrudEntity)
-C = TypeVar("C", bound=DBConfiguration)
+E           = TypeVar("E", bound=CrudEntity)
+C           = TypeVar("C", bound=DBConfiguration)
+# fmt: on
 
 
 class DBRepository(Generic[E, C], CrudRepository[E], metaclass=AbstractSingleton):

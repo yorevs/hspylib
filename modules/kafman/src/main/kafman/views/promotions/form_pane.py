@@ -20,7 +20,7 @@ from hqt.promotions.hframe import HFrame
 from hqt.promotions.hlistwidget import HListWidget
 from hqt.promotions.hstacked_widget import HStackedWidget
 from hspylib.core.preconditions import check_argument, check_not_none
-from kafman.core.schema.widget_utils import INPUT_VALUE, INPUT_WIDGET, WidgetUtils
+from kafman.core.schema.widget_utils import InputValue, InputWidget, WidgetUtils
 from kafman.views.promotions.form_area import FormArea
 from PyQt5.QtWidgets import (QCheckBox, QDoubleSpinBox, QFrame, QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget)
@@ -41,7 +41,7 @@ class FormPane(HFrame):
     _forms = defaultdict()
 
     @staticmethod
-    def _field_value(widget: INPUT_WIDGET) -> Optional[INPUT_VALUE]:
+    def _field_value(widget: InputWidget) -> Optional[InputValue]:
         """TODO"""
 
         widget_type = widget.__class__
@@ -92,7 +92,7 @@ class FormPane(HFrame):
     def parent_name(self) -> Optional[str]:
         return self._parent_form.name() if self._parent_form else None
 
-    def add_field(self, field_name: str, label: QLabel, req_label: QLabel, widget: INPUT_WIDGET, row: int) -> None:
+    def add_field(self, field_name: str, label: QLabel, req_label: QLabel, widget: InputWidget, row: int) -> None:
         """TODO"""
 
         check_not_none(widget)

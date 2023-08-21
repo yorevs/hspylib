@@ -1,8 +1,9 @@
 from clitt.core.exception.exceptions import NotATerminalError
+from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import is_debugging
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from shutil import get_terminal_size
-from typing import Callable, Tuple, TypeVar, Union
+from typing import Callable, Tuple, TypeAlias, Union
 
 import logging as log
 import re
@@ -10,15 +11,33 @@ import sys
 import termios
 import tty
 
-DIMENSION = TypeVar("DIMENSION", bound=Tuple[int, int])
+# fmt: off
+Dimension       : TypeAlias = Tuple[int, int]
+Position        : TypeAlias = Tuple[int, int]
+Resize_Cb       : TypeAlias = Callable[[None], None]
+MoveDirection   : TypeAlias = "Direction"
+EraseDirection  : TypeAlias = Union["Direction", "Portion"]
+# fmt: on
 
-POSITION = TypeVar("POSITION", bound=Tuple[int, int])
 
-CB_RESIZE = TypeVar("CB_RESIZE", bound=Callable[[None], None])
+class Direction(Enumeration):
+    """Provide a base class for the cursor direction."""
 
-MOVE_DIRECTION = TypeVar("MOVE_DIRECTION", bound="Cursor.Direction")
+    # fmt: off
+    UP          = '%ED1%', '%CUU({n})%'   # Cursor up (line)
+    RIGHT       = '%EL0%', '%CUF({n})%'   # Cursor right (forward)
+    DOWN        = '%ED0%', '%CUD({n})%'   # Cursor down (line)
+    LEFT        = '%EL1%', '%CUB({n})%'   # Cursor left (backward)
+    # fmt: on
 
-ERASE_DIRECTION = TypeVar("ERASE_DIRECTION", bound=Union["Cursor.Direction", "Screen.Portion"])
+
+class Portion(Enumeration):
+    """Provide a base class for the portions of the screen."""
+
+    # fmt: off
+    SCREEN      = '%ED2%', ''   # Entire screen (screen)
+    LINE        = '%EL2%', ''   # Entire line (line)
+    # fmt: on
 
 
 def get_dimensions(fallback: Tuple[int, int] = (24, 80)) -> Tuple[int, int]:

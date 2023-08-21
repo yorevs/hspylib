@@ -14,19 +14,27 @@
 """
 
 from abc import ABC
-from hqt.promotions.hcombobox import HComboBox
-from hqt.promotions.hlistwidget import HListWidget
-from hspylib.core.exception.exceptions import InvalidStateError
+from typing import List, Union, TypeAlias
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
-from typing import List, TypeVar, Union
+from hqt.promotions.hcombobox import HComboBox
+from hqt.promotions.hlistwidget import HListWidget
+from hspylib.core.exception.exceptions import InvalidStateError
 
-INPUT_WIDGET = TypeVar(
-    "INPUT_WIDGET", QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget
-)
+InputWidget : TypeAlias = Union[
+    QWidget,
+    HComboBox,
+    QLineEdit,
+    QSpinBox,
+    QDoubleSpinBox,
+    QToolButton,
+    QCheckBox,
+    HListWidget
+]
 
-INPUT_VALUE = TypeVar("INPUT_VALUE", int, str, bool, float, list)
+InputValue : TypeAlias = Union[int, str, bool, float, list]
 
 
 class WidgetUtils(ABC):
@@ -48,12 +56,12 @@ class WidgetUtils(ABC):
     }
 
     @staticmethod
-    def get_widget_type(field_type: str) -> INPUT_WIDGET:
+    def get_widget_type(field_type: str) -> InputWidget:
         return WidgetUtils.QWIDGET_TYPE_MAP[field_type]
 
     @staticmethod
     def setup_widget(
-        widget: INPUT_WIDGET, doc: str = None, symbols: list = None, default: Union[str, int, float, bool] = None
+        widget: InputWidget, doc: str = None, symbols: list = None, default: Union[str, int, float, bool] = None
     ) -> QWidget:
         """Return the QWidget that the field is displayed at the schema form"""
 
