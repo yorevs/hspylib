@@ -25,7 +25,7 @@ import os
 class Preferences(metaclass=AbstractSingleton):
     """General purpose bas class to provide preference management."""
 
-    def __init__(self, prefix: str = ''):
+    def __init__(self, prefix: str = ""):
         self._prefix = prefix
         self._overrides = {}
 

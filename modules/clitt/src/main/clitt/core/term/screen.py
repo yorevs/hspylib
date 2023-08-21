@@ -1,7 +1,6 @@
-from clitt.core.term.commons import CB_RESIZE, DIMENSION, get_dimensions
+from clitt.core.term.commons import Dimension, get_dimensions, Portion, Resize_Cb
 from clitt.core.term.cursor import Cursor
 from clitt.core.tui.tui_preferences import TUIPreferences
-from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from threading import Timer
@@ -17,20 +16,12 @@ class Screen(metaclass=Singleton):
 
     RESIZE_WATCH_INTERVAL = 0.5
 
-    class Portion(Enumeration):
-        """Provide a base class for the portions of the screen."""
-
-        # fmt: off
-        SCREEN      = '%ED2%', ''   # Entire screen (screen)
-        LINE        = '%EL2%', ''   # Entire line (line)
-        # fmt: on
-
     def __init__(self):
         self._preferences: TUIPreferences = TUIPreferences.INSTANCE
-        self._dimension: DIMENSION = get_dimensions()
+        self._dimension: Dimension = get_dimensions()
         self._cursor: Cursor = Cursor.INSTANCE or Cursor()
         self._resize_timer: Optional[Timer] = None
-        self._cb_watchers: List[CB_RESIZE] = []
+        self._cb_watchers: List[Resize_Cb] = []
         self._alternate: bool = False
         self._resize_watcher()
 
@@ -45,7 +36,7 @@ class Screen(metaclass=Singleton):
         return self._preferences
 
     @property
-    def dimension(self) -> DIMENSION:
+    def dimension(self) -> Dimension:
         return self._dimension
 
     @property
@@ -77,9 +68,9 @@ class Screen(metaclass=Singleton):
     def clear(self) -> None:
         """Clear terminal and move the cursor to HOME position (0, 0)."""
         self.cursor.home()
-        self.cursor.erase(Screen.Portion.SCREEN)
+        self.cursor.erase(Portion.SCREEN)
 
-    def add_watcher(self, watcher: CB_RESIZE) -> None:
+    def add_watcher(self, watcher: Resize_Cb) -> None:
         """Add a resize watcher."""
         self._cb_watchers.append(watcher)
         if not self._resize_timer:
@@ -89,7 +80,7 @@ class Screen(metaclass=Singleton):
         """Add a watcher for screen resizes. If a resize is detected, the callback is called with the
         new dimension."""
         if self._cb_watchers and threading.main_thread().is_alive():
-            dimension: DIMENSION = get_dimensions()
+            dimension: Dimension = get_dimensions()
             self._resize_timer = Timer(self.RESIZE_WATCH_INTERVAL, self._resize_watcher)
             if dimension != self._dimension:
                 list(map(lambda cb_w: cb_w(), self._cb_watchers))

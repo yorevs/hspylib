@@ -19,9 +19,9 @@ from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput_utils import get_selected, MASK_SYMBOLS, toggle_selected, unpack_masked
 from hspylib.core.exception.exceptions import InvalidInputError
 from hspylib.core.tools.text_tools import xstr
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeAlias
 
-FIELD_VALIDATOR_FNC = TypeVar("FIELD_VALIDATOR_FNC", bound=Callable[["FormField"], bool])
+FieldValidator_Fn: TypeAlias = Callable[["FormField"], bool]
 
 
 class FormField:
@@ -37,7 +37,7 @@ class FormField:
         access_type: AccessType = AccessType.READ_WRITE,
         value: Any = "",
         input_validator: InputValidator = InputValidator.anything(),
-        field_validator: FIELD_VALIDATOR_FNC = None,
+        field_validator: FieldValidator_Fn = None,
         tooltip: str = None,
     ):
         self._label = label

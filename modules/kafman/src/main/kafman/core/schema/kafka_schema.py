@@ -28,7 +28,7 @@ from json.decoder import JSONDecodeError
 from kafman.core.exception.exceptions import InvalidSchemaError
 from kafman.core.schema.schema_field import SchemaField
 from kafman.core.schema.schema_type import SchemaType
-from kafman.core.schema.widget_utils import INPUT_WIDGET
+from kafman.core.schema.widget_utils import InputWidget
 from kafman.views.promotions.form_pane import FormPane
 from PyQt5.QtWidgets import QLabel
 from typing import List, Tuple
@@ -68,7 +68,7 @@ class KafkaSchema(ABC):
         return str(uuid4())
 
     @staticmethod
-    def create_schema_form_row_widget(field: SchemaField) -> Tuple[QLabel, QLabel, INPUT_WIDGET]:
+    def create_schema_form_row_widget(field: SchemaField) -> Tuple[QLabel, QLabel, InputWidget]:
         """Create a schema form row widget"""
 
         check_not_none(field)

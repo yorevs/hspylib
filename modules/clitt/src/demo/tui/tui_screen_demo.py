@@ -12,15 +12,13 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.term.commons import get_cursor_position
-from clitt.core.term.cursor import Cursor
+from clitt.core.term.commons import Direction, get_cursor_position, Portion
 from clitt.core.term.screen import Screen
-from clitt.core.term.terminal import Terminal
 from time import sleep
 
 
 def draw(scr: Screen):
-    scr.cursor.erase(Screen.Portion.SCREEN)
+    scr.cursor.erase(Portion.SCREEN)
     scr.cursor.home()
     scr.cursor.writeln("." * 40)
     scr.cursor.writeln("." * 40)
@@ -35,20 +33,20 @@ if __name__ == "__main__":
     screen = Screen()
     draw(screen)
     sleep(0.5)
-    screen.cursor.erase(Cursor.Direction.UP)
+    screen.cursor.erase(Direction.UP)
     sleep(0.5)
     draw(screen)
     sleep(0.5)
-    screen.cursor.erase(Cursor.Direction.DOWN)
+    screen.cursor.erase(Direction.DOWN)
     sleep(0.5)
     draw(screen)
-    screen.cursor.erase(Cursor.Direction.LEFT)
+    screen.cursor.erase(Direction.LEFT)
     sleep(0.5)
     draw(screen)
-    screen.cursor.erase(Cursor.Direction.RIGHT)
+    screen.cursor.erase(Direction.RIGHT)
     sleep(0.5)
     draw(screen)
-    screen.cursor.erase(Screen.Portion.LINE)
+    screen.cursor.erase(Portion.LINE)
     sleep(0.5)
     draw(screen)
     screen.cursor.move_to(screen.cursor.bottom[0], screen.cursor.bottom[1])
@@ -58,16 +56,16 @@ if __name__ == "__main__":
     sleep(0.5)
     screen.cursor.write("@")
     sleep(0.5)
-    screen.cursor.move(5, Cursor.Direction.RIGHT)
+    screen.cursor.move(5, Direction.RIGHT)
     screen.cursor.write("#")
     sleep(0.5)
-    screen.cursor.move(2, Cursor.Direction.DOWN)
+    screen.cursor.move(2, Direction.DOWN)
     screen.cursor.write("#")
     sleep(0.5)
-    screen.cursor.move(5, Cursor.Direction.LEFT)
+    screen.cursor.move(5, Direction.LEFT)
     screen.cursor.write("#")
     sleep(0.5)
-    screen.cursor.move(2, Cursor.Direction.UP)
+    screen.cursor.move(2, Direction.UP)
     screen.cursor.write("#")
     sleep(0.5)
     screen.cursor.end()

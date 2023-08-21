@@ -14,24 +14,25 @@
 """
 
 from clitt.core.tui.menu.tui_menu import TUIMenu
-from clitt.core.tui.menu.tui_menu_action import ON_TRIGGER_CB, TUIMenuAction
+from clitt.core.tui.menu.tui_menu_action import OnTrigger_Cb, TUIMenuAction
 from clitt.core.tui.menu.tui_menu_item import TUIMenuItem
 from clitt.core.tui.menu.tui_menu_view import TUIMenuView
 from hspylib.core.preconditions import check_not_none
-from typing import List, TypeVar, Union
+from typing import List, TypeAlias, Union
 
-AnyBuilder = TypeVar(
-    "AnyBuilder",
-    bound=Union[
-        "TUIMenuFactory.TUIMenuBuilder", "TUIMenuFactory.TUIMenuItemBuilder", "TUIMenuFactory.TUIMenuViewBuilder"
-    ],
-)
+MenuBuilder: TypeAlias = Union[
+    "TUIMenuFactory.TUIMenuBuilder", "TUIMenuFactory.TUIMenuItemBuilder", "TUIMenuFactory.TUIMenuViewBuilder"
+]
 
 
 class TUIMenuFactory:
+    """TODO"""
+
     _main_menu = None
 
     class TUIMenuBuilder:
+        """TODO"""
+
         def __init__(self, parent: "TUIMenuFactory", main_menu: TUIMenuItem):
             check_not_none((parent, main_menu))
             self._parent = parent
@@ -50,7 +51,11 @@ class TUIMenuFactory:
             return self._parent
 
     class TUIMenuItemBuilder:
-        def __init__(self, parent: AnyBuilder, parent_item: TUIMenuItem, title: str = None, tooltip: str | None = None):
+        """TODO"""
+
+        def __init__(
+            self, parent: MenuBuilder, parent_item: TUIMenuItem, title: str = None, tooltip: str | None = None
+        ):
             check_not_none((parent, parent_item))
             self._parent = parent
             self._menu_item = TUIMenuItem(parent_item, title, tooltip)
@@ -66,29 +71,37 @@ class TUIMenuFactory:
         def with_view(self, title: str, tooltip: str | None = None) -> "TUIMenuFactory.TUIMenuViewBuilder":
             return TUIMenuFactory.TUIMenuViewBuilder(self, self._menu_item, title, tooltip)
 
-        def then(self) -> AnyBuilder:
+        def then(self) -> MenuBuilder:
             return self._parent
 
     class TUIMenuViewBuilder:
-        def __init__(self, parent: AnyBuilder, parent_item: TUIMenuItem, title: str = None, tooltip: str | None = None):
+        """TODO"""
+
+        def __init__(
+            self, parent: MenuBuilder, parent_item: TUIMenuItem, title: str = None, tooltip: str | None = None
+        ):
             check_not_none((parent, parent_item))
             self._parent = parent
             self._menu_view = TUIMenuView(parent_item, title, tooltip)
             parent_item.add_items(self._menu_view)
 
-        def on_render(self, on_render: str | ON_TRIGGER_CB) -> "TUIMenuFactory.TUIMenuItemBuilder":
+        def on_render(self, on_render: str | OnTrigger_Cb) -> "TUIMenuFactory.TUIMenuItemBuilder":
             self._menu_view.on_render(on_render)
             return self._parent
 
     class TUIMenuActionBuilder:
-        def __init__(self, parent: AnyBuilder, parent_item: TUIMenuItem, title: str = None, tooltip: str | None = None):
+        """TODO"""
+
+        def __init__(
+            self, parent: MenuBuilder, parent_item: TUIMenuItem, title: str = None, tooltip: str | None = None
+        ):
             check_not_none((parent, parent_item))
             self._parent = parent
             self._menu_action = TUIMenuAction(parent_item, title, tooltip)
             self._parent_item = parent_item
             parent_item.add_items(self._menu_action)
 
-        def on_trigger(self, action: ON_TRIGGER_CB) -> "TUIMenuFactory.TUIMenuItemBuilder":
+        def on_trigger(self, action: OnTrigger_Cb) -> "TUIMenuFactory.TUIMenuItemBuilder":
             check_not_none(action)
             self._menu_action.on_trigger(action)
             return self._parent

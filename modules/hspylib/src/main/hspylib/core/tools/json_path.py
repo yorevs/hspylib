@@ -13,12 +13,12 @@
    Copyright 2023, HsPyLib team
 """
 
-from pyparsing import unicode
-from typing import Any, TypeVar
-
 import re
+from typing import Any, TypeAlias, Union
 
-JSON_ELEMENT = TypeVar("JSON_ELEMENT", bound=[list, dict, unicode])
+from pyparsing import unicode
+
+JsonElement : TypeAlias = Union[list, dict, unicode]
 
 
 class JsonPath:
@@ -41,8 +41,8 @@ class JsonPath:
         self.pat_sub_expr_val = None
 
     def _find_next_element(
-        self, root_element: JSON_ELEMENT, match_name: str, match_value: Any = None, fetch_parent: bool = False
-    ) -> JSON_ELEMENT:
+        self, root_element: JsonElement, match_name: str, match_value: Any = None, fetch_parent: bool = False
+    ) -> JsonElement:
         """Find the next element in the list matching the specified value."""
 
         selected_element = root_element
@@ -74,8 +74,8 @@ class JsonPath:
         return selected_element
 
     def _find_in_sub_expr(
-        self, sub_expr: JSON_ELEMENT, sub_sel_el: JSON_ELEMENT, pat_subst_expr_val: Any, fetch_parent: bool = False
-    ) -> JSON_ELEMENT:
+        self, sub_expr: JsonElement, sub_sel_el: JsonElement, pat_subst_expr_val: Any, fetch_parent: bool = False
+    ) -> JsonElement:
         """Find the element in the sub-expressions."""
 
         for nextSubExpr in sub_expr:
@@ -88,7 +88,7 @@ class JsonPath:
         return sub_sel_el
 
     # pylint: disable=too-many-branches,consider-using-f-string
-    def select(self, root_element: JSON_ELEMENT, search_path: str, fetch_parent: bool = False) -> JSON_ELEMENT:
+    def select(self, root_element: JsonElement, search_path: str, fetch_parent: bool = False) -> JsonElement:
         """
         Get the json element through it's path. Returned object is either [dict, list or unicode].
 

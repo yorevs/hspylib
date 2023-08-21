@@ -1,13 +1,13 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-datasource v0.9.42
+# hspylib-datasource v0.9.43
 #
 # Package: demo.phonebook.entity
 """Package initialization."""
 
 __all__ = [
-    'company', 
-    'contact_forms', 
-    'person'
+    'Company', 
+    'Person', 
+    'contact_forms'
 ]
-__version__ = '0.9.42'
+__version__ = '0.9.43'

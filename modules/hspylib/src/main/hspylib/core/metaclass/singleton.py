@@ -13,15 +13,15 @@
    Copyright 2023, HsPyLib team
 """
 
-from abc import ABCMeta
-from hspylib.core.exception.exceptions import HSBaseException
-from hspylib.core.preconditions import check_not_none
-from typing import Any, Type, TypeVar, Union
-
 import logging as log
 import sys
+from abc import ABCMeta
+from typing import Any, Type, Union, TypeAlias
 
-SINGLETON = TypeVar("SINGLETON", bound=Union[Type, "Singleton"])
+from hspylib.core.exception.exceptions import HSBaseException
+from hspylib.core.preconditions import check_not_none
+
+SingletonClass : TypeAlias = Union[Type, "Singleton"]
 
 
 class Singleton(Type):
@@ -46,12 +46,12 @@ class Singleton(Type):
         return Singleton._instances[mcs.__name__]
 
     @classmethod
-    def has_instance(cls, clazz: SINGLETON) -> bool:
+    def has_instance(cls, clazz: SingletonClass) -> bool:
         """Whether the class has an instance or not."""
         return clazz.__name__ in cls._instances
 
     @classmethod
-    def del_instance(cls, clazz: SINGLETON) -> None:
+    def del_instance(cls, clazz: SingletonClass) -> None:
         """Deletes the singleton instance. This method should be used only for testing purposes."""
         if any(m in sys.modules for m in ["unittest", "pytest"]):
             if Singleton.has_instance(clazz):

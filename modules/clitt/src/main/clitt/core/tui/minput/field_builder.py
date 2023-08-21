@@ -13,7 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 from clitt.core.tui.minput.access_type import AccessType
-from clitt.core.tui.minput.form_field import FIELD_VALIDATOR_FNC, FormField
+from clitt.core.tui.minput.form_field import FieldValidator_Fn, FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput_utils import get_selected, MASK_SYMBOLS, unpack_masked, VALUE_SEPARATORS
@@ -84,7 +84,7 @@ class FieldBuilder:
         return self
 
     def validator(
-        self, input_validator: InputValidator = None, field_validator: FIELD_VALIDATOR_FNC = None
+        self, input_validator: InputValidator = None, field_validator: FieldValidator_Fn = None
     ) -> "FieldBuilder":
         self._validator = input_validator, field_validator or self._validate_field
         return self

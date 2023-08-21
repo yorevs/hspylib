@@ -14,9 +14,7 @@
 """
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.term.commons import get_cursor_position
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
+from clitt.core.term.commons import Direction, get_cursor_position
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.minput import minput_utils as mu
 from clitt.core.tui.minput.form_builder import FormBuilder
@@ -89,7 +87,7 @@ class MenuInput(TUIComponent):
             self._render_field(field)
             self._render_details(field, field_length)
 
-        self.cursor.erase(Cursor.Direction.DOWN)
+        self.cursor.erase(Direction.DOWN)
         self.draw_navbar(self.navbar())
         self._re_render = False
         self._set_cursor_pos()
@@ -287,6 +285,6 @@ class MenuInput(TUIComponent):
         Terminal.set_enable_echo()
         # Erase the message after the timeout
         self.cursor.move_to(self.cur_row, err_pos)
-        self.cursor.erase(Cursor.Direction.RIGHT)
+        self.cursor.erase(Direction.RIGHT)
         Terminal.set_show_cursor()
         self._re_render = True

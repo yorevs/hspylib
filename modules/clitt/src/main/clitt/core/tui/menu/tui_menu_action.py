@@ -12,7 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.tui.menu.tui_menu import ON_TRIGGER_CB, TUIMenu
+from clitt.core.tui.menu.tui_menu import OnTrigger_Cb, TUIMenu
 from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from typing import Optional
 
@@ -36,12 +36,12 @@ class TUIMenuAction(TUIMenu):
         parent: TUIMenu,
         title: Optional[str] = None,
         tooltip: Optional[str] = None,
-        on_trigger: ON_TRIGGER_CB = None,
+        on_trigger: OnTrigger_Cb = None,
     ):
         super().__init__(parent, title, tooltip)
         self._parent = parent
-        self._on_trigger: ON_TRIGGER_CB = on_trigger or super()._default_trigger_cb
+        self._on_trigger: OnTrigger_Cb = on_trigger or super()._default_trigger_cb
 
-    def on_trigger(self, cb_on_trigger: ON_TRIGGER_CB) -> None:
+    def on_trigger(self, cb_on_trigger: OnTrigger_Cb) -> None:
         """Setter for the on_trigger callback. It is called when a menu item is triggered."""
         self._on_trigger = cb_on_trigger

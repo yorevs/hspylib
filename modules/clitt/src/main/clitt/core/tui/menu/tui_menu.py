@@ -21,9 +21,9 @@ from clitt.core.tui.minput.minput import minput
 from clitt.core.tui.tui_component import TUIComponent
 from hspylib.core.namespace import Namespace
 from hspylib.modules.cli.keyboard import Keyboard
-from typing import Callable, Optional, TypeVar
+from typing import Callable, Optional, TypeAlias
 
-ON_TRIGGER_CB = TypeVar("ON_TRIGGER_CB", bound=Callable[["TUIMenu"], Optional["TUIMenu"]])
+OnTrigger_Cb: TypeAlias = Callable[["TUIMenu"], Optional["TUIMenu"]]
 
 
 class TUIMenu(TUIComponent, ABC):
@@ -53,7 +53,7 @@ class TUIMenu(TUIComponent, ABC):
         parent: Optional["TUIMenu"] = None,
         title: str = "",
         tooltip: str = "",
-        default_on_trigger_cb: ON_TRIGGER_CB = None,
+        default_on_trigger_cb: OnTrigger_Cb = None,
     ):
         super().__init__(title)
         self._tooltip = tooltip
