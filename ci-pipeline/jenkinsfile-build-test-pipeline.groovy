@@ -1,5 +1,16 @@
 #!/usr/bin/env groovy
 
+def allModules = [
+  'cfman',
+  'clitt',
+  'datasource',
+  'firebase',
+  'hspylib',
+  'kafman',
+  'setman',
+  'vault'
+]
+
 pipeline {
   agent {
     node {
@@ -12,9 +23,6 @@ pipeline {
     ansiColor('xterm')
   }
 
-  environment {
-  }
-
   stages {
 
     stage('Pre Build Actions') {
@@ -24,17 +32,31 @@ pipeline {
     }
 
     stage('Build') {
-      steps {
-        script {
-          sh "./gradlew -g . clean build"
+      failFast true
+      parallel {
+        stage('HSPyLib - Core') {
+          steps {
+            script {
+              allModules.each { module ->
+                sh "./gradlew -g . ${module}:clean ${module}:buildOnly ${params.gradle_debug_params}"
+              }
+            }
+          }
         }
       }
     }
 
-    stage('Unit Tests') {
-      steps {
-        script {
-          sh sh "./gradlew -g . check"
+    stage('Install and Test') {
+      failFast true
+      parallel {
+        stage('HSPyLib - Core') {
+          steps {
+            script {
+              allModules.each { module ->
+                sh "./gradlew -g . ${module}:installModule ${module}:check ${params.gradle_debug_params}"
+              }
+            }
+          }
         }
       }
     }
