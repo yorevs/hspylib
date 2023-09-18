@@ -12,16 +12,19 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.zoned_datetime import now_ms
-from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
+import sys
+import unittest
 from time import sleep
 
 import keyring
-import sys
-import unittest
+
+from hspylib.core.decorator.decorators import integration_test
+from hspylib.core.zoned_datetime import now_ms
+from hspylib.modules.cache.ttl_keyring_be import TTLKeyringBE
 
 
-class TestTextTools(unittest.TestCase):
+@integration_test
+class TestTTLKeyring(unittest.TestCase):
     TEST_SERVICE = "test-srv"
     TEST_USER = "test-un"
 
@@ -49,5 +52,5 @@ class TestTextTools(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestTextTools)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestTTLKeyring)
     unittest.TextTestRunner(verbosity=2, failfast=True, stream=sys.stdout).run(suite)
