@@ -69,8 +69,8 @@ jobs:
     - name: Publish and tag revision
       if: inputs.tag_version
       run: |
-        version="$(awk '/./{line=$0} END{print line}' .version)"
         bumpver update "--${{ inputs.release_type }}"
+        version="$(awk '/./{line=$0} END{print line}' .version)"
         git add '.version' 'bumpver.toml'
         git commit -m "[@${{ github.actor }}] ${{ inputs.comment }}"
         git push origin HEAD
