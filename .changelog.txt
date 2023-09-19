@@ -1,6 +1,9 @@
 New HSPyLib Revision: New HSPyLib v1.12
 Changelog: 
 ------------------------------------------------------------
+  4ab24d06 2023-09-19 Fixed the wrong version number publish  
+  ec3539dc 2023-09-19 Fixed the publish action  
+  3cc69001 2023-09-19 Fixed publish action  
   1ab1f6db 2023-09-19 Updated changelog before releasing v1.12  
   f3a53e99 2023-09-19 [@yorevs] Improve build-test github action  
   8d389bed 2023-09-19 [@yorevs] AUTO updated build & check badges  
