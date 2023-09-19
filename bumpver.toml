@@ -9,4 +9,4 @@ push = false
 [bumpver.file_patterns]
 "bumpver.toml" = ['current_version = "{version}"']
 ".version" = ["{version}"]
-
+"README.md" = ["release/v{version}/gray"]
