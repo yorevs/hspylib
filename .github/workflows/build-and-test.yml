@@ -4,13 +4,23 @@
 name: Python application
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ "master" ]
+    branches:
+      - '**'
+    paths:
+      - 'modules/**'
+  fork:
+    branches:
+      - '**'
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - '**'
+    paths:
+      - 'modules/**'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
 
@@ -37,3 +47,14 @@ jobs:
         run: pip install --upgrade pip
       - name: Execute Gradle build
         run: ./gradlew clean install build
+      - name: Commit badges
+        run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+          if [[ -z $(git status --porcelain) ]]; then
+            echo 'Build/Check badges are the same, skipping commit.'
+          else
+            git add '*-badge.svg'
+            git commit -m "[@${{ github.actor }}] AUTO updated build & check badges"
+            git push origin HEAD
+          fi
