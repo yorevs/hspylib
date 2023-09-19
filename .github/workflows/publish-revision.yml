@@ -1,0 +1,78 @@
+name: publish-revision
+run-name: HSPyLib publish by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      gradle_debug_params:
+        description: 'Gradle debug parameters'
+        default: ''
+        required: false
+        type: string
+      comment:
+        description: 'Publish description'
+        default: 'New HSPyLib '
+        required: false
+        type: string
+      tag_version:
+        description: 'Tag this version ?'
+        type: boolean
+        required: true
+        default: false
+      release_type:
+        description: 'Major/Minor or Patch only update ?'
+        type: choice
+        required: true
+        default: 'patch'
+        options:
+          - 'patch'
+          - 'minor'
+          - 'major'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 11
+    - uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: '7.4'
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Install Python tools
+      run: ./gradlew installBuildTools ${gradle_debug_params}
+
+    - name: Fetch revision details
+      run: |
+        git fetch --prune --unshallow
+        echo "Publishing new HSPyLib revision"
+        echo "New HSPyLib Revision: ${{ inputs.comment }}" > '.changelog.txt'
+        echo "Changelog: " >> '.changelog.txt'
+        echo "------------------------------------------------------------" >> '.changelog.txt'
+        ./gradlew changelog ${gradle_debug_params} | grep -E "^'[0-9a-z]{7}" | sed -r "s/^'|'$/  /g" >> '.changelog.txt'
+
+    - name: Create changelog file
+      run: |
+        cat '.changelog.txt'
+        git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+        git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+        git add '.changelog.txt'
+
+    - name: Publish and tag revision
+      if: inputs.tag_version
+      run: |
+        version="$(awk '/./{line=$0} END{print line}' .version)"
+        bumpver update "--${{ inputs.release_type }}"
+        git add '.version' 'bumpver.toml'
+        git commit -m "[@${{ github.actor }}] ${{ inputs.comment }}"
+        git push origin HEAD
+        git tag -a "v$version" -m "New HSPyLib revision version $version"
+        git push origin "v$version"
