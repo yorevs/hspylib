@@ -6,7 +6,7 @@
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
 [![Donate](https://badgen.net/badge/paypal/donate/yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
-[![Release](https://badgen.net/badge/release/v0.11.201/gray)](docs/CHANGELOG.md#unreleased)
+[![Release](https://badgen.net/badge/release/v0.12.0/gray)](docs/CHANGELOG.md#unreleased)
 [![Checks](check-badge.svg)](check-badge.svg)
 
 HsPyLib is a Python library that will elevate your experience to another level. It relies on well known principles as
