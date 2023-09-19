@@ -2,108 +2,74 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog][kac] and this project adheres to
-[Semantic Versioning][semver].
+The format is based on [Keep a Changelog][kac] and this project adheres to [Semantic Versioning][semver].
 
-[kac]: https://keepachangelog.com/en/1.0.0/
+    [kac]: https://keepachangelog.com/en/1.0.0/
+    [semver]: https://semver.org/
 
-[semver]: https://semver.org/
+    ## Unreleased
+
+    ### Added
+
+    ### Fixed
+
+    ### Updated
+
+    ### Removed
 
 ## Unreleased
 
 ### Added
 
-### Changed
-
 ### Fixed
+
+### Updated
+
+### Removed
 
 ---
 
-## v0.11.126 - 2022-12-06
+## v0.11.1 - 2022-12-06
 
 ### Added
 
 * Added missing docs for public release.
 * Added a new project datasource that was removed from the core library.
-* Firebase security check.
+* Added Firebase security check.
 
-### Changed
+### Fixed
 
-* Upgraded to gradle 7.4.2
-* Vault now uses SQLite database instead of a simple file.
-* Kafman accept schemas.
-* Moved all applications to the new arguments framework.
+* Fixed Various bugfixes
+
+### Updated
+
+* Updated Upgraded to gradle 7.4.2.
+* Updated Vault now uses SQLite database instead of a simple file.
+* Updated Kafman accept schemas.
+* Updated Moved all applications to the new arguments framework.
 * Updated publication docs.
-* Refactoring to match a final package structure.
-* Discontinued submodule versioner since bumpver already does what we need.
-
-### Fixed
-
-* Various bugfixes
+* Updated Refactoring to match a final package structure.
+* Updated Discontinued submodule versioner since bumpver already does what we need.
 
 ---
 
-## v0.10.9 - 2021-05-03
+## v0.10.1 - 2021-05-03
 
 ### Added
 
-* Added SendMsg widget
-* Added create widget mode for hspylib app
-* Added Pruni widget scratch
-* Added widgets manager
-* Added minput type "masked"
-* Added minput type "select"
-* Added versioner app draft
-* Added draft for git and versioning
-* Added unittests for application
-* Added docgen.gradle extension
-* Added py file headers
-* Added Time Calc widget
-* Added Terminal module
-
-### Changed
-
-* Improve minput to return an object with the fields instead of a dict
-* Finished SendMsg widget. Improved with argument parser
-* Updated Doc headers, formatting, import optimize and adjustments on menu extra
-* Additional improvements for menu -> extra
-* Improve SendMsg widget
-* Improve calc widget with masked input
-* Moved keyboard to cli package
-* Removed inner classes from minput
-* Removed inner classes from dashboard
-* Improved mselect and mchoose to match minput and mdashboard
-* Renamed hspylib addins to addons
-* Finished application FW
-* Improved versioner
-* Improved exceptions
-* Improved cfman application
-* Improved return types
-* Reformat code + sync usage messages with sample.
-* Change docgen to avoid replacing existing headers
-* Removed ui package, creating cli under modules. Creating add-ins for main hspylib app. Moving some other files into a
-  proper place
-
-### Fixed
-
-* Code and pylint cleanup
-* Fixed setup to classify as Linux based kernels
-* Renamed addins to addons at manifest.md
-* Renamed all enum packages to enums, to avoid the AttributeError (name shadowing)
-* Fixed menu_extra exit that was not re-showing cursor and ++version
-* Fixed input validators for minput
-* Fixed minput to remove the mask after value was validated
-* Pylint cleanup
-* Fixed the position of the error message when validating the entire form.
-* Bugfix version string in template.
-* Small bugfix about appman.
-
----
-
-## 0.10.3 - 2021-04-27
-
-### Added
-
+* Added SendMsg widget.
+* Added create widget mode for hspylib app.
+* Added Pruni widget scratch.
+* Added widgets manager.
+* Added minput type "masked".
+* Added minput type "select".
+* Added versioner app draft.
+* Added draft for git and versioning.
+* Added unittests for application.
+* Added docgen.gradle extension.
+* Added py file headers.
+* Added Time Calc widget.
+* Added Terminal module.
 * Added support for ini and yaml for Properties.
 * Added dashboard icons.
 * Added a unit test for application framework.
@@ -114,35 +80,68 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 * Added PyLint and pylint cleanup.
 * Added mdashboard demo.
 
-### Changed
-
-* Change hspylib app to use current dir instead of HOME folder and add a test template.
-* Properties upgrade.
-* Moving and renaming application module.
-* Moving usage and welcome messages to a separate file.
-* Removing main try catch blocks.
-* Updated helps according to the new apps FW.
-* Upgrade gradle to 7.0.
-* Refactored main hspylib app to fit the new application FW.
-* Improve hspylib applications.
-* Improve parse parameters and options.
-* Improving app framework. Missing conditional arguments.
-* Restructured apps to match manager structure.
-* Changed dependencies, that will not have any task due to new hspylib manager app.
-* Improved mdashboard.
-* Grant +x for main.py.
-* Application FW upgrade.
-* Improved logging.
-
 ### Fixed
 
+* Fixed Code and pylint cleanup.
+* Fixed setup to classify as Linux based kernels.
+* Fixed menu_extra exit that was not re-showing cursor and ++version.
+* Fixed input validators for minput
+* Fixed minput to remove the mask after value was validated.
+* Fixed Pylint errors.
+* Fixed the position of the error message when validating the entire form.
+* Fixed Bugfix version string in template.
+* Fixed Small bugfix about appman.
 * Fixed setup to match python guidelines.
-* Fixed, comments and exception tune.
+* Fixed comments and exception tune.
 * Fixed percent operation for calculator.
 * Fixed vault, firebase and cfman according to the new application framework.
 * Fixed name conventions.
-* MDashboard bugfixes.
+* Fixed MDashboard bugfixes.
 * Fixed some minor bugs.
+
+### Updated
+
+* Updated Improve minput to return an object with the fields instead of a dict.
+* Updated Finished SendMsg widget. Improved with argument parser.
+* Updated Doc headers, formatting, import optimize and adjustments on menu extra.
+* Updated Additional improvements for menu -> extra.
+* Updated Improved SendMsg widget.
+* Updated Improved calc widget with masked input.
+* Updated Moved keyboard to cli package.
+* Updated Improved mselect and mchoose to match minput and mdashboard.
+* Updated Renamed hspylib addins to addons.
+* Updated Finished application FW.
+* Updated Improved versioner.
+* Updated Improved exceptions.
+* Updated Improved cfman application.
+* Updated Improved return types.
+* Updated Reformat code + sync usage messages with sample.
+* Updated docgen to avoid replacing existing headers.
+* Updated Renamed addins to addons at manifest.md.
+* Updated Renamed all enum packages to enums, to avoid the AttributeError (name shadowing).
+* Updated hspylib app to use current dir instead of HOME folder and add a test template.
+* Updated Properties upgrade.
+* Updated Moving and renaming application module.
+* Updated Moving usage and welcome messages to a separate file.
+* Updated helps according to the new apps FW.
+* Updated Upgrade gradle to 7.0.
+* Updated Refactored main hspylib app to fit the new application FW.
+* Updated Improve hspylib applications.
+* Updated Improve parse parameters and options.
+* Updated Improving app framework. Missing conditional arguments.
+* Updated Restructured apps to match manager structure.
+* Updated dependencies, that will not have any task due to new hspylib manager app.
+* Updated Improved mdashboard.
+* Updated Grant +x for main.py.
+* Updated Application FW upgrade.
+* Updated Improved logging.
+
+### Removed
+
+* Removed inner classes from minput
+* Removed inner classes from dashboard
+* Removed ui package, creating cli under modules. Creating add-ins for main hspylib app. Moving some other files into a proper place
+* Removed main try catch blocks.
 
 ---
 
