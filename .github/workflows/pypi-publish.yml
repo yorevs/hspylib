@@ -17,63 +17,29 @@ on:
         options:
           - 'pypi-test'
           - 'pypi-prod'
-      module-cfman:
-        description: 'Publish CFMan module ?'
-        default: false
+      module:
+        description: 'Publish which HSPyLib module ?'
+        default: 'all'
         required: true
-        type: boolean
-      module-clitt:
-        description: 'Publish Clitt module ?'
-        default: false
-        required: true
-        type: boolean
-      module-datasource:
-        description: 'Publish Datasource module ?'
-        default: false
-        required: true
-        type: boolean
-      module-firebase:
-        description: 'Publish Firebase module ?'
-        default: false
-        required: true
-        type: boolean
-      module-hqt:
-        description: 'Publish HQT module ?'
-        default: false
-        required: true
-        type: boolean
-      module-hspylib:
-        description: 'Publish HSPyLib module ?'
-        default: false
-        required: true
-        type: boolean
-      module-kafman:
-        description: 'Publish Kafman module ?'
-        default: false
-        required: true
-        type: boolean
-      module-setman:
-        description: 'Publish Setman module ?'
-        default: false
-        required: true
-        type: boolean
-      module-vault:
-        description: 'Publish Vault module ?'
-        default: false
-        required: true
+        type: choice
+        options:
+          - "all"
+          - "cfman"
+          - "clitt",
+          - "datasource"
+          - "firebase"
+          - "hqt"
+          - "hspylib"
+          - "kafman"
+          - "setman"
+          - "vault"
+
 
 permissions:
   contents: read
 
 jobs:
   pypi-publish:
-    strategy:
-      matrix:
-        module: [
-          "hspylib", "cfman", "clitt",
-          "datasource", "firebase", "hqt",
-          "kafman", "setman", "vault"
-        ]
     runs-on: ubuntu-latest
     environment: ${{ inputs.pypi_env }}
     env:
@@ -95,9 +61,13 @@ jobs:
         python-version: '3.10'
     - name: Install Python tools
       run: ./gradlew installBuildTools ${gradle_debug_params}
-    - name: Publish to PyPi
-      if:  inputs["${{ matrix.module }}"]
+    - name: Publish module to PyPi
+      if:  inputs.module != "all"
       run: |
-        echo "Publishing ${{ matrix.module }} to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }} ..."
+        echo "Publishing ${{ inputs.module }} to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
+    - name: Publish all modules to PyPi
+      if:  inputs.module == "all"
+      run: |
+        echo "Publishing all modules to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
 
 
