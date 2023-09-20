@@ -64,9 +64,10 @@ jobs:
       if: ${{ inputs.module != 'all' }}
       run: |
         echo "Publishing ${{ inputs.module }} to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
+        ./gradlew publish pypiShow ${gradle_debug_params}
     - name: Publish all modules to PyPi
       if: ${{ inputs.module == 'all' }}
       run: |
         echo "Publishing all modules to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
-
+        ./gradlew "${{ inputs.module }}:publish" "${{ inputs.module }}:pypiShow" ${gradle_debug_params}
 
