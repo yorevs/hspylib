@@ -1,5 +1,5 @@
 name: publish
-run-name: HSPyLib build-and-test [@${{ github.actor }}]
+run-name: HSPyLib publish [@${{ github.actor }}]
 
 on:
   workflow_dispatch:
@@ -35,6 +35,8 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      VERSION: ''
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
@@ -66,13 +68,16 @@ jobs:
         git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
         git add '.changelog.txt'
 
-    - name: Publish and tag revision
-      if: inputs.tag_version
+    - name: Publish
       run: |
         bumpver update "--${{ inputs.release_type }}"
         version="$(awk '/./{line=$0} END{print line}' .version)"
-        git add '.version' 'bumpver.toml'
-        git commit -m "[@${{ github.actor }}] ${{ inputs.comment }}"
+        echo "VERSION=$version" >> $GITHUB_ENV
+        git commit -a -m "[@${{ github.actor }}] ${{ inputs.comment }}"
         git push origin HEAD
-        git tag -a "v$version" -m "New HSPyLib revision version $version"
-        git push origin "v$version"
+
+    - name: Tag revision
+      if: inputs.tag_version
+      run: |
+        git tag -a "v${{ env.VERSION }}" -m "New HSPyLib revision v${{ env.VERSION }}"
+        git push origin "v${{ env.VERSION }}"
