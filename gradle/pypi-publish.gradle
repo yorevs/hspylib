@@ -9,8 +9,8 @@
 import groovy.json.JsonSlurper
 
 ext {
-  pypiRepository = System.getenv("PYPI_REPOSITORY") ?: 'https://test.pypi.org/legacy/'
-  pypiModuleUrl = "https://pypi.org/pypi/${app_name}/json"
+  pypiRepository = System.getenv("PYPI_REPOSITORY") ?: 'https://test.pypi.org/legacy'
+  pypiModuleUrl = System.getenv("PYPI_MODULE_URL") ?: 'https://test.pypi.org/pypi'
   pypiUsername = System.getenv("PYPI_USERNAME") ?: ''
   pypiPassword = System.getenv("PYPI_PASSWORD") ?: ''
 }
@@ -130,8 +130,9 @@ task pypiShow(type: Task) {
   description = "Show PyPi module details"
   doLast {
     def tempDir = System.getenv("TEMP") ?: '/tmp'
-    def url = project.ext.pypiModuleUrl
+    def url = project.ext.pypiModuleUrl + "/${app_name}/json"
     def outFile = "${tempDir}/${app_name}-info.json"
+    println("PyPi Instance: " + url)
     exec {
       commandLine 'curl', '-s', '-o', outFile, '-O', url
     }
