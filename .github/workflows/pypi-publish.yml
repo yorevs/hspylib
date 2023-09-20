@@ -23,17 +23,16 @@ on:
         required: true
         type: choice
         options:
-          - "all"
-          - "cfman"
-          - "clitt",
-          - "datasource"
-          - "firebase"
-          - "hqt"
-          - "hspylib"
-          - "kafman"
-          - "setman"
-          - "vault"
-
+          - 'all'
+          - 'cfman'
+          - 'clitt'
+          - 'datasource'
+          - 'firebase'
+          - 'hqt'
+          - 'hspylib'
+          - 'kafman'
+          - 'setman'
+          - 'vault'
 
 permissions:
   contents: read
