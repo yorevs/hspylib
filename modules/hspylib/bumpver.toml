@@ -8,7 +8,6 @@ push = false
 
 [bumpver.file_patterns]
 "bumpver.toml" = ['current_version = "{version}"']
-"build-info.properties" = ["app.version = {version}"]
 "gradle.properties" = ["app_version = '{version}'"]
 "src/main/hspylib/.version" = ["{version}"]
 "../../README.md" = ["release/v{version}/gray"]
