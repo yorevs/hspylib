@@ -1,5 +1,5 @@
 name: publish-revision
-run-name: HSPyLib publish by @${{ github.actor }}
+run-name: HSPyLib build-and-test [@${{ github.actor }}]
 
 on:
   workflow_dispatch:
