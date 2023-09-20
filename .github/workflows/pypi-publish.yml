@@ -10,7 +10,7 @@ on:
         required: false
         type: string
       pypi_env:
-        description: 'Publish package to which PyPi instance ?'
+        description: 'PyPi instance to publish ?'
         default: 'pypi-test'
         required: true
         type: choice
@@ -18,7 +18,7 @@ on:
           - 'pypi-test'
           - 'pypi-prod'
       module:
-        description: 'Publish which HSPyLib module ?'
+        description: 'Which HSPyLib module ?'
         default: 'all'
         required: true
         type: choice
