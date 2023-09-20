@@ -1,5 +1,5 @@
 /*
-    Gradle build information and versioning extension
+    Gradle build versioning extension
 
     Created: 4th March, 2021
     License: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -11,43 +11,11 @@
     - Increment the PATCH version when making backwards-compatible bug fixes. (Source)
 */
 
-import java.text.SimpleDateFormat
-
-/* Project file definitions */
-project.ext.build_info_file = 'build-info.properties'
-
 String relPath(String absPath) {
   return absPath.replace("${project.projectDir}/", '')
 }
 
 /* Tasks ------------------------------------------------------------------- */
-
-task updateBuildInfo(type: Task) {
-  group = 'Versioning'
-  description = 'Update the build-info.properties file with current build and version numbers'
-  outputs.upToDateWhen { false }
-  doLast {
-    def build_info_file = project.file("$project.ext.build_info_file")
-    def build_datetime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS z").format(new Date())
-    if (build_info_file.exists()) {
-      build_info_file.delete()
-    }
-    build_info_file <<
-        """###
-#   (Automated) Build information
-#   Do not modify by hand. Automatic field update
-###
-
-build.date = $build_datetime
-
-# Application version.
-app.version = $app_version
-
-# PYTHON version used to compile.
-python.version = $pythonVersion
-"""
-  }
-}
 
 /* Increment the build number for publishing (patch) */
 task patchVersion(type: Task) {
@@ -126,6 +94,3 @@ task listProperties(type: Task) {
       + relPath("${project.ext.has('application') ? project.ext.application : 'N/A'}")
   }
 }
-
-build.finalizedBy(updateBuildInfo)
-buildOnly.finalizedBy(updateBuildInfo)

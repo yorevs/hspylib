@@ -28,7 +28,7 @@ ext {
 
 apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/python.gradle"
-apply from: "$rootDir/gradle/build-info.gradle"
+apply from: "$rootDir/gradle/versioning.gradle"
 apply from: "$rootDir/gradle/pypi-publish.gradle"
 apply from: "$rootDir/gradle/docker.gradle"
 apply from: "$rootDir/gradle/oracle.gradle"
