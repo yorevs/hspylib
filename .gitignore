@@ -20,3 +20,4 @@ dist/
 *.bak
 data/
 .kafman-history.properties
+gradlew.bat
