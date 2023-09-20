@@ -28,6 +28,11 @@ on:
           - 'patch'
           - 'minor'
           - 'major'
+      pypi_publish:
+        description: 'Publish package to PyPi ?'
+        default: 'none'
+        required: false
+        type: environment
 
 permissions:
   contents: write
