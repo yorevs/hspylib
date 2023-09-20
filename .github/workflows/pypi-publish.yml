@@ -77,6 +77,13 @@ jobs:
     - name: Check published package
       run: ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
 
+    - name: Commit revision
+      run: |
+        git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+        git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+        git commit -a -m "[@${{ github.actor }}] PyPi published modules"
+        git push origin HEAD
+
   pypi-publish-module:
     if: ${{ inputs.module != 'all' }}
     runs-on: ubuntu-latest
@@ -109,7 +116,7 @@ jobs:
     - name: Check published package
       run: ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
 
-    - name: Commit new version
+    - name: Commit revision
       run: |
         git config --global user.name "$(git log -n 1 --pretty=format:%an)"
         git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
