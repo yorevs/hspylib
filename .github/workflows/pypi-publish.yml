@@ -1,0 +1,48 @@
+name: pypi-publish
+run-name: HSPyLib pypi-publish [@${{ github.actor }}]
+
+on:
+  workflow_dispatch:
+    inputs:
+      gradle_debug_params:
+        description: 'Gradle debug parameters'
+        default: ''
+        required: false
+        type: string
+      pypi_env:
+        description: 'Publish package to which PyPi instance ?'
+        default: 'none'
+        required: false
+        type: choice
+        options:
+          - 'pypi-test'
+          - 'pypi-prod'
+
+permissions:
+  contents: read
+
+jobs:
+  pypi-publish:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.pypi_env }}
+    env:
+      PYPI_REPOSITORY: ${{ vars.PYPI_REPOSITORY }}
+      PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+      PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 11
+    - uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: '7.4'
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Install Python tools
+      run: ./gradlew installBuildTools ${gradle_debug_params}
+    - name: Publish to PyPi
+      run: |
+        echo "Publishing to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }} ..."
