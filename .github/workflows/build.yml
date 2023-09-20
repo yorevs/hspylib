@@ -48,13 +48,3 @@ jobs:
         run: pip install --upgrade pip
       - name: Execute Gradle build
         run: ./gradlew clean install build
-      - name: Commit badges
-        run: |
-          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
-          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
-          if [[ -z $(git status --porcelain) ]]; then
-            echo 'No changes detected, skipping commit.'
-          else
-            git commit -a -m "[@${{ github.actor }}] AUTO updated build properties"
-            git push origin HEAD
-          fi
