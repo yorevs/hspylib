@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.114
+# hspylib-kafman v0.9.115
 #
 # Package: main.kafman
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
     'core', 
     'views'
 ]
-__version__ = '0.9.114'
+__version__ = '0.9.115'
