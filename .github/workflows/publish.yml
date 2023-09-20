@@ -1,4 +1,4 @@
-name: publish-revision
+name: publish
 run-name: HSPyLib build-and-test [@${{ github.actor }}]
 
 on:
