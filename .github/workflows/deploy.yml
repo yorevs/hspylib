@@ -98,4 +98,4 @@ jobs:
       with:
         name: "deploy-workspace-${{ env.PYPI_MODULE }}"
         path: |-
-          "${{ env.FILES }}"
+          ${{ env.FILES }}
