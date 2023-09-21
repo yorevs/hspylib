@@ -102,28 +102,8 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: "deploy-workspace-${{ env.PYPI_MODULE }}"
+        name: "deploy-workspace"
         path: |-
           ${{ env.FILES }}
 
-  commit:
-    needs: deploy
-    strategy:
-      matrix:
-        module: [
-          "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
-        ]
-    runs-on: ubuntu-latest
-    env:
-      PYPI_MODULE: ${{ matrix.module }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: "deploy-workspace-${{ env.PYPI_MODULE }}"
-          path: .
 
-      - name: Commit revision
-        if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
-        run: |
-          git status
