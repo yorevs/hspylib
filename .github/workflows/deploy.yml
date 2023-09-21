@@ -1,5 +1,5 @@
 name: deploy
-run-name: HSPyLib PyPi deploy \#${{github.run_number}} [@${{ github.actor }}]
+run-name: HSPyLib PyPi deploy ##${{github.run_number}} [@${{ github.actor }}]
 
 on:
   workflow_dispatch:
@@ -99,7 +99,7 @@ jobs:
         git status --porcelain | cut -c 4-
         {
           echo 'FILES<<EOF'
-          git status --porcelain | cut -c 4-
+          git status --porcelain | cut -c 4- | while read line; do echo "$(pwd)/${line}"; done
           echo EOF
         } >> "$GITHUB_ENV"
 
