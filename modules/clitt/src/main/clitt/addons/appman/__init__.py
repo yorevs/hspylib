@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.84
+# hspylib-clitt v0.9.86
 #
 # Package: main.clitt.addons.appman
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
     'appman_enums', 
     'templates'
 ]
-__version__ = '0.9.84'
+__version__ = '0.9.86'
