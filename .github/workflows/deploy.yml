@@ -94,6 +94,9 @@ jobs:
 
     - name: Set the commit files
       run: |
+        echo "CurDir: $(pwd)"
+        echo "files to commit:"
+        git status --porcelain | cut -c 4-
         {
           echo 'FILES<<EOF'
           git status --porcelain | cut -c 4-
