@@ -42,12 +42,12 @@ permissions:
 jobs:
   deploy:
     strategy:
+      fail-fast: true
+      max-parallel: 1
       matrix:
         module: [
           "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
         ]
-      fail-fast: true
-      max-parallel: 1
     runs-on: ubuntu-latest
     environment: ${{ inputs.pypi_env }}
     env:
@@ -97,7 +97,11 @@ jobs:
     - name: Commit revision
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
-        git config --global user.name "$(git log -n 1 --pretty=format:%an)"
-        git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
-        git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
-        git pull --rebase -Xtheirs && git push --atomic origin HEAD
+        if [ -z $(git status --porcelain) ]; then
+          echo "No changes to commit!"
+        else
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+          git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
+          git pull --rebase -Xtheirs && git push --atomic origin HEAD
+        fi
