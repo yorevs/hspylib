@@ -70,15 +70,15 @@ jobs:
 
     - name: Update patch number
       if: ${{ inputs.release_type == 'patch' }}
-      run: ./gradlew patchVersion ${gradle_debug_params}
+      run: ./gradlew "${{ matrix.module }}:patchVersion" ${gradle_debug_params}
 
     - name: Update minor number
       if: ${{ inputs.release_type == 'minor' }}
-      run: ./gradlew updateMinor ${gradle_debug_params}
+      run: ./gradlew "${{ matrix.module }}:updateMinor" ${gradle_debug_params}
 
     - name: Update major number
       if: ${{ inputs.release_type == 'major' }}
-      run: ./gradlew updateMajor ${gradle_debug_params}
+      run: ./gradlew "${{ matrix.module }}:updateMajor" ${gradle_debug_params}
 
     - name: Publish modules to PyPi
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
