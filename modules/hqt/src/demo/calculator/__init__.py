@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-hqt v0.9.20
+# hspylib-hqt v0.9.22
 #
 # Package: demo.calculator
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
     'core', 
     'views'
 ]
-__version__ = '0.9.20'
+__version__ = '0.9.22'

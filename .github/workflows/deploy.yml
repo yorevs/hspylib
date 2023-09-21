@@ -29,7 +29,7 @@ on:
         description: 'Update version before publish ?'
         type: choice
         required: true
-        default: 'none'
+        default: 'patch'
         options:
           - 'none'
           - 'patch'
@@ -101,7 +101,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@master
       with:
-        name: deploy-workspace-${{github.run_number}}
+        name: deploy-workspace
         path: .
 
     - name: Commit revision
