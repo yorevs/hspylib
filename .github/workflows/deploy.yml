@@ -90,6 +90,21 @@ jobs:
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
 
+    - uses: actions/upload-artifact@master
+      with:
+        name: version-changes
+        path: deploys/${{ inputs.pypi_env }}/changes
+
+  commit:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@master
+      with:
+        name: version-changes
+        path: deploys/${{ inputs.pypi_env }}/changes
+
     - name: Commit revision
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
@@ -97,3 +112,5 @@ jobs:
         git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
         git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
         git pull --rebase -Xtheirs && git push --atomic origin HEAD
+
+
