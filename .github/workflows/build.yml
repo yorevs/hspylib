@@ -47,4 +47,4 @@ jobs:
       - name: Update PIP
         run: pip install --upgrade pip
       - name: Build HSPyLib modules
-        run: ./gradlew "${{ matrix.module }}:clean" "${{ matrix.module }}:install" "${{ matrix.module }}:build"
+        run: ./gradlew "${{ matrix.module }}:clean" "${{ matrix.module }}:installModule" "${{ matrix.module }}:build"
