@@ -65,27 +65,26 @@ task checkDist(type: Task) {
 task sdist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
-  if (!hasProperty('no-patch')) {
-    dependsOn project.patchVersion
+  if (!project.hasProperty('no-patch')) {
+    dependsOn patchVersion
   }
-//   dependsOn copyLicense
-//   dependsOn syncRequirements
-//   finalizedBy checkDist
+  dependsOn copyLicense
+  dependsOn syncRequirements
+  finalizedBy checkDist
   doLast {
     fileTree("$sourceRoot").matching {
         include "**/setup.py"
       }.each { File module ->
-        println "Generating distribution files -> $moduleDir"
-//           def moduleDir = dirName(module)
-//           println "Generating distribution files -> $moduleDir"
-//           exec {
-//             workingDir "$moduleDir"
-//             commandLine rootProject.python, "-m", "build", "--sdist"
-//           }
-//           exec {
-//             workingDir "$moduleDir"
-//             commandLine rootProject.python, "-m", "build", "--wheel"
-//           }
+        def moduleDir = dirName(module)
+          println "Generating distribution files -> $moduleDir"
+          exec {
+            workingDir "$moduleDir"
+            commandLine rootProject.python, "-m", "build", "--sdist"
+          }
+          exec {
+            workingDir "$moduleDir"
+            commandLine rootProject.python, "-m", "build", "--wheel"
+          }
         }
   }
 }

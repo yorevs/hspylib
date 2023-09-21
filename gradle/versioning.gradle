@@ -17,7 +17,7 @@ String relPath(String absPath) {
 
 /* Tasks ------------------------------------------------------------------- */
 
-/* Increment the build number for publishing (patch) */
+/* Increment the build number (patch) */
 task patchVersion(type: Task) {
   group = 'Versioning'
   description = 'Increment the build number for publishing (patch)'
