@@ -102,8 +102,22 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: "deploy-workspace"
+        name: 'deploy-workspace'
         path: |-
           ${{ env.FILES }}
 
+  commit:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: 'deploy-workspace'
+          path: ${{ github.workspace }}
+
+      - name: Commit revision
+        if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
+        run: |
+          git status
 
