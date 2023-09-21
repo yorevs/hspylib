@@ -2,12 +2,12 @@
 
 ## Your Python code is not JUST a script !!
 
-[![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
-[![Release](https://badgen.net/badge/release/v0.9.27/gray)](docs/CHANGELOG.md#unreleased)
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
-[![GitHub](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/yorevs/hspylib)
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
 [![Donate](https://badgen.net/badge/paypal/donate/yellow)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
+[![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
+[![Release](https://badgen.net/badge/release/v0.12.2/gray)](docs/CHANGELOG.md#unreleased)
+[![build](https://github.com/yorevs/hspylib/actions/workflows/build.yml/badge.svg)](https://github.com/yorevs/hspylib/actions/workflows/build.yml)
 
 HsPyLib is a Python library that will elevate your experience to another level. It relies on well known principles as
 SOLID, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid) and YAGNI (You Ain’t Gonna Need It). It provides many
@@ -315,15 +315,17 @@ This project is supported by:
   <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="120" height="120">
 </a>
 
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=a46eac913a06&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
 Thank you for your support <3 !!
 
 ## Links
 
 - Documentation: [API](docs/api/index.html)
 - License: [MIT](LICENSE.md)
-- Releases: https://pypi.org/project/hspylib/#history
-- Code: https://github.com/yorevs/hspylib
-- Issue tracker: https://github.com/yorevs/hspylib/issues
-- Official chat: https://gitter.im/hspylib/community
-- Contact: https://www.reddit.com/user/yorevs
-- Mailto: [Yorevs](mailto:yorevs@hotmail.com)
+- Releases: [HSPyLib-Releases](https://pypi.org/project/hspylib/#history)
+- Code: [Github](https://github.com/yorevs/hspylib)
+- Issue tracker: [HSPyLib-Issues](https://github.com/yorevs/hspylib/issues)
+- Official chat: [HSPyLib](https://gitter.im/hspylib/community)
+- Contact: [yorevs](https://www.reddit.com/user/yorevs)
+- Mailto: [yorevs](mailto:yorevs@hotmail.com)
