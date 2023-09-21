@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.132
+# hspylib-kafman v0.9.133
 #
 # Package: main.kafman.core.schema.avro.field
 """Package initialization."""
@@ -14,4 +14,4 @@ __all__ = [
     'primitive_field', 
     'record_field'
 ]
-__version__ = '0.9.132'
+__version__ = '0.9.133'
