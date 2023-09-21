@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.18
+# hspylib v1.12.19
 #
 # Package: main.hspylib.modules.eventbus
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
     'event', 
     'eventbus'
 ]
-__version__ = '1.12.18'
+__version__ = '1.12.19'
