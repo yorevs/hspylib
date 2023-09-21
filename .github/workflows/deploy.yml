@@ -1,5 +1,5 @@
 name: deploy
-run-name: HSPyLib PyPi deploy [@${{ github.actor }}]
+run-name: HSPyLib PyPi deploy \#${{github.run_number}} [@${{ github.actor }}]
 
 on:
   workflow_dispatch:
@@ -92,18 +92,17 @@ jobs:
 
     - uses: actions/upload-artifact@master
       with:
-        name: version-changes
-        path: deploys/${{ inputs.pypi_env }}/changes
+        name: deploy-workspace
+        path: .
 
   commit:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
     - uses: actions/download-artifact@master
       with:
-        name: version-changes
-        path: deploys/${{ inputs.pypi_env }}/changes
+        name: deploy-workspace-${{github.run_number}}
+        path: .
 
     - name: Commit revision
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
