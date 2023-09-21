@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.95
+# hspylib-clitt v0.9.96
 #
 # Package: demo.term
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
     'terminal_demo'
 ]
-__version__ = '0.9.95'
+__version__ = '0.9.96'
