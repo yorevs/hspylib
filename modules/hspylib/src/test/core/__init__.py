@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.2
+# hspylib v1.12.3
 #
 # Package: test.core
 """Package initialization."""
@@ -14,4 +14,4 @@ __all__ = [
     'test_preconditions', 
     'tools'
 ]
-__version__ = '1.12.2'
+__version__ = '1.12.3'
