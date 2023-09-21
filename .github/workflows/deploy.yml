@@ -41,7 +41,6 @@ permissions:
 
 jobs:
   deploy:
-    if: ${{ inputs.module == 'none' }}
     strategy:
       matrix:
         module: [
@@ -108,6 +107,7 @@ jobs:
           ${{ env.FILES }}
 
   commit:
+    needs: deploy
     strategy:
       matrix:
         module: [
