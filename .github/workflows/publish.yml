@@ -79,5 +79,5 @@ jobs:
     - name: Tag revision
       if: inputs.tag_version
       run: |
-        git tag -a "v${{ env.VERSION }}" -m "New HSPyLib revision v${{ env.VERSION }}"
+        git tag -a "v${{ env.VERSION }}" -m "[@${{ github.actor }}] New HSPyLib revision v${{ env.VERSION }}"
         git push origin "v${{ env.VERSION }}"
