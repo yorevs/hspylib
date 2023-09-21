@@ -40,7 +40,7 @@ permissions:
   contents: write
 
 jobs:
-  publish-all:
+  deploy:
     strategy:
       matrix:
         module: [
@@ -83,7 +83,7 @@ jobs:
     - name: Publish modules to PyPi
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
-        echo "Publishing all modules (${{ matrix.module }}) to ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
+        echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
         ./gradlew "${{ matrix.module }}:publish" -Pno-patch=true ${gradle_debug_params}
 
     - name: Check published package
@@ -95,5 +95,6 @@ jobs:
       run: |
         git config --global user.name "$(git log -n 1 --pretty=format:%an)"
         git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
-        git commit -a -m "[@${{ github.actor }}] New PyPi publish: ${{ matrix.module }}"
+        git pull --rebase
+        git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
         git push origin HEAD
