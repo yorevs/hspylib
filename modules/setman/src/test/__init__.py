@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-setman v0.10.9
+# hspylib-setman v0.10.11
 #
 # Package: test
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
     'test_main'
 ]
-__version__ = '0.10.9'
+__version__ = '0.10.11'
