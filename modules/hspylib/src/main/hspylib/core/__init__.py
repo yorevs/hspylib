@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.5
+# hspylib v1.12.7
 #
 # Package: main.hspylib.core
 """Package initialization."""
@@ -18,4 +18,4 @@ __all__ = [
     'tools', 
     'zoned_datetime'
 ]
-__version__ = '1.12.5'
+__version__ = '1.12.7'
