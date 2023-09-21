@@ -24,8 +24,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ "ubuntu-latest" ]
-        python-version: ["3.10"]
+        os: [ 'ubuntu-latest' ]
+        python-version: ['3.10', '3.11']
         module: [
           "hspylib", "cfman", "clitt", "datasource", "firebase", "hqt", "kafman", "setman", "vault"
         ]
