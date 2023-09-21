@@ -96,5 +96,5 @@ jobs:
         git config --global user.name "$(git log -n 1 --pretty=format:%an)"
         git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
         git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
-        git rebase -Xtheirs
+        git pull --rebase -Xtheirs
         git push origin HEAD
