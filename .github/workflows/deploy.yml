@@ -54,7 +54,6 @@ jobs:
       PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
       PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       PYPI_MODULE: ${{ matrix.module }}
-      FILES: ''
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
@@ -91,10 +90,11 @@ jobs:
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
         ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
-        files=$(git status --porcelain | cut -c 4- | tr '\n' ' ')
+        files=$(git status --porcelain | cut -c 4-)
         echo "FILES=$files" >> $GITHUB_ENV
 
     - uses: actions/upload-artifact@master
       with:
         name: "deploy-workspace-${{ env.PYPI_MODULE }}"
-        path: "${{ env.FILES }}"
+        path: |-
+          "${{ env.FILES }}"
