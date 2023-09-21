@@ -41,6 +41,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ inputs.module != 'none' }}
     strategy:
       matrix:
         module: [
