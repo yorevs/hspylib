@@ -27,9 +27,7 @@ jobs:
         os: [ "ubuntu-latest" ]
         python-version: ["3.10"]
         module: [
-          "hspylib", "cfman", "clitt",
-          "datasource", "firebase", "hqt",
-          "kafman", "setman", "vault"
+          "hspylib", "cfman", "clitt", "datasource", "firebase", "hqt", "kafman", "setman", "vault"
         ]
     runs-on: ${{ matrix.os }}
     steps:
