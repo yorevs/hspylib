@@ -23,7 +23,7 @@ on:
         required: true
         type: choice
         options: [
-          "none", "all", "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
+          "all", "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
         ]
       release_type:
         description: 'Update version before publish ?'
@@ -41,7 +41,6 @@ permissions:
 
 jobs:
   deploy:
-    if: ${{ inputs.module != 'none' }}
     strategy:
       matrix:
         module: [
@@ -91,21 +90,6 @@ jobs:
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
 
-    - uses: actions/upload-artifact@master
-      with:
-        name: deploy-workspace
-        path: .
-
-  commit:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@master
-      with:
-        name: deploy-workspace
-        path: .
-
     - name: Commit revision
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
@@ -113,5 +97,3 @@ jobs:
         git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
         git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
         git pull --rebase -Xtheirs && git push --atomic origin HEAD
-
-
