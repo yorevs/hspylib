@@ -41,6 +41,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ inputs.module == 'none' }}
     strategy:
       matrix:
         module: [
@@ -54,6 +55,7 @@ jobs:
       PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
       PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       PYPI_MODULE: ${{ matrix.module }}
+      FILES: ''
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
@@ -102,5 +104,31 @@ jobs:
     - uses: actions/upload-artifact@master
       with:
         name: "deploy-workspace-${{ env.PYPI_MODULE }}"
+        if-no-files-found: ignore
         path: |-
           ${{ env.FILES }}
+
+  commit:
+    strategy:
+      matrix:
+        module: [
+          "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
+        ]
+    runs-on: ubuntu-latest
+    env:
+      PYPI_MODULE: ${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@master
+        with:
+          name: "deploy-workspace-${{ env.PYPI_MODULE }}"
+          if-no-files-found: ignore
+          path: .
+
+      - name: Commit revision
+        if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
+        run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+          git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
+          git pull --rebase -Xtheirs && git push --atomic origin HEAD
