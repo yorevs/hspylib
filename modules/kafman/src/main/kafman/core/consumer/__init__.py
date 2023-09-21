@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-kafman v0.9.130
+# hspylib-kafman v0.9.131
 #
 # Package: main.kafman.core.consumer
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
     'consumer_config', 
     'consumer_worker'
 ]
-__version__ = '0.9.130'
+__version__ = '0.9.131'
