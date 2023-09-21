@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-setman v0.10.17
+# hspylib-setman v0.10.20
 #
 # Package: main.setman.core
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
     'setman_config', 
     'setman_enums'
 ]
-__version__ = '0.10.17'
+__version__ = '0.10.20'
