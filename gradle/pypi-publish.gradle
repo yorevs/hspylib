@@ -65,7 +65,7 @@ task checkDist(type: Task) {
 task sdist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
-  if (!project.hasProperty('no-patch')) {
+  if (!project.hasProperty('no-patch') || Boolean(project.getProperty('no-patch'))) {
     dependsOn patchVersion
   }
   dependsOn copyLicense
