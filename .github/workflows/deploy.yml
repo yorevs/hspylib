@@ -101,10 +101,9 @@ jobs:
           echo EOF
         } >> "$GITHUB_ENV"
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v3
       with:
         name: "deploy-workspace-${{ env.PYPI_MODULE }}"
-        if-no-files-found: ignore
         path: |-
           ${{ env.FILES }}
 
@@ -119,16 +118,12 @@ jobs:
       PYPI_MODULE: ${{ matrix.module }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v3
         with:
           name: "deploy-workspace-${{ env.PYPI_MODULE }}"
-          if-no-files-found: ignore
           path: .
 
       - name: Commit revision
         if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
         run: |
-          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
-          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
-          git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
-          git pull --rebase -Xtheirs && git push --atomic origin HEAD
+          git status
