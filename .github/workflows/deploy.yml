@@ -50,6 +50,7 @@ jobs:
         ]
     runs-on: ubuntu-latest
     environment: ${{ inputs.pypi_env }}
+    if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
     env:
       PYPI_REPOSITORY: ${{ vars.PYPI_REPOSITORY }}
       PYPI_MODULE_URL: ${{ vars.PYPI_MODULE_URL }}
@@ -84,18 +85,15 @@ jobs:
       run: ./gradlew "${{ matrix.module }}:updateMajor" ${gradle_debug_params}
 
     - name: Publish modules to PyPi
-      if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
         echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
         ./gradlew "${{ matrix.module }}:publish" -Pno-patch=true ${gradle_debug_params}
 
     - name: Check published package
-      if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
         ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
 
     - name: Commit revision
-      if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
         if [ -z $(git status --porcelain) ]; then
           echo "No changes to commit!"
