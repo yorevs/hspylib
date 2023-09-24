@@ -142,6 +142,7 @@ class Vault:
             if not hint or not password:
                 entry = VaultEntry.prompt(entry)
             if entry:
+                entry.password = self._encrypt_passphrase(entry.password)
                 self.service.save(entry)
                 sysout(f"%GREEN%%EOL%=== Entry saved ===%EOL%%EOL%%NC%{entry.to_string()}")
         else:
