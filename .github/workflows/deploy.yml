@@ -58,7 +58,7 @@ jobs:
   deploy:
     needs: preparation
     strategy:
-      matrix: ${{ preparation.outputs.matrix )}}
+      matrix: ${{ needs.preparation.outputs.matrix )}}
     runs-on: ubuntu-latest
     environment: ${{ inputs.pypi_env }}
     env:
