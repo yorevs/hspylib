@@ -54,8 +54,9 @@ jobs:
       - id: set-matrix
         if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
         run: |
-          echo "matrix=[$(echo $matrix), matrix.module]" >> $GITHUB_OUTPUT
+          echo "matrix=$(echo $matrix), matrix.module" >> $GITHUB_OUTPUT
   deploy:
+    needs: preparation
     strategy:
       matrix: ${{ preparation.outputs.matrix )}}
     runs-on: ubuntu-latest
