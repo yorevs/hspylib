@@ -14,11 +14,6 @@ on:
         default: 'New HSPyLib '
         required: false
         type: string
-      tag_version:
-        description: 'Tag this version ?'
-        type: boolean
-        required: true
-        default: false
       release_type:
         description: 'Major/Minor or Patch only update ?'
         type: choice
@@ -42,13 +37,13 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: temurin
-        java-version: 11
+        java-version: ${{ vars.JAVA_VERSION }}
     - uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: '7.4'
+        gradle-version: ${{ vars.GRADLE_VERSION }}
     - uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: ${{ vars.PYTHON_VERSION }}
     - name: Install Python tools
       run: ./gradlew installBuildTools ${gradle_debug_params}
 
@@ -77,7 +72,6 @@ jobs:
         git pull --rebase -Xtheirs && git push --atomic origin HEAD
 
     - name: Tag revision
-      if: inputs.tag_version
       run: |
         git tag -a "v${{ env.VERSION }}" -m "[@${{ github.actor }}] New HSPyLib revision v${{ env.VERSION }}"
         git push --atomic origin "v${{ env.VERSION }}"

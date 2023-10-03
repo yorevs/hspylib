@@ -9,22 +9,27 @@ on:
         default: ''
         required: false
         type: string
-      pypi_env:
-        description: 'Which PyPi instance to publish ?'
+      pypi_instance:
+        description: 'Deploy to which PyPi instance ?'
         default: 'pypi-test'
         required: true
-        type: choice
-        options:
-          - 'pypi-test'
-          - 'pypi-prod'
+        type: environment
       module:
         description: 'Which HSPyLib module ?'
         default: 'all'
         required: true
         type: choice
-        options: [
-          "all", "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
-        ]
+        options:
+          - "all"
+          - "cfman"
+          - "clitt"
+          - "datasource"
+          - "firebase"
+          - "hqt"
+          - "hspylib"
+          - "kafman"
+          - "setman"
+          - "vault"
       release_type:
         description: 'Update version before publish ?'
         type: choice
@@ -45,11 +50,19 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        module: [
-          "cfman", "clitt", "datasource", "firebase", "hqt", "hspylib", "kafman", "setman", "vault"
-        ]
+        module:
+          - "all"
+          - "cfman"
+          - "clitt"
+          - "datasource"
+          - "firebase"
+          - "hqt"
+          - "hspylib"
+          - "kafman"
+          - "setman"
+          - "vault"
     runs-on: ubuntu-latest
-    environment: ${{ inputs.pypi_env }}
+    environment: ${{ inputs.pypi_instance }}
     env:
       PYPI_REPOSITORY: ${{ vars.PYPI_REPOSITORY }}
       PYPI_MODULE_URL: ${{ vars.PYPI_MODULE_URL }}
@@ -61,13 +74,13 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: temurin
-        java-version: 11
+        java-version: ${{ vars.JAVA_VERSION }}
     - uses: gradle/gradle-build-action@v2
       with:
-        gradle-version: '7.4'
+        gradle-version: ${{ vars.GRADLE_VERSION }}
     - uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: ${{ vars.PYTHON_VERSION }}
     - name: Install Python tools
       run: ./gradlew installBuildTools ${gradle_debug_params}
 
@@ -86,7 +99,7 @@ jobs:
     - name: Publish modules to PyPi
       if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
       run: |
-        echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
+        echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_instance }} -> ${{ env.PYPI_REPOSITORY }}"
         ./gradlew "${{ matrix.module }}:publish" -Pno-patch=true ${gradle_debug_params}
 
     - name: Check published package
