@@ -1,5 +1,5 @@
-name: build
-run-name: HSPyLib build - ${{github.run_number}} [@${{ github.actor }}]
+name: build-and-test
+run-name: Build & Test [${{ github.sha }}]
 
 on:
   workflow_dispatch:
@@ -24,21 +24,34 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ 'ubuntu-latest' ]
-        python-version: ['3.10', '3.11']
-        module: [
-          "hspylib", "cfman", "clitt", "datasource", "firebase", "hqt", "kafman", "setman", "vault"
-        ]
+        os:
+          - 'ubuntu-latest'
+        python-version:
+          - '3.10'
+          - '3.11'
+        module:
+          - "all"
+          - "cfman"
+          - "clitt"
+          - "datasource"
+          - "firebase"
+          - "hqt"
+          - "hspylib"
+          - "kafman"
+          - "setman"
+          - "vault"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 11
+          java-version: ${{ vars.JAVA_VERSION }}
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Set up Python 3.10+
+        with:
+          gradle-version: ${{ vars.GRADLE_VERSION }}
+      - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
