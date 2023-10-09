@@ -124,7 +124,7 @@ jobs:
       - name: Publish modules to PyPi
         run: |
           echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
-          gradle "${{ matrix.module }}:publish" ${gradle_debug_params}
+          
       - name: Check published package
         run: |
           gradle "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
@@ -141,14 +141,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update patch number
-        run: gradle "${{ matrix.module }}:patchVersion" ${gradle_debug_params}
-      - name: Commit revision
         run: |
-          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
-          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
-          git config github.token "${{ inputs.github-token }}"
-          git commit -a -m "[@${{ github.actor }}] Push for new deployment -> '${{ matrix.module }}'"
-          git pull --rebase -Xtheirs && git push --atomic origin HEAD
+          echo "${{ needs.deploy.outputs.modules }}"
 
   create-release:
     needs:
