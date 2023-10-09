@@ -8,7 +8,10 @@ on:
         description: 'PyPi instance to publish ?'
         default: 'pypi-test'
         required: true
-        type: environment
+        type: choice
+        options:
+          - pypi-test
+          - pypi-prod
       cfman:
         description: 'Deploy HSPyLib-Cfman ?'
         default: false
