@@ -63,9 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix-items.outputs.matrix }}
+      modules: ${{ steps.set-matrix-items.outputs.modules }}
     steps:
       - id: set-matrix-items
         run: |
+          selected=()
           modules=('cfman' 'clitt' 'datasource' 'firebase' 'hqt' 'hspylib' 'kafman' 'setman' 'vault')
           JSON="{\"include\":["
           # Loop by lines
@@ -81,6 +83,7 @@ jobs:
                   (${module} == 'setman' && "true" == "${{inputs.setman}}") ||
                   (${module} == 'vault' && "true" == "${{inputs.vault}}")]]
             then
+              selected+=("${module}")
               JSONline="{\"module\": \"${module}\"},"
               if [[ "$JSON" != *"$JSONline"* ]]; then
                 JSON="$JSON$JSONline"
@@ -94,12 +97,13 @@ jobs:
           # Add closing brackets
           JSON="$JSON]}"
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
+          echo "modules=$( echo "$selected" )" >> $GITHUB_OUTPUT
   deploy:
     if: false
     needs: set-env-matrix
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-env-matrix.outputs.matrix) }}
+      matrix: ${{ needs.set-env-matrix.outputs.selected }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.pypi_env }}
     env:
@@ -137,7 +141,7 @@ jobs:
     steps:
       - name: Update patch number
         run: |
-          for m in ${{ fromJson(needs.set-env-matrix.outputs.matrix) }}
+          for m in ${{ fromJson(needs.set-env-matrix.outputs.matrix.module) }}
             echo "Module: $m"
           done
 
