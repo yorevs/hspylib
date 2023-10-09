@@ -112,26 +112,40 @@ jobs:
             git commit -a -m "[@${{ github.actor }}] Push for new deployment -> '${{ matrix.module }}'"
             git pull --rebase -Xtheirs && git push --atomic origin HEAD
           fi
-      - name: Check Version
-        id: check-version
-        run: |
-          appVersion=$(cat modules/${{ matrix.module }}/src/main/${{ matrix.module }}/.version)
-          echo "app_version=$(echo $appVersion)" >> $GITHUB_OUTPUT
-      - name: Git Tag Version
-        uses: yorevs/hspylib/.github/actions/tag-version@master
-        with:
-          tag-name: "v${{ steps.check-version.outputs.app_version }}"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create Changelog
-        id: change-log
-        uses: yorevs/hspylib/.github/actions/changelog@master
-        with:
-          tag-name: "v${{ steps.check-version.outputs.app_version }}"
-      - name: Create Release
-        uses: yorevs/hspylib/.github/actions/create-release@master
-        with:
-          tag-name: "v${{ steps.check-version.outputs.app_version }}"
-          artifact-name: ${{ vars.ARTIFACT_NAME }}
-          changelog: ${{ steps.change-log.outputs.changelog }}
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  create-release:
+      needs:
+        - deploy
+      name: Create Release
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+        - name: Check Version
+          id: check-version
+          run: |
+            appVersion=$(cat modules/${{ matrix.module }}/src/main/${{ matrix.module }}/.version)
+            echo "app_version=$(echo $appVersion)" >> $GITHUB_OUTPUT
+        - name: Git Tag Version
+          uses: yorevs/hspylib/.github/actions/tag-version@master
+          with:
+            tag-name: "v${{ steps.check-version.outputs.app_version }}"
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+        - name: Create Changelog
+          id: change-log
+          uses: yorevs/hspylib/.github/actions/changelog@master
+          with:
+            tag-name: "v${{ steps.check-version.outputs.app_version }}"
+        - name: Create Release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: "v${{ steps.check-version.outputs.app_version }}"
+            release_name: "${{ vars.APP_NAME }}-v${{ steps.check-version.outputs.app_version }}"
+            body: |
+              ${{ steps.change-log.outputs.changelog }}
+            draft: false
+            prerelease: false
+
 
