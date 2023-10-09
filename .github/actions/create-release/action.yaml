@@ -1,0 +1,45 @@
+name: 'create-release'
+description: 'Create GitHub Release'
+
+inputs:
+  tag-name:
+    description: 'The Release Tag Name'
+    required: true
+  artifact-name:
+    description: 'The Artifact Name'
+    required: true
+  changelog:
+    description: 'The Release Changelog'
+    required: true
+  github-token:
+    description: 'Github Repository Token'
+    required: true
+  is-draft:
+    description: 'Whether its a draft-release'
+    required: false
+    default: false
+  is-pre-release:
+    description: 'Whether its a pre-release'
+    required: false
+    default: false
+
+runs:
+  using: composite
+  steps:
+    create-release:
+      name: Create Release
+      shell: bash
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+        - name: Create Release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ inputs.github-token }}
+          with:
+            tag_name: ${{ inputs.tag-name }}
+            release_name: ${{ inputs.artifact-name }}-${{ inputs.tag-name }}
+            body: |
+              ${{ inputs.changelog }}
+            draft: ${{ inputs.is-draft }}
+            prerelease: ${{ inputs.is-pre-release }}
