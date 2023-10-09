@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-vault v0.9.123
+# hspylib-vault v0.9.124
 #
 # Package: main.vault
 """Package initialization."""
@@ -10,4 +10,4 @@ __all__ = [
     'domain', 
     'exception'
 ]
-__version__ = '0.9.123'
+__version__ = '0.9.124'
