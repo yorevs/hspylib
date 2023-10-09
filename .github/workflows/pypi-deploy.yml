@@ -26,10 +26,11 @@ on:
           - 'major'
       module:
         description: 'Which HSPyLib module ?'
-        default: 'all'
+        default: 'none'
         required: true
         type: choice
         options:
+          - "none"
           - "all"
           - "cfman"
           - "clitt"
@@ -114,38 +115,34 @@ jobs:
           fi
 
   create-release:
-      needs:
-        - deploy
-      name: Create Release
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v3
-        - name: Check Version
-          id: check-version
-          run: |
-            appVersion=$(cat modules/${{ matrix.module }}/src/main/${{ matrix.module }}/.version)
-            echo "app_version=$(echo $appVersion)" >> $GITHUB_OUTPUT
-        - name: Git Tag Version
-          uses: yorevs/hspylib/.github/actions/tag-version@master
-          with:
-            tag-name: "v${{ steps.check-version.outputs.app_version }}"
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-        - name: Create Changelog
-          id: change-log
-          uses: yorevs/hspylib/.github/actions/changelog@master
-          with:
-            tag-name: "v${{ steps.check-version.outputs.app_version }}"
-        - name: Create Release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: "v${{ steps.check-version.outputs.app_version }}"
-            release_name: "${{ vars.APP_NAME }}-v${{ steps.check-version.outputs.app_version }}"
-            body: |
-              ${{ steps.change-log.outputs.changelog }}
-            draft: false
-            prerelease: false
+    if: inputs.release_type != 'none'
+    needs:
+      - deploy
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Git Tag Version
+        uses: yorevs/hspylib/.github/actions/tag-version@master
+        with:
+          tag-name: "v${{ github.run_number }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Changelog
+        id: change-log
+        uses: yorevs/hspylib/.github/actions/changelog@master
+        with:
+          tag-name: "v${{ github.run_number }}"
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ github.run_number }}"
+          release_name: "${{ vars.APP_NAME }}-v${{ github.run_number }}"
+          body: |
+            ${{ steps.change-log.outputs.changelog }}
+          draft: false
+          prerelease: false
 
 
