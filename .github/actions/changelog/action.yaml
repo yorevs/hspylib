@@ -27,7 +27,7 @@ runs:
     run: |
       echo "changelog<<EOF" >> ${GITHUB_OUTPUT}
       echo "
-         Changelog ${{ inputs.tag-name }}:
+         ### Changelog ${{ inputs.tag-name }}:
          ------------------------------------------------------------
          $(git log --oneline --pretty='%h %ad %s' --date=short ${{ steps.last-tag.outputs.lastTag }}..HEAD)
       " >> ${GITHUB_OUTPUT}
