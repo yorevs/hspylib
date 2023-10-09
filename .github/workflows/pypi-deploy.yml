@@ -169,7 +169,9 @@ jobs:
           gradle "${{ matrix.module }}:pypiShow"
 
   create-release:
-    needs: deploy
+    needs:
+      - deploy
+      - set-env-matrix
     name: Create Release
     runs-on: ubuntu-latest
     steps:
