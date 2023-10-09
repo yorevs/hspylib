@@ -36,6 +36,7 @@ task updateMinor(type: Task) {
   group = 'Versioning'
   description = 'Increment the build number (minor)'
   outputs.upToDateWhen { false }
+  finalizedBy syncPythonPackages
   doLast {
     println "Updating the minor number"
     exec {
@@ -49,6 +50,7 @@ task updateMajor(type: Task) {
   group = 'Versioning'
   description = 'Increment the build number (major)'
   outputs.upToDateWhen { false }
+  finalizedBy syncPythonPackages
   doLast {
     println "Updating the major number"
     exec {
