@@ -1,5 +1,5 @@
 name: publish
-run-name: HSPyLib publish - ${{github.run_number}} [@${{ github.actor }}]
+run-name: Publish
 
 on:
   workflow_dispatch:
@@ -52,6 +52,9 @@ jobs:
           bumpver update "--${{ inputs.release_type }}"
           version="$(awk '/./{line=$0} END{print line}' .version)"
           echo "version=$version" >> $GITHUB_ENV
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+          git config github.token "${{ secrets.GITHUB_TOKEN }}"
           git commit -a -m "[@${{ github.actor }}] ${{ inputs.comment }}"
           git pull --rebase -Xtheirs && git push --atomic origin HEAD
 
