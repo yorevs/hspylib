@@ -105,7 +105,6 @@ task publish(type: Task) {
         println "|-setup: ${module}"
         println "|-url: ${url}"
         println "|-user: ${un}"
-        println "|-password: __token__"
         println "|-dist: ${distDir}/*"
         println '-------------------------------'
         println "Publishing module to PyPi => ${url}"
