@@ -129,7 +129,7 @@ jobs:
       - name: Publish modules to PyPi
         run: |
           echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
-
+          gradle "${{ matrix.module }}:publish" ${gradle_debug_params}
       - name: Check published package
         run: |
           gradle "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
@@ -141,12 +141,14 @@ jobs:
     steps:
       - name: Update patch number
         run: |
-          for m in ${{ needs.set-env-matrix.outputs.modules }}
+          for m in ${{ needs.set-env-matrix.outputs.modules }};
+          do
             echo "Module: $m"
           done
 
 
   create-release:
+    if: false
     needs:
       - deploy
       - update-version
