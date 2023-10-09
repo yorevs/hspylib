@@ -105,6 +105,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: ${{ vars.JAVA_VERSION }}
+      - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: ${{ vars.GRADLE_VERSION }}
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+      - name: Install Python tools
+        run: gradle installBuildTools
       - name: Patch Versions & Commit
         run: |
           for module in ${{ needs.set-env-matrix.outputs.modules }};
