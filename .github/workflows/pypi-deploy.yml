@@ -98,9 +98,30 @@ jobs:
           JSON="$JSON]}"
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
           echo "modules=$( echo "${selected[*]}" )" >> $GITHUB_OUTPUT
+
+  update-version:
+    needs:
+      - set-env-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Patch Versions & Commit
+        run: |
+          for module in ${{ needs.set-env-matrix.outputs.modules }};
+          do
+            gradle "${module}:patchVersion"
+          done
+          if [[ -n $(git status --porcelain) ]]; then
+            git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+            git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+            git config github.token "${{ inputs.github-token }}"
+            git commit -a -m "[@${{ github.actor }}] Push for new deployment -> '${{ matrix.module }}'"
+            git pull --rebase -Xtheirs && git push --atomic origin HEAD
+          fi
+
   deploy:
-    if: false
-    needs: set-env-matrix
+    needs:
+      - set-env-matrix
+      - update-version
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-env-matrix.outputs.matrix) }}
@@ -125,33 +146,17 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
       - name: Install Python tools
-        run: gradle installBuildTools ${gradle_debug_params}
+        run: gradle installBuildTools
       - name: Publish modules to PyPi
         run: |
           echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
-          gradle "${{ matrix.module }}:publish" ${gradle_debug_params}
+          gradle "${{ matrix.module }}:publish"
       - name: Check published package
         run: |
-          gradle "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
-
-  update-version:
-    needs:
-      - set-env-matrix
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update patch number
-        run: |
-          for m in ${{ needs.set-env-matrix.outputs.modules }};
-          do
-            echo "Module: $m"
-          done
-
+          gradle "${{ matrix.module }}:pypiShow"
 
   create-release:
-    if: false
-    needs:
-      - deploy
-      - update-version
+    needs: deploy
     name: Create Release
     runs-on: ubuntu-latest
     steps:
