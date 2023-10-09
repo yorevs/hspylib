@@ -97,13 +97,13 @@ jobs:
           # Add closing brackets
           JSON="$JSON]}"
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
-          echo "modules=$( echo "$selected" )" >> $GITHUB_OUTPUT
+          echo "modules=$( echo "${selected[*]}" )" >> $GITHUB_OUTPUT
   deploy:
     if: false
     needs: set-env-matrix
     strategy:
       fail-fast: false
-      matrix: ${{ needs.set-env-matrix.outputs.selected }}
+      matrix: ${{ fromJson(needs.set-env-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.pypi_env }}
     env:
@@ -141,7 +141,7 @@ jobs:
     steps:
       - name: Update patch number
         run: |
-          for m in ${{ fromJson(needs.set-env-matrix.outputs.matrix.module) }}
+          for m in ${{ needs.set-env-matrix.outputs.matrix.modules }}
             echo "Module: $m"
           done
 
