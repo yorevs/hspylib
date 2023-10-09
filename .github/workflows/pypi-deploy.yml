@@ -136,4 +136,49 @@ jobs:
     outputs:
       modules: ${{ steps.deploy-info.outputs.modules }}
 
+  update-version:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update patch number
+        run: gradle "${{ matrix.module }}:patchVersion" ${gradle_debug_params}
+      - name: Commit revision
+        run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+          git config github.token "${{ inputs.github-token }}"
+          git commit -a -m "[@${{ github.actor }}] Push for new deployment -> '${{ matrix.module }}'"
+          git pull --rebase -Xtheirs && git push --atomic origin HEAD
+
+  create-release:
+    needs:
+      - deploy
+      - update-version
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Git Tag Version
+        uses: yorevs/hspylib/.github/actions/tag-version@master
+        with:
+          tag-name: "v${{ github.run_number }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Changelog
+        id: change-log
+        uses: yorevs/hspylib/.github/actions/changelog@master
+        with:
+          tag-name: "v${{ github.run_number }}"
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ github.run_number }}"
+          release_name: "${{ vars.APP_NAME }}-v${{ github.run_number }}"
+          body: |
+            ${{ steps.change-log.outputs.changelog }}
+          draft: false
+          prerelease: false
+
 
