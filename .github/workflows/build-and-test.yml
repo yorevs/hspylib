@@ -1,10 +1,4 @@
 name: build-and-test
-<<<<<<< HEAD
-run-name: Build & Test [${{ github.sha }}]
-
-on:
-  workflow_dispatch:
-=======
 run-name: "Build & Test"
 
 permissions:
@@ -18,28 +12,13 @@ on:
         default: ''
         required: false
         type: string
->>>>>>> 9ccae6df (Add github custom actions)
   push:
     branches:
       - '**'
     paths:
       - 'modules/**'
-<<<<<<< HEAD
-  fork:
-    branches:
-      - '**'
-  pull_request:
-    branches:
-      - '**'
-    paths:
-      - 'modules/**'
-
-permissions:
-  contents: read
-=======
       - 'gradle/*.gradle'
       - 'build.gradle'
->>>>>>> 9ccae6df (Add github custom actions)
 
 jobs:
   build:
@@ -51,19 +30,12 @@ jobs:
           - '3.10'
           - '3.11'
         module:
-<<<<<<< HEAD
-=======
           - "hspylib"
->>>>>>> 9ccae6df (Add github custom actions)
           - "cfman"
           - "clitt"
           - "datasource"
           - "firebase"
           - "hqt"
-<<<<<<< HEAD
-          - "hspylib"
-=======
->>>>>>> 9ccae6df (Add github custom actions)
           - "kafman"
           - "setman"
           - "vault"
@@ -73,30 +45,17 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
-<<<<<<< HEAD
           java-version: ${{ vars.JAVA_VERSION }}
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v2
         with:
           gradle-version: ${{ vars.GRADLE_VERSION }}
-      - name: Set up Python
-=======
-          java-version: 11
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Set up Python 3.10+
->>>>>>> 9ccae6df (Add github custom actions)
-        uses: actions/setup-python@v3
+      - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
       - name: Update PIP
         run: pip install --upgrade pip
       - name: Build HSPyLib modules
-<<<<<<< HEAD
-        run: ./gradlew "${{ matrix.module }}:clean" "${{ matrix.module }}:installModule" "${{ matrix.module }}:build"
-=======
         run: |
           gradle "${{ matrix.module }}:clean" \
             "${{ matrix.module }}:installModule" \
             "${{ matrix.module }}:build" ${{ inputs.gradle_debug_params }}
->>>>>>> 9ccae6df (Add github custom actions)

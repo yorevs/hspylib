@@ -1,5 +1,5 @@
-name: deploy
-run-name: HSPyLib PyPi deploy - ${{github.run_number}} [@${{ github.actor }}]
+name: pypi-deploy
+run-name: PyPi Deploy
 
 on:
   workflow_dispatch:
@@ -9,11 +9,21 @@ on:
         default: ''
         required: false
         type: string
-      pypi_instance:
-        description: 'Deploy to which PyPi instance ?'
+      pypi_env:
+        description: 'PyPi instance to publish ?'
         default: 'pypi-test'
         required: true
         type: environment
+      release_type:
+        description: 'Release type ?'
+        type: choice
+        required: true
+        default: 'patch'
+        options:
+          - 'none'
+          - 'patch'
+          - 'minor'
+          - 'major'
       module:
         description: 'Which HSPyLib module ?'
         default: 'all'
@@ -30,16 +40,6 @@ on:
           - "kafman"
           - "setman"
           - "vault"
-      release_type:
-        description: 'Update version before publish ?'
-        type: choice
-        required: true
-        default: 'patch'
-        options:
-          - 'none'
-          - 'patch'
-          - 'minor'
-          - 'major'
 
 permissions:
   contents: write
@@ -61,7 +61,7 @@ jobs:
           - "setman"
           - "vault"
     runs-on: ubuntu-latest
-    environment: ${{ inputs.pypi_instance }}
+    environment: ${{ inputs.pypi_env }}
     env:
       PYPI_REPOSITORY: ${{ vars.PYPI_REPOSITORY }}
       PYPI_MODULE_URL: ${{ vars.PYPI_MODULE_URL }}
@@ -69,51 +69,69 @@ jobs:
       PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       PYPI_MODULE: ${{ matrix.module }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-java@v3
-      with:
-        distribution: temurin
-        java-version: ${{ vars.JAVA_VERSION }}
-    - uses: gradle/gradle-build-action@v2
-      with:
-        gradle-version: ${{ vars.GRADLE_VERSION }}
-    - uses: actions/setup-python@v3
-      with:
-        python-version: ${{ vars.PYTHON_VERSION }}
-    - name: Install Python tools
-      run: ./gradlew installBuildTools ${gradle_debug_params}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: ${{ vars.JAVA_VERSION }}
+      - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: ${{ vars.GRADLE_VERSION }}
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+      - name: Install Python tools
+        run: gradle installBuildTools ${gradle_debug_params}
+      - name: Update patch number
+        if: ${{ inputs.release_type == 'patch' }}
+        run: gradle "${{ matrix.module }}:patchVersion" ${gradle_debug_params}
+      - name: Update minor number
+        if: ${{ inputs.release_type == 'minor' }}
+        run: gradle "${{ matrix.module }}:updateMinor" ${gradle_debug_params}
+      - name: Update major number
+        if: ${{ inputs.release_type == 'major' }}
+        run: gradle "${{ matrix.module }}:updateMajor" ${gradle_debug_params}
+      - name: Publish modules to PyPi
+        if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
+        run: |
+          echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
+          gradle "${{ matrix.module }}:publish" -Pno-patch=true ${gradle_debug_params}
+      - name: Check published package
+        if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
+        run: |
+          gradle "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
+      - name: Commit revision
+        if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
+        run: |
+          if [ -z $(git status --porcelain) ]; then
+            echo "No changes to commit!"
+          else
+            git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+            git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+            git config github.token "${{ inputs.github-token }}"
+            git commit -a -m "[@${{ github.actor }}] Push for new deployment -> '${{ matrix.module }}'"
+            git pull --rebase -Xtheirs && git push --atomic origin HEAD
+          fi
+      - name: Check Version
+        id: check-version
+        run: |
+          appVersion=$(cat modules/${{ matrix.module }}/src/main/${{ matrix.module }}/.version)
+          echo "app_version=$(echo $appVersion)" >> $GITHUB_OUTPUT
+      - name: Git Tag Version
+        uses: yorevs/hspylib/.github/actions/tag-version@master
+        with:
+          tag-name: "v${{ steps.check-version.outputs.app_version }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Changelog
+        id: change-log
+        uses: yorevs/hspylib/.github/actions/changelog@master
+        with:
+          tag-name: "v${{ steps.check-version.outputs.app_version }}"
+      - name: Create Release
+        uses: yorevs/hspylib/.github/actions/create-release@master
+        with:
+          tag-name: "v${{ steps.check-version.outputs.app_version }}"
+          artifact-name: ${{ vars.ARTIFACT_NAME }}
+          changelog: ${{ steps.change-log.outputs.changelog }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Update patch number
-      if: ${{ inputs.release_type == 'patch' }}
-      run: ./gradlew "${{ matrix.module }}:patchVersion" ${gradle_debug_params}
-
-    - name: Update minor number
-      if: ${{ inputs.release_type == 'minor' }}
-      run: ./gradlew "${{ matrix.module }}:updateMinor" ${gradle_debug_params}
-
-    - name: Update major number
-      if: ${{ inputs.release_type == 'major' }}
-      run: ./gradlew "${{ matrix.module }}:updateMajor" ${gradle_debug_params}
-
-    - name: Publish modules to PyPi
-      if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
-      run: |
-        echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_instance }} -> ${{ env.PYPI_REPOSITORY }}"
-        ./gradlew "${{ matrix.module }}:publish" -Pno-patch=true ${gradle_debug_params}
-
-    - name: Check published package
-      if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
-      run: |
-        ./gradlew "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
-
-    - name: Commit revision
-      if: ${{ inputs.module == 'all' || inputs.module == matrix.module }}
-      run: |
-        if [ -z $(git status --porcelain) ]; then
-          echo "No changes to commit!"
-        else
-          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
-          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
-          git commit -a -m "[@${{ github.actor }}] New PyPi deployment. Module: ${{ matrix.module }}"
-          git pull --rebase -Xtheirs && git push --atomic origin HEAD
-        fi
