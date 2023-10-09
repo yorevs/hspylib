@@ -67,12 +67,16 @@ jobs:
     steps:
       - name: Check Branch
         run: |
-          [[ "${{ inputs.pypi_env }}" == "pypi-test" &&
-             "develop" != "${{ github.ref_name }}" ]] &&
-             echo "Can only deploy to 'pypi-test' from develop" && exit 1
-          [[ "${{ inputs.pypi_env }}" == "pypi-prod" &&
-             "master" != "${{ github.ref_name }}" ]] &&
-             echo "Can only deploy to 'pypi-prod' from master" && exit 1
+          if [[ "${{ inputs.pypi_env }}" == "pypi-test" &&
+             "${{ github.ref_name }}" != 'develop' ]]; then
+             echo "Can only deploy to 'pypi-test' from develop"
+             exit 1
+          fi
+          if [[ "${{ inputs.pypi_env }}" == "pypi-prod" &&
+             "${{ github.ref_name }}" != 'master' ]]; then
+             echo "Can only deploy to 'pypi-prod' from master"
+             exit 1
+          fi
       - name: Set Matrix Items
         id: set-matrix-items
         run: |
