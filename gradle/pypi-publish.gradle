@@ -65,9 +65,6 @@ task checkDist(type: Task) {
 task sdist(type: Task) {
   group = 'Publish'
   description = 'Generate PyPi distribution files'
-  if (!project.hasProperty('no-patch') || !Boolean.valueOf(project.getProperty('no-patch'))) {
-    dependsOn patchVersion
-  }
   dependsOn copyLicense
   dependsOn syncRequirements
   finalizedBy checkDist
@@ -94,7 +91,6 @@ task publish(type: Task) {
   group = 'Publish'
   description = "Publish the module to PyPi repository"
   dependsOn sdist
-  finalizedBy cleanDist
   def url = project.ext.pypiRepository
   def un = project.ext.pypiUsername
   def pw = project.ext.pypiPassword
