@@ -10,12 +10,12 @@ on:
         required: true
         type: environment
       cfman:
-        description: 'Deploy HSPyLib-CFman ?'
+        description: 'Deploy HSPyLib-Cfman ?'
         default: false
         required: true
         type: boolean
       clitt:
-        description: 'Deploy HSPyLib-CLItt ?'
+        description: 'Deploy HSPyLib-Clitt ?'
         default: false
         required: true
         type: boolean
@@ -177,23 +177,28 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      - name: Set App. Version
+        id: set-app-version
+        run: |
+          version=$(cat .version)
+          echo "version=$( echo "${version}" )" >> $GITHUB_OUTPUT
       - name: Git Tag Version
         uses: yorevs/hspylib/.github/actions/tag-version@master
         with:
-          tag-name: "v${{ github.run_number }}"
+          tag-name: "v${{ steps.set-app-version.outputs.version }}"
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Changelog
         id: change-log
         uses: yorevs/hspylib/.github/actions/changelog@master
         with:
-          tag-name: "v${{ github.run_number }}"
+          tag-name: "v${{ steps.set-app-version.outputs.version }}"
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "v${{ github.run_number }}"
-          release_name: "${{ vars.APP_NAME }}-v${{ github.run_number }}"
+          release_name: "${{ vars.APP_NAME }}-v${{ steps.set-app-version.outputs.version }}-r${{ github.run_number }}"
           body: |
             ${{ steps.change-log.outputs.changelog }}
           draft: false
