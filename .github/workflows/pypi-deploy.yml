@@ -95,6 +95,7 @@ jobs:
           JSON="$JSON]}"
           echo "matrix=$( echo "$JSON" )" >> $GITHUB_OUTPUT
   deploy:
+    if: false
     needs: set-env-matrix
     strategy:
       fail-fast: false
@@ -124,25 +125,22 @@ jobs:
       - name: Publish modules to PyPi
         run: |
           echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
-          
+
       - name: Check published package
         run: |
           gradle "${{ matrix.module }}:pypiShow" ${gradle_debug_params}
-      - name: Deploy Information
-        id: deploy-info
-        run: |
-          echo "modules=$(echo ${{ matrix.module }})" >> $GITHUB_OUTPUT
-
-    outputs:
-      modules: ${{ steps.deploy-info.outputs.modules }}
 
   update-version:
-    needs: deploy
+    needs:
+      - set-env-matrix
     runs-on: ubuntu-latest
     steps:
       - name: Update patch number
         run: |
-          echo "${{ needs.deploy.outputs.modules }}"
+          for m in ${{ fromJson(needs.set-env-matrix.outputs.matrix) }}
+            echo "Module: $m"
+          done
+
 
   create-release:
     needs:
