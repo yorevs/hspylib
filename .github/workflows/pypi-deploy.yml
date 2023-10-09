@@ -141,7 +141,7 @@ jobs:
     steps:
       - name: Update patch number
         run: |
-          for m in ${{ needs.set-env-matrix.outputs.matrix.modules }}
+          for m in ${{ needs.set-env-matrix.outputs.modules }}
             echo "Module: $m"
           done
 
