@@ -49,6 +49,12 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           gradle-version: ${{ vars.GRADLE_VERSION }}
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
