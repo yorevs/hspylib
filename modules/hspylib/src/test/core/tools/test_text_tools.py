@@ -91,9 +91,13 @@ class TestTextTools(unittest.TestCase):
         camel_text = camelcase(text)
         expected_text = "thisIsJustASimpleTest"
         self.assertEqual(expected_text, camel_text)
-        camel_text_upper = camelcase(text, upper=True)
+        camel_text = camelcase(text, capitalized=True)
         expected_text = "ThisIsJustASimpleTest"
-        self.assertEqual(expected_text, camel_text_upper)
+        self.assertEqual(expected_text, camel_text)
+        text = "MY PROP MY  PROP my prop"
+        expected_text = "myPropMyPropMyProp"
+        snake_text = camelcase(text)
+        self.assertEqual(expected_text, snake_text)
 
     def test_should_snake_case(self) -> None:
         text = "This is just a simple test"
@@ -103,6 +107,10 @@ class TestTextTools(unittest.TestCase):
         screaming_snake_text = snakecase(text, screaming=True)
         expected_text = "THIS_IS_JUST_A_SIMPLE_TEST"
         self.assertEqual(expected_text, screaming_snake_text)
+        text = "MY_PROP MY_ PROP my_prop"
+        expected_text = "my_prop_my_prop_my_prop"
+        snake_text = snakecase(text)
+        self.assertEqual(expected_text, snake_text)
 
     def test_should_kebab_case(self) -> None:
         text = "This is just a simple test"
@@ -112,6 +120,10 @@ class TestTextTools(unittest.TestCase):
         screaming_snake_text = kebabcase(text, train=True)
         expected_text = "THIS-IS-JUST-A-SIMPLE-TEST"
         self.assertEqual(expected_text, screaming_snake_text)
+        text = "MY-PROP MY- PROP my-prop"
+        expected_text = "my-prop-my-prop-my-prop"
+        kebab_text = kebabcase(text)
+        self.assertEqual(expected_text, kebab_text)
 
     def test_should_title_case(self) -> None:
         text = "That's not just a simple test"
@@ -135,7 +147,7 @@ class TestTextTools(unittest.TestCase):
         self.assertEqual(expected_text, camel_text)
         kebab_text = kebabcase(camel_text)
         expected_text = "this-is-just-a-simple-test"
-        self.assertEqual(kebab_text, expected_text)
+        self.assertEqual(expected_text, kebab_text)
         snake_text = snakecase(kebab_text)
         expected_text = "this_is_just_a_simple_test"
         self.assertEqual(expected_text, snake_text)
