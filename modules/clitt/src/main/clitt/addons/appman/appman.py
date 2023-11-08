@@ -179,7 +179,7 @@ class AppManager(metaclass=Singleton):
             f"widget_{app_name.lower()}.py",
             (self.TEMPLATES / "widget.py.tpl")
             .read_text()
-            .replace("_WIDGET_NAME_", f"{camelcase(app_name, upper=True)}"),
+            .replace("_WIDGET_NAME_", f"{camelcase(app_name, capitalized=True)}"),
         )
 
     def _create_base_app_struct(self, app_name: str) -> None:
