@@ -90,28 +90,28 @@ def lowercase(text: str) -> str:
     return text.lower()
 
 
-def camelcase(text: str, separator: str = " |-|_", upper: bool = False) -> str:
+def camelcase(text: str, separator: str = " |-|_", capitalized: bool = False) -> str:
     """Return a copy of the string converted to camel case.
     Ref:https://en.wikipedia.org/wiki/Letter_case :: Camel case
     :param text: TODO
     :param separator: TODO
-    :param upper: TODO
+    :param capitalized: TODO
     """
     s = re.sub(rf"({separator})+", " ", text)
     s = s.title()
-    s = re.sub(rf"({separator})+", "", s)
-    fnc = getattr(s[0], "lower" if not upper else "upper")
-    return "".join([fnc(), s[1:]])
+    text = re.sub(rf"({separator})+", "", s)
+    fnc = getattr(text[0], "lower" if not capitalized else "upper")
+    return "".join([fnc(), text[1:]])
 
 
-def snakecase(text: str, separator: str = "-", screaming: bool = False) -> str:
+def snakecase(text: str, separator: str = " |-|_", screaming: bool = False) -> str:
     """Return a copy of the string converted to snake case.
     Ref:https://en.wikipedia.org/wiki/Letter_case :: Snake case
     :param text: TODO
     :param separator: TODO
     :param screaming: TODO
     """
-    s = re.sub("([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", text.replace(separator, " ")))
+    s = re.sub("([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", re.sub(separator, " ", text)))
     text = "_".join(s.split())
     fnc = getattr(text, "lower" if not screaming else "upper")
     return fnc()
@@ -124,7 +124,7 @@ def kebabcase(text: str, separator: str = " |-|_", train: bool = False) -> str:
     :param separator: TODO
     :param train: TODO
     """
-    s = re.sub("([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", text.replace(separator, " ")))
+    s = re.sub("([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", re.sub(separator, " ", text)))
     text = "-".join(s.split())
     fnc = getattr(text, "lower" if not train else "upper")
     return fnc()
