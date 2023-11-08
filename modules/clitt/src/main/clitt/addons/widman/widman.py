@@ -46,7 +46,7 @@ class WidgetManager(metaclass=Singleton):
         return (
             expected_name.lower() == provided_name.lower()
             or expected_name == provided_name.capitalize()
-            or expected_name == camelcase(provided_name, upper=True)
+            or expected_name == camelcase(provided_name, capitalized=True)
             or expected_name.lower() == provided_name.lower().replace("_", "")
         )
 
@@ -64,7 +64,7 @@ class WidgetManager(metaclass=Singleton):
         :param widget_args the arguments to be provided to the widget.
         """
 
-        widget = self._import_widget(camelcase(widget_name, upper=True))
+        widget = self._import_widget(camelcase(widget_name, capitalized=True))
         try:
             atexit.register(widget.cleanup)
             exit_code = widget.execute(*widget_args)
