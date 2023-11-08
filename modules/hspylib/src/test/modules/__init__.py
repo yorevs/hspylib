@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.26
+# hspylib v1.12.27
 #
 # Package: test.modules
 """Package initialization."""
@@ -12,4 +12,4 @@ __all__ = [
     'fetch', 
     'security'
 ]
-__version__ = '1.12.26'
+__version__ = '1.12.27'
