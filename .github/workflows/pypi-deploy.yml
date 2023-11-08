@@ -185,7 +185,7 @@ jobs:
       - name: Publish modules to PyPi
         run: |
           echo "Deploying module: (${{ matrix.module }}) to: ${{ inputs.pypi_env }} -> ${{ env.PYPI_REPOSITORY }}"
-          gradle "${{ matrix.module }}:publish -Pno-patch=true"
+          gradle ${{ matrix.module }}:publish -Pno-patch=true
       - name: Check published package
         run: |
-          gradle "${{ matrix.module }}:pypiShow"
+          gradle ${{ matrix.module }}:pypiShow
