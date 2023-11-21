@@ -228,6 +228,8 @@ task uninstall(type: Task) {
 task check(type: Task) {
   group = 'Verification'
   description = "Run all python unittests from sourceRoot"
+  dependsOn compilePython
+  dependsOn compileQrc
   doLast {
     println "Executing all unittests from ${sourceRoot}"
     fileTree("${sourceRoot}/test").matching {

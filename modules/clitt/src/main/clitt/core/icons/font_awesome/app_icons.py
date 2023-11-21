@@ -51,4 +51,5 @@ class AppIcons(Awesome):
     YOUTUBE         = '\uF16A'  # 
     WHATSAPP        = '\uFAA2'  # 甆
     WINDOWS         = '\uF17A'  # 
+    ALPINE          = '\uF7F4'  # 
     # fmt: on
