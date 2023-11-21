@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-setman v0.10.30
+# hspylib-setman v0.10.31
 #
 # Package: demo.settings
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
     'settings_demo'
 ]
-__version__ = '0.10.30'
+__version__ = '0.10.31'
