@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.32
+# hspylib v1.12.33
 #
 # Package: test.core.metaclass
 """Package initialization."""
@@ -8,4 +8,4 @@
 __all__ = [
     'test_metaclass'
 ]
-__version__ = '1.12.32'
+__version__ = '1.12.33'

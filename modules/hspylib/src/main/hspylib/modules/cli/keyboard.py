@@ -12,6 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
+import os
 from time import sleep
 
 from hspylib.core.enums.enumeration import Enumeration
@@ -34,14 +35,14 @@ class Keyboard(Enumeration):
     # Control keys
     VK_NONE         = ''; VK_DISABLED = ''
 
-    VK_ESC          = getkey.keys.ESC; VK_ENTER             = getkey.keys.ENTER
-    VK_UP           = getkey.keys.UP; VK_DELETE             = getkey.keys.DELETE
-    VK_DOWN         = getkey.keys.DOWN; VK_SPACE            = getkey.keys.SPACE
-    VK_LEFT         = getkey.keys.LEFT; VK_HOME             = getkey.keys.HOME
-    VK_RIGHT        = getkey.keys.RIGHT; VK_END             = getkey.keys.END
-    VK_BACKSPACE    = getkey.keys.BACKSPACE; VK_PAGE_UP     = getkey.keys.PAGE_UP
-    VK_INSERT       = getkey.keys.INSERT; VK_PAGE_DOWN      = getkey.keys.PAGE_DOWN
-    VK_TAB          = '\t'; VK_SHIFT_TAB                    = '\x1b[Z'
+    VK_ESC          = getkey.keys.ESC;        VK_ENTER      = os.linesep
+    VK_UP           = getkey.keys.UP;         VK_DELETE     = getkey.keys.DELETE
+    VK_DOWN         = getkey.keys.DOWN;       VK_SPACE      = getkey.keys.SPACE
+    VK_LEFT         = getkey.keys.LEFT;       VK_HOME       = getkey.keys.HOME
+    VK_RIGHT        = getkey.keys.RIGHT;      VK_END        = getkey.keys.END
+    VK_BACKSPACE    = getkey.keys.BACKSPACE;  VK_PAGE_UP    = getkey.keys.PAGE_UP
+    VK_INSERT       = getkey.keys.INSERT;     VK_PAGE_DOWN  = getkey.keys.PAGE_DOWN
+    VK_TAB          = '\t';                   VK_SHIFT_TAB  = '\x1b[Z'
 
     VK_CTRL_A       = '\x01';       VK_CTRL_B = '\x02';       VK_CTRL_C = VK_DISABLED; VK_CTRL_D = '\x04'
     VK_CTRL_E       = '\x05';       VK_CTRL_F = '\x06';       VK_CTRL_G = '\x07';      VK_CTRL_H = '\x08'
