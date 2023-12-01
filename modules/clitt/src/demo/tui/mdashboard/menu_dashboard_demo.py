@@ -15,11 +15,8 @@
 
 from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
 from clitt.core.tui.mdashboard.mdashboard import mdashboard, MenuDashBoard
-from clitt.core.tui.tui_preferences import TUIPreferences
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 if __name__ == "__main__":
-    TUIPreferences(max_rows=10, items_per_line=3, highlight_color=VtColor.WHITE)
     # fmt: off
     dashboard_items = MenuDashBoard.builder() \
         .item() \

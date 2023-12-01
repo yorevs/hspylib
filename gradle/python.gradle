@@ -174,10 +174,14 @@ task installModule(type: Task) {
       include "**/setup.py"
     }.each { File module ->
         def moduleDir = dirName(module)
-        println "Install $project.name : $moduleDir -> $module.path"
+        def args = [
+          rootProject.python, '-m', 'pip', 'install', '-e', "${sourceRoot}/main",
+          '--break-system-packages'
+        ]
+        println "Install [Editable] module ${project.name} : ${moduleDir} -> ${module.path}"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '-e', "$sourceRoot/main"
+          commandLine args.flatten()
         }
       }
   }
@@ -194,11 +198,16 @@ task install(type: Task) {
       include "**/setup.py"
     }.each { File module ->
         def moduleDir = dirName(module)
-        println "Installing $project.name : $moduleDir"
+        def args = [
+          rootProject.python, '-m', 'pip', 'install', '-q',
+          rootProject.space, '--upgrade', moduleDir,
+          '--break-system-packages'
+        ]
+        println "Installing ${project.name} : '${moduleDir}' using ${rootProject.python}"
         println "Space: ${rootProject.space}"
         exec {
-          workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'install', '-q', rootProject.space, '--upgrade', moduleDir
+          workingDir "${moduleDir}"
+          commandLine args.flatten()
         }
       }
   }
@@ -213,10 +222,14 @@ task uninstall(type: Task) {
       include "**/setup.py"
     }.each { File module ->
         def moduleDir = "${module.path.replace(module.name, "")}"
+        def args = [
+          rootProject.python, '-m', 'pip', 'uninstall', '-y', '-q', project.ext.app_name,
+          '--break-system-packages'
+        ]
         println "Uninstall $project.name : $moduleDir -> $module.path"
         exec {
           workingDir "$moduleDir"
-          commandLine rootProject.python, '-m', 'pip', 'uninstall', '-y', '-q', project.ext.app_name
+          commandLine args.flatten()
         }
       }
   }

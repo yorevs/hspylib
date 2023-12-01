@@ -13,14 +13,16 @@
    Copyright 2023, HsPyLib team
 """
 from abc import ABC, abstractmethod
+from hspylib.core.tools.text_tools import elide_text
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import Any, List, Optional, TypeVar
+
 from clitt.core.icons.font_awesome.awesome import Awesome
+from clitt.core.term.commons import Direction
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.screen import Screen
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_preferences import TUIPreferences
-from hspylib.core.tools.text_tools import elide_text
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import Any, List, Optional, TypeVar
 
 T = TypeVar("T", bound=Any)
 
@@ -73,20 +75,22 @@ class TUIComponent(ABC):
     def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
         """Loop and await for a keypress. Render the component if required."""
 
-        break_keys = break_keys or [Keyboard.VK_ESC, Keyboard.VK_ENTER]
+        break_keys = break_keys or Keyboard.break_keys()
         keypress = Keyboard.VK_NONE
 
         # Wait for user interaction
         while not self._done and keypress not in break_keys:
+
             # Menu Renderization
             if self._re_render:
                 self.render()
-
             # Navigation input
             keypress = self.handle_keypress()
 
         self.cursor.end()
-        self.writeln("%MOD(0)%%EOL%")
+        self.cursor.erase(Direction.DOWN)
+        self.cursor.reset_mode()
+        self.cursor.writeln('\n')
 
         return keypress
 

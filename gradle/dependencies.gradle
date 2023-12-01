@@ -98,7 +98,7 @@ task installDependencies(type: Task) {
   dependsOn syncRequirements
   doLast {
     def req_file = new File("${project.ext.sourceRoot}/main/requirements.txt")
-    println "\nInstalling \"${project.name}\" dependencies"
+    println "\nInstalling \"${project.name}\" dependencies using ${rootProject.python}"
     println "Requirements file: \n\t" + req_file
     println "Required Packages:"
     req_file.each { dep ->
@@ -108,7 +108,9 @@ task installDependencies(type: Task) {
     }
     println "Space: ${rootProject.space}"
     def args = [
-      rootProject.python, '-m', 'pip', 'install', '-q', rootProject.space, '--upgrade', '-r', req_file.toString()
+      rootProject.python, '-m', 'pip', 'install', '-q',
+      rootProject.space, '--upgrade', '-r', req_file.toString(),
+      '--break-system-packages'
     ]
     exec {
       commandLine args.flatten()

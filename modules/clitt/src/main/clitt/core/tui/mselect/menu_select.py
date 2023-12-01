@@ -12,12 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional, TypeAlias, TypeVar
+
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.tui.tui_component import TUIComponent
-from functools import cached_property
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import List, Optional, TypeAlias, TypeVar
 
 T = TypeVar("T")
 
@@ -42,10 +42,6 @@ class MenuSelect(TUIComponent):
         self._sel_index = 0
         self._max_line_length = max(len(str(item)) for item in items)
 
-    @cached_property
-    def digits(self) -> List[Keyboard]:
-        return Keyboard.digits()
-
     def execute(self) -> Optional[T]:
         """Execute the component's main flow."""
 
@@ -57,7 +53,7 @@ class MenuSelect(TUIComponent):
         self._prepare_render()
         keypress = self._loop()
 
-        return self._items[self._sel_index] if keypress == Keyboard.VK_ENTER else None
+        return self._items[self._sel_index] if keypress.isEnter() else None
 
     def render(self) -> None:
         """Renders the TUI component."""
@@ -96,7 +92,7 @@ class MenuSelect(TUIComponent):
     def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
             match keypress:
-                case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
+                case _ as key if key in Keyboard.break_keys():
                     self._done = True
                 case Keyboard.VK_UP:
                     self._handle_key_up()
@@ -106,7 +102,7 @@ class MenuSelect(TUIComponent):
                     self._handle_tab()
                 case Keyboard.VK_SHIFT_TAB:
                     self._handle_shift_tab()
-                case _ as key if key in self.digits:
+                case _ as key if key in Keyboard.digits():
                     self._handle_digit(keypress)
 
         return keypress

@@ -12,10 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
-from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.tui.mselect.mselect import mselect
-from clitt.core.tui.tui_preferences import TUIPreferences
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class SelectableItem:
@@ -31,9 +28,6 @@ class SelectableItem:
 
 
 if __name__ == "__main__":
-    TUIPreferences(
-        max_rows=10, highlight_color=VtColor.WHITE, selected=NavIcons.SELECTED, unselected=NavIcons.UNSELECTED
-    )
     quantity = 22
     digits = len(str(quantity))
     it = [SelectableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]

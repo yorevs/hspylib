@@ -13,17 +13,17 @@
    Copyright 2023, HsPyLib team
 """
 import os
-from time import sleep
-
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.exception.exceptions import KeyboardInputError
-from typing import List, Optional
-
-import getkey
 import select
 import string
 import sys
 import termios
+from time import sleep
+from typing import List, Optional
+
+import getkey
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.exception.exceptions import KeyboardInputError
 
 
 # pylint: disable=multiple-statements
@@ -33,9 +33,11 @@ class Keyboard(Enumeration):
     # fmt: off
 
     # Control keys
-    VK_NONE         = ''; VK_DISABLED = ''
+    VK_NONE         = '';                     VK_DISABLED = ''
+    VK_ESC          = getkey.keys.ESC
 
-    VK_ESC          = getkey.keys.ESC;        VK_ENTER      = os.linesep
+    VK_ENTER        = os.linesep;             VK_CRLF       = '\r\n'
+    VK_CR           = '\r';                   VK_LF         = '\n'
     VK_UP           = getkey.keys.UP;         VK_DELETE     = getkey.keys.DELETE
     VK_DOWN         = getkey.keys.DOWN;       VK_SPACE      = getkey.keys.SPACE
     VK_LEFT         = getkey.keys.LEFT;       VK_HOME       = getkey.keys.HOME
@@ -119,6 +121,16 @@ class Keyboard(Enumeration):
         return list(map(cls.of_value, filter(lambda v: str(v).isalpha(), cls.values())))
 
     @classmethod
+    def line_separators(cls) -> List["Keyboard"]:
+        """Return all line feed separators."""
+        return [cls.VK_ENTER, cls.VK_CRLF, cls.VK_CRLF, cls.VK_CR]
+
+    @classmethod
+    def break_keys(cls) -> List["Keyboard"]:
+        """Return all line feed separators."""
+        return [cls.VK_ESC, cls.VK_ENTER, cls.VK_CRLF, cls.VK_CRLF, cls.VK_CR]
+
+    @classmethod
     def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
         """Wait until a keypress is detected."""
         try:
@@ -161,3 +173,6 @@ class Keyboard(Enumeration):
     def ispunct(self) -> bool:
         """Return True if the keystroke is a punctuation string, False otherwise."""
         return all(ch in string.punctuation for ch in str(self.value))
+
+    def isEnter(self) -> bool:
+        return self in [self.VK_ENTER, self.VK_CRLF, self.VK_CR, self.VK_LF]

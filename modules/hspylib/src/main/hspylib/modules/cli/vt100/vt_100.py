@@ -12,11 +12,11 @@
 
    Copyright 2023, HsPyLib team
 """
-from abc import ABC
-from hspylib.core.preconditions import check_argument
-
 import os
 import re
+from abc import ABC
+
+from hspylib.core.preconditions import check_argument
 
 
 class Vt100(ABC):
@@ -78,9 +78,9 @@ class Vt100(ABC):
 
     # Esc[<Modes...>m
     @staticmethod
-    def mode(mod_seq: str) -> str:
+    def mode(mod_seq: str | int) -> str:
         """Build an escape sequence to change character attributes. 'Esc[m' or 'Esc[0m' ro reset."""
-        check_argument(bool(re.match(r"[0-9]+(;[0-9]+){0,2}", mod_seq)), f"Invalid mode sequence: {mod_seq}")
+        check_argument(bool(re.match(r"[0-9]+(;[0-9]+){0,2}", str(mod_seq))), f"Invalid mode sequence: {mod_seq}")
         return Vt100.sequence(f"{mod_seq}m")
 
     # Esc[<n>J
