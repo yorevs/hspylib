@@ -82,7 +82,7 @@ class MenuDashBoard(TUIComponent):
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx, item in enumerate(self._items):
-            self._print_item(
+            self._draw_item(
                 idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL
             )
 
@@ -117,13 +117,19 @@ class MenuDashBoard(TUIComponent):
 
         return keypress
 
-    def _print_item(self, item_idx: int, item: DashboardItem, cell_template: DashboardMatrix) -> None:
+    def _draw_item(
+        self,
+        item_idx: int,
+        item: DashboardItem,
+        cell_template: DashboardMatrix) -> None:
         """Print the specified dashboard item at the given index.
         :param item_idx: the item index.
         :param item: the dashboard item.
         :param cell_template: the template of the dashboard cell (selected or unselected).
         """
+
         num_cols, num_rows = len(cell_template[0]), len(cell_template)
+
         for row in range(0, num_rows):
             for col in range(0, num_cols):
                 cur_cell = cell_template[row][col]
@@ -132,6 +138,7 @@ class MenuDashBoard(TUIComponent):
             # Move to the next the next row
             self.cursor.move(1, Direction.DOWN)
             self.cursor.move(num_cols, Direction.LEFT)
+
         if item_idx > 0 and (item_idx + 1) % self._items_per_line() == 0:
             # Break the line
             self.cursor.move(1, Direction.DOWN)
@@ -142,5 +149,6 @@ class MenuDashBoard(TUIComponent):
             self.cursor.move(num_cols, Direction.RIGHT)
 
     def _items_per_line(self) -> int:
+        """TODO"""
         screen_columns = self.screen.columns - self.COLUMN_OFFSET
         return max(self.MIN_COLUMNS, min(self.prefs.items_per_line, screen_columns))

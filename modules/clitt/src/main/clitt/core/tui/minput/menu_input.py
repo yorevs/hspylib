@@ -70,6 +70,7 @@ class MenuInput(TUIComponent):
         return None
 
     def render(self) -> None:
+
         Terminal.set_show_cursor(False)
         self.cursor.restore()
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
@@ -89,11 +90,12 @@ class MenuInput(TUIComponent):
 
         self.cursor.erase(Direction.DOWN)
         self.draw_navbar(self.navbar())
-        self._re_render = False
         self._set_cursor_pos()
+        self._re_render = False
         Terminal.set_show_cursor()
 
     def navbar(self, **kwargs) -> str:
+
         return (
             f"%EOL%{NavIcons.POINTER} %GREEN%{self.cur_field.tooltip or f'the {self.cur_field.label.lower()}'}%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
