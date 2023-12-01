@@ -31,5 +31,6 @@ if __name__ == "__main__":
     quantity = 22
     digits = len(str(quantity))
     it = [ChooseableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
-    sel = mchoose(it, [n % 2 == 0 for n in range(1, quantity)])
+    # sel = mchoose(it, [n % 2 == 0 for n in range(1, quantity)])
+    sel = mchoose(it, [n % 2 == 0 for n in range(1, 11)])
     print(str(sel))

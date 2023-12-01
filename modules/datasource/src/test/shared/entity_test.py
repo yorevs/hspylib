@@ -15,7 +15,7 @@
 from collections import namedtuple
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import to_bool
 from hspylib.core.tools.text_tools import snakecase
 from typing import List
 
@@ -36,7 +36,7 @@ class EntityTest(CrudEntity):
         super().__init__(entity_id)
         self.comment = kwargs["comment"]
         self.lucky_number = kwargs["lucky_number"]
-        self.is_working = str_to_bool(str(kwargs["is_working"]))
+        self.is_working = to_bool(str(kwargs["is_working"]))
 
     def __str__(self) -> str:
         return f"id={self.id} comment={self.comment} lucky_number={self.lucky_number} working={self.is_working}"

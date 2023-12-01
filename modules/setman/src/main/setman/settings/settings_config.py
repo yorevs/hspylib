@@ -13,7 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 from datasource.db_configuration import DBConfiguration
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import to_bool
 
 
 class SettingsConfig(DBConfiguration):
@@ -24,7 +24,7 @@ class SettingsConfig(DBConfiguration):
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
         self._database: str = self["hhs.settings.database"]
-        self._encode_db: bool = str_to_bool(self["hhs.settings.encode.database"])
+        self._encode_db: bool = to_bool(self["hhs.settings.encode.database"])
 
     @property
     def database(self) -> str:

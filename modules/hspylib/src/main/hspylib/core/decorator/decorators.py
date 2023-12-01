@@ -13,7 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 from datetime import datetime, timedelta
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import to_bool
 from math import ceil
 from typing import Any, Callable
 
@@ -26,7 +26,7 @@ import unittest
 def integration_test(cls: type):
     """Enable/Disable HsPyLib integration tests"""
 
-    it_disabled = str_to_bool(os.environ.get("HSPYLIB_IT_DISABLED", "True"))
+    it_disabled = to_bool(os.environ.get("HSPYLIB_IT_DISABLED", "True"))
     if it_disabled:
         log.debug("Skipping test: %s", cls.__name__)
         return unittest.skipIf(
