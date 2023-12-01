@@ -73,7 +73,7 @@ class TUIComponent(ABC):
         self.cursor.save()
 
     def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
-        """Loop and await for a keypress. Render the component if required."""
+        """Loop and wait for a keypress. Render the component if required."""
 
         break_keys = break_keys or Keyboard.break_keys()
         keypress = Keyboard.VK_NONE
