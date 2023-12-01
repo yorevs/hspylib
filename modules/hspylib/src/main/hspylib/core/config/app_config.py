@@ -16,7 +16,7 @@
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import run_dir, str_to_bool
+from hspylib.core.tools.commons import run_dir, to_bool
 from textwrap import dedent
 from typing import Any, Optional
 
@@ -95,4 +95,4 @@ class AppConfigs(metaclass=Singleton):
 
     def get_bool(self, property_name: str) -> Optional[bool]:
         """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, cb_to_type=str_to_bool)
+        return self._properties.get(property_name, cb_to_type=to_bool)

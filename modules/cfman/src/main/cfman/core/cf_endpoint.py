@@ -13,7 +13,7 @@
    Copyright 2023, HsPyLib team
 """
 from cfman.exception.exceptions import CFInvalidEndpoint
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import to_bool
 
 
 class CFEndpoint:
@@ -26,7 +26,7 @@ class CFEndpoint:
             )
         self._alias = attrs[0]
         self._host = attrs[1]
-        self._protected = str_to_bool(attrs[2])
+        self._protected = to_bool(attrs[2])
 
     def __str__(self) -> str:
         return f"{self.alias}  {self.host}"

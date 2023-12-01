@@ -19,7 +19,7 @@ from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput_utils import get_selected, MASK_SYMBOLS, unpack_masked, VALUE_SEPARATORS
 from functools import reduce
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import to_bool
 from hspylib.core.tools.text_tools import snakecase
 from operator import add
 from typing import Any
@@ -91,7 +91,7 @@ class FieldBuilder:
 
     def build(self) -> Any:
         if self._itype == InputType.CHECKBOX:
-            self._value = str_to_bool(str(self._value))
+            self._value = to_bool(str(self._value))
         elif self._itype == InputType.SELECT:
             parts = re.split(VALUE_SEPARATORS, re.sub("[<>]", "", str(self._value or "")))
             self._min_max_length = len(min(parts, key=len)), len(max(parts, key=len))

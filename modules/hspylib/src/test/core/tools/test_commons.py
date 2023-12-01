@@ -12,7 +12,7 @@
 
    Copyright 2023, HsPyLib team
 """
-from hspylib.core.tools.commons import str_to_bool, syserr, sysout
+from hspylib.core.tools.commons import to_bool, syserr, sysout
 
 import sys
 import unittest
@@ -20,19 +20,19 @@ import unittest
 
 class TestCommons(unittest.TestCase):
     def test_should_return_proper_bool_value(self) -> None:
-        self.assertFalse(str_to_bool(""))
-        self.assertFalse(str_to_bool("0"))
-        self.assertFalse(str_to_bool("off"))
-        self.assertFalse(str_to_bool("no"))
-        self.assertTrue(str_to_bool("1"))
-        self.assertTrue(str_to_bool("true"))
-        self.assertTrue(str_to_bool("True"))
-        self.assertTrue(str_to_bool("on"))
-        self.assertTrue(str_to_bool("yes"))
+        self.assertFalse(to_bool(""))
+        self.assertFalse(to_bool("0"))
+        self.assertFalse(to_bool("off"))
+        self.assertFalse(to_bool("no"))
+        self.assertTrue(to_bool("1"))
+        self.assertTrue(to_bool("true"))
+        self.assertTrue(to_bool("True"))
+        self.assertTrue(to_bool("on"))
+        self.assertTrue(to_bool("yes"))
 
-        self.assertFalse(str_to_bool("good"))
-        self.assertTrue(str_to_bool("good", {"good"}))
-        self.assertFalse(str_to_bool("bad", {"good"}))
+        self.assertFalse(to_bool("good"))
+        self.assertTrue(to_bool("good", {"good"}))
+        self.assertFalse(to_bool("bad", {"good"}))
 
     def test_shouldNotFailIfReceivedNoneValueToSysoutOrSyserr(self) -> None:
         try:

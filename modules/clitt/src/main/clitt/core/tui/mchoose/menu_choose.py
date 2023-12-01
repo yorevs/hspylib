@@ -13,7 +13,8 @@
    Copyright 2023, HsPyLib team
 """
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.core.tools.commons import str_to_bool
+from hspylib.core.tools.commons import to_bool
+from hspylib.core.tools.dict_tools import get_or_default
 from typing import List, Optional, TypeAlias, TypeVar
 
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
@@ -49,10 +50,10 @@ class MenuChoose(TUIComponent):
         self.max_line_length = max(len(str(item)) for item in items)
         # Initialize all options
         if isinstance(checked, bool):
-            self.sel_options = [1 if checked else 0 for _ in range(len(items))]
+            self.sel_options = [checked for _ in range(len(items))]
         else:
             # Check both sizes
-            self.sel_options = checked
+            self.sel_options = [get_or_default(checked, i, 0) for i in range(len(items))]
 
     def execute(self) -> Optional[MChooseItems]:
         if len(self.items) == 0:
@@ -79,7 +80,7 @@ class MenuChoose(TUIComponent):
             self.cursor.erase(Portion.LINE)
             # Print the selector if the index is currently selected
             selector = self.draw_selector(idx == self.sel_index)
-            mark = self.prefs.checked_icon if str_to_bool(self.sel_options[idx]) else self.prefs.unchecked_icon
+            mark = self.prefs.checked_icon if to_bool(self.sel_options[idx]) else self.prefs.unchecked_icon
             # fmt: off
             line_fmt = (
                 "  {:>" + f"{len(str(length))}" + "}  "

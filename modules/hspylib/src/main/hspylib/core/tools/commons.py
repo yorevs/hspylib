@@ -167,12 +167,12 @@ def class_attribute_values(instance: dict) -> Optional[Tuple]:
     return tuple(instance.values()) if instance else None
 
 
-def str_to_bool(string: str, true_values: Set[str] = None) -> bool:
+def to_bool(string: Any, true_values: Set[str] = None) -> bool:
     """Convert a string to boolean
     :param string: The string to be converted
     :param true_values: The list of strings that will become True value
     """
-    return string is not None and string.lower() in (true_values or TRUE_VALUES)
+    return string is not None and str(string).lower() in (true_values or TRUE_VALUES)
 
 
 def map_many(iterable: Iterable, function: Callable, *functions) -> Optional[map]:
