@@ -12,12 +12,12 @@
 
    Copyright 2023, HsPyLib team
 """
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional, TypeAlias, TypeVar
+
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.tui.tui_component import TUIComponent
-from functools import cached_property
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import List, Optional, TypeAlias, TypeVar
 
 T = TypeVar("T")
 
@@ -33,19 +33,25 @@ class MenuChoose(TUIComponent):
 
     MIN_ROWS = 3
 
-    def __init__(self, title: str, items: MChooseItems, checked: bool):
+    def __init__(
+        self,
+        title: str,
+        items: MChooseItems,
+        checked: bool | List[bool] = False):
+
         super().__init__(title)
         self.items = items
         self.show_from = 0
         self.show_to = self._max_rows()
         self.diff_index = self.show_to - self.show_from
         self.sel_index = 0
-        self.sel_options = [1 if checked else 0 for _ in range(len(items))]  # Initialize all options
         self.max_line_length = max(len(str(item)) for item in items)
-
-    @cached_property
-    def digits(self) -> List[Keyboard]:
-        return Keyboard.digits()
+        # Initialize all options
+        if isinstance(checked, bool):
+            self.sel_options = [1 if checked else 0 for _ in range(len(items))]
+        else:
+            # Check both sizes
+            self.sel_options = checked
 
     def execute(self) -> Optional[MChooseItems]:
         if len(self.items) == 0:
@@ -56,8 +62,7 @@ class MenuChoose(TUIComponent):
 
         return (
             [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
-            if keypress == Keyboard.VK_ENTER
-            else None
+            if keypress.isEnter() else None
         )
 
     def render(self) -> None:
@@ -97,7 +102,7 @@ class MenuChoose(TUIComponent):
     def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
             match keypress:
-                case _ as key if key in [Keyboard.VK_ESC, Keyboard.VK_ENTER]:
+                case _ as key if key in Keyboard.break_keys():
                     self._done = True
                 case Keyboard.VK_UP:
                     self._handle_key_up()
@@ -111,7 +116,7 @@ class MenuChoose(TUIComponent):
                     self._handle_space()
                 case _ as key if key in [Keyboard.VK_i, Keyboard.VK_I]:
                     self._handle_key_i()
-                case _ as key if key in self.digits:
+                case _ as key if key in Keyboard.digits():
                     self._handle_digit(keypress)
 
         return keypress
