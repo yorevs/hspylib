@@ -10,12 +10,13 @@
 project.ext.depsFile = "$project.projectDir/dependencies.hspd"
 project.ext.reqsFile = "$project.projectDir/src/main/requirements.txt"
 
-/* Mode Map, please check: */
+/* Version mode map */
 def modesMap = [
-  lt: '<', le: '<=',
+  lt:  '<', le: '<=',
   eq: '==', ne: '!=',
-  gt: '>', ge: '>=',
-  compat: '~=', none: null
+  gt:  '>', ge: '>=',
+  compat: '~=', // Compatibility mode
+  none: null // No mode set
 ]
 
 /* List of project dependencies*/
@@ -23,6 +24,7 @@ project.ext.deps = []
 
 /* Helper Functions -------------------------------------------------------- */
 
+// Read .hspd files using the defined hspd syntax.
 void readDependencies() {
   def depsFile = new File(depsFile)
   depsFile.eachLine { line ->
