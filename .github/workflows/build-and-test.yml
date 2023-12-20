@@ -12,6 +12,21 @@ on:
         default: ''
         required: false
         type: string
+      build_python3_10:
+        description: 'Check to build using python@3.10'
+        default: true
+        required: true
+        type: boolean
+      build_python3_11:
+        description: 'Check to build using python@3.11'
+        default: true
+        required: true
+        type: boolean
+      build_python3_12:
+        description: 'Check to build using python@3.12'
+        default: false
+        required: true
+        type: boolean
   push:
     branches:
       - '**'
@@ -21,15 +36,42 @@ on:
       - 'build.gradle'
 
 jobs:
+  set-python-matrix:
+    runs-on: "ubuntu-latest"
+    outputs:
+      exclude-array: ${{ steps.set-matrix-items.outputs.excludes }}
+    steps:
+      - name: Show Selected Input
+        run: |
+          echo "Build Ubuntu: ${{inputs.ubuntu}}"
+          echo " Build macOS: ${{inputs.macos}}"
+      - name: Set Exclusion Matrix
+        id: set-matrix-items
+        run: |
+          count=0
+          all=('3.10' '3.11' '3.12')
+          while read -r next; do
+          if [[ (${next} == 'ubuntu-latest' && "false" == "${{inputs.ubuntu}}") ||
+                  (${next} == 'macos-latest' && "false" == "${{inputs.macos}}") ]]; then
+              item="{\"os\":\"${next}\"},"
+              [[ "${JSON}" != *"${item}"* ]] && JSON="${JSON}${item}"
+              ((count+=1))
+          fi
+          done < <(printf '%s\n' "${all[@]}")
+          [[ $JSON == *, ]] && JSON="${JSON%?}"
+          [[ ${count} -eq ${#all[@]} ]] && JSON="{\"os\":\"macos-latest\"}"
+          JSON="[${JSON}]"
+          echo "JSON: ${JSON}"
+          echo "excludes=$( echo "${JSON}" )" >> $GITHUB_OUTPUT
+
   build:
+    needs: set-python-matrix
     strategy:
       matrix:
         os:
           - 'ubuntu-latest'
         python-version:
-          - '3.10'
-          - '3.11'
-          - '3.12'
+          - exclude: ${{ needs.set-python-matrix.outputs.exclude-array }}
         module:
           - "hspylib"
           - "cfman"
