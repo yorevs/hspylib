@@ -73,7 +73,6 @@ jobs:
         os:
           - 'ubuntu-latest'
         python-version:
-          - exclude: ${{ needs.set-python-matrix.outputs.exclude-array }}
         module:
           - "hspylib"
           - "cfman"
@@ -84,6 +83,7 @@ jobs:
           - "kafman"
           - "setman"
           - "vault"
+        exclude: ${{ needs.set-python-matrix.outputs.exclude-array }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
