@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
 ![MenuSelect](https://iili.io/HYBFh74.png "MenuSelect")
 
-> Create beautiful menu-choose inputs
+> And create beautiful menu-choose inputs
 
 ```python
 class ChooseableItem:
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
 ![MenuChoose](https://iili.io/HYBFwp2.png "MenuChoose")
 
-> Create beautiful form inputs
+> And also, create beautiful form inputs
 
 ```python
 from clitt.core.tui.minput.input_validator import InputValidator
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
 ![MenuInput](https://iili.io/HYBFVrG.png "MenuInput")
 
-> Or even create nice dashboards:
+> Or even, create nice dashboards:
 
 ```python
 if __name__ == "__main__":
@@ -180,9 +180,9 @@ if __name__ == "__main__":
     result = mdashboard(dashboard_items)
 ```
 
-> And even, an entire menu system
+![MenuDashboard](https://iili.io/HYBFX2f.png "MenuDashboard")
 
-![Menus](https://iili.io/JAGQJkJ.png "Menus")
+> And even more, create beautiful menus !
 
 ```bash
 if __name__ == "__main__":
@@ -212,7 +212,7 @@ if __name__ == "__main__":
     TUIMenuUi(main_menu, "TUI Main Menu").execute()
 ```
 
-![MenuDashboard](https://iili.io/HYBFX2f.png "MenuDashboard")
+![Menus](https://iili.io/JAGQJkJ.png "Menus")
 
 ## Table of contents
 
