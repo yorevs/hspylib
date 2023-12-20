@@ -86,7 +86,7 @@ jobs:
           - "kafman"
           - "setman"
           - "vault"
-        exclude: ${{ needs.set-python-matrix.outputs.exclude-array }}
+        exclude: ${{ fromJSON(needs.set-python-matrix.outputs.exclude-array) }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
