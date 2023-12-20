@@ -53,19 +53,6 @@ subprojects {
   }
 }
 
-/* Helper Functions -------------------------------------------------------- */
-String detectSpace() {
-
-  def output = new ByteArrayOutputStream()
-  exec {
-    commandLine 'sh', '-c', 'python3 -c "from sys import prefix, base_prefix; print(prefix != base_prefix);"'
-    standardOutput = output
-  }
-  def is_venv = Boolean.parseBoolean(output.toString())
-
-  return is_venv ? '--global' : '--user'
-}
-
 /* Project extension properties */
 ext {
   python = "python" + (System.getenv('PYTHON_VERSION') ?: '3.11')
@@ -76,6 +63,19 @@ ext {
   modulesDir = "${project.projectDir}/modules/"
   buildToolsFile = new File("${project.projectDir}/buildTools.txt")
   space = detectSpace()
+}
+
+/* Helper Functions -------------------------------------------------------- */
+String detectSpace() {
+
+  def output = new ByteArrayOutputStream()
+  exec {
+    commandLine 'sh', '-c', "${project.ext.python} -c \"from sys import prefix, base_prefix; print(prefix != base_prefix);\""
+    standardOutput = output
+  }
+  def is_venv = Boolean.parseBoolean(output.toString())
+
+  return is_venv ? '--global' : '--user'
 }
 
 apply from: "$rootDir/gradle/idea.gradle"
