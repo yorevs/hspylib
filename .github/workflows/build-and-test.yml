@@ -43,23 +43,25 @@ jobs:
     steps:
       - name: Show Selected Input
         run: |
-          echo "Build Ubuntu: ${{inputs.ubuntu}}"
-          echo " Build macOS: ${{inputs.macos}}"
+          echo "Use Python@3.10: ${{inputs.build_python3_10}}"
+          echo "Use Python@3.11: ${{inputs.build_python3_11}}"
+          echo "Use Python@3.12: ${{inputs.build_python3_12}}"
       - name: Set Exclusion Matrix
         id: set-matrix-items
         run: |
           count=0
           all=('3.10' '3.11' '3.12')
           while read -r next; do
-          if [[ (${next} == 'ubuntu-latest' && "false" == "${{inputs.ubuntu}}") ||
-                  (${next} == 'macos-latest' && "false" == "${{inputs.macos}}") ]]; then
-              item="{\"os\":\"${next}\"},"
+          if [[ (${next} == '3.10' && "false" == "${{inputs.build_python3_10}}") ||
+                (${next} == '3.11' && "false" == "${{inputs.build_python3_11}}") ||
+                (${next} == '3.12' && "false" == "${{inputs.build_python3_12}}") ]]; then
+              item="{\"python-version\":\"${next}\"},"
               [[ "${JSON}" != *"${item}"* ]] && JSON="${JSON}${item}"
               ((count+=1))
           fi
           done < <(printf '%s\n' "${all[@]}")
           [[ $JSON == *, ]] && JSON="${JSON%?}"
-          [[ ${count} -eq ${#all[@]} ]] && JSON="{\"os\":\"macos-latest\"}"
+          [[ ${count} -eq ${#all[@]} ]] && JSON="{\"python-version\":\"3.10\"}"
           JSON="[${JSON}]"
           echo "JSON: ${JSON}"
           echo "excludes=$( echo "${JSON}" )" >> $GITHUB_OUTPUT
