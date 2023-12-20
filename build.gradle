@@ -68,8 +68,8 @@ String detectSpace() {
 
 /* Project extension properties */
 ext {
-  python = "python${pythonVersion}"
-  pyrcc = "pyrcc${pyrccVersion}"
+  python = "python" + (System.getenv('PYTHON_VERSION') ?: '3.11')
+  pyrcc = "pyrcc" + (System.getenv('PYRCC_VERSION') ?: '5')
   buildTools = "${buildTools}".split(",")
   startTime = System.currentTimeMillis()
   verbose = findProperty('verbose') ?: false

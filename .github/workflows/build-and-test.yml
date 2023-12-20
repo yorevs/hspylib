@@ -88,6 +88,9 @@ jobs:
           - "vault"
         exclude: ${{ fromJSON(needs.set-python-matrix.outputs.exclude-array) }}
     runs-on: ${{ matrix.os }}
+    env:
+      PYTHON_VERSION: ${{ matrix.python-version }}
+      PYRCC_VERSION: 5
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3

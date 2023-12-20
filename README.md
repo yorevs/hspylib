@@ -308,33 +308,33 @@ The API documentation can be found [here](docs/api/index.html)
 You can contact us using our [Gitter](https://gitter.im/hspylib/community) community or using our
 [Reddit](https://www.reddit.com/user/yorevs).
 
-## Support HsPyLib
+## Support
 
-You can support HsPyLib
-by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
-or coding. Fell free to contact me for details. When contributing with code change please take a look at our
-[guidelines](docs/CONTRIBUTING.md) and [code of conduct](docs/CODE_OF_CONDUCT.md).
+> Your support and contributions are greatly appreciated in helping us improve and enhance HomeSetup. Together, we can
+make it even better!
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
+You can support HSPyLib by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
+or contributing code. Feel free to contact me for further details. When making code contributions, please make sure to
+review our [guidelines](docs/CONTRIBUTING.md) and adhere to our [code of conduct](docs/CODE_OF_CONDUCT.md).
 
-## Sponsors
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/yorevs)
 
-This project is supported by:
+This project is already supported by:
 
 <a href="https://www.jetbrains.com/community/opensource/?utm_campaign=opensource&utm_content=approved&utm_medium=email&utm_source=newsletter&utm_term=jblogo#support">
   <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="120" height="120">
 </a>
 
-[![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=a46eac913a06&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+Thank you <3 !!
 
-Thank you for your support <3 !!
+## Known Issues
 
-## Links
+- [In-Progress] We are aware that there is a problems when using python@3.12 and we are already working on a fix.
+
+## Contacts
 
 - Documentation: [API](docs/api/index.html)
 - License: [MIT](LICENSE.md)
-- Releases: [HSPyLib-Releases](https://pypi.org/project/hspylib/#history)
-- Code: [Github](https://github.com/yorevs/hspylib)
 - Issue tracker: [HSPyLib-Issues](https://github.com/yorevs/hspylib/issues)
 - Official chat: [HSPyLib](https://gitter.im/hspylib/community)
 - Contact: [yorevs](https://www.reddit.com/user/yorevs)
