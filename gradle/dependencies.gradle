@@ -10,7 +10,7 @@
 project.ext.depsFile = "$project.projectDir/dependencies.hspd"
 project.ext.reqsFile = "$project.projectDir/src/main/requirements.txt"
 
-/* Mode Map*/
+/* Mode Map, please check: */
 def modesMap = [
   lt: '<', le: '<=',
   eq: '==', ne: '!=',
