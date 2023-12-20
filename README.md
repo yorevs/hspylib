@@ -1,6 +1,8 @@
-# <img src="https://iili.io/HYBJFA7.png"  width="34" height="34"> HomeSetup Python Library - HsPyLib
+<img src="https://iili.io/HYBJFA7.png" width="64" height="64" align="right" />
 
-## Your Python code is not JUST a script !!
+# HomeSetup Python Library
+>
+> Because your Python code is not JUST a script !
 
 [![PyPi](https://badgen.net/badge/icon/python?icon=pypi&label)](https://pypi.org/project/hspylib)
 [![Gitter](https://badgen.net/badge/icon/gitter?icon=gitter&label)](https://gitter.im/hspylib/community)
@@ -9,43 +11,30 @@
 [![Release](https://badgen.net/badge/release/v1.12.4/gray)](docs/CHANGELOG.md#unreleased)
 [![build-and-test](https://github.com/yorevs/hspylib/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/yorevs/hspylib/actions/workflows/build-and-test.yml)
 
-HsPyLib is a Python library that will elevate your experience to another level. It relies on well known principles as
-SOLID, DRY (Don't Repeat Yourself), KISS (Keep It Simple, Stupid) and YAGNI (You Ain’t Gonna Need It). It provides many
-frameworks and facilities to help you create mature python3 applications "PYCSNBASS" (Python Code Should Not Be A Simple
-Script).
+HsPyLib is not just a Python library; it's a gateway to elevating your programming experience to new heights. Built on
+established principles like **SOLID**, **DRY** (Don't Repeat Yourself), **KISS** (Keep It Simple, Stupid), and **YAGNI**
+(You Ain’t Gonna Need It), HsPyLib offers a wealth of frameworks and features. It empowers you to craft sophisticated
+Python3 applications, adhering to the philosophy that code should not merely be a simple script - it should be a part
+of the 'PYCSNBASS' (Python Code Should Not Be A Simple Script) mindset.
 
-HsPyLib is a part of the [HomeSetup](https://github.com/yorevs/homesetup) project.
+> This project is a part of the [HomeSetup](https://github.com/yorevs/homesetup) project.
 
-## Highlights
+## Key Features
 
-- Easy installation.
-- Application manager that provides a helper to scaffold your python applications.
-- Widgets manager that provides running 'built-in' and custom python widgets.
-- Enhanced TUI helpers and input methods, to elevate your UXP with terminal applications.
-- crud framework to help with databases, repositories and services.
-- HTTP request helpers.
-- Enable Properties and AppConfigs using the most common extensions such as .properties, toml, yml...
-- Well tested code and often pylint clean.
-- Gradle build system with many extensions.
-- Various demos to help understand the library.
+- Seamless installation process.
+- Application manager offering a helpful scaffold for Python applications.
+- Widgets manager for running both 'built-in' and custom Python widgets.
+- Improved TUI (Text User Interface) helpers and input methods to enhance your User Experience with terminal applications.
+- CRUD (Create, Read, Update, Delete) framework aiding with databases, repositories, and services.
+- HTTP request helpers for simplified communication.
+- Support for enabling Properties and AppConfigs using popular extensions like .properties, toml, yml, and more.
+- Code rigorously tested and consistently adhering to Pylint standards.
+- Utilizes the Gradle build system with numerous extensions.
+- Diverse set of demos to facilitate a deeper understanding of the library.
 
-- [A Kafka manager](modules/kafman/src/main/README.md) application tool.
-- [A Cloud Foundry](modules/cfman/src/main/README.md) application tool.
-- [A Firebase](modules/firebase/src/main/README.md) application tool.
-- [A Vault provider](modules/vault/src/main/README.md) tool.
-- [A CLI Terminal](modules/clitt/src/main/README.md) framework.
-- [A PyQt](modules/hqt/src/main/README.md) applications framework.
-
-Create an easy to use and code multiple select or choose input method:
+> Create beautiful menu-select inputs
 
 ```python
-from hspylib.modules.cli.vt100.vt_color import VtColor
-
-from clitt.core.icons.font_awesome.nav_icons import NavIcons
-from clitt.core.tui.mselect.mselect import mselect
-from clitt.core.tui.tui_preferences import TUIPreferences
-
-
 class SelectableItem:
     def __init__(self, name: str, value: str):
         self.name = name
@@ -59,12 +48,6 @@ class SelectableItem:
 
 
 if __name__ == "__main__":
-    TUIPreferences(
-        max_rows=10,
-        highlight_color=VtColor.WHITE,
-        selected=NavIcons.SELECTED,
-        unselected=NavIcons.UNSELECTED,
-    )
     quantity = 22
     digits = len(str(quantity))
     it = [SelectableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
@@ -74,13 +57,9 @@ if __name__ == "__main__":
 
 ![MenuSelect](https://iili.io/HYBFh74.png "MenuSelect")
 
+> Create beautiful menu-choose inputs
+
 ```python
-from hspylib.modules.cli.vt100.vt_color import VtColor
-
-from clitt.core.tui.mchoose.mchoose import mchoose
-from clitt.core.tui.tui_preferences import TUIPreferences
-
-
 class ChooseableItem:
     def __init__(self, name: str, value: str):
         self.name = name
@@ -94,19 +73,16 @@ class ChooseableItem:
 
 
 if __name__ == "__main__":
-    TUIPreferences(
-        max_rows=10, highlight_color=VtColor.WHITE
-    )
     quantity = 22
     digits = len(str(quantity))
     it = [ChooseableItem(f"Item-{n:>0{digits}}", f"Value-{n:>0{digits}}") for n in range(1, quantity)]
-    sel = mchoose(it)
+    sel = mchoose(it, [n % 2 == 0 for n in range(1, quantity)])
     print(str(sel))
 ```
 
 ![MenuChoose](https://iili.io/HYBFwp2.png "MenuChoose")
 
-Create beautiful form inputs:
+> Create beautiful form inputs
 
 ```python
 from clitt.core.tui.minput.input_validator import InputValidator
@@ -162,21 +138,10 @@ if __name__ == "__main__":
 
 ![MenuInput](https://iili.io/HYBFVrG.png "MenuInput")
 
-Or even create nice dashboards:
+> Or even create nice dashboards:
 
 ```python
-from hspylib.modules.cli.vt100.vt_color import VtColor
-
-from clitt.core.icons.font_awesome.dashboard_icons import DashboardIcons
-from clitt.core.tui.mdashboard.mdashboard import mdashboard, MenuDashBoard
-from clitt.core.tui.tui_preferences import TUIPreferences
-
 if __name__ == "__main__":
-    TUIPreferences(
-        max_rows=10,
-        items_per_line=3,
-        highlight_color=VtColor.WHITE
-    )
     # fmt: off
     dashboard_items = MenuDashBoard.builder() \
         .item() \
@@ -215,24 +180,69 @@ if __name__ == "__main__":
     result = mdashboard(dashboard_items)
 ```
 
+> And even, an entire menu system
+
+![Menus](https://iili.io/JAGQJkJ.png "Menus")
+
+```bash
+if __name__ == "__main__":
+    # fmt: off
+    main_menu = TUIMenuFactory \
+        .create_main_menu('TUI Main Menu', tooltip='Test Terminal UI Menus') \
+            .with_item('Sub-Menu-1') \
+                .with_action("DO IT 1", "Let's do it") \
+                    .on_trigger(lambda x: print("ACTION 1", x)) \
+                .with_view("Just a View 1", "Show the view 1") \
+                    .on_render("MY BEAUTIFUL VIEW 1") \
+                .with_action("Back", "Back to the previous menu") \
+                    .on_trigger(TUIMenuUi.back) \
+                .then() \
+            .with_item('Sub-Menu-2') \
+                .with_action("DO IT 2", "Let's do it too") \
+                    .on_trigger(lambda x: print("ACTION 2", x)) \
+                .with_view("Just a View 2", "Show the view 2") \
+                    .on_render("MY BEAUTIFUL VIEW 2") \
+                .with_action("Back", "Back to the previous menu") \
+                    .on_trigger(TUIMenuUi.back) \
+                .then() \
+            .then() \
+        .build()
+    # fmt: on
+
+    TUIMenuUi(main_menu, "TUI Main Menu").execute()
+```
+
 ![MenuDashboard](https://iili.io/HYBFX2f.png "MenuDashboard")
 
 ## Table of contents
 
 <!-- toc -->
 
-- [1. Installation](#installation)
-  * [1.1. Requirements](#requirements)
-    + [1.1.1. Operating systems](#operating-systems)
-    + [1.1.2. Required software](#required-software)
-  * [1.2. PyPi](#pypi)
-  * [1.3. GitHub](#github)
-- [2. Documentation](#documentation)
-- [3. Contact](#contact)
-- [4. Support HsPyLib](#support-hspylib)
-- [5. Links](#links)
+- [PyPi Modules](#pypi-modules)
+- [Installation](#installation)
+  * [Requirements](#requirements)
+    + [Operating systems](#operating-systems)
+    + [Required software](#required-software)
+  * [PyPi](#pypi)
+  * [GitHub](#github)
+- [Documentation](#documentation)
+- [Support](#support-hspylib)
+- [Links](#links)
+- [Contacts](#contact)
 
 <!-- tocstop -->
+
+## PyPi Modules
+
+- [A Pivotal Cloud Foundry](https://pypi.org/project/hspylib-cfman) application tool.
+- [A CLI Terminal](https://pypi.org/project/hspylib-clitt) tools.
+- [Datasource](https://pypi.org/project/hspylib-datasource) framework.
+- [A Firebase](https://pypi.org/project/hspylib-firebase) integration tool.
+- [A PyQt](https://pypi.org/project/hspylib-hqt) application framework.
+- [Core](https://pypi.org/project/hspylib) HomeSetup library.
+- [A Kafka manager](https://pypi.org/project/hspylib-kafman) application tool.
+- [A System Settings](https://pypi.org/project/hspylib-kafman) application tool.
+- [A Vault](https://pypi.org/project/hspylib-vault) application tool.
 
 ## Installation
 
