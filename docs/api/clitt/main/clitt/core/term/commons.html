@@ -31,6 +31,36 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
+                    <a class="class" href="#Direction">Direction</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Direction.UP">UP</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Direction.RIGHT">RIGHT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Direction.DOWN">DOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Direction.LEFT">LEFT</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#Portion">Portion</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Portion.SCREEN">SCREEN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Portion.LINE">LINE</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#get_dimensions">get_dimensions</a>
             </li>
             <li>
@@ -58,72 +88,253 @@ main<wbr>.<a href="./../../../clitt.html">clitt</a><wbr>.<a href="./../../core.h
                         <label class="view-source-button" for="mod-commons-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">clitt.core.exception.exceptions</span> <span class="kn">import</span> <span class="n">NotATerminalError</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">hspylib.core.tools.commons</span> <span class="kn">import</span> <span class="n">is_debugging</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">hspylib.modules.cli.vt100.vt_100</span> <span class="kn">import</span> <span class="n">Vt100</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">get_terminal_size</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">log</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">import</span> <span class="nn">re</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">import</span> <span class="nn">sys</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">import</span> <span class="nn">termios</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">import</span> <span class="nn">tty</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="n">DIMENSION</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;DIMENSION&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">POSITION</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;POSITION&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="n">CB_RESIZE</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;CB_RESIZE&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Callable</span><span class="p">[[</span><span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">MOVE_DIRECTION</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;MOVE_DIRECTION&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;Cursor.Direction&quot;</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="n">ERASE_DIRECTION</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;ERASE_DIRECTION&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Cursor.Direction&quot;</span><span class="p">,</span> <span class="s2">&quot;Screen.Portion&quot;</span><span class="p">])</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">hspylib.core.enums.enumeration</span> <span class="kn">import</span> <span class="n">Enumeration</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">hspylib.core.tools.commons</span> <span class="kn">import</span> <span class="n">is_debugging</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">hspylib.modules.cli.vt100.vt_100</span> <span class="kn">import</span> <span class="n">Vt100</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">get_terminal_size</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">Union</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">log</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">import</span> <span class="nn">re</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">import</span> <span class="nn">sys</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">import</span> <span class="nn">termios</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="kn">import</span> <span class="nn">tty</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="c1"># fmt: off</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">Dimension</span>       <span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="n">Position</span>        <span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="n">Resize_Cb</span>       <span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="n">MoveDirection</span>   <span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s2">&quot;Direction&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">EraseDirection</span>  <span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Direction&quot;</span><span class="p">,</span> <span class="s2">&quot;Portion&quot;</span><span class="p">]</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="c1"># fmt: on</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the size of the terminal.</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">    :return lines, columns</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_dimensions:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">fallback</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="n">dim</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">((</span><span class="n">fallback</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fallback</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">return</span> <span class="n">dim</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">dim</span><span class="o">.</span><span class="n">columns</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="k">class</span> <span class="nc">Direction</span><span class="p">(</span><span class="n">Enumeration</span><span class="p">):</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a base class for the cursor direction.&quot;&quot;&quot;</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="c1"># fmt: off</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">UP</span>          <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">D1%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUU(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor up (line)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">RIGHT</span>       <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">L0%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUF(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor right (forward)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="n">DOWN</span>        <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">D0%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUD(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor down (line)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">LEFT</span>        <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">L1%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUB(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor left (backward)</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="c1"># fmt: on</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="k">def</span> <span class="nf">get_cursor_position</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the terminal cursor position.</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">    :return line, column</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">pos</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">re_query_resp</span> <span class="o">=</span> <span class="n">fallback</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;^\x1b\[(\d*);(\d*)R&quot;</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_cursor_position:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">pos</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="k">if</span> <span class="n">is_debugging</span><span class="p">():</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="k">return</span> <span class="n">pos</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="n">stdin</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>  <span class="c1"># Get the stdin file descriptor.</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="n">attrs</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">)</span>  <span class="c1"># Save terminal attributes.</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="n">tty</span><span class="o">.</span><span class="n">setcbreak</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Vt100</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">())</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="k">while</span> <span class="ow">not</span> <span class="n">buf</span> <span class="ow">or</span> <span class="n">buf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>            <span class="n">buf</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="k">if</span> <span class="n">matches</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">re_query_resp</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>  <span class="c1"># If the response is &#39;Esc[r;cR&#39;</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>            <span class="n">groups</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>            <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>    <span class="k">finally</span><span class="p">:</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>  <span class="c1"># Reset terminal attributes</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="k">return</span> <span class="n">pos</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="k">class</span> <span class="nc">Portion</span><span class="p">(</span><span class="n">Enumeration</span><span class="p">):</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a base class for the portions of the screen.&quot;&quot;&quot;</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="c1"># fmt: off</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">SCREEN</span>      <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">D2%&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>   <span class="c1"># Entire screen (screen)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">LINE</span>        <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">L2%&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>   <span class="c1"># Entire line (line)</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="c1"># fmt: on</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the size of the terminal.</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">    :return lines, columns</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_dimensions:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="n">fallback</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="n">dim</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">((</span><span class="n">fallback</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fallback</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">return</span> <span class="n">dim</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">dim</span><span class="o">.</span><span class="n">columns</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="k">def</span> <span class="nf">get_cursor_position</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the terminal cursor position.</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">    :return line, column</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="n">pos</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">re_query_resp</span> <span class="o">=</span> <span class="n">fallback</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;^\x1b\[(\d*);(\d*)R&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_cursor_position:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="k">return</span> <span class="n">pos</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>    <span class="k">if</span> <span class="n">is_debugging</span><span class="p">():</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="n">pos</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>    <span class="n">stdin</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>  <span class="c1"># Get the stdin file descriptor.</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>    <span class="n">attrs</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">)</span>  <span class="c1"># Save terminal attributes.</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="n">tty</span><span class="o">.</span><span class="n">setcbreak</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">)</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Vt100</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">())</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>        <span class="k">while</span> <span class="ow">not</span> <span class="n">buf</span> <span class="ow">or</span> <span class="n">buf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>            <span class="n">buf</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>        <span class="k">if</span> <span class="n">matches</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">re_query_resp</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>  <span class="c1"># If the response is &#39;Esc[r;cR&#39;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>            <span class="n">groups</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>            <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>    <span class="k">finally</span><span class="p">:</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>        <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>  <span class="c1"># Reset terminal attributes</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    <span class="k">return</span> <span class="n">pos</span>
 </span></pre></div>
 
 
             </section>
+                <section id="Direction">
+                            <input id="Direction-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Direction</span><wbr>(<span class="base">hspylib.core.enums.enumeration.Enumeration</span>):
+
+                <label class="view-source-button" for="Direction-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Direction"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Direction-24"><a href="#Direction-24"><span class="linenos">24</span></a><span class="k">class</span> <span class="nc">Direction</span><span class="p">(</span><span class="n">Enumeration</span><span class="p">):</span>
+</span><span id="Direction-25"><a href="#Direction-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a base class for the cursor direction.&quot;&quot;&quot;</span>
+</span><span id="Direction-26"><a href="#Direction-26"><span class="linenos">26</span></a>
+</span><span id="Direction-27"><a href="#Direction-27"><span class="linenos">27</span></a>    <span class="c1"># fmt: off</span>
+</span><span id="Direction-28"><a href="#Direction-28"><span class="linenos">28</span></a>    <span class="n">UP</span>          <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">D1%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUU(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor up (line)</span>
+</span><span id="Direction-29"><a href="#Direction-29"><span class="linenos">29</span></a>    <span class="n">RIGHT</span>       <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">L0%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUF(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor right (forward)</span>
+</span><span id="Direction-30"><a href="#Direction-30"><span class="linenos">30</span></a>    <span class="n">DOWN</span>        <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">D0%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUD(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor down (line)</span>
+</span><span id="Direction-31"><a href="#Direction-31"><span class="linenos">31</span></a>    <span class="n">LEFT</span>        <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">L1%&#39;</span><span class="p">,</span> <span class="s1">&#39;%CUB(</span><span class="si">{n}</span><span class="s1">)%&#39;</span>   <span class="c1"># Cursor left (backward)</span>
+</span><span id="Direction-32"><a href="#Direction-32"><span class="linenos">32</span></a>    <span class="c1"># fmt: on</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Provide a base class for the cursor direction.</p>
+</div>
+
+
+                            <div id="Direction.UP" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UP</span>        =
+<span class="default_value">UP</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Direction.UP"></a>
+    
+    
+
+                            </div>
+                            <div id="Direction.RIGHT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RIGHT</span>        =
+<span class="default_value">RIGHT</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Direction.RIGHT"></a>
+    
+    
+
+                            </div>
+                            <div id="Direction.DOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DOWN</span>        =
+<span class="default_value">DOWN</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Direction.DOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="Direction.LEFT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LEFT</span>        =
+<span class="default_value">LEFT</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Direction.LEFT"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>hspylib.core.enums.enumeration.Enumeration</dt>
+                                <dd id="Direction.names" class="function">names</dd>
+                <dd id="Direction.values" class="function">values</dd>
+                <dd id="Direction.value_of" class="function">value_of</dd>
+                <dd id="Direction.of_value" class="function">of_value</dd>
+                <dd id="Direction.compose" class="function">compose</dd>
+
+            </div>
+            <div><dt>enum.Enum</dt>
+                                <dd id="Direction.name" class="variable">name</dd>
+                <dd id="Direction.value" class="variable">value</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Portion">
+                            <input id="Portion-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Portion</span><wbr>(<span class="base">hspylib.core.enums.enumeration.Enumeration</span>):
+
+                <label class="view-source-button" for="Portion-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Portion"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Portion-35"><a href="#Portion-35"><span class="linenos">35</span></a><span class="k">class</span> <span class="nc">Portion</span><span class="p">(</span><span class="n">Enumeration</span><span class="p">):</span>
+</span><span id="Portion-36"><a href="#Portion-36"><span class="linenos">36</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a base class for the portions of the screen.&quot;&quot;&quot;</span>
+</span><span id="Portion-37"><a href="#Portion-37"><span class="linenos">37</span></a>
+</span><span id="Portion-38"><a href="#Portion-38"><span class="linenos">38</span></a>    <span class="c1"># fmt: off</span>
+</span><span id="Portion-39"><a href="#Portion-39"><span class="linenos">39</span></a>    <span class="n">SCREEN</span>      <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">D2%&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>   <span class="c1"># Entire screen (screen)</span>
+</span><span id="Portion-40"><a href="#Portion-40"><span class="linenos">40</span></a>    <span class="n">LINE</span>        <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%E</span><span class="s1">L2%&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>   <span class="c1"># Entire line (line)</span>
+</span><span id="Portion-41"><a href="#Portion-41"><span class="linenos">41</span></a>    <span class="c1"># fmt: on</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Provide a base class for the portions of the screen.</p>
+</div>
+
+
+                            <div id="Portion.SCREEN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SCREEN</span>        =
+<span class="default_value">SCREEN</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Portion.SCREEN"></a>
+    
+    
+
+                            </div>
+                            <div id="Portion.LINE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LINE</span>        =
+<span class="default_value">LINE</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Portion.LINE"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>hspylib.core.enums.enumeration.Enumeration</dt>
+                                <dd id="Portion.names" class="function">names</dd>
+                <dd id="Portion.values" class="function">values</dd>
+                <dd id="Portion.value_of" class="function">value_of</dd>
+                <dd id="Portion.of_value" class="function">of_value</dd>
+                <dd id="Portion.compose" class="function">compose</dd>
+
+            </div>
+            <div><dt>enum.Enum</dt>
+                                <dd id="Portion.name" class="variable">name</dd>
+                <dd id="Portion.value" class="variable">value</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="get_dimensions">
                             <input id="get_dimensions-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -135,15 +346,15 @@ main<wbr>.<a href="./../../../clitt.html">clitt</a><wbr>.<a href="./../../core.h
 
     </div>
     <a class="headerlink" href="#get_dimensions"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_dimensions-25"><a href="#get_dimensions-25"><span class="linenos">25</span></a><span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="get_dimensions-26"><a href="#get_dimensions-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the size of the terminal.</span>
-</span><span id="get_dimensions-27"><a href="#get_dimensions-27"><span class="linenos">27</span></a><span class="sd">    :return lines, columns</span>
-</span><span id="get_dimensions-28"><a href="#get_dimensions-28"><span class="linenos">28</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="get_dimensions-29"><a href="#get_dimensions-29"><span class="linenos">29</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
-</span><span id="get_dimensions-30"><a href="#get_dimensions-30"><span class="linenos">30</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_dimensions:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
-</span><span id="get_dimensions-31"><a href="#get_dimensions-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="n">fallback</span>
-</span><span id="get_dimensions-32"><a href="#get_dimensions-32"><span class="linenos">32</span></a>    <span class="n">dim</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">((</span><span class="n">fallback</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fallback</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-</span><span id="get_dimensions-33"><a href="#get_dimensions-33"><span class="linenos">33</span></a>    <span class="k">return</span> <span class="n">dim</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">dim</span><span class="o">.</span><span class="n">columns</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_dimensions-44"><a href="#get_dimensions-44"><span class="linenos">44</span></a><span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="get_dimensions-45"><a href="#get_dimensions-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the size of the terminal.</span>
+</span><span id="get_dimensions-46"><a href="#get_dimensions-46"><span class="linenos">46</span></a><span class="sd">    :return lines, columns</span>
+</span><span id="get_dimensions-47"><a href="#get_dimensions-47"><span class="linenos">47</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="get_dimensions-48"><a href="#get_dimensions-48"><span class="linenos">48</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
+</span><span id="get_dimensions-49"><a href="#get_dimensions-49"><span class="linenos">49</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_dimensions:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
+</span><span id="get_dimensions-50"><a href="#get_dimensions-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="n">fallback</span>
+</span><span id="get_dimensions-51"><a href="#get_dimensions-51"><span class="linenos">51</span></a>    <span class="n">dim</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">((</span><span class="n">fallback</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fallback</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</span><span id="get_dimensions-52"><a href="#get_dimensions-52"><span class="linenos">52</span></a>    <span class="k">return</span> <span class="n">dim</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">dim</span><span class="o">.</span><span class="n">columns</span>
 </span></pre></div>
 
 
@@ -164,35 +375,35 @@ main<wbr>.<a href="./../../../clitt.html">clitt</a><wbr>.<a href="./../../core.h
 
     </div>
     <a class="headerlink" href="#get_cursor_position"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_cursor_position-36"><a href="#get_cursor_position-36"><span class="linenos">36</span></a><span class="k">def</span> <span class="nf">get_cursor_position</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="get_cursor_position-37"><a href="#get_cursor_position-37"><span class="linenos">37</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the terminal cursor position.</span>
-</span><span id="get_cursor_position-38"><a href="#get_cursor_position-38"><span class="linenos">38</span></a><span class="sd">    :return line, column</span>
-</span><span id="get_cursor_position-39"><a href="#get_cursor_position-39"><span class="linenos">39</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="get_cursor_position-40"><a href="#get_cursor_position-40"><span class="linenos">40</span></a>    <span class="n">pos</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">re_query_resp</span> <span class="o">=</span> <span class="n">fallback</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;^\x1b\[(\d*);(\d*)R&quot;</span>
-</span><span id="get_cursor_position-41"><a href="#get_cursor_position-41"><span class="linenos">41</span></a>
-</span><span id="get_cursor_position-42"><a href="#get_cursor_position-42"><span class="linenos">42</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
-</span><span id="get_cursor_position-43"><a href="#get_cursor_position-43"><span class="linenos">43</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_cursor_position:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
-</span><span id="get_cursor_position-44"><a href="#get_cursor_position-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="n">pos</span>
-</span><span id="get_cursor_position-45"><a href="#get_cursor_position-45"><span class="linenos">45</span></a>
-</span><span id="get_cursor_position-46"><a href="#get_cursor_position-46"><span class="linenos">46</span></a>    <span class="k">if</span> <span class="n">is_debugging</span><span class="p">():</span>
-</span><span id="get_cursor_position-47"><a href="#get_cursor_position-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="n">pos</span>
-</span><span id="get_cursor_position-48"><a href="#get_cursor_position-48"><span class="linenos">48</span></a>
-</span><span id="get_cursor_position-49"><a href="#get_cursor_position-49"><span class="linenos">49</span></a>    <span class="n">stdin</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>  <span class="c1"># Get the stdin file descriptor.</span>
-</span><span id="get_cursor_position-50"><a href="#get_cursor_position-50"><span class="linenos">50</span></a>    <span class="n">attrs</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">)</span>  <span class="c1"># Save terminal attributes.</span>
-</span><span id="get_cursor_position-51"><a href="#get_cursor_position-51"><span class="linenos">51</span></a>
-</span><span id="get_cursor_position-52"><a href="#get_cursor_position-52"><span class="linenos">52</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="get_cursor_position-53"><a href="#get_cursor_position-53"><span class="linenos">53</span></a>        <span class="n">tty</span><span class="o">.</span><span class="n">setcbreak</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">)</span>
-</span><span id="get_cursor_position-54"><a href="#get_cursor_position-54"><span class="linenos">54</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Vt100</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">())</span>
-</span><span id="get_cursor_position-55"><a href="#get_cursor_position-55"><span class="linenos">55</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-</span><span id="get_cursor_position-56"><a href="#get_cursor_position-56"><span class="linenos">56</span></a>        <span class="k">while</span> <span class="ow">not</span> <span class="n">buf</span> <span class="ow">or</span> <span class="n">buf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
-</span><span id="get_cursor_position-57"><a href="#get_cursor_position-57"><span class="linenos">57</span></a>            <span class="n">buf</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="get_cursor_position-58"><a href="#get_cursor_position-58"><span class="linenos">58</span></a>        <span class="k">if</span> <span class="n">matches</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">re_query_resp</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>  <span class="c1"># If the response is &#39;Esc[r;cR&#39;</span>
-</span><span id="get_cursor_position-59"><a href="#get_cursor_position-59"><span class="linenos">59</span></a>            <span class="n">groups</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-</span><span id="get_cursor_position-60"><a href="#get_cursor_position-60"><span class="linenos">60</span></a>            <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="get_cursor_position-61"><a href="#get_cursor_position-61"><span class="linenos">61</span></a>    <span class="k">finally</span><span class="p">:</span>
-</span><span id="get_cursor_position-62"><a href="#get_cursor_position-62"><span class="linenos">62</span></a>        <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>  <span class="c1"># Reset terminal attributes</span>
-</span><span id="get_cursor_position-63"><a href="#get_cursor_position-63"><span class="linenos">63</span></a>
-</span><span id="get_cursor_position-64"><a href="#get_cursor_position-64"><span class="linenos">64</span></a>    <span class="k">return</span> <span class="n">pos</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_cursor_position-55"><a href="#get_cursor_position-55"><span class="linenos">55</span></a><span class="k">def</span> <span class="nf">get_cursor_position</span><span class="p">(</span><span class="n">fallback</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="get_cursor_position-56"><a href="#get_cursor_position-56"><span class="linenos">56</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the terminal cursor position.</span>
+</span><span id="get_cursor_position-57"><a href="#get_cursor_position-57"><span class="linenos">57</span></a><span class="sd">    :return line, column</span>
+</span><span id="get_cursor_position-58"><a href="#get_cursor_position-58"><span class="linenos">58</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="get_cursor_position-59"><a href="#get_cursor_position-59"><span class="linenos">59</span></a>    <span class="n">pos</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">re_query_resp</span> <span class="o">=</span> <span class="n">fallback</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;^\x1b\[(\d*);(\d*)R&quot;</span>
+</span><span id="get_cursor_position-60"><a href="#get_cursor_position-60"><span class="linenos">60</span></a>
+</span><span id="get_cursor_position-61"><a href="#get_cursor_position-61"><span class="linenos">61</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">isatty</span><span class="p">():</span>
+</span><span id="get_cursor_position-62"><a href="#get_cursor_position-62"><span class="linenos">62</span></a>        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">NotATerminalError</span><span class="p">(</span><span class="s2">&quot;get_cursor_position:: Requires a terminal (TTY)&quot;</span><span class="p">))</span>
+</span><span id="get_cursor_position-63"><a href="#get_cursor_position-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="n">pos</span>
+</span><span id="get_cursor_position-64"><a href="#get_cursor_position-64"><span class="linenos">64</span></a>
+</span><span id="get_cursor_position-65"><a href="#get_cursor_position-65"><span class="linenos">65</span></a>    <span class="k">if</span> <span class="n">is_debugging</span><span class="p">():</span>
+</span><span id="get_cursor_position-66"><a href="#get_cursor_position-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="n">pos</span>
+</span><span id="get_cursor_position-67"><a href="#get_cursor_position-67"><span class="linenos">67</span></a>
+</span><span id="get_cursor_position-68"><a href="#get_cursor_position-68"><span class="linenos">68</span></a>    <span class="n">stdin</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>  <span class="c1"># Get the stdin file descriptor.</span>
+</span><span id="get_cursor_position-69"><a href="#get_cursor_position-69"><span class="linenos">69</span></a>    <span class="n">attrs</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">)</span>  <span class="c1"># Save terminal attributes.</span>
+</span><span id="get_cursor_position-70"><a href="#get_cursor_position-70"><span class="linenos">70</span></a>
+</span><span id="get_cursor_position-71"><a href="#get_cursor_position-71"><span class="linenos">71</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="get_cursor_position-72"><a href="#get_cursor_position-72"><span class="linenos">72</span></a>        <span class="n">tty</span><span class="o">.</span><span class="n">setcbreak</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">)</span>
+</span><span id="get_cursor_position-73"><a href="#get_cursor_position-73"><span class="linenos">73</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Vt100</span><span class="o">.</span><span class="n">get_cursor_pos</span><span class="p">())</span>
+</span><span id="get_cursor_position-74"><a href="#get_cursor_position-74"><span class="linenos">74</span></a>        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span id="get_cursor_position-75"><a href="#get_cursor_position-75"><span class="linenos">75</span></a>        <span class="k">while</span> <span class="ow">not</span> <span class="n">buf</span> <span class="ow">or</span> <span class="n">buf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+</span><span id="get_cursor_position-76"><a href="#get_cursor_position-76"><span class="linenos">76</span></a>            <span class="n">buf</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="get_cursor_position-77"><a href="#get_cursor_position-77"><span class="linenos">77</span></a>        <span class="k">if</span> <span class="n">matches</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">re_query_resp</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>  <span class="c1"># If the response is &#39;Esc[r;cR&#39;</span>
+</span><span id="get_cursor_position-78"><a href="#get_cursor_position-78"><span class="linenos">78</span></a>            <span class="n">groups</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+</span><span id="get_cursor_position-79"><a href="#get_cursor_position-79"><span class="linenos">79</span></a>            <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="get_cursor_position-80"><a href="#get_cursor_position-80"><span class="linenos">80</span></a>    <span class="k">finally</span><span class="p">:</span>
+</span><span id="get_cursor_position-81"><a href="#get_cursor_position-81"><span class="linenos">81</span></a>        <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>  <span class="c1"># Reset terminal attributes</span>
+</span><span id="get_cursor_position-82"><a href="#get_cursor_position-82"><span class="linenos">82</span></a>
+</span><span id="get_cursor_position-83"><a href="#get_cursor_position-83"><span class="linenos">83</span></a>    <span class="k">return</span> <span class="n">pos</span>
 </span></pre></div>
 
 
