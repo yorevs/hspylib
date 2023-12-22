@@ -226,8 +226,8 @@ if __name__ == "__main__":
   * [PyPi](#pypi)
   * [GitHub](#github)
 - [Documentation](#documentation)
-- [Support](#support-hspylib)
-- [Links](#links)
+- [Support](#support)
+- [Known Issues](#known-issues)
 - [Contacts](#contact)
 
 <!-- tocstop -->
