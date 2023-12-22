@@ -99,7 +99,7 @@ main<wbr>.<a href="./../../../kafman.html">kafman</a><wbr>.<a href="./../../view
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="kn">from</span> <span class="nn">hqt.promotions.hstacked_widget</span> <span class="kn">import</span> <span class="n">HStackedWidget</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="kn">from</span> <span class="nn">kafman.core.schema.widget_utils</span> <span class="kn">import</span> <span class="n">INPUT_VALUE</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="kn">from</span> <span class="nn">kafman.core.schema.widget_utils</span> <span class="kn">import</span> <span class="n">InputValue</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">pyqtSignal</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QAbstractScrollArea</span><span class="p">,</span> <span class="n">QFrame</span><span class="p">,</span> <span class="n">QScrollArea</span><span class="p">,</span> <span class="n">QWidget</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
@@ -113,7 +113,7 @@ main<wbr>.<a href="./../../../kafman.html">kafman</a><wbr>.<a href="./../../view
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="n">keyPressed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">_is_not_empty</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">INPUT_VALUE</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">_is_not_empty</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">InputValue</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="k">return</span> <span class="kc">True</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
@@ -172,7 +172,7 @@ main<wbr>.<a href="./../../../kafman.html">kafman</a><wbr>.<a href="./../../view
 </span><span id="FormArea-30"><a href="#FormArea-30"><span class="linenos">30</span></a>    <span class="n">keyPressed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </span><span id="FormArea-31"><a href="#FormArea-31"><span class="linenos">31</span></a>
 </span><span id="FormArea-32"><a href="#FormArea-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FormArea-33"><a href="#FormArea-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">_is_not_empty</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">INPUT_VALUE</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="FormArea-33"><a href="#FormArea-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">_is_not_empty</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">InputValue</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span id="FormArea-34"><a href="#FormArea-34"><span class="linenos">34</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
 </span><span id="FormArea-35"><a href="#FormArea-35"><span class="linenos">35</span></a>            <span class="k">return</span> <span class="kc">True</span>
 </span><span id="FormArea-36"><a href="#FormArea-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
@@ -283,7 +283,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>setWidget(self, w: QWidget)</p>
+            <div class="docstring"><p>setWidget(self, w: Optional[QWidget])</p>
 </div>
 
 
