@@ -10,7 +10,7 @@
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2023, HsPyLib team
+   Copyright·(c)·2024,·HSPyLib
 """
 from confluent_kafka.schema_registry.avro import AvroDeserializer, AvroSerializer
 from confluent_kafka.serialization import StringDeserializer, StringSerializer

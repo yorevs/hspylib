@@ -10,7 +10,7 @@
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2023, HsPyLib team
+   Copyright·(c)·2024,·HSPyLib
 """
 from clitt.core.tui.minput.field_builder import FieldBuilder
 from clitt.core.tui.minput.form_field import FormField

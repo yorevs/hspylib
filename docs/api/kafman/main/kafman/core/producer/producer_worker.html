@@ -87,7 +87,7 @@ main<wbr>.<a href="./../../../kafman.html">kafman</a><wbr>.<a href="./../../core
    @site: <a href="https://github.com/yorevs/hspylib">https://github.com/yorevs/hspylib</a>
 @license: MIT - Please refer to <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a></p>
 
-<p>Copyright 2023, HsPyLib team</p>
+<p>Copyright·(c)·2024,·HSPyLib</p>
 </div>
 
                         <input id="mod-producer_worker-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -106,7 +106,7 @@ main<wbr>.<a href="./../../../kafman.html">kafman</a><wbr>.<a href="./../../core
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">      @site: https://github.com/yorevs/hspylib</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">   @license: MIT - Please refer to &lt;https://opensource.org/licenses/MIT&gt;</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">   Copyright 2023, HsPyLib team</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">   Copyright·(c)·2024,·HSPyLib</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="kn">from</span> <span class="nn">avro.io</span> <span class="kn">import</span> <span class="n">AvroTypeException</span>
@@ -225,7 +225,7 @@ main<wbr>.<a href="./../../../kafman.html">kafman</a><wbr>.<a href="./../../core
                 <section id="ProducerWorker">
                             <input id="ProducerWorker-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
-            
+
     <span class="def">class</span>
     <span class="name">ProducerWorker</span><wbr>(<span class="base">PyQt5.QtCore.QThread</span>):
 
@@ -342,7 +342,7 @@ Ref:. <a href="https://github.com/confluentinc/confluent-kafka-python/blob/maste
                             <div id="ProducerWorker.__init__" class="classattr">
                                         <input id="ProducerWorker.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="name">ProducerWorker</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">poll_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>, </span><span class="param"><span class="n">flush_timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span></span>)</span>
 
                 <label class="view-source-button" for="ProducerWorker.__init__-view-source"><span>View Source</span></label>
@@ -362,19 +362,19 @@ Ref:. <a href="https://github.com/confluentinc/confluent-kafka-python/blob/maste
 </span></pre></div>
 
 
-    
+
 
                             </div>
                             <div id="ProducerWorker.messageProduced" class="classattr">
                                 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">messageProduced</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">unknown</span></span><span class="return-annotation">):</span></span>
 
-        
+
     </div>
     <a class="headerlink" href="#ProducerWorker.messageProduced"></a>
-    
+
             <div class="docstring"><p>pyqtSignal(*types, name: str = ..., revision: int = ..., arguments: Sequence = ...) -> PYQT_SIGNAL</p>
 
 <p>types is normally a sequence of individual types.  Each type is either a
@@ -392,14 +392,14 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             </div>
                             <div id="ProducerWorker.messageFailed" class="classattr">
                                 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">messageFailed</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">unknown</span></span><span class="return-annotation">):</span></span>
 
-        
+
     </div>
     <a class="headerlink" href="#ProducerWorker.messageFailed"></a>
-    
+
             <div class="docstring"><p>pyqtSignal(*types, name: str = ..., revision: int = ..., arguments: Sequence = ...) -> PYQT_SIGNAL</p>
 
 <p>types is normally a sequence of individual types.  Each type is either a
@@ -418,7 +418,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             <div id="ProducerWorker.start_producer" class="classattr">
                                         <input id="ProducerWorker.start_producer-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">start_producer</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">settings</span><span class="p">:</span> <span class="nb">dict</span>,</span><span class="param">	<span class="n">schema</span><span class="p">:</span> <span class="n">kafman</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">kafka_schema</span><span class="o">.</span><span class="n">KafkaSchema</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
 
@@ -443,7 +443,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             <div id="ProducerWorker.stop_producer" class="classattr">
                                         <input id="ProducerWorker.stop_producer-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">stop_producer</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
 
@@ -472,7 +472,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             <div id="ProducerWorker.schema" class="classattr">
                                         <input id="ProducerWorker.schema-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">schema</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">kafman</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">kafka_schema</span><span class="o">.</span><span class="n">KafkaSchema</span>:</span></span>
 
@@ -494,7 +494,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             <div id="ProducerWorker.produce" class="classattr">
                                         <input id="ProducerWorker.produce-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">produce</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">topics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>, </span><span class="param"><span class="n">messages</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
 
@@ -520,7 +520,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             <div id="ProducerWorker.is_started" class="classattr">
                                         <input id="ProducerWorker.is_started-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">is_started</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
 
@@ -542,7 +542,7 @@ arguments is the optional sequence of the names of the signal's arguments.</p>
                             <div id="ProducerWorker.run" class="classattr">
                                         <input id="ProducerWorker.run-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+
         <span class="def">def</span>
         <span class="name">run</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
 

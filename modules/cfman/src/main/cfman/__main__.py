@@ -10,7 +10,7 @@
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2023, HsPyLib team
+   Copyright·(c)·2024,·HSPyLib
 """
 from cfman.__classpath__ import _Classpath
 from cfman.core.cf_manager import CFManager

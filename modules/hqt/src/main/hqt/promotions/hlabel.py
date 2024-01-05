@@ -10,7 +10,7 @@
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2023, HsPyLib team
+   Copyright·(c)·2024,·HSPyLib
 """
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFontMetrics, QMouseEvent, QResizeEvent, QTextDocument
