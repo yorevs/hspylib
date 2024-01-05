@@ -12,16 +12,23 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import re
+import logging as log
 import sys
+from textwrap import dedent
+
 from clitt.__classpath__ import _Classpath
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.commons import syserr
+from hspylib.core.zoned_datetime import now
+from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-from askai.core.ask_ai import AIBrain
+from askai.core.ask_ai import AskAI
+from askai.core.engine.ai_engine import AIEngine
+from askai.core.engine.openai.openai_engine import OpenAIEngine
+from askai.core.exception.exceptions import NoSuchEngineError
 
 
 class Main(TUIApplication):
@@ -33,35 +40,67 @@ class Main(TUIApplication):
     # Location of the .version file
     VERSION_DIR = _Classpath.source_path()
 
+    @staticmethod
+    def _find_engine(engine_type: str, engine_model: str) -> AIEngine:
+        match (engine_type.lower() if engine_model else 'openai'):
+            case 'openai':
+                return OpenAIEngine.of_value(engine_model or OpenAIEngine.GPT_3_5_TURBO.value)
+            case 'paml':
+                syserr('Google paml is not yet implemented!')
+                sys.exit(ExitStatus.ABORTED.val)
+
+        raise NoSuchEngineError(f"Engine type: ${engine_type}  model: ${engine_model}")
+
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
         super().__init__(app_name, version, self.DESCRIPTION.format(version))
-        self._ai = AIBrain()
+        self._ai = None
 
     def _setup_arguments(self) -> None:
         """Initialize application parameters and options."""
+        # fmt: off
+        self._with_options() \
+            .option(
+                "interactive", "i", "interactive", "Whether to run interactively or not",
+                nargs="?", action=ParserAction.STORE_TRUE, default=True)\
+            .option(
+                "engine", "e", "engine", "Which AI engine to use."
+                "If not provided, 'openai' wil be used.",
+                choices=['openai', 'palm'])\
+            .option(
+                "model", "m", "model", "Which AI model to use (if applicable).",
+                nargs=1)\
+        # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        """Main entry point handler."""
+        """Run the application with the command line arguments."""
+
+        self._ai = AskAI(
+            bool(self.get_arg("interactive")),
+            self._find_engine(
+                self.get_arg("engine"),
+                self.get_arg("model")
+            )
+        )
+
+        log.info(
+            dedent(
+                f"""
+        {self._app_name} v{self._app_version}
+
+        Settings ==============================
+                STARTED: {now("%Y-%m-%d %H:%M:%S")}
+        """
+            )
+        )
         return self._exec_application()
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application main flow."""
-        sysout(self._ai)
-
-        while message := input("User: "):
-            if re.match(r"(good)?bye|tchau|quit|exit", message.lower()):
-                sysout(f"ChatGPT: {message.title()}")
-                break
-            sysout("ChatGPT: ", end='')
-            sysout(self._ai.ask(message))
-
-        if not message:
-            sysout("ChatGPT: Bye")
-
+        self._ai.run()
         return ExitStatus.SUCCESS
 
 
 # Application entry point
 if __name__ == "__main__":
-    Main("askai").INSTANCE.run(sys.argv[1:])
+    Main("ask-ai").INSTANCE.run(sys.argv[1:])

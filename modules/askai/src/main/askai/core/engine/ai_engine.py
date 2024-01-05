@@ -27,6 +27,10 @@ class AIEngine(Protocol):
         """Get the type of the AI."""
         ...
 
+    def nickname(self) -> str:
+        """Get the AI nickname."""
+        ...
+
     def ask(self, question: str) -> str:
         """Ask AI assistance for the given question."""
         ...

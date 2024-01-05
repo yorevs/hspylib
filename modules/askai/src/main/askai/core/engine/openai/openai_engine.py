@@ -19,6 +19,7 @@ class OpenAIEngine(Enumeration):
     def __init__(self, model_name: str):
         super().__init__()
         self._url = 'https://api.openai.com/v1/chat/completions'
+        self._nickname = 'ChatGPT'
         self._model_name = model_name
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         self._chat = [{"role": "system", "content": "you are a kind helpful assistant!"}]
@@ -32,6 +33,9 @@ class OpenAIEngine(Enumeration):
 
     def ai_model(self) -> str:
         return self.value
+
+    def nickname(self) -> str:
+        return self._nickname
 
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
