@@ -12,6 +12,8 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from hspylib.modules.application.exit_status import ExitStatus
+
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
@@ -55,7 +57,7 @@ class CFManager:
     @staticmethod
     def _abort():
         """Abort the execution and exit."""
-        sys.exit(1)
+        sys.exit(ExitStatus.FAILED.val)
 
     @staticmethod
     def _allow_multiple(action: str) -> bool:

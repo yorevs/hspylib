@@ -1,0 +1,20 @@
+/*
+  Python dependencies file
+  Project: hspylib-ask-ai
+  Created: 05th Jan, 2024
+
+  !! Syntax for dependencies !!
+  package: <pkg_name>, version: <latest|versionNum>, mode: <gt|ge|eq|ne|compat|none>
+*/
+
+/* Module dependencies */
+
+package: hspylib
+package: hspylib-clitt
+
+/* Application dependencies */
+
+package: retry
+package: requests
+package: urllib3, version: 2.0.0, mode: lt
+package: openai, version: 1.0.0, mode: gt
