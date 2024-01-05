@@ -10,7 +10,7 @@
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
-   Copyright 2023, HsPyLib team
+   Copyright·(c)·2024,·HSPyLib
 """
 from clitt.core.term.commons import Direction, get_cursor_position, Portion
 from clitt.core.term.screen import Screen
