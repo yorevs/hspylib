@@ -12,6 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import os
 import re
 import sys
 from functools import lru_cache
@@ -71,6 +72,7 @@ class AskAI:
         self._terminal = Terminal.INSTANCE
         self._cache = TTLCache()
         self._engine = engine
+        self._user = os.getenv('USER', 'you')
         self._done = False
 
     def __str__(self) -> str:
@@ -97,6 +99,10 @@ class AskAI:
         else:
             NotImplemented
 
+    def _ask(self) -> str:
+        """Ask the question and expect the response."""
+        return input(f"  {self._user.title()}: ")
+
     def _reply(self, message: str, streamed: bool = True) -> None:
         """Reply to the user with the AI response."""
         if streamed:
@@ -108,10 +114,11 @@ class AskAI:
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         wait_msg = f"  {self._engine.nickname()}: Processing, please wait..."
+        self._reply(f"Hello {self._user}, what can I do for you today ?")
 
-        while message := input("  Ask: "):
+        while message := self._ask():
             if re.match(AskAI.TERM_EXPRESSIONS, message.lower()):
-                sysout(f"  {self._engine.nickname()}: {message.title()}")
+                self._reply(message.title())
                 break
             sysout(wait_msg, end='')
             reply = self.ask(message)
@@ -120,4 +127,4 @@ class AskAI:
             self._reply(reply)
 
         if not message:
-            sysout(f"  {self._engine.nickname()}: Bye")
+            self._reply("Bye")
