@@ -17,6 +17,7 @@ import re
 import sys
 from functools import lru_cache
 from time import sleep
+from typing import List
 
 from clitt.core.term.commons import Portion, Direction
 from clitt.core.term.terminal import Terminal
@@ -65,15 +66,17 @@ class AskAI:
     def __init__(
         self,
         interactive: bool,
-        engine: AIEngine
+        engine: AIEngine,
+        query_string: str | List[str]
         ):
 
-        self._interactive = interactive
-        self._terminal = Terminal.INSTANCE
-        self._cache = TTLCache()
-        self._engine = engine
-        self._user = os.getenv('USER', 'you')
-        self._done = False
+        self._interactive: bool = interactive
+        self._terminal: Terminal = Terminal.INSTANCE
+        self._cache: TTLCache = TTLCache()
+        self._engine: AIEngine = engine
+        self._query_string: str = str(' '.join(query_string) if isinstance(query_string, list) else query_string)
+        self._user: str = os.getenv('USER', 'you')
+        self._done: bool = False
 
     def __str__(self) -> str:
         return (
@@ -86,6 +89,10 @@ class AskAI:
             f"%EOL%Interactive Mode is ON%EOL%%NC%"
         )
 
+    @property
+    def query_string(self) -> str:
+        return self._query_string
+
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
         """Ask the question and expect the response."""
@@ -93,11 +100,14 @@ class AskAI:
 
     def run(self) -> None:
         """Run the program."""
-        sysout(self)
         if self._interactive:
+            sysout(self)
             self._prompt()
-        else:
-            NotImplemented
+        elif self._query_string:
+            if not re.match(AskAI.TERM_EXPRESSIONS, self._query_string.lower()):
+                sysout(f"  {self._user.title()}: {self._query_string}")
+                reply = self.ask(self._query_string)
+                self._reply(reply, False)
 
     def _ask(self) -> str:
         """Ask the question and expect the response."""
@@ -109,12 +119,12 @@ class AskAI:
             sysout(f"  {self._engine.nickname()}: ", end='')
             AskAI.stream(message)
         else:
-            sysout(message)
+            sysout(f"  {self._engine.nickname()}: {message}")
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         wait_msg = f"  {self._engine.nickname()}: Processing, please wait..."
-        self._reply(f"Hello {self._user}, what can I do for you today ?")
+        self._reply(f"Hey {self._user}, How can I assist you today?")
 
         while message := self._ask():
             if re.match(AskAI.TERM_EXPRESSIONS, message.lower()):

@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib-AskAI
-   @package: clitt
+   @package: askai
       @file: __classpath__.py
    @created: Fri, 5 Jan 2024
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
