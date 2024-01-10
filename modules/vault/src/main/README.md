@@ -1,4 +1,4 @@
-# HomeSetup - Secrets Vault
+# HsPyLib - Secrets Vault
 
 ## Manage your secrets and passwords
 

@@ -1,6 +1,6 @@
-# HomeSetup - CloudFoundry manager
+# HsPyLib - Ask AI
 
-## Manage your PCF applications
+## CLI integration with AI models
 
 [![License](https://badgen.net/badge/license/MIT/gray)](LICENSE.md)
 [![Release](https://badgen.net/badge/release/v0.9.2/gray)](CHANGELOG.md#unreleased)

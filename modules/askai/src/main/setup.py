@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib-CFMan
+   @project: HsPyLib-AskAI
       @file: setup.py
-   @created: Tue, 4 May 2021
+   @created: Tue, 2 Jan 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
@@ -32,7 +32,7 @@ REQUIREMENTS = list(filter(None, (HERE / "requirements.txt").read_text().splitli
 setuptools.setup(
     name="hspylib-askai",
     version=VERSION,
-    description="HsPyLib - CloudFoundry manager",
+    description="HsPyLib - Ask AI",
     author="Hugo Saporetti Junior",
     author_email="yorevs@hotmail.com",
     long_description=README,

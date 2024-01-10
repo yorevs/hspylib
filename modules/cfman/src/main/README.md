@@ -1,4 +1,4 @@
-# HomeSetup - CloudFoundry manager
+# HsPyLib - CloudFoundry manager
 
 ## Manage your PCF applications
 

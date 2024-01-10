@@ -21,7 +21,10 @@ class OpenAIEngine(Enumeration):
         self._url = 'https://api.openai.com/v1/chat/completions'
         self._nickname = 'ChatGPT'
         self._model_name = model_name
-        self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        self._client = OpenAI(
+            api_key=os.environ.get("OPENAI_API_KEY"),
+            organization=os.environ.get("OPENAI_ORG_ID")
+        )
         self._chat = [{"role": "system", "content": "you are a kind helpful assistant!"}]
 
     @property
