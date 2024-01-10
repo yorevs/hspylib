@@ -2,10 +2,10 @@
 #
 # hspylib-ask-ai v0.9.3
 #
-# Package: main.askai.core.exception
+# Package: main.askai.utils
 """Package initialization."""
 
 __all__ = [
-    'exceptions'
+    'utilities'
 ]
 __version__ = '0.9.3'
