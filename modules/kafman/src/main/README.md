@@ -1,4 +1,4 @@
-# HomeSetup - Apache Kafka Manager
+# HsPyLib - Apache Kafka Manager
 
 ## Manage and test you kafka applications
 

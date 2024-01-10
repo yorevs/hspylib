@@ -1,4 +1,4 @@
-# HomeSetup - Datasource integration
+# HsPyLib - Datasource integration
 
 ## Manage you datasource's
 
