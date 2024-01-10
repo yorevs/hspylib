@@ -14,6 +14,7 @@ class OpenAIEngine(Enumeration):
     GPT_3_5_TURBO       = 'gpt-3.5-turbo'
     GPT_3_5_TURBO_16K   = 'gpt-3.5-turbo-16k'
     GPT_3_5_TURBO_1106  = 'gpt-3.5-turbo-1106'
+    GPT_4               = 'gpt-4'
     # fmt: on
 
     def __init__(self, model_name: str):

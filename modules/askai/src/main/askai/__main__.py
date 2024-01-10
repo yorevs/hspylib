@@ -19,13 +19,14 @@ from textwrap import dedent
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr, sysout
+from hspylib.core.tools.dict_tools import get_or_default
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
 from askai.__classpath__ import _Classpath
-from askai.core.ask_ai import AskAI
+from askai.core.ask_ai import AskAi
 from askai.core.engine.ai_engine import AIEngine
 from askai.core.engine.openai.openai_engine import OpenAIEngine
 from askai.core.exception.exceptions import NoSuchEngineError
@@ -42,9 +43,12 @@ class Main(TUIApplication):
     # Location of the .version file
     VERSION_DIR = _Classpath.source_path()
 
+    # The resources folder
+    RESOURCE_DIR = str(_Classpath.resource_path())
+
     @staticmethod
     def _find_engine(engine_type: str, engine_model: str) -> AIEngine:
-        match (engine_type.lower() if engine_model else "openai"):
+        match (engine_type.lower() if engine_type else "openai"):
             case "openai":
                 return OpenAIEngine.of_value(
                     engine_model or OpenAIEngine.GPT_3_5_TURBO.value
@@ -57,7 +61,7 @@ class Main(TUIApplication):
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
-        super().__init__(app_name, version, self.DESCRIPTION.format(version))
+        super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
         self._ai = None
 
     def _setup_arguments(self) -> None:
@@ -70,8 +74,9 @@ class Main(TUIApplication):
                 nargs="?", action=ParserAction.STORE_TRUE, default=False)\
             .option(
                 "engine", "e", "engine", "specifies which AI engine to use."
-                "If not provided, 'openai' wil be used.",
-                choices=['openai', 'palm'])\
+                "If not provided, the default engine wil be used.",
+                choices=['openai', 'palm'],
+                nargs=1)\
             .option(
                 "model", "m", "model", "specifies which AI model to use (depends on the engine).",
                 nargs=1)
@@ -81,10 +86,11 @@ class Main(TUIApplication):
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments."""
-
-        self._ai = AskAI(
+        engine = get_or_default(self.get_arg("engine") or [], 0)
+        model = get_or_default(self.get_arg("model") or [], 0)
+        self._ai = AskAi(
             bool(self.get_arg("interactive")),
-            self._find_engine(self.get_arg("engine"), self.get_arg("model")),
+            self._find_engine(engine, model),
             self.get_arg("query_string")
         )
 
