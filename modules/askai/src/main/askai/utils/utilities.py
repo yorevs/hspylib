@@ -12,15 +12,17 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from subprocess import DEVNULL, STDOUT
 from time import sleep
 
+from clitt.core.term.terminal import Terminal
 from hspylib.core.tools.commons import sysout
 
 
 def stream(
     reply_str: str,
     speed: int = 1,
-    base_interval_ms: float = 0.010,
+    base_interval_ms: float = 0.014,
 ) -> None:
     """Stream the response from the AI Engine. Simulates a typewriter effect.
     :param reply_str the text to stream.
@@ -30,9 +32,9 @@ def stream(
     # hardcoded values were benchmarked
     base_speed = base_interval_ms / max(1, speed)
     alpha_interval_ms: float = base_speed
-    number_interval_ms: float = 2 * base_speed
-    comma_interval_ms: float = 25 * base_speed
-    punct_interval_ms: float = 40 * base_speed
+    number_interval_ms: float = 30 * base_speed
+    comma_interval_ms: float = 20 * base_speed
+    punct_interval_ms: float = 60 * base_speed
 
     for next_chr in reply_str:
         sysout(next_chr, end="")
@@ -49,6 +51,8 @@ def stream(
     sysout("")
 
 
-if __name__ == '__main__':
-    stream("Hello, my friend! How are you doing ? I'm very good thanks, and you ?", speed=0)
-
+def play_mp3(path_to_mp3: str) -> None:
+    """TODO"""
+    Terminal.shell_exec(
+        f"ffplay -v 0 -nodisp -autoexit {path_to_mp3}", stdout=DEVNULL, stderr=STDOUT
+    )

@@ -22,7 +22,7 @@ class AskAiConfigs(metaclass=Singleton):
     INSTANCE = None
 
     def __init__(self):
-        self._configs = AppConfigs.INSTANCE
+        self._configs = AppConfigs.INSTANCE or AppConfigs()
 
     @property
     def stream_speed(self) -> int:

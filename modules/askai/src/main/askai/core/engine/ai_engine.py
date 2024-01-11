@@ -13,7 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from typing import Protocol
+from typing import Protocol, Callable, Optional
 
 
 class AIEngine(Protocol):
@@ -37,4 +37,13 @@ class AIEngine(Protocol):
 
     def reset(self) -> None:
         """Forget the context and restart over."""
+        ...
+
+    def speak(
+        self,
+        text: str,
+        cb_started: Optional[Callable[[str], None]] = None,
+        cb_finished: Optional[Callable] = None,
+    ) -> None:
+        """Text-T0-Speech the provided text."""
         ...

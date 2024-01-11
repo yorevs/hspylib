@@ -28,7 +28,7 @@ from hspylib.modules.application.version import Version
 from askai.__classpath__ import _Classpath
 from askai.core.ask_ai import AskAi
 from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.openai.openai_engine import OpenAIEngine
+from askai.core.engine.openai_engine import OpenAIEngine
 from askai.core.exception.exceptions import NoSuchEngineError
 
 

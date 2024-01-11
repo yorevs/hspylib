@@ -16,6 +16,7 @@ import os
 import re
 import sys
 from functools import lru_cache
+from threading import Thread
 from typing import List
 
 from clitt.core.term.commons import Portion, Direction
@@ -42,6 +43,7 @@ class AskAi:
     def __init__(
         self, interactive: bool, engine: AIEngine, query_string: str | List[str]
     ):
+        self._configs: AskAiConfigs = AskAiConfigs()
         self._interactive: bool = interactive
         self._terminal: Terminal = Terminal.INSTANCE
         self._cache: TTLCache = TTLCache()
@@ -49,7 +51,6 @@ class AskAi:
         self._query_string: str = str(" ".join(query_string) if isinstance(query_string, list) else query_string)
         self._user: str = os.getenv("USER", "you")
         self._wait_msg: str = f"  {self._engine.nickname()}: Processing, please wait..."
-        self._configs: AskAiConfigs = AskAiConfigs.INSTANCE or AskAiConfigs()
         self._done: bool = False
 
     def __str__(self) -> str:
@@ -103,8 +104,7 @@ class AskAi:
     def _reply(self, message: str) -> None:
         """Reply to the user with the AI response."""
         if self.is_stream:
-            sysout(f"  {self._engine.nickname()}: ", end="")
-            stream(message, speed=self._configs.stream_speed)
+            self._engine.speak(message, self._stream_text)
         else:
             sysout(f"  {self._engine.nickname()}: {message}")
 
@@ -119,12 +119,17 @@ class AskAi:
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         self._reply(f"Hey {self._user}, How can I assist you today?")
-
         while question := self._input():
             if re.match(AskAi.TERM_EXPRESSIONS, question.lower()):
                 self._reply(question.title())
                 break
             self._ask_and_respond(question)
-
         if not question:
             self._reply("Bye")
+
+    def _stream_text(self, message: str) -> None:
+        sysout(f"  {self._engine.nickname()}: ", end="")
+        stream_thread = Thread(target=stream, args=(message, self._configs.stream_speed, ))
+        stream_thread.start()
+        stream_thread.join()
+
