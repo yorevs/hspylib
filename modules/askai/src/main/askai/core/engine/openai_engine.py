@@ -1,4 +1,3 @@
-import hashlib
 import logging as log
 import os
 from functools import lru_cache
@@ -6,12 +5,11 @@ from threading import Thread
 from time import sleep
 from typing import Callable, Optional
 
-from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import file_is_not_empty
-from openai import OpenAI, RateLimitError, APIConnectionError, APIStatusError
+from openai import APIConnectionError, APIStatusError, OpenAI, RateLimitError
 
-from askai.utils.utilities import play_mp3
+from askai.utils.utilities import play_mp3, hash_text
 
 
 class OpenAIEngine(Enumeration):
@@ -56,6 +54,7 @@ class OpenAIEngine(Enumeration):
     def ask(self, question: str) -> str:
         self._chat.append({"role": "user", "content": question})
         try:
+            log.debug(f"Generating AI answer for: {question}")
             response = self._client.chat.completions.create(
                 model=self._model_name, messages=self._chat
             )
@@ -90,20 +89,17 @@ class OpenAIEngine(Enumeration):
         cb_finished: Optional[Callable] = None,
     ) -> None:
         tmp_dir = os.getenv("TEMP", "/tmp")
-        file_hash = hashlib.md5(text.encode(Charset.UTF_8.val)).hexdigest()
-        speech_file_path = f"{tmp_dir}/{file_hash}.mp3"
-
+        speech_file_path = f"{tmp_dir}/{hash_text(text)}.mp3"
         if not file_is_not_empty(speech_file_path):
             log.debug(f"Generating AI mp3 file: {speech_file_path}")
             response = self._client.audio.speech.create(
                 model="tts-1", voice="onyx", input=text
             )
             response.stream_to_file(speech_file_path)
-
         speak_thread = Thread(target=play_mp3, args=(speech_file_path,))
         speak_thread.start()
         if cb_started:
-            sleep(1.2)
+            sleep(1)  # Delayed start.
             cb_started(text)
         speak_thread.join()
         if cb_finished:

@@ -12,6 +12,8 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+
+import logging as log
 import os
 import re
 import sys
@@ -19,7 +21,7 @@ from functools import lru_cache
 from threading import Thread
 from typing import List
 
-from clitt.core.term.commons import Portion, Direction
+from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
@@ -27,7 +29,7 @@ from hspylib.modules.cache.ttl_cache import TTLCache
 
 from askai.core.ask_ai_configs import AskAiConfigs
 from askai.core.engine.ai_engine import AIEngine
-from askai.utils.utilities import stream
+from askai.utils.utilities import stream, hash_text
 
 
 class AskAi:
@@ -48,10 +50,15 @@ class AskAi:
         self._terminal: Terminal = Terminal.INSTANCE
         self._cache: TTLCache = TTLCache()
         self._engine: AIEngine = engine
-        self._query_string: str = str(" ".join(query_string) if isinstance(query_string, list) else query_string)
+        self._query_string: str = str(
+            " ".join(query_string) if isinstance(query_string, list) else query_string
+        )
         self._user: str = os.getenv("USER", "you")
-        self._wait_msg: str = f"  {self._engine.nickname()}: Processing, please wait..."
+        self._wait_msg: str = (
+            f"  {self._engine.nickname()}: Processing, please wait..."
+        )
         self._done: bool = False
+        self._processing: bool = False
 
     def __str__(self) -> str:
         return (
@@ -81,6 +88,18 @@ class AskAi:
     def is_stream(self) -> bool:
         return self._configs.is_stream
 
+    @property
+    def is_processing(self) -> bool:
+        return self._processing
+
+    @is_processing.setter
+    def is_processing(self, is_processing: bool) -> None:
+        if is_processing:
+            sysout(self.wait_msg, end="")
+        else:
+            self._terminal.cursor.erase(Portion.LINE)
+            self._terminal.cursor.move(len(self.wait_msg), Direction.LEFT)
+
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
         """Ask the question and expect the response."""
@@ -101,19 +120,27 @@ class AskAi:
         """Prompt for user input."""
         return input(f"  {self._user.title()}: ")
 
-    def _reply(self, message: str) -> None:
+    def _reply(self, message: str, speak: bool = True) -> None:
         """Reply to the user with the AI response."""
         if self.is_stream:
-            self._engine.speak(message, self._stream_text)
+            if speak:
+                self._engine.speak(message, self._stream_text)
+            else:
+                self._stream_text(message)
         else:
+            self.is_processing = False
             sysout(f"  {self._engine.nickname()}: {message}")
 
     def _ask_and_respond(self, question: str) -> None:
         """Ask the question and expect the response."""
-        sysout(self.wait_msg, end="")
-        reply = self.ask(question)
-        self._terminal.cursor.erase(Portion.LINE)
-        self._terminal.cursor.move(len(self.wait_msg), Direction.LEFT)
+        self.is_processing = True
+        key = hash_text(question)
+        if not (reply := self._cache.read(key)):
+            log.debug("Reply is not cached. Fetching from AI engine")
+            reply = self.ask(question)
+            self._cache.save(key, reply)
+        else:
+            log.debug("Response found in cache. Returning it.")
         self._reply(reply)
 
     def _prompt(self) -> None:
@@ -121,15 +148,18 @@ class AskAi:
         self._reply(f"Hey {self._user}, How can I assist you today?")
         while question := self._input():
             if re.match(AskAi.TERM_EXPRESSIONS, question.lower()):
-                self._reply(question.title())
+                self._reply(question.title(), False)
                 break
             self._ask_and_respond(question)
         if not question:
-            self._reply("Bye")
+            self._reply("Bye", False)
 
     def _stream_text(self, message: str) -> None:
+        """Stream the message using default parameters."""
+        self.is_processing = False
         sysout(f"  {self._engine.nickname()}: ", end="")
-        stream_thread = Thread(target=stream, args=(message, self._configs.stream_speed, ))
+        stream_thread = Thread(
+            target=stream, args=(message, self._configs.stream_speed)
+        )
         stream_thread.start()
         stream_thread.join()
-

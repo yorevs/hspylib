@@ -13,7 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from typing import Protocol, Callable, Optional
+from typing import Callable, Optional, Protocol
 
 
 class AIEngine(Protocol):
@@ -40,10 +40,7 @@ class AIEngine(Protocol):
         ...
 
     def speak(
-        self,
-        text: str,
-        cb_started: Optional[Callable[[str], None]] = None,
-        cb_finished: Optional[Callable] = None,
+        self, text: str, cb_started: Optional[Callable[[str], None]] = None, cb_finished: Optional[Callable] = None
     ) -> None:
         """Text-T0-Speech the provided text."""
         ...

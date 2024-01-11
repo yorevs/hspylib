@@ -31,4 +31,3 @@ class AskAiConfigs(metaclass=Singleton):
     @property
     def is_stream(self) -> bool:
         return self._configs.get_bool("askai.stream.response")
-

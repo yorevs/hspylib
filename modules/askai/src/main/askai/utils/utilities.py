@@ -12,47 +12,70 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from subprocess import DEVNULL, STDOUT
+import hashlib
+from subprocess import DEVNULL
 from time import sleep
 
 from clitt.core.term.terminal import Terminal
-from hspylib.core.tools.commons import sysout
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import sysout, file_is_not_empty
 
 
-def stream(
-    reply_str: str,
-    speed: int = 1,
-    base_interval_ms: float = 0.014,
-) -> None:
-    """Stream the response from the AI Engine. Simulates a typewriter effect.
+def hash_text(text: str) -> str:
+    """Create a hash string based on the provided text.
+    :param: text the text to be hashed.
+    """
+    return hashlib.md5(text.encode(Charset.UTF_8.val)).hexdigest()
+
+
+def stream(reply_str: str, speed: int = 1, base_interval_ms: float = 0.010) -> None:
+    """Stream the response from the AI Engine. Simulates a typewriter effect. The following hardcoded values were
+    benchmarked according to the selected speaker engine.
     :param reply_str the text to stream.
     :param speed the speed multiplier of the typewriter effect. Defaults to 1.
     :param base_interval_ms the base delay interval between each characters.
     """
-    # hardcoded values were benchmarked
     base_speed = base_interval_ms / max(1, speed)
-    alpha_interval_ms: float = base_speed
-    number_interval_ms: float = 30 * base_speed
-    comma_interval_ms: float = 20 * base_speed
-    punct_interval_ms: float = 60 * base_speed
+    words_interval_ms: float = 12 * base_speed
+    breath_interval_ms: float = 45.5 * base_speed
+    number_interval_ms: float = 26.5 * base_speed
+    comma_interval_ms: float = 27 * base_speed
+    punct_interval_ms: float = 40.5 * base_speed
+    period_interval_ms: float = 2 * punct_interval_ms + breath_interval_ms
+    words: int = 0
 
-    for next_chr in reply_str:
+    for i, next_chr in enumerate(reply_str):
         sysout(next_chr, end="")
         if next_chr.isalpha():
-            sleep(alpha_interval_ms)
+            sleep(base_speed)
         elif next_chr.isnumeric():
             sleep(number_interval_ms)
         elif next_chr in [",", ";"]:
-            sleep(comma_interval_ms)
+            sleep(
+                comma_interval_ms
+                if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
+                else base_speed
+            )
         elif next_chr in [".", "?", "!"]:
-            sleep(punct_interval_ms)
+            sleep(
+                period_interval_ms
+                if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
+                else punct_interval_ms
+            )
+            continue
+        elif next_chr.isspace():
+            if i - 1 >= 0 and not reply_str[i - 1].isspace():
+                words += 1
+                sleep(breath_interval_ms if words % 10 == 0 else words_interval_ms)
+            continue
         sleep(base_speed)
-
     sysout("")
 
 
 def play_mp3(path_to_mp3: str) -> None:
-    """TODO"""
-    Terminal.shell_exec(
-        f"ffplay -v 0 -nodisp -autoexit {path_to_mp3}", stdout=DEVNULL, stderr=STDOUT
-    )
+    """Play the specified mp3 file using ffplay (ffmpeg) application.
+    :param path_to_mp3 the path to the mp3 file to be played.
+    """
+    check_argument(file_is_not_empty(path_to_mp3))
+    Terminal.shell_exec(f"ffplay -v 0 -nodisp -autoexit {path_to_mp3}", stdout=DEVNULL)

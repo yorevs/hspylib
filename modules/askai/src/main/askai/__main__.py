@@ -12,10 +12,11 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import logging as log
-import sys
-from textwrap import dedent
-
+from askai.__classpath__ import _Classpath
+from askai.core.ask_ai import AskAi
+from askai.core.engine.ai_engine import AIEngine
+from askai.core.engine.openai_engine import OpenAIEngine
+from askai.core.exception.exceptions import NoSuchEngineError
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr, sysout
@@ -24,21 +25,17 @@ from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
+from textwrap import dedent
 
-from askai.__classpath__ import _Classpath
-from askai.core.ask_ai import AskAi
-from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.openai_engine import OpenAIEngine
-from askai.core.exception.exceptions import NoSuchEngineError
+import logging as log
+import sys
 
 
 class Main(TUIApplication):
     """HsPyLib Ask-AI Terminal Tools - AI on the palm of your shell."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(
-        encoding=Charset.UTF_8.val
-    )
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
     VERSION_DIR = _Classpath.source_path()
@@ -50,9 +47,7 @@ class Main(TUIApplication):
     def _find_engine(engine_type: str, engine_model: str) -> AIEngine:
         match (engine_type.lower() if engine_type else "openai"):
             case "openai":
-                return OpenAIEngine.of_value(
-                    engine_model or OpenAIEngine.GPT_3_5_TURBO.value
-                )
+                return OpenAIEngine.of_value(engine_model or OpenAIEngine.GPT_3_5_TURBO.value)
             case "paml":
                 syserr("Google paml is not yet implemented!")
             case _:
@@ -89,9 +84,7 @@ class Main(TUIApplication):
         engine = get_or_default(self.get_arg("engine") or [], 0)
         model = get_or_default(self.get_arg("model") or [], 0)
         self._ai = AskAi(
-            bool(self.get_arg("interactive")),
-            self._find_engine(engine, model),
-            self.get_arg("query_string")
+            bool(self.get_arg("interactive")), self._find_engine(engine, model), self.get_arg("query_string")
         )
 
         log.info(
