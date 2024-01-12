@@ -22,12 +22,31 @@ class AskAiConfigs(metaclass=Singleton):
     INSTANCE = None
 
     def __init__(self):
-        self._configs = AppConfigs.INSTANCE or AppConfigs()
+        self._configs = AppConfigs.INSTANCE
+        self._stream_speed = self._configs.get_int("askai.stream.speed")
+        self._is_stream = self._configs.get_bool("askai.stream.response")
+        self._is_speak = self._configs.get_bool("askai.speak.response")
 
     @property
     def stream_speed(self) -> int:
-        return self._configs.get_int("askai.stream.speed")
+        return self._stream_speed
+
+    @stream_speed.setter
+    def stream_speed(self, value: int) -> None:
+        self._stream_speed = value
 
     @property
     def is_stream(self) -> bool:
-        return self._configs.get_bool("askai.stream.response")
+        return self._is_stream
+
+    @is_stream.setter
+    def is_stream(self, value: bool) -> None:
+        self._is_stream = value
+
+    @property
+    def is_speak(self) -> bool:
+        return self._is_speak
+
+    @is_speak.setter
+    def is_speak(self, value: bool) -> None:
+        self._is_speak = value

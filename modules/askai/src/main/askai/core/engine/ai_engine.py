@@ -40,7 +40,11 @@ class AIEngine(Protocol):
         ...
 
     def speak(
-        self, text: str, cb_started: Optional[Callable[[str], None]] = None, cb_finished: Optional[Callable] = None
+        self,
+        text: str,
+        speed: int,
+        cb_started: Optional[Callable[[str], None]] = None,
+        cb_finished: Optional[Callable] = None,
     ) -> None:
         """Text-T0-Speech the provided text."""
         ...

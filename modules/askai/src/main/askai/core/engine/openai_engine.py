@@ -29,6 +29,7 @@ class OpenAIEngine(Enumeration):
         self._url = "https://api.openai.com/v1/chat/completions"
         self._nickname = "ChatGPT"
         self._model_name = model_name
+        self._balance = 0
         self._client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY"),
             organization=os.environ.get("OPENAI_ORG_ID"),
@@ -85,6 +86,7 @@ class OpenAIEngine(Enumeration):
     def speak(
         self,
         text: str,
+        speed: int,
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
@@ -96,10 +98,9 @@ class OpenAIEngine(Enumeration):
                 model="tts-1", voice="onyx", input=text
             )
             response.stream_to_file(speech_file_path)
-        speak_thread = Thread(target=play_mp3, args=(speech_file_path,))
+        speak_thread = Thread(target=play_mp3, args=(speech_file_path, speed,))
         speak_thread.start()
         if cb_started:
-            sleep(1)  # Delayed start.
             cb_started(text)
         speak_thread.join()
         if cb_finished:

@@ -37,12 +37,12 @@ def stream(reply_str: str, speed: int = 1, base_interval_ms: float = 0.010) -> N
     :param base_interval_ms the base delay interval between each characters.
     """
     base_speed = base_interval_ms / max(1, speed)
-    words_interval_ms: float = 12 * base_speed
-    breath_interval_ms: float = 45.5 * base_speed
-    number_interval_ms: float = 26.5 * base_speed
-    comma_interval_ms: float = 27 * base_speed
-    punct_interval_ms: float = 40.5 * base_speed
-    period_interval_ms: float = 2 * punct_interval_ms + breath_interval_ms
+    words_interval_ms: float = 12.5 * base_speed
+    breath_interval_ms: float = 46 * base_speed
+    number_interval_ms: float = 28 * base_speed
+    comma_interval_ms: float = 26 * base_speed
+    punct_interval_ms: float = 40 * base_speed
+    period_interval_ms: float = 2 * punct_interval_ms
     words: int = 0
 
     for i, next_chr in enumerate(reply_str):
@@ -73,9 +73,10 @@ def stream(reply_str: str, speed: int = 1, base_interval_ms: float = 0.010) -> N
     sysout("")
 
 
-def play_mp3(path_to_mp3: str) -> None:
+def play_mp3(path_to_mp3: str, speed: int = 1) -> None:
     """Play the specified mp3 file using ffplay (ffmpeg) application.
     :param path_to_mp3 the path to the mp3 file to be played.
+    :param speed the playing speed.
     """
     check_argument(file_is_not_empty(path_to_mp3))
-    Terminal.shell_exec(f"ffplay -v 0 -nodisp -autoexit {path_to_mp3}", stdout=DEVNULL)
+    Terminal.shell_exec(f"ffplay -af \"atempo={speed}\" -v 0 -nodisp -autoexit {path_to_mp3}", stdout=DEVNULL)

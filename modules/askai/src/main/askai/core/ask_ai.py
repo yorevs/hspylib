@@ -43,7 +43,12 @@ class AskAi:
         sys.exit(ExitStatus.FAILED.val)
 
     def __init__(
-        self, interactive: bool, engine: AIEngine, query_string: str | List[str]
+        self,
+        interactive: bool,
+        is_stream: bool,
+        is_speak: bool,
+        tempo: int,
+        engine: AIEngine, query_string: str | List[str]
     ):
         self._configs: AskAiConfigs = AskAiConfigs()
         self._interactive: bool = interactive
@@ -59,17 +64,23 @@ class AskAi:
         )
         self._done: bool = False
         self._processing: bool = False
+        self._configs.is_stream = is_stream
+        self._configs.is_speak = is_speak
+        self._configs.stream_speed = tempo
 
     def __str__(self) -> str:
         return (
-            f"%EOL%%GREEN%"
+            f"%GREEN%"
             f"{'-=' * 40} %EOL%"
-            f"  Engine: {self._engine.ai_name()} %EOL%"
-            f"   Model: {self._engine.ai_model()} %EOL%"
-            f"Nickname: {self._engine.nickname()} %EOL%"
+            f"     Engine: {self._engine.ai_name()} %EOL%"
+            f"      Model: {self._engine.ai_model()} %EOL%"
+            f"   Nickname: {self._engine.nickname()} %EOL%"
             f"{'--' * 40} %EOL%"
-            f"Interactive Mode: ON %EOL%"
-            f"{'Streaming: ON  Speed: ' + str(self.stream_speed) + '%EOL%' if self.is_stream else '' }%NC%"
+            f"Interactive: ON %EOL%"
+            f"  Streaming: {'ON' if self.is_stream else 'OFF'} %EOL%"
+            f"   Speaking: {'ON' if self.is_speak else 'OFF'} %EOL%"
+            f"      Tempo: {self.stream_speed} %EOL%"
+            f"{'--' * 40} %EOL%%NC%"
         )
 
     @property
@@ -87,6 +98,10 @@ class AskAi:
     @property
     def is_stream(self) -> bool:
         return self._configs.is_stream
+
+    @property
+    def is_speak(self) -> bool:
+        return self._configs.is_speak
 
     @property
     def is_processing(self) -> bool:
@@ -122,11 +137,12 @@ class AskAi:
 
     def _reply(self, message: str, speak: bool = True) -> None:
         """Reply to the user with the AI response."""
-        if self.is_stream:
-            if speak:
-                self._engine.speak(message, self._stream_text)
-            else:
-                self._stream_text(message)
+        if self.is_stream and speak and self.is_speak:
+            self._engine.speak(message, self._configs.stream_speed, self._stream_text)
+        elif not self.is_stream and speak and self.is_speak:
+            self._engine.speak(message, self._configs.stream_speed, sysout)
+        elif self.is_stream:
+            self._stream_text(message)
         else:
             self.is_processing = False
             sysout(f"  {self._engine.nickname()}: {message}")
@@ -136,11 +152,11 @@ class AskAi:
         self.is_processing = True
         key = hash_text(question)
         if not (reply := self._cache.read(key)):
-            log.debug("Reply is not cached. Fetching from AI engine")
+            log.debug("Response was not found for \"{question}\" in cache. Fetching from AI engine")
             reply = self.ask(question)
             self._cache.save(key, reply)
         else:
-            log.debug("Response found in cache. Returning it.")
+            log.debug(f"Response found for \"{question}\" in cache.")
         self._reply(reply)
 
     def _prompt(self) -> None:

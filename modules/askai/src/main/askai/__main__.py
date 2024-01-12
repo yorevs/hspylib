@@ -12,30 +12,35 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from askai.__classpath__ import _Classpath
-from askai.core.ask_ai import AskAi
-from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.openai_engine import OpenAIEngine
-from askai.core.exception.exceptions import NoSuchEngineError
+import logging as log
+import sys
+from textwrap import dedent
+from time import sleep
+from typing import List
+
+from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import syserr, sysout
 from hspylib.core.tools.dict_tools import get_or_default
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from textwrap import dedent
 
-import logging as log
-import sys
+from askai.__classpath__ import _Classpath
+from askai.core.ask_ai import AskAi
+from askai.core.engine.ai_engine import AIEngine
+from askai.core.engine.openai_engine import OpenAIEngine
+from askai.core.exception.exceptions import NoSuchEngineError
 
 
 class Main(TUIApplication):
     """HsPyLib Ask-AI Terminal Tools - AI on the palm of your shell."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(
+        encoding=Charset.UTF_8.val
+    )
 
     # Location of the .version file
     VERSION_DIR = _Classpath.source_path()
@@ -44,19 +49,31 @@ class Main(TUIApplication):
     RESOURCE_DIR = str(_Classpath.resource_path())
 
     @staticmethod
-    def _find_engine(engine_type: str, engine_model: str) -> AIEngine:
-        match (engine_type.lower() if engine_type else "openai"):
+    def _find_engine(
+        engine_type: str | List[str], engine_model: str | List[str]
+    ) -> AIEngine:
+        engine = engine_type.lower() if isinstance(engine_type, str) else engine_type[0]
+        model = engine_model.lower() if isinstance(engine_model, str) else engine_model[0]
+        match engine:
             case "openai":
-                return OpenAIEngine.of_value(engine_model or OpenAIEngine.GPT_3_5_TURBO.value)
-            case "paml":
-                syserr("Google paml is not yet implemented!")
+                return OpenAIEngine.of_value(
+                    model or OpenAIEngine.GPT_3_5_TURBO.value
+                )
+            case "palm":
+                raise NoSuchEngineError("Google 'paml' is not yet implemented!")
             case _:
-                raise NoSuchEngineError(f"Engine type: ${engine_type}  model: ${engine_model}")
-        sys.exit(ExitStatus.ABORTED.val)
+                raise NoSuchEngineError(
+                    f"Engine type: {engine_type}  model: {engine_model}"
+                )
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)
-        super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
+        super().__init__(
+            app_name,
+            version,
+            self.DESCRIPTION.format(version),
+            resource_dir=self.RESOURCE_DIR,
+        )
         self._ai = None
 
     def _setup_arguments(self) -> None:
@@ -64,27 +81,42 @@ class Main(TUIApplication):
         # fmt: off
         self._with_options() \
             .option(
+                "engine", "e", "engine",
+                "specifies which AI engine to use. If not provided, the default engine wil be used.",
+                choices=['openai', 'palm'],
+                nargs=1, default='openai')\
+            .option(
+                "model", "m", "model",
+                "specifies which AI model to use (depends on the engine).",
+                nargs=1, default='gpt-3.5-turbo')\
+            .option(
                 "interactive", "i", "interactive",
-                "whether you would like to run the program in an interactive mode or not.",
+                "whether you would like to run the program in an interactive mode.",
                 nargs="?", action=ParserAction.STORE_TRUE, default=False)\
             .option(
-                "engine", "e", "engine", "specifies which AI engine to use."
-                "If not provided, the default engine wil be used.",
-                choices=['openai', 'palm'],
-                nargs=1)\
+                "flat", "f", "flat",
+                "whether you want a streamed (typewriter effect) or flat response.",
+                nargs="?", action=ParserAction.STORE_FALSE, default=True)\
             .option(
-                "model", "m", "model", "specifies which AI model to use (depends on the engine).",
-                nargs=1)
+                "quiet", "q", "quiet",
+                "whether you want to speak (audio) the response.",
+                nargs="?", action=ParserAction.STORE_FALSE, default=True)\
+            .option(
+                "tempo", "t", "tempo",
+                "specifies the playback and streaming speed.",
+                choices=['1', '2', '3'],
+                nargs=1, default='1')
         self._with_arguments() \
             .argument("query_string", "what to ask to the AI engine", nargs="*")
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments."""
-        engine = get_or_default(self.get_arg("engine") or [], 0)
-        model = get_or_default(self.get_arg("model") or [], 0)
         self._ai = AskAi(
-            bool(self.get_arg("interactive")), self._find_engine(engine, model), self.get_arg("query_string")
+            self.get_arg("interactive"), self.get_arg("flat"), self.get_arg("quiet"),
+            int(get_or_default(self.get_arg("tempo") or [], 0, '1')),
+            self._find_engine(self.get_arg("engine"), self.get_arg("model")),
+            self.get_arg("query_string"),
         )
 
         log.info(
@@ -94,6 +126,7 @@ class Main(TUIApplication):
 
         Settings ==============================
                 STARTED: {now("%Y-%m-%d %H:%M:%S")}
+        {self.configs}
         """
             )
         )
@@ -101,8 +134,10 @@ class Main(TUIApplication):
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application main flow."""
+        Terminal.alternate_screen(True)
         self._ai.run()
-        sysout("%EOL%", end="")
+        sleep(1)
+        Terminal.alternate_screen(False)
         return ExitStatus.SUCCESS
 
 
