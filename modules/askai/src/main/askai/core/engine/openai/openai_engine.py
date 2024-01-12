@@ -2,32 +2,29 @@ import logging as log
 import os
 from functools import lru_cache
 from threading import Thread
+from time import sleep
 from typing import Callable, Optional
 
-from hspylib.core.enums.enumeration import Enumeration
+import speech_recognition as speech_rec
 from hspylib.core.tools.commons import file_is_not_empty
 from openai import APIConnectionError, APIStatusError, OpenAI, RateLimitError
 
-from askai.utils.utilities import play_mp3, hash_text
+from askai.core.engine.ai_engine import AIEngine
+from askai.core.engine.ai_model import AIModel
+from askai.core.engine.openai.openai_configs import OpenAiConfigs
+from askai.core.engine.openai.openai_model import OpenAiModel
+from askai.utils.utilities import play_audio_file, hash_text, input_mic
 
 
-class OpenAIEngine(Enumeration):
-    """Provide a base class for OpenAI features."""
+class OpenAIEngine(AIEngine):
+    """Provide a base class for OpenAI features. Implements the prototype AIEngine."""
 
-    # ID of the model to use. Currently, only the values below are supported
-
-    # fmt: off
-    GPT_3_5_TURBO       = 'gpt-3.5-turbo'
-    GPT_3_5_TURBO_16K   = 'gpt-3.5-turbo-16k'
-    GPT_3_5_TURBO_1106  = 'gpt-3.5-turbo-1106'
-    GPT_4               = 'gpt-4'
-    # fmt: on
-
-    def __init__(self, model_name: str):
+    def __init__(self, model: AIModel = OpenAiModel.GPT_3_5_TURBO):
         super().__init__()
         self._url = "https://api.openai.com/v1/chat/completions"
+        self._configs: OpenAiConfigs = OpenAiConfigs()
         self._nickname = "ChatGPT"
-        self._model_name = model_name
+        self._model_name = model.model_name()
         self._balance = 0
         self._client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY"),
@@ -45,7 +42,7 @@ class OpenAIEngine(Enumeration):
         return self.__class__.__name__
 
     def ai_model(self) -> str:
-        return self.value
+        return self._model_name
 
     def nickname(self) -> str:
         return self._nickname
@@ -82,25 +79,55 @@ class OpenAIEngine(Enumeration):
             {"role": "system", "content": "you are a kind helpful assistant!"}
         ]
 
-    def speak(
+    def text_to_speech(
         self,
-        text: str,
-        speed: int,
+        text: str = None,
+        speed: int = 0,
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
+        """Text-T0-Speech the provided text. The text to generate audio for. The maximum length
+        is 4096 characters.
+        :param text: The text to speech.
+        :param speed: The tempo to play the generated audio [1..3].
+        :param cb_started: The callback function called when the speaker starts.
+        :param cb_finished: The callback function called when the speaker ends.
+        """
         tmp_dir = os.getenv("TEMP", "/tmp")
-        speech_file_path = f"{tmp_dir}/{hash_text(text)}.mp3"
+        speech_file_path = f"{tmp_dir}/{hash_text(text)}.{self._configs.tts_format}"
         if not file_is_not_empty(speech_file_path):
-            log.debug(f"Generating AI mp3 file: {speech_file_path}")
-            response = self._client.audio.speech.create(
-                model="tts-1", voice="onyx", input=text
+            log.debug(
+                f"Audio file not found. Generating the AI mp3 file: {speech_file_path}"
             )
+            response = self._client.audio.speech.create(
+                input=text,
+                model=self._configs.tts_model,
+                voice=self._configs.tts_voice,
+                response_format=self._configs.tts_format,
+            )
+            # Save the audio file locally.
             response.stream_to_file(speech_file_path)
-        speak_thread = Thread(target=play_mp3, args=(speech_file_path, speed,))
+        speak_thread = Thread(
+            target=play_audio_file,
+            args=(
+                speech_file_path,
+                speed,
+            ),
+        )
         speak_thread.start()
         if cb_started:
+            # Delayed start.
+            sleep(1.1)
             cb_started(text)
+        # Block until the speech is done.
         speak_thread.join()
         if cb_finished:
             cb_finished()
+
+    def speech_to_text(
+        self,
+        prompt: str = "Listening...",
+        processing_msg: str = "Transcribing audio to text...",
+    ) -> str:
+        """Transcribes audio input from the microphone into the text input language."""
+        return input_mic(prompt, processing_msg, speech_rec.Recognizer.recognize_whisper)

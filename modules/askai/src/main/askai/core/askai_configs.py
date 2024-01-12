@@ -4,7 +4,7 @@
 """
    @project: HsPyLib-AskAI
    @package: askai.core
-      @file: ask_ai_configs.py
+      @file: askai_configs.py
    @created: Fri, 5 Jan 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -15,14 +15,19 @@
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
 
+from askai.__classpath__ import _Classpath
+
 
 class AskAiConfigs(metaclass=Singleton):
     """TODO"""
 
     INSTANCE = None
 
+    # The resources folder
+    RESOURCE_DIR = str(_Classpath.resource_path())
+
     def __init__(self):
-        self._configs = AppConfigs.INSTANCE
+        self._configs = AppConfigs.INSTANCE or AppConfigs(self.RESOURCE_DIR)
         self._stream_speed = self._configs.get_int("askai.stream.speed")
         self._is_stream = self._configs.get_bool("askai.stream.response")
         self._is_speak = self._configs.get_bool("askai.speak.response")

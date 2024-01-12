@@ -15,11 +15,20 @@
 import hashlib
 from subprocess import DEVNULL
 from time import sleep
+from typing import Callable
 
+import speech_recognition as speech_rec
 from clitt.core.term.terminal import Terminal
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import sysout, file_is_not_empty
+from speech_recognition import AudioData
+
+from askai.exception.exceptions import (
+    InvalidRecognitionApiError,
+    IntelligibleAudioError,
+    RecognitionApiRequestError,
+)
 
 
 def hash_text(text: str) -> str:
@@ -43,10 +52,7 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
     comma_interval_s: float = 26 * base_speed
     punct_interval_s: float = 40 * base_speed
     period_interval_s: float = 2.2 * punct_interval_s
-    delayed_start_s: float = 0.4
     words: int = 0
-
-    sleep(delayed_start_s)
 
     for i, next_chr in enumerate(reply_str):
         sysout(next_chr, end="")
@@ -76,13 +82,47 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
     sysout("")
 
 
-def play_mp3(path_to_mp3: str, speed: int = 1) -> None:
+def play_audio_file(path_to_audio_file: str, speed: int = 1) -> None:
     """Play the specified mp3 file using ffplay (ffmpeg) application.
-    :param path_to_mp3 the path to the mp3 file to be played.
+    :param path_to_audio_file the path to the mp3 file to be played.
     :param speed the playing speed.
     """
-    check_argument(file_is_not_empty(path_to_mp3))
+    check_argument(file_is_not_empty(path_to_audio_file))
     Terminal.shell_exec(
-        f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_mp3}',
+        f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
         stdout=DEVNULL,
     )
+
+
+def input_text(prompt: str) -> str:
+    """Read a string from standard input. The trailing newline is stripped.
+    :param prompt: The message to be displayed to the user.
+    """
+    return input(prompt)
+
+
+def input_mic(
+    prompt: str = "Listening...",
+    processing_msg: str = "Transcribing audio to text...",
+    fn_recognition: Callable[[AudioData], str] = None
+    ) -> str:
+    """Listen to the microphone and transcribe the speech into text.
+    :param prompt: The message to be displayed to the user.
+    :param processing_msg: The message displayed when the audio is being processed.
+    :param fn_recognition: The AI engine API to use to recognize the speech.
+    """
+    rec: speech_rec.Recognizer = speech_rec.Recognizer()
+    with speech_rec.Microphone() as source:
+        sysout(prompt)
+        audio: AudioData = rec.listen(source)
+        sysout(processing_msg)
+        try:
+            recognizer_api = getattr(rec, fn_recognition.__name__)
+            if recognizer_api and isinstance(recognizer_api, Callable):
+                text = recognizer_api(audio)
+                return text.strip()
+            raise InvalidRecognitionApiError(str(fn_recognition or "<none>"))
+        except speech_rec.UnknownValueError as err:
+            raise IntelligibleAudioError(str(err)) from err
+        except speech_rec.RequestError as err:
+            raise RecognitionApiRequestError(str(err))

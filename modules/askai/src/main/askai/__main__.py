@@ -28,9 +28,10 @@ from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
 from askai.__classpath__ import _Classpath
-from askai.core.ask_ai import AskAi
+from askai.core.askai import AskAi
 from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.openai_engine import OpenAIEngine
+from askai.core.engine.openai.openai_model import OpenAiModel
+from askai.core.engine.openai.openai_engine import OpenAIEngine
 from askai.core.exception.exceptions import NoSuchEngineError
 
 
@@ -56,8 +57,8 @@ class Main(TUIApplication):
         model = engine_model.lower() if isinstance(engine_model, str) else engine_model[0]
         match engine:
             case "openai":
-                return OpenAIEngine.of_value(
-                    model or OpenAIEngine.GPT_3_5_TURBO.value
+                return OpenAIEngine(
+                    OpenAiModel.of_value(model) or OpenAiModel.GPT_3_5_TURBO
                 )
             case "palm":
                 raise NoSuchEngineError("Google 'paml' is not yet implemented!")
@@ -136,7 +137,7 @@ class Main(TUIApplication):
         """Execute the application main flow."""
         Terminal.alternate_screen(True)
         self._ai.run()
-        sleep(1)
+        sleep(2)
         Terminal.alternate_screen(False)
         return ExitStatus.SUCCESS
 
