@@ -2,7 +2,6 @@ import logging as log
 import os
 from functools import lru_cache
 from threading import Thread
-from time import sleep
 from typing import Callable, Optional
 
 from hspylib.core.enums.enumeration import Enumeration
