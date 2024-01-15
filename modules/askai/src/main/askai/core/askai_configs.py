@@ -12,10 +12,13 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import os
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
 
 from askai.__classpath__ import _Classpath
+from askai.lang.language import Language
 
 
 class AskAiConfigs(metaclass=Singleton):
@@ -31,6 +34,7 @@ class AskAiConfigs(metaclass=Singleton):
         self._stream_speed = self._configs.get_int("askai.stream.speed")
         self._is_stream = self._configs.get_bool("askai.stream.response")
         self._is_speak = self._configs.get_bool("askai.speak.response")
+        self._language = Language.of_locale(os.getenv("LC_ALL", os.getenv("LC_TYPE", os.getenv("LANG", "en_US.UTF-8"))))
 
     @property
     def stream_speed(self) -> int:
@@ -55,3 +59,11 @@ class AskAiConfigs(metaclass=Singleton):
     @is_speak.setter
     def is_speak(self, value: bool) -> None:
         self._is_speak = value
+
+    @property
+    def language(self) -> Language:
+        return self._language
+
+    @property
+    def encoding(self) -> str:
+        return self._language.encoding

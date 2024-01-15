@@ -51,10 +51,22 @@ class Main(TUIApplication):
 
     @staticmethod
     def _find_engine(
-        engine_type: str | List[str], engine_model: str | List[str]
+        engine_name: str | List[str], engine_model: str | List[str]
     ) -> AIEngine:
-        engine = engine_type.lower() if isinstance(engine_type, str) else engine_type[0]
-        model = engine_model.lower() if isinstance(engine_model, str) else engine_model[0]
+        """Find the suitable AI engine according to the provided engine name.
+        :param engine_name: the AI engine name.
+        :param engine_model: the AI engine model.
+        """
+        engine = (
+            engine_name.lower()
+            if isinstance(engine_name, str)
+            else engine_name[0].lower()
+        )
+        model = (
+            engine_model.lower()
+            if isinstance(engine_model, str)
+            else engine_model[0].lower()
+        )
         match engine:
             case "openai":
                 return OpenAIEngine(
@@ -64,7 +76,7 @@ class Main(TUIApplication):
                 raise NoSuchEngineError("Google 'paml' is not yet implemented!")
             case _:
                 raise NoSuchEngineError(
-                    f"Engine type: {engine_type}  model: {engine_model}"
+                    f"Engine name: {engine_name}  model: {engine_model}"
                 )
 
     def __init__(self, app_name: str):
@@ -114,8 +126,10 @@ class Main(TUIApplication):
     def _main(self, *params, **kwargs) -> ExitStatus:
         """Run the application with the command line arguments."""
         self._ai = AskAi(
-            self.get_arg("interactive"), self.get_arg("flat"), self.get_arg("quiet"),
-            int(get_or_default(self.get_arg("tempo") or [], 0, '1')),
+            self.get_arg("interactive"),
+            self.get_arg("flat"),
+            self.get_arg("quiet"),
+            int(get_or_default(self.get_arg("tempo") or [], 0, "1")),
             self._find_engine(self.get_arg("engine"), self.get_arg("model")),
             self.get_arg("query_string"),
         )
@@ -137,7 +151,7 @@ class Main(TUIApplication):
         """Execute the application main flow."""
         Terminal.alternate_screen(True)
         self._ai.run()
-        sleep(2)
+        sleep(2)  # Wait a bit before switching the screen back.
         Terminal.alternate_screen(False)
         return ExitStatus.SUCCESS
 

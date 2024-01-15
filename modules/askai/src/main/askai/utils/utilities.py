@@ -18,6 +18,7 @@ from time import sleep
 from typing import Callable
 
 import speech_recognition as speech_rec
+from clitt.core.term.commons import Portion, Direction
 from clitt.core.term.terminal import Terminal
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
@@ -102,10 +103,10 @@ def input_text(prompt: str) -> str:
 
 
 def input_mic(
-    prompt: str = "Listening...",
-    processing_msg: str = "Transcribing audio to text...",
-    fn_recognition: Callable[[AudioData], str] = None
-    ) -> str:
+    prompt: str,
+    processing_msg: str,
+    fn_recognition: Callable[[AudioData], str] = None,
+) -> str:
     """Listen to the microphone and transcribe the speech into text.
     :param prompt: The message to be displayed to the user.
     :param processing_msg: The message displayed when the audio is being processed.
@@ -115,6 +116,8 @@ def input_mic(
     with speech_rec.Microphone() as source:
         sysout(prompt)
         audio: AudioData = rec.listen(source)
+        Terminal.INSTANCE.cursor.erase(Portion.LINE)
+        Terminal.INSTANCE.cursor.move(len(prompt), Direction.LEFT)
         sysout(processing_msg)
         try:
             recognizer_api = getattr(rec, fn_recognition.__name__)
@@ -126,3 +129,6 @@ def input_mic(
             raise IntelligibleAudioError(str(err)) from err
         except speech_rec.RequestError as err:
             raise RecognitionApiRequestError(str(err))
+        finally:
+            Terminal.INSTANCE.cursor.erase(Portion.LINE)
+            Terminal.INSTANCE.cursor.move(len(processing_msg), Direction.LEFT)

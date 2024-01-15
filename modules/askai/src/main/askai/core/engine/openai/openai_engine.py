@@ -30,7 +30,7 @@ class OpenAIEngine(AIEngine):
             api_key=os.environ.get("OPENAI_API_KEY"),
             organization=os.environ.get("OPENAI_ORG_ID"),
         )
-        self._chat = [
+        self._chat_context = [
             {"role": "system", "content": "you are a kind helpful assistant!"}
         ]
 
@@ -49,14 +49,14 @@ class OpenAIEngine(AIEngine):
 
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
-        self._chat.append({"role": "user", "content": question})
+        self._chat_context.append({"role": "user", "content": question})
         try:
             log.debug(f"Generating AI answer for: {question}")
             response = self._client.chat.completions.create(
-                model=self._model_name, messages=self._chat
+                model=self._model_name, messages=self._chat_context
             )
             reply = response.choices[0].message.content
-            self._chat.append({"role": "assistant", "content": reply})
+            self._chat_context.append({"role": "assistant", "content": reply})
         except RateLimitError as error:
             reply = (
                 "RateLimitError => " + error.body["message"] if error.body else error
@@ -74,9 +74,10 @@ class OpenAIEngine(AIEngine):
 
         return reply
 
-    def reset(self) -> None:
-        self._chat = [
-            {"role": "system", "content": "you are a kind helpful assistant!"}
+    def forget(self) -> None:
+        """Forget the chat context and start over."""
+        self._chat_context = [
+            {"role": "system", "content": "HomeSetup thanks you kind AI assistant!"}
         ]
 
     def text_to_speech(
@@ -86,13 +87,6 @@ class OpenAIEngine(AIEngine):
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
-        """Text-T0-Speech the provided text. The text to generate audio for. The maximum length
-        is 4096 characters.
-        :param text: The text to speech.
-        :param speed: The tempo to play the generated audio [1..3].
-        :param cb_started: The callback function called when the speaker starts.
-        :param cb_finished: The callback function called when the speaker ends.
-        """
         tmp_dir = os.getenv("TEMP", "/tmp")
         speech_file_path = f"{tmp_dir}/{hash_text(text)}.{self._configs.tts_format}"
         if not file_is_not_empty(speech_file_path):
@@ -119,7 +113,7 @@ class OpenAIEngine(AIEngine):
             # Delayed start.
             sleep(1.1)
             cb_started(text)
-        # Block until the speech is done.
+        # Block until the speech has finished.
         speak_thread.join()
         if cb_finished:
             cb_finished()
@@ -129,5 +123,6 @@ class OpenAIEngine(AIEngine):
         prompt: str = "Listening...",
         processing_msg: str = "Transcribing audio to text...",
     ) -> str:
-        """Transcribes audio input from the microphone into the text input language."""
-        return input_mic(prompt, processing_msg, speech_rec.Recognizer.recognize_whisper)
+        text = input_mic(prompt, processing_msg, speech_rec.Recognizer.recognize_whisper)
+        log.debug(f"Audio transcribed to: {text}")
+        return text

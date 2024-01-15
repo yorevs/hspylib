@@ -13,7 +13,9 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from typing import Callable, Optional, Protocol
+from typing import Callable, Optional, Protocol, List
+
+from askai.core.engine.ai_model import AIModel
 
 
 class AIEngine(Protocol):
@@ -31,14 +33,18 @@ class AIEngine(Protocol):
         """Get the AI engine nickname."""
         ...
 
+    def models(self) -> List[AIModel]:
+        """Get the list of available models for the engine."""
+        ...
+
     def ask(self, question: str) -> str:
-        """Ask AI assistance for the given question.
-        :param question: The question to ask to the AI engine.
+        """Ask AI assistance for the given question and expect a response.
+        :param question: The question to send to the AI engine.
         """
         ...
 
-    def clear(self) -> None:
-        """Forget the chat context and restart over."""
+    def forget(self) -> None:
+        """Forget the chat context and start over."""
         ...
 
     def text_to_speech(
@@ -61,5 +67,8 @@ class AIEngine(Protocol):
         prompt: str = "Listening...",
         processing_msg: str = "Transcribing audio to text...",
     ) -> str:
-        """Transcribes audio input from the microphone into the text input language."""
+        """Transcribes audio input from the microphone into the text input language.
+        :param prompt: The message to be displayed when the recorder is listening.
+        :param processing_msg: The message to be transcribed.
+        """
         ...

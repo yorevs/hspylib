@@ -29,13 +29,14 @@ from hspylib.modules.cache.ttl_cache import TTLCache
 
 from askai.core.askai_configs import AskAiConfigs
 from askai.core.engine.ai_engine import AIEngine
+from askai.lang.language import Language
+from askai.lang.static_messages import StaticMessages
+from askai.utils.constants import Constants
 from askai.utils.utilities import stream, hash_text
 
 
 class AskAi:
     """Responsible for the OpenAI functionalities."""
-
-    TERM_EXPRESSIONS = r"^((good)?(bye ?)+|(tchau ?)+|quit|exit).*"
 
     @staticmethod
     def _abort():
@@ -50,7 +51,7 @@ class AskAi:
         tempo: int,
         engine: AIEngine, query_string: str | List[str]
     ):
-        self._configs: AskAiConfigs = AskAiConfigs()
+        self._configs: AskAiConfigs = AskAiConfigs.INSTANCE or AskAiConfigs()
         self._interactive: bool = interactive
         self._terminal: Terminal = Terminal.INSTANCE
         self._cache: TTLCache = TTLCache()
@@ -59,9 +60,6 @@ class AskAi:
             " ".join(query_string) if isinstance(query_string, list) else query_string
         )
         self._user: str = os.getenv("USER", "you")
-        self._wait_msg: str = (
-            f"  {self._engine.nickname()}: Processing, please wait..."
-        )
         self._done: bool = False
         self._processing: bool = False
         self._configs.is_stream = is_stream
@@ -76,6 +74,7 @@ class AskAi:
             f"      Model: {self._engine.ai_model()} %EOL%"
             f"   Nickname: {self._engine.nickname()} %EOL%"
             f"{'--' * 40} %EOL%"
+            f"   Language: {self.language.description} %EOL%"
             f"Interactive: ON %EOL%"
             f"  Streaming: {'ON' if self.is_stream else 'OFF'} %EOL%"
             f"   Speaking: {'ON' if self.is_speak else 'OFF'} %EOL%"
@@ -88,8 +87,20 @@ class AskAi:
         return self._query_string
 
     @property
+    def welcome_msg(self) -> str:
+        return StaticMessages.welcome(self._user)
+
+    @property
     def wait_msg(self) -> str:
-        return self._wait_msg
+        return StaticMessages.wait("", self._engine.nickname())
+
+    @property
+    def listening_msg(self) -> str:
+        return StaticMessages.listening("", self._engine.nickname())
+
+    @property
+    def transcribing_msg(self) -> str:
+        return StaticMessages.transcribing("", self._engine.nickname())
 
     @property
     def stream_speed(self) -> int:
@@ -102,6 +113,10 @@ class AskAi:
     @property
     def is_speak(self) -> bool:
         return self._configs.is_speak
+
+    @property
+    def language(self) -> Language:
+        return self._configs.language
 
     @property
     def is_processing(self) -> bool:
@@ -128,28 +143,30 @@ class AskAi:
             sysout(self)
             self._prompt()
         elif self._query_string:
-            if not re.match(AskAi.TERM_EXPRESSIONS, self._query_string.lower()):
+            if not re.match(Constants.TERM_EXPRESSIONS, self._query_string.lower()):
                 sysout("", end="")
                 sysout(f"  {self._user.title()}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
 
     def _input(self) -> str:
         """Prompt for user input."""
-        # return input(f"  {self._user.title()}: ")
-        spoken_text = self._engine.speech_to_text(
-            f"  {self._engine.nickname()}: Listening...",
-            f"  {self._engine.nickname()}: Processing your voice..."
-        )
-        if spoken_text:
-            sysout(f"  {self._user.title()}: {spoken_text}")
 
-        return spoken_text
+        if self.is_speak:
+            spoken_text = self._engine.speech_to_text(
+                self.listening_msg,
+                self.transcribing_msg
+            )
+            if spoken_text:
+                sysout(f"  {self._user.title()}: {spoken_text}")
+            return spoken_text
+
+        return input(f"  {self._user.title()}: ")
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
-        self._reply(f"Hey {self._user}, How can I assist you today?")
+        self._reply(self.welcome_msg)
         while question := self._input():
-            if re.match(AskAi.TERM_EXPRESSIONS, question.lower()):
+            if re.match(Constants.TERM_EXPRESSIONS, question.lower()):
                 self._reply(question.title())
                 break
             self._ask_and_reply(question)

@@ -2,13 +2,11 @@
 #
 # hspylib-ask-ai v0.9.8
 #
-# Package: main.askai
+# Package: main.askai.lang
 """Package initialization."""
 
 __all__ = [
-    'core', 
-    'exception', 
-    'lang', 
-    'utils'
+    'multilingual_translator', 
+    'static_messages'
 ]
 __version__ = '0.9.8'

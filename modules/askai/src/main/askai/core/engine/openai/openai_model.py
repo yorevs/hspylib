@@ -1,4 +1,8 @@
+from typing import List
+
 from hspylib.core.enums.enumeration import Enumeration
+
+from askai.core.engine.ai_model import AIModel
 
 
 class OpenAiModel(Enumeration):
@@ -25,3 +29,6 @@ class OpenAiModel(Enumeration):
 
     def model_name(self) -> str:
         return self.value
+
+    def models(self) -> List["AIModel"]:
+        return [m.of_value() for m in self.values()]
