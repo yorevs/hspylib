@@ -1,8 +1,9 @@
 import logging as log
+from typing import Optional
 
 from argostranslate import translate, package
+from argostranslate.translate import ITranslation
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.preconditions import check_state
 
 from askai.lang.language import Language
 
@@ -13,7 +14,7 @@ class MultilingualTranslator(metaclass=Singleton):
     INSTANCE = None
 
     @staticmethod
-    def _get_argos_model(source: Language, target: Language):
+    def _get_argos_model(source: Language, target: Language) -> Optional[ITranslation]:
         """Retrieve ARGOS model from source to target languages.
         :param source: The source language.
         :param target: The target language.
@@ -30,10 +31,9 @@ class MultilingualTranslator(metaclass=Singleton):
             for model in translate.get_installed_languages()
             if lang in map(repr, model.translations_to)
         ]
-        check_state(
-            len(source_lang) > 0 and len(target_lang) > 0,
-            "No installed translations found!",
-        )
+        if len(source_lang) <= 0 or len(target_lang) <= 0:
+            log.warning("No installed translations found!")
+            return None
 
         return source_lang[0].get_translation(target_lang[0])
 
@@ -43,6 +43,7 @@ class MultilingualTranslator(metaclass=Singleton):
         self._argos_model = self._get_argos_model(from_idiom, to_idiom)
         if not self._argos_model:
             self._install_translator()
+            self._argos_model = self._get_argos_model(from_idiom, to_idiom)
 
     def translate(self, text: str) -> str:
         """Translate text using Argos translator.
@@ -55,7 +56,7 @@ class MultilingualTranslator(metaclass=Singleton):
         )
 
     def _install_translator(self) -> bool:
-        """TODO"""
+        """Install the Argos translator if it's not yet installed on the system."""
         package.update_package_index()
         required_package = next(
             filter(

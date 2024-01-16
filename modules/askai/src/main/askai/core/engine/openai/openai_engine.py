@@ -31,7 +31,7 @@ class OpenAIEngine(AIEngine):
             organization=os.environ.get("OPENAI_ORG_ID"),
         )
         self._chat_context = [
-            {"role": "system", "content": "you are a kind helpful assistant!"}
+            {"role": "system", "content": "HomSetup thanks you kind AI assistant!"}
         ]
 
     @property
@@ -111,7 +111,7 @@ class OpenAIEngine(AIEngine):
         speak_thread.start()
         if cb_started:
             # Delayed start.
-            sleep(1.1)
+            sleep(0.8)
             cb_started(text)
         # Block until the speech has finished.
         speak_thread.join()

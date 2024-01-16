@@ -30,13 +30,15 @@ from hspylib.modules.cache.ttl_cache import TTLCache
 from askai.core.askai_configs import AskAiConfigs
 from askai.core.engine.ai_engine import AIEngine
 from askai.lang.language import Language
-from askai.lang.static_messages import StaticMessages
+from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
 from askai.utils.utilities import stream, hash_text
 
 
 class AskAi:
     """Responsible for the OpenAI functionalities."""
+
+    MSG = TextualMessages.INSTANCE or TextualMessages()
 
     @staticmethod
     def _abort():
@@ -54,7 +56,7 @@ class AskAi:
         self._configs: AskAiConfigs = AskAiConfigs.INSTANCE or AskAiConfigs()
         self._interactive: bool = interactive
         self._terminal: Terminal = Terminal.INSTANCE
-        self._cache: TTLCache = TTLCache()
+        self._cache: TTLCache = TTLCache(ttl_minutes=60)
         self._engine: AIEngine = engine
         self._query_string: str = str(
             " ".join(query_string) if isinstance(query_string, list) else query_string
@@ -65,6 +67,8 @@ class AskAi:
         self._configs.is_stream = is_stream
         self._configs.is_speak = is_speak
         self._configs.stream_speed = tempo
+        self.MSG.user = self._user
+        self.MSG.nickname = self._engine.nickname()
 
     def __str__(self) -> str:
         return (
@@ -85,22 +89,6 @@ class AskAi:
     @property
     def query_string(self) -> str:
         return self._query_string
-
-    @property
-    def welcome_msg(self) -> str:
-        return StaticMessages.welcome(self._user)
-
-    @property
-    def wait_msg(self) -> str:
-        return StaticMessages.wait("", self._engine.nickname())
-
-    @property
-    def listening_msg(self) -> str:
-        return StaticMessages.listening("", self._engine.nickname())
-
-    @property
-    def transcribing_msg(self) -> str:
-        return StaticMessages.transcribing("", self._engine.nickname())
 
     @property
     def stream_speed(self) -> int:
@@ -125,10 +113,10 @@ class AskAi:
     @is_processing.setter
     def is_processing(self, is_processing: bool) -> None:
         if is_processing:
-            sysout(self.wait_msg, end="")
+            sysout(f"  {self._engine.nickname().title()}: {self.MSG.wait}")
         else:
             self._terminal.cursor.erase(Portion.LINE)
-            self._terminal.cursor.move(len(self.wait_msg), Direction.LEFT)
+            self._terminal.cursor.move(len(self.MSG.wait), Direction.LEFT)
 
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
@@ -151,20 +139,20 @@ class AskAi:
     def _input(self) -> str:
         """Prompt for user input."""
 
-        if self.is_speak:
-            spoken_text = self._engine.speech_to_text(
-                self.listening_msg,
-                self.transcribing_msg
-            )
-            if spoken_text:
-                sysout(f"  {self._user.title()}: {spoken_text}")
-            return spoken_text
+        # if self.is_speak:
+        #     spoken_text = self._engine.speech_to_text(
+        #         f"  {self._engine.nickname().title()}: {self.MSG.listening}",
+        #         f"  {self._engine.nickname().title()}: {self.MSG.transcribing}"
+        #     )
+        #     if spoken_text:
+        #         sysout(f"  {self._user.title()}: {spoken_text}")
+        #     return spoken_text
 
         return input(f"  {self._user.title()}: ")
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
-        self._reply(self.welcome_msg)
+        self._reply(self.MSG.welcome(self._user))
         while question := self._input():
             if re.match(Constants.TERM_EXPRESSIONS, question.lower()):
                 self._reply(question.title())

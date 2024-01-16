@@ -6,7 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-    'multilingual_translator', 
-    'static_messages'
+    'multilingual_translator',
+    'textual_messages.py'
 ]
 __version__ = '0.9.8'

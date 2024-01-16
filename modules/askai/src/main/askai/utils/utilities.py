@@ -47,12 +47,13 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
     :param base_interval_s the base delay interval between each characters.
     """
     base_speed = base_interval_s / max(1, speed)
-    words_interval_s: float = 12.5 * base_speed
-    breath_interval_s: float = 46 * base_speed
+    words_interval_s: float = 12 * base_speed
+    breath_interval_s: float = 45 * base_speed
     number_interval_s: float = 28 * base_speed
-    comma_interval_s: float = 26 * base_speed
-    punct_interval_s: float = 40 * base_speed
-    period_interval_s: float = 2.2 * punct_interval_s
+    comma_interval_s: float = 20 * base_speed
+    punct_interval_s: float = 35 * base_speed
+    enum_interval_s: float = 10 * base_speed
+    period_interval_s: float = 68 * base_speed
     words: int = 0
 
     for i, next_chr in enumerate(reply_str):
@@ -60,7 +61,19 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
         if next_chr.isalpha():
             sleep(base_speed)
         elif next_chr.isnumeric():
-            sleep(number_interval_s)
+            sleep(
+                breath_interval_s
+                if i + 1 < len(reply_str) and reply_str[i + 1] == "."
+                else number_interval_s
+            )
+        elif next_chr in [":", "-"]:
+            sleep(
+                enum_interval_s
+                if i + 1 < len(reply_str)
+                and reply_str[i + 1].isnumeric()
+                or reply_str[i + 1] in [" ", "\n", "-"]
+                else base_speed
+            )
         elif next_chr in [",", ";"]:
             sleep(
                 comma_interval_s
@@ -70,7 +83,7 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
         elif next_chr in [".", "?", "!"]:
             sleep(
                 period_interval_s
-                if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
+                if i + 1 < len(reply_str) and reply_str[i + 1] in [" ", "\n"]
                 else punct_interval_s
             )
             continue
@@ -81,18 +94,6 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
             continue
         sleep(base_speed)
     sysout("")
-
-
-def play_audio_file(path_to_audio_file: str, speed: int = 1) -> None:
-    """Play the specified mp3 file using ffplay (ffmpeg) application.
-    :param path_to_audio_file the path to the mp3 file to be played.
-    :param speed the playing speed.
-    """
-    check_argument(file_is_not_empty(path_to_audio_file))
-    Terminal.shell_exec(
-        f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
-        stdout=DEVNULL,
-    )
 
 
 def input_text(prompt: str) -> str:
@@ -132,3 +133,15 @@ def input_mic(
         finally:
             Terminal.INSTANCE.cursor.erase(Portion.LINE)
             Terminal.INSTANCE.cursor.move(len(processing_msg), Direction.LEFT)
+
+
+def play_audio_file(path_to_audio_file: str, speed: int = 1) -> None:
+    """Play the specified mp3 file using ffplay (ffmpeg) application.
+    :param path_to_audio_file the path to the mp3 file to be played.
+    :param speed the playing speed.
+    """
+    check_argument(file_is_not_empty(path_to_audio_file))
+    Terminal.shell_exec(
+        f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
+        stdout=DEVNULL,
+    )
