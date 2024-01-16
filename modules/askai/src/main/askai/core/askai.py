@@ -140,14 +140,14 @@ class AskAi:
     def _input(self) -> str:
         """Prompt for user input."""
 
-        # if self.is_speak:
-        #     spoken_text = self._engine.speech_to_text(
-        #         f"  {self._engine.nickname()}: {self.MSG.listening}",
-        #         f"  {self._engine.nickname()}: {self.MSG.transcribing}"
-        #     )
-        #     if spoken_text:
-        #         sysout(f"  {self._user}: {spoken_text}")
-        #     return spoken_text
+        if self.is_speak:
+            spoken_text = self._engine.speech_to_text(
+                f"  {self._engine.nickname()}: {self.MSG.listening}",
+                f"  {self._engine.nickname()}: {self.MSG.transcribing}"
+            )
+            if spoken_text:
+                sysout(f"  {self._user}: {spoken_text}")
+            return spoken_text
 
         return input(f"  {self._user}: ")
 

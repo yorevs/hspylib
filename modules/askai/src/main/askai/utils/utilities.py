@@ -119,11 +119,11 @@ def input_mic(
     """
     rec: speech_rec.Recognizer = speech_rec.Recognizer()
     with speech_rec.Microphone() as source:
-        sysout(prompt)
+        sysout(prompt, end="")
         audio: AudioData = rec.listen(source)
         Terminal.INSTANCE.cursor.erase(Portion.LINE)
         Terminal.INSTANCE.cursor.move(len(prompt), Direction.LEFT)
-        sysout(processing_msg)
+        sysout(processing_msg, end="")
         try:
             recognizer_api = getattr(rec, fn_recognition.__name__)
             if recognizer_api and isinstance(recognizer_api, Callable):

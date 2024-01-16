@@ -1,0 +1,13 @@
+[pt]
+
+base.speed = 'base_interval.sec / max(1, speed)'
+words.interval.sec = '13.2 * base.secpeed'
+breath.interval.sec = '44 * base.secpeed'
+number.interval.sec = '28 * base.secpeed'
+comma.interval.sec = '17 * base.secpeed'
+punct.interval.sec = '32 * base.secpeed'
+enum.interval.sec = '14 * base.secpeed'
+period.interval.sec = '62 * base.secpeed'
+
+[en]
+

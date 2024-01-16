@@ -1,7 +1,9 @@
 from functools import cached_property
 from typing import Tuple
 
+from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.dict_tools import get_or_default
 
 
 class Language(Enumeration):
@@ -147,7 +149,9 @@ class Language(Enumeration):
         loc_enc = (
             locale if isinstance(locale, tuple) else locale.replace(":", ".").split(".")
         )
-        locale_str = f"{loc_enc[0]}.{loc_enc[1].lower()}"
+        lang = get_or_default(loc_enc, 0, Language.EN_US.mnemonic)
+        encoding = get_or_default(loc_enc, 1, Charset.UTF_8.val).lower()
+        locale_str = f"{lang}.{encoding}"
         return next(
             (
                 Language.of_value(ln)
