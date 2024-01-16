@@ -102,6 +102,7 @@ class OpenAIEngine(AIEngine):
             # Save the audio file locally.
             response.stream_to_file(speech_file_path)
         speak_thread = Thread(
+            daemon=True,
             target=play_audio_file,
             args=(
                 speech_file_path,
@@ -111,7 +112,7 @@ class OpenAIEngine(AIEngine):
         speak_thread.start()
         if cb_started:
             # Delayed start.
-            sleep(0.8)
+            sleep(1)
             cb_started(text)
         # Block until the speech has finished.
         speak_thread.join()

@@ -46,15 +46,17 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
     :param speed the speed multiplier of the typewriter effect. Defaults to 1.
     :param base_interval_s the base delay interval between each characters.
     """
-    base_speed = base_interval_s / max(1, speed)
-    words_interval_s: float = 12 * base_speed
-    breath_interval_s: float = 45 * base_speed
-    number_interval_s: float = 28 * base_speed
-    comma_interval_s: float = 20 * base_speed
-    punct_interval_s: float = 35 * base_speed
-    enum_interval_s: float = 10 * base_speed
-    period_interval_s: float = 68 * base_speed
-    words: int = 0
+    # fmt: off
+    base_speed: float           = base_interval_s / max(1, speed)
+    words_interval_s: float     = 13.2 * base_speed
+    breath_interval_s: float    = 44 * base_speed
+    number_interval_s: float    = 28 * base_speed
+    comma_interval_s: float     = 17 * base_speed
+    punct_interval_s: float     = 32 * base_speed
+    enum_interval_s: float      = 14 * base_speed
+    period_interval_s: float    = 62 * base_speed
+    # fmt: on
+    word_count: int = 0
 
     for i, next_chr in enumerate(reply_str):
         sysout(next_chr, end="")
@@ -66,7 +68,7 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
                 if i + 1 < len(reply_str) and reply_str[i + 1] == "."
                 else number_interval_s
             )
-        elif next_chr in [":", "-"]:
+        elif next_chr in [":", "-", "\n"]:
             sleep(
                 enum_interval_s
                 if i + 1 < len(reply_str)
@@ -80,17 +82,19 @@ def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> No
                 if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
                 else base_speed
             )
-        elif next_chr in [".", "?", "!"]:
+        elif next_chr in [".", "?", "!", "\n"]:
             sleep(
                 period_interval_s
-                if i + 1 < len(reply_str) and reply_str[i + 1] in [" ", "\n"]
+                if i + 1 < len(reply_str)
+                and reply_str[i + 1] in [" ", "\n"]
+                and not reply_str[i - 1].isnumeric()
                 else punct_interval_s
             )
             continue
         elif next_chr.isspace():
             if i - 1 >= 0 and not reply_str[i - 1].isspace():
-                words += 1
-                sleep(breath_interval_s if words % 10 == 0 else words_interval_s)
+                word_count += 1
+                sleep(breath_interval_s if word_count % 10 == 0 else words_interval_s)
             continue
         sleep(base_speed)
     sysout("")

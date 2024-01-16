@@ -112,11 +112,12 @@ class AskAi:
 
     @is_processing.setter
     def is_processing(self, is_processing: bool) -> None:
+        msg = f"  {self._engine.nickname()}: {self.MSG.wait}"
         if is_processing:
-            sysout(f"  {self._engine.nickname().title()}: {self.MSG.wait}")
+            sysout(msg, end="")
         else:
             self._terminal.cursor.erase(Portion.LINE)
-            self._terminal.cursor.move(len(self.MSG.wait), Direction.LEFT)
+            self._terminal.cursor.move(len(msg), Direction.LEFT)
 
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
@@ -133,7 +134,7 @@ class AskAi:
         elif self._query_string:
             if not re.match(Constants.TERM_EXPRESSIONS, self._query_string.lower()):
                 sysout("", end="")
-                sysout(f"  {self._user.title()}: {self._query_string}")
+                sysout(f"  {self._user}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
 
     def _input(self) -> str:
@@ -141,14 +142,14 @@ class AskAi:
 
         # if self.is_speak:
         #     spoken_text = self._engine.speech_to_text(
-        #         f"  {self._engine.nickname().title()}: {self.MSG.listening}",
-        #         f"  {self._engine.nickname().title()}: {self.MSG.transcribing}"
+        #         f"  {self._engine.nickname()}: {self.MSG.listening}",
+        #         f"  {self._engine.nickname()}: {self.MSG.transcribing}"
         #     )
         #     if spoken_text:
-        #         sysout(f"  {self._user.title()}: {spoken_text}")
+        #         sysout(f"  {self._user}: {spoken_text}")
         #     return spoken_text
 
-        return input(f"  {self._user.title()}: ")
+        return input(f"  {self._user}: ")
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
