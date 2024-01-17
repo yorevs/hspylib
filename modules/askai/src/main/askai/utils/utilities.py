@@ -13,6 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 import hashlib
+import logging as log
 from subprocess import DEVNULL
 from time import sleep
 from typing import Callable
@@ -100,12 +101,12 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
     sysout("")
 
 
-def ptt_input(prompt: str) -> str:
+def ptt_input(prompt: str = "", stt_enable: bool = False) -> str:
     """Read a string from standard input. The trailing newline is stripped.
     :param prompt: The message to be displayed to the user.
+    :param stt_enable: Whether input using audio or text (speech to text).
     """
-    # return input(prompt)
-    return Constants.PUSH_TO_TALK_STR
+    return input(prompt) if not stt_enable else Constants.PUSH_TO_TALK_STR
 
 
 def input_mic(
@@ -142,13 +143,18 @@ def input_mic(
             Terminal.INSTANCE.cursor.move(len(processing_msg), Direction.LEFT)
 
 
-def play_audio_file(path_to_audio_file: str, speed: int = 1) -> None:
+def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
     """Play the specified mp3 file using ffplay (ffmpeg) application.
     :param path_to_audio_file: the path to the mp3 file to be played.
     :param speed: the playing speed.
     """
     check_argument(file_is_not_empty(path_to_audio_file))
-    Terminal.shell_exec(
-        f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
-        stdout=DEVNULL,
-    )
+    try:
+        Terminal.shell_exec(
+            f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
+            stdout=DEVNULL,
+        )
+        return True
+    except FileNotFoundError:
+        log.error("ffplay is not installed, speech is disabled!")
+        return False

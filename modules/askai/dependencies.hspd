@@ -16,9 +16,10 @@ package: hspylib-clitt
 
 package: retry
 package: requests
-package: toml
 package: argostranslate
-package: SpeechRecognition
+package: soundfile
 package: PyAudio
+package: SpeechRecognition
+package: openai-whisper
 package: urllib3, version: 2.0.0, mode: lt
 package: openai, version: 1.7.2, mode: ge

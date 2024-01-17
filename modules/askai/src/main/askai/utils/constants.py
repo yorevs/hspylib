@@ -4,7 +4,7 @@ from hspylib.modules.cli.keyboard import Keyboard
 
 class Constants:
     # Interative mode termination expressions.
-    TERM_EXPRESSIONS = r"^((good)?(bye ?)+|(tchau ?)+|(ciao ?)|quit|exit|than(ks| you)).*"
+    TERM_EXPRESSIONS = r"^((good)?(bye ?)+|(tchau ?)+|(ciao ?)|quit|exit|[tT]hank(s| you)).*"
     # Default application language.
     DEFAULT_LANGUAGE = 'en_US'
     # Default application text encoding.

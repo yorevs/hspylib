@@ -142,7 +142,7 @@ class AskAi:
 
     def _input(self) -> str:
         """Prompt for user input."""
-        ret = ptt_input(f"  {self._user}: ")
+        ret = ptt_input(f"  {self._user}: ", self.is_speak)
         if self.is_speak and ret == Constants.PUSH_TO_TALK_STR:
             spoken_text = self._engine.speech_to_text(
                 f"  {self._engine.nickname()}: {self.MSG.listening}",
@@ -157,14 +157,16 @@ class AskAi:
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         self._reply(self.MSG.welcome(self._user))
-        while question := self._input():
-            if not question or re.match(Constants.TERM_EXPRESSIONS, question.lower()):
+        while query := self._input():
+            if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
                 self._reply(self.MSG.goodbye)
                 break
-            elif not self._process_command(question):
-                self._ask_and_reply(question)
+            elif not self._process_command(query):
+                self._ask_and_reply(query)
             else:
-                self._reply(question)
+                self._reply(query)
+        if not query:
+            self._reply(self.MSG.goodbye)
 
     def _process_command(self, command: str) -> bool:
         """Attempt to process command."""

@@ -13,6 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 import os
+from shutil import which
 
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
@@ -54,11 +55,11 @@ class AskAiConfigs(metaclass=Singleton):
 
     @property
     def is_speak(self) -> bool:
-        return self._is_speak
+        return which("ffplay") and self._is_speak
 
     @is_speak.setter
     def is_speak(self, value: bool) -> None:
-        self._is_speak = value
+        self._is_speak = value and which("ffplay")
 
     @property
     def language(self) -> Language:

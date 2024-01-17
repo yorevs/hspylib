@@ -56,7 +56,8 @@ class OpenAIEngine(AIEngine):
                 model=self._model_name, messages=self._chat_context
             )
             reply = response.choices[0].message.content
-            self._chat_context.append({"role": "assistant", "content": reply})
+            if reply:
+                self._chat_context.append({"role": "assistant", "content": reply})
         except RateLimitError as error:
             reply = (
                 "RateLimitError => " + error.body["message"] if error.body else error
