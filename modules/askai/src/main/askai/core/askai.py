@@ -21,8 +21,6 @@ from functools import lru_cache
 from threading import Thread
 from typing import List
 
-from askai.utils.cache_service import CacheService as cache
-
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from hspylib.core.tools.commons import sysout
@@ -33,7 +31,7 @@ from askai.core.engine.ai_engine import AIEngine
 from askai.lang.language import Language
 from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
-from askai.utils.utilities import stream, hash_text, ptt_input
+from askai.utils.utilities import stream, ptt_input
 
 
 class AskAi:
@@ -180,7 +178,6 @@ class AskAi:
         :param question: The question to ask to the AI engine.
         """
         self.is_processing = True
-        key = hash_text(question)
         self._reply(self.ask(question))
 
     def _reply(self, message: str, speak: bool = True) -> None:

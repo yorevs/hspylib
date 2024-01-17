@@ -1,4 +1,5 @@
 import logging as log
+from functools import lru_cache
 from typing import Optional
 
 from argostranslate import translate, package
@@ -32,7 +33,7 @@ class MultilingualTranslator(metaclass=Singleton):
             if lang in map(repr, model.translations_to)
         ]
         if len(source_lang) <= 0 or len(target_lang) <= 0:
-            log.warning("No installed translations found!")
+            log.info("Translation \"%s\" is not installed. Installing it...", lang)
             return None
 
         return source_lang[0].get_translation(target_lang[0])
@@ -45,6 +46,7 @@ class MultilingualTranslator(metaclass=Singleton):
             self._install_translator()
             self._argos_model = self._get_argos_model(from_idiom, to_idiom)
 
+    @lru_cache(maxsize=500)
     def translate(self, text: str) -> str:
         """Translate text using Argos translator.
         :param text: Text to translate.
@@ -65,6 +67,6 @@ class MultilingualTranslator(metaclass=Singleton):
                 package.get_available_packages(),
             )
         )
-        log.debug("Downloading and installing package %s", required_package)
+        log.debug("Downloading and installing translator package: %s", required_package)
         package.install_from_path(required_package.download())
         return True

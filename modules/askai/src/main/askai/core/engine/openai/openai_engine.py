@@ -92,8 +92,8 @@ class OpenAIEngine(AIEngine):
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
-        speech_file_path = cache.get_audio_file(text, self._configs.tts_format)
-        if not file_is_not_empty(speech_file_path):
+        speech_file_path, file_exists = cache.get_audio_file(text, self._configs.tts_format)
+        if not file_exists:
             log.debug(f'Audio file "%s" not found in cache. Querying AI engine.', speech_file_path)
             response = self._client.audio.speech.create(
                 input=text,
