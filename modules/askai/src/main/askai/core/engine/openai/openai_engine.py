@@ -1,6 +1,5 @@
 import logging as log
 import os
-from functools import lru_cache
 from threading import Thread
 from time import sleep
 from typing import Callable, Optional
@@ -13,7 +12,8 @@ from askai.core.engine.ai_engine import AIEngine
 from askai.core.engine.ai_model import AIModel
 from askai.core.engine.openai.openai_configs import OpenAiConfigs
 from askai.core.engine.openai.openai_model import OpenAiModel
-from askai.utils.utilities import play_audio_file, hash_text, input_mic
+from askai.utils.cache_service import CacheService as cache
+from askai.utils.utilities import play_audio_file, input_mic
 
 
 class OpenAIEngine(AIEngine):
@@ -47,31 +47,35 @@ class OpenAIEngine(AIEngine):
     def nickname(self) -> str:
         return self._nickname
 
-    @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
-        self._chat_context.append({"role": "user", "content": question})
-        try:
-            log.debug(f"Generating AI answer for: {question}")
-            response = self._client.chat.completions.create(
-                model=self._model_name, messages=self._chat_context
-            )
-            reply = response.choices[0].message.content
-            if reply:
-                self._chat_context.append({"role": "assistant", "content": reply})
-        except RateLimitError as error:
-            reply = (
-                "RateLimitError => " + error.body["message"] if error.body else error
-            )
-        except APIConnectionError as error:
-            reply = (
-                "APIConnectionError => " + error.body["message"]
-                if error.body
-                else error
-            )
-        except APIStatusError as error:
-            reply = (
-                "APIStatusError => " + error.body["message"] if error.body else error
-            )
+        if not (reply := cache.read_reply(question)):
+            log.debug('Response not found for: "%s" in cache. Querying AI engine.', question)
+            try:
+                self._chat_context.append({"role": "user", "content": question})
+                log.debug(f"Generating AI answer for: {question}")
+                response = self._client.chat.completions.create(
+                    model=self._model_name, messages=self._chat_context
+                )
+                reply = response.choices[0].message.content
+                if reply:
+                    self._chat_context.append({"role": "assistant", "content": reply})
+            except RateLimitError as error:
+                reply = (
+                    "RateLimitError => " + error.body["message"] if error.body else error
+                )
+            except APIConnectionError as error:
+                reply = (
+                    "APIConnectionError => " + error.body["message"]
+                    if error.body
+                    else error
+                )
+            except APIStatusError as error:
+                reply = (
+                    "APIStatusError => " + error.body["message"] if error.body else error
+                )
+            cache.save_reply(question, reply)
+        else:
+            log.debug('Response found for: "%s" in cache.', question)
 
         return reply
 
@@ -88,12 +92,9 @@ class OpenAIEngine(AIEngine):
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
-        tmp_dir = os.getenv("TEMP", "/tmp")
-        speech_file_path = f"{tmp_dir}/{hash_text(text)}.{self._configs.tts_format}"
+        speech_file_path = cache.get_audio_file(text, self._configs.tts_format)
         if not file_is_not_empty(speech_file_path):
-            log.debug(
-                f"Audio file not found. Generating the AI mp3 file: {speech_file_path}"
-            )
+            log.debug(f'Audio file "%s" not found in cache. Querying AI engine.', speech_file_path)
             response = self._client.audio.speech.create(
                 input=text,
                 model=self._configs.tts_model,

@@ -21,11 +21,12 @@ from functools import lru_cache
 from threading import Thread
 from typing import List
 
+from askai.utils.cache_service import CacheService as cache
+
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cache.ttl_cache import TTLCache
 
 from askai.core.askai_configs import AskAiConfigs
 from askai.core.engine.ai_engine import AIEngine
@@ -57,7 +58,6 @@ class AskAi:
         self._configs: AskAiConfigs = AskAiConfigs.INSTANCE or AskAiConfigs()
         self._interactive: bool = interactive
         self._terminal: Terminal = Terminal.INSTANCE
-        self._cache: TTLCache = TTLCache(ttl_minutes=60)
         self._engine: AIEngine = engine
         self._query_string: str = str(
             " ".join(query_string) if isinstance(query_string, list) else query_string
@@ -181,15 +181,7 @@ class AskAi:
         """
         self.is_processing = True
         key = hash_text(question)
-        if not (reply := self._cache.read(key)):
-            log.debug(
-                'Response was not found for "{question}" in cache. Fetching from AI engine'
-            )
-            reply = self.ask(question)
-            self._cache.save(key, reply)
-        else:
-            log.debug(f'Response found for "{question}" in cache.')
-        self._reply(reply)
+        self._reply(self.ask(question))
 
     def _reply(self, message: str, speak: bool = True) -> None:
         """Reply to the user with the AI response.
