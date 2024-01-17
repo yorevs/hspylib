@@ -1,4 +1,5 @@
 from hspylib.core.enums.charset import Charset
+from hspylib.modules.cli.keyboard import Keyboard
 
 
 class Constants:
@@ -8,3 +9,5 @@ class Constants:
     DEFAULT_LANGUAGE = 'en_US'
     # Default application text encoding.
     DEFAULT_ENCODING = Charset.UTF_8.val
+    # Push to talk string value
+    PUSH_TO_TALK_STR = Keyboard.VK_CTRL_T.val

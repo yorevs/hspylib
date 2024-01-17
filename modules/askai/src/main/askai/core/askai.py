@@ -32,7 +32,7 @@ from askai.core.engine.ai_engine import AIEngine
 from askai.lang.language import Language
 from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
-from askai.utils.utilities import stream, hash_text
+from askai.utils.utilities import stream, hash_text, ptt_input
 
 
 class AskAi:
@@ -51,7 +51,8 @@ class AskAi:
         is_stream: bool,
         is_speak: bool,
         tempo: int,
-        engine: AIEngine, query_string: str | List[str]
+        engine: AIEngine,
+        query_string: str | List[str],
     ):
         self._configs: AskAiConfigs = AskAiConfigs.INSTANCE or AskAiConfigs()
         self._interactive: bool = interactive
@@ -63,7 +64,7 @@ class AskAi:
         )
         self._user: str = os.getenv("USER", "you")
         self._done: bool = False
-        self._processing: bool = False
+        self._processing: bool | None = None
         self._configs.is_stream = is_stream
         self._configs.is_speak = is_speak
         self._configs.stream_speed = tempo
@@ -111,13 +112,15 @@ class AskAi:
         return self._processing
 
     @is_processing.setter
-    def is_processing(self, is_processing: bool) -> None:
-        msg = f"  {self._engine.nickname()}: {self.MSG.wait}"
-        if is_processing:
-            sysout(msg, end="")
-        else:
+    def is_processing(self, processing: bool) -> None:
+        msg = self.MSG.wait
+        if processing:
+            self._reply(msg)
+        elif not processing and self._processing is not None and processing != self._processing:
+            self._terminal.cursor.move(1, Direction.UP)
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(msg), Direction.LEFT)
+        self._processing = processing
 
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> str:
@@ -139,28 +142,36 @@ class AskAi:
 
     def _input(self) -> str:
         """Prompt for user input."""
-
-        if self.is_speak:
+        ret = ptt_input(f"  {self._user}: ")
+        if self.is_speak and ret == Constants.PUSH_TO_TALK_STR:
             spoken_text = self._engine.speech_to_text(
                 f"  {self._engine.nickname()}: {self.MSG.listening}",
-                f"  {self._engine.nickname()}: {self.MSG.transcribing}"
+                f"  {self._engine.nickname()}: {self.MSG.transcribing}",
             )
             if spoken_text:
                 sysout(f"  {self._user}: {spoken_text}")
             return spoken_text
 
-        return input(f"  {self._user}: ")
+        return ret
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         self._reply(self.MSG.welcome(self._user))
         while question := self._input():
-            if re.match(Constants.TERM_EXPRESSIONS, question.lower()):
-                self._reply(question.title())
+            if not question or re.match(Constants.TERM_EXPRESSIONS, question.lower()):
+                self._reply(self.MSG.goodbye)
                 break
-            self._ask_and_reply(question)
-        if not question:
-            self._reply("Bye", False)
+            elif not self._process_command(question):
+                self._ask_and_reply(question)
+            else:
+                self._reply(question)
+
+    def _process_command(self, command: str) -> bool:
+        """Attempt to process command."""
+
+        log.debug("Question: \"%s\" is not a COMMAND", command)
+
+        return False
 
     def _ask_and_reply(self, question: str) -> None:
         """Ask the question and provide the reply.
@@ -169,11 +180,13 @@ class AskAi:
         self.is_processing = True
         key = hash_text(question)
         if not (reply := self._cache.read(key)):
-            log.debug("Response was not found for \"{question}\" in cache. Fetching from AI engine")
+            log.debug(
+                'Response was not found for "{question}" in cache. Fetching from AI engine'
+            )
             reply = self.ask(question)
             self._cache.save(key, reply)
         else:
-            log.debug(f"Response found for \"{question}\" in cache.")
+            log.debug(f'Response found for "{question}" in cache.')
         self._reply(reply)
 
     def _reply(self, message: str, speak: bool = True) -> None:
@@ -183,15 +196,15 @@ class AskAi:
         """
         if self.is_stream and speak and self.is_speak:
             self._engine.text_to_speech(
-                message, self._configs.stream_speed, cb_started=self._stream_text)
+                message, self._configs.stream_speed, cb_started=self._stream_text
+            )
         elif not self.is_stream and speak and self.is_speak:
             self._engine.text_to_speech(
-                message, self._configs.stream_speed, cb_started=sysout)
-            self.is_processing = False
+                message, self._configs.stream_speed, cb_started=sysout
+            )
         elif self.is_stream:
             self._stream_text(message)
         else:
-            self.is_processing = False
             sysout(f"  {self._engine.nickname()}: {message}")
 
     def _stream_text(self, message: str) -> None:
@@ -206,4 +219,3 @@ class AskAi:
         stream_thread.start()
         # Block until the text is fully streamed.
         stream_thread.join()
-

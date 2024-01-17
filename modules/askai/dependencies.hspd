@@ -16,6 +16,7 @@ package: hspylib-clitt
 
 package: retry
 package: requests
+package: toml
 package: argostranslate
 package: SpeechRecognition
 package: PyAudio

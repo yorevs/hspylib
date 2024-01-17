@@ -21,15 +21,19 @@ class TextualMessages(metaclass=Singleton):
 
     @property
     def wait(self) -> str:
-        return self._translate("Processing, please wait...")
+        return self._translate("I'm processing, please wait...")
 
     @property
     def listening(self) -> str:
-        return self._translate("Listening...")
+        return self._translate("I'm listening...")
 
     @property
     def transcribing(self) -> str:
-        return self._translate("Processing your voice, please wait...")
+        return self._translate("I'm processing your voice, please wait...")
+
+    @property
+    def goodbye(self) -> str:
+        return self._translate("Goodbye, have a nice day !")
 
     def _translate(self, text: str) -> str:
         """Translate text using the configured language."""

@@ -30,6 +30,9 @@ from askai.exception.exceptions import (
     IntelligibleAudioError,
     RecognitionApiRequestError,
 )
+from askai.lang.language import Language
+from askai.utils.constants import Constants
+from askai.utils.presets import Presets
 
 
 def hash_text(text: str) -> str:
@@ -39,72 +42,70 @@ def hash_text(text: str) -> str:
     return hashlib.md5(text.encode(Charset.UTF_8.val)).hexdigest()
 
 
-def stream(reply_str: str, speed: int = 1, base_interval_s: float = 0.010) -> None:
-    """Stream the response from the AI Engine. Simulates a typewriter effect. The following hardcoded values were
-    benchmarked according to the selected speaker engine.
-    :param reply_str the text to stream.
-    :param speed the speed multiplier of the typewriter effect. Defaults to 1.
-    :param base_interval_s the base delay interval between each characters.
+def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) -> None:
+    """Stream the response from the AI Engine. Simulates a typewriter effect. The following presets were
+    benchmarked according to the selected speaker engine and language.
+    :param reply_str: the text to stream.
+    :param tempo: the speed multiplier of the typewriter effect. Defaults to 1.
+    :param language: the language used to stream the text.
     """
-    # fmt: off
-    base_speed: float           = base_interval_s / max(1, speed)
-    words_interval_s: float     = 13.2 * base_speed
-    breath_interval_s: float    = 44 * base_speed
-    number_interval_s: float    = 28 * base_speed
-    comma_interval_s: float     = 17 * base_speed
-    punct_interval_s: float     = 32 * base_speed
-    enum_interval_s: float      = 14 * base_speed
-    period_interval_s: float    = 62 * base_speed
-    # fmt: on
+    ln = language.mnemonic.split("_")[0]
+    presets = Presets.get(ln, tempo=tempo)
     word_count: int = 0
 
+    # The following algorithm was created based on the whisper voice.
     for i, next_chr in enumerate(reply_str):
         sysout(next_chr, end="")
         if next_chr.isalpha():
-            sleep(base_speed)
+            sleep(presets.base_speed)
         elif next_chr.isnumeric():
             sleep(
-                breath_interval_s
+                presets.breath_interval
                 if i + 1 < len(reply_str) and reply_str[i + 1] == "."
-                else number_interval_s
+                else presets.number_interval
             )
         elif next_chr in [":", "-", "\n"]:
             sleep(
-                enum_interval_s
+                presets.enum_interval
                 if i + 1 < len(reply_str)
                 and reply_str[i + 1].isnumeric()
                 or reply_str[i + 1] in [" ", "\n", "-"]
-                else base_speed
+                else presets.base_speed
             )
         elif next_chr in [",", ";"]:
             sleep(
-                comma_interval_s
+                presets.comma_interval
                 if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
-                else base_speed
+                else presets.base_speed
             )
         elif next_chr in [".", "?", "!", "\n"]:
             sleep(
-                period_interval_s
+                presets.period_interval
                 if i + 1 < len(reply_str)
                 and reply_str[i + 1] in [" ", "\n"]
                 and not reply_str[i - 1].isnumeric()
-                else punct_interval_s
+                else presets.punct_interval
             )
             continue
         elif next_chr.isspace():
             if i - 1 >= 0 and not reply_str[i - 1].isspace():
                 word_count += 1
-                sleep(breath_interval_s if word_count % 10 == 0 else words_interval_s)
+                sleep(
+                    presets.breath_interval
+                    if word_count % 10 == 0
+                    else presets.words_interval
+                )
             continue
-        sleep(base_speed)
+        sleep(presets.base_speed)
     sysout("")
 
 
-def input_text(prompt: str) -> str:
+def ptt_input(prompt: str) -> str:
     """Read a string from standard input. The trailing newline is stripped.
     :param prompt: The message to be displayed to the user.
     """
-    return input(prompt)
+    # return input(prompt)
+    return Constants.PUSH_TO_TALK_STR
 
 
 def input_mic(
@@ -119,10 +120,12 @@ def input_mic(
     """
     rec: speech_rec.Recognizer = speech_rec.Recognizer()
     with speech_rec.Microphone() as source:
+        rec.adjust_for_ambient_noise(source, duration=1)
         sysout(prompt, end="")
         audio: AudioData = rec.listen(source)
         Terminal.INSTANCE.cursor.erase(Portion.LINE)
         Terminal.INSTANCE.cursor.move(len(prompt), Direction.LEFT)
+        # TODO Play a beep sound to indicate we are listening
         sysout(processing_msg, end="")
         try:
             recognizer_api = getattr(rec, fn_recognition.__name__)
@@ -141,8 +144,8 @@ def input_mic(
 
 def play_audio_file(path_to_audio_file: str, speed: int = 1) -> None:
     """Play the specified mp3 file using ffplay (ffmpeg) application.
-    :param path_to_audio_file the path to the mp3 file to be played.
-    :param speed the playing speed.
+    :param path_to_audio_file: the path to the mp3 file to be played.
+    :param speed: the playing speed.
     """
     check_argument(file_is_not_empty(path_to_audio_file))
     Terminal.shell_exec(
