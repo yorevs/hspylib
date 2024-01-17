@@ -71,18 +71,19 @@ class Cursor(metaclass=Singleton):
         :param direction the direction to move.
         :return the cursor position after moving.
         """
-        sysout(direction.value[1].format(n=amount), end="")
-        row_pos, col_pos = self.position
-        match direction:
-            case Direction.UP:
-                row_pos -= max(0, amount)
-            case Direction.DOWN:
-                row_pos += max(0, amount)
-            case Direction.LEFT:
-                col_pos -= max(0, amount)
-            case Direction.RIGHT:
-                col_pos += max(0, amount)
-        self.position = row_pos, col_pos
+        if amount > 0:
+            sysout(direction.value[1].format(n=amount), end="")
+            row_pos, col_pos = self.position
+            match direction:
+                case Direction.UP:
+                    row_pos -= max(0, amount)
+                case Direction.DOWN:
+                    row_pos += max(0, amount)
+                case Direction.LEFT:
+                    col_pos -= max(0, amount)
+                case Direction.RIGHT:
+                    col_pos += max(0, amount)
+            self.position = row_pos, col_pos
         return self.position
 
     def erase(self, direction: EraseDirection) -> Position:
