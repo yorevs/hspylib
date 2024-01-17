@@ -32,7 +32,6 @@ from askai.exception.exceptions import (
     RecognitionApiRequestError,
 )
 from askai.lang.language import Language
-from askai.utils.constants import Constants
 from askai.utils.presets import Presets
 
 
@@ -99,14 +98,6 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
             continue
         sleep(presets.base_speed)
     sysout("")
-
-
-def ptt_input(prompt: str = "", stt_enable: bool = False) -> str:
-    """Read a string from standard input. The trailing newline is stripped.
-    :param prompt: The message to be displayed to the user.
-    :param stt_enable: Whether input using audio or text (speech to text).
-    """
-    return input(prompt) if not stt_enable else Constants.PUSH_TO_TALK_STR
 
 
 def input_mic(

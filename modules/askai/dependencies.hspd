@@ -16,6 +16,7 @@ package: hspylib-clitt
 
 package: retry
 package: requests
+package: pyperclip
 package: argostranslate
 package: soundfile
 package: PyAudio

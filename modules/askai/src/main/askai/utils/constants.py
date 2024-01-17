@@ -10,4 +10,4 @@ class Constants:
     # Default application text encoding.
     DEFAULT_ENCODING = Charset.UTF_8.val
     # Push to talk string value
-    PUSH_TO_TALK_STR = Keyboard.VK_CTRL_T.val
+    PUSH_TO_TALK = Keyboard.VK_CTRL_L

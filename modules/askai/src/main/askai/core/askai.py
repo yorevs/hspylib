@@ -31,7 +31,8 @@ from askai.core.engine.ai_engine import AIEngine
 from askai.lang.language import Language
 from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
-from askai.utils.utilities import stream, ptt_input
+from askai.utils.ptt_input import ptt_input
+from askai.utils.utilities import stream
 
 
 class AskAi:
@@ -138,10 +139,12 @@ class AskAi:
                 sysout(f"  {self._user}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
 
-    def _input(self) -> str:
+    def _input(self, prompt: str) -> str:
         """Prompt for user input."""
-        ret = ptt_input(f"  {self._user}: ", self.is_speak)
-        if self.is_speak and ret == Constants.PUSH_TO_TALK_STR:
+        ret = ptt_input(prompt, Constants.PUSH_TO_TALK)
+        if self.is_speak and ret == Constants.PUSH_TO_TALK:
+            self._terminal.cursor.erase(Portion.LINE)
+            self._terminal.cursor.move(len(prompt), Direction.LEFT)
             spoken_text = self._engine.speech_to_text(
                 f"  {self._engine.nickname()}: {self.MSG.listening}",
                 f"  {self._engine.nickname()}: {self.MSG.transcribing}",
@@ -150,12 +153,12 @@ class AskAi:
                 sysout(f"  {self._user}: {spoken_text}")
             return spoken_text
 
-        return ret
+        return ret if isinstance(ret, str) else ret.val
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         self._reply(self.MSG.welcome(self._user))
-        while query := self._input():
+        while query := self._input(f"  {self._user}: "):
             if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
                 self._reply(self.MSG.goodbye)
                 break

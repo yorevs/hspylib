@@ -23,7 +23,7 @@ from askai.lang.language import Language
 
 
 class AskAiConfigs(metaclass=Singleton):
-    """TODO"""
+    """Provides access to AskAI configurations."""
 
     INSTANCE = None
 
@@ -61,7 +61,7 @@ class AskAiConfigs(metaclass=Singleton):
 
     @is_speak.setter
     def is_speak(self, value: bool) -> None:
-        self._is_speak = value and which("ffplay")
+        self._is_speak = which("ffplay") and value
 
     @property
     def language(self) -> Language:
