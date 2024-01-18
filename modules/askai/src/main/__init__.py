@@ -5,7 +5,5 @@
 # Package: main
 """Package initialization."""
 
-__all__ = [
-    'askai'
-]
-__version__ = '0.9.8'
+__all__ = ["askai"]
+__version__ = "0.9.8"

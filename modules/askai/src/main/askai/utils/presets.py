@@ -12,9 +12,10 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import functools
 from string import Template
 from textwrap import dedent
+
+import functools
 
 
 class Presets:
@@ -70,7 +71,7 @@ class Presets:
         comma_interval: float,
         punct_interval: float,
         enum_interval: float,
-        period_interval: float
+        period_interval: float,
     ):
         self._lang = lang
         self._base_speed = base_speed
@@ -83,16 +84,19 @@ class Presets:
         self._period_interval = period_interval
 
     def __str__(self) -> str:
-        return dedent((
-            f"Presets.{self._lang}("
-            f"Base Speed={self.base_speed}, "
-            f"Words Interval={self.words_interval}, "
-            f"Breath Interval={self.breath_interval}, "
-            f"Number Interval={self.number_interval}, "
-            f"Comma Interval={self.comma_interval}, "
-            f"Punct Interval={self.punct_interval}, "
-            f"Enum Interval={self.enum_interval}, "
-            f"Period Interval={self.period_interval}"))
+        return dedent(
+            (
+                f"Presets.{self._lang}("
+                f"Base Speed={self.base_speed}, "
+                f"Words Interval={self.words_interval}, "
+                f"Breath Interval={self.breath_interval}, "
+                f"Number Interval={self.number_interval}, "
+                f"Comma Interval={self.comma_interval}, "
+                f"Punct Interval={self.punct_interval}, "
+                f"Enum Interval={self.enum_interval}, "
+                f"Period Interval={self.period_interval}"
+            )
+        )
 
     @property
     def base_speed(self) -> float:

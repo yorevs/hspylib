@@ -12,30 +12,25 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import hashlib
-import logging as log
+from askai.__classpath__ import _Classpath
+from askai.exception.exceptions import IntelligibleAudioError, InvalidRecognitionApiError, RecognitionApiRequestError
+from askai.language.language import Language
+from askai.utils.presets import Presets
+from clitt.core.term.commons import Direction, Portion
+from clitt.core.term.terminal import Terminal
 from functools import partial
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument
+from hspylib.core.tools.commons import file_is_not_empty, sysout
+from hspylib.core.tools.text_tools import ensure_endswith
 from shutil import which
+from speech_recognition import AudioData
 from time import sleep
 from typing import Callable
 
+import hashlib
+import logging as log
 import speech_recognition as speech_rec
-from clitt.core.term.commons import Direction, Portion
-from clitt.core.term.terminal import Terminal
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import sysout, file_is_not_empty
-from hspylib.core.tools.text_tools import ensure_endswith
-from speech_recognition import AudioData
-
-from askai.__classpath__ import _Classpath
-from askai.exception.exceptions import (
-    InvalidRecognitionApiError,
-    IntelligibleAudioError,
-    RecognitionApiRequestError,
-)
-from askai.language.language import Language
-from askai.utils.presets import Presets
 
 # Sound effects directory.
 SFX_DIR = str(_Classpath.resource_path()) + "/assets/sound-fx"
@@ -78,35 +73,28 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
             )
         elif char in [",", ";"]:
             sleep(
-                presets.comma_interval
-                if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
-                else presets.base_speed
+                presets.comma_interval if i + 1 < len(reply_str) and reply_str[i + 1].isspace() else presets.base_speed
             )
         elif char in [".", "?", "!", "\n"]:
             sleep(
                 presets.period_interval
-                if i + 1 < len(reply_str) and reply_str[i + 1] in [" ", "\n"] and i - 1 > 0 and not reply_str[i - 1].isnumeric()
+                if i + 1 < len(reply_str)
+                and reply_str[i + 1] in [" ", "\n"]
+                and i - 1 > 0
+                and not reply_str[i - 1].isnumeric()
                 else presets.punct_interval
             )
             continue
         elif char.isspace():
             if i - 1 >= 0 and not reply_str[i - 1].isspace():
                 word_count += 1
-                sleep(
-                    presets.breath_interval
-                    if word_count % 10 == 0
-                    else presets.words_interval
-                )
+                sleep(presets.breath_interval if word_count % 10 == 0 else presets.words_interval)
             continue
         sleep(presets.base_speed)
     sysout("")
 
 
-def input_mic(
-    fn_listening: partial,
-    fn_processing: partial,
-    fn_recognition: Callable[[AudioData], str],
-) -> str:
+def input_mic(fn_listening: partial, fn_processing: partial, fn_recognition: Callable[[AudioData], str]) -> str:
     """Listen to the microphone and transcribe the speech into text.
     :param fn_listening: The function to display the listening message.
     :param fn_processing: The function to display the processing message.
@@ -144,9 +132,7 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
     """
     check_argument(which("ffplay") and file_is_not_empty(path_to_audio_file))
     try:
-        Terminal.shell_exec(
-            f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}'
-        )
+        Terminal.shell_exec(f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}')
         return True
     except FileNotFoundError:
         log.error("ffplay is not installed, speech is disabled!")
@@ -156,7 +142,5 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
 def play_sfx(sfx_name: str):
     """Play a sound effect audio file."""
     filename = f"{SFX_DIR}/{ensure_endswith(sfx_name, '.mp3')}"
-    check_argument(
-        file_is_not_empty(filename), f"Sound effects file does not exist: {filename}"
-    )
+    check_argument(file_is_not_empty(filename), f"Sound effects file does not exist: {filename}")
     play_audio_file(filename)

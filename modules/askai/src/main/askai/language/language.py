@@ -1,9 +1,8 @@
 from functools import cached_property
-from typing import Tuple
-
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.dict_tools import get_or_default
+from typing import Tuple
 
 
 class Language(Enumeration):
@@ -146,20 +145,11 @@ class Language(Enumeration):
     def of_locale(locale: str | Tuple[str, str]) -> "Language":
         """Create a Language object based on a locale string or tuple containing the language code and encoding."""
         # Replace possible 'loc:charset' values
-        loc_enc = (
-            locale if isinstance(locale, tuple) else locale.replace(":", ".").split(".")
-        )
+        loc_enc = locale if isinstance(locale, tuple) else locale.replace(":", ".").split(".")
         lang = get_or_default(loc_enc, 0, Language.EN_US.mnemonic)
         encoding = get_or_default(loc_enc, 1, Charset.UTF_8.val).lower()
         locale_str = f"{lang}.{encoding}"
-        return next(
-            (
-                Language.of_value(ln)
-                for ln in Language.values()
-                if ln[0] == locale_str
-            ),
-            None,
-        )
+        return next((Language.of_value(ln) for ln in Language.values() if ln[0] == locale_str), None)
 
     def __init__(self, locale: str, description: str):
         self._locale = locale

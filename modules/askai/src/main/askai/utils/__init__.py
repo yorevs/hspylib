@@ -5,10 +5,5 @@
 # Package: main.askai.utils
 """Package initialization."""
 
-__all__ = [
-    'cache_service', 
-    'constants', 
-    'presets', 
-    'utilities'
-]
-__version__ = '0.9.8'
+__all__ = ["cache_service", "constants", "presets", "utilities"]
+__version__ = "0.9.8"

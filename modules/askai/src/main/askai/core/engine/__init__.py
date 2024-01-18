@@ -5,8 +5,5 @@
 # Package: main.askai.core.engine
 """Package initialization."""
 
-__all__ = [
-    'openai', 
-    'protocols'
-]
-__version__ = '0.9.8'
+__all__ = ["openai", "protocols"]
+__version__ = "0.9.8"

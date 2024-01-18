@@ -6,7 +6,7 @@ class Constants:
     # Interative mode termination expressions.
     TERM_EXPRESSIONS = r"^((good)?(bye ?)+|(tchau ?)+|(ciao ?)|quit|exit|[tT]hank(s| you)).*"
     # Default application language.
-    DEFAULT_LANGUAGE = 'en_US'
+    DEFAULT_LANGUAGE = "en_US"
     # Default application text encoding.
     DEFAULT_ENCODING = Charset.UTF_8.val
     # Push to talk string value

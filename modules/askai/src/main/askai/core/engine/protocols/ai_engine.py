@@ -12,11 +12,10 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from functools import partial
-from typing import Callable, Optional, Protocol, List
-
 from askai.core.engine.protocols.ai_model import AIModel
 from askai.core.engine.protocols.ai_reply import AIReply
+from functools import partial
+from typing import Callable, List, Optional, Protocol
 
 
 class AIEngine(Protocol):
@@ -63,11 +62,7 @@ class AIEngine(Protocol):
         """
         ...
 
-    def speech_to_text(
-        self,
-        fn_listening: partial,
-        fn_processing: partial,
-    ) -> str:
+    def speech_to_text(self, fn_listening: partial, fn_processing: partial) -> str:
         """Transcribes audio input from the microphone into the text input language.
         :param fn_listening: The function to display the listening message.
         :param fn_processing: The function to display the processing message.

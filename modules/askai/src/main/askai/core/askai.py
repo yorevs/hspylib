@@ -60,9 +60,7 @@ class AskAi:
         self._interactive: bool = interactive
         self._terminal: Terminal = Terminal.INSTANCE
         self._engine: AIEngine = engine
-        self._query_string: str = str(
-            " ".join(query_string) if isinstance(query_string, list) else query_string
-        )
+        self._query_string: str = str(" ".join(query_string) if isinstance(query_string, list) else query_string)
         self._user: str = os.getenv("USER", "you")
         self._done: bool = False
         self._processing: bool | None = None
@@ -117,11 +115,7 @@ class AskAi:
         msg = self.MSG.wait
         if processing:
             self._reply(msg)
-        elif (
-            not processing
-            and self._processing is not None
-            and processing != self._processing
-        ):
+        elif not processing and self._processing is not None and processing != self._processing:
             self._terminal.cursor.move(1, Direction.UP)
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(msg), Direction.LEFT)
@@ -145,8 +139,7 @@ class AskAi:
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(prompt), Direction.LEFT)
             spoken_text = self._engine.speech_to_text(
-                partial(self._reply, self.MSG.listening),
-                partial(self._reply, self.MSG.transcribing),
+                partial(self._reply, self.MSG.listening), partial(self._reply, self.MSG.transcribing)
             )
             if spoken_text:
                 sysout(f"%EL0%  {self._user}: {spoken_text}")
@@ -174,20 +167,16 @@ class AskAi:
         :param query: The query to process.
         """
         cmd_ret = None
-        exe = self.MSG.execute
-        if query.lower().startswith(exe):
-            cmd_line = query[query.index(exe) + len(exe) :].strip()
+        exe_msg = self.MSG.execute
+        if query.lower().startswith(exe_msg):
+            cmd_line = query[query.index(exe_msg) + len(exe_msg) :].strip()
             command = cmd_line.split(" ")[0]
             if which(command):
                 log.debug('Processing command: "%s"', cmd_line)
                 self._reply(self.MSG.executing())
                 cmd_ret, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
                 if exit_code == ExitStatus.SUCCESS:
-                    self._reply(
-                        self.MSG.translate(
-                            f"Your command return code is {exit_code} and the output:"
-                        )
-                    )
+                    self._reply(self.MSG.translate(f"Your command return code is {exit_code} and the output:"))
                     cmd_ret = ensure_startswith(ensure_endswith(cmd_ret, "\n"), "\n\n")
                 else:
                     cmd_ret = self.MSG.translate(f"Failed to execute command {command} !")
@@ -215,13 +204,9 @@ class AskAi:
         :param speak: Whether to speak the reply or not.
         """
         if self.is_stream and speak and self.is_speak:
-            self._engine.text_to_speech(
-                message, self._configs.stream_speed, cb_started=self._stream_text
-            )
+            self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=self._stream_text)
         elif not self.is_stream and speak and self.is_speak:
-            self._engine.text_to_speech(
-                message, self._configs.stream_speed, cb_started=sysout
-            )
+            self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=sysout)
         elif self.is_stream:
             self._stream_text(message)
         else:
@@ -242,9 +227,7 @@ class AskAi:
         """
         self.is_processing = False
         sysout(f"%EL0%  {self._engine.nickname()}: ", end="")
-        stream_thread = Thread(
-            target=stream, args=(message, self._configs.stream_speed)
-        )
+        stream_thread = Thread(target=stream, args=(message, self._configs.stream_speed))
         stream_thread.start()
         # Block until the text is fully streamed.
         stream_thread.join()

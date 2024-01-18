@@ -12,15 +12,14 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import os
-from pathlib import Path
-from typing import Optional, Tuple
-
+from askai.utils.utilities import hash_text
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.modules.cache.ttl_cache import TTLCache
+from pathlib import Path
+from typing import Optional, Tuple
 
-from askai.utils.utilities import hash_text
+import os
 
 CACHE_DIR: Path = Path(f'{os.getenv("HHS_DIR", os.getenv("TEMP", "/tmp"))}/askai')
 AUDIO_DIR: Path = Path(str(CACHE_DIR) + "/cache/audio")

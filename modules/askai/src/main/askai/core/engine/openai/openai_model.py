@@ -12,11 +12,9 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from typing import List
-
-from hspylib.core.enums.enumeration import Enumeration
-
 from askai.core.engine.protocols.ai_model import AIModel
+from hspylib.core.enums.enumeration import Enumeration
+from typing import List
 
 
 class OpenAIModel(Enumeration):

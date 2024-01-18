@@ -12,24 +12,23 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import logging as log
-import os
-from functools import partial, lru_cache
+from askai.core.engine.openai.openai_configs import OpenAiConfigs
+from askai.core.engine.openai.openai_model import OpenAIModel
+from askai.core.engine.openai.openai_reply import OpenAIReply
+from askai.core.engine.protocols.ai_engine import AIEngine
+from askai.core.engine.protocols.ai_model import AIModel
+from askai.core.engine.protocols.ai_reply import AIReply
+from askai.utils.cache_service import CacheService as cache
+from askai.utils.utilities import input_mic, play_audio_file
+from functools import lru_cache, partial
+from openai import APIError, OpenAI
 from threading import Thread
 from time import sleep
 from typing import Callable, Optional
 
+import logging as log
+import os
 import speech_recognition as speech_rec
-from openai import OpenAI, APIError
-
-from askai.core.engine.protocols.ai_engine import AIEngine
-from askai.core.engine.protocols.ai_model import AIModel
-from askai.core.engine.protocols.ai_reply import AIReply
-from askai.core.engine.openai.openai_configs import OpenAiConfigs
-from askai.core.engine.openai.openai_model import OpenAIModel
-from askai.core.engine.openai.openai_reply import OpenAIReply
-from askai.utils.cache_service import CacheService as cache
-from askai.utils.utilities import play_audio_file, input_mic
 
 
 class OpenAIEngine(AIEngine):
@@ -42,13 +41,8 @@ class OpenAIEngine(AIEngine):
         self._nickname = "ChatGPT"
         self._model_name = model.model_name()
         self._balance = 0
-        self._client = OpenAI(
-            api_key=os.environ.get("OPENAI_API_KEY"),
-            organization=os.environ.get("OPENAI_ORG_ID"),
-        )
-        self._chat_context = [
-            {"role": "system", "content": "HomSetup thanks you kind AI assistant!"}
-        ]
+        self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
+        self._chat_context = [{"role": "system", "content": "HomSetup thanks you kind AI assistant!"}]
 
     @property
     def url(self):
@@ -67,15 +61,11 @@ class OpenAIEngine(AIEngine):
     def ask(self, question: str) -> AIReply:
         is_success = False
         if not (reply := cache.read_reply(question)):
-            log.debug(
-                'Response not found for: "%s" in cache. Querying AI engine.', question
-            )
+            log.debug('Response not found for: "%s" in cache. Querying AI engine.', question)
             try:
                 self._chat_context.append({"role": "user", "content": question})
                 log.debug(f"Generating AI answer for: {question}")
-                response = self._client.chat.completions.create(
-                    model=self._model_name, messages=self._chat_context
-                )
+                response = self._client.chat.completions.create(model=self._model_name, messages=self._chat_context)
                 reply = OpenAIReply(response.choices[0].message.content, True)
                 self._chat_context.append({"role": "assistant", "content": reply.message})
                 cache.save_reply(question, reply.message)
@@ -89,9 +79,7 @@ class OpenAIEngine(AIEngine):
 
     def forget(self) -> None:
         """Forget the chat context and start over."""
-        self._chat_context = [
-            {"role": "system", "content": "HomeSetup thanks you kind AI assistant!"}
-        ]
+        self._chat_context = [{"role": "system", "content": "HomeSetup thanks you kind AI assistant!"}]
 
     def text_to_speech(
         self,
@@ -100,14 +88,9 @@ class OpenAIEngine(AIEngine):
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
-        speech_file_path, file_exists = cache.get_audio_file(
-            text, self._configs.tts_format
-        )
+        speech_file_path, file_exists = cache.get_audio_file(text, self._configs.tts_format)
         if not file_exists:
-            log.debug(
-                f'Audio file "%s" not found in cache. Querying AI engine.',
-                speech_file_path,
-            )
+            log.debug(f'Audio file "%s" not found in cache. Querying AI engine.', speech_file_path)
             response = self._client.audio.speech.create(
                 input=text,
                 model=self._configs.tts_model,
@@ -116,14 +99,7 @@ class OpenAIEngine(AIEngine):
             )
             # Save the audio file locally.
             response.stream_to_file(speech_file_path)
-        speak_thread = Thread(
-            daemon=True,
-            target=play_audio_file,
-            args=(
-                speech_file_path,
-                speed,
-            ),
-        )
+        speak_thread = Thread(daemon=True, target=play_audio_file, args=(speech_file_path, speed))
         speak_thread.start()
         if cb_started:
             sleep(1)
@@ -132,13 +108,7 @@ class OpenAIEngine(AIEngine):
         if cb_finished:
             cb_finished()
 
-    def speech_to_text(
-        self,
-        fn_listening: partial,
-        fn_processing: partial,
-    ) -> str:
-        text = input_mic(
-            fn_listening, fn_processing, speech_rec.Recognizer.recognize_whisper
-        )
+    def speech_to_text(self, fn_listening: partial, fn_processing: partial) -> str:
+        text = input_mic(fn_listening, fn_processing, speech_rec.Recognizer.recognize_whisper)
         log.debug(f"Audio transcribed to: {text}")
         return text

@@ -12,12 +12,10 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from typing import Literal
-
+from askai.__classpath__ import _Classpath
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
-
-from askai.__classpath__ import _Classpath
+from typing import Literal
 
 
 class OpenAiConfigs(metaclass=Singleton):
