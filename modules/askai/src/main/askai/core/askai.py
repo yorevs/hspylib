@@ -18,20 +18,21 @@ import os
 import re
 import sys
 from functools import partial
+from shutil import which
 from threading import Thread
 from typing import List, Optional
 
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.line_input.line_input import line_input
-
 from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import ensure_endswith, ensure_startswith
 from hspylib.modules.application.exit_status import ExitStatus
 
 from askai.core.askai_configs import AskAiConfigs
+from askai.core.askai_messages import AskAiMessages
 from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.language.language import Language
-from askai.core.askai_messages import AskAiMessages
 from askai.utils.constants import Constants
 from askai.utils.utilities import stream
 
@@ -116,7 +117,11 @@ class AskAi:
         msg = self.MSG.wait
         if processing:
             self._reply(msg)
-        elif not processing and self._processing is not None and processing != self._processing:
+        elif (
+            not processing
+            and self._processing is not None
+            and processing != self._processing
+        ):
             self._terminal.cursor.move(1, Direction.UP)
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(msg), Direction.LEFT)
@@ -156,20 +161,42 @@ class AskAi:
             if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
                 self._reply(self.MSG.goodbye)
                 break
-            elif not self._process_command(query):
-                self._ask_and_reply(query)
+            elif cmd_ret := self._process_command(query):
+                self._reply(cmd_ret)
             else:
-                self._reply(query)
+                self._ask_and_reply(query)
         if not query:
             self._reply(self.MSG.goodbye)
         sysout("")
 
-    def _process_command(self, command: str) -> bool:
-        """Attempt to process command."""
+    def _process_command(self, query: str) -> Optional[str]:
+        """Attempt to process command.
+        :param query: The query to process.
+        """
+        cmd_ret = None
+        exe = self.MSG.execute
+        if query.lower().startswith(exe):
+            cmd_line = query[query.index(exe) + len(exe) :].strip()
+            command = cmd_line.split(" ")[0]
+            if which(command):
+                log.debug('Processing command: "%s"', cmd_line)
+                self._reply(self.MSG.executing())
+                cmd_ret, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
+                if exit_code == ExitStatus.SUCCESS:
+                    self._reply(
+                        self.MSG.translate(
+                            f"Your command return code is {exit_code} and the output:"
+                        )
+                    )
+                    cmd_ret = ensure_startswith(ensure_endswith(cmd_ret, "\n"), "\n\n")
+                else:
+                    cmd_ret = self.MSG.translate(f"Failed to execute command {command} !")
+            else:
+                cmd_ret = self.MSG.translate(f"Command {command} does not exist!")
+        else:
+            log.debug('Question: "%s" is not a COMMAND', query)
 
-        log.debug("Question: \"%s\" is not a COMMAND", command)
-
-        return False
+        return cmd_ret
 
     def _ask_and_reply(self, question: str) -> None:
         """Ask the question and provide the reply.

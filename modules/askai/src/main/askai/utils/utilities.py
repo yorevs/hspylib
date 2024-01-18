@@ -16,7 +16,6 @@ import hashlib
 import logging as log
 from functools import partial
 from shutil import which
-from subprocess import DEVNULL
 from time import sleep
 from typing import Callable
 
@@ -61,40 +60,36 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
     word_count: int = 0
 
     # The following algorithm was created based on the whisper voice.
-    for i, next_chr in enumerate(reply_str):
-        sysout(next_chr, end="")
-        if next_chr.isalpha():
+    for i, char in enumerate(reply_str):
+        sysout(char, end="")
+        if char.isalpha():
             sleep(presets.base_speed)
-        elif next_chr.isnumeric():
+        elif char.isnumeric():
             sleep(
                 presets.breath_interval
                 if i + 1 < len(reply_str) and reply_str[i + 1] == "."
                 else presets.number_interval
             )
-        elif next_chr in [":", "-", "\n"]:
+        elif char in [":", "-", "\n"]:
             sleep(
                 presets.enum_interval
-                if i + 1 < len(reply_str)
-                and reply_str[i + 1].isnumeric()
-                or reply_str[i + 1] in [" ", "\n", "-"]
+                if i + 1 < len(reply_str) and (reply_str[i + 1].isnumeric() or reply_str[i + 1] in [" ", "\n", "-"])
                 else presets.base_speed
             )
-        elif next_chr in [",", ";"]:
+        elif char in [",", ";"]:
             sleep(
                 presets.comma_interval
                 if i + 1 < len(reply_str) and reply_str[i + 1].isspace()
                 else presets.base_speed
             )
-        elif next_chr in [".", "?", "!", "\n"]:
+        elif char in [".", "?", "!", "\n"]:
             sleep(
                 presets.period_interval
-                if i + 1 < len(reply_str)
-                and reply_str[i + 1] in [" ", "\n"]
-                and not reply_str[i - 1].isnumeric()
+                if i + 1 < len(reply_str) and reply_str[i + 1] in [" ", "\n"] and i - 1 > 0 and not reply_str[i - 1].isnumeric()
                 else presets.punct_interval
             )
             continue
-        elif next_chr.isspace():
+        elif char.isspace():
             if i - 1 >= 0 and not reply_str[i - 1].isspace():
                 word_count += 1
                 sleep(
@@ -150,8 +145,7 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
     check_argument(which("ffplay") and file_is_not_empty(path_to_audio_file))
     try:
         Terminal.shell_exec(
-            f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
-            stdout=DEVNULL,
+            f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}'
         )
         return True
     except FileNotFoundError:
@@ -162,5 +156,7 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
 def play_sfx(sfx_name: str):
     """Play a sound effect audio file."""
     filename = f"{SFX_DIR}/{ensure_endswith(sfx_name, '.mp3')}"
-    check_argument(file_is_not_empty(filename), f"Sound effects file does not exist: {filename}")
+    check_argument(
+        file_is_not_empty(filename), f"Sound effects file does not exist: {filename}"
+    )
     play_audio_file(filename)

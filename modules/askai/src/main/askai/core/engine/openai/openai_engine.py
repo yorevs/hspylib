@@ -16,6 +16,7 @@ import logging as log
 import os
 from functools import partial, lru_cache
 from threading import Thread
+from time import sleep
 from typing import Callable, Optional
 
 import speech_recognition as speech_rec
@@ -125,6 +126,7 @@ class OpenAIEngine(AIEngine):
         )
         speak_thread.start()
         if cb_started:
+            sleep(1)
             cb_started(text)
         speak_thread.join()  # Block until the speech has finished.
         if cb_finished:

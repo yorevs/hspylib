@@ -1,6 +1,6 @@
 /*
   Python dependencies file
-  Project: hspylib-ask-ai
+  Project: hspylib-askai
   Created: 05th Jan, 2024
 
   !! Syntax for dependencies !!
@@ -10,7 +10,7 @@
 /* Module dependencies */
 
 package: hspylib
-package: hspylib-clitt, version: 0.9.108, mode: ge
+package: hspylib-clitt, version: 0.9.111, mode: ge
 
 /* Application dependencies */
 

@@ -38,6 +38,14 @@ class AskAiMessages(metaclass=Singleton):
     def goodbye(self) -> str:
         return self.translate("Goodbye, have a nice day ! ")
 
+    @cached_property
+    def execute(self) -> str:
+        return self.translate("execute")
+
+    @lru_cache(maxsize=500)
+    def executing(self) -> str:
+        return self.translate(f"Executing command, please wait... ")
+
     @lru_cache(maxsize=500)
     def translate(self, text: str) -> str:
         """Translate text using the configured language."""

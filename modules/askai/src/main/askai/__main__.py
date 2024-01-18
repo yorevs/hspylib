@@ -18,7 +18,6 @@ from textwrap import dedent
 from time import sleep
 from typing import List
 
-from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.dict_tools import get_or_default
@@ -29,9 +28,9 @@ from hspylib.modules.application.version import Version
 
 from askai.__classpath__ import _Classpath
 from askai.core.askai import AskAi
-from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.openai.openai_model import OpenAIModel
 from askai.core.engine.openai.openai_engine import OpenAIEngine
+from askai.core.engine.openai.openai_model import OpenAIModel
+from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.core.exception.exceptions import NoSuchEngineError
 
 
