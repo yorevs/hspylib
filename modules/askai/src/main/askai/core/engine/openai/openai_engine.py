@@ -5,7 +5,6 @@ from time import sleep
 from typing import Callable, Optional
 
 import speech_recognition as speech_rec
-from hspylib.core.tools.commons import file_is_not_empty
 from openai import APIConnectionError, APIStatusError, OpenAI, RateLimitError
 
 from askai.core.engine.ai_engine import AIEngine

@@ -19,7 +19,7 @@ import re
 import sys
 from functools import lru_cache
 from threading import Thread
-from typing import List
+from typing import List, Optional
 
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
@@ -31,7 +31,7 @@ from askai.core.engine.ai_engine import AIEngine
 from askai.lang.language import Language
 from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
-from askai.utils.ptt_input import ptt_input
+from askai.utils.line_input import line_input
 from askai.utils.utilities import stream
 
 
@@ -139,9 +139,9 @@ class AskAi:
                 sysout(f"  {self._user}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
 
-    def _input(self, prompt: str) -> str:
+    def _input(self, prompt: str) -> Optional[str]:
         """Prompt for user input."""
-        ret = ptt_input(prompt, Constants.PUSH_TO_TALK)
+        ret = line_input(prompt)
         if self.is_speak and ret == Constants.PUSH_TO_TALK:
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(prompt), Direction.LEFT)
@@ -153,7 +153,7 @@ class AskAi:
                 sysout(f"  {self._user}: {spoken_text}")
             return spoken_text
 
-        return ret if isinstance(ret, str) else ret.val
+        return ret if not ret or isinstance(ret, str) else ret.val
 
     def _prompt(self) -> None:
         """Prompt for user interaction."""
@@ -168,6 +168,7 @@ class AskAi:
                 self._reply(query)
         if not query:
             self._reply(self.MSG.goodbye)
+        sysout("")
 
     def _process_command(self, command: str) -> bool:
         """Attempt to process command."""
