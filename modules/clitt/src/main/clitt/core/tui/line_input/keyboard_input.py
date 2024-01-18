@@ -127,7 +127,7 @@ class KeyboardInput(TUIComponent):
         self.write(self._input_text)
         self._re_render = False
         self._set_cursor_pos()
-        Terminal.set_show_cursor(True)
+        Terminal.set_show_cursor()
 
     def navbar(self, **kwargs) -> str:
         pass
@@ -148,7 +148,7 @@ class KeyboardInput(TUIComponent):
                         + self._input_text[1 + self._input_index :]
                     )
                 case Keyboard.VK_CTRL_P:
-                    self._update_input(pyperclip.paste() or self._input_text)
+                    self._update_input(f"{self._input_text}{pyperclip.paste() or ''}")
                     self._input_index = self.length
                 case Keyboard.VK_CTRL_R:
                     self._input_index = 0

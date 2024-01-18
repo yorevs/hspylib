@@ -55,7 +55,7 @@ class Terminal(metaclass=Singleton):
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             output = subprocess.check_output(cmd_args, **kwargs).decode(Charset.UTF_8.val)
             log.info("Execution result: %s", ExitStatus.SUCCESS)
-            return output.strip() if output else None, ExitStatus.SUCCESS
+            return output if output else None, ExitStatus.SUCCESS
         except subprocess.CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
             return None, ExitStatus.FAILED
