@@ -8,7 +8,7 @@ from askai.lang.multilingual_translator import MultilingualTranslator
 
 
 class TextualMessages(metaclass=Singleton):
-    """TODO"""
+    """Provide access to static 'translated' messages."""
 
     INSTANCE = None
 
@@ -20,25 +20,25 @@ class TextualMessages(metaclass=Singleton):
 
     @lru_cache(maxsize=500)
     def welcome(self, username: str = "user") -> str:
-        return self._translate(f"Hey {username}, How can I assist you today?")
+        return self.translate(f"Hey {username}, How can I assist you today?")
 
     @cached_property
     def wait(self) -> str:
-        return self._translate("I'm thinking, please wait...")
+        return self.translate("I'm thinking, please wait... ")
 
     @cached_property
     def listening(self) -> str:
-        return self._translate("I'm listening after the beep...")
+        return self.translate("I'm listening... ")
 
     @cached_property
     def transcribing(self) -> str:
-        return self._translate("I'm processing your voice, please wait...")
+        return self.translate("I'm processing your voice, please wait... ")
 
     @cached_property
     def goodbye(self) -> str:
-        return self._translate("Goodbye, have a nice day !")
+        return self.translate("Goodbye, have a nice day ! ")
 
     @lru_cache(maxsize=500)
-    def _translate(self, text: str) -> str:
+    def translate(self, text: str) -> str:
         """Translate text using the configured language."""
         return self._translator.translate(text)

@@ -209,15 +209,17 @@ class KeyboardInput(TUIComponent):
         return keypress
 
     def _set_cursor_pos(self):
-        """TODO"""
+        """Set the cursor position on the input."""
         index_offset = max(0, self.length - self._input_index)
         self.screen.cursor.move(index_offset, Direction.LEFT)
 
     def _update_input(self, text: str) -> str:
-        """TODO"""
+        """Update the value of the input.
+        :param text: The text to be set.
+        """
         self._UNDO_HISTORY.append(self._input_text)
+        self._HISTORY[0] = text if text not in self._HISTORY else self._input_text
         self._input_text = text
-        self._HISTORY[0] = text
         return text
 
 

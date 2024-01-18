@@ -121,7 +121,6 @@ def input_mic(
     with speech_rec.Microphone() as source:
         rec.adjust_for_ambient_noise(source, duration=1)
         msg = fn_listening()
-        play_sfx("beep")
         audio: AudioData = rec.listen(source)
         Terminal.INSTANCE.cursor.move(1, Direction.UP)
         Terminal.INSTANCE.cursor.erase(Portion.LINE)

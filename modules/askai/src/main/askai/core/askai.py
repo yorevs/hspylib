@@ -32,7 +32,7 @@ from askai.lang.language import Language
 from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
 from askai.utils.line_input import line_input
-from askai.utils.utilities import stream, play_sfx
+from askai.utils.utilities import stream
 
 
 class AskAi:
@@ -158,7 +158,6 @@ class AskAi:
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         self._reply(self.MSG.welcome(self._user))
-        play_sfx("welcome")
         while query := self._input(f"  {self._user}: "):
             if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
                 self._reply(self.MSG.goodbye)

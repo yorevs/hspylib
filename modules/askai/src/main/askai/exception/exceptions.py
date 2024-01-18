@@ -26,3 +26,7 @@ class IntelligibleAudioError(HSBaseException):
 
 class RecognitionApiRequestError(HSBaseException):
     """Raised when an there was an error calling the recognition API."""
+
+
+class TranslationPackageError(HSBaseException):
+    """Raised when an there was an error installing an Argos translation package."""
