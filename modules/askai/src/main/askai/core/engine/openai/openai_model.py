@@ -1,8 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   @project: HsPyLib-AskAI
+   @package: askai.core.engine.openai
+      @file: openai_model.py
+   @created: Fri, 12 Jan 2024
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+      @site: https://github.com/yorevs/hspylib
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright·(c)·2024,·HSPyLib
+"""
 from typing import List
 
 from hspylib.core.enums.enumeration import Enumeration
 
-from askai.core.engine.ai_model import AIModel
+from askai.core.engine.protocols.ai_model import AIModel
 
 
 class OpenAIModel(Enumeration):

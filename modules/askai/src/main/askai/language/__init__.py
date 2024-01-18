@@ -2,13 +2,11 @@
 #
 # hspylib-ask-ai v0.9.8
 #
-# Package: main.askai.utils
+# Package: main.askai.language
 """Package initialization."""
 
 __all__ = [
-    'cache_service', 
-    'constants', 
-    'presets', 
-    'utilities'
+    'argos_translator', 
+    'language'
 ]
 __version__ = '0.9.8'

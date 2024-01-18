@@ -6,8 +6,7 @@
 """Package initialization."""
 
 __all__ = [
-    'ai_engine', 
-    'ai_model', 
-    'openai'
+    'openai', 
+    'protocols'
 ]
 __version__ = '0.9.8'

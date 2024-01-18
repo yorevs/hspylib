@@ -29,9 +29,9 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 
 from askai.core.askai_configs import AskAiConfigs
-from askai.core.engine.ai_engine import AIEngine
-from askai.lang.language import Language
-from askai.lang.textual_messages import TextualMessages
+from askai.core.engine.protocols.ai_engine import AIEngine
+from askai.language.language import Language
+from askai.core.askai_messages import AskAiMessages
 from askai.utils.constants import Constants
 from askai.utils.utilities import stream
 
@@ -39,7 +39,7 @@ from askai.utils.utilities import stream
 class AskAi:
     """Responsible for the OpenAI functionalities."""
 
-    MSG = TextualMessages.INSTANCE or TextualMessages()
+    MSG = AskAiMessages.INSTANCE or AskAiMessages()
 
     @staticmethod
     def _abort():
@@ -180,7 +180,7 @@ class AskAi:
         if reply.is_success():
             self._reply(reply.reply_text())
         else:
-            self._report_error(reply.reply_text())
+            self._reply_error(reply.reply_text())
 
     def _reply(self, message: str, speak: bool = True) -> str:
         """Reply to the user with the AI response.
@@ -203,8 +203,8 @@ class AskAi:
 
         return message
 
-    def _report_error(self, error_message: str) -> None:
-        """Report API os system errors.
+    def _reply_error(self, error_message: str) -> None:
+        """Reply API or system errors.
         :param error_message: The error message to be displayed.
         """
         sysout(f"%EL0%  {self._engine.nickname()}: {error_message}")

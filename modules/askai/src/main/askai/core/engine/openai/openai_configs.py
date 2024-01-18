@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib-AskAI
-   @package: askai.core
+   @package: askai.core.engine.openai
       @file: openai_configs.py
    @created: Fri, 12 Jan 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

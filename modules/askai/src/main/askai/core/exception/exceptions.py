@@ -3,9 +3,9 @@
 
 """
    @project: HsPyLib-CFMan
-   @package: cfman.exception
+   @package: askai.exception
       @file: exceptions.py
-   @created: Tue, 11 May 2021
+   @created: Fri, 5 Jan 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>

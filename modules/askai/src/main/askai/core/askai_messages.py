@@ -3,18 +3,18 @@ from functools import cached_property, lru_cache
 from hspylib.core.metaclass.singleton import Singleton
 
 from askai.core.askai_configs import AskAiConfigs
-from askai.lang.language import Language
-from askai.lang.multilingual_translator import MultilingualTranslator
+from askai.language.language import Language
+from askai.language.argos_translator import ArgosTranslator
 
 
-class TextualMessages(metaclass=Singleton):
+class AskAiMessages(metaclass=Singleton):
     """Provide access to static 'translated' messages."""
 
     INSTANCE = None
 
     def __init__(self):
         self._configs: AskAiConfigs = AskAiConfigs.INSTANCE or AskAiConfigs()
-        self._translator = MultilingualTranslator.INSTANCE or MultilingualTranslator(
+        self._translator = ArgosTranslator.INSTANCE or ArgosTranslator(
             Language.EN_US, self._configs.language
         )
 

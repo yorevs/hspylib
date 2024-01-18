@@ -8,7 +8,7 @@
 __all__ = [
     'core', 
     'exception', 
-    'lang', 
+    'language', 
     'utils'
 ]
 __version__ = '0.9.8'

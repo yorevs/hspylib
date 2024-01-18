@@ -9,10 +9,10 @@ from argostranslate.translate import ITranslation
 from hspylib.core.metaclass.singleton import Singleton
 
 from askai.exception.exceptions import TranslationPackageError
-from askai.lang.language import Language
+from askai.language.language import Language
 
 
-class MultilingualTranslator(metaclass=Singleton):
+class ArgosTranslator(metaclass=Singleton):
     """Provides a multi-lingual offline translation engine."""
 
     INSTANCE = None
@@ -68,7 +68,6 @@ class MultilingualTranslator(metaclass=Singleton):
     def _install_translator(self) -> bool:
         """Install the Argos translator if it's not yet installed on the system."""
         old_stdout = sys.stdout
-        required_package = None
         with open(os.devnull, 'w') as dev_null:
             sys.stdout = dev_null
             package.update_package_index()

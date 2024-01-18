@@ -35,7 +35,7 @@ from askai.exception.exceptions import (
     IntelligibleAudioError,
     RecognitionApiRequestError,
 )
-from askai.lang.language import Language
+from askai.language.language import Language
 from askai.utils.presets import Presets
 
 # Sound effects directory.

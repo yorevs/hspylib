@@ -8,6 +8,7 @@
 __all__ = [
     'askai', 
     'askai_configs', 
+    'askai_messages', 
     'engine', 
     'exception'
 ]

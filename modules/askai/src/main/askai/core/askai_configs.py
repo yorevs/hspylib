@@ -19,7 +19,7 @@ from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.metaclass.singleton import Singleton
 
 from askai.__classpath__ import _Classpath
-from askai.lang.language import Language
+from askai.language.language import Language
 
 
 class AskAiConfigs(metaclass=Singleton):

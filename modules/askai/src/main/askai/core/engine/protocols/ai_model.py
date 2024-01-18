@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib-AskAI
-   @package: askai.core.engine
+   @package: askai.core.engine.protocols
       @file: ai_model.py
    @created: Fri, 5 May 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"

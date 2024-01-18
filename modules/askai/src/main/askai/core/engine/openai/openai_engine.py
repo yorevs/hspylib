@@ -3,7 +3,7 @@
 
 """
    @project: HsPyLib-AskAI
-   @package: askai.core
+   @package: askai.core.engine.openai
       @file: openai_engine.py
    @created: Fri, 12 Jan 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
@@ -21,9 +21,9 @@ from typing import Callable, Optional
 import speech_recognition as speech_rec
 from openai import OpenAI, APIError
 
-from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.ai_model import AIModel
-from askai.core.engine.ai_reply import AIReply
+from askai.core.engine.protocols.ai_engine import AIEngine
+from askai.core.engine.protocols.ai_model import AIModel
+from askai.core.engine.protocols.ai_reply import AIReply
 from askai.core.engine.openai.openai_configs import OpenAiConfigs
 from askai.core.engine.openai.openai_model import OpenAIModel
 from askai.core.engine.openai.openai_reply import OpenAIReply

@@ -8,6 +8,7 @@
 __all__ = [
     'openai_configs', 
     'openai_engine', 
-    'openai_model'
+    'openai_model', 
+    'openai_reply'
 ]
 __version__ = '0.9.8'
