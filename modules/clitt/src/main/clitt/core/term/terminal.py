@@ -46,6 +46,11 @@ class Terminal(metaclass=Singleton):
     @staticmethod
     def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
         """Execute command with arguments and return it's run status."""
+        output = None
+        if "stdout" in kwargs:
+            del kwargs["stdout"]  # Deleted because it's forbidden by check_output
+        if "stderr" in kwargs:
+            del kwargs["stderr"]  # Deleted because it's forbidden by check_output
         try:
             log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
@@ -54,7 +59,7 @@ class Terminal(metaclass=Singleton):
             return output if output else None, ExitStatus.SUCCESS
         except subprocess.CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
-            return None, ExitStatus.FAILED
+            return output, ExitStatus.FAILED
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
