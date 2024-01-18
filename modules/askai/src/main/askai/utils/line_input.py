@@ -56,17 +56,20 @@ class KeyboardInput(TUIComponent):
         """
         if input_text:
             cls._HISTORY[max(1, len(cls._HISTORY))] = input_text
+            cls._HIST_INDEX += 1
 
     @classmethod
     def _next_in_history(cls) -> Optional[str]:
-        cls._HIST_INDEX = min(max(0, len(cls._HISTORY) - 1), cls._HIST_INDEX + 1)
-        text = cls._HISTORY.get(cls._HIST_INDEX, "")
-        return text or cls._HISTORY.get(cls._HIST_INDEX - 1, "")
+        index = min(len(cls._HISTORY), cls._HIST_INDEX + 1)
+        text = cls._HISTORY.get(index, "")
+        cls._HIST_INDEX = min(len(cls._HISTORY) - 1, index)
+        return text or cls._HISTORY[0]
 
     @classmethod
     def _prev_in_history(cls) -> Optional[str]:
-        cls._HIST_INDEX = max(0, cls._HIST_INDEX - 1)
-        text = cls._HISTORY.get(cls._HIST_INDEX, "")
+        index = max(1, cls._HIST_INDEX)
+        text = cls._HISTORY.get(index, "")
+        cls._HIST_INDEX = max(1, index - 1)
         return text
 
     @classmethod
@@ -139,9 +142,8 @@ class KeyboardInput(TUIComponent):
         self._terminal.cursor.erase(Portion.LINE)
         self.write(f"{self._prompt_color.placeholder}{self.title}%NC%")
         self.write(self._input_text)
-        index_offset = max(0, self.length - self._input_index)
-        self.screen.cursor.move(index_offset, Direction.LEFT)
         self._re_render = False
+        self._set_cursor_pos()
         Terminal.set_show_cursor(True)
 
     def navbar(self, **kwargs) -> str:
@@ -172,12 +174,12 @@ class KeyboardInput(TUIComponent):
                 case Keyboard.VK_CTRL_R:
                     self._input_index = 0
                     self._update_input("")
-                case Keyboard.VK_CTRL_U:
+                case Keyboard.VK_CTRL_U:  # Undo
                     undo_text = self._undo()
                     self._input_text = undo_text
                     self._input_index = self.length
                     self._HISTORY[0] = self._input_text
-                case Keyboard.VK_CTRL_K:
+                case Keyboard.VK_CTRL_K:  # redo
                     redo_text = self._redo()
                     self._input_text = redo_text if redo_text else self._input_text
                     self._input_index = self.length
@@ -187,24 +189,29 @@ class KeyboardInput(TUIComponent):
                 case Keyboard.VK_RIGHT:
                     self._input_index = min(self.length, self._input_index + 1)
                 case Keyboard.VK_UP:
-                    self._input_text = self._next_in_history()
-                    self._input_index = self.length
-                case Keyboard.VK_DOWN:
                     self._input_text = self._prev_in_history()
                     self._input_index = self.length
+                case Keyboard.VK_DOWN:
+                    self._input_text = self._next_in_history()
+                    self._input_index = self.length
                 case _ as key if key.val.isprintable():
-                    self._input_index += 1
                     self._update_input(
                         self._input_text[:self._input_index]
                         + key.val
                         + self._input_text[self._input_index:]
                     )
+                    self._input_index += 1
                 case _:
                     self._input_text = keypress
                     self._done = True
-        self._re_render = True
+            self._re_render = True
 
         return keypress
+
+    def _set_cursor_pos(self):
+        """TODO"""
+        index_offset = max(0, self.length - self._input_index)
+        self.screen.cursor.move(index_offset, Direction.LEFT)
 
     def _update_input(self, text: str) -> str:
         """TODO"""
