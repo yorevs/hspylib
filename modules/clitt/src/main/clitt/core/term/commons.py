@@ -14,7 +14,7 @@ import tty
 # fmt: off
 Dimension       : TypeAlias = Tuple[int, int]
 Position        : TypeAlias = Tuple[int, int]
-Resize_Cb       : TypeAlias = Callable[[None], None]
+Resize_Cb       : TypeAlias = Callable[[], None]
 MoveDirection   : TypeAlias = "Direction"
 EraseDirection  : TypeAlias = Union["Direction", "Portion"]
 # fmt: on
