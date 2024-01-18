@@ -24,7 +24,7 @@ class AskAiMessages(metaclass=Singleton):
 
     @cached_property
     def listening(self) -> str:
-        return self.translate("I'm listening... ")
+        return self.translate("I'm listening")
 
     @cached_property
     def transcribing(self) -> str:

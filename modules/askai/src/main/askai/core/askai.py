@@ -169,7 +169,7 @@ class AskAi:
         cmd_ret = None
         exe_msg = self.MSG.execute
         if query.lower().startswith(exe_msg):
-            cmd_line = query[query.index(exe_msg) + len(exe_msg) :].strip()
+            cmd_line = query[query.lower().index(exe_msg) + len(exe_msg) :].strip()
             command = cmd_line.split(" ")[0]
             if which(command):
                 log.debug('Processing command: "%s"', cmd_line)
