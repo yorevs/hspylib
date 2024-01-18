@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.109
+# hspylib-clitt v0.9.110
 #
 # Package: demo
 """Package initialization."""
@@ -11,4 +11,4 @@ __all__ = [
     'term', 
     'tui'
 ]
-__version__ = '0.9.109'
+__version__ = '0.9.110'

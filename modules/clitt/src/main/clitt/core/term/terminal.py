@@ -47,10 +47,6 @@ class Terminal(metaclass=Singleton):
     def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
         """Execute command with arguments and return it's run status."""
         try:
-            if "stdout" in kwargs:
-                del kwargs["stdout"]  # Deleted since we use our own stream
-            if "stderr" in kwargs:
-                del kwargs["stderr"]  # Deleted since we use our own stream
             log.info("Executing shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
             output = subprocess.check_output(cmd_args, **kwargs).decode(Charset.UTF_8.val)
