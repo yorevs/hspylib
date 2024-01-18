@@ -23,6 +23,8 @@ from typing import List, Optional
 
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
+from clitt.core.tui.line_input.line_input import line_input
+
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 
@@ -31,7 +33,6 @@ from askai.core.engine.ai_engine import AIEngine
 from askai.lang.language import Language
 from askai.lang.textual_messages import TextualMessages
 from askai.utils.constants import Constants
-from askai.utils.line_input import line_input
 from askai.utils.utilities import stream
 
 

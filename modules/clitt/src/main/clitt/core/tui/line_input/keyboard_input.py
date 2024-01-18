@@ -3,8 +3,8 @@
 
 """
    @project: HsPyLib-AskAI
-   @package: askai.utils
-      @file: line_input.py
+   @package: main.clitt.core.tui.line_input
+      @file: keyboard_input.py
    @created: Wed, 17 Jan 2024
     @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
       @site: https://github.com/yorevs/hspylib
@@ -12,26 +12,14 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from typing import Optional, List
-
 import pyperclip
-from clitt.core.term.commons import Portion, Direction
-from clitt.core.term.terminal import Terminal
-from clitt.core.tui.tui_component import TUIComponent
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
+from typing import Optional, List
 
-
-def line_input(
-    prompt: str = "",
-    prompt_color: VtColor = VtColor.NC
-) -> Optional[str | Keyboard]:
-    """Read a string from standard input.
-    :param prompt: The message to be displayed to the user.
-    :param prompt_color: The color of the prompt text.
-    """
-    ptt = KeyboardInput(prompt, prompt_color)
-    return ptt.execute()
+from clitt.core.term.commons import Direction, Portion
+from clitt.core.term.terminal import Terminal
+from clitt.core.tui.tui_component import TUIComponent
 
 
 class KeyboardInput(TUIComponent):
@@ -86,11 +74,7 @@ class KeyboardInput(TUIComponent):
             cls._UNDO_HISTORY.append(cls._HISTORY[0])
         return text
 
-    def __init__(
-        self,
-        prompt: str = "",
-        prompt_color: VtColor = VtColor.NC
-    ):
+    def __init__(self, prompt: str = "", prompt_color: VtColor = VtColor.NC):
         super().__init__(prompt)
         self._prompt_color = prompt_color
         self._input_index = 0
@@ -112,7 +96,6 @@ class KeyboardInput(TUIComponent):
 
         # Wait for user interaction
         while not self._done and keypress not in break_keys:
-
             # Menu Renderization
             if self._re_render:
                 self.render()
@@ -125,14 +108,14 @@ class KeyboardInput(TUIComponent):
         self._prepare_render()
         keypress = self._loop()
 
-        if keypress == Keyboard.VK_ENTER:
+        if keypress.isEnter():
             self._add_history(self._input_text)
-            self.writeln("")
             self._UNDO_HISTORY.clear()
             self._REDO_HISTORY.clear()
         elif keypress == Keyboard.VK_ESC:
-            self.writeln("")
             self._input_text = None
+
+        self.writeln("")
 
         return self._input_text
 
@@ -152,21 +135,17 @@ class KeyboardInput(TUIComponent):
     def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
             match keypress:
-                case Keyboard.VK_ESC:
-                    self._done = True
-                case Keyboard.VK_ENTER:
-                    self._done = True
                 case Keyboard.VK_BACKSPACE:
                     if self._input_index > 0:
                         self._input_index = max(0, self._input_index - 1)
                         self._update_input(
-                            self._input_text[:self._input_index]
-                            + self._input_text[1 + self._input_index:]
+                            self._input_text[: self._input_index]
+                            + self._input_text[1 + self._input_index :]
                         )
                 case Keyboard.VK_DELETE:
                     self._update_input(
-                        self._input_text[:self._input_index]
-                        + self._input_text[1 + self._input_index:]
+                        self._input_text[: self._input_index]
+                        + self._input_text[1 + self._input_index :]
                     )
                 case Keyboard.VK_CTRL_P:
                     self._update_input(pyperclip.paste() or self._input_text)
@@ -196,11 +175,13 @@ class KeyboardInput(TUIComponent):
                     self._input_index = self.length
                 case _ as key if key.val.isprintable():
                     self._update_input(
-                        self._input_text[:self._input_index]
+                        self._input_text[: self._input_index]
                         + key.val
-                        + self._input_text[self._input_index:]
+                        + self._input_text[self._input_index :]
                     )
                     self._input_index += 1
+                case _ as key if key in Keyboard.break_keys():
+                    self._done = True
                 case _:
                     self._input_text = keypress
                     self._done = True
@@ -221,12 +202,3 @@ class KeyboardInput(TUIComponent):
         self._HISTORY[0] = text if text not in self._HISTORY else self._input_text
         self._input_text = text
         return text
-
-
-if __name__ == "__main__":
-    print("-=" * 30)
-    while (i := line_input("What is it? ")) not in ["bye", ""]:
-        if isinstance(i, Keyboard):
-            print(i)
-        else:
-            print("Input:", i)

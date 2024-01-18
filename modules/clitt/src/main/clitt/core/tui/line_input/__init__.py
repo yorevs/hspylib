@@ -2,10 +2,11 @@
 #
 # hspylib-clitt v0.9.108
 #
-# Package: demo.term
+# Package: main.clitt.core.tui.line_input
 """Package initialization."""
 
 __all__ = [
-    'terminal_demo'
+    'keyboard_input', 
+    'line_input'
 ]
 __version__ = '0.9.108'
