@@ -12,7 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-
+from functools import partial
 from typing import Callable, Optional, Protocol, List
 
 from askai.core.engine.ai_model import AIModel
@@ -64,11 +64,11 @@ class AIEngine(Protocol):
 
     def speech_to_text(
         self,
-        prompt: str = "Listening...",
-        processing_msg: str = "Transcribing audio to text...",
+        fn_listening: partial,
+        fn_processing: partial,
     ) -> str:
         """Transcribes audio input from the microphone into the text input language.
-        :param prompt: The message to be displayed when the recorder is listening.
-        :param processing_msg: The message to be transcribed.
+        :param fn_listening: The function to display the listening message.
+        :param fn_processing: The function to display the processing message.
         """
         ...

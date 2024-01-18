@@ -17,7 +17,7 @@ import logging as log
 import os
 import re
 import sys
-from functools import lru_cache
+from functools import lru_cache, partial
 from threading import Thread
 from typing import List, Optional
 
@@ -146,8 +146,8 @@ class AskAi:
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(prompt), Direction.LEFT)
             spoken_text = self._engine.speech_to_text(
-                f"  {self._engine.nickname()}: {self.MSG.listening}",
-                f"  {self._engine.nickname()}: {self.MSG.transcribing}",
+                partial(self._reply, self.MSG.listening),
+                partial(self._reply, self.MSG.transcribing),
             )
             if spoken_text:
                 sysout(f"  {self._user}: {spoken_text}")
@@ -184,7 +184,7 @@ class AskAi:
         self.is_processing = True
         self._reply(self.ask(question))
 
-    def _reply(self, message: str, speak: bool = True) -> None:
+    def _reply(self, message: str, speak: bool = True) -> str:
         """Reply to the user with the AI response.
         :param message: The message to reply to the user.
         :param speak: Whether to speak the reply or not.
@@ -200,7 +200,10 @@ class AskAi:
         elif self.is_stream:
             self._stream_text(message)
         else:
-            sysout(f"  {self._engine.nickname()}: {message}")
+            message = f"  {self._engine.nickname()}: {message}"
+            sysout(message)
+
+        return message
 
     def _stream_text(self, message: str) -> None:
         """Stream the message using default parameters.

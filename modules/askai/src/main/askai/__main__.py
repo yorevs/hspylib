@@ -149,11 +149,11 @@ class Main(TUIApplication):
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application main flow."""
-        Terminal.alternate_screen(True)
+        # Terminal.alternate_screen(True)
         self._ai.run()
         sleep(1)  # Wait a bit before switching the screen back.
-        Terminal.alternate_screen(False)
-        
+        # Terminal.alternate_screen(False)
+
         return ExitStatus.SUCCESS
 
 

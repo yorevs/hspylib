@@ -14,18 +14,21 @@
 """
 import hashlib
 import logging as log
+from functools import partial
 from subprocess import DEVNULL
 from time import sleep
 from typing import Callable
 
 import speech_recognition as speech_rec
-from clitt.core.term.commons import Portion, Direction
+from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import sysout, file_is_not_empty
+from hspylib.core.tools.text_tools import ensure_endswith
 from speech_recognition import AudioData
 
+from askai.__classpath__ import _Classpath
 from askai.exception.exceptions import (
     InvalidRecognitionApiError,
     IntelligibleAudioError,
@@ -33,6 +36,9 @@ from askai.exception.exceptions import (
 )
 from askai.lang.language import Language
 from askai.utils.presets import Presets
+
+# Sound effects directory.
+SFX_DIR = str(_Classpath.resource_path()) + "/assets/sound-fx"
 
 
 def hash_text(text: str) -> str:
@@ -101,24 +107,25 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
 
 
 def input_mic(
-    prompt: str,
-    processing_msg: str,
-    fn_recognition: Callable[[AudioData], str] = None,
+    fn_listening: partial,
+    fn_processing: partial,
+    fn_recognition: Callable[[AudioData], str],
 ) -> str:
     """Listen to the microphone and transcribe the speech into text.
-    :param prompt: The message to be displayed to the user.
-    :param processing_msg: The message displayed when the audio is being processed.
+    :param fn_listening: The function to display the listening message.
+    :param fn_processing: The function to display the processing message.
     :param fn_recognition: The AI engine API to use to recognize the speech.
     """
     rec: speech_rec.Recognizer = speech_rec.Recognizer()
     with speech_rec.Microphone() as source:
         rec.adjust_for_ambient_noise(source, duration=1)
-        sysout(prompt, end="")
+        msg = fn_listening()
+        play_sfx("beep")
         audio: AudioData = rec.listen(source)
+        Terminal.INSTANCE.cursor.move(1, Direction.UP)
         Terminal.INSTANCE.cursor.erase(Portion.LINE)
-        Terminal.INSTANCE.cursor.move(len(prompt), Direction.LEFT)
-        # TODO Play a beep sound to indicate we are listening
-        sysout(processing_msg, end="")
+        Terminal.INSTANCE.cursor.move(len(msg), Direction.LEFT)
+        msg = fn_processing()
         try:
             recognizer_api = getattr(rec, fn_recognition.__name__)
             if recognizer_api and isinstance(recognizer_api, Callable):
@@ -130,8 +137,9 @@ def input_mic(
         except speech_rec.RequestError as err:
             raise RecognitionApiRequestError(str(err))
         finally:
+            Terminal.INSTANCE.cursor.move(1, Direction.UP)
             Terminal.INSTANCE.cursor.erase(Portion.LINE)
-            Terminal.INSTANCE.cursor.move(len(processing_msg), Direction.LEFT)
+            Terminal.INSTANCE.cursor.move(len(msg), Direction.LEFT)
 
 
 def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
@@ -149,3 +157,10 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
     except FileNotFoundError:
         log.error("ffplay is not installed, speech is disabled!")
         return False
+
+
+def play_sfx(sfx_name: str):
+    """Play a sound effect audio file."""
+    filename = f"{SFX_DIR}/{ensure_endswith(sfx_name, '.mp3')}"
+    check_argument(file_is_not_empty(filename), f"Sound effects file does not exist: {filename}")
+    play_audio_file(filename)

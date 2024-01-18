@@ -1,5 +1,6 @@
 import logging as log
 import os
+from functools import partial
 from threading import Thread
 from time import sleep
 from typing import Callable, Optional
@@ -122,9 +123,13 @@ class OpenAIEngine(AIEngine):
 
     def speech_to_text(
         self,
-        prompt: str = "Listening...",
-        processing_msg: str = "Transcribing audio to text...",
+        fn_listening: partial,
+        fn_processing: partial,
     ) -> str:
-        text = input_mic(prompt, processing_msg, speech_rec.Recognizer.recognize_whisper)
+        text = input_mic(
+            fn_listening,
+            fn_processing,
+            speech_rec.Recognizer.recognize_whisper
+        )
         log.debug(f"Audio transcribed to: {text}")
         return text

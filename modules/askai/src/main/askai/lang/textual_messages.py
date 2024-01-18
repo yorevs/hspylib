@@ -24,11 +24,11 @@ class TextualMessages(metaclass=Singleton):
 
     @cached_property
     def wait(self) -> str:
-        return self._translate("I'm processing, please wait...")
+        return self._translate("I'm thinking, please wait...")
 
     @cached_property
     def listening(self) -> str:
-        return self._translate("I'm listening...")
+        return self._translate("I'm listening after the beep...")
 
     @cached_property
     def transcribing(self) -> str:
