@@ -30,7 +30,7 @@ from hspylib.modules.application.version import Version
 from askai.__classpath__ import _Classpath
 from askai.core.askai import AskAi
 from askai.core.engine.ai_engine import AIEngine
-from askai.core.engine.openai.openai_model import OpenAiModel
+from askai.core.engine.openai.openai_model import OpenAIModel
 from askai.core.engine.openai.openai_engine import OpenAIEngine
 from askai.core.exception.exceptions import NoSuchEngineError
 
@@ -70,7 +70,7 @@ class Main(TUIApplication):
         match engine:
             case "openai":
                 return OpenAIEngine(
-                    OpenAiModel.of_value(model) or OpenAiModel.GPT_3_5_TURBO
+                    OpenAIModel.of_value(model) or OpenAIModel.GPT_3_5_TURBO
                 )
             case "palm":
                 raise NoSuchEngineError("Google 'paml' is not yet implemented!")

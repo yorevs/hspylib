@@ -5,7 +5,7 @@ from hspylib.core.enums.enumeration import Enumeration
 from askai.core.engine.ai_model import AIModel
 
 
-class OpenAiModel(Enumeration):
+class OpenAIModel(Enumeration):
     """Enumeration for the supported OpenAi models."""
 
     # ID of the model to use. Currently, only the values below are supported:

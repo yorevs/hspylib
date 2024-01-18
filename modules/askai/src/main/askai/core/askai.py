@@ -17,7 +17,7 @@ import logging as log
 import os
 import re
 import sys
-from functools import lru_cache, partial
+from functools import partial
 from threading import Thread
 from typing import List, Optional
 
@@ -121,13 +121,6 @@ class AskAi:
             self._terminal.cursor.move(len(msg), Direction.LEFT)
         self._processing = processing
 
-    @lru_cache(maxsize=500)
-    def ask(self, question: str) -> str:
-        """Ask the question and expect the response.
-        :param question: The question to ask to the AI engine.
-        """
-        return self._engine.ask(question)
-
     def run(self) -> None:
         """Run the program."""
         if self._interactive:
@@ -136,7 +129,7 @@ class AskAi:
         elif self._query_string:
             if not re.match(Constants.TERM_EXPRESSIONS, self._query_string.lower()):
                 sysout("", end="")
-                sysout(f"  {self._user}: {self._query_string}")
+                sysout(f"%EL0%  {self._user}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
 
     def _input(self, prompt: str) -> Optional[str]:
@@ -150,7 +143,7 @@ class AskAi:
                 partial(self._reply, self.MSG.transcribing),
             )
             if spoken_text:
-                sysout(f"  {self._user}: {spoken_text}")
+                sysout(f"%EL0%  {self._user}: {spoken_text}")
             return spoken_text
 
         return ret if not ret or isinstance(ret, str) else ret.val
@@ -158,7 +151,7 @@ class AskAi:
     def _prompt(self) -> None:
         """Prompt for user interaction."""
         self._reply(self.MSG.welcome(self._user))
-        while query := self._input(f"  {self._user}: "):
+        while query := self._input(f"%EL0%  {self._user}: "):
             if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
                 self._reply(self.MSG.goodbye)
                 break
@@ -182,7 +175,11 @@ class AskAi:
         :param question: The question to ask to the AI engine.
         """
         self.is_processing = True
-        self._reply(self.ask(question))
+        reply = self._engine.ask(question)
+        if reply.is_success():
+            self._reply(reply.reply_text())
+        else:
+            self._report_error(reply.reply_text())
 
     def _reply(self, message: str, speak: bool = True) -> str:
         """Reply to the user with the AI response.
@@ -200,17 +197,23 @@ class AskAi:
         elif self.is_stream:
             self._stream_text(message)
         else:
-            message = f"  {self._engine.nickname()}: {message}"
+            message = f"%EL0%  {self._engine.nickname()}: {message}"
             sysout(message)
 
         return message
+
+    def _report_error(self, error_message: str) -> None:
+        """Report API os system errors.
+        :param error_message: The error message to be displayed.
+        """
+        sysout(f"%EL0%  {self._engine.nickname()}: {error_message}")
 
     def _stream_text(self, message: str) -> None:
         """Stream the message using default parameters.
         :param message: The message to be streamed.
         """
         self.is_processing = False
-        sysout(f"  {self._engine.nickname()}: ", end="")
+        sysout(f"%EL0%  {self._engine.nickname()}: ", end="")
         stream_thread = Thread(
             target=stream, args=(message, self._configs.stream_speed)
         )

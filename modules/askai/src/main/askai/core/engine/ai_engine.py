@@ -16,6 +16,7 @@ from functools import partial
 from typing import Callable, Optional, Protocol, List
 
 from askai.core.engine.ai_model import AIModel
+from askai.core.engine.ai_reply import AIReply
 
 
 class AIEngine(Protocol):
@@ -37,7 +38,7 @@ class AIEngine(Protocol):
         """Get the list of available models for the engine."""
         ...
 
-    def ask(self, question: str) -> str:
+    def ask(self, question: str) -> AIReply:
         """Ask AI assistance for the given question and expect a response.
         :param question: The question to send to the AI engine.
         """
