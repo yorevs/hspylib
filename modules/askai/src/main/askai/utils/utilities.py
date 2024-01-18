@@ -15,6 +15,7 @@
 import hashlib
 import logging as log
 from functools import partial
+from shutil import which
 from subprocess import DEVNULL
 from time import sleep
 from typing import Callable
@@ -147,7 +148,7 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
     :param path_to_audio_file: the path to the mp3 file to be played.
     :param speed: the playing speed.
     """
-    check_argument(file_is_not_empty(path_to_audio_file))
+    check_argument(which("ffplay") and file_is_not_empty(path_to_audio_file))
     try:
         Terminal.shell_exec(
             f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}',
