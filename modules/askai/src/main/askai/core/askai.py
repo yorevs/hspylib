@@ -135,6 +135,7 @@ class AskAi:
     def _input(self, prompt: str) -> Optional[str]:
         """Prompt for user input."""
         ret = line_input(prompt)
+        # Use audio as input method.
         if self.is_speak and ret == Constants.PUSH_TO_TALK:
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(prompt), Direction.LEFT)

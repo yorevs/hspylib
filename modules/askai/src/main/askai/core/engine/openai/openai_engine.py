@@ -43,6 +43,7 @@ class OpenAIEngine(AIEngine):
         self._balance = 0
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         self._chat_context = [{"role": "system", "content": "HomSetup thanks you kind AI assistant!"}]
+        cache.read_query_history()
 
     @property
     def url(self):
@@ -59,7 +60,6 @@ class OpenAIEngine(AIEngine):
 
     @lru_cache(maxsize=500)
     def ask(self, question: str) -> AIReply:
-        is_success = False
         if not (reply := cache.read_reply(question)):
             log.debug('Response not found for: "%s" in cache. Querying AI engine.', question)
             try:
@@ -69,6 +69,7 @@ class OpenAIEngine(AIEngine):
                 reply = OpenAIReply(response.choices[0].message.content, True)
                 self._chat_context.append({"role": "assistant", "content": reply.message})
                 cache.save_reply(question, reply.message)
+                cache.save_query_history()
             except APIError as error:
                 body: dict = error.body or {"message": "Message not provided"}
                 reply = OpenAIReply(f"%RED%{error.__class__.__name__} => {body['message']}%NC%", False)

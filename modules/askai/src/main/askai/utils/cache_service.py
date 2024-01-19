@@ -12,14 +12,16 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from askai.utils.utilities import hash_text
+import os
+from pathlib import Path
+from typing import Optional, Tuple, List
+
+from clitt.core.tui.line_input.keyboard_input import KeyboardInput
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import file_is_not_empty
 from hspylib.modules.cache.ttl_cache import TTLCache
-from pathlib import Path
-from typing import Optional, Tuple
 
-import os
+from askai.utils.utilities import hash_text
 
 CACHE_DIR: Path = Path(f'{os.getenv("HHS_DIR", os.getenv("TEMP", "/tmp"))}/askai')
 AUDIO_DIR: Path = Path(str(CACHE_DIR) + "/cache/audio")
@@ -32,15 +34,17 @@ class CacheService(metaclass=Singleton):
 
     _ttl_cache: TTLCache[str] = TTLCache(ttl_minutes=60)
 
+    ASK_AI_CACHE_KEY = "askai-input-cache"
+
     @classmethod
     def read_reply(cls, text: str) -> Optional[str]:
-        """Read a previous reply from cache."""
+        """Read AI replies from TTL cache."""
         key = text.strip().lower()
         return cls._ttl_cache.read(key)
 
     @classmethod
     def save_reply(cls, text: str, reply: str) -> None:
-        """Save a reply into the cache."""
+        """Save a AI reply into the TTL cache."""
         key = text.strip().lower()
         cls._ttl_cache.save(key, reply)
 
@@ -50,3 +54,17 @@ class CacheService(metaclass=Singleton):
         key = text.strip().lower()
         audio_file_path = f"{str(AUDIO_DIR)}/askai-{hash_text(key)}.{audio_format}"
         return audio_file_path, file_is_not_empty(audio_file_path)
+
+    @classmethod
+    def read_query_history(cls) -> None:
+        """Read the input queries from TTL cache."""
+        hist_str: str = cls._ttl_cache.read(cls.ASK_AI_CACHE_KEY)
+        if hist_str:
+            hist: List[str] = hist_str.split(",")
+            KeyboardInput.preload_history(hist)
+
+    @classmethod
+    def save_query_history(cls) -> None:
+        """Save the line input queries into the TTL cache."""
+        hist = KeyboardInput.history()
+        cls._ttl_cache.save(cls.ASK_AI_CACHE_KEY, ",".join(hist))
