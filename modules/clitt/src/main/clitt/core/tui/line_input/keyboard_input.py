@@ -12,6 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+
 import pyperclip
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
@@ -29,7 +30,7 @@ class KeyboardInput(TUIComponent):
     _HIST_INDEX: int = 0
 
     # Dict containing all previously accepted inputs.
-    _HISTORY: dict[int, str] = {}
+    _HISTORY: dict[int, str] = {0: ""}
 
     # Stack containing current input changes.
     _UNDO_HISTORY: List[str] = []
@@ -37,14 +38,25 @@ class KeyboardInput(TUIComponent):
     # Stack containing current input reverts.
     _REDO_HISTORY: List[str] = []
 
-    @classmethod
-    def _add_history(cls, input_text: str) -> None:
+    @staticmethod
+    def preload_history(history: list[str]) -> None:
+        """Preload the input with the provided dictionary."""
+        for entry in history:
+            KeyboardInput._add_history(entry)
+
+    @staticmethod
+    def history() -> list[str]:
+        """Return the actual input history."""
+        return list(filter(lambda v: v, KeyboardInput._HISTORY.values()))
+
+    @staticmethod
+    def _add_history(input_text: str) -> None:
         """Add the following input to the history set.
         :param input_text: The input text to add to the history.
         """
-        if input_text:
-            cls._HISTORY[max(1, len(cls._HISTORY))] = input_text
-            cls._HIST_INDEX += 1
+        if input_text and input_text not in list(KeyboardInput._HISTORY.values())[1:]:
+            KeyboardInput._HISTORY[max(1, len(KeyboardInput._HISTORY))] = input_text
+            KeyboardInput._HIST_INDEX += 1
 
     @classmethod
     def _next_in_history(cls) -> Optional[str]:
