@@ -12,17 +12,16 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from typing import Optional
-
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
+from typing import Optional
 
 from clitt.core.tui.line_input.keyboard_input import KeyboardInput
 
 
 def line_input(
     prompt: str = "",
-    prompt_color: VtColor = VtColor.NC
+    prompt_color: VtColor = VtColor.NC,
 ) -> Optional[str | Keyboard]:
     """Read a string from standard input.
     :param prompt: The message to be displayed to the user.
@@ -33,9 +32,12 @@ def line_input(
 
 
 if __name__ == "__main__":
+    hist = ["Hugo", "Joao", "Koko", "Hugo"]
+    KeyboardInput.preload_history(hist)
     print("-=" * 30)
     while (i := line_input("What is it? ")) not in ["bye", ""]:
         if isinstance(i, Keyboard):
             print(i)
         else:
             print("Input:", i)
+    print(KeyboardInput.history())
