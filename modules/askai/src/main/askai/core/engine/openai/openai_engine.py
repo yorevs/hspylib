@@ -22,6 +22,7 @@ from typing import Callable, Optional
 import speech_recognition as speech_rec
 from openai import APIError, OpenAI
 
+from askai.core.askai_prompt import AskAiPrompt
 from askai.core.engine.openai.openai_configs import OpenAiConfigs
 from askai.core.engine.openai.openai_model import OpenAIModel
 from askai.core.engine.openai.openai_reply import OpenAIReply
@@ -29,7 +30,7 @@ from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.core.engine.protocols.ai_model import AIModel
 from askai.core.engine.protocols.ai_reply import AIReply
 from askai.utils.cache_service import CacheService as cache
-from askai.utils.utilities import input_mic, play_audio_file, read_prompts
+from askai.utils.utilities import input_mic, play_audio_file
 
 
 class OpenAIEngine(AIEngine):
@@ -43,7 +44,8 @@ class OpenAIEngine(AIEngine):
         self._model_name = model.model_name()
         self._balance = 0
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
-        self._chat_context = read_prompts()
+        self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
+        self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
         cache.read_query_history()
 
     @property
@@ -85,7 +87,7 @@ class OpenAIEngine(AIEngine):
 
     def forget(self) -> None:
         """Forget all of the chat context."""
-        self._chat_context = read_prompts()
+        self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
 
     def text_to_speech(
         self,

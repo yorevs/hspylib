@@ -31,6 +31,7 @@ from hspylib.modules.application.exit_status import ExitStatus
 
 from askai.core.askai_configs import AskAiConfigs
 from askai.core.askai_messages import AskAiMessages
+from askai.core.askai_prompt import AskAiPrompt
 from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.language.language import Language
 from askai.utils.constants import Constants
@@ -69,6 +70,7 @@ class AskAi(metaclass=Singleton):
         self._configs.is_stream = is_stream
         self._configs.is_speak = is_speak
         self._configs.stream_speed = tempo
+        self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
         self.MSG.user = self._user
         self.MSG.nickname = self._engine.nickname()
 
@@ -206,7 +208,8 @@ class AskAi(metaclass=Singleton):
             self.reply(self.MSG.executing())
             cmd_ret, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
             if exit_code == ExitStatus.SUCCESS:
-                self._ask_and_reply(cmd_ret)
+                self.reply(self.MSG.translate(f"The command {command} return with code: {exit_code}"))
+                self._ask_and_reply(self._prompts.cmd_ret(cmd_ret))
             else:
                 self.reply(self.MSG.translate(f"Failed to execute command {command} !"))
         else:
@@ -218,7 +221,9 @@ class AskAi(metaclass=Singleton):
         """
         self.is_processing = True
         if (response := self._engine.ask(query)) and response.is_success():
-            if (reply := response.reply_text()) and (mat := re.match(r".*`{3}bash(.+)`{3}.*", reply.strip().replace('\n', ''), re.I)):
+            if (reply := response.reply_text()) and (
+                mat := re.match(r".*`{3}bash(.+)`{3}.*", reply.strip().replace("\n", ""), re.I)
+            ):
                 self._process_command(mat.group(1))
             else:
                 self.reply(reply)

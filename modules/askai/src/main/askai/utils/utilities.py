@@ -12,14 +12,12 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import glob
 import hashlib
 import logging as log
-import re
 from functools import partial
 from shutil import which
 from time import sleep
-from typing import Callable, List, Dict
+from typing import Callable
 
 import speech_recognition as speech_rec
 from clitt.core.term.commons import Direction, Portion
@@ -152,10 +150,7 @@ def play_sfx(sfx_name: str):
     play_audio_file(filename)
 
 
-def read_prompts() -> List[Dict[str, str]]:
-    prompts = []
-    for ctx in ["system", "user", "assistant"]:
-        for p in glob.glob(f"{PROMPT_DIR}/{ctx}/*.txt"):
-            with open(p) as f_prompt:
-                prompts.append({"role": ctx, "content": "".join(f_prompt.readlines())})
-    return prompts
+def read_prompt(filename: str) -> str:
+    """TODO"""
+    with open(f"{PROMPT_DIR}/{filename}") as f_prompt:
+        return "".join(f_prompt.readlines())
