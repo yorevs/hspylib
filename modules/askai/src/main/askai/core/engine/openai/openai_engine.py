@@ -12,6 +12,16 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import logging as log
+import os
+from functools import partial
+from threading import Thread
+from time import sleep
+from typing import Callable, Optional
+
+import speech_recognition as speech_rec
+from openai import APIError, OpenAI
+
 from askai.core.engine.openai.openai_configs import OpenAiConfigs
 from askai.core.engine.openai.openai_model import OpenAIModel
 from askai.core.engine.openai.openai_reply import OpenAIReply
@@ -19,16 +29,7 @@ from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.core.engine.protocols.ai_model import AIModel
 from askai.core.engine.protocols.ai_reply import AIReply
 from askai.utils.cache_service import CacheService as cache
-from askai.utils.utilities import input_mic, play_audio_file
-from functools import lru_cache, partial
-from openai import APIError, OpenAI
-from threading import Thread
-from time import sleep
-from typing import Callable, Optional
-
-import logging as log
-import os
-import speech_recognition as speech_rec
+from askai.utils.utilities import input_mic, play_audio_file, read_prompts
 
 
 class OpenAIEngine(AIEngine):
@@ -42,7 +43,7 @@ class OpenAIEngine(AIEngine):
         self._model_name = model.model_name()
         self._balance = 0
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
-        self._chat_context = [{"role": "system", "content": "HomSetup thanks you kind AI assistant!"}]
+        self._chat_context = read_prompts()
         cache.read_query_history()
 
     @property
@@ -58,14 +59,15 @@ class OpenAIEngine(AIEngine):
     def nickname(self) -> str:
         return self._nickname
 
-    @lru_cache(maxsize=500)
     def ask(self, question: str) -> AIReply:
         if not (reply := cache.read_reply(question)):
             log.debug('Response not found for: "%s" in cache. Querying AI engine.', question)
             try:
                 self._chat_context.append({"role": "user", "content": question})
                 log.debug(f"Generating AI answer for: {question}")
-                response = self._client.chat.completions.create(model=self._model_name, messages=self._chat_context)
+                response = self._client.chat.completions.create(
+                    model=self._model_name, messages=self._chat_context, temperature=0.0
+                )
                 reply = OpenAIReply(response.choices[0].message.content, True)
                 self._chat_context.append({"role": "assistant", "content": reply.message})
                 cache.save_reply(question, reply.message)
@@ -75,12 +77,15 @@ class OpenAIEngine(AIEngine):
                 reply = OpenAIReply(f"%RED%{error.__class__.__name__} => {body['message']}%NC%", False)
         else:
             log.debug('Response found for: "%s" in cache.', question)
+            reply = OpenAIReply(reply, True)
+            self._chat_context.append({"role": "user", "content": question})
+            self._chat_context.append({"role": "assistant", "content": reply.message})
 
         return reply
 
     def forget(self) -> None:
-        """Forget the chat context and start over."""
-        self._chat_context = [{"role": "system", "content": "HomeSetup thanks you kind AI assistant!"}]
+        """Forget all of the chat context."""
+        self._chat_context = read_prompts()
 
     def text_to_speech(
         self,

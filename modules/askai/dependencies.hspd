@@ -18,6 +18,8 @@ package: retry
 package: requests
 package: argostranslate
 package: soundfile
+package: langchain
+package: langchain-openai
 package: PyAudio
 package: SpeechRecognition
 package: openai-whisper

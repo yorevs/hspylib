@@ -12,28 +12,34 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from askai.__classpath__ import _Classpath
-from askai.exception.exceptions import IntelligibleAudioError, InvalidRecognitionApiError, RecognitionApiRequestError
-from askai.language.language import Language
-from askai.utils.presets import Presets
+import glob
+import hashlib
+import logging as log
+import re
+from functools import partial
+from shutil import which
+from time import sleep
+from typing import Callable, List, Dict
+
+import speech_recognition as speech_rec
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
-from functools import partial
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import ensure_endswith
-from shutil import which
 from speech_recognition import AudioData
-from time import sleep
-from typing import Callable
 
-import hashlib
-import logging as log
-import speech_recognition as speech_rec
+from askai.__classpath__ import _Classpath
+from askai.exception.exceptions import IntelligibleAudioError, InvalidRecognitionApiError, RecognitionApiRequestError
+from askai.language.language import Language
+from askai.utils.presets import Presets
 
 # Sound effects directory.
 SFX_DIR = str(_Classpath.resource_path()) + "/assets/sound-fx"
+
+# AI Prompts directory.
+PROMPT_DIR = str(_Classpath.resource_path()) + "/assets/prompts"
 
 
 def hash_text(text: str) -> str:
@@ -144,3 +150,12 @@ def play_sfx(sfx_name: str):
     filename = f"{SFX_DIR}/{ensure_endswith(sfx_name, '.mp3')}"
     check_argument(file_is_not_empty(filename), f"Sound effects file does not exist: {filename}")
     play_audio_file(filename)
+
+
+def read_prompts() -> List[Dict[str, str]]:
+    prompts = []
+    for ctx in ["system", "user", "assistant"]:
+        for p in glob.glob(f"{PROMPT_DIR}/{ctx}/*.txt"):
+            with open(p) as f_prompt:
+                prompts.append({"role": ctx, "content": "".join(f_prompt.readlines())})
+    return prompts

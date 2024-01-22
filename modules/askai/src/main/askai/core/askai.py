@@ -25,8 +25,8 @@ from typing import List, Optional
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.line_input.line_input import line_input
+from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import ensure_endswith, ensure_startswith
 from hspylib.modules.application.exit_status import ExitStatus
 
 from askai.core.askai_configs import AskAiConfigs
@@ -37,8 +37,10 @@ from askai.utils.constants import Constants
 from askai.utils.utilities import stream
 
 
-class AskAi:
+class AskAi(metaclass=Singleton):
     """Responsible for the OpenAI functionalities."""
+
+    INSTANCE = None
 
     MSG = AskAiMessages.INSTANCE or AskAiMessages()
 
@@ -114,7 +116,7 @@ class AskAi:
     def is_processing(self, processing: bool) -> None:
         msg = self.MSG.wait
         if processing:
-            self._reply(msg)
+            self.reply(msg)
         elif not processing and self._processing is not None and processing != self._processing:
             self._terminal.cursor.move(1, Direction.UP)
             self._terminal.cursor.erase(Portion.LINE)
@@ -132,97 +134,30 @@ class AskAi:
                 sysout(f"%EL0%  {self._user}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
 
-    def _input(self, prompt: str) -> Optional[str]:
-        """Prompt for user input."""
-        ret = line_input(prompt)
-        # Use audio as input method.
-        if self.is_speak and ret == Constants.PUSH_TO_TALK:
-            self._terminal.cursor.erase(Portion.LINE)
-            self._terminal.cursor.move(len(prompt), Direction.LEFT)
-            spoken_text = self._engine.speech_to_text(
-                partial(self._reply, self.MSG.listening), partial(self._reply, self.MSG.transcribing)
-            )
-            if spoken_text:
-                sysout(f"%EL0%  {self._user}: {spoken_text}")
-            return spoken_text
-
-        return ret if not ret or isinstance(ret, str) else ret.val
-
-    def _prompt(self) -> None:
-        """Prompt for user interaction."""
-        self._reply(self.MSG.welcome(self._user))
-        while query := self._input(f"%EL0%  {self._user}: "):
-            if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
-                self._reply(self.MSG.goodbye)
-                break
-            elif cmd_ret := self._process_command(query):
-                self._reply(cmd_ret)
-            else:
-                self._ask_and_reply(query)
-        if not query:
-            self._reply(self.MSG.goodbye)
-        sysout("")
-
-    def _process_command(self, query: str) -> Optional[str]:
-        """Attempt to process command.
-        :param query: The query to process.
-        """
-        cmd_ret = None
-        exe_msg = self.MSG.execute
-        if query.lower().startswith(exe_msg):
-            cmd_line = query[query.lower().index(exe_msg) + len(exe_msg) :].strip()
-            command = cmd_line.split(" ")[0]
-            if which(command):
-                log.debug('Processing command: "%s"', cmd_line)
-                self._reply(self.MSG.executing())
-                cmd_ret, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
-                if exit_code == ExitStatus.SUCCESS:
-                    self._reply(self.MSG.translate(f"Your command return code is {exit_code} and the output:"))
-                    cmd_ret = ensure_startswith(ensure_endswith(cmd_ret, "\n"), "\n\n")
-                else:
-                    cmd_ret = self.MSG.translate(f"Failed to execute command {command} !")
-            else:
-                cmd_ret = self.MSG.translate(f"Command {command} does not exist!")
-        else:
-            log.debug('Question: "%s" is not a COMMAND', query)
-
-        return cmd_ret
-
-    def _ask_and_reply(self, question: str) -> None:
-        """Ask the question and provide the reply.
-        :param question: The question to ask to the AI engine.
-        """
-        self.is_processing = True
-        reply = self._engine.ask(question)
-        if reply.is_success():
-            self._reply(reply.reply_text())
-        else:
-            self._reply_error(reply.reply_text())
-
-    def _reply(self, message: str, speak: bool = True) -> str:
+    def reply(self, message: str, speak: bool = True) -> str:
         """Reply to the user with the AI response.
         :param message: The message to reply to the user.
         :param speak: Whether to speak the reply or not.
         """
         if self.is_stream and speak and self.is_speak:
-            self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=self._stream_text)
+            self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=self.stream_text)
         elif not self.is_stream and speak and self.is_speak:
             self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=sysout)
         elif self.is_stream:
-            self._stream_text(message)
+            self.stream_text(message)
         else:
             message = f"%EL0%  {self._engine.nickname()}: {message}"
             sysout(message)
 
         return message
 
-    def _reply_error(self, error_message: str) -> None:
+    def reply_error(self, error_message: str) -> None:
         """Reply API or system errors.
         :param error_message: The error message to be displayed.
         """
         sysout(f"%EL0%  {self._engine.nickname()}: {error_message}")
 
-    def _stream_text(self, message: str) -> None:
+    def stream_text(self, message: str) -> None:
         """Stream the message using default parameters.
         :param message: The message to be streamed.
         """
@@ -232,3 +167,60 @@ class AskAi:
         stream_thread.start()
         # Block until the text is fully streamed.
         stream_thread.join()
+
+    def _input(self, prompt: str) -> Optional[str]:
+        """Prompt for user input."""
+        ret = line_input(prompt)
+        # Use audio as input method.
+        if self.is_speak and ret == Constants.PUSH_TO_TALK:
+            self._terminal.cursor.erase(Portion.LINE)
+            self._terminal.cursor.move(len(prompt), Direction.LEFT)
+            spoken_text = self._engine.speech_to_text(
+                partial(self.reply, self.MSG.listening), partial(self.reply, self.MSG.transcribing)
+            )
+            if spoken_text:
+                sysout(f"%EL0%  {self._user}: {spoken_text}")
+            return spoken_text
+
+        return ret if not ret or isinstance(ret, str) else ret.val
+
+    def _prompt(self) -> None:
+        """Prompt for user interaction."""
+        self.reply(self.MSG.welcome(self._user))
+        while query := self._input(f"%EL0%  {self._user}: "):
+            if not query or re.match(Constants.TERM_EXPRESSIONS, query.lower()):
+                self.reply(self.MSG.goodbye)
+                break
+            else:
+                self._ask_and_reply(query)
+        if not query:
+            self.reply(self.MSG.goodbye)
+        sysout("")
+
+    def _process_command(self, cmd_line: str) -> None:
+        """Attempt to process command.
+        :param cmd_line: The command line to execute.
+        """
+        if (command := cmd_line.split(" ")[0]) and which(command):
+            log.debug('Processing command: "%s"', cmd_line)
+            self.reply(self.MSG.executing())
+            cmd_ret, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
+            if exit_code == ExitStatus.SUCCESS:
+                self._ask_and_reply(cmd_ret)
+            else:
+                self.reply(self.MSG.translate(f"Failed to execute command {command} !"))
+        else:
+            self.reply(self.MSG.translate(f"Command {command} does not exist!"))
+
+    def _ask_and_reply(self, query: str) -> None:
+        """Ask the question and provide the reply.
+        :param query: The question to ask to the AI engine.
+        """
+        self.is_processing = True
+        if (response := self._engine.ask(query)) and response.is_success():
+            if (reply := response.reply_text()) and (mat := re.match(r".*`{3}bash(.+)`{3}.*", reply.strip().replace('\n', ''), re.I)):
+                self._process_command(mat.group(1))
+            else:
+                self.reply(reply)
+        else:
+            self.reply_error(response.reply_text())
