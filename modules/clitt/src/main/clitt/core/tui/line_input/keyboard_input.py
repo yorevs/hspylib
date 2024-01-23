@@ -47,7 +47,9 @@ class KeyboardInput(TUIComponent):
     @staticmethod
     def forget_history() -> None:
         """Forget all input history entries."""
+        tmp: str = KeyboardInput._HISTORY[0]
         KeyboardInput._HISTORY.clear()
+        KeyboardInput._HISTORY[0] = tmp
 
     @staticmethod
     def history() -> List[str]:
@@ -162,9 +164,14 @@ class KeyboardInput(TUIComponent):
                     self._update_input(
                         self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
                     )
+                case Keyboard.VK_CTRL_F:
+                    self.forget_history()
                 case Keyboard.VK_CTRL_P:
-                    self._update_input(f"{self._input_text}{pyperclip.paste() or ''}")
-                    self._input_index = self.length
+                    text = (pyperclip.paste() or '').replace("\n", "↵")
+                    self._update_input(
+                        self._input_text[: self._input_index] + text + self._input_text[self._input_index :]
+                    )
+                    self._input_index += len(text)
                 case Keyboard.VK_CTRL_R:
                     self._input_index = 0
                     self._update_input("")
@@ -187,6 +194,10 @@ class KeyboardInput(TUIComponent):
                     self._input_index = self.length
                 case Keyboard.VK_DOWN:
                     self._input_text = self._next_in_history()
+                    self._input_index = self.length
+                case Keyboard.VK_HOME:
+                    self._input_index = 0
+                case Keyboard.VK_END:
                     self._input_index = self.length
                 case _ as key if key.val.isprintable():
                     self._update_input(
