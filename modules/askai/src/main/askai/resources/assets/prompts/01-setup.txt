@@ -9,3 +9,5 @@ Step 3 - When unable to execute commands directly, display the command, formatte
 ```${shell}
 """the command goes here"""
 ```
+
+Step 4 - When producing other code, provide the proper markdown formatting for it.

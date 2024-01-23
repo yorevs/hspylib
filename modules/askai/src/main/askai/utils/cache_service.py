@@ -32,9 +32,9 @@ if not AUDIO_DIR.exists():
 class CacheService(metaclass=Singleton):
     """Provide a cache service for previously used queries, audio generation, etc..."""
 
-    _ttl_cache: TTLCache[str] = TTLCache(ttl_minutes=60)
+    _ttl_cache: TTLCache[str] = TTLCache(ttl_minutes=30)
 
-    ASK_AI_CACHE_KEY = "askai-input-cache"
+    ASKAI_INPUT_CACHE_KEY = "askai-input-cache"
 
     @classmethod
     def read_reply(cls, text: str) -> Optional[str]:
@@ -58,7 +58,7 @@ class CacheService(metaclass=Singleton):
     @classmethod
     def read_query_history(cls) -> None:
         """Read the input queries from TTL cache."""
-        hist_str: str = cls._ttl_cache.read(cls.ASK_AI_CACHE_KEY)
+        hist_str: str = cls._ttl_cache.read(cls.ASKAI_INPUT_CACHE_KEY)
         if hist_str:
             hist: List[str] = hist_str.split(",")
             KeyboardInput.preload_history(hist)
@@ -67,4 +67,4 @@ class CacheService(metaclass=Singleton):
     def save_query_history(cls) -> None:
         """Save the line input queries into the TTL cache."""
         hist = KeyboardInput.history()
-        cls._ttl_cache.save(cls.ASK_AI_CACHE_KEY, ",".join(hist))
+        cls._ttl_cache.save(cls.ASKAI_INPUT_CACHE_KEY, ",".join(hist))

@@ -12,6 +12,9 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from clitt.core.term.terminal import Terminal
+from hspylib.core.tools.commons import is_debugging
+
 from askai.__classpath__ import _Classpath
 from askai.core.askai import AskAi
 from askai.core.engine.openai.openai_engine import OpenAIEngine
@@ -126,10 +129,12 @@ class Main(TUIApplication):
 
     def _exec_application(self) -> ExitStatus:
         """Execute the application main flow."""
-        # Terminal.alternate_screen(True)
+        if not is_debugging():
+            Terminal.alternate_screen(True)
         self._ai.run()
-        sleep(1)  # Wait a bit before switching the screen back.
-        # Terminal.alternate_screen(False)
+        if not is_debugging():
+            sleep(1)  # Wait a bit before switching the screen back.
+            Terminal.alternate_screen(False)
 
         return ExitStatus.SUCCESS
 

@@ -24,22 +24,22 @@ class Presets:
     # fmt: off
     _ALL_RESETS = {
         "en": {
-             "words.interval.sec": Template("13.2 * ${base_speed}"),
-            "breath.interval.sec": Template("44 * ${base_speed}"),
+             "words.interval.sec": Template("12.2 * ${base_speed}"),
+            "breath.interval.sec": Template("43 * ${base_speed}"),
             "number.interval.sec": Template("28 * ${base_speed}"),
-             "comma.interval.sec": Template("17 * ${base_speed}"),
+             "comma.interval.sec": Template("26 * ${base_speed}"),
              "punct.interval.sec": Template("32 * ${base_speed}"),
-              "enum.interval.sec": Template("14 * ${base_speed}"),
-            "period.interval.sec": Template("62 * ${base_speed}"),
+              "enum.interval.sec": Template("10 * ${base_speed}"),
+            "period.interval.sec": Template("165 * ${base_speed}"),
         },
         "pt": {
-             "words.interval.sec": Template("13.2 * ${base_speed}"),
-            "breath.interval.sec": Template("44 * ${base_speed}"),
-            "number.interval.sec": Template("28 * ${base_speed}"),
-             "comma.interval.sec": Template("17 * ${base_speed}"),
-             "punct.interval.sec": Template("32 * ${base_speed}"),
-              "enum.interval.sec": Template("14 * ${base_speed}"),
-            "period.interval.sec": Template("62 * ${base_speed}"),
+             "words.interval.sec": Template("8 * ${base_speed}"),
+            "breath.interval.sec": Template("40 * ${base_speed}"),
+            "number.interval.sec": Template("27 * ${base_speed}"),
+             "comma.interval.sec": Template("25 * ${base_speed}"),
+             "punct.interval.sec": Template("31 * ${base_speed}"),
+              "enum.interval.sec": Template("10 * ${base_speed}"),
+            "period.interval.sec": Template("160 * ${base_speed}"),
         }
     }
     # fmt: on

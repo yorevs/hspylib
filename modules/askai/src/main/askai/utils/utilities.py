@@ -26,6 +26,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import ensure_endswith
+from hspylib.modules.cli.vt100.vt_color import VtColor
 from speech_recognition import AudioData
 
 from askai.__classpath__ import _Classpath
@@ -54,6 +55,8 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
     :param tempo: the speed multiplier of the typewriter effect. Defaults to 1.
     :param language: the language used to stream the text.
     """
+
+    reply_str = VtColor.strip_colors(reply_str)
     ln = language.mnemonic.split("_")[0]
     presets = Presets.get(ln, tempo=tempo)
     word_count: int = 0
@@ -69,7 +72,26 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
                 if i + 1 < len(reply_str) and reply_str[i + 1] == "."
                 else presets.number_interval
             )
-        elif char in [":", "-", "\n"]:
+        elif char.isspace():
+            if i - 1 >= 0 and not reply_str[i - 1].isspace():
+                word_count += 1
+                sleep(presets.breath_interval if word_count % 10 == 0 else presets.words_interval)
+            elif i - 1 >= 0 and not reply_str[i - 1] in [".", "?", "!"]:
+                word_count += 1
+                sleep(presets.period_interval if word_count % 10 == 0 else presets.punct_interval)
+        elif char == "/":
+            sleep(
+                presets.base_speed
+                if i + 1 < len(reply_str) and reply_str[i + 1].isnumeric()
+                else presets.punct_interval
+            )
+        elif char == "\n":
+            sleep(
+                presets.period_interval
+                if i + 1 < len(reply_str) and reply_str[i + 1] == '\n'
+                else presets.punct_interval
+            )
+        elif char in [":", "-"]:
             sleep(
                 presets.enum_interval
                 if i + 1 < len(reply_str) and (reply_str[i + 1].isnumeric() or reply_str[i + 1] in [" ", "\n", "-"])
@@ -80,20 +102,7 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
                 presets.comma_interval if i + 1 < len(reply_str) and reply_str[i + 1].isspace() else presets.base_speed
             )
         elif char in [".", "?", "!", "\n"]:
-            sleep(
-                presets.period_interval
-                if i + 1 < len(reply_str)
-                and reply_str[i + 1] in [" ", "\n"]
-                and i - 1 > 0
-                and not reply_str[i - 1].isnumeric()
-                else presets.punct_interval
-            )
-            continue
-        elif char.isspace():
-            if i - 1 >= 0 and not reply_str[i - 1].isspace():
-                word_count += 1
-                sleep(presets.breath_interval if word_count % 10 == 0 else presets.words_interval)
-            continue
+            sleep(presets.punct_interval)
         sleep(presets.base_speed)
     sysout("")
 
@@ -143,14 +152,20 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
         return False
 
 
-def play_sfx(sfx_name: str):
-    """Play a sound effect audio file."""
-    filename = f"{SFX_DIR}/{ensure_endswith(sfx_name, '.mp3')}"
+def play_sfx(filename: str):
+    """Play a sound effect audio file.
+    :param filename: The filename of the sound effect.
+    """
+    filename = f"{SFX_DIR}/{ensure_endswith(filename, '.mp3')}"
     check_argument(file_is_not_empty(filename), f"Sound effects file does not exist: {filename}")
     play_audio_file(filename)
 
 
 def read_prompt(filename: str) -> str:
-    """TODO"""
-    with open(f"{PROMPT_DIR}/{filename}") as f_prompt:
+    """Read the prompt specified by the filename.
+    :param filename: The filename of the prompt.
+    """
+    filename = f"{PROMPT_DIR}/{ensure_endswith(filename, '.txt')}"
+    check_argument(file_is_not_empty(filename), f"Prompt file does not exist: {filename}")
+    with open(filename) as f_prompt:
         return "".join(f_prompt.readlines())

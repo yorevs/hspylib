@@ -14,12 +14,14 @@
 """
 import logging as log
 import os
+import time
 from functools import partial
 from threading import Thread
-from time import sleep
 from typing import Callable, Optional
 
 import speech_recognition as speech_rec
+from hspylib.core.zoned_datetime import now_ms
+from hspylib.modules.cli.vt100.vt_color import VtColor
 from openai import APIError, OpenAI
 
 from askai.core.askai_prompt import AskAiPrompt
@@ -30,7 +32,7 @@ from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.core.engine.protocols.ai_model import AIModel
 from askai.core.engine.protocols.ai_reply import AIReply
 from askai.utils.cache_service import CacheService as cache
-from askai.utils.utilities import input_mic, play_audio_file
+from askai.utils.utilities import input_mic, play_audio_file, play_sfx
 
 
 class OpenAIEngine(AIEngine):
@@ -46,6 +48,7 @@ class OpenAIEngine(AIEngine):
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
+        self._start_delay = None
         cache.read_query_history()
 
     @property
@@ -100,7 +103,7 @@ class OpenAIEngine(AIEngine):
         if not file_exists:
             log.debug(f'Audio file "%s" not found in cache. Querying AI engine.', speech_file_path)
             response = self._client.audio.speech.create(
-                input=text,
+                input=VtColor.strip_colors(text),
                 model=self._configs.tts_model,
                 voice=self._configs.tts_voice,
                 response_format=self._configs.tts_format,
@@ -108,9 +111,13 @@ class OpenAIEngine(AIEngine):
             # Save the audio file locally.
             response.stream_to_file(speech_file_path)
         speak_thread = Thread(daemon=True, target=play_audio_file, args=(speech_file_path, speed))
+        if self._start_delay is None:
+            started = time.time()
+            play_sfx("sample.mp3")
+            self._start_delay = max(0.0, time.time() - started - 1.75)
         speak_thread.start()
         if cb_started:
-            sleep(1)
+            time.sleep(self._start_delay)
             cb_started(text)
         speak_thread.join()  # Block until the speech has finished.
         if cb_finished:
