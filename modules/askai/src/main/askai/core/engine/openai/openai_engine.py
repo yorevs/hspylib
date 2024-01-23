@@ -17,7 +17,7 @@ import os
 import time
 from functools import partial, cached_property
 from threading import Thread
-from typing import Callable, Optional
+from typing import Callable, Optional, List
 
 import speech_recognition as speech_rec
 from hspylib.modules.cli.vt100.vt_color import VtColor
@@ -63,15 +63,25 @@ class OpenAIEngine(AIEngine):
         return self._url
 
     def ai_name(self) -> str:
+        """Get the AI model name."""
         return self.__class__.__name__
 
     def ai_model(self) -> str:
+        """Get the AI model name."""
         return self._model_name
 
     def nickname(self) -> str:
+        """Get the AI engine nickname."""
         return self._nickname
 
+    def models(self) -> List[AIModel]:
+        """Get the list of available models for the engine."""
+        return OpenAIModel.models()
+
     def ask(self, question: str) -> AIReply:
+        """Ask AI assistance for the given question and expect a response.
+        :param question: The question to send to the AI engine.
+        """
         if not (reply := cache_service.read_reply(question)):
             log.debug('Response not found for: "%s" in cache. Querying AI engine.', question)
             try:
@@ -106,6 +116,12 @@ class OpenAIEngine(AIEngine):
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
+        """Text-T0-Speech the provided text.
+        :param text: The text to speech.
+        :param speed: The tempo to play the generated audio [1..3].
+        :param cb_started: The callback function called when the speaker starts.
+        :param cb_finished: The callback function called when the speaker ends.
+        """
         speech_file_path, file_exists = cache_service.get_audio_file(text, self._configs.tts_format)
         if not file_exists:
             log.debug(f'Audio file "%s" not found in cache. Querying AI engine.', speech_file_path)
@@ -126,6 +142,10 @@ class OpenAIEngine(AIEngine):
             cb_finished()
 
     def speech_to_text(self, fn_listening: partial, fn_processing: partial) -> str:
+        """Transcribes audio input from the microphone into the text input language.
+        :param fn_listening: The function to display the listening message.
+        :param fn_processing: The function to display the processing message.
+        """
         text = input_mic(fn_listening, fn_processing, speech_rec.Recognizer.recognize_whisper)
         log.debug(f"Audio transcribed to: {text}")
         return text

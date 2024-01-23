@@ -42,5 +42,6 @@ class OpenAIModel(Enumeration):
     def model_name(self) -> str:
         return self.value
 
-    def models(self) -> List["AIModel"]:
-        return [m.of_value() for m in self.values()]
+    @staticmethod
+    def models() -> List["AIModel"]:
+        return [m.of_value() for m in OpenAIModel.values()]
