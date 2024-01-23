@@ -206,7 +206,7 @@ task install(type: Task) {
           rootProject.space, '--upgrade', moduleDir,
           '--break-system-packages'
         ]
-        println "Installing ${project.name} : '${moduleDir}' using ${rootProject.python}"
+        println "Installing ${project.name} v${project.ext.app_version} using ${rootProject.python}"
         println "Space: ${rootProject.space}"
         exec {
           workingDir "${moduleDir}"

@@ -40,5 +40,4 @@ if __name__ == "__main__":
             print(i)
         else:
             print("Input:", i)
-    KeyboardInput.forget_history()
     print(KeyboardInput.history())
