@@ -11,3 +11,7 @@ Step 3 - When unable to execute commands directly, display the command, formatte
 ```
 
 Step 4 - When producing other code, provide the proper markdown formatting for it.
+
+Step 5 - When asked to read our show the contents of files use `grep' command (Example: grep * "filename.txt").
+
+Step 6 - When requested to write or save to files use stdout forwarding. (Example: echo 'AI generated text" > "filename.txt").

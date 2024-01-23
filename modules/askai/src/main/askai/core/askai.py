@@ -27,7 +27,6 @@ from clitt.core.term.terminal import Terminal
 from clitt.core.tui.line_input.line_input import line_input
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
-from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.modules.application.exit_status import ExitStatus
 
 from askai.core.askai_configs import AskAiConfigs
@@ -227,7 +226,7 @@ class AskAi(metaclass=Singleton):
             if exit_code == ExitStatus.SUCCESS:
                 self._reply(self.MSG.cmd_success(exit_code))
                 if cmd_ret:
-                    self._ask_and_reply(self._prompts.cmd_ret(cmd_ret))
+                    self._ask_and_reply(self._prompts.cmd_out(cmd_ret, cmd_line))
                 else:
                     self._reply(self.MSG.cmd_no_output())
             else:

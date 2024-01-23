@@ -21,7 +21,7 @@ from askai.utils.utilities import read_prompt
 
 
 class AskAiPrompt(metaclass=Singleton):
-    """"""
+    """TODO"""
 
     INSTANCE = None
 
@@ -37,8 +37,9 @@ class AskAiPrompt(metaclass=Singleton):
             os_type=self._os_release
         )
 
-    def cmd_ret(self, output: str) -> str:
+    def cmd_out(self, output: str, cmd_line: str) -> str:
         return self._cmd_ret.substitute(
             shell=self._shell,
-            cmd_ret=output
+            command_output=output,
+            command_line=cmd_line
         )

@@ -88,7 +88,7 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
         elif char == "\n":
             sleep(
                 presets.period_interval
-                if i + 1 < len(reply_str) and reply_str[i + 1] == '\n'
+                if i + 1 < len(reply_str) and reply_str[i + 1] == "\n"
                 else presets.punct_interval
             )
         elif char in [":", "-"]:

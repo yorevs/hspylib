@@ -15,12 +15,11 @@
 import logging as log
 import os
 import time
-from functools import partial
+from functools import partial, cached_property
 from threading import Thread
 from typing import Callable, Optional
 
 import speech_recognition as speech_rec
-from hspylib.core.zoned_datetime import now_ms
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from openai import APIError, OpenAI
 
@@ -48,8 +47,16 @@ class OpenAIEngine(AIEngine):
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
-        self._start_delay = None
+        self._start_delay = self.start_delay
         cache.read_query_history()
+
+    @cached_property
+    def start_delay(self) -> float:
+        """Determine the amount of delay before start streaming the text."""
+        sample_audio_duration = 1.75  # We know the length
+        started = time.time()
+        play_sfx("sample.mp3")
+        return max(0.0, time.time() - started - sample_audio_duration)
 
     @property
     def url(self):
@@ -108,13 +115,8 @@ class OpenAIEngine(AIEngine):
                 voice=self._configs.tts_voice,
                 response_format=self._configs.tts_format,
             )
-            # Save the audio file locally.
-            response.stream_to_file(speech_file_path)
+            response.stream_to_file(speech_file_path)  # Save the audio file locally.
         speak_thread = Thread(daemon=True, target=play_audio_file, args=(speech_file_path, speed))
-        if self._start_delay is None:
-            started = time.time()
-            play_sfx("sample.mp3")
-            self._start_delay = max(0.0, time.time() - started - 1.75)
         speak_thread.start()
         if cb_started:
             time.sleep(self._start_delay)

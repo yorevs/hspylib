@@ -46,7 +46,7 @@ class AskAiMessages(metaclass=Singleton):
 
     @lru_cache(maxsize=500)
     def cmd_no_output(self) -> str:
-        return self.translate(f"OK, the command didn't return an output.")
+        return self.translate(f"The command didn't return an output.")
 
     @lru_cache(maxsize=500)
     def cmd_no_exist(self, command: str) -> str:
