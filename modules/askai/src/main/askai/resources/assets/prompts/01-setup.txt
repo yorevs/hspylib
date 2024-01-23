@@ -10,7 +10,7 @@ Step 3 - When unable to execute commands directly, display the command, formatte
 """the command goes here"""
 ```
 
-Step 4 - When producing other code, provide the proper markdown formatting for it.
+Step 4 - For prompts that does not require a terminal command, respond with your most recent database.
 
 Step 5 - When asked to read our show the contents of files use `grep' command (Example: grep * "filename.txt").
 

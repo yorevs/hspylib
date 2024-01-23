@@ -30,7 +30,7 @@ from askai.core.engine.openai.openai_reply import OpenAIReply
 from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.core.engine.protocols.ai_model import AIModel
 from askai.core.engine.protocols.ai_reply import AIReply
-from askai.utils.cache_service import CacheService as cache
+from askai.utils.cache_service import CacheService as cache_service
 from askai.utils.utilities import input_mic, play_audio_file, play_sfx
 
 
@@ -48,7 +48,7 @@ class OpenAIEngine(AIEngine):
         self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
         self._start_delay = self.start_delay
-        cache.read_query_history()
+        cache_service.read_query_history()
 
     @cached_property
     def start_delay(self) -> float:
@@ -72,7 +72,7 @@ class OpenAIEngine(AIEngine):
         return self._nickname
 
     def ask(self, question: str) -> AIReply:
-        if not (reply := cache.read_reply(question)):
+        if not (reply := cache_service.read_reply(question)):
             log.debug('Response not found for: "%s" in cache. Querying AI engine.', question)
             try:
                 self._chat_context.append({"role": "user", "content": question})
@@ -82,8 +82,8 @@ class OpenAIEngine(AIEngine):
                 )
                 reply = OpenAIReply(response.choices[0].message.content, True)
                 self._chat_context.append({"role": "assistant", "content": reply.message})
-                cache.save_reply(question, reply.message)
-                cache.save_query_history()
+                cache_service.save_reply(question, reply.message)
+                cache_service.save_query_history()
             except APIError as error:
                 body: dict = error.body or {"message": "Message not provided"}
                 reply = OpenAIReply(f"%RED%{error.__class__.__name__} => {body['message']}%NC%", False)
@@ -106,7 +106,7 @@ class OpenAIEngine(AIEngine):
         cb_started: Optional[Callable[[str], None]] = None,
         cb_finished: Optional[Callable] = None,
     ) -> None:
-        speech_file_path, file_exists = cache.get_audio_file(text, self._configs.tts_format)
+        speech_file_path, file_exists = cache_service.get_audio_file(text, self._configs.tts_format)
         if not file_exists:
             log.debug(f'Audio file "%s" not found in cache. Querying AI engine.', speech_file_path)
             response = self._client.audio.speech.create(
