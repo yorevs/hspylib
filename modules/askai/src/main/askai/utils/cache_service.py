@@ -36,11 +36,22 @@ class CacheService(metaclass=Singleton):
 
     ASKAI_INPUT_CACHE_KEY = "askai-input-history"
 
+    DISABLE_CACHE = False
+
+    @classmethod
+    def set_cache_enable(cls, enable: bool) -> bool:
+        """Enable or disable caching. Is does not clear current cached entries, but it does not retrieve or save new
+        ones while not re-enabled."""
+        cls.DISABLE_CACHE = enable
+        return not cls.DISABLE_CACHE
+
     @classmethod
     def read_reply(cls, text: str) -> Optional[str]:
         """Read AI replies from TTL cache.
         :param text: Text to be cached.
         """
+        if cls.DISABLE_CACHE:
+            return None
         key = text.strip().lower()
         return cls._ttl_cache.read(key)
 
@@ -50,29 +61,32 @@ class CacheService(metaclass=Singleton):
         :param text: Text to be cached.
         :param reply: The reply associated to this text.
         """
-        key = text.strip().lower()
-        cls._ttl_cache.save(key, reply)
-
-    @classmethod
-    def get_audio_file(cls, text: str, audio_format: str = "mp3") -> Tuple[str, bool]:
-        """Retrieve the audio filename and whether it exists or not.
-        :param text: Text to be cached.
-        :param audio_format: The audio format used.
-        """
-        key = text.strip().lower()
-        audio_file_path = f"{str(AUDIO_DIR)}/askai-{hash_text(key)}.{audio_format}"
-        return audio_file_path, file_is_not_empty(audio_file_path)
+        if not cls.DISABLE_CACHE:
+            key = text.strip().lower()
+            cls._ttl_cache.save(key, reply)
 
     @classmethod
     def read_query_history(cls) -> None:
         """Read the input queries from TTL cache."""
-        hist_str: str = cls._ttl_cache.read(cls.ASKAI_INPUT_CACHE_KEY)
-        if hist_str:
-            hist: List[str] = hist_str.split(",")
-            KeyboardInput.preload_history(hist)
+        if not cls.DISABLE_CACHE:
+            hist_str: str = cls._ttl_cache.read(cls.ASKAI_INPUT_CACHE_KEY)
+            if hist_str:
+                hist: List[str] = hist_str.split(",")
+                KeyboardInput.preload_history(hist)
 
     @classmethod
     def save_query_history(cls) -> None:
         """Save the line input queries into the TTL cache."""
-        hist = KeyboardInput.history()
-        cls._ttl_cache.save(cls.ASKAI_INPUT_CACHE_KEY, ",".join(hist))
+        if not cls.DISABLE_CACHE:
+            hist = KeyboardInput.history()
+            cls._ttl_cache.save(cls.ASKAI_INPUT_CACHE_KEY, ",".join(hist))
+
+    @classmethod
+    def get_audio_file(cls, text: str, audio_format: str = "mp3") -> Tuple[str, bool]:
+        """Retrieve the audio file path and whether it exists or not.
+        :param text: Text to be cached. This is the text that the audio is speaking.
+        :param audio_format: The audio format used.
+        """
+        key = text.strip().lower()
+        audio_file_path = f"{str(AUDIO_DIR)}/askai-{hash_text(key)}.{audio_format}"
+        return audio_file_path, (not cls.DISABLE_CACHE) and file_is_not_empty(audio_file_path)
