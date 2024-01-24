@@ -34,23 +34,31 @@ class CacheService(metaclass=Singleton):
 
     _ttl_cache: TTLCache[str] = TTLCache(ttl_minutes=30)
 
-    ASKAI_INPUT_CACHE_KEY = "askai-input-cache"
+    ASKAI_INPUT_CACHE_KEY = "askai-input-history"
 
     @classmethod
     def read_reply(cls, text: str) -> Optional[str]:
-        """Read AI replies from TTL cache."""
+        """Read AI replies from TTL cache.
+        :param text: Text to be cached.
+        """
         key = text.strip().lower()
         return cls._ttl_cache.read(key)
 
     @classmethod
     def save_reply(cls, text: str, reply: str) -> None:
-        """Save a AI reply into the TTL cache."""
+        """Save a AI reply into the TTL cache.
+        :param text: Text to be cached.
+        :param reply: The reply associated to this text.
+        """
         key = text.strip().lower()
         cls._ttl_cache.save(key, reply)
 
     @classmethod
     def get_audio_file(cls, text: str, audio_format: str = "mp3") -> Tuple[str, bool]:
-        """Retrieve the audio filename and whether it exists or not."""
+        """Retrieve the audio filename and whether it exists or not.
+        :param text: Text to be cached.
+        :param audio_format: The audio format used.
+        """
         key = text.strip().lower()
         audio_file_path = f"{str(AUDIO_DIR)}/askai-{hash_text(key)}.{audio_format}"
         return audio_file_path, file_is_not_empty(audio_file_path)

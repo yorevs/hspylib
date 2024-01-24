@@ -149,7 +149,8 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
         return True
     except FileNotFoundError:
         log.error("ffplay is not installed, speech is disabled!")
-        return False
+
+    return False
 
 
 def play_sfx(filename: str):

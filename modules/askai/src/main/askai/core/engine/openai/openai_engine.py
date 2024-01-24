@@ -39,15 +39,15 @@ class OpenAIEngine(AIEngine):
 
     def __init__(self, model: AIModel = OpenAIModel.GPT_3_5_TURBO):
         super().__init__()
+        self._nickname = "ChatGPT"
         self._url = "https://api.openai.com/v1/chat/completions"
         self._configs: OpenAiConfigs = OpenAiConfigs()
-        self._nickname = "ChatGPT"
-        self._model_name = model.model_name()
-        self._balance = 0
-        self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
+        self._balance = 0
+        self._model_name = model.model_name()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
         self._start_delay = self.start_delay
+        self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         cache_service.read_query_history()
 
     @cached_property

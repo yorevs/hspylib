@@ -124,7 +124,7 @@ class AskAi(metaclass=Singleton):
 
     @is_processing.setter
     def is_processing(self, processing: bool) -> None:
-        msg = self.MSG.wait
+        msg = self.MSG.wait()
         if processing:
             self._reply(msg)
         elif not processing and self._processing is not None and processing != self._processing:
@@ -173,12 +173,12 @@ class AskAi(metaclass=Singleton):
             if not query:
                 continue
             elif re.match(Constants.TERM_EXPRESSIONS, query.lower()):
-                self._reply(self.MSG.goodbye)
+                self._reply(self.MSG.goodbye())
                 break
             else:
                 self._ask_and_reply(query)
         if not query:
-            self._reply(self.MSG.goodbye)
+            self._reply(self.MSG.goodbye())
         sysout("")
 
     def _reply(self, message: str, speak: bool = True) -> str:

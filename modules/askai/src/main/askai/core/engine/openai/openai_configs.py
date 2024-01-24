@@ -19,7 +19,7 @@ from typing import Literal
 
 
 class OpenAiConfigs(metaclass=Singleton):
-    """TODO"""
+    """Provides access to OpenAI configurations."""
 
     INSTANCE = None
 

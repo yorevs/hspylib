@@ -12,16 +12,16 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from functools import lru_cache
 from string import Template
 from textwrap import dedent
 
-import functools
-
 
 class Presets:
-    """TODO"""
+    """Provides text streaming presets according to the language used."""
 
     # fmt: off
+
     _ALL_RESETS = {
         "en": {
              "words.interval.sec": Template("12.2 * ${base_speed}"),
@@ -42,10 +42,11 @@ class Presets:
             "period.interval.sec": Template("160 * ${base_speed}"),
         }
     }
+
     # fmt: on
 
     @classmethod
-    @functools.lru_cache(maxsize=125)
+    @lru_cache(maxsize=125)
     def get(cls, lang: str = "en", tempo: int = 1, base_interval: float = 0.010) -> "Presets":
         base_speed = base_interval / max(1, tempo)
         presets = cls._ALL_RESETS[lang] if hasattr(cls._ALL_RESETS, lang) else cls._ALL_RESETS["en"]
@@ -100,40 +101,32 @@ class Presets:
 
     @property
     def base_speed(self) -> float:
-        """TODO"""
         return self._base_speed
 
     @property
     def words_interval(self) -> float:
-        """TODO"""
         return self._words_interval
 
     @property
     def breath_interval(self) -> float:
-        """TODO"""
         return self._breath_interval
 
     @property
     def number_interval(self) -> float:
-        """TODO"""
         return self._number_interval
 
     @property
     def comma_interval(self) -> float:
-        """TODO"""
         return self._comma_interval
 
     @property
     def punct_interval(self) -> float:
-        """TODO"""
         return self._punct_interval
 
     @property
     def enum_interval(self) -> float:
-        """TODO"""
         return self._enum_interval
 
     @property
     def period_interval(self) -> float:
-        """TODO"""
         return self._period_interval

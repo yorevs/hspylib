@@ -143,7 +143,9 @@ class Language(Enumeration):
 
     @staticmethod
     def of_locale(locale: str | Tuple[str, str]) -> "Language":
-        """Create a Language object based on a locale string or tuple containing the language code and encoding."""
+        """Create a Language object based on a locale string or tuple containing the language code and encoding.
+        :param locale: The locale to parse.
+        """
         # Replace possible 'loc:charset' values
         loc_enc = locale if isinstance(locale, tuple) else locale.replace(":", ".").split(".")
         lang = get_or_default(loc_enc, 0, Language.EN_US.mnemonic)

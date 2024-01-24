@@ -23,12 +23,14 @@ class OpenAIReply(AIReply):
         self._message = message
         self._is_success = is_success
 
-    def reply_text(self) -> str:
-        return self._message
-
-    def is_success(self) -> bool:
-        return self._is_success
-
     @property
     def message(self) -> str:
         return self._message
+
+    def reply_text(self) -> str:
+        """Get the retrieved reply message."""
+        return self._message
+
+    def is_success(self) -> bool:
+        """Whether this is a success reply."""
+        return self._is_success

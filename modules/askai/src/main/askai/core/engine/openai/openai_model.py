@@ -18,7 +18,7 @@ from typing import List
 
 
 class OpenAIModel(Enumeration):
-    """Enumeration for the supported OpenAi models."""
+    """Enumeration for the supported OpenAi models. Implements the AIModel protocol."""
 
     # ID of the model to use. Currently, only the values below are supported:
 
@@ -40,6 +40,7 @@ class OpenAIModel(Enumeration):
     # fmt: on
 
     def model_name(self) -> str:
+        """Get the official model's name."""
         return self.value
 
     @staticmethod
