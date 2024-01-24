@@ -34,6 +34,7 @@ from askai.core.askai_messages import AskAiMessages
 from askai.core.askai_prompt import AskAiPrompt
 from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.language.language import Language
+from askai.utils.cache_service import CacheService
 from askai.utils.constants import Constants
 from askai.utils.utilities import stream
 
@@ -86,6 +87,7 @@ class AskAi(metaclass=Singleton):
             f"Interactive: ON %EOL%"
             f"  Streaming: {'ON' if self.is_stream else 'OFF'} %EOL%"
             f"   Speaking: {'ON' if self.is_speak else 'OFF'} %EOL%"
+            f"    Caching: {'ON' if CacheService.is_cache_enabled() else 'OFF'} %EOL%"
             f"      Tempo: {self.stream_speed} %EOL%"
             f"{'--' * 40} %EOL%%NC%"
         )
@@ -142,7 +144,7 @@ class AskAi(metaclass=Singleton):
             if not re.match(Constants.TERM_EXPRESSIONS, self._query_string.lower()):
                 sysout("", end="")
                 sysout(f"{self.user}: {self._query_string}")
-                self._ask_and_reply(self._query_string)
+                self._ask_and_reply(self._query_string, True)
 
     def _input(self, prompt: str) -> Optional[str]:
         """Prompt for user input.
@@ -176,7 +178,7 @@ class AskAi(metaclass=Singleton):
                 self._reply(self.MSG.goodbye())
                 break
             else:
-                self._ask_and_reply(query)
+                self._ask_and_reply(query, True)
         if not query:
             self._reply(self.MSG.goodbye())
         sysout("")
@@ -226,7 +228,7 @@ class AskAi(metaclass=Singleton):
             if exit_code == ExitStatus.SUCCESS:
                 self._reply(self.MSG.cmd_success(exit_code))
                 if cmd_ret:
-                    self._ask_and_reply(self._prompts.cmd_out(cmd_ret, cmd_line))
+                    self._ask_and_reply(self._prompts.cmd_out(cmd_ret, cmd_line), False)
                 else:
                     self._reply(self.MSG.cmd_no_output())
             else:
@@ -234,11 +236,13 @@ class AskAi(metaclass=Singleton):
         else:
             self._reply(self.MSG.cmd_no_exist(command))
 
-    def _ask_and_reply(self, query: str) -> None:
+    def _ask_and_reply(self, query: str, is_user_input: bool) -> None:
         """Ask the question and provide the reply.
         :param query: The question to ask to the AI engine.
         """
         self.is_processing = True
+        if not is_user_input:
+            query = self._prompts.query(query)
         if (response := self._engine.ask(query)) and response.is_success():
             if (reply := response.reply_text()) and (
                 mat := re.match(r".*`{3}(bash|zsh)(.+)`{3}.*", reply.strip().replace("\n", ""), re.I | re.M)

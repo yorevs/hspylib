@@ -28,7 +28,8 @@ class AskAiPrompt(metaclass=Singleton):
 
     def __init__(self):
         self._setup = Template(read_prompt("01-setup.txt"))
-        self._cmd_ret = Template(read_prompt("02-cmd-out.txt"))
+        self._query_id = Template(read_prompt("02-query.txt"))
+        self._cmd_out = Template(read_prompt("03-cmd-out.txt"))
         self._shell = os.getenv("HHS_MY_SHELL", "bash")
         self._os_release = os.getenv("HHS_MY_OS_RELEASE", "linux")
 
@@ -41,8 +42,14 @@ class AskAiPrompt(metaclass=Singleton):
 
     @lru_cache
     def cmd_out(self, output: str, cmd_line: str) -> str:
-        return self._cmd_ret.substitute(
+        return self._cmd_out.substitute(
             shell=self._shell,
             command_output=output,
             command_line=cmd_line
+        )
+
+    @lru_cache
+    def query(self, query: str) -> str:
+        return self._query_id.substitute(
+            query_string=query
         )

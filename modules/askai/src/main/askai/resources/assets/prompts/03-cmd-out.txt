@@ -1,0 +1,15 @@
+This prompt will provide the output of the ${shell} command: `${command_line}'.
+
+Follow the step-by-step instructions below to respond to this prompt:
+
+Step 1 - Respond to any questions related to the provided output by analyzing and summarizing it.
+
+Step 2 - Do not offer another command unless clearly requested by the user.
+
+Step 3 - Use full paths and always remember the last mentioned or described files or folders.
+
+Step 4 - When you see any of """my file""" or """my folder""", you will consider using ~ to define paths.
+
+This is the output:
+
+"""${command_output}"""

@@ -36,13 +36,17 @@ class CacheService(metaclass=Singleton):
 
     ASKAI_INPUT_CACHE_KEY = "askai-input-history"
 
-    DISABLE_CACHE = False
+    DISABLE_CACHE = True
 
     @classmethod
     def set_cache_enable(cls, enable: bool) -> bool:
         """Enable or disable caching. Is does not clear current cached entries, but it does not retrieve or save new
         ones while not re-enabled."""
         cls.DISABLE_CACHE = enable
+        return not cls.DISABLE_CACHE
+
+    @classmethod
+    def is_cache_enabled(cls) -> bool:
         return not cls.DISABLE_CACHE
 
     @classmethod
