@@ -17,17 +17,16 @@ import logging as log
 import os
 import re
 import sys
-from functools import partial
-from shutil import which
-from threading import Thread
-from typing import List, Optional
-
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.line_input.line_input import line_input
+from functools import partial
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
+from shutil import which
+from threading import Thread
+from typing import List, Optional
 
 from askai.core.askai_configs import AskAiConfigs
 from askai.core.askai_messages import AskAiMessages
@@ -167,7 +166,8 @@ class AskAi(metaclass=Singleton):
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(prompt), Direction.LEFT)
             spoken_text = self._engine.speech_to_text(
-                partial(self._reply, self.MSG.listening()), partial(self._reply, self.MSG.transcribing())
+                partial(self._reply, self.MSG.listening()),
+                partial(self._reply, self.MSG.transcribing())
             )
             if spoken_text:
                 sysout(f"{self.user}: {spoken_text}")

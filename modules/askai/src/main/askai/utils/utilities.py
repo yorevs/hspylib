@@ -14,20 +14,18 @@
 """
 import hashlib
 import logging as log
-from functools import partial
-from shutil import which
-from time import sleep
-from typing import Callable
-
-import speech_recognition as speech_rec
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
+from functools import partial
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.modules.cli.vt100.vt_color import VtColor
-from speech_recognition import AudioData
+from shutil import which
+from speech_recognition import AudioData, Recognizer, Microphone, UnknownValueError, RequestError
+from time import sleep
+from typing import Callable
 
 from askai.__classpath__ import _Classpath
 from askai.exception.exceptions import IntelligibleAudioError, InvalidRecognitionApiError, RecognitionApiRequestError
@@ -48,7 +46,11 @@ def hash_text(text: str) -> str:
     return hashlib.md5(text.encode(Charset.UTF_8.val)).hexdigest()
 
 
-def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) -> None:
+def stream(
+    reply_str: str,
+    tempo: int = 1,
+    language: Language = Language.EN_US
+) -> None:
     """Stream the response from the AI Engine. Simulates a typewriter effect. The following presets were
     benchmarked according to the selected speaker engine and language.
     :param reply_str: the text to stream.
@@ -107,17 +109,21 @@ def stream(reply_str: str, tempo: int = 1, language: Language = Language.EN_US) 
     sysout("")
 
 
-def input_mic(fn_listening: partial, fn_processing: partial, fn_recognition: Callable[[AudioData], str]) -> str:
+def input_mic(
+    fn_listening: partial,
+    fn_processing: partial,
+    fn_recognition: Callable[[AudioData], str]
+) -> str:
     """Listen to the microphone and transcribe the speech into text.
     :param fn_listening: The function to display the listening message.
     :param fn_processing: The function to display the processing message.
     :param fn_recognition: The AI engine API to use to recognize the speech.
     """
-    rec: speech_rec.Recognizer = speech_rec.Recognizer()
-    with speech_rec.Microphone() as source:
-        rec.adjust_for_ambient_noise(source, duration=1)
+    rec: Recognizer = Recognizer()
+    with Microphone() as source:
+        rec.adjust_for_ambient_noise(source, duration=1.5)
         msg = fn_listening()
-        audio: AudioData = rec.listen(source)
+        audio: AudioData = rec.listen(source, timeout=5, phrase_time_limit=5)
         Terminal.INSTANCE.cursor.move(1, Direction.UP)
         Terminal.INSTANCE.cursor.erase(Portion.LINE)
         Terminal.INSTANCE.cursor.move(len(msg), Direction.LEFT)
@@ -127,9 +133,9 @@ def input_mic(fn_listening: partial, fn_processing: partial, fn_recognition: Cal
             if recognizer_api and isinstance(recognizer_api, Callable):
                 return recognizer_api(audio).strip()
             raise InvalidRecognitionApiError(str(fn_recognition or "<none>"))
-        except speech_rec.UnknownValueError as err:
+        except UnknownValueError as err:
             raise IntelligibleAudioError(str(err)) from err
-        except speech_rec.RequestError as err:
+        except RequestError as err:
             raise RecognitionApiRequestError(str(err))
         finally:
             Terminal.INSTANCE.cursor.move(1, Direction.UP)
@@ -137,14 +143,14 @@ def input_mic(fn_listening: partial, fn_processing: partial, fn_recognition: Cal
             Terminal.INSTANCE.cursor.move(len(msg), Direction.LEFT)
 
 
-def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
+def play_audio_file(path_to_audio_file: str, tempo: int = 1) -> bool:
     """Play the specified mp3 file using ffplay (ffmpeg) application.
     :param path_to_audio_file: the path to the mp3 file to be played.
-    :param speed: the playing speed.
+    :param tempo: the playing speed.
     """
     check_argument(which("ffplay") and file_is_not_empty(path_to_audio_file))
     try:
-        Terminal.shell_exec(f'ffplay -af "atempo={speed}" -v 0 -nodisp -autoexit {path_to_audio_file}')
+        Terminal.shell_exec(f'ffplay -af "atempo={tempo}" -v 0 -nodisp -autoexit {path_to_audio_file}')
         return True
     except FileNotFoundError:
         log.error("ffplay is not installed, speech is disabled!")
@@ -152,13 +158,14 @@ def play_audio_file(path_to_audio_file: str, speed: int = 1) -> bool:
     return False
 
 
-def play_sfx(filename: str):
+def play_sfx(filename: str) -> bool:
     """Play a sound effect audio file.
     :param filename: The filename of the sound effect.
     """
     filename = f"{SFX_DIR}/{ensure_endswith(filename, '.mp3')}"
     check_argument(file_is_not_empty(filename), f"Sound effects file does not exist: {filename}")
-    play_audio_file(filename)
+
+    return play_audio_file(filename)
 
 
 def read_prompt(filename: str) -> str:
