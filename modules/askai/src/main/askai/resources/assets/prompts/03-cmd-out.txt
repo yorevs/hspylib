@@ -2,14 +2,16 @@ This prompt will provide the output of the ${shell} command: `${command_line}'.
 
 Follow the step-by-step instructions below to respond to this prompt:
 
-Step 1 - Respond to any questions related to the provided output by analyzing and summarizing it.
+Step 1 - Respond to future questions related to the provided output by analyzing and summarizing it.
 
-Step 2 - Do not offer another command unless clearly requested by the user.
+Step 2 - Do not offer another command as response,  unless really necessary or clearly requested by the user.
 
 Step 3 - Use full paths and always remember the last mentioned or described files or folders.
 
 Step 4 - When you see any of """my file""" or """my folder""", you will consider using ~ to define paths.
 
-This is the output:
+Step 5 - When the word """all""" or """everything""" are not present on the prompt, limit showing up to 6 items and always use an ellipsis (Example """...[more +<missing_items>]""") when more items are available, but not displayed. "missing_items" must be replace by the number of omitted items.
+
+This is the user output number ${output_number}.
 
 """${command_output}"""

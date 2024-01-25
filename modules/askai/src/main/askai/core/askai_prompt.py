@@ -41,15 +41,17 @@ class AskAiPrompt(metaclass=Singleton):
         )
 
     @lru_cache
-    def cmd_out(self, output: str, cmd_line: str) -> str:
+    def cmd_out(self, number: int, output: str, cmd_line: str) -> str:
         return self._cmd_out.substitute(
             shell=self._shell,
+            output_number=number,
             command_output=output,
             command_line=cmd_line
         )
 
     @lru_cache
-    def query(self, query: str) -> str:
+    def query(self, number: int, query: str) -> str:
         return self._query_id.substitute(
+            query_number=number,
             query_string=query
         )

@@ -46,7 +46,6 @@ class OpenAIEngine(AIEngine):
         self._balance = 0
         self._model_name = model.model_name()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
-        self._start_delay = self.start_delay
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         cache_service.read_query_history()
 
@@ -135,7 +134,7 @@ class OpenAIEngine(AIEngine):
         speak_thread = Thread(daemon=True, target=play_audio_file, args=(speech_file_path, speed))
         speak_thread.start()
         if cb_started:
-            time.sleep(self._start_delay)
+            time.sleep(self.start_delay)
             cb_started(text)
         speak_thread.join()  # Block until the speech has finished.
         if cb_finished:

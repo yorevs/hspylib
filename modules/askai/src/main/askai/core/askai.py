@@ -69,6 +69,8 @@ class AskAi(metaclass=Singleton):
         self._user: str = os.getenv("USER", "you")
         self._done: bool = False
         self._processing: bool | None = None
+        self._cmd_num = 0
+        self._query_num = 0
         self._configs.is_stream = is_stream
         self._configs.is_speak = is_speak
         self._configs.stream_speed = tempo
@@ -123,6 +125,16 @@ class AskAi(metaclass=Singleton):
     @property
     def engine(self) -> str:
         return f"%EL0%  {self._engine.nickname()}"
+
+    @property
+    def cmd_num(self) -> int:
+        self._cmd_num += 1
+        return self._cmd_num
+
+    @property
+    def query_num(self) -> int:
+        self._query_num += 1
+        return self._query_num
 
     @is_processing.setter
     def is_processing(self, processing: bool) -> None:
@@ -188,6 +200,7 @@ class AskAi(metaclass=Singleton):
         :param message: The message to reply to the user.
         :param speak: Whether to speak the reply or not.
         """
+        self.is_processing = False
         if self.is_stream and speak and self.is_speak:
             self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=self._stream_text)
         elif not self.is_stream and speak and self.is_speak:
@@ -210,7 +223,6 @@ class AskAi(metaclass=Singleton):
         """Stream the message using default parameters.
         :param message: The message to be streamed.
         """
-        self.is_processing = False
         sysout(f"{self.engine}: ", end="")
         stream_thread = Thread(target=stream, args=(message, self._configs.stream_speed))
         stream_thread.start()
@@ -228,7 +240,7 @@ class AskAi(metaclass=Singleton):
             if exit_code == ExitStatus.SUCCESS:
                 self._reply(self.MSG.cmd_success(exit_code))
                 if cmd_ret:
-                    self._ask_and_reply(self._prompts.cmd_out(cmd_ret, cmd_line), False)
+                    self._ask_and_reply(self._prompts.cmd_out(self.cmd_num, cmd_ret, cmd_line), False)
                 else:
                     self._reply(self.MSG.cmd_no_output())
             else:
@@ -241,8 +253,8 @@ class AskAi(metaclass=Singleton):
         :param query: The question to ask to the AI engine.
         """
         self.is_processing = True
-        if not is_user_input:
-            query = self._prompts.query(query)
+        if is_user_input:
+            query = self._prompts.query(self.query_num, query)
         if (response := self._engine.ask(query)) and response.is_success():
             if (reply := response.reply_text()) and (
                 mat := re.match(r".*`{3}(bash|zsh)(.+)`{3}.*", reply.strip().replace("\n", ""), re.I | re.M)
