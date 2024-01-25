@@ -125,8 +125,7 @@ def input_mic(fn_listening: partial, fn_processing: partial, fn_recognition: Cal
         try:
             recognizer_api = getattr(rec, fn_recognition.__name__)
             if recognizer_api and isinstance(recognizer_api, Callable):
-                text = recognizer_api(audio)
-                return text.strip()
+                return recognizer_api(audio).strip()
             raise InvalidRecognitionApiError(str(fn_recognition or "<none>"))
         except speech_rec.UnknownValueError as err:
             raise IntelligibleAudioError(str(err)) from err

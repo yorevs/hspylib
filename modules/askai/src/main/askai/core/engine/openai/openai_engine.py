@@ -52,10 +52,14 @@ class OpenAIEngine(AIEngine):
     @cached_property
     def start_delay(self) -> float:
         """Determine the amount of delay before start streaming the text."""
+        log.debug("Determining the start delay")
         sample_audio_duration = 1.75  # We know the length
         started = time.time()
         play_sfx("sample.mp3")
-        return max(0.0, time.time() - started - sample_audio_duration)
+        delay = max(0.0, time.time() - started - sample_audio_duration)
+        log.debug("Detected delay of %s seconds", delay)
+
+        return delay
 
     @property
     def url(self):
