@@ -167,7 +167,7 @@ class AskAi(metaclass=Singleton):
             self._terminal.cursor.erase(Portion.LINE)
             self._terminal.cursor.move(len(prompt), Direction.LEFT)
             spoken_text = self._engine.speech_to_text(
-                partial(self._reply, self.MSG.listening), partial(self._reply, self.MSG.transcribing)
+                partial(self._reply, self.MSG.listening()), partial(self._reply, self.MSG.transcribing())
             )
             if spoken_text:
                 sysout(f"{self.user}: {spoken_text}")
