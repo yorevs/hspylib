@@ -223,9 +223,9 @@ class AskAi(metaclass=Singleton):
         :param cmd_line: The command line to execute.
         """
         if (command := cmd_line.split(" ")[0]) and which(command):
-            log.debug("Processing command `%s'", cmd_line)
-            self._reply(self.MSG.executing(cmd_line))
             cmd_line = cmd_line.replace("~", os.getenv("HOME"))
+            self._reply(self.MSG.executing(cmd_line))
+            log.debug("Processing command `%s'", cmd_line)
             output, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
             if exit_code == ExitStatus.SUCCESS:
                 self._reply(self.MSG.cmd_success(exit_code))

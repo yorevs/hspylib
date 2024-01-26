@@ -27,7 +27,7 @@ class AskAiPrompt(metaclass=Singleton):
     def __init__(self):
         self._shell = os.getenv("HHS_MY_SHELL", "bash")
         self._os_type = os.getenv("HHS_MY_OS_RELEASE", "linux")
-        self._setup = Template(read_prompt("01-setup-new.txt"))
+        self._setup = Template(read_prompt("01-setup.txt"))
         self._query = Template(read_prompt("02-query.txt"))
         self._output = Template(read_prompt("03-cmd-out.txt"))
 

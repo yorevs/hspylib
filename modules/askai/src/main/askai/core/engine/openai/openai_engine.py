@@ -14,14 +14,13 @@
 """
 import logging as log
 import os
+import speech_recognition as speech_rec
 import time
 from functools import partial, cached_property
-from threading import Thread
-from typing import Callable, Optional, List
-
-import speech_recognition as speech_rec
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from openai import APIError, OpenAI
+from threading import Thread
+from typing import Callable, Optional, List
 
 from askai.core.askai_prompt import AskAiPrompt
 from askai.core.engine.openai.openai_configs import OpenAiConfigs
@@ -91,7 +90,8 @@ class OpenAIEngine(AIEngine):
                 self._chat_context.append({"role": "user", "content": question})
                 log.debug(f"Generating AI answer for: {question}")
                 response = self._client.chat.completions.create(
-                    model=self._model_name, messages=self._chat_context, temperature=0.0
+                    model=self._model_name, messages=self._chat_context,
+                    temperature=0.0, top_p=0.0
                 )
                 reply = OpenAIReply(response.choices[0].message.content, True)
                 self._chat_context.append({"role": "assistant", "content": reply.message})
