@@ -13,10 +13,8 @@
    Copyright·(c)·2024,·HSPyLib
 """
 import os
-from functools import lru_cache
-from string import Template
-
 from hspylib.core.metaclass.singleton import Singleton
+from string import Template
 
 from askai.utils.utilities import read_prompt
 
@@ -27,31 +25,24 @@ class AskAiPrompt(metaclass=Singleton):
     INSTANCE = None
 
     def __init__(self):
-        self._setup = Template(read_prompt("01-setup.txt"))
-        self._query_id = Template(read_prompt("02-query.txt"))
-        self._cmd_out = Template(read_prompt("03-cmd-out.txt"))
         self._shell = os.getenv("HHS_MY_SHELL", "bash")
-        self._os_release = os.getenv("HHS_MY_OS_RELEASE", "linux")
+        self._os_type = os.getenv("HHS_MY_OS_RELEASE", "linux")
+        self._setup = Template(read_prompt("01-setup-new.txt"))
+        self._query = Template(read_prompt("02-query.txt"))
+        self._output = Template(read_prompt("03-cmd-out.txt"))
 
-    @lru_cache
     def setup(self) -> str:
         return self._setup.substitute(
             shell=self._shell,
-            os_type=self._os_release
+            os_type=self._os_type
         )
 
-    @lru_cache
-    def cmd_out(self, number: int, output: str, cmd_line: str) -> str:
-        return self._cmd_out.substitute(
-            shell=self._shell,
-            output_number=number,
-            command_output=output,
-            command_line=cmd_line
+    def cmd_out(self, command_output: str) -> str:
+        return self._output.substitute(
+            command_output=command_output,
         )
 
-    @lru_cache
-    def query(self, number: int, query: str) -> str:
-        return self._query_id.substitute(
-            query_number=number,
-            query_string=query
+    def query(self, query_string: str) -> str:
+        return self._query.substitute(
+            query_string=query_string
         )

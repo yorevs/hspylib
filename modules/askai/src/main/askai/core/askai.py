@@ -125,16 +125,6 @@ class AskAi(metaclass=Singleton):
     def engine(self) -> str:
         return f"%EL0%  {self._engine.nickname()}"
 
-    @property
-    def cmd_num(self) -> int:
-        self._cmd_num += 1
-        return self._cmd_num
-
-    @property
-    def query_num(self) -> int:
-        self._query_num += 1
-        return self._query_num
-
     @is_processing.setter
     def is_processing(self, processing: bool) -> None:
         msg = self.MSG.wait()
@@ -236,11 +226,11 @@ class AskAi(metaclass=Singleton):
             log.debug("Processing command `%s'", cmd_line)
             self._reply(self.MSG.executing(cmd_line))
             cmd_line = cmd_line.replace("~", os.getenv("HOME"))
-            cmd_ret, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
+            output, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
             if exit_code == ExitStatus.SUCCESS:
                 self._reply(self.MSG.cmd_success(exit_code))
-                if cmd_ret:
-                    self._ask_and_reply(self._prompts.cmd_out(self.cmd_num, cmd_ret, cmd_line), False)
+                if output:
+                    self._ask_and_reply(self._prompts.cmd_out(output), False)
                 else:
                     self._reply(self.MSG.cmd_no_output())
             else:
@@ -254,7 +244,7 @@ class AskAi(metaclass=Singleton):
         """
         self.is_processing = True
         if is_user_input:
-            query = self._prompts.query(self.query_num, query)
+            query = self._prompts.query(query)
         if (response := self._engine.ask(query)) and response.is_success():
             if (reply := response.reply_text()) and (
                 mat := re.match(r".*`{3}(bash|zsh)(.+)`{3}.*", reply.strip().replace("\n", ""), re.I | re.M)

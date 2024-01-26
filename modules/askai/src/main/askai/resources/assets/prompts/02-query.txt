@@ -1,11 +1,1 @@
-You must following the step-by-step instructions below before responding to the query:
-
-Step 1 - Always prefer using previously provided users prompts (in chat history) before generating a new terminal command to find the information.
-
-Step 2 - For each prompt, provide a summarized and accessible description of it's content, aiming for STT reproduction.
-
-Step 3 - For each prompt with an attachment, inquire about how you wish to proceed in understanding that content, considering the inherent limitations of STT communication.
-
-This is the user query number ${query_number}.
-
-"""${query_string}"""
+${query_string}
