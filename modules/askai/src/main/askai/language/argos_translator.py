@@ -22,7 +22,7 @@ class ArgosTranslator(metaclass=Singleton):
         :param source: The source language.
         :param target: The target language.
         """
-        lang = f"{source.shortname} -> {target.shortname}"
+        lang = f"{source.name} -> {target.name}"
         log.debug(f"Translating from: {source} to: {target}")
         source_lang = [
             model for model in translate.get_installed_languages() if lang in map(repr, model.translations_from)
@@ -39,15 +39,15 @@ class ArgosTranslator(metaclass=Singleton):
     def __init__(self, from_idiom: Language, to_idiom: Language):
         self._from_idiom: Language = from_idiom
         self._to_idiom: Language = to_idiom
-        self._argos_model = self._get_argos_model(from_idiom, to_idiom)
-        if self._argos_model:
-            log.debug(f"Argos translator found for: {from_idiom.shortname} -> {to_idiom.shortname}")
-        elif not self._argos_model and not self._install_translator():
+        if argos_model := self._get_argos_model(from_idiom, to_idiom):
+            log.debug(f"Argos translator found for: {from_idiom.language} -> {to_idiom.language}")
+        elif not self._install_translator():
             raise TranslationPackageError(
-                f"Could not install Argos translator: {from_idiom.shortname} -> {to_idiom.shortname}"
+                f"Could not install Argos translator: {from_idiom.language} -> {to_idiom.language}"
             )
         else:
-            self._argos_model = self._get_argos_model(from_idiom, to_idiom)
+            argos_model = self._get_argos_model(from_idiom, to_idiom)
+        self._argos_model = argos_model
 
     @lru_cache(maxsize=500)
     def translate(self, text: str) -> str:
@@ -64,7 +64,7 @@ class ArgosTranslator(metaclass=Singleton):
             package.update_package_index()
             required_package = next(
                 filter(
-                    lambda x: x.from_code == self._from_idiom.mnemonic and x.to_code == self._to_idiom.mnemonic,
+                    lambda x: x.from_code == self._from_idiom.language and x.to_code == self._to_idiom.language,
                     package.get_available_packages(),
                 )
             )

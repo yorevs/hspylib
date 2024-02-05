@@ -59,7 +59,7 @@ def stream(
     """
 
     reply_str = VtColor.strip_colors(reply_str)
-    ln = language.mnemonic.split("_")[0]
+    ln = language.language
     presets = Presets.get(ln, tempo=tempo)
     word_count: int = 0
 

@@ -12,6 +12,8 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from hspylib.core.enums.charset import Charset
+
 from askai.__classpath__ import _Classpath
 from askai.language.language import Language
 from hspylib.core.config.app_config import AppConfigs
@@ -67,5 +69,5 @@ class AskAiConfigs(metaclass=Singleton):
         return self._language
 
     @property
-    def encoding(self) -> str:
-        return self._language.encoding
+    def encoding(self) -> Charset:
+        return self.language.encoding

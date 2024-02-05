@@ -84,7 +84,7 @@ class AskAi(metaclass=Singleton):
             f"      Model: {self._engine.ai_model()} %EOL%"
             f"   Nickname: {self.engine} %EOL%"
             f"{'--' * 40} %EOL%"
-            f"   Language: {self.language.description} %EOL%"
+            f"   Language: {self.language.name} %EOL%"
             f"Interactive: ON %EOL%"
             f"  Streaming: {'ON' if self.is_stream else 'OFF'} %EOL%"
             f"   Speaking: {'ON' if self.is_speak else 'OFF'} %EOL%"
