@@ -24,6 +24,7 @@ class Presets:
 
     _ALL_RESETS = {
         "en": {
+            "words.per.breath": 10,
              "words.interval.sec": Template("12.2 * ${base_speed}"),
             "breath.interval.sec": Template("43 * ${base_speed}"),
             "number.interval.sec": Template("28 * ${base_speed}"),
@@ -33,6 +34,7 @@ class Presets:
             "period.interval.sec": Template("165 * ${base_speed}"),
         },
         "pt": {
+            "words.per.breath": 10,
              "words.interval.sec": Template("8 * ${base_speed}"),
             "breath.interval.sec": Template("40 * ${base_speed}"),
             "number.interval.sec": Template("27 * ${base_speed}"),
@@ -46,12 +48,13 @@ class Presets:
     # fmt: on
 
     @classmethod
-    @lru_cache(maxsize=125)
+    @lru_cache
     def get(cls, lang: str = "en", tempo: int = 1, base_interval: float = 0.010) -> "Presets":
         base_speed = base_interval / max(1, tempo)
         presets = cls._ALL_RESETS[lang] if hasattr(cls._ALL_RESETS, lang) else cls._ALL_RESETS["en"]
         return Presets(
             lang,
+            int(presets["words.per.breath"]),
             base_speed,
             float(eval(presets["words.interval.sec"].substitute(base_speed=base_speed))),
             float(eval(presets["breath.interval.sec"].substitute(base_speed=base_speed))),
@@ -65,6 +68,7 @@ class Presets:
     def __init__(
         self,
         lang: str,
+        words_per_breath: int,
         base_speed: float,
         words_interval: float,
         breath_interval: float,
@@ -75,6 +79,7 @@ class Presets:
         period_interval: float,
     ):
         self._lang = lang
+        self._words_per_breath = words_per_breath
         self._base_speed = base_speed
         self._words_interval = words_interval
         self._breath_interval = breath_interval
@@ -88,16 +93,21 @@ class Presets:
         return dedent(
             (
                 f"Presets.{self._lang}("
-                f"Base Speed={self.base_speed}, "
-                f"Words Interval={self.words_interval}, "
-                f"Breath Interval={self.breath_interval}, "
-                f"Number Interval={self.number_interval}, "
-                f"Comma Interval={self.comma_interval}, "
-                f"Punct Interval={self.punct_interval}, "
-                f"Enum Interval={self.enum_interval}, "
-                f"Period Interval={self.period_interval}"
+                f"WordsPerBreath={self.words_per_breath}[sec], "
+                f"Base Speed={self.base_speed}[sec], "
+                f"Words={self.words_interval}[sec], "
+                f"Breaths={self.breath_interval}[sec], "
+                f"Numbers={self.number_interval}[sec], "
+                f"Commas={self.comma_interval}[sec], "
+                f"Punctuation={self.punct_interval}[sec], "
+                f"Enums={self.enum_interval}[sec], "
+                f"Period={self.period_interval}[sec]"
             )
         )
+
+    @property
+    def words_per_breath(self) -> int:
+        return self._words_per_breath
 
     @property
     def base_speed(self) -> float:

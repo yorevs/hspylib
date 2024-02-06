@@ -12,6 +12,8 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import os
+
 import hashlib
 import logging as log
 import pause
@@ -47,6 +49,21 @@ def hash_text(text: str) -> str:
     return hashlib.md5(text.encode(Charset.UTF_8.val)).hexdigest()
 
 
+@lru_cache
+def calculate_delay_ms(audio_length_sec: float, text_length: int) -> float:
+    """Calculate the required delay for one char to be printed according to the audio length in millis."""
+    # Convert audio length from seconds to milliseconds
+    audio_length_ms: float = audio_length_sec * 1000
+
+    # Calculate characters per millisecond
+    characters_per_ms: float = text_length * 1000 / audio_length_ms
+
+    # Calculate delay in seconds for one character
+    delay_sec = 1.0 / characters_per_ms
+
+    return delay_sec * 1000
+
+
 def stream(
     reply_str: str,
     tempo: int = 1,
@@ -60,9 +77,9 @@ def stream(
     """
 
     reply_str: str = VtColor.strip_colors(reply_str)
-    ln: str = language.language
-    presets: Presets = Presets.get(ln, tempo=tempo)
+    presets: Presets = Presets.get(language.language, tempo=tempo)
     word_count: int = 0
+    ln: str = os.linesep
 
     # The following algorithm was created based on the whisper voice.
     for i, char in enumerate(reply_str):
@@ -78,33 +95,35 @@ def stream(
         elif char.isspace():
             if i - 1 >= 0 and not reply_str[i - 1].isspace():
                 word_count += 1
-                pause.seconds(presets.breath_interval if word_count % 10 == 0 else presets.words_interval)
+                pause.seconds(
+                    presets.breath_interval if word_count % presets.words_per_breath == 0 else presets.words_interval)
             elif i - 1 >= 0 and not reply_str[i - 1] in [".", "?", "!"]:
                 word_count += 1
-                pause.seconds(presets.period_interval if word_count % 10 == 0 else presets.punct_interval)
+                pause.seconds(
+                    presets.period_interval if word_count % presets.words_per_breath == 0 else presets.punct_interval)
         elif char == "/":
             pause.seconds(
                 presets.base_speed
                 if i + 1 < len(reply_str) and reply_str[i + 1].isnumeric()
                 else presets.punct_interval
             )
-        elif char == "\n":
+        elif char == ln:
             pause.seconds(
                 presets.period_interval
-                if i + 1 < len(reply_str) and reply_str[i + 1] == "\n"
+                if i + 1 < len(reply_str) and reply_str[i + 1] == ln
                 else presets.punct_interval
             )
         elif char in [":", "-"]:
             pause.seconds(
                 presets.enum_interval
-                if i + 1 < len(reply_str) and (reply_str[i + 1].isnumeric() or reply_str[i + 1] in [" ", "\n", "-"])
+                if i + 1 < len(reply_str) and (reply_str[i + 1].isnumeric() or reply_str[i + 1] in [" ", ln, "-"])
                 else presets.base_speed
             )
         elif char in [",", ";"]:
             pause.seconds(
                 presets.comma_interval if i + 1 < len(reply_str) and reply_str[i + 1].isspace() else presets.base_speed
             )
-        elif char in [".", "?", "!", "\n"]:
+        elif char in [".", "?", "!", ln]:
             pause.seconds(presets.punct_interval)
         pause.seconds(presets.base_speed)
     sysout("")
@@ -148,13 +167,30 @@ def input_mic(
 def start_delay() -> float:
     """Determine the amount of delay before start streaming the text."""
     log.debug("Determining the start delay")
-    sample_audio_duration = 1.75  # We know the length
+    sample_duration_sec = 1.75  # We know the length
     started = time.time()
     play_sfx("sample.mp3")
-    delay = max(0.0, time.time() - started - sample_audio_duration)
-    log.debug("Detected delay of %s seconds", delay)
+    delay = max(0.0, time.time() - started - sample_duration_sec)
+    log.debug("Detected a play delay of %s seconds", delay)
 
     return delay
+
+
+@lru_cache
+def audio_length(path_to_audio_file: str) -> float:
+    check_argument(which("ffprobe") and file_is_not_empty(path_to_audio_file))
+    ret: float = 0.0
+    try:
+        ret, code = Terminal.shell_exec(
+            f'ffprobe -i {path_to_audio_file} -show_entries format=duration -v quiet -of csv="p=0"'
+        )
+        return float(ret)
+    except FileNotFoundError:
+        log.error("ffprobe is not installed, speech is disabled!")
+    except TypeError:
+        log.error("Could not determine audio duration!")
+
+    return ret
 
 
 def play_audio_file(path_to_audio_file: str, tempo: int = 1) -> bool:
