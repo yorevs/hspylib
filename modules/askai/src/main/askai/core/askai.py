@@ -230,7 +230,7 @@ class AskAi(metaclass=Singleton):
             if exit_code == ExitStatus.SUCCESS:
                 self._reply(self.MSG.cmd_success(exit_code))
                 if output:
-                    self._ask_and_reply(self._prompts.cmd_out(output), False)
+                    self._ask_and_reply(self._prompts.command_output(output), False)
                 else:
                     self._reply(self.MSG.cmd_no_output())
             else:
@@ -244,7 +244,7 @@ class AskAi(metaclass=Singleton):
         """
         self.is_processing = True
         if is_user_input:
-            query = self._prompts.query(query)
+            query = self._prompts.user_input(query)
         if (response := self._engine.ask(query)) and response.is_success():
             if (reply := response.reply_text()) and (
                 mat := re.match(r".*`{3}(bash|zsh)(.+)`{3}.*", reply.strip().replace("\n", ""), re.I | re.M)

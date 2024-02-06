@@ -113,6 +113,7 @@ def stream(
                 if i + 1 < len(reply_str) and reply_str[i + 1] == ln
                 else presets.punct_interval
             )
+            word_count = 0
         elif char in [":", "-"]:
             pause.seconds(
                 presets.enum_interval
@@ -125,6 +126,7 @@ def stream(
             )
         elif char in [".", "?", "!", ln]:
             pause.seconds(presets.punct_interval)
+            word_count = 0
         pause.seconds(presets.base_speed)
     sysout("")
 
@@ -143,7 +145,7 @@ def input_mic(
     with Microphone() as source:
         rec.adjust_for_ambient_noise(source, duration=1.5)
         msg = fn_listening()
-        audio: AudioData = rec.listen(source, timeout=5, phrase_time_limit=5)
+        audio: AudioData = rec.listen(source, timeout=5)
         Terminal.INSTANCE.cursor.move(1, Direction.UP)
         Terminal.INSTANCE.cursor.erase(Portion.LINE)
         Terminal.INSTANCE.cursor.move(len(msg), Direction.LEFT)

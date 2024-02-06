@@ -37,12 +37,12 @@ class AskAiPrompt(metaclass=Singleton):
             os_type=self._os_type
         )
 
-    def cmd_out(self, command_output: str) -> str:
+    def command_output(self, command_output: str) -> str:
         return self._output.substitute(
             command_output=command_output,
         )
 
-    def query(self, query_string: str) -> str:
+    def user_input(self, query_string: str) -> str:
         return self._query.substitute(
             query_string=query_string
         )
