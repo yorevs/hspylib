@@ -14,9 +14,11 @@
 """
 import hashlib
 import logging as log
+import pause
+import time
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.term.terminal import Terminal
-from functools import partial
+from functools import partial, lru_cache
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
@@ -24,7 +26,6 @@ from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from shutil import which
 from speech_recognition import AudioData, Recognizer, Microphone, UnknownValueError, RequestError
-from time import sleep
 from typing import Callable
 
 from askai.__classpath__ import _Classpath
@@ -58,18 +59,18 @@ def stream(
     :param language: the language used to stream the text.
     """
 
-    reply_str = VtColor.strip_colors(reply_str)
-    ln = language.language
-    presets = Presets.get(ln, tempo=tempo)
+    reply_str: str = VtColor.strip_colors(reply_str)
+    ln: str = language.language
+    presets: Presets = Presets.get(ln, tempo=tempo)
     word_count: int = 0
 
     # The following algorithm was created based on the whisper voice.
     for i, char in enumerate(reply_str):
         sysout(char, end="")
         if char.isalpha():
-            sleep(presets.base_speed)
+            pause.seconds(presets.base_speed)
         elif char.isnumeric():
-            sleep(
+            pause.seconds(
                 presets.breath_interval
                 if i + 1 < len(reply_str) and reply_str[i + 1] == "."
                 else presets.number_interval
@@ -77,35 +78,35 @@ def stream(
         elif char.isspace():
             if i - 1 >= 0 and not reply_str[i - 1].isspace():
                 word_count += 1
-                sleep(presets.breath_interval if word_count % 10 == 0 else presets.words_interval)
+                pause.seconds(presets.breath_interval if word_count % 10 == 0 else presets.words_interval)
             elif i - 1 >= 0 and not reply_str[i - 1] in [".", "?", "!"]:
                 word_count += 1
-                sleep(presets.period_interval if word_count % 10 == 0 else presets.punct_interval)
+                pause.seconds(presets.period_interval if word_count % 10 == 0 else presets.punct_interval)
         elif char == "/":
-            sleep(
+            pause.seconds(
                 presets.base_speed
                 if i + 1 < len(reply_str) and reply_str[i + 1].isnumeric()
                 else presets.punct_interval
             )
         elif char == "\n":
-            sleep(
+            pause.seconds(
                 presets.period_interval
                 if i + 1 < len(reply_str) and reply_str[i + 1] == "\n"
                 else presets.punct_interval
             )
         elif char in [":", "-"]:
-            sleep(
+            pause.seconds(
                 presets.enum_interval
                 if i + 1 < len(reply_str) and (reply_str[i + 1].isnumeric() or reply_str[i + 1] in [" ", "\n", "-"])
                 else presets.base_speed
             )
         elif char in [",", ";"]:
-            sleep(
+            pause.seconds(
                 presets.comma_interval if i + 1 < len(reply_str) and reply_str[i + 1].isspace() else presets.base_speed
             )
         elif char in [".", "?", "!", "\n"]:
-            sleep(presets.punct_interval)
-        sleep(presets.base_speed)
+            pause.seconds(presets.punct_interval)
+        pause.seconds(presets.base_speed)
     sysout("")
 
 
@@ -143,6 +144,19 @@ def input_mic(
             Terminal.INSTANCE.cursor.move(len(msg), Direction.LEFT)
 
 
+@lru_cache
+def start_delay() -> float:
+    """Determine the amount of delay before start streaming the text."""
+    log.debug("Determining the start delay")
+    sample_audio_duration = 1.75  # We know the length
+    started = time.time()
+    play_sfx("sample.mp3")
+    delay = max(0.0, time.time() - started - sample_audio_duration)
+    log.debug("Detected delay of %s seconds", delay)
+
+    return delay
+
+
 def play_audio_file(path_to_audio_file: str, tempo: int = 1) -> bool:
     """Play the specified mp3 file using ffplay (ffmpeg) application.
     :param path_to_audio_file: the path to the mp3 file to be played.
@@ -168,6 +182,7 @@ def play_sfx(filename: str) -> bool:
     return play_audio_file(filename)
 
 
+@lru_cache
 def read_prompt(filename: str) -> str:
     """Read the prompt specified by the filename.
     :param filename: The filename of the prompt.

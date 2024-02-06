@@ -14,10 +14,13 @@ Step 1 - Determine which type of query is it: "Type 1", "Type 2", "Type 3" or "T
 Step 2 - Follow ALL workflow steps related to the type of query determined above.
 
 
+%WORKFLOWS:
+
+
 %Workflow for queries of "Type 1"%:
 
 - Search you database for the latest information.
-- Return final response.
+- Return the final response immediately.
 
 
 %Workflow for queries of "Type 2"%:

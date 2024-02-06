@@ -14,9 +14,9 @@
 """
 import logging as log
 import os
+import pause
 import speech_recognition as speech_rec
-import time
-from functools import partial, cached_property
+from functools import partial
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from openai import APIError, OpenAI
 from threading import Thread
@@ -30,7 +30,7 @@ from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.core.engine.protocols.ai_model import AIModel
 from askai.core.engine.protocols.ai_reply import AIReply
 from askai.utils.cache_service import CacheService
-from askai.utils.utilities import input_mic, play_audio_file, play_sfx
+from askai.utils.utilities import input_mic, play_audio_file, start_delay
 
 
 class OpenAIEngine(AIEngine):
@@ -43,22 +43,11 @@ class OpenAIEngine(AIEngine):
         self._configs: OpenAiConfigs = OpenAiConfigs()
         self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
         self._balance = 0
+        self._start_delay = start_delay()
         self._model_name = model.model_name()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
         CacheService.read_query_history()
-
-    @cached_property
-    def start_delay(self) -> float:
-        """Determine the amount of delay before start streaming the text."""
-        log.debug("Determining the start delay")
-        sample_audio_duration = 1.75  # We know the length
-        started = time.time()
-        play_sfx("sample.mp3")
-        delay = max(0.0, time.time() - started - sample_audio_duration)
-        log.debug("Detected delay of %s seconds", delay)
-
-        return delay
 
     @property
     def url(self):
@@ -138,7 +127,7 @@ class OpenAIEngine(AIEngine):
         speak_thread = Thread(daemon=True, target=play_audio_file, args=(speech_file_path, speed))
         speak_thread.start()
         if cb_started:
-            time.sleep(self.start_delay)
+            pause.seconds(self._start_delay)
             cb_started(text)
         speak_thread.join()  # Block until the speech has finished.
         if cb_finished:
