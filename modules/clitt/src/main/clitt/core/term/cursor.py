@@ -7,7 +7,7 @@ from hspylib.modules.cli.vt100.vt_code import VtCode
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from typing import Any
 
-from clitt.core.term.commons import Direction, EraseDirection, get_cursor_position, MoveDirection, Position
+from clitt.core.term.commons import Direction, EraseDirection, get_cursor_position, MoveDirection, Position, Portion
 
 
 class Cursor(metaclass=Singleton):
@@ -95,6 +95,15 @@ class Cursor(metaclass=Singleton):
         sysout(direction.value[0], end="")
         return self.position
 
+    def erase_line(self) -> Position:
+        """Erase the previous line of the screen."""
+        row_pos, col_pos = self.position
+        self.move(1, Direction.UP)
+        self.erase(Portion.LINE)
+        self.move(col_pos, Direction.LEFT)
+        self.position = row_pos, 0
+        return self.position
+
     def track(self) -> Position:
         """Track the cursor position.
         :return the tracked cursor position.
@@ -145,3 +154,6 @@ class Cursor(metaclass=Singleton):
         """Reset cursor modifiers."""
         sysout(Vt100.mode(0), end=end)
         return self.position
+
+
+assert Cursor().INSTANCE is not None, "Failed to create Cursor instance"

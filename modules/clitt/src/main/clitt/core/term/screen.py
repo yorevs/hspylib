@@ -86,3 +86,6 @@ class Screen(metaclass=Singleton):
                 list(map(lambda cb_w: cb_w(), self._cb_watchers))
                 self._dimension = dimension
             self._resize_timer.start()
+
+
+assert Screen().INSTANCE is not None, "Failed to create Screen instance"

@@ -12,17 +12,6 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from clitt.core.exception.exceptions import NotATerminalError
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
-from hspylib.core.enums.charset import Charset
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from typing import Any, Optional, Tuple
-
 import atexit
 import logging as log
 import os
@@ -30,8 +19,20 @@ import platform
 import select
 import shlex
 import signal
-import subprocess
 import sys
+from subprocess import CalledProcessError, Popen, PIPE
+from typing import Any, Optional, Tuple, List, Iterable
+
+from hspylib.core.enums.charset import Charset
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+
+from clitt.core.exception.exceptions import NotATerminalError
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
 
 
 class Terminal(metaclass=Singleton):
@@ -44,34 +45,55 @@ class Terminal(metaclass=Singleton):
         return sys.stdout.isatty()
 
     @staticmethod
-    def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
-        """Execute command with arguments and return it's run status."""
-        output = None
+    def _chain_pipes(cmd_list: Iterable, **kwargs) -> Popen:
+        """Run commands in PIPE, return the last process in chain.
+        :param cmd_list: the command list to be executed.
+        """
         if "stdout" in kwargs:
-            del kwargs["stdout"]  # Deleted because it's forbidden by check_output
+            del kwargs["stdout"]
         if "stderr" in kwargs:
-            del kwargs["stderr"]  # Deleted because it's forbidden by check_output
-        try:
-            log.info("Executing shell command: %s", cmd_line)
-            cmd_args = list(filter(None, shlex.split(cmd_line)))
-            output = subprocess.check_output(cmd_args, **kwargs).decode(Charset.UTF_8.val)
-            log.info("Execution result: %s", ExitStatus.SUCCESS)
-            return output if output else None, ExitStatus.SUCCESS
-        except subprocess.CalledProcessError as err:
-            log.error("Command failed: %s => %s", cmd_line, err)
-            return output, ExitStatus.FAILED
+            del kwargs["stderr"]
+        if "stdin" in kwargs:
+            del kwargs["stdin"]
+        if "shell" in kwargs:
+            del kwargs["shell"]
+        commands = map(shlex.split, cmd_list)
+        first_cmd, *rest_cmds = commands
+        if len(rest_cmds) > 0:
+            procs: List[Popen] = [Popen(first_cmd, stdout=PIPE, stderr=PIPE, **kwargs)]
+            for cmd in rest_cmds:
+                last_stdout = procs[-1].stdout
+                procs.append(Popen(cmd, stdin=last_stdout, stdout=PIPE, stderr=PIPE, **kwargs))
+            return procs[-1]
+        return Popen(first_cmd, stdout=PIPE, stderr=PIPE, **kwargs)
+
+    @staticmethod
+    def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
+        """Execute command with arguments and return it's run status.
+        :param cmd_line: the command line to be executed.
+        """
+        proc = Terminal._chain_pipes(cmd_line.split("|"), **kwargs)
+        log.info("Executing shell command: %s", cmd_line)
+        output, err_out = proc.communicate()
+        ret_code = ExitStatus.FAILED if err_out else ExitStatus.SUCCESS
+        log.info("Execution result: %s", ret_code)
+        return output.decode(Charset.UTF_8.val) if output else err_out.decode(Charset.UTF_8.val), ret_code
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
-        """Execute command with arguments and continuously poll it's output."""
+        """Execute command with arguments and continuously poll it's output.
+        :param cmd_line: the command line to be executed.
+        """
         if "stdout" in kwargs:
-            del kwargs["stdout"]  # Deleted since we use our own stream
+            del kwargs["stdout"]  # Deleted because it's forbidden
         if "stderr" in kwargs:
-            del kwargs["stderr"]  # Deleted since we use our own stream
+            del kwargs["stderr"]  # Deleted because it's forbidden
+        if "shell" in kwargs:
+            del kwargs["shell"]  # Deleted because we don't want to use it
         try:
             log.info("Polling shell command: %s", cmd_line)
             cmd_args = list(filter(None, shlex.split(cmd_line)))
-            with subprocess.Popen(cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs) as proc:
+            with Popen(cmd_args, stdout=PIPE, stderr=PIPE, **kwargs) as proc:
                 process = select.poll()
                 process.register(proc.stdout)
                 process.register(proc.stderr)
@@ -83,7 +105,7 @@ class Terminal(metaclass=Singleton):
                 os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
         except (InterruptedError, KeyboardInterrupt):
             log.warning("Polling process has been interrupted command='%s'", cmd_line)
-        except subprocess.CalledProcessError as err:
+        except CalledProcessError as err:
             log.error("Command failed: %s => %s", cmd_line, err)
 
     @staticmethod
@@ -142,7 +164,7 @@ class Terminal(metaclass=Singleton):
         """Wrapper to set all terminal attributes at once."""
         # fmt: off
         enable_echo = attrs['enable_echo']
-        auto_wrap   = attrs['auto_wrap']
+        auto_wrap = attrs['auto_wrap']
         show_cursor = attrs['show_cursor']
         # fmt: on
         if enable_echo is not None:
