@@ -35,7 +35,7 @@ from askai.core.engine.protocols.ai_engine import AIEngine
 from askai.language.language import Language
 from askai.utils.cache_service import CacheService
 from askai.utils.constants import Constants
-from askai.utils.utilities import stream
+from askai.utils.utilities import stream, start_delay
 
 
 class AskAi(metaclass=Singleton):
@@ -72,11 +72,8 @@ class AskAi(metaclass=Singleton):
         self._query_num = 0
         self._configs.is_stream = is_stream
         self._configs.is_speak = is_speak
-        self._configs.stream_speed = tempo
         self.MSG.user = self.user
         self.MSG.nickname = self._engine.nickname()
-        CacheService.set_cache_enable(self.cache_enabled)
-        CacheService.read_query_history()
 
     def __str__(self) -> str:
         return (
@@ -142,6 +139,7 @@ class AskAi(metaclass=Singleton):
     def run(self) -> None:
         """Run the program."""
         if self._interactive:
+            self._startup()
             sysout(self)
             self._prompt()
         elif self._query_string:
@@ -149,6 +147,13 @@ class AskAi(metaclass=Singleton):
                 sysout("", end="")
                 sysout(f"{self.user}: {self._query_string}")
                 self._ask_and_reply(self._query_string)
+
+    def _startup(self) -> None:
+        """Initialize the application."""
+        CacheService.set_cache_enable(self.cache_enabled)
+        CacheService.read_query_history()
+        if self.is_speak:
+            start_delay()
 
     def _input(self, prompt: str) -> Optional[str]:
         """Prompt for user input.
@@ -239,6 +244,7 @@ class AskAi(metaclass=Singleton):
         :param cmd_line: The command line to execute.
         """
         if (command := cmd_line.split(" ")[0]) and which(command):
+            cmd_line = cmd_line.replace("~", os.getenv("HOME"))
             self._reply(self.MSG.executing(cmd_line))
             log.debug("Processing command `%s'", cmd_line)
             output, exit_code = self._terminal.shell_exec(cmd_line, shell=True)

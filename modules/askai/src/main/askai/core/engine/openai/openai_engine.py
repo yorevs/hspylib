@@ -14,13 +14,14 @@
 """
 import logging as log
 import os
-import pause
-import speech_recognition as speech_rec
-from functools import partial
-from hspylib.modules.cli.vt100.vt_color import VtColor
-from openai import APIError, OpenAI
+from functools import partial, cached_property
 from threading import Thread
 from typing import Callable, Optional, List
+
+import pause
+import speech_recognition as speech_rec
+from hspylib.modules.cli.vt100.vt_color import VtColor
+from openai import APIError, OpenAI
 
 from askai.core.askai_prompt import AskAiPrompt
 from askai.core.engine.openai.openai_configs import OpenAiConfigs

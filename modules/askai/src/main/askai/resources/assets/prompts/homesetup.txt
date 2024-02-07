@@ -18,10 +18,10 @@ Task 2 - When requested to write or save to files, use echo and stdout forwardin
 Task 3 - When requested to find files and folders, use `find' (Example: find . -maxdepth 0 -type d).
 Task 4 - When requested to list files and folders, use `ls -lh' (Example: ls -lh ~/Downloads).
 Task 5 - When requested to open or show files and folders, use `open' (Example: open "file.txt"  Example 2: open ~).
-Task 6 - When requested to play movies or songs, use `ffplay' (Example: ffplay -v 0 -autoexit "music.mp3").
+Task 6 - When requested to play movies or songs, use `ffplay' (Example: ffplay -v 0 -autoexit "music.mp3" &>/dev/null).
 Task 7 - Create an adequate "${os_type}" "${shell}" command wrapped in a markdown code block.
 Task 8 - When the user mention "my files" or "my folders", assume he wants to use his HOME (~) directory.
-Task 9 - Always use the last mentioned directory in history and absolute paths when opening or showing files.
+Task 9 - Always use absolute full paths when dealing with files, folders and applications.
 Task 10 - Limit showing only the required command.
 
 
