@@ -27,22 +27,10 @@ class AskAiPrompt(metaclass=Singleton):
     def __init__(self):
         self._shell = os.getenv("HHS_MY_SHELL", "bash")
         self._os_type = os.getenv("HHS_MY_OS_RELEASE", "linux")
-        self._setup = Template(read_prompt("01-setup.txt"))
-        self._query = Template(read_prompt("02-query.txt"))
-        self._output = Template(read_prompt("03-cmd-out.txt"))
+        self._setup = Template(read_prompt("homesetup.txt"))
 
     def setup(self) -> str:
         return self._setup.substitute(
             shell=self._shell,
             os_type=self._os_type
-        )
-
-    def command_output(self, command_output: str) -> str:
-        return self._output.substitute(
-            command_output=command_output,
-        )
-
-    def user_input(self, query_string: str) -> str:
-        return self._query.substitute(
-            query_string=query_string
         )

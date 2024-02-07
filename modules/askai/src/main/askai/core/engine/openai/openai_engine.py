@@ -43,11 +43,13 @@ class OpenAIEngine(AIEngine):
         self._configs: OpenAiConfigs = OpenAiConfigs()
         self._prompts = AskAiPrompt.INSTANCE or AskAiPrompt()
         self._balance = 0
-        self._start_delay = start_delay()
         self._model_name = model.model_name()
         self._chat_context = [{"role": "system", "content": self._prompts.setup()}]
         self._client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), organization=os.environ.get("OPENAI_ORG_ID"))
-        CacheService.read_query_history()
+
+    @property
+    def start_delay(self) -> float:
+        return start_delay()
 
     @property
     def url(self):
@@ -127,7 +129,7 @@ class OpenAIEngine(AIEngine):
         speak_thread = Thread(daemon=True, target=play_audio_file, args=(speech_file_path, speed))
         speak_thread.start()
         if cb_started:
-            pause.seconds(self._start_delay)
+            pause.seconds(self.start_delay)
             cb_started(text)
         speak_thread.join()  # Block until the speech has finished.
         if cb_finished:

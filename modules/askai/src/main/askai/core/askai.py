@@ -12,21 +12,21 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-
 import logging as log
 import os
 import re
 import sys
-from clitt.core.term.commons import Direction, Portion
-from clitt.core.term.terminal import Terminal
-from clitt.core.tui.line_input.line_input import line_input
 from functools import partial
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.application.exit_status import ExitStatus
 from shutil import which
 from threading import Thread
 from typing import List, Optional
+
+from clitt.core.term.terminal import Terminal
+from clitt.core.tui.line_input.line_input import line_input
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+from hspylib.core.tools.text_tools import ensure_endswith
+from hspylib.modules.application.exit_status import ExitStatus
 
 from askai.core.askai_configs import AskAiConfigs
 from askai.core.askai_messages import AskAiMessages
@@ -76,6 +76,7 @@ class AskAi(metaclass=Singleton):
         self.MSG.user = self.user
         self.MSG.nickname = self._engine.nickname()
         CacheService.set_cache_enable(self.cache_enabled)
+        CacheService.read_query_history()
 
     def __str__(self) -> str:
         return (
@@ -132,13 +133,10 @@ class AskAi(metaclass=Singleton):
 
     @is_processing.setter
     def is_processing(self, processing: bool) -> None:
-        msg = self.MSG.wait()
         if processing:
-            self._reply(msg)
+            self._reply(self.MSG.wait())
         elif not processing and self._processing is not None and processing != self._processing:
-            self._terminal.cursor.move(1, Direction.UP)
-            self._terminal.cursor.erase(Portion.LINE)
-            self._terminal.cursor.move(len(msg), Direction.LEFT)
+            self._terminal.cursor.erase_line()
         self._processing = processing
 
     def run(self) -> None:
@@ -150,7 +148,7 @@ class AskAi(metaclass=Singleton):
             if not re.match(Constants.TERM_EXPRESSIONS, self._query_string.lower()):
                 sysout("", end="")
                 sysout(f"{self.user}: {self._query_string}")
-                self._ask_and_reply(self._query_string, True)
+                self._ask_and_reply(self._query_string)
 
     def _input(self, prompt: str) -> Optional[str]:
         """Prompt for user input.
@@ -158,8 +156,7 @@ class AskAi(metaclass=Singleton):
         """
         ret = line_input(prompt)
         if self.is_speak and ret == Constants.PUSH_TO_TALK:  # Use audio as input method.
-            self._terminal.cursor.erase(Portion.LINE)
-            self._terminal.cursor.move(len(prompt), Direction.LEFT)
+            self._terminal.cursor.erase_line()
             spoken_text = self._engine.speech_to_text(
                 partial(self._reply, self.MSG.listening()),
                 partial(self._reply, self.MSG.transcribing())
@@ -168,9 +165,7 @@ class AskAi(metaclass=Singleton):
                 sysout(f"{self.user}: {spoken_text}")
                 ret = spoken_text
         elif not self.is_speak and not isinstance(ret, str):
-            self._terminal.cursor.move(1, Direction.UP)
-            self._terminal.cursor.erase(Portion.LINE)
-            self._terminal.cursor.move(len(prompt), Direction.LEFT)
+            self._terminal.cursor.erase_line()
             sysout(f"{self.user}: %YELLOW%Speech-To-Text is disabled!%NC%")
 
         return ret if isinstance(ret, str) else ret.val
@@ -185,74 +180,50 @@ class AskAi(metaclass=Singleton):
                 self._reply(self.MSG.goodbye())
                 break
             else:
-                self._ask_and_reply(query, True)
+                self._ask_and_reply(query)
         if not query:
             self._reply(self.MSG.goodbye())
         sysout("")
 
-    def _reply(self, message: str, speak: bool = True) -> str:
+    def _reply(self, reply_message: str, speak: bool = True) -> str:
         """Reply to the user with the AI response.
-        :param message: The message to reply to the user.
+        :param reply_message: The message to reply to the user.
         :param speak: Whether to speak the reply or not.
         """
         if self.is_stream and speak and self.is_speak:
-            self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=self._stream_text)
+            self._engine.text_to_speech(reply_message, self._configs.stream_speed, cb_started=self._stream_text)
         elif not self.is_stream and speak and self.is_speak:
-            self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=sysout)
-            self.is_processing = False
+            self._engine.text_to_speech(reply_message, self._configs.stream_speed, cb_started=sysout)
         elif self.is_stream:
-            self._stream_text(message)
+            self._stream_text(reply_message)
         else:
-            message = f"{self.engine}: {message}"
-            sysout(message)
-            self.is_processing = False
+            reply_message = f"{self.engine}: {reply_message}"
+            sysout(reply_message)
 
-        return message
+        return reply_message
 
     def _reply_error(self, error_message: str) -> None:
         """Reply API or system errors.
         :param error_message: The error message to be displayed.
         """
-        sysout(f"{self.engine}: {error_message}")
+        sysout(f"{self.engine}: {ensure_endswith(error_message, os.linesep)}")
 
     def _stream_text(self, message: str) -> None:
         """Stream the message using default parameters.
         :param message: The message to be streamed.
         """
-        self.is_processing = False
         sysout(f"{self.engine}: ", end="")
         stream_thread = Thread(target=stream, args=(message, self._configs.stream_speed))
         stream_thread.start()
         stream_thread.join()  # Block until the text is fully streamed.
 
-    def _process_command(self, cmd_line: str) -> None:
-        """Attempt to process command.
-        :param cmd_line: The command line to execute.
-        """
-        if (command := cmd_line.split(" ")[0]) and which(command):
-            cmd_line = cmd_line.replace("~", os.getenv("HOME"))
-            self._reply(self.MSG.executing(cmd_line))
-            log.debug("Processing command `%s'", cmd_line)
-            output, exit_code = Terminal.shell_exec(cmd_line, stderr=sys.stdout.fileno())
-            if exit_code == ExitStatus.SUCCESS:
-                self._reply(self.MSG.cmd_success(exit_code))
-                if output:
-                    self._ask_and_reply(self._prompts.command_output(output), False)
-                else:
-                    self._reply(self.MSG.cmd_no_output())
-            else:
-                self._reply(self.MSG.cmd_failed(command))
-        else:
-            self._reply(self.MSG.cmd_no_exist(command))
-
-    def _ask_and_reply(self, query: str, is_user_input: bool) -> None:
+    def _ask_and_reply(self, query: str) -> None:
         """Ask the question and provide the reply.
         :param query: The question to ask to the AI engine.
         """
         self.is_processing = True
-        if is_user_input:
-            query = self._prompts.user_input(query)
         if (response := self._engine.ask(query)) and response.is_success():
+            self.is_processing = False
             if (reply := response.reply_text()) and (
                 mat := re.match(r".*`{3}(bash|zsh)(.+)`{3}.*", reply.strip().replace("\n", ""), re.I | re.M)
             ):
@@ -260,4 +231,24 @@ class AskAi(metaclass=Singleton):
             else:
                 self._reply(reply)
         else:
+            self.is_processing = False
             self._reply_error(response.reply_text())
+
+    def _process_command(self, cmd_line: str) -> None:
+        """Attempt to process command.
+        :param cmd_line: The command line to execute.
+        """
+        if (command := cmd_line.split(" ")[0]) and which(command):
+            self._reply(self.MSG.executing(cmd_line))
+            log.debug("Processing command `%s'", cmd_line)
+            output, exit_code = self._terminal.shell_exec(cmd_line, shell=True)
+            if exit_code == ExitStatus.SUCCESS:
+                self._reply(self.MSG.cmd_success(exit_code))
+                if output:
+                    self._ask_and_reply(f"%COMMAND OUTPUT: \n\n{output}")
+                else:
+                    self._reply(self.MSG.cmd_no_output())
+            else:
+                self._reply(self.MSG.cmd_failed(command))
+        else:
+            self._reply(self.MSG.cmd_no_exist(command))
