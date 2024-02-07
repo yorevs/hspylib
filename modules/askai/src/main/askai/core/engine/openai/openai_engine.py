@@ -14,14 +14,14 @@
 """
 import logging as log
 import os
-from functools import partial, cached_property
+from functools import partial
 from threading import Thread
 from typing import Callable, Optional, List
 
 import pause
 import speech_recognition as speech_rec
 from hspylib.modules.cli.vt100.vt_color import VtColor
-from openai import APIError, OpenAI
+from openai import APIError, OpenAI, BadRequestError
 
 from askai.core.askai_prompt import AskAiPrompt
 from askai.core.engine.openai.openai_configs import OpenAiConfigs
@@ -92,6 +92,8 @@ class OpenAIEngine(AIEngine):
             except APIError as error:
                 body: dict = error.body or {"message": "Message not provided"}
                 reply = OpenAIReply(f"%RED%{error.__class__.__name__} => {body['message']}%NC%", False)
+                if isinstance(error, BadRequestError):
+                    self.forget()
         else:
             log.debug('Response found for: "%s" in cache.', question)
             reply = OpenAIReply(reply, True)
