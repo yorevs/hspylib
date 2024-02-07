@@ -75,6 +75,7 @@ class AskAi(metaclass=Singleton):
         self._configs.stream_speed = tempo
         self.MSG.user = self.user
         self.MSG.nickname = self._engine.nickname()
+        CacheService.set_cache_enable(self.cache_enabled)
 
     def __str__(self) -> str:
         return (
@@ -92,6 +93,10 @@ class AskAi(metaclass=Singleton):
             f"      Tempo: {self.stream_speed} %EOL%"
             f"{'--' * 40} %EOL%%NC%"
         )
+
+    @property
+    def cache_enabled(self) -> bool:
+        return self._configs.is_cache
 
     @property
     def query_string(self) -> str:
@@ -190,16 +195,17 @@ class AskAi(metaclass=Singleton):
         :param message: The message to reply to the user.
         :param speak: Whether to speak the reply or not.
         """
-        self.is_processing = False
         if self.is_stream and speak and self.is_speak:
             self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=self._stream_text)
         elif not self.is_stream and speak and self.is_speak:
             self._engine.text_to_speech(message, self._configs.stream_speed, cb_started=sysout)
+            self.is_processing = False
         elif self.is_stream:
             self._stream_text(message)
         else:
             message = f"{self.engine}: {message}"
             sysout(message)
+            self.is_processing = False
 
         return message
 
@@ -213,6 +219,7 @@ class AskAi(metaclass=Singleton):
         """Stream the message using default parameters.
         :param message: The message to be streamed.
         """
+        self.is_processing = False
         sysout(f"{self.engine}: ", end="")
         stream_thread = Thread(target=stream, args=(message, self._configs.stream_speed))
         stream_thread.start()

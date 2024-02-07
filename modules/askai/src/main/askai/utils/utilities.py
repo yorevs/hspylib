@@ -25,6 +25,7 @@ from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import file_is_not_empty, sysout
 from hspylib.core.tools.text_tools import ensure_endswith
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from shutil import which
 from speech_recognition import AudioData, Recognizer, Microphone, UnknownValueError, RequestError
@@ -202,8 +203,8 @@ def play_audio_file(path_to_audio_file: str, tempo: int = 1) -> bool:
     """
     check_argument(which("ffplay") and file_is_not_empty(path_to_audio_file))
     try:
-        Terminal.shell_exec(f'ffplay -af "atempo={tempo}" -v 0 -nodisp -autoexit {path_to_audio_file}')
-        return True
+        out, code = Terminal.shell_exec(f'ffplay -af "atempo={tempo}" -v 0 -nodisp -autoexit {path_to_audio_file}')
+        return code == ExitStatus.SUCCESS
     except FileNotFoundError:
         log.error("ffplay is not installed, speech is disabled!")
 

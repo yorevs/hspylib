@@ -23,15 +23,15 @@ class AskAiMessages(metaclass=Singleton):
 
     @lru_cache
     def wait(self) -> str:
-        return self.translate("I'm thinking, please wait...")
+        return self.translate("I'm thinking, please wait.")
 
     @lru_cache
     def listening(self) -> str:
-        return self.translate("%BLUE%I'm listening...%NC%")
+        return self.translate("%BLUE%I'm listening.%NC%")
 
     @lru_cache
     def transcribing(self) -> str:
-        return self.translate("Transcribing %GREEN%your voice%NC%, please wait...")
+        return self.translate("Transcribing %GREEN%your voice%NC%, please wait.")
 
     @lru_cache
     def goodbye(self) -> str:
@@ -39,7 +39,7 @@ class AskAiMessages(metaclass=Singleton):
 
     @lru_cache
     def executing(self, cmd_line: str) -> str:
-        return self.translate(f"Executing command %GREEN%`{cmd_line}'%NC%, please wait...")
+        return self.translate(f"Executing command %GREEN%`{cmd_line}'%NC%, please wait.")
 
     @lru_cache
     def cmd_success(self, exit_code: ExitStatus) -> str:

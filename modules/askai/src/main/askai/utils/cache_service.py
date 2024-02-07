@@ -42,8 +42,8 @@ class CacheService(metaclass=Singleton):
     def set_cache_enable(cls, enable: bool) -> bool:
         """Enable or disable caching. Is does not clear current cached entries, but it does not retrieve or save new
         ones while not re-enabled."""
-        cls.DISABLE_CACHE = enable
-        return not cls.DISABLE_CACHE
+        cls.DISABLE_CACHE = not enable
+        return cls.DISABLE_CACHE
 
     @classmethod
     def is_cache_enabled(cls) -> bool:
@@ -94,3 +94,4 @@ class CacheService(metaclass=Singleton):
         key = text.strip().lower()
         audio_file_path = f"{str(AUDIO_DIR)}/askai-{hash_text(key)}.{audio_format}"
         return audio_file_path, (not cls.DISABLE_CACHE) and file_is_not_empty(audio_file_path)
+
