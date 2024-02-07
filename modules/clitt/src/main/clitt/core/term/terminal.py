@@ -55,7 +55,7 @@ class Terminal(metaclass=Singleton):
             del kwargs["stderr"]
         if "stdin" in kwargs:
             del kwargs["stdin"]
-        commands = map(shlex.split, cmd_list)
+        commands = map(shlex.split, cmd_list) if 'shell' not in kwargs else cmd_list
         first_cmd, *rest_cmds = commands
         if len(rest_cmds) > 0:
             procs: List[Popen] = [Popen(first_cmd, stdout=PIPE, stderr=PIPE, **kwargs)]
