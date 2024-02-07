@@ -55,8 +55,6 @@ class Terminal(metaclass=Singleton):
             del kwargs["stderr"]
         if "stdin" in kwargs:
             del kwargs["stdin"]
-        if "shell" in kwargs:
-            del kwargs["shell"]
         commands = map(shlex.split, cmd_list)
         first_cmd, *rest_cmds = commands
         if len(rest_cmds) > 0:
