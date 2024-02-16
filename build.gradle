@@ -21,6 +21,19 @@ idea {
   }
 }
 
+apply from: "$rootDir/gradle/idea.gradle"
+
+/* Project extension properties */
+ext {
+  python = "python" + (System.getenv('PYTHON_VERSION') ?: '3.11')
+  pyrcc = "pyrcc" + (System.getenv('PYRCC_VERSION') ?: '5')
+  buildTools = "${buildTools}".split(",")
+  buildToolsFile = new File("${project.projectDir}/buildTools.txt")
+  modulesDir = "${project.projectDir}/modules/"
+  verbose = findProperty('verbose') ?: false
+  startTime = System.currentTimeMillis()
+}
+
 configurations {
     modules
 }
@@ -52,20 +65,6 @@ subprojects {
     assert project.ext.has("pythonPath")
   }
 }
-
-/* Project extension properties */
-ext {
-  python = "python" + (System.getenv('PYTHON_VERSION') ?: '3.11')
-  pyrcc = "pyrcc" + (System.getenv('PYRCC_VERSION') ?: '5')
-  buildTools = "${buildTools}".split(",")
-  startTime = System.currentTimeMillis()
-  verbose = findProperty('verbose') ?: false
-  modulesDir = "${project.projectDir}/modules/"
-  buildToolsFile = new File("${project.projectDir}/buildTools.txt")
-  space = detectSpace()
-}
-
-apply from: "$rootDir/gradle/idea.gradle"
 
 /* List project modules */
 task listModules(type: Task) {
