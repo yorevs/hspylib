@@ -60,6 +60,10 @@ subprojects {
 
   apply from: "$projectDir/gradle.properties"
 
+  ext {
+    python = "${rootProject.python}"
+  }
+
   project.afterEvaluate {
     assert project.ext.has("sourceRoot")
     assert project.ext.has("pythonPath")
