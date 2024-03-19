@@ -33,7 +33,7 @@ urllib3.disable_warnings()
 
 
 class Main(TUIApplication):
-    """Firebase Agent - Manage your firebase integration"""
+    """Firebase Agent - Manage your firebase integration."""
 
     # The welcome message
     DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
@@ -63,18 +63,18 @@ class Main(TUIApplication):
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
-            .add_option(
-                    'glob', 'g', 'glob',
-                    'filter path names matching a specified glob pattern.',
-                    nargs='?') \
-            .add_parameter('db_alias', 'alias to identify the firebase object to fetch') \
-                .add_parameter('files', 'list of files to upload (separated by a space)', nargs='*') \
+                .add_option(
+                        'glob', 'g', 'glob',
+                        'filter path names matching a specified glob pattern.',
+                        nargs='?') \
+                .add_parameter('db_alias', 'alias to identify the firebase object to fetch') \
+                    .add_parameter('files', 'list of files to upload (separated by a space)', nargs='*') \
             .argument('download', 'download files from your Firebase Realtime Database') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
                     nargs='?', default=self._run_dir) \
-            .add_parameter('db_alias', 'alias to identify the firebase object to fetch')
+                .add_parameter('db_alias', 'alias to identify the firebase object to fetch')
         # fmt: on
 
     def _main(self, *params, **kwargs) -> ExitStatus:

@@ -88,4 +88,4 @@ class Screen(metaclass=Singleton):
             self._resize_timer.start()
 
 
-assert Screen().INSTANCE is not None, "Failed to create Screen instance"
+assert (screen := Screen().INSTANCE) is not None, "Failed to create Screen instance"

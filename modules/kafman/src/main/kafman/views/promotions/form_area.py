@@ -15,6 +15,8 @@
 
 from collections import defaultdict
 from hqt.promotions.hstacked_widget import HStackedWidget
+from hspylib.core.preconditions import check_argument
+
 from kafman.core.schema.widget_utils import InputValue
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QAbstractScrollArea, QFrame, QScrollArea, QWidget
@@ -43,7 +45,7 @@ class FormArea(QScrollArea):
 
     def setWidget(self, widget: QWidget) -> None:
         if self._form is not None:
-            assert isinstance(widget, HStackedWidget), "Only HStackedWidget type instances are accepted"
+            check_argument(isinstance(widget, HStackedWidget), "Only HStackedWidget type instances are accepted")
         super().setWidget(widget)
         self._form = widget
 

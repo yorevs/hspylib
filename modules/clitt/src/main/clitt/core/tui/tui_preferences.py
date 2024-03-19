@@ -100,4 +100,4 @@ class TUIPreferences(Preferences):
         return self.get_preference("unchecked.icon", FormIcons.UNMARKED)
 
 
-assert TUIPreferences().INSTANCE is not None, "Failed to create TUIPreferences instance"
+assert (tui_preferences := TUIPreferences().INSTANCE) is not None, "Failed to create TUIPreferences instance"

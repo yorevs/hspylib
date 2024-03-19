@@ -17,11 +17,11 @@ from hspylib.core.tools.commons import get_path, run_dir
 
 
 class _Classpath(Classpath):
-    """TODO"""
+    """Provide a class to help locating user-defined classes, packages, sources and resources."""
 
     def __init__(self) -> None:
         super().__init__(get_path(__file__), get_path(run_dir()), (get_path(__file__) / "resources"))
 
 
 # Instantiate the classpath singleton
-assert _Classpath().INSTANCE is not None, "Failed to create Classpath instance"
+assert (classpath := _Classpath().INSTANCE) is not None, "Failed to create Classpath instance"

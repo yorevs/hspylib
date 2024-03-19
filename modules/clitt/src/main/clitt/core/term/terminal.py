@@ -200,4 +200,4 @@ class Terminal(metaclass=Singleton):
         return self.screen.cursor
 
 
-assert Terminal().INSTANCE is not None, "Failed to create Terminal instance"
+assert (terminal := Terminal().INSTANCE) is not None, "Failed to create Terminal instance"

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib-CFMan
-   @package: cfman
+   @project: HsPyLib-Datasource
+   @package: datasource
       @file: __classpath__.py
-   @created: Wed, 8 Jun 2022
+   @created: Fri, 23 Dec 2022
     @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
       @site: "https://github.com/yorevs/hspylib")
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>

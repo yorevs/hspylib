@@ -156,4 +156,4 @@ class Cursor(metaclass=Singleton):
         return self.position
 
 
-assert Cursor().INSTANCE is not None, "Failed to create Cursor instance"
+assert (cursor := Cursor().INSTANCE) is not None, "Failed to create Cursor instance"
