@@ -15,13 +15,13 @@
 
 from datasource.crud_service import CrudService
 from datasource.db_configuration import DBConfiguration
-from phonebook.__classpath__ import _Classpath
+from phonebook.__classpath__ import classpath
 from phonebook.entity.company import Company
 from phonebook.repository.company_repository import CompanyRepository
 
 
 class CompanyService(CrudService[CompanyRepository, Company]):
     def __init__(self) -> None:
-        cfg = DBConfiguration(str(_Classpath.resource_path()))
+        cfg = DBConfiguration(str(classpath.resource_path()))
         repository = CompanyRepository(cfg)
         super().__init__(repository)

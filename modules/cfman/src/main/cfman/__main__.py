@@ -12,7 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from cfman.__classpath__ import _Classpath
+from cfman.__classpath__ import classpath
 from cfman.core.cf_manager import CFManager
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
@@ -31,10 +31,10 @@ class Main(TUIApplication):
     """Cloud Foundry Manager - Manage PCF applications."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # location of the .version file
-    VERSION_DIR = _Classpath.source_path()
+    VERSION_DIR = classpath.source_path()
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)

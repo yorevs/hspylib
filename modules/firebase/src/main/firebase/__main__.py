@@ -14,7 +14,7 @@
 """
 
 from clitt.core.tui.tui_application import TUIApplication
-from firebase.__classpath__ import _Classpath
+from firebase.__classpath__ import classpath
 from firebase.core.firebase import Firebase
 from hspylib.core.enums.charset import Charset
 from hspylib.core.tools.commons import syserr
@@ -36,13 +36,13 @@ class Main(TUIApplication):
     """Firebase Agent - Manage your firebase integration."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # location of the .version file
-    VERSION_DIR = _Classpath.source_path()
+    VERSION_DIR = classpath.source_path()
 
     # The resources folder
-    RESOURCE_DIR = str(_Classpath.resource_path())
+    RESOURCE_DIR = str(classpath.resource_path())
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)

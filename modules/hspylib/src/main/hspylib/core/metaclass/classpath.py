@@ -97,7 +97,7 @@ class Classpath(metaclass=Singleton):
         return res_str
 
     @classmethod
-    def get_resource_path(cls, resource: str | Path) -> Path:
+    def get_resource(cls, resource: str | Path) -> Path:
         """Return the path of the given resource."""
         check_not_none(resource, "Must provide a valid resource path")
         resource = Path(f"{cls.resource_path()}/{str(resource)}")
@@ -106,7 +106,7 @@ class Classpath(metaclass=Singleton):
         return resource
 
     @classmethod
-    def get_source_path(cls, source: str | Path) -> Path:
+    def get_source(cls, source: str | Path) -> Path:
         """Return the path of the given source."""
         check_not_none(source, "Must provide a valid source path")
         filepath = Path(f"{cls.source_path()}/{str(source)}")

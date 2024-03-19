@@ -18,7 +18,7 @@ from clitt.core.tui.menu.tui_menu_ui import TUIMenuUi
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from phonebook.__classpath__ import _Classpath
+from phonebook.__classpath__ import classpath
 from phonebook.view.create_view import CreateView
 from phonebook.view.edit_view import EditView
 from phonebook.view.search_view import SearchView
@@ -30,8 +30,8 @@ class Main(TUIApplication):
     """TODO"""
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=f"{_Classpath.run_path()}/phonebook")
-        super().__init__(app_name, version, "A Simple CLI phonebook", resource_dir=str(_Classpath.resource_path()))
+        version = Version.load(load_dir=f"{classpath.run_path()}/phonebook")
+        super().__init__(app_name, version, "A Simple CLI phonebook", resource_dir=str(classpath.resource_path()))
 
     def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
         # fmt: off

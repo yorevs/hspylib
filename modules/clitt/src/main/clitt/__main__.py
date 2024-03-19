@@ -12,7 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from clitt.__classpath__ import _Classpath
+from clitt.__classpath__ import classpath
 from clitt.addons.appman.appman import AppManager
 from clitt.addons.appman.appman_enums import AppExtension, AppType
 from clitt.addons.widman.widman import WidgetManager
@@ -31,10 +31,10 @@ class Main(TUIApplication):
     """HsPyLib CLI Terminal Tools - Create professional CLI applications."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
-    VERSION_DIR = _Classpath.source_path()
+    VERSION_DIR = classpath.source_path()
 
     class Addon(Enumeration):
         """HsPyLib addon types."""

@@ -18,7 +18,7 @@ from hspylib.core.config.properties import Properties
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_not_none
-from kafman.__classpath__ import _Classpath
+from kafman.__classpath__ import classpath
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, Qt
 from PyQt5.QtGui import QFont
@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import QDialogButtonBox, QWidget
 class SettingsDialog(QObject):
     """TODO"""
 
-    DIALOG_FORM = _Classpath.get_resource_path("forms/settings_dlg.ui")
+    DIALOG_FORM = classpath.get_resource("forms/settings_dlg.ui")
 
     # fmt: off
     FORBIDDEN_SETTINGS = {
@@ -40,10 +40,10 @@ class SettingsDialog(QObject):
     class SettingsType(Enumeration):
         """TODO"""
 
-        PRODUCER_SETTINGS = _Classpath.get_resource_path("producer-settings.properties").read_text(
+        PRODUCER_SETTINGS = classpath.get_resource("producer-settings.properties").read_text(
             encoding=Charset.UTF_8.val
         )
-        CONSUMER_SETTINGS = _Classpath.get_resource_path("consumer-settings.properties").read_text(
+        CONSUMER_SETTINGS = classpath.get_resource("consumer-settings.properties").read_text(
             encoding=Charset.UTF_8.val
         )
 

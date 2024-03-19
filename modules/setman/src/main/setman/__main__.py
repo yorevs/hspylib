@@ -18,7 +18,7 @@ from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.argparse.parser_action import ParserAction
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
-from setman.__classpath__ import _Classpath
+from setman.__classpath__ import classpath
 from setman.core.setman import Setman
 from setman.core.setman_enums import SetmanOps, SettingsType
 from textwrap import dedent
@@ -31,10 +31,10 @@ class Main(TUIApplication):
     """HsPyLib CLI Terminal Tools - Create professional CLI applications."""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
-    VERSION_DIR = _Classpath.source_path()
+    VERSION_DIR = classpath.source_path()
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)

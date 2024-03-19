@@ -30,7 +30,7 @@ from hspylib.core.tools.text_tools import strip_escapes, strip_extra_spaces, str
 from hspylib.core.zoned_datetime import now, now_ms
 from hspylib.modules.fetch.fetch import is_reachable
 from json.decoder import JSONDecodeError
-from kafman.__classpath__ import _Classpath
+from kafman.__classpath__ import classpath
 from kafman.core.constants import MAX_HISTORY_SIZE_BYTES, StatusColor
 from kafman.core.consumer.consumer_config import ConsumerConfig
 from kafman.core.consumer.consumer_worker import ConsumerWorker
@@ -68,11 +68,11 @@ import re
 class MainQtView(QtView):
     """Main application view"""
 
-    VERSION = _Classpath.get_source_path(".version").read_text(encoding=Charset.UTF_8.val)
+    VERSION = classpath.get_source(".version").read_text(encoding=Charset.UTF_8.val)
 
-    SCHEMA_DIR = _Classpath.resource_path() / "schema"
+    SCHEMA_DIR = classpath.resource_path() / "schema"
 
-    FORMS_DIR = str(_Classpath.resource_path() / "forms")
+    FORMS_DIR = str(classpath.resource_path() / "forms")
 
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
 

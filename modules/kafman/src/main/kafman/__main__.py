@@ -17,7 +17,7 @@ from hqt.qt_application import QtApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.version import Version
-from kafman.__classpath__ import _Classpath
+from kafman.__classpath__ import classpath
 from kafman.views.main_qt_view import MainQtView
 from textwrap import dedent
 
@@ -29,19 +29,19 @@ class Main(QtApplication):
     """Kafman application main class"""
 
     # The welcome message
-    DESCRIPTION = _Classpath.get_source_path("welcome.txt").read_text(encoding=Charset.UTF_8.val)
+    DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
-    VERSION_DIR = _Classpath.source_path()
+    VERSION_DIR = classpath.source_path()
 
     # Location of the resources dir
-    RESOURCE_DIR = str(_Classpath.resource_path())
+    RESOURCE_DIR = str(classpath.resource_path())
 
     # Location of the UI font
-    FONT_PATH = _Classpath.get_resource_path("fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf")
+    FONT_PATH = classpath.get_resource("fonts/Droid-Sans-Mono-for-Powerline-Nerd-Font-Complete.otf")
 
     # Application icon
-    APP_ICON_PATH = _Classpath.get_resource_path("app-icon.png")
+    APP_ICON_PATH = classpath.get_resource("app-icon.png")
 
     def __init__(self, app_name: str):
         version = Version.load(load_dir=self.VERSION_DIR)

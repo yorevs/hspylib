@@ -6,7 +6,7 @@ from %APP_NAME%.__classpath__ import _Classpath
 
 class MainQtView(QtView):
     """Main application view"""
-    VERSION = _Classpath.get_source_path(".version").read_text(encoding=Charset.UTF_8.val)
+    VERSION = classpath.get_source(".version").read_text(encoding=Charset.UTF_8.val)
 
     FORMS_DIR = str(_Classpath.resource_path() / "forms")
 
