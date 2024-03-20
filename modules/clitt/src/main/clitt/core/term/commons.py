@@ -1,3 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   @project: hspylib-clitt
+   @package: hspylib-clitt.main.clitt.core.term
+      @file: commons.py
+   @created: Wed, 20 Mar 2024
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2024, HSPyLib team
+"""
+
 from clitt.core.exception.exceptions import NotATerminalError
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.tools.commons import is_debugging

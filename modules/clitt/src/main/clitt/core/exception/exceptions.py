@@ -16,3 +16,4 @@
 
 class NotATerminalError(NotImplementedError):
     """Raised when a TTY terminal is required"""
+

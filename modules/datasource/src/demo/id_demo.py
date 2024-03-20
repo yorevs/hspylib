@@ -1,3 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+   @project: hspylib-datasource
+   @package: hspylib-datasource.demo
+      @file: id_demo.py
+   @created: Wed, 20 Mar 2024
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+      @site: "https://github.com/yorevs/hspylib")
+   @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
+
+   Copyright 2024, HSPyLib team
+"""
+
 from collections import namedtuple
 from datasource.identity import Identity
 from hspylib.core.namespace import Namespace
