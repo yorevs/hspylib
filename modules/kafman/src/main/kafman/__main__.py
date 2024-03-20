@@ -32,7 +32,7 @@ class Main(QtApplication):
     DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
-    VERSION_DIR = classpath.source_path()
+    VERSION = Version.load(load_dir=classpath.source_path())
 
     # Location of the resources dir
     RESOURCE_DIR = str(classpath.resource_path())
@@ -44,9 +44,8 @@ class Main(QtApplication):
     APP_ICON_PATH = classpath.get_resource("app-icon.png")
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=self.VERSION_DIR)
-        description = self.DESCRIPTION.format(version)
-        super().__init__(MainQtView, app_name, version, description, resource_dir=self.RESOURCE_DIR)
+        description = self.DESCRIPTION.format(self.VERSION)
+        super().__init__(MainQtView, app_name, self.VERSION, description, resource_dir=self.RESOURCE_DIR)
         self.set_application_font(self.FONT_PATH)
         self.set_application_icon(self.APP_ICON_PATH)
         log.info(

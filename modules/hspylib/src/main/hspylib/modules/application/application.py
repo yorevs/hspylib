@@ -15,6 +15,7 @@
 from abc import abstractmethod
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
+from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.core.preconditions import check_state
 from hspylib.core.tools.commons import hook_exit_signals, log_init, syserr, sysout
@@ -72,8 +73,8 @@ class Application(metaclass=AbstractSingleton):
         description: str = None,
         usage: str = None,
         epilog: str = None,
-        resource_dir: str = None,
-        log_dir: str = None,
+        resource_dir: AnyPath = None,
+        log_dir: AnyPath = None,
     ):
         log.captureWarnings(True)
         hook_exit_signals(Application.exit)

@@ -39,14 +39,13 @@ class Main(TUIApplication):
     DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # location of the .version file
-    VERSION_DIR = classpath.source_path()
+    VERSION = Version.load(load_dir=classpath.source_path())
 
     # The resources folder
-    RESOURCE_DIR = str(classpath.resource_path())
+    RESOURCE_DIR = classpath.resource_path()
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=self.VERSION_DIR)
-        super().__init__(app_name, version, self.DESCRIPTION.format(version), resource_dir=self.RESOURCE_DIR)
+        super().__init__(app_name, self.VERSION, self.DESCRIPTION.format(self.VERSION), resource_dir=self.RESOURCE_DIR)
         self.firebase = Firebase()
 
     def _setup_arguments(self) -> None:

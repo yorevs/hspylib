@@ -14,6 +14,7 @@
 """
 
 from hspylib.core.config.properties import Properties
+from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import run_dir, to_bool
@@ -39,9 +40,14 @@ class AppConfigs(metaclass=Singleton):
     """
     )
 
-    def __init__(self, resource_dir: str, filename: str | None = None, profile: str | None = None):
-        check_argument(os.path.exists(resource_dir), "Unable to locate resources dir: {}", resource_dir)
-        self._resource_dir = resource_dir
+    def __init__(
+        self,
+        resource_dir: AnyPath,
+        filename: str | None = None,
+        profile: str | None = None
+    ):
+        check_argument(os.path.exists(str(resource_dir)), "Unable to locate resources dir: {}", resource_dir)
+        self._resource_dir = str(resource_dir)
         self._properties = Properties(filename=filename, load_dir=resource_dir, profile=profile)
         log.info(self)
 

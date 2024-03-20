@@ -31,6 +31,7 @@ of the 'PYCSNBASS' (Python Code Should Not Be A Simple Script) mindset.
 - Code rigorously tested and consistently adhering to Pylint standards.
 - Utilizes the Gradle build system with numerous extensions.
 - Diverse set of demos to facilitate a deeper understanding of the library.
+- AI model integrations (currently supporting OpenAI).
 
 > Create beautiful menu-select inputs
 
@@ -214,24 +215,6 @@ if __name__ == "__main__":
 
 ![Menus](https://iili.io/JAGQJkJ.png "Menus")
 
-## Table of contents
-
-<!-- toc -->
-
-- [PyPi Modules](#pypi-modules)
-- [Installation](#installation)
-  * [Requirements](#requirements)
-    + [Operating systems](#operating-systems)
-    + [Required software](#required-software)
-  * [PyPi](#pypi)
-  * [GitHub](#github)
-- [Documentation](#documentation)
-- [Support](#support)
-- [Known Issues](#known-issues)
-- [Contacts](#contact)
-
-<!-- tocstop -->
-
 ## PyPi Modules
 
 - [A Pivotal Cloud Foundry](https://pypi.org/project/hspylib-cfman) application tool.
@@ -303,21 +286,18 @@ To clone HsPyLib into your local machine type the command:
 
 The API documentation can be found [here](docs/api/index.html)
 
-## Contact
-
-You can contact us using our [Gitter](https://gitter.im/hspylib/community) community or using our
-[Reddit](https://www.reddit.com/user/yorevs).
-
 ## Support
 
 > Your support and contributions are greatly appreciated in helping us improve and enhance HomeSetup. Together, we can
 make it even better!
 
-You can support HSPyLib by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
+You can support HomeSetup by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=J5CDEFLF6M3H4)
 or contributing code. Feel free to contact me for further details. When making code contributions, please make sure to
 review our [guidelines](docs/CONTRIBUTING.md) and adhere to our [code of conduct](docs/CODE_OF_CONDUCT.md).
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/yorevs)
+
+You can also sponsor it by using our [GitHub Sponsors](https://github.com/sponsors/yorevs) page.
 
 This project is already supported by:
 
