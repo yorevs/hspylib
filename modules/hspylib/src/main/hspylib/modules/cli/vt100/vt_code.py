@@ -61,6 +61,11 @@ class VtCode(Enumeration):
     CUF = "CUF"                             # ^[[<n>C         -> Move cursor right n times
     CUB = "CUB"                             # ^[[<n>D         -> Move cursor left n times
 
+    # Advanced terminal codes
+
+    BSU = Vt100.sync_update()               # ^[[?2026h       -> Begin synchronized update
+    ESU = Vt100.sync_update(False)          # ^[[?2026l       -> End synchronized update
+
     # fmt: on
 
     @staticmethod

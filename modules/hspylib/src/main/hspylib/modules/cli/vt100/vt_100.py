@@ -37,7 +37,7 @@ class Vt100(ABC):
     # Esc[<Code>
     @staticmethod
     def sequence(code: str) -> str:
-        """Build an escape sequence start string."""
+        """Build an escape sequence (CSI) start string."""
         return Vt100.escape(f"[{code}")
 
     # Esc7
@@ -158,3 +158,9 @@ class Vt100(ABC):
                 else:
                     seq = Vt100.sequence("2J") + Vt100.sequence("?47l") + Vt100.escape("8")
         return seq
+
+    # Esc[?2026<h/l>
+    @staticmethod
+    def sync_update(enable: bool = True) -> str:
+        """Build an escape sequence to begin/end synchronized update."""
+        return Vt100.sequence(f"?2026{'h' if enable else 'l'}")

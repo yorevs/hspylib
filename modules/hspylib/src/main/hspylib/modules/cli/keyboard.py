@@ -17,7 +17,6 @@ import select
 import string
 import sys
 import termios
-from time import sleep
 from typing import List, Optional
 
 import getkey
@@ -52,7 +51,7 @@ class Keyboard(Enumeration):
     VK_CTRL_M       = VK_DISABLED;  VK_CTRL_N = '\x0e';       VK_CTRL_O = VK_DISABLED; VK_CTRL_P = '\x10'
     VK_CTRL_Q       = VK_DISABLED;  VK_CTRL_R = '\x12';       VK_CTRL_S = VK_DISABLED; VK_CTRL_T = '\x14'
     VK_CTRL_U       = '\x15';       VK_CTRL_V = VK_DISABLED;  VK_CTRL_W = '\x17';      VK_CTRL_X = '\x18'
-    VK_CTRL_Y       = '\x19';       VK_CTRL_Z = VK_DISABLED
+    VK_CTRL_Y       = VK_DISABLED;  VK_CTRL_Z = VK_DISABLED
 
     # Letters
     VK_a = 'a'; VK_i = 'i'; VK_q = 'q'; VK_y = 'y'
@@ -90,7 +89,7 @@ class Keyboard(Enumeration):
     VK_CIRCUMFLEX    = '^'; VK_RIGHT_BRACKET     = ']'; VK_GREATER           = '>'
     VK_AMPERSAND     = '&'; VK_LEFT_BRACE        = '{'; VK_COMMA             = ','
     VK_ASTERISK      = '*'; VK_RIGHT_BRACE       = '}'; VK_PERIOD            = '.'
-    VK_SLASH         = '/'; VK_QUESTION_MARK     = '?'
+    VK_SLASH         = '/'; VK_QUESTION_MARK     = '?'; VK_CUSTOM            = None
 
     # fmt: on
 
@@ -102,6 +101,24 @@ class Keyboard(Enumeration):
                 return dr_list[0] != []
             elif dr_list[0]:
                 return True
+
+    @classmethod
+    def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
+        """Wait until a keypress is detected."""
+        keystroke = getkey.getkey(blocking)
+        try:
+            return cls.of_value(keystroke)
+        except (KeyboardInterrupt, AssertionError) as err:
+            if not ignore_error_keys:
+                raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
+        except TypeError:
+            return Keyboard.custom(keystroke)
+        except termios.error as err:
+            raise KeyboardInputError("keyboard:: Requires a terminal (TTY)") from err
+        finally:
+            sys.stdin.flush()
+
+        return None
 
     @classmethod
     def getch(cls, n: int = 1) -> List["Keyboard"]:
@@ -131,20 +148,10 @@ class Keyboard(Enumeration):
         return [cls.VK_ESC, cls.VK_ENTER, cls.VK_CRLF, cls.VK_CRLF, cls.VK_CR]
 
     @classmethod
-    def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
-        """Wait until a keypress is detected."""
-        try:
-            keystroke = getkey.getkey(blocking)
-            return cls.of_value(keystroke)
-        except (KeyboardInterrupt, AssertionError) as err:
-            if not ignore_error_keys:
-                raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
-        except termios.error as err:
-            raise KeyboardInputError("keyboard:: Requires a terminal (TTY)") from err
-        finally:
-            sys.stdin.flush()
-
-        return None
+    def custom(cls, value):
+        member = Keyboard.VK_CUSTOM
+        member._value_ = value
+        return member
 
     def __str__(self) -> str:
         return self.name

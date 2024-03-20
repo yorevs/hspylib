@@ -13,12 +13,13 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
+from typing import Optional, List, Dict
+
 import pyperclip
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
-from typing import Optional, List, Dict
 
-from clitt.core.term.commons import Direction, Portion
+from clitt.core.term.commons import Direction
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_component import TUIComponent
 
@@ -43,6 +44,7 @@ class KeyboardInput(TUIComponent):
         """Preload the input with the provided dictionary."""
         for entry in history:
             KeyboardInput._add_history(entry)
+        KeyboardInput._HIST_INDEX = 0
 
     @staticmethod
     def forget_history() -> None:
@@ -62,22 +64,23 @@ class KeyboardInput(TUIComponent):
         :param input_text: The input text to add to the history.
         """
         if input_text and input_text not in list(KeyboardInput._HISTORY.values())[1:]:
-            KeyboardInput._HISTORY[max(1, len(KeyboardInput._HISTORY))] = input_text
-            KeyboardInput._HIST_INDEX += 1
+            idx: int = max(1, len(KeyboardInput._HISTORY))
+            KeyboardInput._HISTORY[idx] = input_text
+            KeyboardInput._HIST_INDEX = idx
 
     @classmethod
     def _next_in_history(cls) -> Optional[str]:
-        index = min(len(cls._HISTORY), cls._HIST_INDEX + 1)
+        index = min(len(cls._HISTORY) - 1, cls._HIST_INDEX + 1)
         text = cls._HISTORY.get(index, "")
-        cls._HIST_INDEX = min(len(cls._HISTORY) - 1, index)
+        cls._HIST_INDEX = index
         return text or cls._HISTORY[0]
 
     @classmethod
     def _prev_in_history(cls) -> Optional[str]:
-        index = max(1, cls._HIST_INDEX)
+        index = max(0, cls._HIST_INDEX - 1)
         text = cls._HISTORY.get(index, "")
-        cls._HIST_INDEX = max(1, index - 1)
-        return text
+        cls._HIST_INDEX = index
+        return text or cls._HISTORY[0]
 
     @classmethod
     def _undo(cls) -> Optional[str]:
@@ -93,9 +96,14 @@ class KeyboardInput(TUIComponent):
             cls._UNDO_HISTORY.append(cls._HISTORY[0])
         return text
 
-    def __init__(self, prompt: str = "", prompt_color: VtColor = VtColor.NC):
+    def __init__(
+        self, prompt: str = "",
+        prompt_color: VtColor = VtColor.NC,
+        text_color: VtColor = VtColor.NC
+    ):
         super().__init__(prompt)
         self._prompt_color = prompt_color
+        self._text_color = text_color
         self._input_index = 0
         self._input_text: str = ""
         self._HISTORY[0] = ""
@@ -124,6 +132,7 @@ class KeyboardInput(TUIComponent):
         return keypress
 
     def execute(self) -> Optional[str | Keyboard]:
+        self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         self._prepare_render()
         keypress = self._loop()
 
@@ -134,16 +143,15 @@ class KeyboardInput(TUIComponent):
         elif keypress == Keyboard.VK_ESC:
             self._input_text = None
 
-        self.writeln("")
+        self.writeln("%NC%")
 
         return self._input_text
 
     def render(self) -> None:
         Terminal.set_show_cursor(False)
         self.cursor.restore()
-        self._terminal.cursor.erase(Portion.LINE)
-        self.write(f"{self._prompt_color.placeholder}{self.title}%NC%")
         self.write(self._input_text)
+        self._terminal.cursor.erase(Direction.RIGHT)
         self._re_render = False
         self._set_cursor_pos()
         Terminal.set_show_cursor()
@@ -158,33 +166,23 @@ class KeyboardInput(TUIComponent):
                     if self._input_index > 0:
                         self._input_index = max(0, self._input_index - 1)
                         self._update_input(
-                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
+                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
                         )
                 case Keyboard.VK_DELETE:
                     self._update_input(
-                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
+                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
                     )
-                case Keyboard.VK_CTRL_F:
+                case Keyboard.VK_CTRL_F:  # Forget history
                     self.forget_history()
-                case Keyboard.VK_CTRL_P:
+                case Keyboard.VK_CTRL_P:  # Paste from clipboard
                     text = (pyperclip.paste() or '').replace("\n", "↵")
                     self._update_input(
-                        self._input_text[: self._input_index] + text + self._input_text[self._input_index :]
+                        self._input_text[: self._input_index] + text + self._input_text[self._input_index:]
                     )
                     self._input_index += len(text)
-                case Keyboard.VK_CTRL_R:
+                case Keyboard.VK_CTRL_R:  # Reset contents
                     self._input_index = 0
                     self._update_input("")
-                case Keyboard.VK_CTRL_U:  # Undo
-                    undo_text = self._undo()
-                    self._input_text = undo_text
-                    self._input_index = self.length
-                    self._HISTORY[0] = self._input_text
-                case Keyboard.VK_CTRL_K:  # redo
-                    redo_text = self._redo()
-                    self._input_text = redo_text if redo_text else self._input_text
-                    self._input_index = self.length
-                    self._HISTORY[0] = self._input_text
                 case Keyboard.VK_LEFT:
                     self._input_index = max(0, self._input_index - 1)
                 case Keyboard.VK_RIGHT:
@@ -201,7 +199,7 @@ class KeyboardInput(TUIComponent):
                     self._input_index = self.length
                 case _ as key if key.val.isprintable():
                     self._update_input(
-                        self._input_text[: self._input_index] + key.val + self._input_text[self._input_index :]
+                        self._input_text[: self._input_index] + key.val + self._input_text[self._input_index:]
                     )
                     self._input_index += 1
                 case _ as key if key in Keyboard.break_keys():
