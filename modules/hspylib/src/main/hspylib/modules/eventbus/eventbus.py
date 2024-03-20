@@ -12,29 +12,29 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from typing import Any, Callable, Dict, List
 
 from hspylib.core.exception.exceptions import HSBaseException
-from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
-from typing import Any, Callable, Dict, List
 
 EVENT_CALLBACK = Callable[[Event], None]
 
 
-def subscribe(**kwargs) -> Callable:
+def subscribe(bus: str, events: str | list[str]):
     """Method decorator to subscribe to a given bus event."""
 
-    def subscribe_closure(func) -> None:
-        check_argument(func.__code__.co_argcount >= 1, "Subscriber callbacks require at least one parameter.")
-        missing = next((p for p in ["bus", "event"] if p not in kwargs), None)
-        check_argument(missing is None, f"Missing required parameter: '{missing}: str'.")
-        EventBus.get(str(kwargs["bus"])).subscribe(str(kwargs["event"]), func)
+    def subscribe_closure(fn: EVENT_CALLBACK):
+        """TODO"""
+        EventBus.get(bus).subscribe(events, fn)
 
     return subscribe_closure
 
 
 def emit(bus_name: str, event_name: str, **kwargs) -> None:
-    """Emit an event to the specified bus."""
+    """Emit an event to the specified bus.
+    :param bus_name: The name of the event bus.
+    :param event_name: The name of the event.
+    """
     EventBus.get(bus_name).emit(event_name, **kwargs)
 
 
@@ -47,7 +47,9 @@ class EventBus:
 
     @classmethod
     def get(cls, bus_name: str) -> "EventBus":
-        """Return the bus instance referred to the specified bus name."""
+        """Return the bus instance referred to the specified bus name.
+        :param bus_name: The name of the event bus.
+        """
         if bus_name in cls._buses:
             return cls._buses[bus_name]
         bus_instance = EventBus(bus_name)
@@ -56,7 +58,10 @@ class EventBus:
 
     @classmethod
     def _get_subscriber(cls, bus_name: str, event_name: str) -> Any:
-        """Return the subscriber of the referred bus name and event name."""
+        """Return the subscriber of the referred bus name and event name.
+        :param bus_name: The name of the event bus.
+        :param event_name: The name of the event.
+        """
         cache_key = f"{bus_name}.{event_name}"
         if cache_key in cls._subscribers:
             return cls._subscribers[cache_key]
@@ -71,13 +76,21 @@ class EventBus:
     def name(self) -> str:
         return self._name
 
-    def subscribe(self, event_name: str, cb_event_handler: EVENT_CALLBACK) -> None:
-        """Subscribe to the specified event bus."""
-        subscriber = self._get_subscriber(self.name, event_name)
-        subscriber["callbacks"].append(cb_event_handler)
+    def subscribe(self, events: str | list[str], cb_event_handler: EVENT_CALLBACK) -> None:
+        """Subscribe to the specified event bus.
+        :param events: The name of the events.
+        :param cb_event_handler: A callback that handles the event.
+        """
+        events = [events] if isinstance(events, str) else events
+        for ev in events:
+            subscriber = self._get_subscriber(self.name, ev)
+            subscriber["callbacks"].append(cb_event_handler)
 
     def emit(self, event_name: str, **kwargs) -> None:
-        """Emit an event to this bus."""
+        """Emit an event to this bus.
+        :param event_name: The name of the event.
+        :param kwargs: The event keyword arguments.
+        """
         self._events.append(Event(event_name, **kwargs))
         while len(self._events) > 0:
             event = self._events.pop()

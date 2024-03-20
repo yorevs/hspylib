@@ -125,19 +125,19 @@ class CloudFoundry(metaclass=Singleton):
     def spaces(self) -> Optional[List[str]]:
         """List all spaces from organization."""
         all_spaces = self._exec("spaces")
-        return all_spaces.split("\n")[3:] if self._check_result(all_spaces) else None
+        return list(filter(None, all_spaces.split("\n")[3:])) if self._check_result(all_spaces) else None
 
     # Organization management
     def orgs(self) -> Optional[List[str]]:
         """List all organizations from API endpoint."""
         all_orgs = self._exec("orgs")
-        return all_orgs.split("\n")[3:] if self._check_result(all_orgs) else None
+        return list(filter(None, all_orgs.split("\n")[3:])) if self._check_result(all_orgs) else None
 
     # Application action: Retrieve apps
     def apps(self) -> Optional[List[str]]:
         """List all applications from targeted ORG/SPACE."""
         all_apps = self._exec("apps")
-        return all_apps.split("\n")[3:] if self._check_result(all_apps) else None
+        return list(filter(None, all_apps.split("\n")[3:])) if self._check_result(all_apps) else None
 
     # Application action: Start app
     def start(self, **kwargs) -> str:

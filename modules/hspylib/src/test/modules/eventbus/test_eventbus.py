@@ -67,13 +67,13 @@ class TestEventBus(unittest.TestCase):
         method1 = MagicMock()
         method2 = MagicMock()
 
-        @subscribe(bus="test-bus1", event="test-event-Z")
+        @subscribe(bus="test-bus1", events="test-event-Z")
         def method_1(ev) -> None:
             self.assertEqual("test", ev.args.name)
             self.assertEqual(1, ev.args.status)
             method1()
 
-        @subscribe(bus="test-bus1", event="test-event-Z")
+        @subscribe(bus="test-bus1", events="test-event-Z")
         def method_2(ev) -> None:
             self.assertEqual("test", ev.args.name)
             self.assertEqual(1, ev.args.status)
