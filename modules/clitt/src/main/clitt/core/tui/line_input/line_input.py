@@ -23,11 +23,13 @@ def line_input(
     prompt: str = "",
     prompt_color: VtColor = VtColor.NC,
     text_color: VtColor = VtColor.NC,
+    navbar_enable: bool = False
 ) -> Optional[str | Keyboard]:
     """Read a string from standard input.
     :param prompt: The message to be displayed to the user.
     :param prompt_color: The color of the prompt text.
     :param text_color: The color of the input text.
+    :param navbar_enable: Whether to display the navbar or not.
     """
-    ptt = KeyboardInput(prompt, prompt_color, text_color)
+    ptt = KeyboardInput(prompt, prompt_color, text_color, navbar_enable)
     return ptt.execute()

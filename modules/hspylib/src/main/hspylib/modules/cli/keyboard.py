@@ -103,14 +103,15 @@ class Keyboard(Enumeration):
                 return True
 
     @classmethod
-    def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = True) -> Optional["Keyboard"]:
+    def wait_keystroke(cls, blocking: bool = True, ignore_error_keys: bool = False) -> Optional["Keyboard"]:
         """Wait until a keypress is detected."""
-        keystroke = getkey.getkey(blocking)
+        keystroke = None
         try:
+            keystroke = getkey.getkey(blocking)
             return cls.of_value(keystroke)
-        except (KeyboardInterrupt, AssertionError) as err:
+        except AssertionError as err:
             if not ignore_error_keys:
-                raise KeyboardInputError(f"Invalid keystroke => {str(err)}") from err
+                raise KeyboardInputError(f"Invalid keystroke '{keystroke}'") from err
         except TypeError:
             return Keyboard.custom(keystroke)
         except termios.error as err:

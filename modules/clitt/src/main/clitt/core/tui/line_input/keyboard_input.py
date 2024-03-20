@@ -99,11 +99,13 @@ class KeyboardInput(TUIComponent):
     def __init__(
         self, prompt: str = "",
         prompt_color: VtColor = VtColor.NC,
-        text_color: VtColor = VtColor.NC
+        text_color: VtColor = VtColor.NC,
+        navbar_enable: bool = False
     ):
         super().__init__(prompt)
         self._prompt_color = prompt_color
         self._text_color = text_color
+        self._navbar_enable = navbar_enable
         self._input_index = 0
         self._input_text: str = ""
         self._HISTORY[0] = ""
@@ -122,7 +124,7 @@ class KeyboardInput(TUIComponent):
         keypress = Keyboard.VK_NONE
 
         # Wait for user interaction
-        while not self._done and keypress not in break_keys:
+        while not self._done and keypress and keypress not in break_keys:
             # Menu Renderization
             if self._re_render:
                 self.render()
@@ -134,7 +136,7 @@ class KeyboardInput(TUIComponent):
     def execute(self) -> Optional[str | Keyboard]:
         self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         self._prepare_render()
-        keypress = self._loop()
+        keypress = self._loop() or Keyboard.VK_ESC
 
         if keypress.isEnter():
             self._add_history(self._input_text)
@@ -188,10 +190,10 @@ class KeyboardInput(TUIComponent):
                 case Keyboard.VK_RIGHT:
                     self._input_index = min(self.length, self._input_index + 1)
                 case Keyboard.VK_UP:
-                    self._input_text = self._prev_in_history()
+                    self._input_text = self._next_in_history()
                     self._input_index = self.length
                 case Keyboard.VK_DOWN:
-                    self._input_text = self._next_in_history()
+                    self._input_text = self._prev_in_history()
                     self._input_index = self.length
                 case Keyboard.VK_HOME:
                     self._input_index = 0
