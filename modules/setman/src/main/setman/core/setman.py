@@ -13,11 +13,6 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-import logging as log
-import os
-from os.path import basename
-from typing import Any, Optional
-
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
 from clitt.core.tui.table.table_enums import TextAlignment
@@ -31,10 +26,14 @@ from hspylib.core.tools.text_tools import ensure_endswith
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.keyboard import Keyboard
-
+from os.path import basename
 from setman.core.setman_config import SetmanConfig
 from setman.core.setman_enums import SetmanOps, SettingsType
 from setman.settings.settings import Settings
+from typing import Any, Optional
+
+import logging as log
+import os
 
 
 class Setman(metaclass=Singleton):
@@ -118,7 +117,12 @@ class Setman(metaclass=Singleton):
 
         log.debug(
             "<%s> Name: %s  Prefix: %s  Value: %s  SettingsType: %s",
-            operation, name or "*", prefix or '<none>', "-", stype or "*")
+            operation,
+            name or "*",
+            prefix or "<none>",
+            "-",
+            stype or "*",
+        )
         self._settings.preserve = preserve
 
         match operation:
@@ -143,11 +147,7 @@ class Setman(metaclass=Singleton):
 
         return self._exec_status
 
-    def _set_setting(
-        self, name: str | None,
-        prefix: str | None,
-        value: Any | None,
-        stype: SettingsType | None) -> None:
+    def _set_setting(self, name: str | None, prefix: str | None, value: Any | None, stype: SettingsType | None) -> None:
         """Upsert the specified setting.
         :param name the settings name.
         :param value the settings value.
@@ -207,7 +207,7 @@ class Setman(metaclass=Singleton):
                         f"\n-=- Listing {'top' if l_data > diff_offset else 'all'} {min(l_data, diff_offset)} "
                         f"system settings matching: ",
                         f"[name={name or '*'}, stype={stype or '*'}] -=-",
-                        "%EOL%"
+                        "%EOL%",
                     )
                 )
             sysout(os.linesep.join(data))
@@ -216,7 +216,7 @@ class Setman(metaclass=Singleton):
                 sysout(
                     "%EOL%%YELLOW%No settings found matching: %WHITE%",
                     f"[name={name or '*'}, stype={stype or '*'}]",
-                    "%EOL%"
+                    "%EOL%",
                 )
             self._exec_status = ExitStatus.FAILED
 

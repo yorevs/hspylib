@@ -12,19 +12,18 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import os
-import re
 from abc import ABC
 from configparser import ConfigParser
 from functools import partial
+from hspylib.core.tools.dict_tools import flatten_dict
 from typing import Any, Callable, Dict, TextIO, TypeAlias
 
+import os
+import re
 import toml
 import yaml
 
-from hspylib.core.tools.dict_tools import flatten_dict
-
-Properties : TypeAlias = Dict[str, Any]
+Properties: TypeAlias = Dict[str, Any]
 
 
 class ParserFactory(ABC):

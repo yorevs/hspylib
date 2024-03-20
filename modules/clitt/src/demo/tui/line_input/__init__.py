@@ -5,7 +5,5 @@
 # Package: demo.tui.line_input
 """Package initialization."""
 
-__all__ = [
-    'line_input_demo'
-]
-__version__ = '0.9.117'
+__all__ = ["line_input_demo"]
+__version__ = "0.9.117"

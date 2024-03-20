@@ -12,7 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from hspylib.core.tools.commons import to_bool, syserr, sysout
+from hspylib.core.tools.commons import syserr, sysout, to_bool
 
 import sys
 import unittest

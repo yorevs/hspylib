@@ -5,7 +5,5 @@
 # Package: main.clitt.utils
 """Package initialization."""
 
-__all__ = [
-    'git_utils'
-]
-__version__ = '0.9.117'
+__all__ = ["git_utils"]
+__version__ = "0.9.117"

@@ -5,11 +5,5 @@
 # Package: main.setman.settings
 """Package initialization."""
 
-__all__ = [
-    'settings', 
-    'settings_config', 
-    'settings_entry', 
-    'settings_repository', 
-    'settings_service'
-]
-__version__ = '0.10.33'
+__all__ = ["settings", "settings_config", "settings_entry", "settings_repository", "settings_service"]
+__version__ = "0.10.33"

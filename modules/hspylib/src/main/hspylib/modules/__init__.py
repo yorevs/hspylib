@@ -5,12 +5,5 @@
 # Package: main.hspylib.modules
 """Package initialization."""
 
-__all__ = [
-    'application', 
-    'cache', 
-    'cli', 
-    'eventbus', 
-    'fetch', 
-    'security'
-]
-__version__ = '1.12.35'
+__all__ = ["application", "cache", "cli", "eventbus", "fetch", "security"]
+__version__ = "1.12.35"

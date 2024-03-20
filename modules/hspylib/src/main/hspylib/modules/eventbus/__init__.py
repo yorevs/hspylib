@@ -5,8 +5,5 @@
 # Package: main.hspylib.modules.eventbus
 """Package initialization."""
 
-__all__ = [
-    'event', 
-    'eventbus'
-]
-__version__ = '1.12.35'
+__all__ = ["event", "eventbus"]
+__version__ = "1.12.35"

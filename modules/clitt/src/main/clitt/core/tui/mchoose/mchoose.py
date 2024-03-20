@@ -12,10 +12,9 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from clitt.core.tui.mchoose.menu_choose import MenuChoose
 from hspylib.core.enums.charset import Charset
 from typing import List, Optional, TypeVar
-
-from clitt.core.tui.mchoose.menu_choose import MenuChoose
 
 T = TypeVar("T")
 
@@ -24,7 +23,7 @@ def mchoose(
     items: List[T],
     checked: bool | List[bool] = False,
     title: str = "Please choose among the options",
-    output: str = None
+    output: str = None,
 ) -> Optional[List[T]]:
     """
     Terminal UI menu choose input method.

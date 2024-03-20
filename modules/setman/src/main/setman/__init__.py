@@ -5,8 +5,5 @@
 # Package: main.setman
 """Package initialization."""
 
-__all__ = [
-    'core', 
-    'settings'
-]
-__version__ = '0.10.33'
+__all__ = ["core", "settings"]
+__version__ = "0.10.33"

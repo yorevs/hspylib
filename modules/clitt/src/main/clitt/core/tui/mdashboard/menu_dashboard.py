@@ -82,9 +82,7 @@ class MenuDashBoard(TUIComponent):
         self.writeln(f"{self.prefs.title_color.placeholder}{self.title}%EOL%%NC%")
 
         for idx, item in enumerate(self._items):
-            self._draw_item(
-                idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL
-            )
+            self._draw_item(idx, item, MenuDashBoard.CELL_TPL if self._tab_index != idx else MenuDashBoard.SEL_CELL_TPL)
 
         self.cursor.erase(Portion.LINE)
         self.cursor.move_to(column=1)
@@ -117,11 +115,7 @@ class MenuDashBoard(TUIComponent):
 
         return keypress
 
-    def _draw_item(
-        self,
-        item_idx: int,
-        item: DashboardItem,
-        cell_template: DashboardMatrix) -> None:
+    def _draw_item(self, item_idx: int, item: DashboardItem, cell_template: DashboardMatrix) -> None:
         """Print the specified dashboard item at the given index.
         :param item_idx: the item index.
         :param item: the dashboard item.

@@ -12,17 +12,16 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import os
-import sys
-
+from clitt.core.term.screen import screen
+from clitt.core.term.terminal import terminal
 from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 
-from clitt.core.term.screen import screen
-from clitt.core.term.terminal import terminal
+import os
+import sys
 
 
 class TUIApplication(Application, metaclass=AbstractSingleton):

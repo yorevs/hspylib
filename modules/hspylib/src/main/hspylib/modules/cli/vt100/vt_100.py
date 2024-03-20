@@ -12,11 +12,11 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from abc import ABC
+from hspylib.core.preconditions import check_argument
+
 import os
 import re
-from abc import ABC
-
-from hspylib.core.preconditions import check_argument
 
 
 class Vt100(ABC):

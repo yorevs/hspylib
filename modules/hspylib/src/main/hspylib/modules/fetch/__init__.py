@@ -5,10 +5,5 @@
 # Package: main.hspylib.modules.fetch
 """Package initialization."""
 
-__all__ = [
-    'fetch', 
-    'http_response', 
-    'uri_builder', 
-    'uri_scheme'
-]
-__version__ = '1.12.35'
+__all__ = ["fetch", "http_response", "uri_builder", "uri_scheme"]
+__version__ = "1.12.35"

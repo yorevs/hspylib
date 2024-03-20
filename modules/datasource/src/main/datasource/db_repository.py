@@ -18,7 +18,7 @@ from datasource.crud_repository import CrudRepository
 from datasource.db_configuration import DBConfiguration
 from hspylib.core.metaclass.singleton import AbstractSingleton
 from retry import retry
-from typing import Any, Generic, Iterable, Optional, Tuple, TypeVar, TypeAlias
+from typing import Any, Generic, Iterable, Optional, Tuple, TypeAlias, TypeVar
 
 import contextlib
 

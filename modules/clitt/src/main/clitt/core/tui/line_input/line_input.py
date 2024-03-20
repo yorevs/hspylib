@@ -12,18 +12,14 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from clitt.core.tui.line_input.keyboard_input import KeyboardInput
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from typing import Optional
 
-from clitt.core.tui.line_input.keyboard_input import KeyboardInput
-
 
 def line_input(
-    prompt: str = "",
-    prompt_color: VtColor = VtColor.NC,
-    text_color: VtColor = VtColor.NC,
-    navbar_enable: bool = False
+    prompt: str = "", prompt_color: VtColor = VtColor.NC, text_color: VtColor = VtColor.NC, navbar_enable: bool = False
 ) -> Optional[str | Keyboard]:
     """Read a string from standard input.
     :param prompt: The message to be displayed to the user.

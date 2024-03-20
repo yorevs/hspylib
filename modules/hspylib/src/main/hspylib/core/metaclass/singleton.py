@@ -13,15 +13,15 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-import logging as log
-import sys
 from abc import ABCMeta
-from typing import Any, Type, Union, TypeAlias
-
 from hspylib.core.exception.exceptions import HSBaseException
 from hspylib.core.preconditions import check_not_none
+from typing import Any, Type, TypeAlias, Union
 
-SingletonClass : TypeAlias = Union[Type, "Singleton"]
+import logging as log
+import sys
+
+SingletonClass: TypeAlias = Union[Type, "Singleton"]
 
 
 class Singleton(Type):

@@ -14,27 +14,19 @@
 """
 
 from abc import ABC
-from typing import List, Union, TypeAlias
-
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
 from hqt.promotions.hcombobox import HComboBox
 from hqt.promotions.hlistwidget import HListWidget
 from hspylib.core.exception.exceptions import InvalidStateError
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QCheckBox, QDoubleSpinBox, QLineEdit, QSizePolicy, QSpinBox, QToolButton, QWidget
+from typing import List, TypeAlias, Union
 
-InputWidget : TypeAlias = Union[
-    QWidget,
-    HComboBox,
-    QLineEdit,
-    QSpinBox,
-    QDoubleSpinBox,
-    QToolButton,
-    QCheckBox,
-    HListWidget
+InputWidget: TypeAlias = Union[
+    QWidget, HComboBox, QLineEdit, QSpinBox, QDoubleSpinBox, QToolButton, QCheckBox, HListWidget
 ]
 
-InputValue : TypeAlias = Union[int, str, bool, float, list]
+InputValue: TypeAlias = Union[int, str, bool, float, list]
 
 
 class WidgetUtils(ABC):

@@ -95,7 +95,7 @@ class Settings:
         name: str | None = None,
         prefix: str | None = None,
         value: Any | None = None,
-        stype: SettingsType | None = None
+        stype: SettingsType | None = None,
     ) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
         :param name the settings name.
@@ -160,8 +160,13 @@ class Settings:
             for row in csv_reader:
                 if row == self.HEADERS:
                     continue
-                uid, name, prefix, value, stype = \
-                    str(row[0]), str(row[1]), str(row[2]), str(row[3]), SettingsType.of_value(row[4])
+                uid, name, prefix, value, stype = (
+                    str(row[0]),
+                    str(row[1]),
+                    str(row[2]),
+                    str(row[3]),
+                    SettingsType.of_value(row[4]),
+                )
                 found = self._service.get_by_name(name)
                 if found and self._preserve:
                     continue

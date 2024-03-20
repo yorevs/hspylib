@@ -13,12 +13,12 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-import re
+from pyparsing import unicode
 from typing import Any, TypeAlias, Union
 
-from pyparsing import unicode
+import re
 
-JsonElement : TypeAlias = Union[list, dict, unicode]
+JsonElement: TypeAlias = Union[list, dict, unicode]
 
 
 class JsonPath:

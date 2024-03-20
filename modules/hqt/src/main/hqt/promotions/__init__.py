@@ -6,14 +6,14 @@
 """Package initialization."""
 
 __all__ = [
-    'hcombobox', 
-    'hconsole', 
-    'hframe', 
-    'hlabel', 
-    'hlistwidget', 
-    'hstacked_widget', 
-    'htablemodel', 
-    'htableview', 
-    'htoolbox'
+    "hcombobox",
+    "hconsole",
+    "hframe",
+    "hlabel",
+    "hlistwidget",
+    "hstacked_widget",
+    "htablemodel",
+    "htableview",
+    "htoolbox",
 ]
-__version__ = '0.9.38'
+__version__ = "0.9.38"

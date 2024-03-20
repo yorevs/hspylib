@@ -12,11 +12,10 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from hspylib.core.tools.commons import sysout, safe_delete_file
+from hspylib.core.tools.commons import safe_delete_file, sysout
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings import Settings
 from setman.settings.settings_config import SettingsConfig
-
 
 if __name__ == "__main__":
     db_file = "resources/settings.db"
@@ -24,9 +23,9 @@ if __name__ == "__main__":
     configs = SettingsConfig("resources", "settings-demo.properties")
     s = Settings(configs)
     s.clear()
-    s.put("demo.settings.one", '', True, SettingsType.PROPERTY)
-    s.put("demo.settings.two", '', False, SettingsType.ENVIRONMENT)
-    s["demo.settings.three"] = '', 'VALUE', SettingsType.PROPERTY
+    s.put("demo.settings.one", "", True, SettingsType.PROPERTY)
+    s.put("demo.settings.two", "", False, SettingsType.ENVIRONMENT)
+    s["demo.settings.three"] = "", "VALUE", SettingsType.PROPERTY
     sysout(s["demo.settings.one"].to_string())
     s.export_csv(db_file)
     sysout(s)

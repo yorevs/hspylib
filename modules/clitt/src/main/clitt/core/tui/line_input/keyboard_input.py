@@ -13,15 +13,14 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from typing import Optional, List, Dict
-
-import pyperclip
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_color import VtColor
-
 from clitt.core.term.commons import Direction
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_color import VtColor
+from typing import Dict, List, Optional
+
+import pyperclip
 
 
 class KeyboardInput(TUIComponent):
@@ -97,10 +96,11 @@ class KeyboardInput(TUIComponent):
         return text
 
     def __init__(
-        self, prompt: str = "",
+        self,
+        prompt: str = "",
         prompt_color: VtColor = VtColor.NC,
         text_color: VtColor = VtColor.NC,
-        navbar_enable: bool = False
+        navbar_enable: bool = False,
     ):
         super().__init__(prompt)
         self._prompt_color = prompt_color
@@ -168,18 +168,18 @@ class KeyboardInput(TUIComponent):
                     if self._input_index > 0:
                         self._input_index = max(0, self._input_index - 1)
                         self._update_input(
-                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
+                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
                         )
                 case Keyboard.VK_DELETE:
                     self._update_input(
-                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
+                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
                     )
                 case Keyboard.VK_CTRL_F:  # Forget history
                     self.forget_history()
                 case Keyboard.VK_CTRL_P:  # Paste from clipboard
-                    text = (pyperclip.paste() or '').replace("\n", "↵")
+                    text = (pyperclip.paste() or "").replace("\n", "↵")
                     self._update_input(
-                        self._input_text[: self._input_index] + text + self._input_text[self._input_index:]
+                        self._input_text[: self._input_index] + text + self._input_text[self._input_index :]
                     )
                     self._input_index += len(text)
                 case Keyboard.VK_CTRL_R:  # Reset contents
@@ -201,7 +201,7 @@ class KeyboardInput(TUIComponent):
                     self._input_index = self.length
                 case _ as key if key.val.isprintable():
                     self._update_input(
-                        self._input_text[: self._input_index] + key.val + self._input_text[self._input_index:]
+                        self._input_text[: self._input_index] + key.val + self._input_text[self._input_index :]
                     )
                     self._input_index += 1
                 case _ as key if key in Keyboard.break_keys():

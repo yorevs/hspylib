@@ -12,15 +12,14 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from typing import get_args, Iterable, Iterator, Set, Tuple, TypeVar, Union, TypeAlias
-
 from hspylib.core.enums.enumeration import Enumeration
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.text_tools import quote
+from typing import get_args, Iterable, Iterator, Set, Tuple, TypeAlias, TypeVar, Union
 
 T = TypeVar("T")
 
-FilterValue : TypeAlias = Union[int, str, bool, float]
+FilterValue: TypeAlias = Union[int, str, bool, float]
 
 
 class FilterCondition(Enumeration):

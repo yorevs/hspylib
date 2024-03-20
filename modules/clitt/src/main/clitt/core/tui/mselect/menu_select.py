@@ -12,12 +12,11 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import List, Optional, TypeAlias, TypeVar
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional, TypeAlias, TypeVar
 
 T = TypeVar("T")
 

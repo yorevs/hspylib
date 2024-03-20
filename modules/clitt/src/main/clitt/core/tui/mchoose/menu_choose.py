@@ -12,14 +12,13 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.core.tools.commons import to_bool
-from hspylib.core.tools.dict_tools import get_or_default
-from typing import List, Optional, TypeAlias, TypeVar
-
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import Direction, Portion
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.core.tools.commons import to_bool
+from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import List, Optional, TypeAlias, TypeVar
 
 T = TypeVar("T")
 
@@ -35,11 +34,7 @@ class MenuChoose(TUIComponent):
 
     MIN_ROWS = 3
 
-    def __init__(
-        self,
-        title: str,
-        items: MChooseItems,
-        checked: bool | List[bool] = False):
+    def __init__(self, title: str, items: MChooseItems, checked: bool | List[bool] = False):
 
         super().__init__(title)
         self.items = items
@@ -62,10 +57,7 @@ class MenuChoose(TUIComponent):
         self._prepare_render()
         keypress = self._loop()
 
-        return (
-            [op for idx, op in enumerate(self.items) if self.sel_options[idx]]
-            if keypress.isEnter() else None
-        )
+        return [op for idx, op in enumerate(self.items) if self.sel_options[idx]] if keypress.isEnter() else None
 
     def render(self) -> None:
         length = len(self.items)

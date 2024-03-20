@@ -5,8 +5,5 @@
 # Package: demo
 """Package initialization."""
 
-__all__ = [
-    'cli', 
-    'other'
-]
-__version__ = '1.12.35'
+__all__ = ["cli", "other"]
+__version__ = "1.12.35"

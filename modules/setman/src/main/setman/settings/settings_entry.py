@@ -12,20 +12,19 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import re
-from collections import namedtuple
-from textwrap import dedent
-from typing import Any, Optional, Union
-
 from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.menu_input import MenuInput
 from clitt.core.tui.minput.minput import minput
+from collections import namedtuple
 from datasource.crud_entity import CrudEntity
 from datasource.identity import Identity
-from hspylib.core.tools.text_tools import environ_name, xstr, ensure_endswith
+from hspylib.core.tools.text_tools import ensure_endswith, environ_name, xstr
 from hspylib.core.zoned_datetime import now
-
 from setman.core.setman_enums import SettingsType
+from textwrap import dedent
+from typing import Any, Optional, Union
+
+import re
 
 
 class SettingsEntry(CrudEntity):
@@ -97,15 +96,15 @@ class SettingsEntry(CrudEntity):
         self,
         entity_id: Identity = SetmanId(Identity.auto().values),
         name: str = None,
-        prefix: str = '',
+        prefix: str = "",
         value: Any | None = None,
         stype: SettingsType = None,
         modified: str = now(),
     ):
         super().__init__(entity_id)
-        self.name: str = name or ''
-        self.prefix: str = prefix if not prefix.endswith('.') else prefix[:-1]
-        self.value: Any = value or ''
+        self.name: str = name or ""
+        self.prefix: str = prefix if not prefix.endswith(".") else prefix[:-1]
+        self.value: Any = value or ""
         self.stype: str = stype.val if stype else SettingsType.PROPERTY.val
         self.modified: str = modified
 
@@ -118,9 +117,7 @@ class SettingsEntry(CrudEntity):
     @property
     def environ_name(self) -> str:
         """Return the environment variable representation name of this entry."""
-        return environ_name(self._del_prefix()) \
-            if self.stype == SettingsType.ENVIRONMENT.val \
-            else self.name
+        return environ_name(self._del_prefix()) if self.stype == SettingsType.ENVIRONMENT.val else self.name
 
     def to_string(self, simple_fmt: bool = False) -> str:
         """Return the string representation of this entry.
@@ -133,12 +130,7 @@ class SettingsEntry(CrudEntity):
                 else self._SIMPLE_FORMAT.format(self.name, xstr(self.value))
             )
         return self._DISPLAY_FORMAT.format(
-            self.name,
-            self.stype,
-            xstr(self.value),
-            self.prefix or '<none>',
-            self.environ_name,
-            self.modified
+            self.name, self.stype, xstr(self.value), self.prefix or "<none>", self.environ_name, self.modified
         )
 
     def to_env_export(self) -> str:
@@ -146,7 +138,6 @@ class SettingsEntry(CrudEntity):
         return f'export {self.environ_name}="{xstr(self.value)}"'
 
     def _del_prefix(self) -> str:
-        prefix = ensure_endswith(self.prefix, '.') if self.prefix else ''
-        de_prefixed = re.sub(fr"^{prefix}", '', self.name) if prefix else self.name
+        prefix = ensure_endswith(self.prefix, ".") if self.prefix else ""
+        de_prefixed = re.sub(rf"^{prefix}", "", self.name) if prefix else self.name
         return de_prefixed
-

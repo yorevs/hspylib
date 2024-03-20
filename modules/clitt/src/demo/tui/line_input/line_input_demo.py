@@ -17,7 +17,6 @@ from clitt.core.tui.line_input.line_input import line_input
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
-
 if __name__ == "__main__":
     hist = ["Hugo", "Joao", "Koko", "Hugo"]
     KeyboardInput.preload_history(hist)

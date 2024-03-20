@@ -5,9 +5,5 @@
 # Package: test.mock
 """Package initialization."""
 
-__all__ = [
-    'mock_server', 
-    'mock_server_handler', 
-    'test_mock_server'
-]
-__version__ = '1.12.35'
+__all__ = ["mock_server", "mock_server_handler", "test_mock_server"]
+__version__ = "1.12.35"

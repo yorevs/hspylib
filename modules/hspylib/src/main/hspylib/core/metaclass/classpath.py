@@ -12,19 +12,19 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import logging as log
-import os
+from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import ResourceNotFoundError, SourceNotFoundError
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.preconditions import check_argument, check_not_none, check_state
 from pathlib import Path
 from textwrap import dedent
 from types import NoneType
 from typing import Optional, TypeAlias, Union
 
-from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import ResourceNotFoundError, SourceNotFoundError
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.preconditions import check_argument, check_not_none, check_state
+import logging as log
+import os
 
-AnyPath : TypeAlias = Union[Path, str, NoneType]
+AnyPath: TypeAlias = Union[Path, str, NoneType]
 
 
 class Classpath(metaclass=Singleton):
@@ -32,11 +32,7 @@ class Classpath(metaclass=Singleton):
 
     INSTANCE = None
 
-    def __init__(
-        self,
-        source_root: AnyPath = None,
-        run_dir: AnyPath = None,
-        resource_dir: AnyPath = None):
+    def __init__(self, source_root: AnyPath = None, run_dir: AnyPath = None, resource_dir: AnyPath = None):
 
         if source_root:
             check_state(Path(str(source_root)).exists(), "source_root is not an existing path")

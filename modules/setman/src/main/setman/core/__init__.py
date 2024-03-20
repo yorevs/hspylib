@@ -5,9 +5,5 @@
 # Package: main.setman.core
 """Package initialization."""
 
-__all__ = [
-    'setman', 
-    'setman_config', 
-    'setman_enums'
-]
-__version__ = '0.10.33'
+__all__ = ["setman", "setman_config", "setman_enums"]
+__version__ = "0.10.33"

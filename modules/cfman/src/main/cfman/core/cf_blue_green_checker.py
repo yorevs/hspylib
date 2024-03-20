@@ -126,17 +126,21 @@ class CFBlueGreenChecker:
     @classmethod
     def _match_green(cls, app_green: CFApplication, app_blue: CFApplication) -> Tuple[str, str]:
         return (
-            "%YELLOW%"
-            if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
-            else "%NC%",
+            (
+                "%YELLOW%"
+                if app_green is None or app_blue is None or len(app_green.routes) > len(app_blue.routes)
+                else "%NC%"
+            ),
             cls._app_info(app_green, app_blue) if app_green else "%RED%Missing green pair!",
         )
 
     @classmethod
     def _match_blue(cls, app_blue: CFApplication, app_green: CFApplication) -> Tuple[str, str]:
         return (
-            "%YELLOW%"
-            if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
-            else "%NC%",
+            (
+                "%YELLOW%"
+                if app_green is None or app_blue is None or len(app_blue.routes) > len(app_green.routes)
+                else "%NC%"
+            ),
             cls._app_info(app_blue, app_green) if app_blue else "%RED%Missing blue pair!",
         )

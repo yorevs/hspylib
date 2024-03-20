@@ -13,16 +13,15 @@
    Copyright·(c)·2024,·HSPyLib
 """
 from abc import ABC, abstractmethod
-from hspylib.core.tools.text_tools import elide_text
-from hspylib.modules.cli.keyboard import Keyboard
-from typing import Any, List, Optional, TypeVar
-
 from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.term.commons import Direction
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.screen import Screen
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_preferences import TUIPreferences
+from hspylib.core.tools.text_tools import elide_text
+from hspylib.modules.cli.keyboard import Keyboard
+from typing import Any, List, Optional, TypeVar
 
 T = TypeVar("T", bound=Any)
 
@@ -90,7 +89,7 @@ class TUIComponent(ABC):
         self.cursor.end()
         self.cursor.erase(Direction.DOWN)
         self.cursor.reset_mode()
-        self.cursor.writeln('\n')
+        self.cursor.writeln("\n")
 
         return keypress
 

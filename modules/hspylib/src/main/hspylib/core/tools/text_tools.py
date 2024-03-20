@@ -228,9 +228,7 @@ def quote(value: Any) -> str:
     return (
         str(value)
         if not isinstance(value, str)
-        else f'"{value}"'
-        if value.startswith("'") and value.endswith("'")
-        else f"'{value}'"
+        else f'"{value}"' if value.startswith("'") and value.endswith("'") else f"'{value}'"
     )
 
 

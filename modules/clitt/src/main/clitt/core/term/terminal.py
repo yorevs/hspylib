@@ -12,6 +12,18 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from clitt.core.exception.exceptions import NotATerminalError
+from clitt.core.term.cursor import Cursor
+from clitt.core.term.screen import Screen
+from hspylib.core.enums.charset import Charset
+from hspylib.core.metaclass.singleton import Singleton
+from hspylib.core.tools.commons import sysout
+from hspylib.modules.application.exit_status import ExitStatus
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_100 import Vt100
+from subprocess import CalledProcessError, PIPE, Popen
+from typing import Any, Iterable, List, Optional, Tuple
+
 import atexit
 import logging as log
 import os
@@ -20,19 +32,6 @@ import select
 import shlex
 import signal
 import sys
-from subprocess import CalledProcessError, Popen, PIPE
-from typing import Any, Optional, Tuple, List, Iterable
-
-from hspylib.core.enums.charset import Charset
-from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import sysout
-from hspylib.modules.application.exit_status import ExitStatus
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-
-from clitt.core.exception.exceptions import NotATerminalError
-from clitt.core.term.cursor import Cursor
-from clitt.core.term.screen import Screen
 
 
 class Terminal(metaclass=Singleton):
@@ -55,7 +54,7 @@ class Terminal(metaclass=Singleton):
             del kwargs["stderr"]
         if "stdin" in kwargs:
             del kwargs["stdin"]
-        commands = map(shlex.split, cmd_list) if 'shell' not in kwargs else cmd_list
+        commands = map(shlex.split, cmd_list) if "shell" not in kwargs else cmd_list
         first_cmd, *rest_cmds = commands
         if len(rest_cmds) > 0:
             procs: List[Popen] = [Popen(first_cmd, stdout=PIPE, stderr=PIPE, **kwargs)]

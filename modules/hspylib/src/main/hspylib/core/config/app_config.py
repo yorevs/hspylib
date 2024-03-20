@@ -40,12 +40,7 @@ class AppConfigs(metaclass=Singleton):
     """
     )
 
-    def __init__(
-        self,
-        resource_dir: AnyPath,
-        filename: str | None = None,
-        profile: str | None = None
-    ):
+    def __init__(self, resource_dir: AnyPath, filename: str | None = None, profile: str | None = None):
         check_argument(os.path.exists(str(resource_dir)), "Unable to locate resources dir: {}", resource_dir)
         self._resource_dir = str(resource_dir)
         self._properties = Properties(filename=filename, load_dir=resource_dir, profile=profile)

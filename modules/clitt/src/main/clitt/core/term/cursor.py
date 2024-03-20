@@ -1,4 +1,4 @@
-import os
+from clitt.core.term.commons import Direction, EraseDirection, get_cursor_position, MoveDirection, Portion, Position
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.tools.commons import sysout
 from hspylib.core.tools.text_tools import last_index_of
@@ -7,7 +7,7 @@ from hspylib.modules.cli.vt100.vt_code import VtCode
 from hspylib.modules.cli.vt100.vt_color import VtColor
 from typing import Any
 
-from clitt.core.term.commons import Direction, EraseDirection, get_cursor_position, MoveDirection, Position, Portion
+import os
 
 
 class Cursor(metaclass=Singleton):
@@ -120,7 +120,7 @@ class Cursor(metaclass=Singleton):
         sysout(obj, end=end)
         text = (str(obj) + end).replace("%EOL%", os.linesep)
         text = VtColor.strip_colors(VtCode.strip_codes(text))
-        text_offset = len(text[max(0, last_index_of(text, os.linesep)):])
+        text_offset = len(text[max(0, last_index_of(text, os.linesep)) :])
         self.position = self.position[0] + text.count(os.linesep), text_offset + (
             self.position[1] if text.count(os.linesep) == 0 else 0
         )

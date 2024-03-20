@@ -12,8 +12,6 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from hspylib.modules.application.exit_status import ExitStatus
-
 from cfman.core.cf import CloudFoundry
 from cfman.core.cf_application import CFApplication
 from cfman.core.cf_blue_green_checker import CFBlueGreenChecker
@@ -28,6 +26,7 @@ from clitt.core.tui.mselect.mselect import mselect
 from functools import partial
 from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.preconditions import check_state
+from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cache.ttl_cache import TTLCache
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.fetch.fetch import head
