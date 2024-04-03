@@ -41,7 +41,8 @@ class KeyboardInput(TUIComponent):
     @staticmethod
     def preload_history(history: List[str]) -> None:
         """Preload the input with the provided dictionary."""
-        for entry in history:
+        rev_history = reversed(history)
+        for entry in rev_history:
             KeyboardInput._add_history(entry)
         KeyboardInput._HIST_INDEX = 0
 

@@ -1,9 +1,11 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.117
+# hspylib-clitt v0.9.118
 #
 # Package: demo.term
 """Package initialization."""
 
-__all__ = ["terminal_demo"]
-__version__ = "0.9.117"
+__all__ = [
+    'terminal_demo'
+]
+__version__ = '0.9.118'

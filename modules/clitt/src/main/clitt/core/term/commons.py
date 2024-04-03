@@ -35,6 +35,11 @@ EraseDirection  : TypeAlias = Union["Direction", "Portion"]
 # fmt: on
 
 
+def is_a_tty() -> bool:
+    """Checks whether we are under a tty environment."""
+    return sys.stdout.isatty() and sys.stdin.isatty()
+
+
 class Direction(Enumeration):
     """Provide a base class for the cursor direction."""
 
@@ -59,7 +64,7 @@ def get_dimensions(fallback: Tuple[int, int] = (24, 80)) -> Tuple[int, int]:
     """Retrieve the size of the terminal.
     :return lines, columns
     """
-    if not sys.stdout.isatty():
+    if not is_a_tty():
         log.warning(NotATerminalError("get_dimensions:: Requires a terminal (TTY)"))
         return fallback
     dim = get_terminal_size((fallback[1], fallback[0]))
@@ -70,19 +75,21 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
     """Get the terminal cursor position.
     :return line, column
     """
-    pos, buf, re_query_resp = fallback, "", r"^\x1b\[(\d*);(\d*)R"
-
-    if not sys.stdout.isatty():
-        log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
-        return pos
+    pos = fallback
 
     if is_debugging():
         return pos
 
-    stdin = sys.stdin.fileno()  # Get the stdin file descriptor.
-    attrs = termios.tcgetattr(stdin)  # Save terminal attributes.
+    if not is_a_tty():
+        log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
+        return pos
+
+    buf, re_query_resp = "", r"^\x1b\[(\d*);(\d*)R"
+    stdin, attrs = None, None
 
     try:
+        stdin = sys.stdin.fileno()  # Get the stdin file descriptor.
+        attrs = termios.tcgetattr(stdin)  # Save terminal attributes.
         tty.setcbreak(stdin, termios.TCSANOW)
         sys.stdout.write(Vt100.get_cursor_pos())
         sys.stdout.flush()
@@ -91,7 +98,10 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
         if matches := re.match(re_query_resp, buf):  # If the response is 'Esc[r;cR'
             groups = matches.groups()
             pos = int(groups[0]), int(groups[1])
+    except termios.error:
+        log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
     finally:
-        termios.tcsetattr(stdin, termios.TCSANOW, attrs)  # Reset terminal attributes
+        if stdin and attrs:
+            termios.tcsetattr(stdin, termios.TCSANOW, attrs)  # Reset terminal attributes
 
     return pos

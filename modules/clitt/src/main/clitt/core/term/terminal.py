@@ -13,6 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 from clitt.core.exception.exceptions import NotATerminalError
+from clitt.core.term.commons import is_a_tty
 from clitt.core.term.cursor import Cursor
 from clitt.core.term.screen import Screen
 from hspylib.core.enums.charset import Charset
@@ -31,7 +32,6 @@ import platform
 import select
 import shlex
 import signal
-import sys
 
 
 class Terminal(metaclass=Singleton):
@@ -41,7 +41,7 @@ class Terminal(metaclass=Singleton):
 
     @staticmethod
     def is_a_tty() -> bool:
-        return sys.stdout.isatty()
+        return is_a_tty()
 
     @staticmethod
     def _chain_pipes(cmd_list: Iterable, **kwargs) -> Popen:
