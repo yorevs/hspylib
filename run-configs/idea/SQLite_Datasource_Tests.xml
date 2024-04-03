@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SQLite Datasource Tests" type="tests" factoryName="Unittests" folderName="IntegrationTests" singleton="false">
     <module name="HsPyLib.datasource" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>

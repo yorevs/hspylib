@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="setman - truncate - envs" type="PythonConfigurationType" factoryName="Python" folderName="Setman">
     <module name="HsPyLib.setman" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>

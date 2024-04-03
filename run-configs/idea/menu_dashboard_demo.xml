@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="menu_dashboard_demo" type="PythonConfigurationType" factoryName="Python" folderName="Clitt-Demo" nameIsGenerated="true">
     <module name="HsPyLib.clitt" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
