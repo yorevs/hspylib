@@ -13,18 +13,16 @@
    Copyright 2024, HSPyLib team
 """
 
-from clitt.core.exception.exceptions import NotATerminalError
-from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import is_debugging
-from hspylib.modules.cli.vt100.vt_100 import Vt100
-from shutil import get_terminal_size
-from typing import Callable, Tuple, TypeAlias, Union
-
-import logging as log
 import re
 import sys
 import termios
 import tty
+from shutil import get_terminal_size
+from typing import Callable, Tuple, TypeAlias, Union
+
+from hspylib.core.enums.enumeration import Enumeration
+from hspylib.core.tools.commons import is_debugging
+from hspylib.modules.cli.vt100.vt_100 import Vt100
 
 # fmt: off
 Dimension       : TypeAlias = Tuple[int, int]
@@ -37,7 +35,10 @@ EraseDirection  : TypeAlias = Union["Direction", "Portion"]
 
 def is_a_tty() -> bool:
     """Checks whether we are under a tty environment."""
-    return sys.stdout.isatty() and sys.stdin.isatty()
+    try:
+        return sys.stdout.isatty() and sys.stdin.isatty()
+    except ValueError:
+        return sys.stdout.isatty()
 
 
 class Direction(Enumeration):
@@ -65,7 +66,6 @@ def get_dimensions(fallback: Tuple[int, int] = (24, 80)) -> Tuple[int, int]:
     :return lines, columns
     """
     if not is_a_tty():
-        log.warning(NotATerminalError("get_dimensions:: Requires a terminal (TTY)"))
         return fallback
     dim = get_terminal_size((fallback[1], fallback[0]))
     return dim.lines, dim.columns
@@ -81,7 +81,6 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
         return pos
 
     if not is_a_tty():
-        log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
         return pos
 
     buf, re_query_resp = "", r"^\x1b\[(\d*);(\d*)R"
@@ -99,7 +98,7 @@ def get_cursor_position(fallback: Tuple[int, int] = (0, 0)) -> Tuple[int, int]:
             groups = matches.groups()
             pos = int(groups[0]), int(groups[1])
     except termios.error:
-        log.warning(NotATerminalError("get_cursor_position:: Requires a terminal (TTY)"))
+        pass
     finally:
         if stdin and attrs:
             termios.tcsetattr(stdin, termios.TCSANOW, attrs)  # Reset terminal attributes
