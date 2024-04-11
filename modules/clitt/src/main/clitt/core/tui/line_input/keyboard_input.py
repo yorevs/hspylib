@@ -13,14 +13,15 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from clitt.core.term.commons import Direction
-from clitt.core.term.terminal import Terminal
-from clitt.core.tui.tui_component import TUIComponent
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_color import VtColor
 from typing import Dict, List, Optional
 
 import pyperclip
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_color import VtColor
+
+from clitt.core.term.commons import Direction
+from clitt.core.term.terminal import Terminal
+from clitt.core.tui.tui_component import TUIComponent
 
 
 class KeyboardInput(TUIComponent):
@@ -41,8 +42,7 @@ class KeyboardInput(TUIComponent):
     @staticmethod
     def preload_history(history: List[str]) -> None:
         """Preload the input with the provided dictionary."""
-        rev_history = reversed(history)
-        for entry in rev_history:
+        for entry in history:
             KeyboardInput._add_history(entry)
         KeyboardInput._HIST_INDEX = 0
 
@@ -120,22 +120,7 @@ class KeyboardInput(TUIComponent):
         Terminal.set_show_cursor(show_cursor)
         self.cursor.save()
 
-    def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
-        break_keys = break_keys or Keyboard.break_keys()
-        keypress = Keyboard.VK_NONE
-
-        # Wait for user interaction
-        while not self._done and keypress and keypress not in break_keys:
-            # Menu Renderization
-            if self._re_render:
-                self.render()
-            # Navigation input
-            keypress = self.handle_keypress()
-
-        return keypress
-
     def execute(self) -> Optional[str | Keyboard]:
-        self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         self._prepare_render()
         keypress = self._loop() or Keyboard.VK_ESC
 
@@ -150,9 +135,24 @@ class KeyboardInput(TUIComponent):
 
         return self._input_text
 
+    def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
+        break_keys = break_keys or Keyboard.break_keys()
+        keypress = Keyboard.VK_NONE
+
+        # Wait for user interaction
+        while not self._done and keypress and keypress not in break_keys:
+            # Menu Renderization
+            if self._re_render:
+                self.render()
+            # Navigation input
+            keypress = self.handle_keypress()
+
+        return keypress
+
     def render(self) -> None:
         Terminal.set_show_cursor(False)
         self.cursor.restore()
+        self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         self.write(self._input_text)
         self._terminal.cursor.erase(Direction.RIGHT)
         self._re_render = False
