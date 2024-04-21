@@ -14,7 +14,7 @@ package: urllib3
 package: cryptocode
 package: cryptography
 package: emoji
-package: getkey
+package: get-key
 package: keyring
 package: pyparsing
 package: pyperclip
