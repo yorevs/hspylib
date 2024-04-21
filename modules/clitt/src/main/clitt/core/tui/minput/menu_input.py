@@ -12,6 +12,12 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import re
+from functools import reduce
+from operator import add
+from time import sleep
+from typing import List, Optional
+
 from clitt.core.icons.font_awesome.form_icons import FormIcons
 from clitt.core.icons.font_awesome.nav_icons import NavIcons
 from clitt.core.term.commons import Direction, get_cursor_position
@@ -22,17 +28,10 @@ from clitt.core.tui.minput.form_field import FormField
 from clitt.core.tui.minput.input_type import InputType
 from clitt.core.tui.minput.minput_utils import MASK_SYMBOLS, VALUE_SEPARATORS
 from clitt.core.tui.tui_component import TUIComponent
-from functools import reduce
 from hspylib.core.exception.exceptions import InvalidInputError, InvalidStateError
 from hspylib.core.namespace import Namespace
 from hspylib.core.tools.text_tools import xstr
 from hspylib.modules.cli.keyboard import Keyboard
-from operator import add
-from time import sleep
-from typing import List, Optional
-
-import pyperclip
-import re
 
 
 class MenuInput(TUIComponent):
@@ -100,7 +99,7 @@ class MenuInput(TUIComponent):
             f"%EOL%{NavIcons.POINTER} %GREEN%{self.cur_field.tooltip or f'the {self.cur_field.label.lower()}'}%NC%"
             f"%EOL%{self.prefs.navbar_color.placeholder}%EOL%"
             f"[Enter] Submit  [{self.NAV_ICONS}] "
-            f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [^P] Paste  [Esc] Quit %NC%"
+            f"Navigate  [{NavIcons.TAB}] Next  [Space] Toggle  [Esc] Quit %NC%"
         )
 
     def handle_keypress(self) -> Keyboard:
@@ -119,8 +118,6 @@ class MenuInput(TUIComponent):
                         self._display_error("This field is read only !")
                     else:
                         self._handle_backspace()
-                case Keyboard.VK_CTRL_P:
-                    self._handle_ctrl_p()
                 case Keyboard.VK_ENTER:
                     return self._handle_enter()
                 case _ as key if key.isalnum() or key.ispunct() or key == Keyboard.VK_SPACE:
@@ -200,11 +197,6 @@ class MenuInput(TUIComponent):
                 self.cur_field.value = str(self.cur_field.value)[:-1]
             elif not self.cur_field.can_write():
                 self._display_error("This field is read only !")
-
-    def _handle_ctrl_p(self) -> None:
-        """Handle 'ctrl + p' press. Paste content from clipboard."""
-        for c in pyperclip.paste():
-            self._handle_input(Keyboard.of_value(c))
 
     def _set_cursor_pos(self) -> None:
         """Set the cursor at the right position according to the ATB index."""

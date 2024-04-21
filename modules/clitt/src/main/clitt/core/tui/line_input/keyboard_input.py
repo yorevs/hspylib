@@ -13,15 +13,14 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from typing import Dict, List, Optional
-
-import pyperclip
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_color import VtColor
+from typing import Optional
 
 from clitt.core.term.commons import Direction
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_component import TUIComponent
+from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 
 class KeyboardInput(TUIComponent):
@@ -31,56 +30,47 @@ class KeyboardInput(TUIComponent):
     _HIST_INDEX: int = 0
 
     # Dict containing all previously accepted inputs.
-    _HISTORY: Dict[int, str] = {0: ""}
+    _HISTORY: list[str] = [""]
 
     # Stack containing current input changes.
-    _UNDO_HISTORY: List[str] = []
+    _UNDO_HISTORY: list[str] = []
 
     # Stack containing current input reverts.
-    _REDO_HISTORY: List[str] = []
+    _REDO_HISTORY: list[str] = []
 
-    @staticmethod
-    def preload_history(history: List[str]) -> None:
-        """Preload the input with the provided dictionary."""
-        for entry in history:
-            KeyboardInput._add_history(entry)
-        KeyboardInput._HIST_INDEX = 0
+    @classmethod
+    def preload_history(cls, history: list[str]) -> None:
+        """Preload the input with the provided dictionary.
+        :param history: The history keyboard inputs.
+        """
+        for entry in reversed(history):
+            cls._add_history(entry)
+        cls._HIST_INDEX = max(0, len(cls._HISTORY) - 1)
 
-    @staticmethod
-    def forget_history() -> None:
+    @classmethod
+    def forget_history(cls) -> None:
         """Forget all input history entries."""
-        tmp: str = KeyboardInput._HISTORY[0]
-        KeyboardInput._HISTORY.clear()
-        KeyboardInput._HISTORY[0] = tmp
+        tmp: str = cls._HISTORY[-1]
+        cls._HISTORY.clear()
+        cls._HISTORY.append(tmp)
 
-    @staticmethod
-    def history() -> List[str]:
+    @classmethod
+    def history(cls) -> list[str]:
         """Return the actual input history."""
-        return list(filter(lambda v: v, KeyboardInput._HISTORY.values()))
+        return list(filter(lambda v: v, cls._HISTORY))
 
-    @staticmethod
-    def _add_history(input_text: str) -> None:
+    @classmethod
+    def _add_history(cls, input_text: str) -> None:
         """Add the following input to the history set.
         :param input_text: The input text to add to the history.
         """
-        if input_text and input_text not in list(KeyboardInput._HISTORY.values())[1:]:
-            idx: int = max(1, len(KeyboardInput._HISTORY))
-            KeyboardInput._HISTORY[idx] = input_text
-            KeyboardInput._HIST_INDEX = idx
-
-    @classmethod
-    def _next_in_history(cls) -> Optional[str]:
-        index = min(len(cls._HISTORY) - 1, cls._HIST_INDEX + 1)
-        text = cls._HISTORY.get(index, "")
-        cls._HIST_INDEX = index
-        return text or cls._HISTORY[0]
-
-    @classmethod
-    def _prev_in_history(cls) -> Optional[str]:
-        index = max(0, cls._HIST_INDEX - 1)
-        text = cls._HISTORY.get(index, "")
-        cls._HIST_INDEX = index
-        return text or cls._HISTORY[0]
+        if input_text and input_text not in list(cls._HISTORY)[1:]:
+            idx: int = max(1, len(cls._HISTORY))
+            if input_text not in cls._HISTORY:
+                cls._HISTORY.insert(idx - 1, input_text)
+            else:
+                cls._HISTORY = cls._HISTORY[1:-1] + cls._HISTORY[:1] + cls._HISTORY[-1:]
+            cls._HIST_INDEX = idx
 
     @classmethod
     def _undo(cls) -> Optional[str]:
@@ -104,18 +94,19 @@ class KeyboardInput(TUIComponent):
         navbar_enable: bool = False,
     ):
         super().__init__(prompt)
-        self._prompt_color = prompt_color
-        self._text_color = text_color
-        self._navbar_enable = navbar_enable
-        self._input_index = 0
+        self._prompt_color: VtColor = prompt_color
+        self._text_color: VtColor = text_color
+        self._navbar_enable: bool = navbar_enable
+        self._input_index: int = 0
         self._input_text: str = ""
-        self._HISTORY[0] = ""
+        self._HISTORY[-1] = ""
 
     @property
     def length(self) -> int:
         return len(self._input_text) if self._input_text else 0
 
     def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = True) -> None:
+        self.screen.add_watcher(self.invalidate)
         Terminal.set_auto_wrap(auto_wrap)
         Terminal.set_show_cursor(show_cursor)
         self.cursor.save()
@@ -125,7 +116,7 @@ class KeyboardInput(TUIComponent):
         keypress = self._loop() or Keyboard.VK_ESC
 
         if keypress.isEnter():
-            self._add_history(self._input_text)
+            self._HISTORY.append('')
             self._UNDO_HISTORY.clear()
             self._REDO_HISTORY.clear()
         elif keypress == Keyboard.VK_ESC:
@@ -135,7 +126,12 @@ class KeyboardInput(TUIComponent):
 
         return self._input_text
 
-    def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
+    def reset(self) -> None:
+        """Reset the contents of the input."""
+        self._input_index = 0
+        self._update_input("")
+
+    def _loop(self, break_keys: list[Keyboard] = None) -> Keyboard:
         break_keys = break_keys or Keyboard.break_keys()
         keypress = Keyboard.VK_NONE
 
@@ -154,7 +150,7 @@ class KeyboardInput(TUIComponent):
         self.cursor.restore()
         self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         self.write(self._input_text)
-        self._terminal.cursor.erase(Direction.RIGHT)
+        self._terminal.cursor.erase(Direction.DOWN)
         self._re_render = False
         self._set_cursor_pos()
         Terminal.set_show_cursor()
@@ -175,26 +171,19 @@ class KeyboardInput(TUIComponent):
                     self._update_input(
                         self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
                     )
-                case Keyboard.VK_CTRL_F:  # Forget history
+                case Keyboard.VK_CTRL_R:
+                    self.reset()
+                case Keyboard.VK_CTRL_F:
                     self.forget_history()
-                case Keyboard.VK_CTRL_P:  # Paste from clipboard
-                    text = (pyperclip.paste() or "").replace("\n", "↵")
-                    self._update_input(
-                        self._input_text[: self._input_index] + text + self._input_text[self._input_index :]
-                    )
-                    self._input_index += len(text)
-                case Keyboard.VK_CTRL_R:  # Reset contents
-                    self._input_index = 0
-                    self._update_input("")
                 case Keyboard.VK_LEFT:
                     self._input_index = max(0, self._input_index - 1)
                 case Keyboard.VK_RIGHT:
                     self._input_index = min(self.length, self._input_index + 1)
                 case Keyboard.VK_UP:
-                    self._input_text = self._next_in_history()
+                    self._input_text = self._prev_in_history()
                     self._input_index = self.length
                 case Keyboard.VK_DOWN:
-                    self._input_text = self._prev_in_history()
+                    self._input_text = self._next_in_history()
                     self._input_index = self.length
                 case Keyboard.VK_HOME:
                     self._input_index = 0
@@ -224,6 +213,24 @@ class KeyboardInput(TUIComponent):
         :param text: The text to be set.
         """
         self._UNDO_HISTORY.append(self._input_text)
-        self._HISTORY[0] = text if text not in self._HISTORY else self._input_text
+        self._HISTORY[-1] = text if text not in self._HISTORY else self._input_text
         self._input_text = text
         return text
+
+    def _next_in_history(self) -> str:
+        """Return the next input in history."""
+        edt_text: str = self._HISTORY[-1]
+        filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
+        index = min(len(filtered) - 1, self._HIST_INDEX + 1)
+        text = get_or_default(filtered, index, "")
+        self._HIST_INDEX = index
+        return text or filtered[-1]
+
+    def _prev_in_history(self) -> str:
+        """Return the previous input in history."""
+        edt_text: str = self._HISTORY[-1]
+        filtered: list[str] = list(filter(lambda h: h.lower().startswith(edt_text.lower()), self._HISTORY))
+        index = max(0, min(len(filtered) - 2, self._HIST_INDEX - 1))
+        text = get_or_default(filtered, index, "")
+        self._HIST_INDEX = index
+        return text or filtered[-1]
