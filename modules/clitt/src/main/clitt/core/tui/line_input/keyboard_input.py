@@ -43,9 +43,9 @@ class KeyboardInput(TUIComponent):
         """Preload the input with the provided dictionary.
         :param history: The history keyboard inputs.
         """
-        for entry in reversed(history):
+        for entry in history:
             cls._add_history(entry)
-        cls._HIST_INDEX = max(0, len(cls._HISTORY) - 1)
+        cls._HIST_INDEX = max(0, len(cls._HISTORY))
 
     @classmethod
     def forget_history(cls) -> None:
@@ -64,12 +64,14 @@ class KeyboardInput(TUIComponent):
         """Add the following input to the history set.
         :param input_text: The input text to add to the history.
         """
-        if input_text and input_text not in list(cls._HISTORY)[1:]:
+        if cls._HISTORY[-1] != '':
+            cls._HISTORY.append('')
+        if input_text:
             idx: int = max(1, len(cls._HISTORY))
-            if input_text not in cls._HISTORY:
-                cls._HISTORY.insert(idx - 1, input_text)
-            else:
-                cls._HISTORY = cls._HISTORY[1:-1] + cls._HISTORY[:1] + cls._HISTORY[-1:]
+            if input_text in cls._HISTORY:
+                idx -= 1
+                cls._HISTORY.remove(input_text)
+            cls._HISTORY.insert(idx - 1, input_text)
             cls._HIST_INDEX = idx
 
     @classmethod
@@ -99,7 +101,9 @@ class KeyboardInput(TUIComponent):
         self._navbar_enable: bool = navbar_enable
         self._input_index: int = 0
         self._input_text: str = ""
+        self._tab_complete: str = ""
         self._HISTORY[-1] = ""
+        self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
 
     @property
     def length(self) -> int:
@@ -116,7 +120,7 @@ class KeyboardInput(TUIComponent):
         keypress = self._loop() or Keyboard.VK_ESC
 
         if keypress.isEnter():
-            self._HISTORY.append('')
+            self._add_history(self._input_text)
             self._UNDO_HISTORY.clear()
             self._REDO_HISTORY.clear()
         elif keypress == Keyboard.VK_ESC:
@@ -150,7 +154,8 @@ class KeyboardInput(TUIComponent):
         self.cursor.restore()
         self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         self.write(self._input_text)
-        self._terminal.cursor.erase(Direction.DOWN)
+        # Write the tab complete option
+        self._write_hint()
         self._re_render = False
         self._set_cursor_pos()
         Terminal.set_show_cursor()
@@ -189,6 +194,9 @@ class KeyboardInput(TUIComponent):
                     self._input_index = 0
                 case Keyboard.VK_END:
                     self._input_index = self.length
+                case Keyboard.VK_TAB:
+                    self._update_input(self._input_text + self._tab_complete)
+                    self._input_index = self.length
                 case _ as key if key.val.isprintable():
                     self._update_input(
                         self._input_text[: self._input_index] + key.val + self._input_text[self._input_index :]
@@ -215,22 +223,50 @@ class KeyboardInput(TUIComponent):
         self._UNDO_HISTORY.append(self._input_text)
         self._HISTORY[-1] = text if text not in self._HISTORY else self._input_text
         self._input_text = text
+        self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
         return text
 
     def _next_in_history(self) -> str:
         """Return the next input in history."""
         edt_text: str = self._HISTORY[-1]
-        filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
-        index = min(len(filtered) - 1, self._HIST_INDEX + 1)
-        text = get_or_default(filtered, index, "")
-        self._HIST_INDEX = index
-        return text or filtered[-1]
+        filtered: list[str] = list(filter(lambda h: h.lower().startswith(edt_text.lower()), self._HISTORY))
+        if edt_text in filtered:
+            edt_idx = filtered.index(edt_text)
+            index = min(edt_idx, self._HIST_INDEX + 1)
+            text = get_or_default(filtered, index, None) or filtered[-1]
+            self._HIST_INDEX = filtered.index(text)
+            return text
+        return edt_text
 
     def _prev_in_history(self) -> str:
         """Return the previous input in history."""
         edt_text: str = self._HISTORY[-1]
         filtered: list[str] = list(filter(lambda h: h.lower().startswith(edt_text.lower()), self._HISTORY))
-        index = max(0, min(len(filtered) - 2, self._HIST_INDEX - 1))
-        text = get_or_default(filtered, index, "")
-        self._HIST_INDEX = index
-        return text or filtered[-1]
+        if edt_text in filtered:
+            edt_idx = filtered.index(edt_text) - 1
+            index = max(0, min(edt_idx, self._HIST_INDEX - 1))
+            text = get_or_default(filtered, index, None) or filtered[-1]
+            self._HIST_INDEX = filtered.index(text)
+            return text
+        return edt_text
+
+    def _write_hint(self) -> None:
+        """TODO """
+        edt_text: str = self._input_text
+        filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
+        hint: str = ''
+
+        if edt_text and edt_text in filtered:
+            edt_idx = filtered.index(edt_text) - 1
+            index = max(0, min(edt_idx, self._HIST_INDEX))
+            hint: str = get_or_default(filtered, index, '') or filtered[-1]
+            if hint and (hint := hint[len(edt_text):]):
+                self.write(f"%GRAY%{hint}%NC%")
+                self._terminal.cursor.erase(Direction.DOWN)
+                self.cursor.move(len(hint), Direction.LEFT)
+            else:
+                self._terminal.cursor.erase(Direction.DOWN)
+        else:
+            self._terminal.cursor.erase(Direction.DOWN)
+
+        self._tab_complete = hint

@@ -18,7 +18,7 @@ from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
 if __name__ == "__main__":
-    hist = ["Hugo", "Joao", "Koko", "Hugo"]
+    hist = ["Hugo", "Joao", "Koko", "Hugo", "Koko"]
     KeyboardInput.preload_history(hist)
     print("-=" * 30)
     while (i := line_input("What is it? ", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
