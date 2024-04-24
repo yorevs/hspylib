@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.36
+# hspylib v1.12.37
 #
 # Package: main.hspylib.core.config
 """Package initialization."""
@@ -8,6 +8,8 @@
 __all__ = [
     'app_config', 
     'parser_factory', 
-    'properties'
+    'path_object', 
+    'properties', 
+    'settings'
 ]
-__version__ = '1.12.36'
+__version__ = '1.12.37'

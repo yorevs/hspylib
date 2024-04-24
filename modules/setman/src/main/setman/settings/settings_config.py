@@ -14,6 +14,7 @@
 """
 from datasource.db_configuration import DBConfiguration
 from hspylib.core.tools.commons import to_bool
+from hspylib.core.config.path_object import PathObject
 
 
 class SettingsConfig(DBConfiguration):
@@ -23,7 +24,8 @@ class SettingsConfig(DBConfiguration):
 
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
-        self._database: str = self["hhs.settings.database"]
+        po = PathObject.of(self["hhs.settings.database"])
+        self._database: str = str(po)
         self._encode_db: bool = to_bool(self["hhs.settings.encode.database"])
 
     @property

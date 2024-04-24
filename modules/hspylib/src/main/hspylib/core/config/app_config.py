@@ -12,7 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-
+from hspylib.core.config.path_object import PathObject
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.metaclass.singleton import Singleton
@@ -41,8 +41,9 @@ class AppConfigs(metaclass=Singleton):
     )
 
     def __init__(self, resource_dir: AnyPath, filename: str | None = None, profile: str | None = None):
-        check_argument(os.path.exists(str(resource_dir)), "Unable to locate resources dir: {}", resource_dir)
-        self._resource_dir = str(resource_dir)
+        path_obj = PathObject.of(resource_dir)
+        check_argument(path_obj.exists, "Unable to locate resources dir: {}", resource_dir)
+        self._resource_dir = str(path_obj)
         self._properties = Properties(filename=filename, load_dir=resource_dir, profile=profile)
         log.info(self)
 
