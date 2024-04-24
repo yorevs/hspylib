@@ -35,9 +35,9 @@ class Settings:
 
     HEADERS = ["uuid", "name", "prefix", "value", "settings type", "modified"]
 
-    def __init__(self, configs: SettingsConfig, preserve: bool = False) -> None:
+    def __init__(self, configs: SettingsConfig, frozen: bool = False) -> None:
         self._configs = configs
-        self._preserve = preserve
+        self._frozen = frozen
         self._service = SettingsService(self.configs)
         if not file_is_not_empty(self.configs.database):
             self._create_db()
@@ -70,32 +70,30 @@ class Settings:
         return self._offset
 
     @offset.setter
-    def offset(self, new_offset: int) -> None:
-        self._offset = new_offset
+    def offset(self, value: int) -> None:
+        self._offset = value
 
     @property
-    def preserve(self) -> bool:
-        return self._preserve
+    def frozen(self) -> bool:
+        return self._frozen
 
-    @preserve.setter
-    def preserve(self, new_preserve: bool) -> None:
-        self._preserve = new_preserve
+    @frozen.setter
+    def frozen(self, value: bool) -> None:
+        self._frozen = value
 
     @lru_cache
     def get(self, name: str) -> Optional[SettingsEntry]:
         """Get setting matching the specified name.
         :param name the settings name to get.
         """
-        if name:
-            return self._service.get_by_name(name)
-        return None
+        return self._service.get_by_name(name) if name else None
 
     def put(
         self,
         name: str | None = None,
-        prefix: str | None = None,
+        prefix: str = '',
         value: Any | None = None,
-        stype: SettingsType | None = None,
+        stype: SettingsType  = SettingsType.PROPERTY,
     ) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
         :param name the settings name.
@@ -103,7 +101,7 @@ class Settings:
         :param value the settings value.
         :param stype the settings type.
         """
-        if (found := self._service.get_by_name(name)) and self._preserve:
+        if (found := self._service.get_by_name(name)) and self._frozen:
             log.debug("Setting preserved, and not overwritten: '%s'", found.name)
             return None, None
         entry = found or SettingsEntry(Identity(SettingsEntry.SetmanId(uuid.uuid4().hex)), name, prefix, value, stype)
@@ -149,6 +147,10 @@ class Settings:
         self._service.clear(name, stype)
         self._clear_caches()
 
+    def count(self) -> int:
+        """Return the number of existing settings."""
+        return self._service.count()
+
     def import_csv(self, filepath: str) -> int:
         """Upsert settings from CSV file into the database.
         :param filepath the path of the CSV file to be imported.
@@ -168,7 +170,7 @@ class Settings:
                     SettingsType.of_value(row[4]),
                 )
                 found = self._service.get_by_name(name)
-                if found and self._preserve:
+                if found and self._frozen:
                     continue
                 entry = SettingsEntry(Identity(SettingsEntry.SetmanId(uid)), name, prefix, value, stype)
                 self._service.save(entry)
@@ -196,7 +198,7 @@ class Settings:
         :param name the settings name to filter.
         """
         data = self.search(name, SettingsType.ENVIRONMENT)
-        return list(map(SettingsEntry.to_env_export, data))
+        return list(map(lambda s: s.to_env_export, data))
 
     def _create_db(self) -> bool:
         """Create the settings SQLite DB file."""

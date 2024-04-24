@@ -27,6 +27,8 @@ if __name__ == "__main__":
     s.put("demo.settings.two", "", False, SettingsType.ENVIRONMENT)
     s["demo.settings.three"] = "", "VALUE", SettingsType.PROPERTY
     sysout(s["demo.settings.one"].to_string())
+    sysout(f"There are {s.count()} settings in total!")
+    sysout(s["demo.settings.one"].environ_name)
     s.export_csv(db_file)
     sysout(s)
     s.import_csv("resources/settings.db")

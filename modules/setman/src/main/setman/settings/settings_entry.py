@@ -117,7 +117,7 @@ class SettingsEntry(CrudEntity):
     @property
     def environ_name(self) -> str:
         """Return the environment variable representation name of this entry."""
-        return environ_name(self._del_prefix()) if self.stype == SettingsType.ENVIRONMENT.val else self.name
+        return environ_name(self._de_prefixed()) if self.stype == SettingsType.ENVIRONMENT.val else self.name
 
     def to_string(self, simple_fmt: bool = False) -> str:
         """Return the string representation of this entry.
@@ -137,7 +137,8 @@ class SettingsEntry(CrudEntity):
         """Return the bash export command of this entry."""
         return f'export {self.environ_name}="{xstr(self.value)}"'
 
-    def _del_prefix(self) -> str:
+    def _de_prefixed(self) -> str:
+        """Return the setting name de-prefixed."""
         prefix = ensure_endswith(self.prefix, ".") if self.prefix else ""
         de_prefixed = re.sub(rf"^{prefix}", "", self.name) if prefix else self.name
         return de_prefixed

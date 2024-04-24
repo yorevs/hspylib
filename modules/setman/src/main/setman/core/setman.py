@@ -123,7 +123,7 @@ class Setman(metaclass=Singleton):
             "-",
             stype or "*",
         )
-        self._settings.preserve = preserve
+        self._settings.frozen = preserve
 
         match operation:
             case SetmanOps.LIST:

@@ -48,6 +48,10 @@ class SettingsService(CrudService[SettingsRepository, SettingsEntry]):
         """
         self.repository.clear(name, stype)
 
+    def count(self) -> int:
+        """Return the number of settings entries in the settings table."""
+        return self.repository.count()
+
     def create_db(self) -> None:
         """Create a brand new setman database file."""
         self.repository.create_db()
