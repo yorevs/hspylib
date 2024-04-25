@@ -18,7 +18,7 @@ import os
 from dataclasses import dataclass
 from os.path import expandvars, relpath, join
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Optional
 
 from hspylib.core.metaclass.classpath import AnyPath
 
@@ -34,20 +34,22 @@ class PathObject:
     kind: Literal["file", "folder"]
 
     @staticmethod
-    def of(path_name: AnyPath) -> 'PathObject':
+    def of(path_name: AnyPath) -> Optional['PathObject']:
         """Create a path object from a any path."""
-        path_dir: Path = Path(path_name) if isinstance(path_name, str) else path_name
-        posix_path = Path(expandvars(path_dir.expanduser())).absolute()
-        dir_name, filename = os.path.split(posix_path)
-        if posix_path.exists() and posix_path.is_dir():
-            dir_name = f"{dir_name}/{filename}"
-            filename = ''
-        if dir_name in ['.', '..', '']:
-            dir_name = (dir_name or '.') + os.path.sep
-        return PathObject(
-            dir_name.strip(), relpath(dir_name, os.curdir), filename.strip(),
-            posix_path.exists(), "folder" if posix_path.is_dir() else "file"
-        )
+        if path_name:
+            path_dir: Path = Path(path_name) if isinstance(path_name, str) else path_name
+            posix_path = Path(expandvars(path_dir.expanduser())).absolute()
+            dir_name, filename = os.path.split(posix_path)
+            if posix_path.exists() and posix_path.is_dir():
+                dir_name = f"{dir_name}/{filename}"
+                filename = ''
+            if dir_name in ['.', '..', '']:
+                dir_name = (dir_name or '.') + os.path.sep
+            return PathObject(
+                dir_name.strip(), relpath(dir_name, os.curdir), filename.strip(),
+                posix_path.exists(), "folder" if posix_path.is_dir() else "file"
+            )
+        return None
 
     @staticmethod
     def split(path_name: AnyPath) -> tuple[str, str]:
