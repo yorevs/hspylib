@@ -16,6 +16,7 @@ idea {
     excludeDirs += file('.idea')
     excludeDirs += file('.gradle')
     excludeDirs += file('.vscode')
+    excludeDirs += file('.run')
     excludeDirs += file('run-configs')
     excludeDirs += file('devel')
   }
@@ -83,5 +84,37 @@ task listModules(type: Task) {
         it.name, it.app_version, it.sourceRoot.replaceAll(modulesDir, '')
       ))
     }
+  }
+}
+
+/* Download and extract the yorevs/py-gradle project ZIP */
+task pyGradleUpdate(type: Task) {
+  group = 'build'
+  description = 'Download and extract the yorevs/py-gradle project ZIP'
+  doLast {
+    def gradleDir = "${rootDir}/gradle"
+    def outFile = "${gradleDir}/py-gradle.zip"
+    def url = "https://github.com/yorevs/py-gradle/archive/master.zip"
+    println "Downloading the yorevs/py-gradle project"
+    println "  From: ${url}"
+    println "  Into: ${outFile}"
+    mkdir gradleDir
+    exec {
+      commandLine 'curl', '-L', '-o', "${outFile}", url
+    }
+    copy {
+      from zipTree("${outFile}")
+      into "${gradleDir}"
+    }
+    copy {
+      from "${gradleDir}/py-gradle-master"
+      into "${gradleDir}"
+    }
+    delete fileTree(gradleDir).matching {
+      include "README*"
+      include "LICENSE*"
+      include "py-gradle*"
+    }
+    delete "${gradleDir}/py-gradle-master"
   }
 }

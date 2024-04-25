@@ -33,14 +33,3 @@ apply from: "$rootDir/gradle/pypi-publish.gradle"
 apply from: "$rootDir/gradle/docker.gradle"
 apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
-
-task copyReadme(type: Copy) {
-  group = 'Publish'
-  description = "Copy README into main folder"
-  from(rootDir) {
-    include 'README.md'
-  }
-  into "$sourceRoot/main"
-}
-
-copyLicense.finalizedBy(copyReadme)

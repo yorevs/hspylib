@@ -34,15 +34,6 @@ apply from: "$rootDir/gradle/docker.gradle"
 apply from: "$rootDir/gradle/oracle.gradle"
 apply from: "$rootDir/gradle/docgen.gradle"
 
-task copyReadme(type: Copy) {
-  group = 'Publish'
-  description = "Copy README into main folder"
-  from(rootDir) {
-    include 'README.md'
-  }
-  into "$sourceRoot/main"
-}
-
 /* Update hspylib version in all subprojects */
 task updateSubprojectsVersion(type: Task) {
   group = 'Dependencies'
@@ -62,6 +53,3 @@ task updateSubprojectsVersion(type: Task) {
     }
   }
 }
-
-copyLicense.finalizedBy(copyReadme)
-publish.finalizedBy(updateSubprojectsVersion)
