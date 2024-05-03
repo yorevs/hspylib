@@ -173,13 +173,15 @@ class MenuInput(TUIComponent):
                     self._display_error(str(err))
             case _:
                 if len(xstr(self.cur_field.value)) < self.cur_field.max_length:
-                    if self.cur_field.validate_input(keypress.value):
-                        self.cur_field.value = (str(self.cur_field.value) if self.cur_field.value else "") + str(
-                            keypress.value
-                        )
+                    text: str = keypress.val
+                    while (key := Keyboard.wait_keystroke(False)) != Keyboard.VK_NONE:
+                        if key.val and key.val.isprintable():
+                            text += key.val
+                    if self.cur_field.validate_input(text):
+                        self.cur_field.value = (str(self.cur_field.value) if self.cur_field.value else "") + text
                     else:
                         self._display_error(
-                            f"Input '{keypress.value}' is invalid. "
+                            f"Input '{text}' is not valid. "
                             f"This field takes only {self.cur_field.input_validator}!"
                         )
 

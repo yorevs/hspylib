@@ -91,17 +91,19 @@ class KeyboardInput(TUIComponent):
     def __init__(
         self,
         prompt: str = "",
+        placeholder: str = "",
         prompt_color: VtColor = VtColor.NC,
         text_color: VtColor = VtColor.NC,
         navbar_enable: bool = False,
     ):
         super().__init__(prompt)
+        self._placeholder: str = placeholder
         self._prompt_color: VtColor = prompt_color
         self._text_color: VtColor = text_color
         self._navbar_enable: bool = navbar_enable
         self._input_index: int = 0
         self._input_text: str = ""
-        self._tab_complete: str = ""
+        self._suggestion: str = ""
         self._HISTORY[-1] = ""
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
 
@@ -126,6 +128,7 @@ class KeyboardInput(TUIComponent):
         elif keypress == Keyboard.VK_ESC:
             self._input_text = None
 
+        self._terminal.cursor.erase(Direction.RIGHT)
         self.writeln("%NC%")
 
         return self._input_text
@@ -153,9 +156,13 @@ class KeyboardInput(TUIComponent):
         Terminal.set_show_cursor(False)
         self.cursor.restore()
         self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
-        self.write(self._input_text)
-        # Write the tab complete option
-        self._write_hint()
+        if self._input_text:
+            self.write(self._input_text)
+            self._write_suggestion()
+        else:
+            self.write(f"%GRAY%{self._placeholder}%NC%")
+            self._terminal.cursor.erase(Direction.DOWN)
+            self.cursor.move(len(self._placeholder), Direction.LEFT)
         self._re_render = False
         self._set_cursor_pos()
         Terminal.set_show_cursor()
@@ -170,11 +177,11 @@ class KeyboardInput(TUIComponent):
                     if self._input_index > 0:
                         self._input_index = max(0, self._input_index - 1)
                         self._update_input(
-                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
+                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
                         )
                 case Keyboard.VK_DELETE:
                     self._update_input(
-                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index :]
+                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
                     )
                 case Keyboard.VK_CTRL_R:
                     self.reset()
@@ -195,13 +202,16 @@ class KeyboardInput(TUIComponent):
                 case Keyboard.VK_END:
                     self._input_index = self.length
                 case Keyboard.VK_TAB:
-                    self._update_input(self._input_text + self._tab_complete)
+                    self._update_input(self._input_text + self._suggestion)
                     self._input_index = self.length
                 case _ as key if key.val.isprintable():
+                    text: str = key.val
+                    while (key := Keyboard.wait_keystroke(False)) != Keyboard.VK_NONE:
+                        if key.val and key.val.isprintable():
+                            text += key.val
                     self._update_input(
-                        self._input_text[: self._input_index] + key.val + self._input_text[self._input_index :]
-                    )
-                    self._input_index += 1
+                        self._input_text[: self._input_index] + text + self._input_text[self._input_index:])
+                    self._input_index += len(text)
                 case _ as key if key in Keyboard.break_keys():
                     self._done = True
                 case _:
@@ -250,7 +260,7 @@ class KeyboardInput(TUIComponent):
             return text
         return edt_text
 
-    def _write_hint(self) -> None:
+    def _write_suggestion(self) -> None:
         """TODO """
         edt_text: str = self._input_text
         filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
@@ -269,4 +279,4 @@ class KeyboardInput(TUIComponent):
         else:
             self._terminal.cursor.erase(Direction.DOWN)
 
-        self._tab_complete = hint
+        self._suggestion = hint

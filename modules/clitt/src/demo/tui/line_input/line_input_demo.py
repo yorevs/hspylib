@@ -21,7 +21,7 @@ if __name__ == "__main__":
     hist = ["Hugo", "Joao", "Koko", "Hugo", "Koko"]
     KeyboardInput.preload_history(hist)
     print("-=" * 30)
-    while (i := line_input("What is it? ", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
+    while (i := line_input("What is it? ", "Input your name", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
         if isinstance(i, Keyboard):
             print("PTT", i)
         else:

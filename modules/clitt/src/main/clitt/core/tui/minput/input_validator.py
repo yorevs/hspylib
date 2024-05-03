@@ -83,7 +83,7 @@ class InputValidator(Validator):
     def validate(self, value: str) -> bool:
         """Validate the value against the validator pattern."""
         unmasked_value = re.split("[|,;]", value)[0] if value else ""
-        return bool(re.match(self.pattern, unmasked_value))
+        return all(bool(re.match(self.pattern, v)) for v in unmasked_value)
 
     @property
     def pattern(self) -> str:
