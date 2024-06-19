@@ -125,10 +125,14 @@ class KeyboardInput(TUIComponent):
             self._add_history(self._input_text)
             self._UNDO_HISTORY.clear()
             self._REDO_HISTORY.clear()
+            Terminal.set_show_cursor(False)
+            self.cursor.restore()
+            self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
+            self.write(self._input_text)
+            self._terminal.cursor.erase(Direction.DOWN)
+            Terminal.set_show_cursor(True)
         elif keypress == Keyboard.VK_ESC:
             self._input_text = None
-
-        self._terminal.cursor.erase(Direction.RIGHT)
         self.writeln("%NC%")
 
         return self._input_text
@@ -155,6 +159,7 @@ class KeyboardInput(TUIComponent):
     def render(self) -> None:
         Terminal.set_show_cursor(False)
         self.cursor.restore()
+        self._terminal.cursor.erase(Direction.DOWN)
         self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         if self._input_text:
             self.write(self._input_text)
