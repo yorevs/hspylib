@@ -15,6 +15,6 @@ package: hspylib-clitt
 
 /* Application dependencies */
 
-package: cryptocode
-package: cryptography
-package: keyring
+package: cryptography, version: 42.0.8, mode: eq
+package: cryptocode, version: 0.1, mode: eq
+package: keyring, version: 25.2.1, mode: eq

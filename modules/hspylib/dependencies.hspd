@@ -9,17 +9,11 @@
 
 /* Application dependencies */
 
-package: retry
-package: urllib3
-package: cryptocode
-package: cryptography
-package: emoji
-package: get-key
-package: keyring
-package: pyparsing
-package: pyperclip
-package: PyYAML
-package: toml
-package: requests
-package: urllib3, version: 2.0.0, mode: lt
-package: pyparsing, version: 3.1, mode: lt
+package: retry2, version: 0.9.5, mode: eq
+package: requests, version: 2.32.3, mode: eq
+package: urllib3, version: 2.2.2, mode: eq
+package: keyring, version: 25.2.1, mode: eq
+package: pyparsing, version: 3.1.2, mode: eq
+package: pyperclip, version: 1.9.0, mode: eq
+package: PyYAML, version: 6.0.1, mode: eq
+package: toml, version: 0.10.2, mode: eq
