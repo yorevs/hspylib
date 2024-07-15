@@ -8,7 +8,16 @@
     "build-badge.svg": true,
     ".pylintrc": true,
     "gradlew": true,
-    "hspylib.code-workspace": true
+    "hspylib.code-workspace": true,
+    "modules/hspylib/src/main/__init__.py": true,
+    "modules/hspylib/src/main/__pycache__": true,
+    "modules/hspylib/src/main/build": true,
+    "modules/hspylib/src/main/dist": true,
+    "modules/hspylib/src/main/hspylib.egg-info": true,
+    "**/__pycache__": true,
+    "**/__pycache__.*": true,
+    "**/__init__": true,
+    "**/__init__.*": true
   },
   "python.linting.pylintEnabled": true
 }

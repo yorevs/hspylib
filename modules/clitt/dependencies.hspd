@@ -13,6 +13,6 @@ package: hspylib
 
 /* Application dependencies */
 
-package: pyperclip, version: 1.9.0, mode: eq
-package: urllib3, version: 2.2.2, mode: eq
-package: emoji, version: 2.12.1, mode: eq
+package: pyperclip, version: 1.9.0, mode: ge
+package: urllib3, version: 2.2.2, mode: ge
+package: emoji, version: 2.12.1, mode: ge

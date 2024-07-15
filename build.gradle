@@ -26,7 +26,7 @@ apply from: "$rootDir/gradle/idea.gradle"
 
 /* Project extension properties */
 ext {
-  python = "python" + (System.getenv('PYTHON_VERSION') ?: '3.11')
+  python = "python" + (System.getenv('PYTHON_VERSION') ?: '3')
   pyrcc = "pyrcc" + (System.getenv('PYRCC_VERSION') ?: '5')
   buildTools = "${buildTools}".split(",")
   buildToolsFile = new File("${project.projectDir}/buildTools.txt")

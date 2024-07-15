@@ -13,8 +13,8 @@ package: hspylib
 
 /* Application dependencies */
 
-package: retry2, version: 0.9.5, mode: eq
-package: requests, version: 2.32.3, mode: eq
-package: urllib3, version: 2.2.2, mode: eq
-package: PyMySQL, version: 1.1.1, mode: eq
-package: redis, version: 5.0.7, mode: eq
+package: retry2, version: 0.9.5, mode: ge
+package: requests, version: 2.32.3, mode: ge
+package: urllib3, version: 2.2.2, mode: ge
+package: PyMySQL, version: 1.1.1, mode: ge
+package: redis, version: 5.0.7, mode: ge

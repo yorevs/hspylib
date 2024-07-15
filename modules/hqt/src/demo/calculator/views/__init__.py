@@ -1,9 +1,12 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-hqt v0.9.38
+# hspylib-hqt v0.9.39
 #
 # Package: demo.calculator.views
 """Package initialization."""
 
-__all__ = ["blink_lcd_thread", "main_qt_view"]
-__version__ = "0.9.38"
+__all__ = [
+    'blink_lcd_thread', 
+    'main_qt_view'
+]
+__version__ = '0.9.39'

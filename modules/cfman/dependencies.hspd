@@ -14,6 +14,6 @@ package: hspylib-clitt
 
 /* Application dependencies */
 
-package: retry2, version: 0.9.5, mode: eq
-package: requests, version: 2.32.3, mode: eq
-package: urllib3, version: 2.2.2, mode: eq
+package: retry2, version: 0.9.5, mode: ge
+package: requests, version: 2.32.3, mode: ge
+package: urllib3, version: 2.2.2, mode: ge
