@@ -6,7 +6,7 @@
    @package: hspylib.core
       @file: namespace.py
    @created: Tue, 4 May 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
@@ -14,16 +14,16 @@
 """
 from hspylib.core.preconditions import check_not_none
 from hspylib.core.tools.dict_tools import merge
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple, TypeAlias
 
-ATTRIBUTE_TYPES = Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]
+AttributeTypes: TypeAlias = Dict[str, Any] | Tuple[Dict[str, Any]] | List[Dict[str, Any]]
 
 
 class Namespace:
-    """TODO"""
+    """Provide a namespace class that holds dynamic attributes."""
 
     @staticmethod
-    def of(type_name: str, attributes: ATTRIBUTE_TYPES, final: bool = False) -> "Namespace":
+    def of(type_name: str, attributes: AttributeTypes, final: bool = False) -> "Namespace":
         check_not_none(attributes)
         self = Namespace(type_name, final)
         self += attributes if isinstance(attributes, dict) else merge(attributes)

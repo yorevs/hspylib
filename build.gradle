@@ -22,7 +22,7 @@ idea {
   }
 }
 
-apply from: "$rootDir/gradle/idea.gradle"
+apply from: "${rootDir}/gradle/idea.gradle"
 
 /* Project extension properties */
 ext {
@@ -58,8 +58,6 @@ subprojects {
       println ">>> ${commandLine}"
     }
   }
-
-  apply from: "$projectDir/gradle.properties"
 
   ext {
     python = "${rootProject.python}"
