@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-   @project: HsPyLib-
+   @project: HsPyLib
    @package: hspylib.core.tools
       @file: fluid.py
    @created: Fri, 5 Jan 2024
