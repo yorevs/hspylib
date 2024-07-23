@@ -5,7 +5,7 @@
    @project: HsPyLib-Clitt
       @file: setup.py
    @created: Tue, 4 May 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
@@ -33,7 +33,7 @@ setuptools.setup(
     name="hspylib-clitt",
     version=VERSION,
     description="HsPyLib - CLI Terminal Tools",
-    author="Hugo Saporetti Junior",
+    author="Hugo Saporetti Junior,
     author_email="yorevs@hotmail.com",
     long_description=README,
     long_description_content_type="text/markdown",

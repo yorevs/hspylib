@@ -6,7 +6,7 @@
    @package: kafman.core.schema.avro.field
       @file: fixed_field.py
    @created: Wed, 1 Jun 2022
-    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: "https://github.com/yorevs/hspylib")
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

@@ -5,7 +5,7 @@
    @project: HsPyLib-Hqt
       @file: setup.py
    @created: Tue, 18 Apr 2023
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
@@ -33,7 +33,7 @@ setuptools.setup(
     name="hspylib-hqt",
     version=VERSION,
     description="HsPyLib - QT framework extensions",
-    author="Hugo Saporetti Junior",
+    author="Hugo Saporetti Junior,
     author_email="yorevs@hotmail.com",
     long_description=README,
     long_description_content_type="text/markdown",

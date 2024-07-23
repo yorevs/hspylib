@@ -6,7 +6,7 @@
    @package: test.kafman
       @file: tpl-test_main.py
    @created: Tue, 1 Jun 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

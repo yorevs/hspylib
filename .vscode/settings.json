@@ -1,5 +1,11 @@
 {
   "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
     ".vscode": true,
     ".gradle": true,
     "run-configs": true,
@@ -19,5 +25,6 @@
     "**/__init__": true,
     "**/__init__.*": true
   },
-  "python.linting.pylintEnabled": true
+  "python.linting.pylintEnabled": true,
+  "hide-files.files": []
 }

@@ -6,7 +6,7 @@
    @package: main.clitt.core.tui.line_input
       @file: keyboard_input.py
    @created: Wed, 17 Jan 2024
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

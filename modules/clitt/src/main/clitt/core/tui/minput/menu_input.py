@@ -6,7 +6,7 @@
    @package: clitt.core.tui.minput
       @file: menu_input.py
    @created: Wed, 17 May 2023
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

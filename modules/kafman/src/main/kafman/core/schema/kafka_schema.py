@@ -6,7 +6,7 @@
    @package: kafman.core.schema
       @file: kafka_schema.py
    @created: Sum, 18 Jun 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

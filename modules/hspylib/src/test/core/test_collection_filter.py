@@ -6,7 +6,7 @@
    @package: hspylib.test.tools
       @file: test_collection_filter.py
    @created: Fri, 1 Jul 2022
-    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior")"
+    @author: "<B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: "https://github.com/yorevs/hspylib")
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

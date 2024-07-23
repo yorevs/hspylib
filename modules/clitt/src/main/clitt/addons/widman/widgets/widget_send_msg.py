@@ -6,7 +6,7 @@
    @package: clitt.addons.widman.widgets
       @file: widget_send_msg.py
    @created: Thu, 26 Aug 2017
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

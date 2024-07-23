@@ -6,7 +6,7 @@
    @package: demo.cli.tui
       @file: tui_preferences_demo.py
    @created: Fri, 7 Jul 2023
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

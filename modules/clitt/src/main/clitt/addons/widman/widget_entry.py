@@ -6,7 +6,7 @@
    @package: clitt.addons.widman
       @file: widget_entry.py
    @created: Fri, 04 Jun 2021
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 

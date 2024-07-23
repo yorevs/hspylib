@@ -6,7 +6,7 @@
    @package: clitt.addons.setman
       @file: settings_service.py
    @created: Mon, 5 Jun 2023
-    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior"
+    @author: <B>H</B>ugo <B>S</B>aporetti <B>J</B>unior
       @site: https://github.com/yorevs/hspylib
    @license: MIT - Please refer to <https://opensource.org/licenses/MIT>
 
