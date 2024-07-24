@@ -23,5 +23,9 @@ class InvalidFirebaseCredentials(HSBaseException):
     """Raised when invalid credentials are provided to Firebase"""
 
 
+class UnprocessableFile(HSBaseException):
+    """Raised when invalid or binary file fails to load"""
+
+
 class FirebaseException(HSBaseException):
     """Raised when Firebase module raises an error"""

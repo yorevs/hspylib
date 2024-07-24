@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib v1.12.39
+# hspylib v1.12.41
 #
 # Package: main.hspylib.core
 """Package initialization."""
@@ -14,8 +14,9 @@ __all__ = [
     'exception', 
     'metaclass', 
     'namespace', 
+    'object_mapper', 
     'preconditions', 
     'tools', 
     'zoned_datetime'
 ]
-__version__ = '1.12.39'
+__version__ = '1.12.41'

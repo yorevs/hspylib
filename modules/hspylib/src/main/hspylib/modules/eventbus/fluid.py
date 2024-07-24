@@ -17,6 +17,7 @@ from functools import partial
 from typing import Callable
 
 from hspylib.core.namespace import Namespace
+from hspylib.core.preconditions import check_not_none
 from hspylib.modules.eventbus.eventbus import EventBus, emit
 
 
@@ -24,7 +25,10 @@ class FluidEvent:
     """Provide a 'Fluid' event base class."""
 
     def __init__(self, name: str, **kwargs):
+        check_not_none(name, 'Parameter name is required!')
         self.name = name
+        if 'cb_event_handler' not in kwargs:
+            kwargs['cb_event_handler'] = None
         for key, val in kwargs.items():
             setattr(self, key, val)
 

@@ -21,6 +21,8 @@ import json
 import logging as log
 import os
 
+from firebase.exception.exceptions import UnprocessableFile
+
 
 class FirebaseDto:
     """Represents a Firebase DTO."""
@@ -58,12 +60,15 @@ class FirebaseDto:
     def load(self) -> "FirebaseDto":
         """Loads the file contents."""
         if os.path.exists(self.path):
-            with open(self.path, "r", encoding=Charset.UTF_8.val) as f_in:
-                self.data = f_in.read()
-                if (size := len(self.data)) == 0:
-                    log.warning('Nothing to be loaded. File "%s" is empty', self.path)
-                self.size = size
-                return self
+            try:
+                with open(self.path, "r", encoding=Charset.UTF_8.val) as f_in:
+                    self.data = f_in.read()
+                    if (size := len(self.data)) == 0:
+                        log.warning('Nothing to be loaded. File "%s" is empty', self.path)
+                    self.size = size
+                    return self
+            except UnicodeDecodeError as err:
+                raise UnprocessableFile(f'Unable to load file "{self.path}". Is it binary?') from err
         raise FileNotFoundError(f'File "{self.path}" could not be loaded because it does not exist!')
 
     def save(self) -> "FirebaseDto":

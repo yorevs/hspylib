@@ -56,7 +56,7 @@ def temporized(func: Callable):
     return temporized_closure
 
 
-def hooksignals(signals: tuple | signal.Signals):
+def hook_signals(signals: tuple | signal.Signals):
     def helper(func: Callable[[int, Any], None]):
         # Here, we will see the functionality of the code:
         sig_numbers: tuple = signals if isinstance(signals, tuple) else (signals,)

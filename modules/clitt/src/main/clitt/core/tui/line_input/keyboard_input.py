@@ -13,7 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from typing import Optional
+from typing import Optional, Callable, TypeAlias
 
 from clitt.core.term.commons import Direction
 from clitt.core.term.terminal import Terminal
@@ -21,6 +21,8 @@ from clitt.core.tui.tui_component import TUIComponent
 from hspylib.core.tools.dict_tools import get_or_default
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
+
+KeyBinding: TypeAlias = dict[Keyboard, Callable[[], None]]
 
 
 class KeyboardInput(TUIComponent):
@@ -37,6 +39,9 @@ class KeyboardInput(TUIComponent):
 
     # Stack containing current input reverts.
     _REDO_HISTORY: list[str] = []
+
+    # Map containing the custom keybindings.
+    _BINDINGS: KeyBinding = {}
 
     @classmethod
     def preload_history(cls, history: list[str]) -> None:
@@ -106,16 +111,11 @@ class KeyboardInput(TUIComponent):
         self._suggestion: str = ""
         self._HISTORY[-1] = ""
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
+        self._bindings()
 
     @property
     def length(self) -> int:
         return len(self._input_text) if self._input_text else 0
-
-    def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = True) -> None:
-        self.screen.add_watcher(self.invalidate)
-        Terminal.set_auto_wrap(auto_wrap)
-        Terminal.set_show_cursor(show_cursor)
-        self.cursor.save()
 
     def execute(self) -> Optional[str | Keyboard]:
         self._prepare_render()
@@ -142,19 +142,18 @@ class KeyboardInput(TUIComponent):
         self._input_index = 0
         self._update_input("")
 
-    def _loop(self, break_keys: list[Keyboard] = None) -> Keyboard:
-        break_keys = break_keys or Keyboard.break_keys()
-        keypress = Keyboard.VK_NONE
+    def home(self) -> None:
+        """Place the cursor at the start of the input text."""
+        self._input_index = 0
 
-        # Wait for user interaction
-        while not self._done and keypress and keypress not in break_keys:
-            # Menu Renderization
-            if self._re_render:
-                self.render()
-            # Navigation input
-            keypress = self.handle_keypress()
+    def end(self) -> None:
+        """Place the cursor at the end of the input text."""
+        self._input_index = self.length
 
-        return keypress
+    def complete(self) -> None:
+        """Complete the input text with the suggested text."""
+        self._update_input(self._input_text + self._suggestion)
+        self._input_index = self.length
 
     def render(self) -> None:
         Terminal.set_show_cursor(False)
@@ -163,7 +162,7 @@ class KeyboardInput(TUIComponent):
         self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
         if self._input_text:
             self.write(self._input_text)
-            self._write_suggestion()
+            self._render_suggestions()
         else:
             self.write(f"%GRAY%{self._placeholder}%NC%")
             self._terminal.cursor.erase(Direction.DOWN)
@@ -178,6 +177,7 @@ class KeyboardInput(TUIComponent):
     def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
             match keypress:
+                # Default key bindings.
                 case Keyboard.VK_BACKSPACE:
                     if self._input_index > 0:
                         self._input_index = max(0, self._input_index - 1)
@@ -188,10 +188,6 @@ class KeyboardInput(TUIComponent):
                     self._update_input(
                         self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
                     )
-                case Keyboard.VK_CTRL_R:
-                    self.reset()
-                case Keyboard.VK_CTRL_F:
-                    self.forget_history()
                 case Keyboard.VK_LEFT:
                     self._input_index = max(0, self._input_index - 1)
                 case Keyboard.VK_RIGHT:
@@ -202,13 +198,12 @@ class KeyboardInput(TUIComponent):
                 case Keyboard.VK_DOWN:
                     self._input_text = self._next_in_history()
                     self._input_index = self.length
-                case Keyboard.VK_HOME:
-                    self._input_index = 0
-                case Keyboard.VK_END:
-                    self._input_index = self.length
-                case Keyboard.VK_TAB:
-                    self._update_input(self._input_text + self._suggestion)
-                    self._input_index = self.length
+                # Customizable key bindings.
+                case _ as key if key in self._BINDINGS:
+                    fn: Callable = self._BINDINGS[key]
+                    if fn and isinstance(fn, Callable):
+                        fn()
+                # Printable characters
                 case _ as key if key.val.isprintable():
                     text: str = key.val
                     while (key := Keyboard.wait_keystroke(False)) != Keyboard.VK_NONE:
@@ -217,12 +212,46 @@ class KeyboardInput(TUIComponent):
                     self._update_input(
                         self._input_text[: self._input_index] + text + self._input_text[self._input_index:])
                     self._input_index += len(text)
+                # Loop breaking characters
                 case _ as key if key in Keyboard.break_keys():
                     self._done = True
                 case _:
                     self._input_text = keypress
                     self._done = True
             self._re_render = True
+
+        return keypress
+
+    def _bindings(self) -> None:
+        """TODO"""
+        if not KeyboardInput._BINDINGS:
+            KeyboardInput._BINDINGS.update({
+                Keyboard.VK_CTRL_A: self.home,
+                Keyboard.VK_CTRL_E: self.end,
+                Keyboard.VK_CTRL_R: self.reset,
+                Keyboard.VK_CTRL_F: self.forget_history,
+                Keyboard.VK_HOME: self.home,
+                Keyboard.VK_END: self.end,
+                Keyboard.VK_TAB: self.complete
+            })
+
+    def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = True) -> None:
+        self.screen.add_watcher(self.invalidate)
+        Terminal.set_auto_wrap(auto_wrap)
+        Terminal.set_show_cursor(show_cursor)
+        self.cursor.save()
+
+    def _loop(self, break_keys: list[Keyboard] = None) -> Keyboard:
+        break_keys = break_keys or Keyboard.break_keys()
+        keypress = Keyboard.VK_NONE
+
+        # Wait for user interaction
+        while not self._done and keypress and keypress not in break_keys:
+            # Menu Renderization
+            if self._re_render:
+                self.render()
+            # Navigation input
+            keypress = self.handle_keypress()
 
         return keypress
 
@@ -240,6 +269,27 @@ class KeyboardInput(TUIComponent):
         self._input_text = text
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
         return text
+
+    def _render_suggestions(self) -> None:
+        """Render the input suggestions."""
+        edt_text: str = self._input_text
+        filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
+        hint: str = ''
+
+        if edt_text and edt_text in filtered:
+            edt_idx = filtered.index(edt_text) - 1
+            index = max(0, min(edt_idx, self._HIST_INDEX))
+            hint: str = get_or_default(filtered, index, '') or filtered[-1]
+            if hint and (hint := hint[len(edt_text):]):
+                self.write(f"%GRAY%{hint}%NC%")
+                self._terminal.cursor.erase(Direction.DOWN)
+                self.cursor.move(len(hint), Direction.LEFT)
+            else:
+                self._terminal.cursor.erase(Direction.DOWN)
+        else:
+            self._terminal.cursor.erase(Direction.DOWN)
+
+        self._suggestion = hint
 
     def _next_in_history(self) -> str:
         """Return the next input in history."""
@@ -264,24 +314,3 @@ class KeyboardInput(TUIComponent):
             self._HIST_INDEX = filtered.index(text)
             return text
         return edt_text
-
-    def _write_suggestion(self) -> None:
-        """TODO """
-        edt_text: str = self._input_text
-        filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
-        hint: str = ''
-
-        if edt_text and edt_text in filtered:
-            edt_idx = filtered.index(edt_text) - 1
-            index = max(0, min(edt_idx, self._HIST_INDEX))
-            hint: str = get_or_default(filtered, index, '') or filtered[-1]
-            if hint and (hint := hint[len(edt_text):]):
-                self.write(f"%GRAY%{hint}%NC%")
-                self._terminal.cursor.erase(Direction.DOWN)
-                self.cursor.move(len(hint), Direction.LEFT)
-            else:
-                self._terminal.cursor.erase(Direction.DOWN)
-        else:
-            self._terminal.cursor.erase(Direction.DOWN)
-
-        self._suggestion = hint
