@@ -33,7 +33,7 @@ setuptools.setup(
     name="hspylib-cfman",
     version=VERSION,
     description="HsPyLib - CloudFoundry manager",
-    author="Hugo Saporetti Junior,
+    author="Hugo Saporetti Junior",
     author_email="yorevs@hotmail.com",
     long_description=README,
     long_description_content_type="text/markdown",

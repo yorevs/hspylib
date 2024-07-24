@@ -38,10 +38,11 @@ class FileProcessor(ABC):
         :param glob_exp: the GLOB expressions to filter the input files/folders.
         """
         data = []
+        file_paths = list(map(os.path.expanduser, map(os.path.expandvars, file_paths)))
         for f_path in file_paths:
             if os.path.exists(f_path):
                 if os.path.isfile(f_path):
-                    sysout(f"%BLUE%Uploading file  {f_path:.<22} %NC%", end="")
+                    sysout(f"%BLUE%Uploading file  {f_path:.<40} %NC%", end="")
                     dto = FileProcessor._read_and_encode(f_path)
                     data.append(dto)
                     sysout("[%GREEN%  OK  %NC%]")
@@ -52,7 +53,7 @@ class FileProcessor(ABC):
                     for file in all_files:
                         filename = os.path.join(f_path, file)
                         if os.path.isfile(filename) and fnmatch(file, glob_exp or "*.*"):
-                            sysout(f"%BLUE%Uploading file  {filename:.<22} %NC%", end="")
+                            sysout(f"%BLUE%Uploading file  {filename:.<40} %NC%", end="")
                             dto = FileProcessor._read_and_encode(filename)
                             data.append(dto)
                             sysout("[%GREEN%  OK  %NC%]")

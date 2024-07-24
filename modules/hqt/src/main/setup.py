@@ -33,7 +33,7 @@ setuptools.setup(
     name="hspylib-hqt",
     version=VERSION,
     description="HsPyLib - QT framework extensions",
-    author="Hugo Saporetti Junior,
+    author="Hugo Saporetti Junior",
     author_email="yorevs@hotmail.com",
     long_description=README,
     long_description_content_type="text/markdown",
