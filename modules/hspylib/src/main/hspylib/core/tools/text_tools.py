@@ -44,7 +44,7 @@ def cut(text: str, field: int, separator: str = " ") -> Tuple[Optional[str], tup
     return get_or_default(result, field), result[:field]
 
 
-def random_string(choices: List[str], length: int, weights: List[int] = None) -> str:
+def random_string(choices: List[str] = string.ascii_lowercase, length: int = 8, weights: List[int] = None) -> str:
     """Return a new random string matching choices and length.
     :param choices: The available choices.
     :param length: The required length of the string.

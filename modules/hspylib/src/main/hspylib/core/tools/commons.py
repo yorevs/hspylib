@@ -12,20 +12,24 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from datetime import timedelta
-from hspylib.core.constants import TRUE_VALUES
-from hspylib.core.enums.charset import Charset
-from hspylib.core.preconditions import check_argument, check_not_none
-from hspylib.modules.cli.vt100.vt_code import VtCode
-from hspylib.modules.cli.vt100.vt_color import VtColor
-from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type
-
 import inspect
 import logging as log
 import os
 import pathlib
 import signal
 import sys
+from datetime import timedelta
+from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type, Union
+
+from hspylib.core.constants import TRUE_VALUES
+from hspylib.core.enums.charset import Charset
+from hspylib.core.preconditions import check_argument, check_not_none
+from hspylib.modules.cli.vt100.vt_code import VtCode
+from hspylib.modules.cli.vt100.vt_color import VtColor
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.markdown import Markdown
+from rich.text import Text
 
 # pylint: disable=consider-using-f-string
 FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
@@ -44,16 +48,22 @@ CONSOLE_LOG_FMT = "{} [{}] (@Line:{}) {} : {}".format(
 
 LOG_DATE_FMT = "%Y-%m-%d %H:%M:%S"
 
+console_out = Console(force_terminal=True)
+
+console_err = Console(force_terminal=True, stderr=True)
+
 
 def log_init(
     filename: str = "",
     filemode: str = "a",
-    level: int = log.DEBUG,
+    level: int = log.NOTSET,
     file_format: str = FILE_LOG_FMT,
     console_format: str = CONSOLE_LOG_FMT,
     clear_handlers: bool = True,
     console_enable: bool = False,
     file_enable: bool = True,
+    rich_tracebacks: bool = True,
+    tracebacks_suppress: list = None,
 ) -> bool:
     """Initialize the system logger"""
 
@@ -67,7 +77,7 @@ def log_init(
                 handler.close()
                 root.removeHandler(handler)
 
-    if file_enable:
+    if file_enable and filename:
         if not os.path.exists(filename):
             touch_file(filename)
         touch_file(filename)
@@ -78,7 +88,9 @@ def log_init(
 
     if console_enable or (file_enable and not os.path.exists(filename)):
         console_formatter = log.Formatter(console_format, LOG_DATE_FMT)
-        console_handler = log.StreamHandler(sys.stdout)
+        console_handler = RichHandler(
+            rich_tracebacks=rich_tracebacks, tracebacks_suppress=(tracebacks_suppress or [])
+        )
         console_handler.setFormatter(console_formatter)
         handlers.add(console_handler)
 
@@ -110,36 +122,36 @@ def get_path(filepath: str) -> pathlib.Path:
     return pathlib.Path(filepath).parent
 
 
-def sysout(*objs: Any, end: str = os.linesep) -> None:
-    """Print the unicode input_string decoding vt100 placeholders
-    :param objs: values to be printed to sys.stdout
-    :param end: string appended after the last value, default a newline
+def sysout(*objs: Any, end: str = os.linesep, markdown: bool = False) -> None:
+    """Print the unicode input_string decoding vt100 placeholders.
+    :param objs: values to be printed to sys.stdout.
+    :param end: string appended after the last value, default a newline.
+    :param markdown: whether to print markdown.
     """
-    if objs:
+    if objs is not None:
+        def _sysout_format(obj: Any) -> Union[Text | Markdown]:
+            text = str(obj) if obj is not None else ""
+            text = VtColor.colorize(VtCode.decode(text))
+            return Text(text) if not markdown else Markdown(text)
 
-        def _sysout_format(obj: Any) -> str:
-            plain_text = str(obj) if obj else ""
-            return VtColor.colorize(VtCode.decode(plain_text))
-
-        stream = sys.stdout
-        list(map_many(objs, _sysout_format, lambda s: print(s, file=stream, flush=True, end="")))
-        print("", file=stream, flush=True, end=end)
+        list(map_many(objs, _sysout_format, lambda s: console_out.print(s, end="")))
+        console_out.print("", end=end)
 
 
-def syserr(*objs: Any, end: str = os.linesep) -> None:
-    """Print the unicode input_string decoding vt100 placeholders
-    :param objs: values to be printed to sys.stderr
-    :param end: string appended after the last value, default a newline
+def syserr(*objs: Any, end: str = os.linesep, markdown: bool = False) -> None:
+    """Print the unicode input_string decoding vt100 placeholders.
+    :param objs: values to be printed to sys.stderr.
+    :param end: string appended after the last value, default a newline.
+    :param markdown: whether to print markdown.
     """
-    if objs:
+    if objs is not None:
+        def _syserr_format(obj: Any) -> Union[str | Markdown]:
+            text = VtColor.strip_colors(str(obj)) if obj is not None else ""
+            text = VtColor.colorize(VtCode.decode(f"%RED%{text}%NC%"))
+            return Text(text) if not markdown else Markdown(text)
 
-        def _syserr_format(obj: Any) -> str:
-            plain_text = VtColor.strip_colors(str(obj)) if obj else ""
-            return VtColor.colorize(VtCode.decode(f"%RED%{plain_text}%NC%"))
-
-        stream = sys.stderr
-        list(map_many(objs, _syserr_format, lambda s: print(s, file=stream, flush=True, end="")))
-        print("", file=stream, flush=True, end=end)
+        list(map_many(objs, _syserr_format, lambda s: console_err.print(s, end="")))
+        console_err.print("", end=end)
 
 
 def hook_exit_signals(handler: Callable) -> None:
@@ -228,7 +240,7 @@ def human_readable_bytes(size_in_bytes: int) -> Tuple[str, str]:
     """
 
     byte_size = float(size_in_bytes)
-    kb, mb, gb, tb = 2**10, 2**20, 2**30, 2**40
+    kb, mb, gb, tb = 2 ** 10, 2 ** 20, 2 ** 30, 2 ** 40
 
     if 0 <= byte_size <= kb:
         ret_val = f"{byte_size:3.2f}"
