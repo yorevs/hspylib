@@ -40,15 +40,9 @@ configurations {
 }
 
 dependencies {
-    project(':cfman')
-    project(':clitt')
-    project(':datasource')
-    project(':firebase')
-    project(':hqt')
-    project(':hspylib')
-    project(':kafman')
-    project(':setman')
-    project(':vault')
+    file('modules').eachDir { dir ->
+      project("$dir.name")
+    }
 }
 
 subprojects {
