@@ -47,14 +47,15 @@ class AppConfigs(metaclass=Singleton):
     @staticmethod
     def _replace_holders(value: str, placeholders: Placeholder) -> str:
         """Replace all placeholders by their associated value."""
-        replacements = {k.casefold(): v for k, v in placeholders.items()} if placeholders else {}
-        re_ph = r'\$\{(\w+)\}'
-        pattern = re.compile(re_ph, flags=re.IGNORECASE)
-        while match := pattern.search(value):
-            key = match.group(1)
-            repl = os.environ.get(key, str(get_or_default_by_key(replacements, key, None)))
-            re_placeholder = r'\$\{' + re.escape(key) + r'\}'
-            value = re.sub(re_placeholder, repl, value, flags=re.IGNORECASE)
+        if value:
+            replacements = {k.casefold(): v for k, v in placeholders.items()} if placeholders else {}
+            re_ph = r'\$\{(\w+)\}'
+            pattern = re.compile(re_ph, flags=re.IGNORECASE)
+            while match := pattern.search(value):
+                key = match.group(1)
+                repl = os.environ.get(key, str(get_or_default_by_key(replacements, key, None)))
+                re_placeholder = r'\$\{' + re.escape(key) + r'\}'
+                value = re.sub(re_placeholder, repl, value, flags=re.IGNORECASE)
 
         return value
 
