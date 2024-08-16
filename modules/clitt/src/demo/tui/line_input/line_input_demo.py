@@ -12,18 +12,29 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from textwrap import dedent
+
+from clitt.core.term.cursor import cursor
 from clitt.core.tui.line_input.keyboard_input import KeyboardInput
 from clitt.core.tui.line_input.line_input import line_input
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_color import VtColor
 
 if __name__ == "__main__":
+    MENU = dedent(f"""
+    {"-=" * 30}
+    1. Hugo
+    2. Joao
+    3. Koko
+    4. Hugo
+    5. Koko
+    Who is it
+    > """)
     hist = ["Hugo", "Joao", "Koko", "Hugo", "Koko"]
     KeyboardInput.preload_history(hist)
-    print("-=" * 30)
-    while (i := line_input("What is it? ", "Input your name", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
-        if isinstance(i, Keyboard):
-            print("PTT", i)
+    while (name := line_input(MENU, "Input your name", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
+        if isinstance(name, Keyboard):
+            cursor.writeln("PTT: " + name)
         else:
-            print("Input:", i)
-    print(KeyboardInput.history())
+            cursor.writeln("Input: " + name)
+    cursor.writeln(KeyboardInput.history())

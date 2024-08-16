@@ -41,10 +41,10 @@ class TUIApplication(Application, metaclass=AbstractSingleton):
         self._app_name = os.path.basename(sys.argv[0]) if name is None else name
 
     def _setup_arguments(self) -> None:
-        pass
+        ...
 
     def _main(self, *params, **kwargs) -> ExitStatus:
-        pass
+        ...
 
     def _cleanup(self) -> None:
         if screen.alternate and self._exit_code == ExitStatus.SUCCESS:

@@ -19,7 +19,7 @@ import pathlib
 import signal
 import sys
 from datetime import timedelta
-from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type, Union
+from typing import Any, Callable, Iterable, Optional, Set, Tuple, Type, Union, Literal, TypeAlias
 
 from hspylib.core.constants import TRUE_VALUES
 from hspylib.core.enums.charset import Charset
@@ -32,7 +32,7 @@ from rich.markdown import Markdown
 from rich.text import Text
 
 # pylint: disable=consider-using-f-string
-FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
+DEFAULT_FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
     "%(asctime)s.%(msecs)03d",
     "%(levelname)-7.7s",
     "%(threadName)12.12s",
@@ -42,26 +42,35 @@ FILE_LOG_FMT = "{} {} [{}] {} (@Line:{}) {} : {}".format(
     "%(message)s",
 )
 
-CONSOLE_LOG_FMT = "{} [{}] (@Line:{}) {} : {}".format(
+# pylint: disable=consider-using-f-string
+DEFAULT_CONSOLE_LOG_FMT = "{} [{}] (@Line:{}) {} : {}".format(
     "%(levelname)-7.7s", "%(threadName)12.12s", "%(lineno)05d", "%(filename)-30.30s", "%(message)s"
 )
 
 LOG_DATE_FMT = "%Y-%m-%d %H:%M:%S"
 
-console_out = Console(force_terminal=True)
+console_out = Console(force_terminal=True, soft_wrap=True)
 
-console_err = Console(force_terminal=True, stderr=True)
+console_err = Console(force_terminal=True, soft_wrap=True, stderr=True)
+
+FileMode: TypeAlias = Literal[
+    # Modes for reading
+    "r", "rb", "rt", "r+", "r+b",
+    # Modes for writing
+    "w", "wb", "wt", "w+", "w+b",
+    # Modes for appending
+    "a", "ab", "at", "a+", "a+b"
+]
 
 
 def log_init(
-    filename: str = "",
-    filemode: str = "a",
+    filename: str | None = None,
+    filemode: FileMode = "a",
     level: int = log.NOTSET,
-    file_format: str = FILE_LOG_FMT,
-    console_format: str = CONSOLE_LOG_FMT,
+    file_format: str = DEFAULT_FILE_LOG_FMT,
+    console_format: str = DEFAULT_CONSOLE_LOG_FMT,
     clear_handlers: bool = True,
     console_enable: bool = False,
-    file_enable: bool = True,
     rich_tracebacks: bool = True,
     tracebacks_suppress: list = None,
 ) -> bool:
@@ -77,7 +86,7 @@ def log_init(
                 handler.close()
                 root.removeHandler(handler)
 
-    if file_enable and filename:
+    if filename:
         if not os.path.exists(filename):
             touch_file(filename)
         touch_file(filename)
@@ -86,17 +95,18 @@ def log_init(
         file_handler.setFormatter(file_formatter)
         handlers.add(file_handler)
 
-    if console_enable or (file_enable and not os.path.exists(filename)):
+    if console_enable or (filename and not os.path.exists(filename)):
         console_formatter = log.Formatter(console_format, LOG_DATE_FMT)
+        # Use rich logger.
         console_handler = RichHandler(
-            rich_tracebacks=rich_tracebacks, tracebacks_suppress=(tracebacks_suppress or [])
-        )
+            rich_tracebacks=rich_tracebacks,
+            tracebacks_suppress=(tracebacks_suppress or []))
         console_handler.setFormatter(console_formatter)
         handlers.add(console_handler)
 
     log.basicConfig(level=level, handlers=handlers)
 
-    return file_enable if os.path.exists(filename or "") else console_enable
+    return filename is not None if os.path.exists(filename or "") else console_enable
 
 
 def is_debugging() -> bool:
@@ -126,7 +136,7 @@ def sysout(*objs: Any, end: str = os.linesep, markdown: bool = False) -> None:
     """Print the unicode input_string decoding vt100 placeholders.
     :param objs: values to be printed to sys.stdout.
     :param end: string appended after the last value, default a newline.
-    :param markdown: whether to print markdown.
+    :param markdown: whether to print a markdown render.
     """
     if objs is not None:
         def _sysout_format(obj: Any) -> Union[Text | Markdown]:

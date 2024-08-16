@@ -12,7 +12,10 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from abc import ABC, abstractmethod
+import os
+from abc import ABC
+from typing import Any, Optional, TypeVar
+
 from clitt.core.icons.font_awesome.awesome import Awesome
 from clitt.core.term.commons import Direction
 from clitt.core.term.cursor import Cursor
@@ -21,7 +24,6 @@ from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_preferences import TUIPreferences
 from hspylib.core.tools.text_tools import elide_text
 from hspylib.modules.cli.keyboard import Keyboard
-from typing import Any, List, Optional, TypeVar
 
 T = TypeVar("T", bound=Any)
 
@@ -63,15 +65,21 @@ class TUIComponent(ABC):
     def columns(self) -> int:
         return self.screen.columns
 
-    def _prepare_render(self, auto_wrap: bool = False, show_cursor: bool = False) -> None:
+    def _prepare_render(
+        self,
+        auto_wrap: bool = False,
+        show_cursor: bool = False,
+        clear_screen: bool = True
+    ) -> None:
         """Prepare the screen for renderization."""
         self.screen.add_watcher(self.invalidate)
         Terminal.set_auto_wrap(auto_wrap)
         Terminal.set_show_cursor(show_cursor)
-        self.screen.clear()
+        if clear_screen:
+            self.screen.clear()
         self.cursor.save()
 
-    def _loop(self, break_keys: List[Keyboard] = None) -> Keyboard:
+    def _loop(self, break_keys: list[Keyboard] = None, cleanup: bool = True) -> Keyboard:
         """Loop and wait for a keypress. Render the component if required."""
 
         break_keys = break_keys or Keyboard.break_keys()
@@ -86,10 +94,11 @@ class TUIComponent(ABC):
             # Navigation input
             keypress = self.handle_keypress()
 
-        self.cursor.end()
-        self.cursor.erase(Direction.DOWN)
-        self.cursor.reset_mode()
-        self.cursor.writeln("\n")
+        if cleanup:
+            self.cursor.end()
+            self.cursor.erase(Direction.DOWN)
+            self.cursor.reset_mode()
+            self.cursor.writeln(os.linesep)
 
         return keypress
 
@@ -123,32 +132,33 @@ class TUIComponent(ABC):
 
         return selector
 
-    def write(self, obj: Any) -> None:
+    def write(self, obj: Any = "", end: str = "", markdown: bool = False) -> None:
         """Write the string representation of the object to the screen."""
-        self.terminal.echo(obj, end="")
+        self.terminal.echo(obj, end=end, markdown=markdown)
 
-    def writeln(self, obj: Any) -> None:
+    def writeln(self, obj: Any = "", markdown: bool = False) -> None:
         """Write the string representation of the object to the screen, appending a new line."""
-        self.terminal.echo(obj)
+        self.terminal.echo(obj, markdown=markdown)
 
     def invalidate(self) -> None:
         """Invalidate current TUI renderization."""
         self.screen.clear()
         self.cursor.save()
+        self.cursor.track()
         self.render()
 
-    @abstractmethod
-    def execute(self) -> Optional[T | List[T]]:
+    def execute(self) -> Optional[T | list[T]]:
         """Execute the main TUI component flow."""
+        ...
 
-    @abstractmethod
     def render(self) -> None:
         """Renders the TUI component."""
+        ...
 
-    @abstractmethod
     def navbar(self, **kwargs) -> str:
         """Get the TUI component's navigation bar (optional)."""
+        ...
 
-    @abstractmethod
     def handle_keypress(self) -> Keyboard:
         """Handle a keyboard press."""
+        ...

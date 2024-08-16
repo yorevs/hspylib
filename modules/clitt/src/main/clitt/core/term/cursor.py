@@ -126,27 +126,28 @@ class Cursor(metaclass=Singleton):
         self.position = get_cursor_position() or self.position
         return self.position
 
-    def write(self, obj: Any, end: str = "") -> Position:
+    def write(self, obj: Any = "", end: str = "", markdown: bool = False) -> Position:
         """Write the string representation of the object to the screen.
         :param obj the object to be written.
         :param end string appended after the last value, default a newline.
+        :param markdown: whether to print a markdown render.
         :return the cursor position after writing.
         """
-        sysout(obj, end=end)
-        text = (str(obj) + end).replace("%EOL%", os.linesep)
-        text = VtColor.strip_colors(VtCode.strip_codes(text))
-        text_offset = len(text[max(0, last_index_of(text, os.linesep)) :])
+        sysout(obj, end=end, markdown=markdown)
+        text: str = self.cleanup_text(str(obj) + end)
+        text_offset: int = self.offset_text(text)
         self.position = self.position[0] + text.count(os.linesep), text_offset + (
             self.position[1] if text.count(os.linesep) == 0 else 0
         )
         return self.position
 
-    def writeln(self, obj: Any) -> Position:
+    def writeln(self, obj: Any = "", markdown: bool = False) -> Position:
         """Write the string representation of the object to the screen, appending a new line.
         :param obj the object to be written.
+        :param markdown: whether to print a markdown render.
         :return the cursor position after writing.
         """
-        return self.write(obj, end=os.linesep)
+        return self.write(obj, end=os.linesep, markdown=markdown)
 
     def save(self) -> Position:
         """Save the current cursor position and attributes.
@@ -169,6 +170,15 @@ class Cursor(metaclass=Singleton):
         """Reset cursor modifiers."""
         sysout(Vt100.mode(0), end=end)
         return self.position
+
+    def cleanup_text(self, text: str) -> str:
+        """TODO"""
+        return VtColor.strip_colors(VtCode.strip_codes(text.replace("%EOL%", os.linesep)))
+
+    def offset_text(self, text: str) -> int:
+        """TODO"""
+        text: str = self.cleanup_text(text)
+        return len(text[max(0, last_index_of(text, os.linesep)):])
 
 
 assert (cursor := Cursor().INSTANCE) is not None, "Failed to create Cursor instance"

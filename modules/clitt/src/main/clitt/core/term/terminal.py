@@ -177,9 +177,13 @@ class Terminal(metaclass=Singleton):
         cls.INSTANCE.screen.clear()
 
     @classmethod
-    def echo(cls, obj: Any, end: str = os.linesep) -> None:
-        """Write the string representation of the object to the screen."""
-        cls.INSTANCE.screen.cursor.write(obj, end=end)
+    def echo(cls, obj: Any = "", end: str = os.linesep, markdown: bool = False) -> None:
+        """Write the string representation of the object to the screen.
+        :param obj the object to be written.
+        :param end string appended after the last value, default a newline.
+        :param markdown: whether to print a markdown render.
+        """
+        cls.INSTANCE.screen.cursor.write(obj, end=end, markdown=markdown)
 
     @classmethod
     def alternate_screen(cls, enable: bool) -> None:

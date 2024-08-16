@@ -12,10 +12,11 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-
+import os
+from collections import defaultdict
 from typing import Optional, Callable, TypeAlias
 
-from clitt.core.term.commons import Direction
+from clitt.core.term.commons import Direction, Position
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_component import TUIComponent
 from hspylib.core.tools.dict_tools import get_or_default
@@ -28,6 +29,9 @@ KeyBinding: TypeAlias = dict[Keyboard, Callable[[], None]]
 class KeyboardInput(TUIComponent):
     """Provides a keyboard input for terminal UIs with undo and history."""
 
+    # minimum length to be considered as history store.
+    _MIN_HIST_STORE_LEN: int = 3
+
     # Current history index.
     _HIST_INDEX: int = 0
 
@@ -39,9 +43,6 @@ class KeyboardInput(TUIComponent):
 
     # Stack containing current input reverts.
     _REDO_HISTORY: list[str] = []
-
-    # Map containing the custom keybindings.
-    _BINDINGS: KeyBinding = {}
 
     @classmethod
     def preload_history(cls, history: list[str]) -> None:
@@ -69,6 +70,8 @@ class KeyboardInput(TUIComponent):
         """Add the following input to the history set.
         :param input_text: The input text to add to the history.
         """
+        if not len(input_text) > cls._MIN_HIST_STORE_LEN:
+            return
         if cls._HISTORY[-1] != '':
             cls._HISTORY.append('')
         if input_text:
@@ -101,41 +104,64 @@ class KeyboardInput(TUIComponent):
         text_color: VtColor = VtColor.NC,
         navbar_enable: bool = False,
     ):
+        self._HISTORY[-1] = ""
+        self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
         super().__init__(prompt)
         self._placeholder: str = placeholder
         self._prompt_color: VtColor = prompt_color
         self._text_color: VtColor = text_color
         self._navbar_enable: bool = navbar_enable
+        self._offset: Position = 0, 0
         self._input_index: int = 0
         self._input_text: str = ""
         self._suggestion: str = ""
-        self._HISTORY[-1] = ""
-        self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
-        self._bindings()
+        self._bindings: KeyBinding = defaultdict()
+        self._bind_keys()
+
+    @property
+    def prompt(self) -> str:
+        return f"{self.prompt_color}{self.title}{self.text_color}"
+
+    @property
+    def text(self) -> str:
+        return self._input_text
+
+    @text.setter
+    def text(self, value: str) -> None:
+        self._input_text = value
 
     @property
     def length(self) -> int:
-        return len(self._input_text) if self._input_text else 0
+        return len(self.text) if self.text else 0
+
+    @property
+    def prompt_color(self) -> str:
+        return self._prompt_color.placeholder
+
+    @property
+    def text_color(self) -> str:
+        return self._text_color.placeholder
+
+    @property
+    def placeholder(self) -> str:
+        return self._placeholder
+
+    @property
+    def bindings(self) -> KeyBinding:
+        return self._bindings
 
     def execute(self) -> Optional[str | Keyboard]:
-        self._prepare_render()
-        keypress = self._loop() or Keyboard.VK_ESC
-
+        keypress = self._loop(cleanup=False) or Keyboard.VK_ESC
         if keypress.isEnter():
-            self._add_history(self._input_text)
+            self._add_history(self.text)
             self._UNDO_HISTORY.clear()
             self._REDO_HISTORY.clear()
-            Terminal.set_show_cursor(False)
-            self.cursor.restore()
-            self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
-            self.write(self._input_text)
-            self._terminal.cursor.erase(Direction.DOWN)
-            Terminal.set_show_cursor(True)
+            self.cursor.erase(Direction.DOWN)
         elif keypress == Keyboard.VK_ESC:
-            self._input_text = None
+            self.text = None
         self.writeln("%NC%")
 
-        return self._input_text
+        return self.text
 
     def reset(self) -> None:
         """Reset the contents of the input."""
@@ -152,27 +178,30 @@ class KeyboardInput(TUIComponent):
 
     def complete(self) -> None:
         """Complete the input text with the suggested text."""
-        self._update_input(self._input_text + self._suggestion)
-        self._input_index = self.length
+        text: str = self.text + self._suggestion
+        self._update_input(text)
+        self._input_index = len(text)
 
     def render(self) -> None:
         Terminal.set_show_cursor(False)
-        self.cursor.restore()
-        self._terminal.cursor.erase(Direction.DOWN)
-        self.write(f"{self._prompt_color.placeholder}{self.title}{self._text_color.placeholder}")
-        if self._input_text:
-            self.write(self._input_text)
+        self.cursor.move(self._offset[0], Direction.UP)
+        self.cursor.move(self._offset[1], Direction.LEFT)
+        self.cursor.erase(Direction.DOWN)
+        self.write(self.prompt)
+        if self.text:
+            self.write(self.text)
             self._render_suggestions()
         else:
-            self.write(f"%GRAY%{self._placeholder}%NC%")
-            self._terminal.cursor.erase(Direction.DOWN)
-            self.cursor.move(len(self._placeholder), Direction.LEFT)
+            self.write(f"%GRAY%{self.placeholder}%NC%")
+            self.cursor.erase(Direction.DOWN)
+            self.cursor.move(len(self.placeholder), Direction.LEFT)
         self._re_render = False
         self._set_cursor_pos()
+        self._offset = self.prompt.count(os.linesep), self.cursor.position[1]
         Terminal.set_show_cursor()
 
     def navbar(self, **kwargs) -> str:
-        pass
+        ...
 
     def handle_keypress(self) -> Keyboard:
         if keypress := Keyboard.wait_keystroke():
@@ -182,26 +211,25 @@ class KeyboardInput(TUIComponent):
                     if self._input_index > 0:
                         self._input_index = max(0, self._input_index - 1)
                         self._update_input(
-                            self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
+                            self.text[: self._input_index] + self.text[1 + self._input_index:]
                         )
                 case Keyboard.VK_DELETE:
                     self._update_input(
-                        self._input_text[: self._input_index] + self._input_text[1 + self._input_index:]
+                        self.text[: self._input_index] + self.text[1 + self._input_index:]
                     )
                 case Keyboard.VK_LEFT:
                     self._input_index = max(0, self._input_index - 1)
                 case Keyboard.VK_RIGHT:
                     self._input_index = min(self.length, self._input_index + 1)
                 case Keyboard.VK_UP:
-                    self._input_text = self._prev_in_history()
+                    self.text = self._prev_in_history()
                     self._input_index = self.length
                 case Keyboard.VK_DOWN:
-                    self._input_text = self._next_in_history()
+                    self.text = self._next_in_history()
                     self._input_index = self.length
                 # Customizable key bindings.
-                case _ as key if key in self._BINDINGS:
-                    fn: Callable = self._BINDINGS[key]
-                    if fn and isinstance(fn, Callable):
+                case _ as key if key in self.bindings:
+                    if (fn := self.bindings[key]) and callable(fn):
                         fn()
                 # Printable characters
                 case _ as key if key.val.isprintable():
@@ -210,50 +238,29 @@ class KeyboardInput(TUIComponent):
                         if key.val and key.val.isprintable():
                             text += key.val
                     self._update_input(
-                        self._input_text[: self._input_index] + text + self._input_text[self._input_index:])
+                        self.text[: self._input_index] + text + self.text[self._input_index:])
                     self._input_index += len(text)
                 # Loop breaking characters
                 case _ as key if key in Keyboard.break_keys():
                     self._done = True
                 case _:
-                    self._input_text = keypress
+                    self.text = keypress
                     self._done = True
             self._re_render = True
 
         return keypress
 
-    def _bindings(self) -> None:
-        """TODO"""
-        if not KeyboardInput._BINDINGS:
-            KeyboardInput._BINDINGS.update({
-                Keyboard.VK_CTRL_A: self.home,
-                Keyboard.VK_CTRL_E: self.end,
-                Keyboard.VK_CTRL_R: self.reset,
-                Keyboard.VK_CTRL_F: self.forget_history,
-                Keyboard.VK_HOME: self.home,
-                Keyboard.VK_END: self.end,
-                Keyboard.VK_TAB: self.complete
-            })
-
-    def _prepare_render(self, auto_wrap: bool = True, show_cursor: bool = True) -> None:
-        self.screen.add_watcher(self.invalidate)
-        Terminal.set_auto_wrap(auto_wrap)
-        Terminal.set_show_cursor(show_cursor)
-        self.cursor.save()
-
-    def _loop(self, break_keys: list[Keyboard] = None) -> Keyboard:
-        break_keys = break_keys or Keyboard.break_keys()
-        keypress = Keyboard.VK_NONE
-
-        # Wait for user interaction
-        while not self._done and keypress and keypress not in break_keys:
-            # Menu Renderization
-            if self._re_render:
-                self.render()
-            # Navigation input
-            keypress = self.handle_keypress()
-
-        return keypress
+    def _bind_keys(self) -> None:
+        """Configure the default key bindings."""
+        self._bindings.update({
+            Keyboard.VK_CTRL_A: self.home,
+            Keyboard.VK_CTRL_E: self.end,
+            Keyboard.VK_CTRL_R: self.reset,
+            Keyboard.VK_CTRL_F: self.forget_history,
+            Keyboard.VK_HOME: self.home,
+            Keyboard.VK_END: self.end,
+            Keyboard.VK_TAB: self.complete
+        })
 
     def _set_cursor_pos(self):
         """Set the cursor position on the input."""
@@ -264,15 +271,15 @@ class KeyboardInput(TUIComponent):
         """Update the value of the input.
         :param text: The text to be set.
         """
-        self._UNDO_HISTORY.append(self._input_text)
-        self._HISTORY[-1] = text if text not in self._HISTORY else self._input_text
-        self._input_text = text
+        self._UNDO_HISTORY.append(self.text)
+        self._HISTORY[-1] = text if text not in self._HISTORY else self.text
+        self.text = text
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
         return text
 
     def _render_suggestions(self) -> None:
         """Render the input suggestions."""
-        edt_text: str = self._input_text
+        edt_text: str = self.text
         filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
         hint: str = ''
 
