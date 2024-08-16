@@ -15,7 +15,7 @@
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import get_path
+from hspylib.core.tools.commons import parent_path
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
@@ -68,7 +68,7 @@ class TestApplication(unittest.TestCase):
 
     # Creating an application specifying source root directory
     def test_should_instantiate_configs(self) -> None:
-        cur_dir = get_path(__file__)
+        cur_dir = parent_path(__file__)
         app = self.AppTest(resource_dir=f"{str(cur_dir)}/resources")
         self.assertTrue(hasattr(app.configs, "INSTANCE"))
 

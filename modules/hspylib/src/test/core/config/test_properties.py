@@ -14,14 +14,14 @@
 """
 
 from hspylib.core.config.properties import Properties
-from hspylib.core.tools.commons import get_path
+from hspylib.core.tools.commons import parent_path
 
 import logging as log
 import os
 import sys
 import unittest
 
-TEST_DIR = get_path(__file__)
+TEST_DIR = parent_path(__file__)
 
 RESOURCE_DIR = f"{TEST_DIR}/resources"
 

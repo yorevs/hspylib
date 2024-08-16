@@ -38,6 +38,10 @@ class ApplicationError(HSBaseException):
     """Raised when the application filed to execute is not found"""
 
 
+class PropertyError(HSBaseException):
+    """Raised when a TypeError is raised when converting a property values."""
+
+
 class InputAbortedError(HSBaseException):
     """Raised when an input method is aborted"""
 

@@ -70,6 +70,33 @@ class TestAppConfig(unittest.TestCase):
         self.assertEqual(expected_value_1, AppConfigs.INSTANCE["test.bool.property1"])
         self.assertEqual(expected_value_2, AppConfigs.INSTANCE["test.bool.property2"])
 
+    def test_should_replace_placeholders(self):
+        expected_value_1 = 10
+        expected_value_2 = 0.657
+        expected_value_3 = False
+        expected_value_4 = "Hello, my name is MyName and surname is MySurname"
+        placeholders = {
+            "PLACEHOLDER_INT": expected_value_1,
+            "Placeholder_Float": expected_value_2,
+            "Placeholder_Bool": "off",
+            "Name": "MyName", "Surname": "MySurname"
+        }
+        self.assertEqual(
+            expected_value_1, AppConfigs.INSTANCE.get_int("test.placeholder.int.property", placeholders))
+        self.assertEqual(
+            expected_value_2, AppConfigs.INSTANCE.get_float("test.placeholder.float.property", placeholders))
+        self.assertEqual(
+            expected_value_3, AppConfigs.INSTANCE.get_bool("test.placeholder.bool.property", placeholders))
+        self.assertEqual(
+            expected_value_4, AppConfigs.INSTANCE.get("test.placeholder.strings.property", placeholders))
+
+    def test_should_replace_placeholder_using_environment_vars(self):
+        os.environ['TEST_ENVIRON_1'] = 'Just'
+        os.environ['TEST_ENVIRON_2'] = 'Test'
+        expected_value = "This is Just a Test"
+        self.assertEqual(
+            expected_value, AppConfigs.INSTANCE.get("test.placeholder.environment"))
+
 
 # Program entry point.
 if __name__ == "__main__":

@@ -98,6 +98,10 @@ class Application(metaclass=AbstractSingleton):
         )
         self._arg_parser.add_argument("-v", "--version", action="version", version=f"%(prog)s v{self._app_version}")
 
+        # Initialize application logs
+        self._log_file = f"{log_dir or os.getenv('HHS_LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
+        check_state(log_init(filename=self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
+
         # Initialize application configs
         if os.path.exists(f"{resource_dir}"):
             self.configs = AppConfigs(resource_dir=resource_dir)
@@ -105,10 +109,6 @@ class Application(metaclass=AbstractSingleton):
             self.configs = AppConfigs(resource_dir=f"{self._run_dir}/resources")
         else:
             log.debug('Resource dir "%s" not found. AppConfigs will not be available!', resource_dir or "<none>")
-
-        # Initialize application logs
-        self._log_file = f"{log_dir or os.getenv('HHS_LOG_DIR', os.getcwd())}/{camelcase(name)}.log"
-        check_state(log_init(filename=self._log_file), "Unable to initialize logging. log_file={}", self._log_file)
 
     def run(self, *params, **kwargs) -> None:
         """Main entry point handler."""

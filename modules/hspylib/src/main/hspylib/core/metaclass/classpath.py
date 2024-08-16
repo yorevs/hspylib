@@ -32,7 +32,12 @@ class Classpath(metaclass=Singleton):
 
     INSTANCE = None
 
-    def __init__(self, source_root: AnyPath = None, run_dir: AnyPath = None, resource_dir: AnyPath = None):
+    def __init__(
+        self,
+        source_root: AnyPath = None,
+        run_dir: AnyPath = None,
+        resource_dir: AnyPath = None
+    ):
 
         if source_root:
             check_state(Path(str(source_root)).exists(), "source_root is not an existing path")

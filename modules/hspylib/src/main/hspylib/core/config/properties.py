@@ -13,18 +13,20 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from collections import defaultdict
-from hspylib.core.config.parser_factory import ParserFactory
-from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import dirname, run_dir, touch_file
-from hspylib.core.tools.text_tools import environ_name
-from os.path import basename
-from typing import Any, Callable, Iterator, List, Optional, Type
-
 import logging as log
 import os
+from collections import defaultdict
+from os.path import basename, expandvars
+from typing import Any, Callable, Iterator, List, Optional, TypeAlias
 
-CONVERSION_FN = Type | Callable[[Any], Any]
+from hspylib.core.config.parser_factory import ParserFactory
+from hspylib.core.enums.charset import Charset
+from hspylib.core.exception.exceptions import PropertyError
+from hspylib.core.metaclass.classpath import AnyPath
+from hspylib.core.tools.commons import dirname, root_dir, touch_file
+from hspylib.core.tools.text_tools import environ_name
+
+ConversionFn: TypeAlias = Callable[[Any], Any]
 
 
 class Properties:
@@ -35,11 +37,19 @@ class Properties:
     _default_ext: str = ".properties"
 
     @staticmethod
-    def read_properties(filepath: str) -> "Properties":
+    def read_properties(filepath: AnyPath) -> "Properties":
         """Create properties based on absolute existing file path.
         :param filepath: the path of the file containing the properties
         """
         return Properties(load_dir=dirname(filepath), filename=basename(filepath))
+
+    @staticmethod
+    def convert_type(value: Any, cb_to_type: ConversionFn) -> Optional[Any]:
+        """TODO"""
+        try:
+            return cb_to_type(value) if value else None
+        except TypeError:
+            raise PropertyError(f"Unable to convert value '{value}' into '{cb_to_type}'")
 
     def __init__(self, filename: str = None, profile: str | None = None, load_dir: str | None = None) -> None:
         self._filename, self._extension = os.path.splitext(
@@ -47,7 +57,7 @@ class Properties:
         )
         self._profile = profile if profile else os.environ.get("ACTIVE_PROFILE", "")
         self._properties = defaultdict()
-        self._load(load_dir or f"{run_dir()}/resources")
+        self._load(load_dir or f"{root_dir()}/resources")
 
     def __str__(self) -> str:
         str_val = ""
@@ -68,29 +78,18 @@ class Properties:
         """Retrieve the amount of properties"""
         return len(self._properties)
 
-    def get(self, prop_name: str, cb_to_type: CONVERSION_FN = str, default: Any | None = None) -> Optional[Any]:
-        """Retrieve a property specified by property and cast to the proper type. If the property is not found,
-        return the default value."""
-
-        try:
-            value = self._get(prop_name)
-            return cb_to_type(value) if value else None
-        except TypeError:
-            log.warning("Unable to convert property '%s' into '%s'", prop_name, cb_to_type)
-            return default
-
     @property
     def as_dict(self) -> dict:
         return self._properties
 
     @property
     def values(self) -> List[Any]:
-        """Retrieve all values for all properties"""
+        """Retrieve all values for all properties."""
         return list(self._properties.values())
 
     @property
     def keys(self) -> List[str]:
-        """Retrieve all values for all properties"""
+        """Retrieve all values for all properties."""
         return list(self._properties.keys())
 
     @property
@@ -98,30 +97,49 @@ class Properties:
         """Retrieve the amount of properties actually store."""
         return len(self._properties)
 
-    def _get(self, key: str, default: Any = None) -> Optional[Any]:
-        """Get a property value as string or default_value if the property was not found"""
+    def read_value(self, key: str, default: Any = None) -> Optional[Any]:
+        """Get a property value as string or default_value if the property was not found.
+        :param key: the property key name.
+        :param default: a default value for the property case it is not found.
+        """
         if value := os.environ.get(environ_name(key), None):
             return value
         return self._properties[key] if key in self._properties else default
 
-    def _load(self, load_dir: str) -> None:
-        """Read all properties from the file"""
-        filepath = self._build_path(load_dir)
+    def get(self, key: str, cb_to_type: ConversionFn = str, default: Any | None = None) -> Optional[Any]:
+        """Retrieve a property specified by property and cast to the proper type. If the property is not found,
+        return the default value.
+        :param key: the property key name.
+        :param cb_to_type: the type conversion. Default is str().
+        :param default: a default value for the property case it is not found.
+        """
+        return self.convert_type(self.read_value(key, default), cb_to_type)
+
+    def _load(self, load_dir: AnyPath) -> None:
+        """Read all properties from the file.
+        :param load_dir: where the properties should be loaded from.
+        """
+        filepath: str = expandvars(self._build_path(str(load_dir)))
         if os.path.exists(filepath):
             return self._parse(filepath)
 
         raise FileNotFoundError(f'File "{filepath}" does not exist')
 
-    def _build_path(self, load_dir: str) -> str:
-        """Find the proper path for the properties file"""
+    def _build_path(self, load_dir: AnyPath) -> str:
+        """Find the proper path for the properties file.
+        :param load_dir: where the properties were be loaded from.
+        """
         return f"{load_dir}/{self._filename}{'-' + self._profile if self._profile else ''}{self._extension}"
 
-    def _parse(self, filepath: str) -> None:
-        """Parse the properties file according to it's extension"""
-        if not os.path.isfile(filepath):
-            touch_file(filepath)
+    def _parse(self, filepath: AnyPath) -> None:
+        """Parse the properties file according to it's extension.
+        :param filepath: the properties file path.
+        """
+        expanded_path: str = expandvars(str(filepath))
+        if not os.path.isfile(expanded_path):
+            touch_file(expanded_path)
         ext = self._extension.lower()
-        with open(filepath, encoding=Charset.UTF_8.val) as fh_props:
+        with open(expanded_path, encoding=Charset.UTF_8.val) as fh_props:
             parser = ParserFactory.create(ext)
             self._properties.update(parser.parse(fh_props))
-        log.debug("Successfully loaded %d properties from: %s", len(self._properties), filepath)
+        log.debug("Successfully loaded %d properties from: %s", len(self._properties), expanded_path)

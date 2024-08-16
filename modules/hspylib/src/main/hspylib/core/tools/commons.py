@@ -117,18 +117,18 @@ def is_debugging() -> bool:
     return False
 
 
-def dirname(filepath: str) -> str:
-    """Retrieve the directory of the specified filepath"""
+def dirname(filepath: str) -> Optional[str]:
+    """Extract the directory of the specified filepath."""
     return os.path.dirname(os.path.realpath(filepath))
 
 
-def run_dir() -> str:
-    """Retrieve the application's root directory"""
+def root_dir() -> str:
+    """Get the application's root directory."""
     return sys.path[0]
 
 
-def get_path(filepath: str) -> pathlib.Path:
-    """Retrieve the Path of the file"""
+def parent_path(filepath: str) -> pathlib.Path:
+    """Extract the parent Path of the file."""
     return pathlib.Path(filepath).parent
 
 

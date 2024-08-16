@@ -12,17 +12,21 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import logging as log
+import os
+import re
+from textwrap import dedent
+from typing import Any, Optional, TypeAlias
+
 from hspylib.core.config.path_object import PathObject
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import run_dir, to_bool
-from textwrap import dedent
-from typing import Any, Optional
+from hspylib.core.tools.commons import root_dir, to_bool
+from hspylib.core.tools.dict_tools import get_or_default_by_key
 
-import logging as log
-import os
+Placeholder: TypeAlias = None | dict[str, Any]
 
 
 class AppConfigs(metaclass=Singleton):
@@ -40,6 +44,20 @@ class AppConfigs(metaclass=Singleton):
     """
     )
 
+    @staticmethod
+    def _replace_holders(value: str, placeholders: Placeholder) -> str:
+        """Replace all placeholders by their associated value."""
+        replacements = {k.casefold(): v for k, v in placeholders.items()} if placeholders else {}
+        re_ph = r'\$\{(\w+)\}'
+        pattern = re.compile(re_ph, flags=re.IGNORECASE)
+        while match := pattern.search(value):
+            key = match.group(1)
+            repl = os.environ.get(key, str(get_or_default_by_key(replacements, key, None)))
+            re_placeholder = r'\$\{' + re.escape(key) + r'\}'
+            value = re.sub(re_placeholder, repl, value, flags=re.IGNORECASE)
+
+        return value
+
     def __init__(self, resource_dir: AnyPath, filename: str | None = None, profile: str | None = None):
         path_obj = PathObject.of(resource_dir)
         check_argument(path_obj.exists, "Unable to locate resources dir: {}", resource_dir)
@@ -52,7 +70,7 @@ class AppConfigs(metaclass=Singleton):
         return "\n{}{}{}".format(
             "-=" * 40,
             self.DISPLAY_FORMAT.format(
-                str(run_dir()),
+                str(root_dir()),
                 str(self._resource_dir),
                 str(self._properties).replace(os.linesep, f"{os.linesep}   |-") if self._properties.size > 0 else "",
             ),
@@ -70,31 +88,34 @@ class AppConfigs(metaclass=Singleton):
 
     @property
     def resource_dir(self) -> Optional[str]:
-        """Return the configured application resource dir"""
+        """Return the configured application resource dir."""
         return self._resource_dir
 
     @property
     def properties(self) -> Properties:
-        """Return the application properties"""
+        """Return the application properties."""
         return self._properties
 
     @property
     def size(self) -> int:
-        """Return the application properties"""
+        """Return the application properties."""
         return self._properties.size
 
-    def get(self, property_name: str) -> Optional[Any]:
-        """Get the value, as a string, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name)
+    def get(self, key: str, placeholders: Placeholder = None) -> Optional[Any]:
+        """Get the value, as a string, of a property specified by key, otherwise None is returned.
+        :param key: the key name of the property.
+        :param placeholders: optional placeholders replacement.
+        """
+        return self._replace_holders(self._properties.get(key), placeholders)
 
-    def get_int(self, property_name: str) -> Optional[int]:
-        """Get the value, as an integer, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, cb_to_type=int)
+    def get_int(self, key: str, placeholders: Placeholder = None) -> Optional[int]:
+        """Get the value, as an integer, of a property specified by key, otherwise None is returned."""
+        return Properties.convert_type(self._replace_holders(self._properties.get(key), placeholders), int)
 
-    def get_float(self, property_name: str) -> Optional[float]:
-        """Get the value, as a float, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, cb_to_type=float)
+    def get_float(self, key: str, placeholders: Placeholder = None) -> Optional[float]:
+        """Get the value, as a float, of a property specified by key, otherwise None is returned."""
+        return Properties.convert_type(self._replace_holders(self._properties.get(key), placeholders), float)
 
-    def get_bool(self, property_name: str) -> Optional[bool]:
-        """Get the value, as a boolean, of a property specified by property_name, otherwise None is returned"""
-        return self._properties.get(property_name, cb_to_type=to_bool)
+    def get_bool(self, key: str, placeholders: Placeholder = None) -> Optional[bool]:
+        """Get the value, as a boolean, of a property specified by key, otherwise None is returned."""
+        return Properties.convert_type(self._replace_holders(self._properties.get(key), placeholders), to_bool)
