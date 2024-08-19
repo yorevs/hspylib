@@ -51,7 +51,8 @@ class Firebase:
         """
         self._authenticate()
         url = f"{self.agent_config.url(db_alias)}.json"
-        check_argument(len(file_paths) > 0, "Unable to upload file_paths (zero size).")
+        if len(file_paths) <= 0:
+            log.warning("Skipping zero-sized files..")
         log.debug("Uploading files  alias=%s  files=[%s]", db_alias, ",".join(file_paths))
         return self.processor.upload_files(url, file_paths, glob_exp) > 0
 

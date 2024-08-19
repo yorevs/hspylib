@@ -30,12 +30,15 @@ class Keyboard(Enumeration):
 
     # fmt: off
 
-    # Control keys
+    # 'Esc' keys
     VK_NONE         = '';                     VK_DISABLED = ''
     VK_ESC          = getkey.keys.ESC
 
+    # 'Enter' keys
     VK_ENTER        = os.linesep;             VK_CRLF       = '\r\n'
     VK_CR           = '\r';                   VK_LF         = '\n'
+
+    # Navigation keys
     VK_UP           = getkey.keys.UP;         VK_DELETE     = getkey.keys.DELETE
     VK_DOWN         = getkey.keys.DOWN;       VK_SPACE      = getkey.keys.SPACE
     VK_LEFT         = getkey.keys.LEFT;       VK_HOME       = getkey.keys.HOME
@@ -44,6 +47,7 @@ class Keyboard(Enumeration):
     VK_INSERT       = getkey.keys.INSERT;     VK_PAGE_DOWN  = getkey.keys.PAGE_DOWN
     VK_TAB          = '\t';                   VK_SHIFT_TAB  = '\x1b[Z'
 
+    # Control/Command keys
     VK_CTRL_A       = '\x01';       VK_CTRL_B = '\x02';       VK_CTRL_C = '\x03';      VK_CTRL_D = '\x04'
     VK_CTRL_E       = '\x05';       VK_CTRL_F = '\x06';       VK_CTRL_G = '\x07';      VK_CTRL_H = '\x08'
     VK_CTRL_I       = '\t';         VK_CTRL_J = '\n';         VK_CTRL_K = '\x0b';      VK_CTRL_L = '\x0c'
@@ -51,6 +55,12 @@ class Keyboard(Enumeration):
     VK_CTRL_Q       = '\x11';       VK_CTRL_R = '\x12';       VK_CTRL_S = '\x13';      VK_CTRL_T = '\x14'
     VK_CTRL_U       = '\x15';       VK_CTRL_V = '\x16';       VK_CTRL_W = '\x17';      VK_CTRL_X = '\x18'
     VK_CTRL_Y       = '\x19';       VK_CTRL_Z = '\x1a'
+
+    # Function keys
+    VK_F1   = getkey.keys.F1;   VK_F2 = getkey.keys.F2;     VK_F3 = getkey.keys.F3
+    VK_F4   = getkey.keys.F4;   VK_F5 = getkey.keys.F5;     VK_F6 = getkey.keys.F6
+    VK_F7   = getkey.keys.F1;   VK_F8 = getkey.keys.F8;     VK_F9 = getkey.keys.F9
+    VK_F10  = getkey.keys.F10;  VK_F11 = getkey.keys.F11;   VK_F12 = getkey.keys.F12
 
     # Letters
     VK_a = 'a'; VK_i = 'i'; VK_q = 'q'; VK_y = 'y'

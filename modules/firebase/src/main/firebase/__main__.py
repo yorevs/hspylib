@@ -54,14 +54,14 @@ class Main(TUIApplication):
             .option(
                 'config-dir', 'd', 'config-dir',
                 "the configuration directory. If omitted, the User's home will be used.",
-                nargs='?', default=os.getenv('HOME', self._run_dir))
+                nargs='?', default=os.getenv('HOME', self._root_dir))
         self._with_chained_args('operation', 'the Firebase operation to process') \
             .argument('setup', 'setup your Firebase account') \
             .argument('upload', 'upload files to your Firebase Realtime Database') \
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
-                    nargs='?', default=self._run_dir) \
+                    nargs='?', default=self._root_dir) \
                 .add_option(
                         'glob', 'g', 'glob',
                         'filter path names matching a specified glob pattern.',
@@ -72,7 +72,7 @@ class Main(TUIApplication):
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
-                    nargs='?', default=self._run_dir) \
+                    nargs='?', default=self._root_dir) \
                 .add_parameter('db_alias', 'alias to identify the firebase object to fetch')
         # fmt: on
 

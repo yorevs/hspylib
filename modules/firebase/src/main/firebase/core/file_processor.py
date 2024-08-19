@@ -16,6 +16,7 @@ from abc import ABC
 from firebase.domain.firebase_dto import FirebaseDto
 from fnmatch import fnmatch
 from hspylib.core.enums.http_code import HttpCode
+from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.preconditions import check_argument, check_not_none
 from hspylib.core.tools.commons import syserr, sysout
 from hspylib.modules.fetch.fetch import get, put
@@ -31,7 +32,7 @@ class FileProcessor(ABC):
     """Utility class to upload / download B64-encoded files."""
 
     @staticmethod
-    def upload_files(url: str, file_paths: List[str], glob_exp: str) -> int:
+    def upload_files(url: str, file_paths: List[AnyPath], glob_exp: str) -> int:
         """Upload files to URL.
         :param url: the URL to upload the files.
         :param file_paths: the file paths to be uploaded. File paths will be filtered by glob expressions.
@@ -69,12 +70,12 @@ class FileProcessor(ABC):
             sysout(f"%EOL%%GREEN%File(s):%EOL%  |- {paths}%EOL%%EOL%Successfully uploaded to Firebase!%NC%")
             return len(data)
 
-        syserr(f"No file has been uploaded from ${file_paths}!")
+        syserr(f"No file has been uploaded: `{file_paths}`!")
 
         return 0
 
     @staticmethod
-    def download_files(url: str, dest_dir: str) -> int:
+    def download_files(url: str, dest_dir: AnyPath) -> int:
         """Download files from URL.
         :param url: the URL to download the files.
         :param dest_dir: the destination directory.
@@ -96,14 +97,14 @@ class FileProcessor(ABC):
         return 0
 
     @staticmethod
-    def _read_and_encode(file_path: str) -> FirebaseDto:
+    def _read_and_encode(file_path: AnyPath) -> FirebaseDto:
         """Read and B64-encode a text file.
         :param file_path: the path to the encoding file.
         """
         return FirebaseDto(file_path).load().encode()
 
     @staticmethod
-    def _decode_and_write(dest_dir: str, *data: FirebaseDto) -> None:
+    def _decode_and_write(dest_dir: AnyPath, *data: FirebaseDto) -> None:
         """B64-decode and write entries to a text file.
         :param dest_dir: the destination directory.
         :param data: the file content to be written.

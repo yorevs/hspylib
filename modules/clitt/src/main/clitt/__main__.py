@@ -19,7 +19,7 @@ from clitt.addons.widman.widman import WidgetManager
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
 from hspylib.core.enums.enumeration import Enumeration
-from hspylib.core.tools.commons import run_dir, syserr
+from hspylib.core.tools.commons import root_dir, syserr
 from hspylib.core.tools.text_tools import strip_linebreaks
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
@@ -63,7 +63,7 @@ class Main(TUIApplication):
                 .add_option(
                     'dest-dir', 'd', 'dest-dir',
                     'the destination directory. If omitted, the current directory will be used.',
-                    nargs='?', default=self._run_dir) \
+                    nargs='?', default=self._root_dir) \
                 .add_parameter(
                     'app-name', 'the application name', nargs='?') \
                 .add_parameter(
@@ -121,7 +121,7 @@ class Main(TUIApplication):
                 self.get_arg("app-name"),
                 AppType.of_value(app_type),
                 list(map(AppExtension.value_of, app_ext)) if app_ext else [],
-                self.get_arg("dest-dir") or run_dir(),
+                self.get_arg("dest-dir") or root_dir(),
             )
         else:
             args = addon.prompt()
@@ -131,7 +131,7 @@ class Main(TUIApplication):
                     app_ext.append(AppExtension.GRADLE)
                 if args.initialize_git:
                     app_ext.append(AppExtension.GIT)
-                addon.create(args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or run_dir())
+                addon.create(args.app_name, AppType.of_value(args.app_type), list(app_ext), args.dest_dir or root_dir())
 
 
 # Application entry point

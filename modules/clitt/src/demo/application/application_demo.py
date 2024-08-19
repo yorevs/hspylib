@@ -49,7 +49,7 @@ class Main(TUIApplication):
         elif self.get_arg("operation") == "upload":
             print("Uploading...")
         status = ExitStatus.SUCCESS
-        sysout(f"{repr(status)}, running from {self._run_dir}")
+        sysout(f"{repr(status)}, running from {self._root_dir}")
         return status
 
 

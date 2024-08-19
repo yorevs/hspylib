@@ -21,7 +21,7 @@ from hspylib.core.enums.http_code import HttpCode
 from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import get_path, syserr, sysout
+from hspylib.core.tools.commons import parent_path, syserr, sysout
 from hspylib.core.tools.text_tools import camelcase, ensure_endswith
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
@@ -34,7 +34,7 @@ import os
 import stat
 import urllib3
 
-HERE = get_path(__file__)
+HERE = parent_path(__file__)
 
 INITIAL_REVISION = Version.initial()
 

@@ -14,12 +14,12 @@
 """
 from calculator.views.main_qt_view import MainQtView
 from hqt.qt_application import QtApplication
-from hspylib.core.tools.commons import get_path
+from hspylib.core.tools.commons import parent_path
 from hspylib.modules.application.version import Version
 
 import sys
 
-HERE = str(get_path(__file__))
+HERE = str(parent_path(__file__))
 
 
 class Main(QtApplication):

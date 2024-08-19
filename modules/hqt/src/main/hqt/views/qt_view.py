@@ -14,7 +14,7 @@
 """
 from abc import ABC
 from hspylib.core.preconditions import check_argument, check_state
-from hspylib.core.tools.commons import run_dir
+from hspylib.core.tools.commons import root_dir
 from PyQt5 import uic
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget
@@ -32,7 +32,7 @@ class QtView(ABC):
     def load_form(form_file: str, load_dir: str) -> Tuple[Type, Type]:
         """Load the ui form from the .ui file"""
 
-        form_dir = load_dir if load_dir else f"{run_dir()}/resources/forms/"
+        form_dir = load_dir if load_dir else f"{root_dir()}/resources/forms/"
         check_argument(
             os.path.exists(form_dir) and os.path.isdir(form_dir),
             "Load dir {} does not exist or is not a folder",

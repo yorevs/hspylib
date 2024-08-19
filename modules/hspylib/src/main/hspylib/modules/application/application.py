@@ -81,7 +81,7 @@ class Application(metaclass=AbstractSingleton):
 
         self.exit_hooks = ExitHooks(self._cleanup)
         self.exit_hooks.hook()
-        self._run_dir = os.getcwd()
+        self._root_dir = os.getcwd()
         self._args = {}
         self._exit_code = ExitStatus.NOT_SET
         self._app_name = name
@@ -105,8 +105,8 @@ class Application(metaclass=AbstractSingleton):
         # Initialize application configs
         if os.path.exists(f"{resource_dir}"):
             self.configs = AppConfigs(resource_dir=resource_dir)
-        elif not resource_dir and os.path.exists(f"{self._run_dir}/resources/application.properties"):
-            self.configs = AppConfigs(resource_dir=f"{self._run_dir}/resources")
+        elif not resource_dir and os.path.exists(f"{self._root_dir}/resources/application.properties"):
+            self.configs = AppConfigs(resource_dir=f"{self._root_dir}/resources")
         else:
             log.debug('Resource dir "%s" not found. AppConfigs will not be available!', resource_dir or "<none>")
 

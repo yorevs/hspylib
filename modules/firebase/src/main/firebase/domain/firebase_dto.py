@@ -13,6 +13,7 @@
    Copyright·(c)·2024,·HSPyLib
 """
 from hspylib.core.enums.charset import Charset
+from hspylib.core.metaclass.classpath import AnyPath
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.security.security import b64_decode, b64_encode
 from typing import List
@@ -28,14 +29,14 @@ class FirebaseDto:
     """Represents a Firebase DTO."""
 
     @staticmethod
-    def from_file(filepath: str, contents: str | bytes, encoding: str = Charset.UTF_8.val) -> "FirebaseDto":
+    def from_file(filepath: AnyPath, contents: str | bytes, encoding: str = Charset.UTF_8.val) -> "FirebaseDto":
         """Create a new file entry with the specified contents and expected size.
         :param filepath: the file path.
         :param contents: the file content.
         :param encoding: the file encoding type.
         """
         entry = FirebaseDto(
-            filepath, len(contents), str(contents, encoding=encoding) if isinstance(contents, bytes) else contents
+            str(filepath), len(contents), str(contents, encoding=encoding) if isinstance(contents, bytes) else contents
         )
 
         return entry
@@ -48,8 +49,8 @@ class FirebaseDto:
         json_obj = json.loads(json_string)
         return list(map(lambda o: FirebaseDto(o["path"], o["size"], o["data"], o["modified"]), json_obj))
 
-    def __init__(self, file_path: str, size: int = 0, data: str = None, modified: str = None):
-        self.path = file_path
+    def __init__(self, file_path: AnyPath, size: int = 0, data: str = None, modified: str = None):
+        self.path = str(file_path)
         self.size = size
         self.data = data
         self.modified = modified or now()

@@ -35,19 +35,19 @@ class Classpath(metaclass=Singleton):
     def __init__(
         self,
         source_root: AnyPath = None,
-        run_dir: AnyPath = None,
+        root_dir: AnyPath = None,
         resource_dir: AnyPath = None
     ):
 
         if source_root:
             check_state(Path(str(source_root)).exists(), "source_root is not an existing path")
-        if run_dir:
-            check_state(Path(str(run_dir)).exists(), "run_dir is not an existing path")
+        if root_dir:
+            check_state(Path(str(root_dir)).exists(), "root_dir is not an existing path")
 
         self.source_root = Path(os.getenv("SOURCE_ROOT", str(source_root or os.curdir)))
-        self.run_dir = Path(str(run_dir or self.source_root))
+        self.root_dir = Path(str(root_dir or self.source_root))
         self.resource_dir = Path(str(resource_dir or f"{self.source_root}/resources"))
-        self.log_dir = Path(os.getenv("HHS_LOG_DIR", f"{self.run_dir}/log") or self.run_dir)
+        self.log_dir = Path(os.getenv("HHS_LOG_DIR", f"{self.root_dir}/log") or self.root_dir)
 
     @classmethod
     def source_path(cls) -> Path:
@@ -57,7 +57,7 @@ class Classpath(metaclass=Singleton):
     @classmethod
     def run_path(cls) -> Path:
         """Return the running path of the module."""
-        return cls.INSTANCE.run_dir
+        return cls.INSTANCE.root_dir
 
     @classmethod
     def resource_path(cls) -> Path:
@@ -150,7 +150,7 @@ class Classpath(metaclass=Singleton):
         Classpath(
           |-cur-working-dir: {os.getcwd()}
           |-source-root: {self.source_path()}
-          |-run-dir: {self.run_dir}
+          |-run-dir: {self.root_dir}
           |-log-dir: {self.log_path()}
           |-resource-dir: {self.resource_path()}
         """
