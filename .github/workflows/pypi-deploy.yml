@@ -12,11 +12,6 @@ on:
         options:
           - pypi-test
           - pypi-prod
-      cfman:
-        description: 'Deploy HSPyLib-Cfman ?'
-        default: false
-        required: true
-        type: boolean
       clitt:
         description: 'Deploy HSPyLib-Clitt ?'
         default: false
@@ -84,13 +79,12 @@ jobs:
         id: set-matrix-items
         run: |
           selected=()
-          modules=('cfman' 'clitt' 'datasource' 'firebase' 'hqt' 'hspylib' 'kafman' 'setman' 'vault')
+          modules=('clitt' 'datasource' 'firebase' 'hqt' 'hspylib' 'kafman' 'setman' 'vault')
           JSON="{\"include\":["
           # Loop by lines
           while read -r module;
           do
-            if [[ (${module} == 'cfman' && "true" == "${{inputs.cfman}}") ||
-                  (${module} == 'clitt' && "true" == "${{inputs.clitt}}") ||
+            if [[ (${module} == 'clitt' && "true" == "${{inputs.clitt}}") ||
                   (${module} == 'datasource' && "true" == "${{inputs.datasource}}") ||
                   (${module} == 'firebase' && "true" == "${{inputs.firebase}}") ||
                   (${module} == 'hqt' && "true" == "${{inputs.hqt}}") ||

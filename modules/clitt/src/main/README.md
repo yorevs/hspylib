@@ -217,7 +217,6 @@ if __name__ == "__main__":
 
 ## PyPi Modules
 
-- [A Pivotal Cloud Foundry](https://pypi.org/project/hspylib-cfman) application tool.
 - [A CLI Terminal](https://pypi.org/project/hspylib-clitt) tools.
 - [Datasource](https://pypi.org/project/hspylib-datasource) framework.
 - [A Firebase](https://pypi.org/project/hspylib-firebase) integration tool.
@@ -271,7 +270,6 @@ Additional modules that can also be installed:
 - [CLItt](https://pypi.org/project/hspylib-clitt) : `# python3 -m pip install hspylib-clitt` to install HsPyLib CLI terminal tools.
 - [Firebase](https://pypi.org/project/hspylib-firebase) : `# python3 -m pip install hspylib-firebase` to install HsPyLib Firebase application.
 - [Vault](https://pypi.org/project/hspylib-vault) : `# python3 -m pip install hspylib-vault` to install HsPyLib Vault application.
-- [CFMan](https://pypi.org/project/hspylib-cfman) : `# python3 -m pip install hspylib-cfman` to install CloudFoundry manager.
 - [Kafman](https://pypi.org/project/hspylib-kafman) : `# python3 -m pip install hspylib-kafman` to install Kafka manager.
 - [Datasource](https://pypi.org/project/hspylib-datasource) : `# python3 -m pip install hspylib-datasource` to install datasource helpers.
 - [HQT](https://pypi.org/project/hspylib-hqt) : `# python3 -m pip install hspylib-hqt` to install HsPyLib PyQt framework.
