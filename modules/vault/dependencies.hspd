@@ -17,4 +17,4 @@ package: hspylib-clitt
 
 package: cryptography, version: 42.0.8, mode: ge
 package: cryptocode, version: 0.1, mode: ge
-package: keyring, version: 25.2.1, mode: ge
+package: keyring, version: 24.3.1, mode: ge
