@@ -34,7 +34,7 @@ class TestClass(unittest.TestCase):
     # Setup tests
     @classmethod
     def setUpClass(cls) -> None:
-        log_init(file_enable=False, console_enable=True)
+        log_init(console_enable=True)
         resource_dir = "{}/resources".format(TEST_DIR)
         config = DBConfiguration(resource_dir, profile="test")
         log.info(config)

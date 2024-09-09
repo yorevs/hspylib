@@ -37,13 +37,13 @@ ext {
   pythonPath = "$sourceRoot/main:$sourceRoot/test:$sourceRoot/demo"
 }
 
-apply from: "$rootDir/gradle/dependencies.gradle"
-apply from: "$rootDir/gradle/python.gradle"
-apply from: "$rootDir/gradle/build-info.gradle"
-apply from: "$rootDir/gradle/pypi-publish.gradle"
-apply from: "$rootDir/gradle/docker.gradle"
-apply from: "$rootDir/gradle/badges.gradle"
-apply from: "$rootDir/gradle/docgen.gradle"
+apply from: "${gradleDir}/dependencies.gradle"
+apply from: "${gradleDir}/python.gradle"
+apply from: "${gradleDir}/build-info.gradle"
+apply from: "${gradleDir}/pypi-publish.gradle"
+apply from: "${gradleDir}/docker.gradle"
+apply from: "${gradleDir}/badges.gradle"
+apply from: "${gradleDir}/docgen.gradle"
 
 /* Run Configurations */
 task exportRunConfigurations(type: Copy) {

@@ -31,6 +31,7 @@ ext {
   buildTools = "${buildTools}".split(",")
   buildToolsFile = new File("${project.projectDir}/buildTools.txt")
   modulesDir = "${project.projectDir}/modules/"
+  gradleDir = "${project.projectDir}/gradle"
   verbose = findProperty('verbose') ?: false
   startTime = System.currentTimeMillis()
 }
@@ -80,17 +81,19 @@ task listModules(type: Task) {
 }
 
 /* Download and extract the yorevs/py-gradle project ZIP */
-task pyGradleUpdate(type: Task) {
-  group = 'build'
-  description = 'Download and extract the yorevs/py-gradle project ZIP'
+tasks.register('pyGradleUpdate') {
+  group = 'pygradle'
+  description = 'Download and extract the py-gradle project ZIP'
   doLast {
-    def gradleDir = "${rootDir}/gradle"
     def outFile = "${gradleDir}/py-gradle.zip"
     def url = "https://github.com/yorevs/py-gradle/archive/master.zip"
-    println "Downloading the yorevs/py-gradle project"
+    println "Downloading the py-gradle project"
     println "  From: ${url}"
     println "  Into: ${outFile}"
     mkdir gradleDir
+    delete fileTree(gradleDir).matching {
+      include "**/*.gradle"
+    }
     exec {
       commandLine 'curl', '-L', '-o', "${outFile}", url
     }
@@ -99,14 +102,10 @@ task pyGradleUpdate(type: Task) {
       into "${gradleDir}"
     }
     copy {
-      from "${gradleDir}/py-gradle-master"
+      from "${gradleDir}/py-gradle-master/src/main/groovy"
       into "${gradleDir}"
+      include '**/*.gradle'
     }
-    delete fileTree(gradleDir).matching {
-      include "README*"
-      include "LICENSE*"
-      include "py-gradle*"
-    }
-    delete "${gradleDir}/py-gradle-master"
+    delete "${gradleDir}/py-gradle-master", "${outFile}"
   }
 }

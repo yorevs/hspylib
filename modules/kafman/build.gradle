@@ -29,10 +29,10 @@ dependencies {
     project(':hspylib')
 }
 
-apply from: "$rootDir/gradle/dependencies.gradle"
-apply from: "$rootDir/gradle/python.gradle"
-apply from: "$rootDir/gradle/versioning.gradle"
-apply from: "$rootDir/gradle/pypi-publish.gradle"
-apply from: "$rootDir/gradle/docker.gradle"
-apply from: "$rootDir/gradle/oracle.gradle"
-apply from: "$rootDir/gradle/docgen.gradle"
+apply from: "${gradleDir}/dependencies.gradle"
+apply from: "${gradleDir}/python.gradle"
+apply from: "${gradleDir}/versioning.gradle"
+apply from: "${gradleDir}/pypi-publish.gradle"
+apply from: "${gradleDir}/docker.gradle"
+apply from: "${gradleDir}/oracle.gradle"
+apply from: "${gradleDir}/docgen.gradle"
