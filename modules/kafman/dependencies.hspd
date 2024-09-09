@@ -15,7 +15,7 @@ package: hspylib-hqt
 /* Application dependencies */
 
 package: requests, version: 2.32.3, mode: ge
-package: urllib3, version: 2.2.2, mode: ge
+package: urllib3, version: 1.26.20, mode: ge
 package: PyQt5, version: 5.15.10, mode: ge
 package: PyQt5-stubs, version: 5.15.6.0, mode: ge
 package: confluent_kafka, version: 2.5.0, mode: ge

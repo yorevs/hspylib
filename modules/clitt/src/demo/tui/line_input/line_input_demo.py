@@ -12,29 +12,36 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from textwrap import dedent
+import os
+from textwrap import dedent, indent
+
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 from clitt.core.term.cursor import cursor
 from clitt.core.tui.line_input.keyboard_input import KeyboardInput
 from clitt.core.tui.line_input.line_input import line_input
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 if __name__ == "__main__":
+    if os.path.exists('history.txt'):
+        KeyboardInput.preload_history_file('history.txt')
+    else:
+        KeyboardInput.preload_history(["Hugo", "Joao", "Koko", "Hugo", "Koko"])
+
     MENU = dedent(f"""
     {"-=" * 30}
-    1. Hugo
-    2. Joao
-    3. Koko
-    4. Hugo
-    5. Koko
+    {os.linesep.join([
+        indent(f"{idx}. {entry}", '    ' if idx > 1 else '')
+        for idx, entry in enumerate(KeyboardInput.history(), start=1)
+    ])}
     Who is it
     > """)
-    hist = ["Hugo", "Joao", "Koko", "Hugo", "Koko"]
-    KeyboardInput.preload_history(hist)
+
     while (name := line_input(MENU, "Input your name", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
         if isinstance(name, Keyboard):
             cursor.writeln("PTT: " + name)
         else:
             cursor.writeln("Input: " + name)
+
     cursor.writeln(KeyboardInput.history())
+    KeyboardInput.save_history_file('history.txt')

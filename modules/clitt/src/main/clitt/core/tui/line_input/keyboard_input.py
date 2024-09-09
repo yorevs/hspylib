@@ -13,15 +13,19 @@
    Copyright·(c)·2024,·HSPyLib
 """
 import os
+import string
 from collections import defaultdict
 from typing import Optional, Callable, TypeAlias
+
+from hspylib.core.config.path_object import PathObject
+from hspylib.core.metaclass.classpath import AnyPath
+from hspylib.core.tools.dict_tools import get_or_default
+from hspylib.modules.cli.keyboard import Keyboard
+from hspylib.modules.cli.vt100.vt_color import VtColor
 
 from clitt.core.term.commons import Direction, Position
 from clitt.core.term.terminal import Terminal
 from clitt.core.tui.tui_component import TUIComponent
-from hspylib.core.tools.dict_tools import get_or_default
-from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 KeyBinding: TypeAlias = dict[Keyboard, Callable[[], None]]
 
@@ -45,6 +49,24 @@ class KeyboardInput(TUIComponent):
     _REDO_HISTORY: list[str] = []
 
     @classmethod
+    def preload_history_file(cls, filepath: AnyPath) -> int:
+        """Preload the input with the provided items from the file.
+        :param filepath: Path to the text file.
+        :return: Number of items read.
+        """
+        punctuation = set(string.punctuation + ' ')
+        history: list[str] = []
+        final_path = PathObject.of(filepath)
+        if final_path.exists:
+            with open(filepath, 'r') as file:
+                for line in file:
+                    if (line := line.strip()) and not all(char in punctuation for char in line):
+                        history.append(line)
+            cls.preload_history(history)
+
+        return len(history)
+
+    @classmethod
     def preload_history(cls, history: list[str]) -> None:
         """Preload the input with the provided dictionary.
         :param history: The history keyboard inputs.
@@ -64,6 +86,19 @@ class KeyboardInput(TUIComponent):
     def history(cls) -> list[str]:
         """Return the actual input history."""
         return list(filter(lambda v: v, cls._HISTORY))
+
+    @classmethod
+    def save_history_file(cls, filepath: AnyPath, overwrite: bool = False) -> None:
+        """Save history to the specified file. If `overwrite` is True, the file will be overwritten; otherwise, data will be appended.
+        :param filepath: Path to the file where history will be saved.
+        :param overwrite: Whether to overwrite the file if it exists. Defaults to False.
+        """
+        punctuation = set(string.punctuation + ' ')
+        history: list[str] = list(
+            filter(lambda line: line and not all(char in punctuation for char in line), cls.history())
+        )
+        with open(filepath, 'w' if overwrite else 'a') as file:
+            list(map(file.write, [a + os.linesep for a in history]))
 
     @classmethod
     def _add_history(cls, input_text: str) -> None:
@@ -156,7 +191,13 @@ class KeyboardInput(TUIComponent):
             self._add_history(self.text)
             self._UNDO_HISTORY.clear()
             self._REDO_HISTORY.clear()
+            Terminal.set_show_cursor(False)
+            self.cursor.move(self._offset[0], Direction.UP)
+            self.cursor.move(self._offset[1], Direction.LEFT)
             self.cursor.erase(Direction.DOWN)
+            self.write(self.prompt)
+            self.write(self.text)
+            Terminal.set_show_cursor(True)
         elif keypress == Keyboard.VK_ESC:
             self.text = None
         self.writeln("%NC%")
@@ -179,6 +220,14 @@ class KeyboardInput(TUIComponent):
     def complete(self) -> None:
         """Complete the input text with the suggested text."""
         text: str = self.text + self._suggestion
+        self._update_input(text)
+        self._input_index = len(text)
+
+    def complete_word(self) -> None:
+        """Complete the input text with the next suggested word (including the space)."""
+        text: str = (
+            self.text + (self._suggestion.split(' ', 1)[0] + ' ')) \
+            if ' ' in self._suggestion else self.text + self._suggestion
         self._update_input(text)
         self._input_index = len(text)
 
@@ -220,7 +269,11 @@ class KeyboardInput(TUIComponent):
                 case Keyboard.VK_LEFT:
                     self._input_index = max(0, self._input_index - 1)
                 case Keyboard.VK_RIGHT:
-                    self._input_index = min(self.length, self._input_index + 1)
+                    max_index: int = min(self.length, self._input_index + 1)
+                    if self._input_index != max_index:
+                        self._input_index = max_index
+                    else:
+                        self.complete_word()
                 case Keyboard.VK_UP:
                     self.text = self._prev_in_history()
                     self._input_index = self.length

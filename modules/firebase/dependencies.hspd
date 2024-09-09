@@ -16,5 +16,5 @@ package: hspylib-clitt
 /* Application dependencies */
 
 package: requests, version: 2.32.3, mode: ge
-package: urllib3, version: 2.2.2, mode: ge
+package: urllib3, version: 1.26.20, mode: ge
 package: firebase-admin, version: 6.5.0, mode: ge

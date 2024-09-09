@@ -49,9 +49,9 @@ DEFAULT_CONSOLE_LOG_FMT = "{} [{}] (@Line:{}) {} : {}".format(
 
 LOG_DATE_FMT = "%Y-%m-%d %H:%M:%S"
 
-console_out = Console(force_terminal=True, soft_wrap=True)
+console_out = Console(force_terminal=True, soft_wrap=False)
 
-console_err = Console(force_terminal=True, soft_wrap=True, stderr=True)
+console_err = Console(force_terminal=True, soft_wrap=False, stderr=True)
 
 FileMode: TypeAlias = Literal[
     # Modes for reading
@@ -281,4 +281,5 @@ def human_readable_time(time_microseconds: int) -> str:
     minutes = total_seconds / 60 % 60
     hours = total_seconds / 3600
     microseconds = delta.microseconds
+
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{microseconds:06d}"
