@@ -88,8 +88,9 @@ def hook_signals(signals: tuple[signal.Signals, ...] | signal.Signals):
 
             # If the first argument is 'self', bind the signal handler accordingly
             if count > 2 and inspect.isclass(type(args[0])):
+                self = args[0]  # The first argument is 'self'
                 for s in sig_numbers:
-                    signal.signal(s, partial(func, args[0]))
+                    signal.signal(s, partial(func, self))
             else:
                 for s in sig_numbers:
                     signal.signal(s, func)

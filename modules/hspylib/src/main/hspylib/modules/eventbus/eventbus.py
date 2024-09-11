@@ -16,6 +16,7 @@ import inspect
 from functools import partial
 
 from hspylib.core.exception.exceptions import HSBaseException
+from hspylib.core.namespace import Namespace
 from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
 from typing import Any, Callable, Dict, List
@@ -44,7 +45,7 @@ def subscribe(bus: str, events: str | list[str]):
         def wrapped_function():
             if len(args) > 1 and inspect.isclass(type(args[0])):
                 self = args[0]  # The first argument is 'self'
-                return EventBus.get(bus).subscribe(events, partial(fn, args[0]))
+                return EventBus.get(bus).subscribe(events, partial(fn, self))
             return EventBus.get(bus).subscribe(events, fn)
 
         return wrapped_function()
