@@ -71,8 +71,7 @@ def log_init(
     console_format: str = DEFAULT_CONSOLE_LOG_FMT,
     clear_handlers: bool = True,
     console_enable: bool = False,
-    rich_tracebacks: bool = True,
-    tracebacks_suppress: list = None,
+    rich_logging: bool = False,
 ) -> bool:
     """Initialize the system logger"""
 
@@ -95,13 +94,19 @@ def log_init(
         file_handler.setFormatter(file_formatter)
         handlers.add(file_handler)
 
-    if console_enable or (filename and not os.path.exists(filename)):
-        console_formatter = log.Formatter(console_format, LOG_DATE_FMT)
-        # Use rich logger.
-        console_handler = RichHandler(
-            rich_tracebacks=rich_tracebacks,
-            tracebacks_suppress=(tracebacks_suppress or []))
-        console_handler.setFormatter(console_formatter)
+    if rich_logging or console_enable or (filename and not os.path.exists(filename)):
+        if rich_logging:
+            # Use rich logger.
+            console_handler = RichHandler(
+                level=level,
+                locals_max_length=0,
+                locals_max_string=0,
+                rich_tracebacks=True)
+        else:
+            console_formatter = log.Formatter(console_format, LOG_DATE_FMT)
+            console_handler = log.StreamHandler(sys.stdout)
+            console_handler.setFormatter(console_formatter)
+            handlers.add(console_handler)
         handlers.add(console_handler)
 
     log.basicConfig(level=level, handlers=handlers)
