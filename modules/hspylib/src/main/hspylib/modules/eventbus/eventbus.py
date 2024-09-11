@@ -12,7 +12,11 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import inspect
+from functools import partial
+
 from hspylib.core.exception.exceptions import HSBaseException
+from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
 from typing import Any, Callable, Dict, List
 
@@ -20,17 +24,36 @@ EVENT_CALLBACK = Callable[[Event], None]
 
 
 def subscribe(bus: str, events: str | list[str]):
-    """Method decorator to subscribe to a given bus event."""
+    """Decorator to subscribe to a given bus event."""
 
-    def subscribe_closure(fn: EVENT_CALLBACK):
-        """TODO"""
-        EventBus.get(bus).subscribe(events, fn)
+    def helper(fn: Callable):
+        """'subscribe' wrapper to handle both instance methods and functions."""
 
-    return subscribe_closure
+        handler_signature = inspect.signature(fn)
+        args: list = []
+
+        for param in handler_signature.parameters.values():
+            if param.default == inspect.Parameter.empty and param.kind not in \
+                [inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD]:
+                args.append(param)
+        count = len(args)
+
+        check_argument(
+            count >= 1, f"Event callbacks require the following arguments: (event). Given: '{count}'")
+
+        def wrapped_function():
+            if len(args) > 1 and inspect.isclass(type(args[0])):
+                self = args[0]  # The first argument is 'self'
+                return EventBus.get(bus).subscribe(events, partial(fn, args[0]))
+            return EventBus.get(bus).subscribe(events, fn)
+
+        return wrapped_function()
+
+    return helper
 
 
-def emit(bus_name: str, event_name: str, **kwargs) -> None:
-    """Emit an event to the specified bus.
+def emit(bus_name: str, event_name: str, **kwargs):
+    """Decorator to emit an event to the specified bus.
     :param bus_name: The name of the event bus.
     :param event_name: The name of the event.
     """
