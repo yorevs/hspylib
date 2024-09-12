@@ -12,14 +12,10 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import inspect
-from functools import partial
+from typing import Any, Callable, Dict, List
 
 from hspylib.core.exception.exceptions import HSBaseException
-from hspylib.core.namespace import Namespace
-from hspylib.core.preconditions import check_argument
 from hspylib.modules.eventbus.event import Event
-from typing import Any, Callable, Dict, List
 
 EVENT_CALLBACK = Callable[[Event], None]
 
@@ -27,28 +23,9 @@ EVENT_CALLBACK = Callable[[Event], None]
 def subscribe(bus: str, events: str | list[str]):
     """Decorator to subscribe to a given bus event."""
 
-    def helper(fn: Callable):
+    def helper(func: EVENT_CALLBACK):
         """'subscribe' wrapper to handle both instance methods and functions."""
-
-        handler_signature = inspect.signature(fn)
-        args: list = []
-
-        for param in handler_signature.parameters.values():
-            if param.default == inspect.Parameter.empty and param.kind not in \
-                [inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD]:
-                args.append(param)
-        count = len(args)
-
-        check_argument(
-            count >= 1, f"Event callbacks require the following arguments: (event). Given: '{count}'")
-
-        def wrapped_function():
-            if len(args) > 1 and inspect.isclass(type(args[0])):
-                self = args[0]  # The first argument is 'self'
-                return EventBus.get(bus).subscribe(events, partial(fn, self))
-            return EventBus.get(bus).subscribe(events, fn)
-
-        return wrapped_function()
+        EventBus.get(bus).subscribe(events, func)
 
     return helper
 
