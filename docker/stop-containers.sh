@@ -3,25 +3,30 @@
 # shellcheck disable=SC1091
 source "docker-tools-inc.sh"
 
-RUNNING_CONTAINERS=$(docker ps --format '{{.Names}}' | tr '\n' ' ')
-[[ "${#RUNNING_CONTAINERS[@]}" -eq 0 ]] && exit 0
+# shellcheck disable=SC2206,SC2207
+CONTAINERS=(${1:-$(docker ps --format '{{.Names}}' | tr '\n' ' ')})
+[[ ${#CONTAINERS[@]} -eq 0 ]] && exit 0
 
 # @purpose: Stop all docker-compose.yml
 # -param $1: if the execution is on an interactive console or not
 stopContainers() {
   local all=() container count
 
-  for container in ${RUNNING_CONTAINERS}; do
-    read -r -n 1 -p "Stop container ${container} (y/[n]): " ANS
-    test -n "${ANS}" && echo ''
-    if [[ "${ANS}" == 'y' || "${ANS}" == 'Y' ]]; then
-      all+=("${container}")
-    fi
-  done
+  if [[ ${#CONTAINERS[@]} -gt 1 ]]; then
+    for container in "${CONTAINERS[@]}"; do
+      read -r -n 1 -p "Stop container ${container} (y/[n]): " ANS
+      test -n "${ANS}" && echo ''
+      if [[ "${ANS}" =~ ^[yY]$ ]]; then
+        all+=("${container}")
+      fi
+    done
+  else
+    all+=("${CONTAINERS[0]}")
+  fi
   echo ''
 
   count=${#all[@]}
-  [[ "${count}" -gt 0 ]] && timeout $$ $((count * 30))
+  [[ "${count}" -gt 0 ]] && timeout $$ $((count * 60))
 
   for container in "${all[@]}"; do
     status=$(getStatus "${container}")

@@ -6,6 +6,7 @@ RED=${RED:-'\033[0;31m'}
 GREEN=${GREEN:-'\033[0;32m'}
 BLUE=${BLUE:-'\033[0;34m'}
 YELLOW=${YELLOW:-'\033[0;93m'}
+ORANGE=${ORANGE:-'\033[38;5;202m'}
 
 # @purpose: Start a timer. After the specified timeout, the process specified is killed.
 # -param $1: the PID of the process
