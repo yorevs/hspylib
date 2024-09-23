@@ -255,10 +255,10 @@ class AppManager(metaclass=Singleton):
         :param app_name the application name.
         """
         sysout(f'Initializing "{app_name}" gradle project [press ENTER to continue] ...')
-        output, exit_code = Terminal.shell_exec(
+        output, err_out, exit_code = Terminal.shell_exec(
             f"gradle init --project-name {app_name} --type basic --dsl groovy", cwd=self._app_dir
         )
-        sysout(f"Gradle execution result: {exit_code}%EOL%{output}%EOL%")
+        sysout(f"Gradle execution result: {exit_code}%EOL%{output}{err_out}%EOL%")
 
         if exit_code == ExitStatus.SUCCESS:
             sysout("Downloading gradle extensions ...")
@@ -276,8 +276,9 @@ class AppManager(metaclass=Singleton):
             )
             self._mkfile("dependencies.hspd", (self.TEMPLATES / "dependencies.hspd.tpl").read_text())
             sysout("Building gradle project, please wait ...")
-            output, exit_code = Terminal.shell_exec("./gradlew buildOnly", cwd=self._app_dir)
-            sysout(f"Gradle execution result: {output}")
+            output, err_out, exit_code = Terminal.shell_exec(
+                "./gradlew buildOnly", cwd=self._app_dir)
+            sysout(f"Gradle execution result: {output}{err_out}")
 
         return exit_code == ExitStatus.SUCCESS
 
@@ -285,13 +286,14 @@ class AppManager(metaclass=Singleton):
         """Initialize a git repository for the project."""
         self._mkfile(".gitignore", (self.TEMPLATES / "gitignore.tpl").read_text())
         sysout("Initializing git repository ...")
-        output, exit_code = Terminal.shell_exec("git init", cwd=self._app_dir)
-        sysout(f"Git init result: {exit_code}%EOL%{output}%EOL%")
+        output, err_out, exit_code = Terminal.shell_exec("git init", cwd=self._app_dir)
+        sysout(f"Git init result: {exit_code}%EOL%{output}{err_out}%EOL%")
         if exit_code:
             sysout("Creating first commit")
             Terminal.shell_exec("git add .", cwd=self._app_dir)
-            output, exit_code = Terminal.shell_exec('git commit -m "First commit [@HsPyLib]"', cwd=self._app_dir)
-            sysout(f"Git commit result: {exit_code}%EOL%{output}%EOL%")
+            output, err_out, exit_code = Terminal.shell_exec(
+                'git commit -m "First commit [@HsPyLib]"', cwd=self._app_dir)
+            sysout(f"Git commit result: {exit_code}%EOL%{output}{err_out}%EOL%")
 
         return exit_code == ExitStatus.SUCCESS
 

@@ -23,7 +23,7 @@ from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_100 import Vt100
 from subprocess import CalledProcessError, PIPE, Popen
-from typing import Any, Iterable, List, Optional, Tuple
+from typing import Any, Iterable, List, Optional, Tuple, TypeAlias
 
 import atexit
 import logging as log
@@ -32,6 +32,8 @@ import platform
 import select
 import shlex
 import signal
+
+TerminalExecResult: TypeAlias = Tuple[Optional[str], Optional[str], ExitStatus]
 
 
 class Terminal(metaclass=Singleton):
@@ -65,16 +67,20 @@ class Terminal(metaclass=Singleton):
         return Popen(first_cmd, stdout=PIPE, stderr=PIPE, **kwargs)
 
     @staticmethod
-    def shell_exec(cmd_line: str, **kwargs) -> Tuple[Optional[str], ExitStatus]:
+    def shell_exec(cmd_line: str, **kwargs) -> TerminalExecResult:
         """Execute command with arguments and return it's run status.
         :param cmd_line: the command line to be executed.
         """
         proc = Terminal._chain_pipes(cmd_line.split("|"), **kwargs)
         log.info("Executing shell command: %s", cmd_line)
         output, err_out = proc.communicate()
-        ret_code = ExitStatus.FAILED if err_out else ExitStatus.SUCCESS
+        ret_code = ExitStatus.SUCCESS if proc.returncode == 0 else ExitStatus.FAILED
         log.info("Execution result: %s", ret_code)
-        return output.decode(Charset.UTF_8.val) if output else err_out.decode(Charset.UTF_8.val), ret_code
+        return (
+            output.decode(Charset.UTF_8.val) if output else '',
+            err_out.decode(Charset.UTF_8.val) if err_out else '',
+            ret_code
+        )
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:

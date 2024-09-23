@@ -57,8 +57,8 @@ class WidgetFree(Widget):
     @staticmethod
     def _report_usage() -> bool:
         """Display the memory usage for the cycle."""
-        ps, ec1 = Terminal.shell_exec("ps -caxm -orss,comm")  # Get process info
-        vm, ec2 = Terminal.shell_exec("vm_stat")  # Grabbing memory characteristics
+        ps, _, ec1 = Terminal.shell_exec("ps -caxm -orss,comm")  # Get process info
+        vm, _, ec2 = Terminal.shell_exec("vm_stat")  # Grabbing memory characteristics
 
         if ec1 == ExitStatus.SUCCESS and ec2 == ExitStatus.SUCCESS and ps:
             process_lines = ps.split("\n")  # Iterate processes
