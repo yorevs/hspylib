@@ -28,7 +28,7 @@ import re
 
 
 class SettingsEntry(CrudEntity):
-    """Represents the Settings domain object."""
+    """Represents the Settings domain entity."""
 
     SetmanId = namedtuple("SetmanId", ["uuid"])
 
@@ -50,7 +50,8 @@ class SettingsEntry(CrudEntity):
     @staticmethod
     def prompt(entry: Union["SettingsEntry", None] = None) -> Optional["SettingsEntry"]:
         """Create a settings entry from a form input.
-        :param entry: an optional existing entry to edit.
+        :param entry: An optional existing entry to edit.
+        :return: A new or updated settings entry.
         """
 
         entry = entry or SettingsEntry()
@@ -121,7 +122,8 @@ class SettingsEntry(CrudEntity):
 
     def to_string(self, simple_fmt: bool = False) -> str:
         """Return the string representation of this entry.
-        :param simple_fmt: whether to format the entry or not.
+        :param simple_fmt: Whether to format the entry or not.
+        :return: The string representation of the entry.
         """
         if simple_fmt:
             return (
@@ -134,11 +136,15 @@ class SettingsEntry(CrudEntity):
         )
 
     def to_env_export(self) -> str:
-        """Return the bash export command of this entry."""
+        """Return the bash 'export' command of this entry.
+        :return: The bash export command as a string.
+        """
         return f'export {self.environ_name}="{xstr(self.value)}"'
 
     def _de_prefixed(self) -> str:
-        """Return the setting name de-prefixed."""
+        """Return the setting name without the prefix.
+        :return: The setting name without its prefix.
+        """
         prefix = ensure_endswith(self.prefix, ".") if self.prefix else ""
         de_prefixed = re.sub(rf"^{prefix}", "", self.name) if prefix else self.name
         return de_prefixed

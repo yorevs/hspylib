@@ -13,8 +13,8 @@
    Copyright·(c)·2024,·HSPyLib
 """
 from datasource.db_configuration import DBConfiguration
-from hspylib.core.tools.commons import to_bool
 from hspylib.core.config.path_object import PathObject
+from hspylib.core.tools.commons import to_bool
 
 
 class SettingsConfig(DBConfiguration):

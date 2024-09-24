@@ -12,22 +12,23 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-from datasource.identity import Identity
-from functools import lru_cache
-from hspylib.core.preconditions import check_argument
-from hspylib.core.tools.commons import dirname, file_is_not_empty, touch_file
-from hspylib.core.tools.text_tools import ensure_endswith
-from hspylib.core.zoned_datetime import now
-from setman.core.setman_enums import SettingsType
-from setman.settings.settings_config import SettingsConfig
-from setman.settings.settings_entry import SettingsEntry
-from setman.settings.settings_service import SettingsService
-from typing import Any, List, Optional, Tuple
-
 import csv
 import logging as log
 import os
 import uuid
+from functools import lru_cache
+from typing import Any, List, Optional, Tuple
+
+from datasource.identity import Identity
+from hspylib.core.preconditions import check_argument, check_not_none
+from hspylib.core.tools.commons import dirname, file_is_not_empty, touch_file
+from hspylib.core.tools.text_tools import ensure_endswith
+from hspylib.core.zoned_datetime import now
+
+from setman.core.setman_enums import SettingsType
+from setman.settings.settings_config import SettingsConfig
+from setman.settings.settings_entry import SettingsEntry
+from setman.settings.settings_service import SettingsService
 
 
 class Settings:
@@ -81,7 +82,7 @@ class Settings:
     def frozen(self, value: bool) -> None:
         self._frozen = value
 
-    @lru_cache
+    @lru_cache(maxsize=500)
     def get(self, name: str) -> Optional[SettingsEntry]:
         """Get setting matching the specified name.
         :param name the settings name to get.
@@ -93,13 +94,14 @@ class Settings:
         name: str | None = None,
         prefix: str = '',
         value: Any | None = None,
-        stype: SettingsType  = SettingsType.PROPERTY,
+        stype: SettingsType = SettingsType.PROPERTY,
     ) -> Tuple[Optional[SettingsEntry], Optional[SettingsEntry]]:
         """Upsert the specified setting.
-        :param name the settings name.
-        :param prefix the settings prefix.
-        :param value the settings value.
-        :param stype the settings type.
+        :param name: The settings name.
+        :param prefix: The settings prefix.
+        :param value: The settings value.
+        :param stype: The settings type.
+        :return: A tuple containing the existing setting (if found) and the updated (or new) one.
         """
         if (found := self._service.get_by_name(name)) and self._frozen:
             log.debug("Setting preserved, and not overwritten: '%s'", found.name)
@@ -121,7 +123,8 @@ class Settings:
 
     def remove(self, name: str) -> Optional[SettingsEntry]:
         """Delete the specified setting.
-        :param name the settings name to delete.
+        :param name: The settings name to delete.
+        :return: The deleted setting if found, otherwise None.
         """
         if name:
             found = self._service.get_by_name(name)
@@ -134,26 +137,30 @@ class Settings:
     @lru_cache(maxsize=500)
     def search(self, name: str | None = None, stype: SettingsType | None = None) -> List[SettingsEntry]:
         """Search all settings matching criteria.
-        :param name the settings name to filter.
-        :param stype the settings type to filter.
+        :param name: The settings name to filter.
+        :param stype: The settings type to filter.
+        :return: A list of matching settings entries.
         """
         return self._service.search(name, stype, self.limit, self.offset)
 
     def clear(self, name: str | None = None, stype: SettingsType | None = None) -> None:
-        """Clear all settings from the settings table.
-        :param name the settings name to filter.
-        :param stype the settings type to filter.
+        """Clear settings matching filters.
+        :param name: The settings name to filter.
+        :param stype: The settings type to filter.
         """
         self._service.clear(name, stype)
         self._clear_caches()
 
     def count(self) -> int:
-        """Return the number of existing settings."""
+        """Return the number of existing settings.
+        :return: The count of existing settings.
+        """
         return self._service.count()
 
     def import_csv(self, filepath: str) -> int:
-        """Upsert settings from CSV file into the database.
-        :param filepath the path of the CSV file to be imported.
+        """Upsert settings from a CSV file into the database.
+        :param filepath: The path of the CSV file to be imported.
+        :return: The number of records upserted.
         """
         count, csv_file = 0, ensure_endswith(filepath, ".csv")
         check_argument(os.path.exists(filepath), "CSV file does not exist: " + csv_file)
@@ -179,10 +186,11 @@ class Settings:
             return count
 
     def export_csv(self, filepath: str, name: str = None, stype: SettingsType = None) -> int:
-        """Export settings from CSV file into the database.
-        :param filepath the path of the CSV file to be exported.
-        :param name the settings name to filter.
-        :param stype the settings type to filter.
+        """Export settings from a CSV file into the database.
+        :param filepath: The path of the CSV file to be exported.
+        :param name: The settings name to filter.
+        :param stype: The settings type to filter.
+        :return: The number of settings exported.
         """
         dest_dir, csv_file = dirname(filepath), ensure_endswith(filepath, ".csv")
         check_argument(os.path.exists(dest_dir), "Destination dir does not exist: " + dest_dir)
@@ -195,19 +203,26 @@ class Settings:
 
     def as_environ(self, name: str | None) -> List[str]:
         """Return all settings formatted as bash export environment variables.
-        :param name the settings name to filter.
+        :param name: The settings name to filter.
+        :return: A list of settings formatted as environment variable exports.
         """
         data = self.search(name, SettingsType.ENVIRONMENT)
         return list(map(lambda s: s.to_env_export, data))
 
     def _create_db(self) -> bool:
-        """Create the settings SQLite DB file."""
+        """Create the settings SQLite DB file.
+        :return: True if the database was created successfully, False otherwise.
+        """
+        check_not_none(self.configs["hhs.settings.database"],
+                       "Missing database config: 'hhs.settings.database'!")
+        check_not_none(self.configs["hhs.settings.encode.database"],
+                       "Missing encode config: 'hhs.settings.encode.database'!")
         touch_file(self.configs.database)
         self._service.create_db()
         log.info("Settings file has been created")
         return os.path.exists(self.configs.database)
 
     def _clear_caches(self) -> None:
-        """Remove all caches."""
+        """Remove all lru_caches."""
         self.get.cache_clear()
         self.search.cache_clear()

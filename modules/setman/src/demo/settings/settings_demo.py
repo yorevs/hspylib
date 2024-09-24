@@ -12,13 +12,15 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+from pprint import pprint
+
 from hspylib.core.tools.commons import safe_delete_file, sysout
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings import Settings
 from setman.settings.settings_config import SettingsConfig
 
 if __name__ == "__main__":
-    db_file = "resources/settings.db"
+    db_file = "resources/sqlite.db"
     safe_delete_file(db_file)
     configs = SettingsConfig("resources", "settings-demo.properties")
     s = Settings(configs)
@@ -30,6 +32,6 @@ if __name__ == "__main__":
     sysout(f"There are {s.count()} settings in total!")
     sysout(s["demo.settings.one"].environ_name)
     s.export_csv(db_file)
-    sysout(s)
-    s.import_csv("resources/settings.db")
-    sysout(s)
+    pprint(s)
+    s.import_csv("resources/sqlite.db")
+    pprint(s)
