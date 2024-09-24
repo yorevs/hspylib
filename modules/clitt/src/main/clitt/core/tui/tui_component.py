@@ -107,7 +107,7 @@ class TUIComponent(ABC):
         :param line_fmt: the line format.
         :param args: the format arguments.
         """
-        self.writeln(elide_text(line_fmt.format(*args), self.columns) + "%NC%")
+        self.writeln(elide_text(line_fmt.format(*args).rstrip(), self.columns - 8) + "%NC%")
 
     def draw_navbar(self, navbar: str) -> None:
         """Draws the component navigation bar respecting the specified max_columns.
