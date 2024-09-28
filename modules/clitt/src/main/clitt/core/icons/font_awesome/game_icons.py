@@ -29,6 +29,7 @@ class GameIcons(Awesome):
     STEAM               = '\uF9D2'  # 戮
     XBOX                = '\uFAB8'  # 視
     CUTLERY             = '\uF9A5'  # 殮
+    INN                 = '\uF9A2'  # 廉
     BALL                = '\uF9B7'  # 醴
     HOME                = '\uFAF7'  # 﫷
     FURNITURE           = '\uF9B8'  # 隸
@@ -54,6 +55,16 @@ class GameIcons(Awesome):
     KEY                 = '\uF80A'  # 
     OLD_KEY             = '\uF084'  # 
     SLEEP               = '\uF9B1'  # 鈴
+    NO_SLEEP            = '\uF9B2'  # 零
     LUCK                = '\uFD14'  # ﴔ
     ANIMAL              = '\uF8E8'  # 
+    CASTLE              = '\uF619'  # 
+    KING                = '\uF6A4'  # 
+    DEATH               = '\uFB8A'  # ﮊ
+    BOMB                = '\uFB8F'  # ﮏ
+    HARD                = '\uFCB0'  # ﲰ
+    MEDIUM              = '\uFCB1'  # ﲱ
+    EAZY                = '\uFCB2'  # ﲲ
+    CHEST               = '\uFC24'  # ﰤ
+
     # fmt: on
