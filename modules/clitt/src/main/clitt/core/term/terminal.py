@@ -12,6 +12,17 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+
+import atexit
+import logging as log
+import os
+import platform
+import select
+import shlex
+import signal
+from subprocess import CalledProcessError, PIPE, Popen
+from typing import Any, Iterable, List, Optional, Tuple, TypeAlias
+
 from clitt.core.exception.exceptions import NotATerminalError
 from clitt.core.term.commons import is_a_tty
 from clitt.core.term.cursor import Cursor
@@ -22,16 +33,6 @@ from hspylib.core.tools.commons import sysout
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.cli.keyboard import Keyboard
 from hspylib.modules.cli.vt100.vt_100 import Vt100
-from subprocess import CalledProcessError, PIPE, Popen
-from typing import Any, Iterable, List, Optional, Tuple, TypeAlias
-
-import atexit
-import logging as log
-import os
-import platform
-import select
-import shlex
-import signal
 
 TerminalExecResult: TypeAlias = Tuple[Optional[str], Optional[str], ExitStatus]
 
@@ -76,11 +77,14 @@ class Terminal(metaclass=Singleton):
         output, err_out = proc.communicate()
         ret_code = ExitStatus.SUCCESS if proc.returncode == 0 else ExitStatus.FAILED
         log.info("Execution result: %s", ret_code)
-        return (
-            output.decode(Charset.UTF_8.val) if output else '',
-            err_out.decode(Charset.UTF_8.val) if err_out else '',
-            ret_code
-        )
+        try:
+            return (
+                output.decode(Charset.UTF_8.val) if output else '',
+                err_out.decode(Charset.UTF_8.val) if err_out else '',
+                ret_code
+            )
+        except UnicodeDecodeError as err:
+            return None, str(err), ExitStatus.ABNORMAL
 
     @staticmethod
     def shell_poll(cmd_line: str, **kwargs) -> None:
@@ -210,3 +214,7 @@ class Terminal(metaclass=Singleton):
 
 
 assert (terminal := Terminal().INSTANCE) is not None, "Failed to create Terminal instance"
+
+if __name__ == '__main__':
+    print(terminal.shell_exec("cat /Users/hugo/Downloads/.DS_Store", shell=True))
+
