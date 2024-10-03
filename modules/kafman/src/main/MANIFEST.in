@@ -1,6 +1,3 @@
 include kafman/.version
 include kafman/welcome.txt
-include kafman/resources/*.properties
-include kafman/resources/*.png
-include kafman/resources/forms/*.ui
-include kafman/resources/fonts/*.otf
+recursive-include kafman/resources *

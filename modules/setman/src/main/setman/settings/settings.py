@@ -213,10 +213,10 @@ class Settings:
         """Create the settings SQLite DB file.
         :return: True if the database was created successfully, False otherwise.
         """
-        check_not_none(self.configs["hhs.settings.database"],
-                       "Missing database config: 'hhs.settings.database'!")
-        check_not_none(self.configs["hhs.settings.encode.database"],
-                       "Missing encode config: 'hhs.settings.encode.database'!")
+        check_not_none(
+            self.configs.database, "Missing database property: 'hhs.settings.database'!")
+        check_not_none(
+            self.configs.encoded_db, "Missing encode_db property: 'hhs.settings.encode.database'!")
         touch_file(self.configs.database)
         self._service.create_db()
         log.info("Settings file has been created")

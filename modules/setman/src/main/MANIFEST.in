@@ -1,2 +1,3 @@
 include setman/welcome.txt
 include setman/.version
+recursive-include setman/resources *

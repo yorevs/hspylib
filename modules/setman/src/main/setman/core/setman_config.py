@@ -21,3 +21,4 @@ class SetmanConfig(SettingsConfig):
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
         self._database: str = self["hhs.setman.database"]
+        self._encode_db: str = self["hhs.setman.encode.database"]

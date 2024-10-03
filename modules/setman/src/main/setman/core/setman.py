@@ -39,11 +39,15 @@ import os
 class Setman(metaclass=Singleton):
     """HsPyLib application that helps managing system settings."""
 
+    # fmt: off
     HHS_SETMAN_CONFIG_FILE = os.environ.get(
         "HHS_SETMAN_CONFIG_FILE", f"{os.environ.get('HOME', os.curdir)}/setman.properties"
     )
 
-    HHS_SETMAN_DB_FILE = os.environ.get("HHS_SETMAN_DB_FILE", f"{os.environ.get('HOME', os.curdir)}/setman.db")
+    HHS_SETMAN_DB_FILE = os.environ.get(
+        "HHS_SETMAN_DB_FILE", f"{os.environ.get('HOME', os.curdir)}/setman.db"
+    )
+    # fmt: on
 
     @staticmethod
     def _prompt(db_file: str) -> Optional[Namespace]:

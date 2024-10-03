@@ -24,8 +24,7 @@ class SettingsConfig(DBConfiguration):
 
     def __init__(self, resource_dir: str, filename: str):
         super().__init__(resource_dir, filename)
-        po = PathObject.of(self["hhs.settings.database"])
-        self._database: str = str(po)
+        self._database: str = str(PathObject.of(self["hhs.settings.database"]))
         self._encode_db: bool = to_bool(self["hhs.settings.encode.database"])
 
     @property
