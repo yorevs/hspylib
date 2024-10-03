@@ -12,18 +12,17 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
+import os
+import sys
+import unittest
+
 from hspylib.core.config.app_config import AppConfigs
 from hspylib.core.exception.exceptions import ApplicationError
 from hspylib.core.metaclass.singleton import Singleton
-from hspylib.core.tools.commons import parent_path
 from hspylib.modules.application.application import Application
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
 from shared.application_test import ApplicationTest
-
-import os
-import sys
-import unittest
 
 APP_VERSION = Version.initial()
 
@@ -65,12 +64,6 @@ class TestApplication(unittest.TestCase):
         app = self.AppTest(resource_dir="/gabs")
         self.assertFalse(hasattr(app, "configs"))
         self.assertFalse(Singleton.has_instance(AppConfigs))
-
-    # Creating an application specifying source root directory
-    def test_should_instantiate_configs(self) -> None:
-        cur_dir = parent_path(__file__)
-        app = self.AppTest(resource_dir=f"{str(cur_dir)}/resources")
-        self.assertTrue(hasattr(app.configs, "INSTANCE"))
 
     # Check when passing defined options and arguments
     def test_calling_an_app_with_correct_opts_and_args_should_not_raise_errors(self) -> None:

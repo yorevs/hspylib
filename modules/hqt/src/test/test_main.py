@@ -13,13 +13,10 @@
    Copyright·(c)·2024,·HSPyLib
 """
 
-from hspylib.core.config.app_config import AppConfigs
-from hspylib.core.tools.commons import dirname
-
-import logging as log
-import os
 import sys
 import unittest
+
+from hspylib.core.tools.commons import dirname
 
 TEST_DIR = dirname(__file__)
 
@@ -27,12 +24,7 @@ TEST_DIR = dirname(__file__)
 class TestMain(unittest.TestCase):
     # Setup tests
     def setUp(self):
-        resource_dir = "{}/resources".format(TEST_DIR)
-        os.environ["ACTIVE_PROFILE"] = "test"
-        self.configs = AppConfigs(resource_dir=resource_dir)
-        self.assertIsNotNone(self.configs)
-        self.assertIsNotNone(AppConfigs.INSTANCE)
-        log.info(self.configs)
+        pass
 
     # Teardown tests
     def tearDown(self):

@@ -26,8 +26,6 @@ apply from: "${rootDir}/gradle/idea.gradle"
 
 /* Project extension properties */
 ext {
-  python = (System.getenv('PYTHON_HOME') ?: '') + '/python3'
-  pyrcc = (System.getenv('QT_HOME') ?: '') + '/pyrcc5'
   buildTools = "${buildTools}".split(",")
   buildToolsFile = new File("${project.projectDir}/buildTools.txt")
   modulesDir = "${project.projectDir}/modules/"
@@ -54,24 +52,19 @@ subprojects {
     }
   }
 
-  ext {
-    python = "${rootProject.python}"
-  }
-
   project.afterEvaluate {
     assert project.ext.has("sourceRoot")
     assert project.ext.has("pythonPath")
-    println "> SourceRoot: $project.ext.sourceRoot"
-    println "> PythonPath: $project.ext.pythonPath"
-    exec {
-      commandLine project.ext.python, '--version'
-    }
+    def srcRoot = project.ext.sourceRoot.replaceAll("${rootProject.rootDir}/".toString(), "")
+    def pythonPath = project.ext.pythonPath.replaceAll("${project.ext.sourceRoot}/".toString(), "")
+    println "> SourceRoot: $srcRoot"
+    println "> PythonPath: $pythonPath"
   }
 }
 
 /* List project modules */
 task listModules(type: Task) {
-  group = 'Other'
+  group = 'Build'
   description = 'List project modules'
   doLast {
     println("\nListing " + project.name + " modules ...")
