@@ -26,6 +26,7 @@ class SettingsConfig(DBConfiguration):
         super().__init__(resource_dir, filename)
         self._database: str = str(PathObject.of(self["hhs.settings.database"]))
         self._encode_db: bool = to_bool(self["hhs.settings.encode.database"])
+        SettingsConfig.INSTANCE = self if SettingsConfig.INSTANCE is None else SettingsConfig.INSTANCE
 
     @property
     def database(self) -> str:

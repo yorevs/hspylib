@@ -34,7 +34,7 @@ class Main(TUIApplication):
     DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
-    VERSION_DIR = classpath.source_path()
+    VERSION_DIR = classpath.source_path
 
     class Addon(Enumeration):
         """HsPyLib addon types."""

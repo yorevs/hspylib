@@ -22,6 +22,6 @@ from phonebook.repository.person_repository import PersonRepository
 
 class PersonService(CrudService[PersonRepository, Person]):
     def __init__(self) -> None:
-        cfg = DBConfiguration(str(classpath.resource_path()))
+        cfg = DBConfiguration(str(classpath.resource_path))
         repository = PersonRepository(cfg)
         super().__init__(repository)

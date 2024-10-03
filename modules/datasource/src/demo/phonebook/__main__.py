@@ -30,8 +30,8 @@ class Main(TUIApplication):
     """TODO"""
 
     def __init__(self, app_name: str):
-        version = Version.load(load_dir=f"{classpath.run_path()}/phonebook")
-        super().__init__(app_name, version, "A Simple CLI phonebook", resource_dir=str(classpath.resource_path()))
+        version = Version.load(load_dir=f"{classpath.run_path}/phonebook")
+        super().__init__(app_name, version, "A Simple CLI phonebook", resource_dir=str(classpath.resource_path))
 
     def _main(self, *args, **kwargs) -> ExitStatus:  # pylint: disable=unused-argument
         # fmt: off

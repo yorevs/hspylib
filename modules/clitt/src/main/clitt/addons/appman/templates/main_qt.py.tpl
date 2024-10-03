@@ -20,10 +20,10 @@ class Main(QtApplication):
   DESCRIPTION = (HERE / "welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
   # Location of the .version file
-  VERSION_DIR = _Classpath.source_path()
+  VERSION_DIR = _classpath.source_path
 
   # Location of the resource directory
-  RESOURCE_DIR = str(_Classpath.resource_path())
+  RESOURCE_DIR = str(_classpath.resource_path)
 
   def __init__(self, app_name: str):
     version = Version.load(load_dir=self.VERSION_DIR)

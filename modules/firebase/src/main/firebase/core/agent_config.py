@@ -44,7 +44,7 @@ class AgentConfig(metaclass=Singleton):
         Keyboard.wait_keystroke()
 
     def __init__(self, filename: str) -> None:
-        self.app_configs = AppConfigs(dirname(filename))
+        self.app_configs = AppConfigs(dirname(filename), basename(filename))
         self.firebase_configs = None
         if file_is_not_empty(self.filename):
             self._load()

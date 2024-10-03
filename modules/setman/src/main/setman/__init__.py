@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-setman v0.10.41
+# hspylib-setman v0.10.42
 #
 # Package: main.setman
 """Package initialization."""
@@ -9,4 +9,4 @@ __all__ = [
     'core', 
     'settings'
 ]
-__version__ = '0.10.41'
+__version__ = '0.10.42'

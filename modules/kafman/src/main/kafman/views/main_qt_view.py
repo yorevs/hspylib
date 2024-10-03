@@ -70,9 +70,9 @@ class MainQtView(QtView):
 
     VERSION = classpath.get_source(".version").read_text(encoding=Charset.UTF_8.val)
 
-    SCHEMA_DIR = classpath.resource_path() / "schema"
+    SCHEMA_DIR = classpath.resource_path / "schema"
 
-    FORMS_DIR = str(classpath.resource_path() / "forms")
+    FORMS_DIR = str(classpath.resource_path / "forms")
 
     HISTORY_FILE = f"{os.getenv('HOME', os.getcwd())}/.kafman-history.properties"
 

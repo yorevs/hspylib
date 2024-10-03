@@ -21,7 +21,6 @@ from typing import Any, Optional, TypeAlias
 from hspylib.core.config.path_object import PathObject
 from hspylib.core.config.properties import Properties
 from hspylib.core.metaclass.classpath import AnyPath
-from hspylib.core.metaclass.singleton import Singleton
 from hspylib.core.preconditions import check_argument
 from hspylib.core.tools.commons import root_dir, to_bool
 from hspylib.core.tools.dict_tools import get_or_default_by_key
@@ -29,10 +28,8 @@ from hspylib.core.tools.dict_tools import get_or_default_by_key
 Placeholder: TypeAlias = None | dict[str, Any]
 
 
-class AppConfigs(metaclass=Singleton):
+class AppConfigs:
     """Holds all of the application configurations (properties)"""
-
-    INSTANCE = None
 
     DISPLAY_FORMAT = dedent(
         """

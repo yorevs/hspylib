@@ -12,20 +12,19 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-import glob
-from pathlib import Path
-from typing import List, Optional
-
-import sqlparse
 from datasource.identity import Identity
 from datasource.sqlite.sqlite_repository import SQLiteRepository
 from hspylib.core.enums.charset import Charset
 from hspylib.core.preconditions import check_state
-
-from setman.__classpath__ import classpath as cp
+from pathlib import Path
+from setman.__classpath__ import classpath
 from setman.core.setman_enums import SettingsType
 from setman.settings.settings_config import SettingsConfig
 from setman.settings.settings_entry import SettingsEntry
+from typing import List, Optional
+
+import glob
+import sqlparse
 
 
 class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
@@ -84,7 +83,7 @@ class SettingsRepository(SQLiteRepository[SettingsEntry, SettingsConfig]):
     def create_db(self) -> None:
         """Create the Settings database tables."""
         result: list[str] = list()
-        sql_files: list[str] = glob.glob(str(cp.resource_path() / "**/*.sql"), recursive=True)
+        sql_files: list[str] = glob.glob(str(classpath.resource_path / "**/*.sql"), recursive=True)
         for sql_file in sorted(sql_files):
             sqls: list[str] = sqlparse.split(Path(sql_file).read_text(encoding=Charset.UTF_8.val))
             result.extend(list(map(self.execute, sqls)))

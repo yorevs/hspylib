@@ -34,7 +34,7 @@ class Main(TUIApplication):
     DESCRIPTION = classpath.get_source("welcome.txt").read_text(encoding=Charset.UTF_8.val)
 
     # Location of the .version file
-    VERSION = Version.load(load_dir=classpath.source_path())
+    VERSION = Version.load(load_dir=classpath.source_path)
 
     def __init__(self, app_name: str):
         super().__init__(app_name, self.VERSION, self.DESCRIPTION.format(self.VERSION))
