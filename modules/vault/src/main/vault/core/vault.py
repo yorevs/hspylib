@@ -12,7 +12,7 @@
 
    Copyright·(c)·2024,·HSPyLib
 """
-
+import pyperclip
 from cryptography.fernet import InvalidToken
 from datasource.identity import Identity
 from hspylib.core.preconditions import check_not_none
@@ -171,14 +171,19 @@ class Vault:
             syserr(f"### No entry specified by '{key}' was found in vault")
         log.debug("Vault update issued. User=%s", getpass.getuser())
 
-    def get(self, key) -> None:
+    def get(self, key, show: bool = False) -> None:
         """Display the vault entry specified by name
         :param key: the vault entry key to get
+        :param show: whether to display the vault entry or copy to clipboard.
         """
         entry = self.service.get_by_key(key)
         if entry:
             entry.password = cryptocode.decrypt(entry.password, self._VAULT_HASHCODE)
-            sysout(f"\n{entry.to_string(True, True)}")
+            if show:
+                sysout(f"\n{entry.to_string(True, True)}")
+            else:
+                sysout("%GREEN%Password copied to the clipboard!%NC%")
+                pyperclip.copy(entry.password)
         else:
             log.error("Attempt to get from Vault failed for key=%s", key)
             syserr(f"### No entry specified by '{key}' was found in vault ###")
