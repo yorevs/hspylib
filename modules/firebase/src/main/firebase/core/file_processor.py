@@ -43,7 +43,7 @@ class FileProcessor(ABC):
         for f_path in file_paths:
             if os.path.exists(f_path):
                 if os.path.isfile(f_path):
-                    sysout(f"%BLUE%Uploading file  {f_path:.<40} %NC%", end="")
+                    sysout(f"%BLUE%Uploading file  {f_path:.<50} %NC%", end="")
                     dto = FileProcessor._read_and_encode(f_path)
                     data.append(dto)
                     sysout("[%GREEN%  OK  %NC%]")
@@ -54,7 +54,7 @@ class FileProcessor(ABC):
                     for file in all_files:
                         filename = os.path.join(f_path, file)
                         if os.path.isfile(filename) and fnmatch(file, glob_exp or "*.*"):
-                            sysout(f"%BLUE%Uploading file  {filename:.<40} %NC%", end="")
+                            sysout(f"%BLUE%Uploading file  {filename:.<50} %NC%", end="")
                             dto = FileProcessor._read_and_encode(filename)
                             data.append(dto)
                             sysout("[%GREEN%  OK  %NC%]")
