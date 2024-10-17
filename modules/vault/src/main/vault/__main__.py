@@ -15,7 +15,7 @@
 
 from clitt.core.tui.tui_application import TUIApplication
 from hspylib.core.enums.charset import Charset
-from hspylib.core.tools.commons import hook_exit_signals, syserr
+from hspylib.core.tools.commons import hook_exit_signals, syserr, to_bool
 from hspylib.core.zoned_datetime import now
 from hspylib.modules.application.exit_status import ExitStatus
 from hspylib.modules.application.version import Version
@@ -53,6 +53,7 @@ class Main(TUIApplication):
                 .add_parameter('filter', "filter the listed vault entries by it's name", nargs='*') \
             .argument('get', 'get a vault entry') \
                 .add_parameter('name', 'the name of the vault entry which identifies it') \
+                .add_parameter('show', 'boolean value. Indicates whether to show or copy to the clipboard', nargs='?') \
             .argument('del', 'delete an existing vault entry') \
                 .add_parameter('name', 'the name of the vault entry which identifies it') \
             .argument('add', 'add a NEW UNIQUE vault entry') \
@@ -107,7 +108,7 @@ class Main(TUIApplication):
             if op == "add":
                 self.vault.add(self.get_arg("name"), self.get_arg("hint"), self.get_arg("password"))
             elif op == "get":
-                self.vault.get(self.get_arg("name"))
+                self.vault.get(self.get_arg("name"), self._show_passwd())
             elif op == "del":
                 self.vault.remove(self.get_arg("name"))
             elif op == "upd":
@@ -120,6 +121,10 @@ class Main(TUIApplication):
                 self.usage(ExitStatus.FAILED)
 
         return ExitStatus.of(ret_val)
+
+    def _show_passwd(self) -> bool:
+        """TODO"""
+        return to_bool(self.get_arg("show"))
 
 
 if __name__ == "__main__":

@@ -18,3 +18,4 @@ package: hspylib-clitt
 package: cryptography, version: 42.0.8, mode: ge
 package: cryptocode, version: 0.1, mode: ge
 package: keyring, version: 24.3.1, mode: ge
+package: pyperclip, version: 1.9.0, mode: ge
