@@ -21,3 +21,4 @@ dist/
 data/
 .kafman-history.properties
 gradlew.bat
+.vscode
