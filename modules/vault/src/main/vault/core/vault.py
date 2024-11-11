@@ -26,7 +26,7 @@ from typing import List
 from vault.core.vault_config import VaultConfig
 from vault.core.vault_service import VaultService
 from vault.domain.vault_entry import VaultEntry
-from vault.exception.exceptions import VaultCloseError, VaultExecutionException, VaultSecurityException
+from vault.exception.exceptions import *
 
 import binascii
 import contextlib
