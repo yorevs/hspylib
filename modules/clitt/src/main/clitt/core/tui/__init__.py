@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
 #
-# hspylib-clitt v0.9.139
+# hspylib-clitt v0.9.140
 #
 # Package: main.clitt.core.tui
 """Package initialization."""
@@ -17,4 +17,4 @@ __all__ = [
     'tui_component', 
     'tui_preferences'
 ]
-__version__ = '0.9.139'
+__version__ = '0.9.140'

@@ -49,6 +49,20 @@ class KeyboardInput(TUIComponent):
     _REDO_HISTORY: list[str] = []
 
     @classmethod
+    def save_history_file(cls, filepath: AnyPath, overwrite: bool = False) -> None:
+        """Save history to the specified file. If `overwrite` is True, the file will be overwritten; otherwise, data will be appended.
+        :param filepath: Path to the file where history will be saved.
+        :param overwrite: Whether to overwrite the file if it exists. Defaults to False.
+        """
+        punctuation = set(string.punctuation + ' ')
+        history: list[str] = list(
+            filter(lambda line: line and not all(char in punctuation for char in line), cls.history())
+        )
+        with open(filepath, 'w' if overwrite else 'a') as file:
+            for inpt in history:
+                file.write(f"{inpt}" + os.linesep)
+
+    @classmethod
     def preload_history_file(cls, filepath: AnyPath) -> int:
         """Preload the input with the provided items from the file.
         :param filepath: Path to the text file.
@@ -88,19 +102,6 @@ class KeyboardInput(TUIComponent):
         return list(filter(lambda v: v, cls._HISTORY))
 
     @classmethod
-    def save_history_file(cls, filepath: AnyPath, overwrite: bool = False) -> None:
-        """Save history to the specified file. If `overwrite` is True, the file will be overwritten; otherwise, data will be appended.
-        :param filepath: Path to the file where history will be saved.
-        :param overwrite: Whether to overwrite the file if it exists. Defaults to False.
-        """
-        punctuation = set(string.punctuation + ' ')
-        history: list[str] = list(
-            filter(lambda line: line and not all(char in punctuation for char in line), cls.history())
-        )
-        with open(filepath, 'w' if overwrite else 'a') as file:
-            list(map(file.write, [a + os.linesep for a in history]))
-
-    @classmethod
     def _add_history(cls, input_text: str) -> None:
         """Add the following input to the history set.
         :param input_text: The input text to add to the history.
@@ -138,6 +139,7 @@ class KeyboardInput(TUIComponent):
         prompt_color: VtColor = VtColor.NC,
         text_color: VtColor = VtColor.NC,
         navbar_enable: bool = False,
+        case_insensitive: bool = True
     ):
         self._HISTORY[-1] = ""
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
@@ -146,6 +148,7 @@ class KeyboardInput(TUIComponent):
         self._prompt_color: VtColor = prompt_color
         self._text_color: VtColor = text_color
         self._navbar_enable: bool = navbar_enable
+        self._case_insensitive: bool = case_insensitive
         self._offset: Position = 0, 0
         self._input_index: int = 0
         self._input_text: str = ""
@@ -332,8 +335,9 @@ class KeyboardInput(TUIComponent):
 
     def _render_suggestions(self) -> None:
         """Render the input suggestions."""
-        edt_text: str = self.text
-        filtered: list[str] = list(filter(lambda h: h.startswith(edt_text), self._HISTORY))
+        edt_text: str = self.text.lower() if self._case_insensitive else self.text
+        filtered: list[str] = list(map(str.lower, self._HISTORY)) if self._case_insensitive else self._HISTORY
+        filtered: list[str] = [s for s in filtered if s.startswith(edt_text)]
         hint: str = ''
 
         if edt_text and edt_text in filtered:

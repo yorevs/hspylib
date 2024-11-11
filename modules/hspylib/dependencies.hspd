@@ -18,4 +18,4 @@ package: pyparsing, version: 3.1.2, mode: ge
 package: pyperclip, version: 1.9.0, mode: ge
 package: PyYAML, version: 6.0.1, mode: ge
 package: toml, version: 0.10.2, mode: ge
-package: rich, version: 13.7.1, mode: ge
+package: rich, version: 13.8.1, mode: ge

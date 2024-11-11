@@ -16,3 +16,4 @@ package: hspylib
 package: pyperclip, version: 1.9.0, mode: ge
 package: urllib3, version: 1.26.20, mode: ge
 package: emoji, version: 2.12.1, mode: ge
+package: rich, version: 13.8.1, mode: ge

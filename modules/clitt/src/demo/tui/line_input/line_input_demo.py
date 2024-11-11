@@ -34,12 +34,12 @@ if __name__ == "__main__":
         indent(f"{idx}. {entry}", '    ' if idx > 1 else '')
         for idx, entry in enumerate(KeyboardInput.history(), start=1)
     ])}
-    Who is it
+    Who is it ?
     > """)
 
-    while (name := line_input(MENU, "Input your name", VtColor.YELLOW, VtColor.GREEN, True)) not in ["bye", "", None]:
+    while (name := line_input(MENU, "Input your name", VtColor.YELLOW, VtColor.GREEN, True, False)) not in ["bye", "", None]:
         if isinstance(name, Keyboard):
-            cursor.writeln("PTT: " + name)
+            cursor.writeln("PTT: " + str(name))
         else:
             cursor.writeln("Input: " + name)
 

@@ -24,6 +24,7 @@ def line_input(
     prompt_color: VtColor = VtColor.NC,
     text_color: VtColor = VtColor.NC,
     navbar_enable: bool = False,
+    case_insensitive: bool = True,
 ) -> Optional[str | Keyboard]:
     """Read a string from standard input.
     :param prompt: The message to be displayed to the user.
@@ -31,6 +32,7 @@ def line_input(
     :param prompt_color: The color of the prompt text.
     :param text_color: The color of the input text.
     :param navbar_enable: Whether to display the navbar or not.
+    :param case_insensitive: Whether suggestions are case insensitive or not.
     """
-    ptt = KeyboardInput(prompt, placeholder, prompt_color, text_color, navbar_enable)
+    ptt = KeyboardInput(prompt, placeholder, prompt_color, text_color, navbar_enable, case_insensitive)
     return ptt.execute()
