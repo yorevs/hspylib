@@ -58,14 +58,6 @@ class KeyboardInputError(HSBaseException):
     """Raised when an invalid keystroke input is provided"""
 
 
-class ResourceNotFoundError(HSBaseException):
-    """Raised when resource path is not found"""
-
-
-class SourceNotFoundError(HSBaseException):
-    """Raised when source path is not found"""
-
-
 class InvalidOptionError(HSBaseException):
     """Raised when an invalid option is received by the application"""
 

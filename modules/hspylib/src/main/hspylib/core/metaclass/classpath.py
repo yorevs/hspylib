@@ -20,7 +20,6 @@ from types import NoneType
 from typing import Optional, TypeAlias, Union
 
 from hspylib.core.enums.charset import Charset
-from hspylib.core.exception.exceptions import ResourceNotFoundError, SourceNotFoundError
 from hspylib.core.preconditions import check_argument, check_not_none, check_state
 
 AnyPath: TypeAlias = Union[Path, str, NoneType]
@@ -31,17 +30,17 @@ class Classpath:
 
     def __init__(
         self,
-        source_root: AnyPath = None,
+        source_dir: AnyPath = None,
         root_dir: AnyPath = None,
         resource_dir: AnyPath = None
     ):
 
-        if source_root:
-            check_state(Path(str(source_root)).exists(), "source_root is not an existing path")
+        if source_dir:
+            check_state(Path(source_dir).exists(), f"Source dir does not exist: '{source_dir}'")
         if root_dir:
-            check_state(Path(str(root_dir)).exists(), "root_dir is not an existing path")
+            check_state(Path(root_dir).exists(), f"Root dir does not exist: '{root_dir}'")
 
-        self.source_root = Path(os.getenv("SOURCE_ROOT", str(source_root or os.curdir)))
+        self.source_root = Path(os.getenv("SOURCE_ROOT", str(source_dir or os.curdir)))
         self.root_dir = Path(str(root_dir or self.source_root))
         self.resource_dir = Path(str(resource_dir or f"{self.source_root}/resources"))
         self.log_dir = Path(os.getenv("HHS_LOG_DIR", f"{self.root_dir}/log") or self.root_dir)
@@ -68,10 +67,11 @@ class Classpath:
 
     @property
     def list_resources(self) -> Optional[str]:
-        """Walk through resources directory and build a list with all files"""
-
+        """Walk through the resources directory and display all resource files.
+        :return: A string representation of the list of resource files found, or None if no files are found
+        """
         def list_resources_closure(directory: str | Path, depth: int = 4) -> Optional[str]:
-            """Closure for list_resources method"""
+            """Recursively list the resources"""
             if os.path.exists(directory):
                 res_str = self.list_files(directory, depth)
                 for root, dirs, _ in os.walk(directory):
@@ -84,8 +84,12 @@ class Classpath:
         return list_resources_closure(self.resource_path)
 
     @staticmethod
-    def list_files(directory: str | Path, depth: int = 4) -> str:
-        """Walk through directory and build a list with all files."""
+    def list_files(directory: AnyPath, depth: int = 4) -> str:
+        """Walk through the specified directory up to a certain depth and build a list of all files.
+        :param directory: The directory path to start the file listing from.
+        :param depth: The maximum depth to traverse within the directory, default is 4.
+        :return: A string representation of the list of files found.
+        """
         res_str = ""
         if os.path.exists(directory):
             for filename in os.listdir(directory):
@@ -94,20 +98,26 @@ class Classpath:
                     res_str += " " * depth + "|-" + str(filename) + os.linesep
         return res_str
 
-    def get_resource(self, resource: str | Path) -> Path:
-        """Return the path of the given resource."""
+    def get_resource(self, resource: AnyPath) -> Path:
+        """Return the path of the given resource.
+        :param resource: The name or path of the resource to locate.
+        :return: The path object of the specified resource.
+        :raises FileNotFoundError: if the resource file is not found.
+        """
         check_not_none(resource, "Must provide a valid resource path")
-        resource = Path(f"{self.resource_path}/{str(resource)}")
-        if not resource.exists():
-            raise ResourceNotFoundError(f"Resource {str(resource)} was not found at {self.source_path}!")
+        if not (resource := Path(f"{self.resource_path}/{str(resource)}")).exists():
+            raise FileNotFoundError(f"Resource {str(resource)} was not found at: '{self.source_path}' !")
         return resource
 
-    def get_source(self, source: str | Path) -> Path:
-        """Return the path of the given source."""
+    def get_source(self, source: AnyPath) -> Path:
+        """Return the path of the given source file.
+        :param source: The name or path of the source file to locate
+        :return: The path object of the specified source file
+        :raises FileNotFoundError: if the source file is not found.
+        """
         check_not_none(source, "Must provide a valid source path")
-        filepath = Path(f"{self.source_path}/{str(source)}")
-        if not filepath.exists():
-            raise SourceNotFoundError(f"Source {str(source)} was not found at {self.source_path}!")
+        if not (filepath := Path(f"{self.source_path}/{str(source)}")).exists():
+            raise FileNotFoundError(f"Source {str(source)} was not found at: '{self.source_path}' !")
         return filepath
 
     def load_envs(
@@ -117,18 +127,22 @@ class Classpath:
         load_dir: str | None = None,
         raise_error: bool = False,
     ) -> None:
-        """Load environment variables from environment file."""
-
+        """Load environment variables from an environment file.
+        :param prefix: Optional prefix to filter environment variables
+        :param suffix: Optional suffix to filter environment variables
+        :param load_dir: Optional directory to load the environment file from
+        :param raise_error: If True, raises an error if loading fails
+        :raises FileNotFoundError: if the environment file is not found and raise_error is True
+        """
         load_path = Path(load_dir or f"{self.source_path}/env")
-        check_argument(load_path.exists())
+        check_argument(load_path.exists(), f"Load path does not exist: '{load_path}'!")
         files = [f"{load_path}/{prefix or ''}{f'-{suffix}' if suffix else '.env'}", f"{load_path}/.envrc"]
-        env_file = next((f for f in files if os.path.exists(f)), None)
-        if env_file:
+
+        if env_file := next((f for f in files if os.path.exists(f)), None):
             log.debug("ENVIRONMENT::Loading environment file '%s'", env_file)
             with open(env_file, "r", encoding=Charset.UTF_8.val) as f_env:
-                lines = f_env.readlines()
-                lines = list(filter(lambda l: l.startswith("export "), filter(None, lines)))
-                variables = list(map(lambda x: x.split("=", 1), map(lambda l: l[7:].strip(), lines)))
+                lines = list(filter(lambda line: line.startswith("export "), filter(None, f_env.readlines())))
+                variables = list(map(lambda x: x.split("=", 1), map(lambda var: var[7:].strip(), lines)))
                 for v in variables:
                     log.debug("ENVIRONMENT::Setting environment variable\t'%s'", v[0])
                     os.environ[v[0]] = v[1]
