@@ -18,7 +18,11 @@ runs:
     id: last-tag
     shell: bash
     run: |
-      git fetch --prune --unshallow
+      if git rev-parse --is-shallow-repository | grep -q true; then
+        git fetch --prune --unshallow
+      else
+        git fetch --prune
+      fi
       lastTag=$(git describe --tags --abbrev=0 HEAD^)
       echo "lastTag=$(echo $lastTag)" >> $GITHUB_OUTPUT
   - name: Generate Changelog
@@ -27,8 +31,8 @@ runs:
     run: |
       echo "changelog<<EOF" >> ${GITHUB_OUTPUT}
       echo "
-         ### Changelog ${{ inputs.tag-name }}:
-         ------------------------------------------------------------
-         $(git log --oneline --pretty='%h %ad %s' --date=short ${{ steps.last-tag.outputs.lastTag }}..HEAD)
+        ### Changelog ${{ inputs.tag-name }}:
+        ------------------------------------------------------------
+        $(git log --oneline --pretty='%h %ad %s' --date=short ${{ steps.last-tag.outputs.lastTag }}..HEAD)
       " >> ${GITHUB_OUTPUT}
       echo 'EOF' >> ${GITHUB_OUTPUT}
