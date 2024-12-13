@@ -10,12 +10,12 @@ import org.gradle.internal.os.OperatingSystem;
 String detectPython() {
   def pythonHome = System.getenv('PYTHON_HOME') ?: null
   if (pythonHome != null) {
-      return pythonHome + '/python3'
+      return pythonHome + "/${project.ext.python_ver}"
   }
 
   def output = new ByteArrayOutputStream()
   exec {
-      commandLine 'bash', '-c', 'command -v python3'
+      commandLine 'bash', '-c', "command -v ${project.ext.python_ver}"
       standardOutput = output
   }
 
@@ -31,6 +31,7 @@ ext {
   depsFile = "$project.projectDir/dependencies.hspd"
   reqsFile = "$project.projectDir/src/main/requirements.txt"
   os = OperatingSystem.current().getName()
+  python_ver = 'python3.11'
   python = detectPython()
   pyrcc = 'pyrcc5'
 }
