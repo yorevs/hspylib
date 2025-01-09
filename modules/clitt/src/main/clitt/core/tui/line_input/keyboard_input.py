@@ -139,7 +139,8 @@ class KeyboardInput(TUIComponent):
         prompt_color: VtColor = VtColor.NC,
         text_color: VtColor = VtColor.NC,
         navbar_enable: bool = False,
-        case_insensitive: bool = True
+        case_insensitive: bool = True,
+        markdown: bool = False,
     ):
         self._HISTORY[-1] = ""
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
@@ -148,6 +149,7 @@ class KeyboardInput(TUIComponent):
         self._prompt_color: VtColor = prompt_color
         self._text_color: VtColor = text_color
         self._navbar_enable: bool = navbar_enable
+        self._markdown = markdown
         self._case_insensitive: bool = case_insensitive
         self._offset: Position = 0, 0
         self._input_index: int = 0
@@ -187,6 +189,10 @@ class KeyboardInput(TUIComponent):
     @property
     def bindings(self) -> KeyBinding:
         return self._bindings
+
+    @property
+    def markdown(self) -> bool:
+        return self._markdown
 
     def execute(self) -> Optional[str | Keyboard]:
         keypress = self._loop(cleanup=False) or Keyboard.VK_ESC
@@ -239,7 +245,7 @@ class KeyboardInput(TUIComponent):
         self.cursor.move(self._offset[0], Direction.UP)
         self.cursor.move(self._offset[1], Direction.LEFT)
         self.cursor.erase(Direction.DOWN)
-        self.write(self.prompt)
+        self.write(self.prompt, markdown=self.markdown)
         if self.text:
             self.write(self.text)
             self._render_suggestions()

@@ -16,7 +16,6 @@ import os
 from textwrap import dedent, indent
 
 from hspylib.modules.cli.keyboard import Keyboard
-from hspylib.modules.cli.vt100.vt_color import VtColor
 
 from clitt.core.term.cursor import cursor
 from clitt.core.tui.line_input.keyboard_input import KeyboardInput
@@ -29,15 +28,16 @@ if __name__ == "__main__":
         KeyboardInput.preload_history(["Hugo", "Joao", "Koko", "Hugo", "Koko"])
 
     MENU = dedent(f"""
-    {"-=" * 30}
+    # Menu
     {os.linesep.join([
         indent(f"{idx}. {entry}", '    ' if idx > 1 else '')
         for idx, entry in enumerate(KeyboardInput.history(), start=1)
     ])}
-    Who is it ?
-    > """)
 
-    while (name := line_input(MENU, "Input your name", VtColor.YELLOW, VtColor.GREEN, True, False)) not in ["bye", "", None]:
+    ` Who is it ? ` """)
+
+    while (name := line_input(MENU, "Input your name", navbar_enable=True, case_insensitive=False, markdown=True)) \
+        not in ["bye", "", None]:
         if isinstance(name, Keyboard):
             cursor.writeln("PTT: " + str(name))
         else:

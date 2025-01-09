@@ -22,3 +22,4 @@ data/
 .kafman-history.properties
 gradlew.bat
 .vscode
+history.txt
