@@ -38,11 +38,13 @@ class FirebaseAuth(ABC):
         """
         creds_file = check_not_none(
             os.environ.get("HHS_FIREBASE_CREDS_FILE", f"{os.environ.get('HOME')}/firebase-credentials.json"), project_id
-        )
+        ).format(project_id=project_id)
         try:
-            creds = credentials.Certificate(creds_file.format(project_id=project_id))
+            creds = credentials.Certificate(creds_file)
+        except FileNotFoundError as err:
+            raise InvalidFirebaseCredentials(f'Credentials file not found: "{creds_file}"') from err
         except (IOError, KeyError, ValueError) as err:
-            raise InvalidFirebaseCredentials(f'Invalid credentials or credential file "{creds_file}"') from err
+            raise InvalidFirebaseCredentials(f'Invalid credentials file: "{creds_file}"') from err
 
         return creds
 
@@ -56,7 +58,7 @@ class FirebaseAuth(ABC):
             cls.APP = firebase_admin.initialize_app(FirebaseAuth._credentials(project_id)) if not cls.APP else cls.APP
             if user := auth.get_user(uid):
                 return user
-            raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase. User ID '{uid}' not found.")
+            raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase. User ID not found: '{uid}'")
         except UserNotFoundError as err:
             raise FirebaseAuthenticationError(f"Failed to authenticate to Firebase => {err}") from err
         except (ValueError, FirebaseError) as err:
