@@ -16,6 +16,8 @@ from clitt.core.tui.minput.input_validator import InputValidator
 from clitt.core.tui.minput.minput import MenuInput, minput
 from collections import defaultdict
 from datasource.firebase.firebase_configuration import FirebaseConfiguration
+from hspylib.core.metaclass.classpath import AnyPath
+
 from firebase.core.firebase_auth import FirebaseAuth
 from firebase.exception.exceptions import FirebaseAuthenticationError
 from hspylib.core.config.app_config import AppConfigs
@@ -43,9 +45,19 @@ class AgentConfig(metaclass=Singleton):
         sysout(wait_message)
         Keyboard.wait_keystroke()
 
+    @staticmethod
+    def _create_properties(filepath: AnyPath) -> None:
+        """Create an empty firebase.properties file at the specified location.
+        :param filepath: Path to the location where the firebase.properties file should be created.
+        """
+        with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_config:
+            f_config.write(FirebaseConfiguration.CONFIG_FORMAT)
+
     def __init__(self, filename: str) -> None:
-        self.app_configs = AppConfigs(dirname(filename), basename(filename))
         self.firebase_configs = None
+        if not os.path.exists(filename):
+            self._create_properties(filename)
+        self.app_configs = AppConfigs(dirname(filename), basename(filename))
         if file_is_not_empty(self.filename):
             self._load()
             log.debug("Found and loaded a Firebase configuration: %s", self)
@@ -58,6 +70,32 @@ class AgentConfig(metaclass=Singleton):
 
     def __getitem__(self, item) -> Any:
         return self.app_configs[item]
+
+    @property
+    def filename(self) -> str:
+        """Return the configuration file."""
+        file = self.app_configs["hhs.firebase.config.file"]
+        return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase"
+
+    @property
+    def project_id(self) -> Optional[str]:
+        """Return the firebase Project ID."""
+        return self.firebase_configs.project_id
+
+    @property
+    def uid(self) -> Optional[str]:
+        """Return the firebase User ID."""
+        return self.firebase_configs.uid
+
+    @property
+    def email(self) -> Optional[str]:
+        """Return the firebase user's email."""
+        return self.firebase_configs.email
+
+    @property
+    def database(self) -> Optional[str]:
+        """Return the firebase project database name."""
+        return self.firebase_configs.database
 
     def prompt(self) -> Optional[bool]:
         """Create a new firebase configuration by prompting the user for information."""
@@ -113,6 +151,11 @@ class AgentConfig(metaclass=Singleton):
 
         return None
 
+    def url(self, db_alias: str) -> str:
+        """Return the firebase project URL."""
+        final_alias = db_alias.replace(".", "/")
+        return self.firebase_configs.url(final_alias)
+
     def _setup(self, load_dir: str, filename: str, config_dict: dict) -> bool:
         """Setup firebase from a dict configuration
         :param load_dir: the directory where to load the configurations from.
@@ -125,9 +168,7 @@ class AgentConfig(metaclass=Singleton):
                 if user.uid != config_dict["UID"]:
                     raise FirebaseAuthenticationError(f"Provided UID: {config_dict['UID']} is invalid!")
                 config_dict["UID"] = user.uid
-                self.firebase_configs = FirebaseConfiguration.INSTANCE or FirebaseConfiguration.of(
-                    load_dir, filename, config_dict
-                )
+                self.firebase_configs = FirebaseConfiguration.of(load_dir, filename, config_dict)
                 self.firebase_configs.update(dict(config_dict))
                 self._save()
                 sysout("%GREEN%Firebase authentication succeeded!%EOL%")
@@ -138,37 +179,6 @@ class AgentConfig(metaclass=Singleton):
 
         return False
 
-    @property
-    def filename(self) -> str:
-        """Return the configuration file."""
-        file = self.app_configs["hhs.firebase.config.file"]
-        return file if file else f"{os.getenv('HOME', os.getcwd())}/.firebase"
-
-    @property
-    def project_id(self) -> Optional[str]:
-        """Return the firebase Project ID."""
-        return self.firebase_configs.project_id
-
-    @property
-    def uid(self) -> Optional[str]:
-        """Return the firebase User ID."""
-        return self.firebase_configs.uid
-
-    @property
-    def email(self) -> Optional[str]:
-        """Return the firebase user's email."""
-        return self.firebase_configs.email
-
-    @property
-    def database(self) -> Optional[str]:
-        """Return the firebase project database name."""
-        return self.firebase_configs.database
-
-    def url(self, db_alias: str) -> str:
-        """Return the firebase project URL."""
-        final_alias = db_alias.replace(".", "/")
-        return self.firebase_configs.url(final_alias)
-
     def _load(self) -> None:
         """Load configurations from file."""
         self.firebase_configs = FirebaseConfiguration.of_file(self.filename)
@@ -177,4 +187,4 @@ class AgentConfig(metaclass=Singleton):
         """Save current firebase configurations to file."""
         with open(self.filename, "w+", encoding=Charset.UTF_8.val) as f_config:
             f_config.write(str(self))
-            sysout(f"%GREEN%Firebase configuration saved => {self.filename} !%NC%")
+            sysout(f"%BLUE%Firebase configuration saved => {self.filename} !%NC%")
