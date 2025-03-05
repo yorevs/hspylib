@@ -51,7 +51,8 @@ class AgentConfig(metaclass=Singleton):
         :param filepath: Path to the location where the firebase.properties file should be created.
         """
         with open(filepath, "w+", encoding=Charset.UTF_8.val) as f_config:
-            f_config.write(FirebaseConfiguration.CONFIG_FORMAT)
+            f_config.write(FirebaseConfiguration.CONFIG_FORMAT.format(
+                uid='', project_id='', email='', database='', base_url=''))
 
     def __init__(self, filename: str) -> None:
         self.firebase_configs = None
@@ -152,15 +153,20 @@ class AgentConfig(metaclass=Singleton):
         return None
 
     def url(self, db_alias: str) -> str:
-        """Return the firebase project URL."""
+        """Return the Firebase project URL.
+        :param db_alias: The database alias to be formatted into a URL.
+        :return: The formatted Firebase project URL.
+        """
         final_alias = db_alias.replace(".", "/")
         return self.firebase_configs.url(final_alias)
 
     def _setup(self, load_dir: str, filename: str, config_dict: dict) -> bool:
-        """Setup firebase from a dict configuration
-        :param load_dir: the directory where to load the configurations from.
-        :param filename: the configuration file name.
-        :param config_dict: firebase configuration dictionary.
+        """Setup Firebase from a dictionary configuration.
+        :param load_dir: Directory path where the Firebase configuration should be loaded from.
+        :param filename: Name of the configuration file.
+        :param config_dict: Dictionary containing Firebase configuration details.
+        :return: True if Firebase authentication succeeds, otherwise False.
+        :raises FirebaseAuthenticationError: If the provided UID is invalid.
         """
         try:
             sysout("%BLUE%Authenticating to Firebase ...%NC%")
