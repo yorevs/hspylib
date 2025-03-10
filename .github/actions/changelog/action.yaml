@@ -3,8 +3,8 @@ description: 'Generate a Changelog from the latest tag to the preceding tag'
 
 inputs:
   tag-name:
-    description: 'The new Git Tag name (e.g: v1.0.0)'
-    required: true
+    description: 'The newest Git Tag name (default ot latest)'
+    required: false
 
 outputs:
   changelog:
@@ -15,6 +15,7 @@ runs:
   using: composite
   steps:
   - name: Detect Last Tag
+    if: ${{ inputs.tag-name == '' }}
     id: last-tag
     shell: bash
     run: |
@@ -29,10 +30,63 @@ runs:
     id: change-log
     shell: bash
     run: |
+      V_TAG_NAME="${{ inputs.tag-name != '' && inputs.tag-name || steps.last-tag.outputs.lastTag }}"
+      VERSION="${V_TAG_NAME#v}"
+      CUR_DATE="$(git log -1 v"${VERSION}" --pretty=format:'%ad' --date=format:'%Y/%m/%d')"
+      CUR_DATE="${CUR_DATE:-$(date '+%Y/%m/%d')}"
+      CHG_LOG="$(git log --pretty=format:'%s' v"${VERSION}"..HEAD)"
+      CHG_LOG_UNIQ="$(echo "${CHG_LOG}" | awk '!seen[$0]++ && !/^[[:space:]]*(Merge|New|[Aa]djustments?)/' | sed -E 's/[[:space:]]*-[[:space:]]*[0-9]+//' | sort | uniq)"
+
+      echo "$CHG_LOG_UNIQ"
+      # exit 0
+
+      ADDED=""
+      REMOVED=""
+      FIXED=""
+      UPDATED=""
+
+      while IFS= read -r line; do
+          line=$(echo "$line" | tr -s '[:blank:]' ' ')
+          shopt -s nocasematch
+          if [[ ${line} =~ ^a(dd(ing)?|dded) ]]; then
+              read -r _ msg <<<"${line}"
+              ADDED+="* Added: ${msg}"$'\n'
+          elif [[ ${line} =~ ^remov(e|ed|ing) ]]; then
+              read -r _ msg <<<"${line}"
+              REMOVED+="* Removed: ${msg}"$'\n'
+          elif [[ ${line} =~ ^(bug)?fix(ed|ing|ups)? ]]; then
+              read -r _ msg <<<"${line}"
+              FIXED+="* Fixed: ${msg}"$'\n'
+          elif [[ ${line} =~ ^updat(e|ed|ing) ]]; then
+              read -r _ msg <<<"${line}"
+              UPDATED+="* Updated: ${msg}"$'\n'
+          else
+              UPDATED+="* Updated: ${line}"$'\n'
+          fi
+          shopt -u nocasematch
+      done <<<"$CHG_LOG_UNIQ"
+
+      OUTPUT="## Changelog v${VERSION} - ${CUR_DATE}
+
+      > The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/).
+      ----
+
+      ### Added
+
+      ${ADDED:-**No new additions**}
+
+      ### Fixed
+
+      ${FIXED:-**No bug fixes**}
+
+      ### Updated
+
+      ${UPDATED:-**No updates**}
+
+      ### Removed
+
+      ${REMOVED:-**Nothing**}
+      "
       echo "changelog<<EOF" >> ${GITHUB_OUTPUT}
-      echo "
-        ### Changelog ${{ inputs.tag-name }}:
-        ------------------------------------------------------------
-        $(git log --oneline --pretty='%h %ad %s' --date=short ${{ steps.last-tag.outputs.lastTag }}..HEAD)
-      " >> ${GITHUB_OUTPUT}
+      echo "${OUTPUT}" >> ${GITHUB_OUTPUT}
       echo 'EOF' >> ${GITHUB_OUTPUT}
