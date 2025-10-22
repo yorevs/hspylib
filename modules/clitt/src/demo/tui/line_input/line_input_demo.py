@@ -21,12 +21,9 @@ from clitt.core.term.cursor import cursor
 from clitt.core.tui.line_input.keyboard_input import KeyboardInput
 from clitt.core.tui.line_input.line_input import line_input
 
-if __name__ == "__main__":
-    if os.path.exists('history.txt'):
-        KeyboardInput.preload_history_file('history.txt')
-    else:
-        KeyboardInput.preload_history(["Hugo", "Joao", "Koko", "Hugo", "Koko"])
 
+def menu():
+    global MENU
     MENU = dedent(f"""
     # Menu
     {os.linesep.join([
@@ -34,7 +31,17 @@ if __name__ == "__main__":
         for idx, entry in enumerate(KeyboardInput.history(), start=1)
     ])}
 
-    ` Who is it ? ` """)
+    `> Who is it ? ` """)
+
+
+if __name__ == "__main__":
+    global MENU
+    if os.path.exists('history.txt'):
+        KeyboardInput.preload_history_file('history.txt')
+    else:
+        KeyboardInput.preload_history(["Hugo", "Joao", "Koko", "Hugo", "Koko"])
+
+    menu()
 
     while (name := line_input(MENU, "Input your name", navbar_enable=True, case_insensitive=False, markdown=True)) \
         not in ["bye", "", None]:
@@ -42,6 +49,7 @@ if __name__ == "__main__":
             cursor.writeln("PTT: " + str(name))
         else:
             cursor.writeln("Input: " + name)
+        menu()
 
     cursor.writeln(KeyboardInput.history())
     KeyboardInput.save_history_file('history.txt')

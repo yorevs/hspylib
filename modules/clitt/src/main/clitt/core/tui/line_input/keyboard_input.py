@@ -50,7 +50,8 @@ class KeyboardInput(TUIComponent):
 
     @classmethod
     def save_history_file(cls, filepath: AnyPath, overwrite: bool = False) -> None:
-        """Save history to the specified file. If `overwrite` is True, the file will be overwritten; otherwise, data will be appended.
+        """Save history to the specified file. If `overwrite` is True, the file will be overwritten; otherwise,
+        data will be appended.
         :param filepath: Path to the file where history will be saved.
         :param overwrite: Whether to overwrite the file if it exists. Defaults to False.
         """
@@ -324,12 +325,12 @@ class KeyboardInput(TUIComponent):
             Keyboard.VK_TAB: self.complete
         })
 
-    def _set_cursor_pos(self):
+    def _set_cursor_pos(self) -> None:
         """Set the cursor position on the input."""
         index_offset = max(0, self.length - self._input_index)
         self.screen.cursor.move(index_offset, Direction.LEFT)
 
-    def _update_input(self, text: str) -> str:
+    def _update_input(self, text: str) -> Optional[str]:
         """Update the value of the input.
         :param text: The text to be set.
         """
@@ -339,29 +340,31 @@ class KeyboardInput(TUIComponent):
         self._HIST_INDEX = max(0, len(self._HISTORY) - 1)
         return text
 
-    def _render_suggestions(self) -> None:
+    def _render_suggestions(self) -> Optional[str]:
         """Render the input suggestions."""
         edt_text: str = self.text.lower() if self._case_insensitive else self.text
-        filtered: list[str] = list(map(str.lower, self._HISTORY)) if self._case_insensitive else self._HISTORY
+        filtered: list[str] = [s.lower() for s in self._HISTORY] if self._case_insensitive else self._HISTORY
         filtered: list[str] = [s for s in filtered if s.startswith(edt_text)]
         hint: str = ''
 
-        if edt_text and edt_text in filtered:
-            edt_idx = filtered.index(edt_text) - 1
+        if firstMatch := next((s for s in filtered if s.startswith(edt_text)), None):
+            edt_idx = filtered.index(firstMatch)
             index = max(0, min(edt_idx, self._HIST_INDEX))
             hint: str = get_or_default(filtered, index, '') or filtered[-1]
             if hint and (hint := hint[len(edt_text):]):
                 self.write(f"%GRAY%{hint}%NC%")
-                self._terminal.cursor.erase(Direction.DOWN)
+                self.cursor.erase(Direction.DOWN)
                 self.cursor.move(len(hint), Direction.LEFT)
             else:
-                self._terminal.cursor.erase(Direction.DOWN)
+                self.cursor.erase(Direction.DOWN)
         else:
-            self._terminal.cursor.erase(Direction.DOWN)
+            self.cursor.erase(Direction.DOWN)
 
         self._suggestion = hint
 
-    def _next_in_history(self) -> str:
+        return hint
+
+    def _next_in_history(self) -> Optional[str]:
         """Return the next input in history."""
         edt_text: str = self._HISTORY[-1]
         filtered: list[str] = list(filter(lambda h: h.lower().startswith(edt_text.lower()), self._HISTORY))
@@ -373,7 +376,7 @@ class KeyboardInput(TUIComponent):
             return text
         return edt_text
 
-    def _prev_in_history(self) -> str:
+    def _prev_in_history(self) -> Optional[str]:
         """Return the previous input in history."""
         edt_text: str = self._HISTORY[-1]
         filtered: list[str] = list(filter(lambda h: h.lower().startswith(edt_text.lower()), self._HISTORY))
